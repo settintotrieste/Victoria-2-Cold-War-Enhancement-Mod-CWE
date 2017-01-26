@@ -1,0 +1,489 @@
+# replace_path vic2 bug force "G"ermany.txt as name
+political_decisions = {
+
+	denazification = {
+		picture = "denazification"
+		potential = {
+			OR = { 
+				AND = { tag = USA 564 = { owned_by = USA } }
+				AND = { tag = ENG 369 = { owned_by = ENG } }
+				AND = { tag = RUS 551 = { owned_by = RUS } }
+			}
+			NOT = { has_country_flag = denazification }
+		}
+
+		allow = {
+			OR = { 
+				AND = { tag = USA 564 = { owned_by = USA } }
+				AND = { tag = ENG 369 = { owned_by = ENG } }
+				AND = { tag = RUS 551 = { owned_by = RUS } }
+			}
+			NOT = { has_country_flag = denazification }
+			OR = {
+				AND = {
+					year = 1947
+					ai = yes
+				}
+				AND = {
+					marshall_plan = 1
+					#public_switched_telephone_network = 1
+					ai = no
+				}
+			}
+		}
+
+		effect = {
+			set_country_flag = denazification
+			any_owned = { 
+				limit = { is_core = GER }
+				add_province_modifier = { name = denazification duration = 700 }
+			}
+			country_event = 8204080
+		}
+		ai_will_do = {
+			factor = 1
+		}		
+	}
+	
+	monnet_plan = {
+		picture = "monnet_plan"
+		potential = {
+			owns = 574
+			574 = { NOT = { is_core = THIS } }
+			NOT = { has_country_flag = monnet_plan }
+		}
+
+		allow = {
+			marshall_plan = 1
+		}
+
+		effect = {
+			set_country_flag = monnet_plan
+			any_owned = { 
+				limit = { is_core = GER NOT = { province_id = 573 } }
+				add_province_modifier = { name = colonial_exploitation duration = 700 }
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}		
+	}
+	
+	saar_protectorate = {
+		picture = "saar_protectorate"
+		potential = {
+			owns = 573
+			573 = { NOT = { is_core = THIS } }
+			NOT = { has_country_flag = saar_protectorate }
+		}
+
+		allow = {
+			tag = FRA 573 = { owned_by = FRA }
+			NOT = { has_country_flag = saar_protectorate }
+			has_country_flag = monnet_plan
+			marshall_plan = 1
+			year = 1947
+		}
+
+		effect = {
+			prestige = 10
+			set_country_flag = saar_protectorate
+			release_vassal = SAL
+			country_event = 8204036
+			SAL = { government = sar_government }
+		}
+		ai_will_do = {
+			factor = 1
+		}		
+	}
+	
+	establish_west_germany = {
+		picture = "establish_west_germany"
+		potential = {
+			GER = { exists = no }
+			OR = { 
+				AND = { 
+					has_country_flag = denazification
+					tag = ENG
+					year = 1952
+					369 = { owned_by = ENG }
+				}
+				AND = { 
+					has_country_flag = denazification
+					tag = USA 
+					564 = { owned_by = USA NOT = { has_province_modifier = denazification } } 
+				}
+			}
+			NOT = { has_country_flag = establish_west_germany }
+		}
+
+		allow = {
+			NOT = { has_country_flag = establish_west_germany }
+			OR = { 
+				AND = { 
+					tag = ENG
+					year = 1952
+					369 = { owned_by = ENG }
+				}
+				AND = { 
+					tag = USA 
+					564 = { owned_by = USA NOT = { has_province_modifier = denazification } } 
+				}
+			}
+			OR = {
+				AND = {
+					year = 1949
+					ai = yes
+				}
+				AND = {
+					relation = { who = FRA value = 0 }
+					ai = no
+				}
+			}
+			war = no
+		}
+
+		effect = {
+			set_country_flag = establish_west_germany
+			release = GER
+			diplomatic_influence = { who = GER value = 100 }
+			prestige = 5
+			relation = { who = GER value = 100 }
+		}
+		ai_will_do = {
+			factor = 1
+		}		
+	}
+	
+	establish_east_germany = {
+		picture = "establish_east_germany"
+		potential = {
+			DDR = { exists = no }
+			has_country_flag = denazification
+			tag = RUS
+			OR = { 
+				year = 1952
+				GER = { exists = yes }
+			}
+			NOT = { has_country_flag = establish_east_germany }
+		}
+
+		allow = {
+			DDR = { exists = no }
+			has_country_flag = denazification
+			tag = RUS
+			OR = { 
+				year = 1952
+				GER = { exists = yes }
+			}
+			NOT = { has_country_flag = establish_east_germany }
+			OR = {
+				AND = {
+					year = 1952
+					ai = yes
+				}
+				AND = {
+					NOT = { relation = { who = USA value = 0 } }
+					ai = no
+				}
+			}
+			war = no
+		}
+
+		effect = {
+			set_country_flag = establish_east_germany
+			any_owned = { limit = { is_core = GER } add_core = DDR }
+any_owned = { limit = { is_core = DDR } add_core = GER }
+			release_vassal = DDR
+			diplomatic_influence = { who = DDR value = 200 }
+			military_access = RUS
+			prestige = 50
+		}
+		ai_will_do = {
+			factor = 1
+		}		
+	}
+
+	end_occupation_of_germany = {
+		picture = "establish_west_germany"
+		potential = {
+			GER = { exists = yes }
+			OR = { 
+				AND = { tag = USA 564 = { owned_by = USA } }
+				AND = { tag = ENG 369 = { owned_by = ENG } }
+			}
+			NOT = { has_country_flag = end_occupation_of_germany }
+		}
+
+		allow = {
+			OR = { 
+				AND = { tag = USA 564 = { owned_by = USA } GER = { has_country_flag = end_of_sonderweg } }
+				AND = { tag = ENG 369 = { owned_by = ENG } GER = { has_country_flag = end_of_sonderweg } }
+			}
+			NOT = { has_country_flag = end_occupation_of_germany }
+			GER = { exists = yes }
+			war = no
+		}
+
+		effect = {
+			set_country_flag = end_occupation_of_germany
+			release = GER
+			diplomatic_influence = { who = GER value = 100 }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	
+	end_of_sonderweg = {
+		picture = "end_of_sonderweg"
+		potential = {
+			tag = GER
+			exists = yes
+			government = democracy
+			NOT = { has_country_flag = end_of_sonderweg }
+		}
+
+		allow = {
+			tag = GER
+			OR = {
+				AND = {
+					year = 1949
+					ai = yes
+				}
+				AND = {
+					relation = { who = USA value = 100 }
+					relation = { who = ENG value = 100 }
+					ai = no
+				}
+			}
+		}
+
+		effect = {
+			set_country_flag = end_of_sonderweg
+			prestige = 20
+			all_core = {
+				limit = { owned_by = RUS }
+				remove_core = GER
+				add_core = DDR
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}		
+		
+	}
+
+	accept_ruhr_area = {
+		picture = "ruhr_area"
+		potential = {
+			tag = GER
+			578 = { owned_by = GER } # Dusseldorf
+			579 = { owned_by = FRA } # East of Rhine
+			NOT = { has_country_flag = accept_ruhr_area }
+		}
+
+		allow = {
+			tag = GER
+			578 = { owned_by = GER } # Dusseldorf
+			579 = { owned_by = FRA } # East of Rhine
+			NOT = { has_country_flag = accept_ruhr_area }
+			OR = {
+				AND = {
+					year = 1949
+					ai = yes
+				}
+				AND = {
+					relation = { who = FRA value = 100 }
+					ai = no
+				}
+			}
+		}
+
+		effect = {
+			set_country_flag = accept_ruhr_area
+			prestige = -20
+			FRA = { diplomatic_influence = { who = GER value = 50 } }
+			relation = { who = FRA value = 100 }
+		}
+		ai_will_do = {
+			factor = 1
+		}		
+		
+	}
+
+	ruhr_area = {
+		picture = "ruhr_area"
+		potential = {
+			tag = FRA
+			580 = { owned_by = GER } # Dortmund
+			578 = { owned_by = GER } # Dusseldorf
+			577 = { owned_by = GER } # Cleves
+			579 = { owned_by = FRA } # East of Rhine
+			NOT = { has_country_flag = ruhr_area }
+		}
+
+		allow = {
+			tag = FRA
+			580 = { owned_by = GER } # Dortmund
+			578 = { owned_by = GER } # Dusseldorf
+			577 = { owned_by = GER } # Cleves
+			579 = { owned_by = FRA } # East of Rhine
+			GER = { has_country_flag = accept_ruhr_area }
+			OR = {
+				AND = {
+					year = 1949
+					ai = yes
+				}
+				AND = {
+					relation = { who = GER value = 100 }
+					ai = no
+				}
+			}
+		}
+
+		effect = {
+			any_owned = {
+				limit = { is_core = GER NOT = { is_core = FRA } }
+				secede_province = GER
+			}
+			GER = {
+				country_event = 8204030 # form IAR
+				capital = 574 # Bonn
+				574 = { change_province_name = "Bonn" }
+			}
+			set_country_flag = ruhr_area
+			diplomatic_influence = { who = GER value = 200 }
+		}
+		ai_will_do = {
+			factor = 1
+		}		
+	}
+	
+	end_international_authority_over_ruhr = {
+		picture = "ruhr_area"
+		potential = {
+			tag = GER
+			GER = { has_country_flag = accept_ruhr_area }
+			580 = { owned_by = IAR } # Dortmund
+			578 = { owned_by = IAR } # Dusseldorf
+			577 = { owned_by = IAR } # Cleves
+			FRA = { has_country_flag = ruhr_area }
+			IAR = { ai = yes }
+		}
+
+		allow = {
+			tag = GER
+			any_core = { 
+				NOT = { has_province_modifier = blood_and_iron_mine } 
+				owned_by = IAR
+			}
+			OR = {
+				AND = {
+					year = 1951
+					ai = yes
+				}
+				relation = { who = FRA value = 150 }
+			}
+		}
+
+		effect = {
+			FRA = { country_event = 1005702 }
+			clr_country_flag = accept_ruhr_area
+		}
+		ai_will_do = {
+			factor = 1
+		}		
+	}
+	
+	become_germany = {
+		picture = "become_germany"
+		potential = {
+			tag = DDR
+			NOT = { exists = GER }
+			government = proletarian_dictatorship
+		}
+		
+		allow = {
+			year = 1956 # prevent Soviet from just releaseing DDR begining of game to becom Germany
+			war = no
+		}
+		
+		effect = {
+			prestige = 20
+			change_tag = GER
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	
+	german_reunification = {
+		picture = "german_reunification"
+		potential = {
+			exists = DDR
+			exists = GER
+			OR = { tag = DDR tag = GER DDR = { in_sphere = THIS } DDR = { vassal_of = THIS } GER = { in_sphere = THIS } GER = { vassal_of = THIS } }
+			NOT = { has_global_flag = german_reunification }
+		}
+		allow = {
+			DDR = {
+				all_core = {
+					owner = {
+						OR = {
+							tag = THIS
+							in_sphere = THIS
+							vassal_of = THIS
+						}
+					}
+				}
+			}		
+			GER = {
+				all_core = {
+					owner = {
+						OR = {
+							tag = THIS
+							in_sphere = THIS
+							vassal_of = THIS
+						}
+					}
+				}
+			}
+			OR = { 
+				AND = { GER = { government = proletarian_dictatorship } DDR = { government = proletarian_dictatorship} } 
+				AND = { GER = { government = democracy } DDR = { government = democracy} } 
+			}
+		}
+		effect = {
+			set_global_flag = german_reunification
+			prestige = 20
+			random_country = { limit = { NOT = { tag = THIS } THIS = { OR = { tag = GER tag = DDR } } OR = { tag = GER tag = DDR } } country_event = 11101 }
+			random_country = { limit = { THIS = { NOT = { tag = GER } NOT = { tag = DDR } } OR = { tag = GER tag = DDR } } country_event = 11100 }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	capital_berlin = {
+		picture = "capital_berlin"
+		potential = {
+			exists = yes
+			NOT = { exists = DDR }
+			tag = GER
+			NOT = { capital = 549 }
+		}
+		
+		allow = {
+			owns = 551
+			owns = 549
+		}
+		
+		effect = {
+			capital = 549
+			551 = { change_province_name =  "Potsdam" }
+		}
+	
+	}
+		
+}

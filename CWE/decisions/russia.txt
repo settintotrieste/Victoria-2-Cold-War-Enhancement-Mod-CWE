@@ -1,0 +1,197 @@
+political_decisions = {
+
+	gulag = {
+		picture = "gulag"
+		potential = {
+			tag = RUS
+			NOT = { year = 1956 }
+			NOT = { has_country_modifier = forced_labour }
+			NOT = { has_country_modifier = in_bankrupcy }
+		    NOT = { check_variable = { which = soviet_control_cee value = 2 } }
+		}
+		allow = {
+			government = proletarian_dictatorship
+			war = no
+			NOT = { money = 10000 }
+		}
+		effect = {
+			add_country_modifier = { name = forced_labour duration = 350 }
+			change_variable  = { which = soviet_control_cee value = 1 }
+			treasury = 200000
+			random_owned = { limit = { owner = { coal = 0 } trade_goods = coal } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
+			random_owned = { limit = { owner = { timber = 0 } trade_goods = timber } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
+			random_owned = { limit = { owner = { petroleum = 0 } trade_goods = petroleum } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
+			random_owned = { limit = { owner = { gas = 0 } trade_goods = gas } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
+			random_owned = { limit = { owner = { iron = 0 } trade_goods = iron } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
+			random_owned = { limit = { owner = { copper = 0 } trade_goods = copper } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
+			random_owned = { limit = { owner = { bauxite = 0 } trade_goods = bauxite } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
+			random_owned = { limit = { owner = { other_minerals = 0 } trade_goods = other_minerals } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
+		}
+		ai_will_do = { factor = 1 modifier = { factor = 0 check_variable = { which = soviet_control_cee value = 5 } } }
+	}
+
+	comecon = {
+		picture = "comecon"
+		potential = {
+			government = proletarian_dictatorship
+			RUS = { is_greater_power = yes government = proletarian_dictatorship }
+			NOT = { has_country_modifier = comecon }
+			NOT = { has_country_modifier = comecon_excluded }
+			NOT = { has_country_modifier = bretton_system }
+		}
+		allow = {
+			containment = 1
+			OR = { 
+				war = no
+				tag = RUS
+				relation = { who = RUS value = 150 } # enables other communist to join
+				overlord = { tag = RUS } 
+				sphere_owner = { tag = RUS } 
+			}
+		}
+		effect = {
+			add_country_modifier = { name = comecon duration = -1 }
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	comecon_aid = {
+		picture = "comecon_aid"
+		potential = {
+			NOT = { has_country_modifier = comecon_excluded }
+			RUS = { is_greater_power = yes government = proletarian_dictatorship money = 200000 }
+			NOT = { is_greater_power = yes }
+			NOT = { tag = RUS }
+			NOT = { has_country_modifier = comecon_aid }
+			NOT = { has_country_modifier = comecon_aid_rejected }
+		}
+		allow = {
+			OR = { 
+				government = proletarian_dictatorship 
+				AND = { NOT = { government = democracy } NOT = { government = hms_government } ruling_party_ideology  = socialist } 
+				ruling_party_ideology  = communist
+			}
+			NOT = { money = 1000 }
+		}
+		effect = { # give expl text will get 100000 and need good relation with Soviet
+			add_country_modifier = { name = comecon_aid duration = 700 }
+			any_country = { 
+				limit = { 
+					is_greater_power = yes
+					tag = RUS
+					money = 220000
+				}
+				country_event = 15610 
+			}
+			prestige = -5
+		}
+		ai_will_do = { factor = 1 }
+	}
+
+
+	sino_soviet_friendship = {
+		picture = "sino_soviet_friendship"
+		potential = {
+			CHI = { war = no government = proletarian_dictatorship }
+			war = no
+			government = proletarian_dictatorship
+			NOT = { has_country_flag = sino_soviet_friendship }
+			CHI = { exists = yes }
+			tag = RUS
+		}
+
+		allow = {
+			is_greater_power = yes
+			CHI = { war = no government = proletarian_dictatorship }
+			relation =  { who = CHI value = 100 } 
+			containment = 1
+		}
+
+		effect = {
+			set_country_flag = sino_soviet_friendship
+			CHI = { set_country_flag = sino_soviet_friendship }
+			relation = { who = CHI value = 100 } 
+			create_alliance = CHI
+			diplomatic_influence = { who = CHI value = 100 } 
+		}
+		ai_will_do = {
+			factor = 1
+		}		
+		
+	}
+	
+	deportation_of_germans = {
+		picture = "deportation_of_germans"
+		potential = {
+			tag = RUS
+			year = 1947 NOT = { year = 1990 }
+			NOT = { has_country_flag = deportation_of_germans }
+		}
+
+		allow = {
+			OR = { NOT = { exists = GER } NOT = { relation = { who = GER value = 100 } } }
+			marshall_plan = 1
+		}
+
+		effect = {
+			set_country_flag = deportation_of_germans
+			relation = { who = GER value = -200 } 
+			any_pop = { limit = { location = { province_id = 695 } culture = german } move_pop = 551 } # E.Prussia -> E.Berlin
+			any_pop = { limit = { location = { province_id = 698 } culture = german } move_pop = 1184 } # E.Prussia -> Kazakstan
+			any_pop = { limit = { location = { province_id = 697 } culture = german } move_pop = 2686 } # E.Prussia -> Siberia
+			any_pop = { limit = { strata = poor location = { province_id = 949 } culture = russian } move_pop = 697 } # -> E.Prussia
+			any_pop = { limit = { strata = poor location = { province_id = 941 } culture = russian } move_pop = 695 } #  -> E.Prussia
+		}
+		ai_will_do = {
+			factor = 1
+		}		
+		
+	}
+
+	polish_population_transfers = {
+		picture = "polish_population_transfers"
+		potential = {
+			tag = RUS
+			year = 1947 NOT = { year = 1990 }
+			has_country_flag = allow_polish_population_transfers
+			NOT = { has_country_flag = polish_population_transfers }
+		}
+
+		allow = {
+			marshall_plan = 1
+		}
+
+		effect = {
+			set_country_flag = polish_population_transfers
+			relation = { who = POL value = -100 } 
+			any_pop = { limit = { type = farmers religion = catholic location = { province_id = 360 } culture = polish } move_pop = 690 } # Vilnius -> Danzig
+			any_pop = { limit = { type = farmers religion = catholic  location = { province_id = 947 } culture = polish } move_pop = 680 } # Pastavy -> Koslin
+			any_pop = { limit = { location = { province_id = 947 } culture = polish } move_pop = 682 } # Pastavy -> Breslau
+			any_pop = { limit = { type = farmers  religion = catholic  location = { province_id = 938 } culture = polish } move_pop = 679 } # Lida -> Kolberg
+			any_pop = { limit = { type = farmers  religion = secularism location = { province_id = 936 } culture = polish } move_pop = 696 } # Grodono -> Kolberg
+			any_pop = { limit = { location = { province_id = 939 } culture = polish } move_pop = 692 } # Baranovichi -> Kuslin
+			any_pop = { limit = { location = { province_id = 949 } culture = polish } move_pop = 681 } # Pinsk -> D.Krone
+			any_pop = { limit = { location = { state_id = 937 } culture = polish } move_pop = 682 } # Brest Litovsk -> Breslau
+			any_pop = { limit = { location = { state_id = 957 } culture = polish } move_pop = 684 } # Kovel -> Liegnitz
+	
+			any_pop = { limit = { location = { province_id = 705 } culture = ukrainian } move_pop = 952 } # 
+			any_pop = { limit = { location = { province_id = 719 } culture = byelorussian } move_pop = 697 } # -> E.Prussia
+			any_pop = { limit = { location = { province_id = 707 } culture = byelorussian } move_pop = 695 } #  -> E.Prussia
+
+			any_pop = { limit = { OR = { type = farmers type = aristocrats } location = { province_id = 702 } culture = polish } move_pop = 682 } # Lvov -> Breslau
+			any_pop = { limit = { location = { province_id = 952 } culture = polish } move_pop = 546 } # Ternipol -> Stettin
+			any_pop = { limit = { OR = { type = farmers type = aristocrats }  location = { province_id = 951 } culture = polish } move_pop = 690 } # Styri -> Danzig
+
+			POL = { 
+				random_pop = { limit = { culture = polish religion = secularism } move_pop = 681 } 
+				random_pop = { limit = { culture = polish religion = secularism } move_pop = 679 } 
+				random_pop = { limit = { culture = polish religion = secularism } move_pop = 680 } 
+			}
+		}
+		ai_will_do = {
+			factor = 1
+		}		
+		
+	}	
+	
+}

@@ -1,0 +1,243 @@
+political_decisions = {
+
+	# Arab League as a Freetrade area
+	xal_liberal_ambition = {
+		picture = "xal_liberal_ambition"
+		potential = {
+			has_country_flag = arab_league
+		NOT = { has_global_flag = xal_liberal_ambition }
+		}
+		allow = {
+			war = no
+	part_of_sphere = no
+			election = yes
+			trust_busting = 1
+			OR = { government = democracy government = hms_government }
+		}
+		effect = {
+			prestige = 15
+			set_global_flag = xal_liberal_ambition
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	xal_republican_ambition = {
+		picture = "xal_republican_ambition"
+		potential = {
+			has_country_flag = arab_league
+		part_of_sphere = no
+			NOT = { has_global_flag = xal_republican_ambition }
+		}
+		allow = {
+			war = no
+			OR = { government = populist_dictatorship government = presidential_dictatorship }
+		}
+		effect = {
+			prestige = 15
+			set_global_flag = xal_republican_ambition
+		}
+		ai_will_do = { factor = 1 }
+	}	
+
+#
+# Member Decisions: 	
+#
+	xal_ambition = {
+		picture = "xal_ambition"
+		potential = {
+			OR = { primary_culture = sunni_arab tag = SOM tag = DJI tag = COM } 
+			OR = { exists = XMU exists = XGC exists = XAL tag = EGY tag = SYR tag = IRQ tag = LEB tag = PAL tag = SOM tag = DJI tag = COM }
+			NOT = { has_country_flag = xal_ambition } 
+		}
+		allow = {
+			trust_busting = 1
+			OR = { has_country_flag = trade_block_ambition NOT = { has_global_flag = xal_liberal_ambition } }
+			NOT = { has_country_modifier = in_bankrupcy } 
+			NOT = { AND = { part_of_sphere = yes sphere_owner = { NOT = { has_country_flag = xal_ambition } } } }
+			war = no
+		}
+		effect = {
+			set_country_flag = xal_ambition
+			set_country_flag = in_trade_block
+			any_pop = {
+				scaled_militancy = {
+					issue = protectionism
+					factor = 3
+				}
+				scaled_consciousness = {
+					issue = protectionism
+					factor = 3
+				}
+			}
+			tech_school = XAL_tech_school			
+		}
+		ai_will_do = { factor = 1 }
+	}
+
+	end_xal_ambition = {
+		picture = "xal_parlament"
+		alert = no
+		potential = {
+			has_country_flag = xal_ambition
+			NOT = { tag = XAL }
+		}
+		allow = {
+			OR = { 
+				AND = { part_of_sphere = yes sphere_owner = { NOT = { has_country_flag = xal_ambition } } }
+				NOT = { primary_culture = sunni_arab tag = SOM tag = DJI tag = COM  }
+				has_country_modifier = in_bankrupcy
+			}
+			war = no
+		}
+		effect = {
+			clr_country_flag = xal_ambition
+			clr_country_flag = in_trade_block
+			all_core = { remove_core = XAL }
+			any_pop = {
+				scaled_militancy = {
+					issue = free_trade
+					factor = 3
+				}
+				scaled_consciousness = {
+					issue = free_trade
+					factor = 3
+				}
+			}
+			tech_school = traditional_academic
+			capital_scope = { 
+				remove_province_modifier = single_market			
+				remove_province_modifier = currency_union_province
+				remove_province_modifier = defence_union
+			}
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	xal_single_market= {
+		picture = "single_market"
+		potential = {
+			NOT = { capital_scope = { has_province_modifier = single_market } }
+			OR = { primary_culture = sunni_arab tag = SOM tag = DJI tag = COM } 
+			OR = { exists = XMU exists = XGC exists = XAL tag = EGY tag = SYR tag = IRQ tag = LEB tag = PAL tag = SOM tag = DJI tag = COM }
+		}
+		allow = {
+			has_country_flag = xal_ambition
+			capitalism = 1
+			war = no
+		}
+		effect = {
+			capital_scope = {  add_province_modifier = { name = single_market duration = -1 } }
+		}
+		ai_will_do = { factor = 1 }
+	}
+
+	xal_currency_union = {
+		picture = "currency_union"
+		potential = {
+			NOT = { capital_scope = { has_province_modifier = currency_union_province } }
+			OR = { primary_culture = sunni_arab tag = SOM tag = DJI tag = COM } 
+			OR = { exists = XMU exists = XGC exists = XAL tag = EGY tag = SYR tag = IRQ tag = LEB tag = PAL tag = SOM tag = DJI tag = COM }
+		}
+		allow = {
+			has_country_flag = xal_ambition
+			capital_scope = { has_province_modifier = single_market }
+			economic_globalization = 1
+			war = no
+		}
+		effect = {
+			capital_scope = {  add_province_modifier = { name = currency_union_province duration = -1 } }
+		}
+		ai_will_do = { factor = 1 } 
+	}
+
+	xal_political_union = {
+		picture = "xal_ambition"
+		potential = {
+			NOT = { capital_scope = { is_core = XAL } }
+			OR = { primary_culture = sunni_arab tag = SOM tag = DJI tag = COM } 
+			OR = { exists = XMU exists = XGC exists = XAL tag = EGY tag = SYR tag = IRQ tag = LEB tag = PAL tag = SOM tag = DJI tag = COM }
+		}
+		allow = {
+			has_country_flag = xal_ambition
+			capital_scope = { has_province_modifier = currency_union_province }
+			#has_unclaimed_cores = no
+			war = no
+			commodities_and_credit = 1
+		}
+		effect = {
+			all_core = { add_core = XAL }
+		}
+		ai_will_do = { factor = 1 } # modifier = { factor = 1 consciousness = 2 } }
+	}
+	xal_defence_union = {
+		picture = "defence_union"
+		potential = {
+			NOT = { capital_scope = { has_province_modifier = defence_union } }
+			OR = { primary_culture = sunni_arab tag = SOM tag = DJI tag = COM } 
+			OR = { exists = XMU exists = XGC exists = XAL tag = EGY tag = SYR tag = IRQ tag = LEB tag = PAL tag = SOM tag = DJI tag = COM }
+		}
+		allow = {
+			has_country_flag = xal_ambition
+			capital_scope = { is_core = XAL }
+			war = no
+			age_of_protests = 1
+			#has_unclaimed_cores = no
+		}
+		effect = {
+			capital_scope = { add_province_modifier = { name = defence_union duration = -1 } }
+		}
+		ai_will_do = { factor = 1 } 
+	}
+
+#
+# Leader Decision: Political Union
+#
+	xal_form_union = {
+		picture = "xal_parlament"
+		potential = {
+			XAL = { exists = no }
+			OR = { primary_culture = sunni_arab tag = SOM tag = DJI tag = COM } 
+			OR = { exists = XMU exists = XGC exists = XAL tag = EGY tag = SYR tag = IRQ tag = LEB tag = PAL tag = SOM tag = DJI tag = COM }
+		}
+		allow = {
+			has_country_flag = xal_ambition
+			capital_scope = { has_province_modifier = defence_union } 
+			is_greater_power = yes
+			political_polarization = 1
+            war = no
+            XAL = { any_core = { owner = { war = no OR = { tag = THIS in_sphere = THIS vassal_of = THIS } has_country_flag = xal_ambition } } }
+		}
+		effect = {
+			prestige = 20
+			all_core = {
+				add_core = XAL
+			}
+			change_tag = XAL
+			add_accepted_culture = sunni_arab
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	
+	xal_enlarge_union = {
+		picture = "xal_ambition"
+		potential = {
+			tag = XAL
+			any_neighbor_country = { has_country_flag = xal_ambition in_sphere = THIS NOT = { has_country_modifier = rejected_union } #has_unclaimed_cores = no }
+		}
+		allow = {
+			primary_culture = sunni_arab 
+			is_greater_power = yes
+			political_polarization = 1
+            war = no
+		}
+		effect = {
+			prestige = 20
+			any_neighbor_country = { limit = { has_country_flag = xal_ambition OR = { vassal_of = THIS in_sphere = THIS } } country_event = 11106 }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}		
+}

@@ -1,0 +1,247 @@
+political_decisions = {
+
+	laogai = {
+		picture = "laogai"
+		potential = {
+			tag = CHI
+			NOT = { year = 1976 }
+			NOT = { has_country_modifier = forced_labour }
+		}
+		allow = {
+			government = proletarian_dictatorship
+			war = no
+			NOT = { money = 10000 }
+		}
+		effect = {
+			add_country_modifier = { name = forced_labour duration = 350 }
+			random_owned = { limit = { owner = { coal = 0 } trade_goods = coal } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
+			random_owned = { limit = { owner = { timber = 0 } trade_goods = timber } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
+			random_owned = { limit = { owner = { petroleum = 0 } trade_goods = petroleum } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
+			random_owned = { limit = { owner = { gas = 0 } trade_goods = gas } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
+			random_owned = { limit = { owner = { iron = 0 } trade_goods = iron } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
+			random_owned = { limit = { owner = { copper = 0 } trade_goods = copper } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
+			random_owned = { limit = { owner = { bauxite = 0 } trade_goods = bauxite } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
+			random_owned = { limit = { owner = { other_minerals = 0 } trade_goods = other_minerals } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
+		}
+		ai_will_do = { factor = 1 }	
+	}
+
+
+	sino_soviet_friendship_chi = {
+		picture = "sino_soviet_friendship"
+		potential = {
+			RUS = { war = no government = proletarian_dictatorship }
+			RUS = { has_country_flag = sino_soviet_friendship }
+			war = no
+			NOT = { has_country_flag = sino_soviet_friendship }
+			tag = CHI
+		}
+
+		allow = {
+			war = no
+			government = proletarian_dictatorship
+			containment = 1
+		}
+
+		effect = {
+			set_country_flag = sino_soviet_friendship
+			relation = { who = RUS value = 100 } 
+			add_country_modifier = { name = comecon duration = 1750 }
+			create_alliance = RUS
+			RUS = { diplomatic_influence = { who = CHI value = 100 }  }
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+	the_return_of_hong_kong = {
+		picture = "the_return_of_hong_kong"
+		potential = {
+			OR = { tag = CHI tag = KMT tag = KWA }
+			owns = 2681 # Shenzhen
+			NOT = { has_country_flag = the_return_of_hong_kong }
+			OR = {
+				1496 = { owned_by = ENG } 
+				HKG = { vassal_of = ENG }
+			}
+			OR = {
+				relation =  { who = ENG value = 50 } 
+				year = 1992
+			}
+		}
+
+		allow = {
+			part_of_sphere = no
+			is_vassal = no
+			war = no
+	NOT = { RUS = { government = proletarian_dictatorship } }
+			owns = 2681 # Shenzhen
+			OR = {
+				AND = { year = 1997 ai = yes }
+				AND = {
+					relation =  { who = ENG value = 100 } 
+					rank = 3
+					ENG = { NOT = { rank = 2 } }
+				}
+			}
+		}
+
+		effect = {
+			set_country_flag = the_return_of_hong_kong 
+			ENG = { country_event = 1002801 }
+		}
+		
+		ai_will_do = {
+			factor = 1
+		}
+		
+	}
+	
+	the_return_of_macao = {
+		picture = "the_return_of_macao"
+		potential = {
+			OR = { tag = CHI tag = KMT }
+			NOT = { has_country_flag = the_return_of_macao }
+			OR = { 1498 = { owned_by = POR } MCA = { vassal_of = POR } }
+			OR = {
+				relation =  { who = POR value = 0 } 
+				has_country_flag = the_return_of_hong_kong
+			}
+		}
+
+		allow = {
+			part_of_sphere = no
+			is_vassal = no
+			OR = {
+				AND = { year = 1997 ai = yes }
+				AND = {
+					OR = {
+						relation =  { who = POR value = 100 } 
+						has_country_flag = the_return_of_hong_kong
+					}
+					rank = 4
+					POR = { NOT = { rank = 4 } }
+				}
+			}
+		}
+
+		effect = {
+			KMT = { set_country_flag = the_return_of_macao }
+			CHI = { set_country_flag = the_return_of_macao }
+			POR = { country_event = 1002802 }
+		}
+		
+		ai_will_do = {
+			factor = 1
+		}
+	}	
+	
+	chinese_reunification = {
+		picture = "chinese_reunification"
+		potential = {
+			exists = KMT
+			exists = CHI
+			OR = { tag = KMT tag = CHI }
+			NOT = { has_global_flag = chinese_reunification }
+		}
+		allow = {
+			KMT = {
+				all_core = {
+					OR = { 
+						province_id = 1593 # Tawang
+						province_id = 1678 # Okinawa
+						owner = {
+							OR = {
+								tag = THIS
+								in_sphere = THIS
+								vassal_of = THIS
+							}
+						}
+					}
+				}
+			}		
+			CHI = {
+				all_core = {
+					OR = { 
+						province_id = 1593 # Tawang
+						province_id = 1678 # Okinawa
+						owner = {
+							OR = {
+								tag = THIS
+								in_sphere = THIS
+								vassal_of = THIS
+							}
+						}
+					}
+				}
+			}
+			OR = { 
+				AND = { CHI = { government = proletarian_dictatorship } KMT = { government = proletarian_dictatorship} } 
+				AND = { CHI = { government = democracy } KMT = { government = democracy} } 
+			}
+		}
+		effect = {
+			set_global_flag = chinese_reunification
+			prestige = 20
+			KMT = { country_event = 8002846 } 
+			CHI = { country_event = 8002847 } 
+			random_country = { limit = { NOT = { tag = THIS } OR = { tag = CHI tag = KMT } } country_event = 11101 }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	
+	lesser_taiwan = {
+			picture = "lesser_taiwan"
+			potential = {
+					tag = KMT
+					OR = {
+							government = democracy
+							government = hms_government
+					}
+					2576 = { owned_by = THIS }
+					CHI = { exists = yes }
+			}
+
+			allow = {
+					war = no
+					average_militancy = 5
+					OR = {
+						is_vassal = no
+						part_of_sphere = yes
+					}
+					OR = {
+							ruling_party_ideology = progressive
+							ruling_party_ideology = liberal
+					}
+			}
+
+			effect = {
+					prestige = 10
+					any_pop = {
+					   consciousness = 1
+					   militancy = -4
+					}
+					set_country_flag = lesser_taiwan
+					all_core = { 
+						limit = { NOT = { owned_by = THIS } }
+						remove_core = KMT
+					}
+					2576 = { remove_core = KMT }
+					relation = { who = JAP value = 50 }
+					relation = { who = IDO value = 50 }
+					relation = { who = PHI value = 50 }
+					relation = { who = MSY value = 50 }
+					relation = { who = CHI value = -100 }
+					# TODO add event that offerc China to rejct CHI = { country_event = xxxxx } 
+					2576 = { secede_province  = CHI }
+			}
+		ai_will_do = { factor = 1 }
+
+	}	
+	
+	
+}

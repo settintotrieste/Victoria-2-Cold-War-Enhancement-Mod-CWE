@@ -1,0 +1,216 @@
+political_decisions = {
+
+#
+# Member Decisions: 	
+#
+	xpi_ambition = {
+		picture = "xpi_ambition"
+		potential = {
+			capital_scope = { continent = oceania }
+			NOT = { has_country_flag = xpi_ambition } 
+			NOT = { has_country_flag = imp_ambition } # filter for commonwealth ANZ
+		}
+		allow = {
+			has_country_flag = trade_block_ambition 
+			NOT = { has_country_modifier = in_bankrupcy } 
+			NOT = { AND = { part_of_sphere = yes sphere_owner = { NOT = { has_country_flag = xpi_ambition } } } }
+			OR = { government = democracy government = hms_government }
+			bank_for_international_settlements = 1
+			war = no
+		}
+		effect = {
+			set_country_flag = xpi_ambition
+			set_country_flag = in_trade_block
+			any_pop = {
+				scaled_militancy = {
+					issue = protectionism
+					factor = 3
+				}
+				scaled_consciousness = {
+					issue = protectionism
+					factor = 3
+				}
+			}
+			tech_school = XPI_tech_school			
+		}
+		ai_will_do = { factor = 1 }
+	}
+
+	end_xpi_ambition = {
+		picture = "xpi_parlament"
+		alert = no
+		potential = {
+			has_country_flag = xpi_ambition
+			NOT = {tag = XPI}
+		}
+		allow = {
+			OR = { 
+				AND = { part_of_sphere = yes sphere_owner = { NOT = { has_country_flag = xpi_ambition } } }
+				NOT = { OR = { government = democracy government = hms_government } }
+				has_country_modifier = in_bankrupcy
+			}
+			war = no
+		}
+		effect = {
+			clr_country_flag = xpi_ambition
+			clr_country_flag = in_trade_block
+			all_core = { remove_core = XPI }
+			any_pop = {
+				scaled_militancy = {
+					issue = free_trade
+					factor = 3
+				}
+				scaled_consciousness = {
+					issue = free_trade
+					factor = 3
+				}
+			}
+			tech_school = traditional_academic
+			capital_scope = { 
+				remove_province_modifier = single_market			
+				remove_province_modifier = currency_union_province
+				remove_province_modifier = defence_union
+			}
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	xpi_single_market= {
+		picture = "single_market"
+		potential = {
+			NOT = { capital_scope = { has_province_modifier = single_market } }
+			capital_scope = { continent = oceania }
+		}
+		allow = {
+			has_country_flag = xpi_ambition
+			OR = {
+				government = democracy
+				government = hms_government
+			}
+			capitalism = 1
+			war = no
+		}
+		effect = {
+			capital_scope = {  add_province_modifier = { name = single_market duration = -1 } }
+		}
+		ai_will_do = { factor = 1 }
+	}
+
+	xpi_currency_union = {
+		picture = "currency_union"
+		potential = {
+			NOT = { capital_scope = { has_province_modifier = currency_union_province } }
+			capital_scope = { continent = oceania }
+		}
+		allow = {
+			has_country_flag = xpi_ambition
+			capital_scope = { has_province_modifier = single_market }
+			OR = {
+				government = democracy
+				government = hms_government
+			}
+			economic_globalization = 1
+			election = no
+			war = no
+		}
+		effect = {
+			capital_scope = {  add_province_modifier = { name = currency_union_province duration = -1 } }
+		}
+		ai_will_do = { factor = 1 } 
+	}
+
+	xpi_political_union = {
+		picture = "xpi_ambition"
+		potential = {
+			NOT = { capital_scope = { is_core = XPI } }
+			capital_scope = { continent = oceania }
+		}
+		allow = {
+			has_country_flag = xpi_ambition
+			capital_scope = { has_province_modifier = currency_union_province }
+			OR = { government = democracy government = hms_government }
+			election = no
+			#has_unclaimed_cores = no
+			war = no
+			commodities_and_credit = 1
+		}
+		effect = {
+			all_core = { add_core = XPI }
+		}
+		ai_will_do = { factor = 1 } # modifier = { factor = 1 consciousness = 2 } }
+	}
+	xpi_defence_union = {
+		picture = "defence_union"
+		potential = {
+			NOT = { capital_scope = { has_province_modifier = defence_union } }
+			capital_scope = { continent = oceania }
+		}
+		allow = {
+			has_country_flag = xpi_ambition
+			capital_scope = { is_core = XPI }
+			OR = { government = democracy government = hms_government }
+			election = no
+			war = no
+			age_of_protests = 1
+			#has_unclaimed_cores = no
+		}
+		effect = {
+			capital_scope = { add_province_modifier = { name = defence_union duration = -1 } }
+		}
+		ai_will_do = { factor = 1 } 
+	}
+
+#
+# Leader Decision: Political Union
+#
+	xpi_form_union = {
+		picture = "xpi_parlament"
+		potential = {
+			XPI = { exists = no }
+			capital_scope = { continent = oceania }
+		}
+		allow = {
+			has_country_flag = xpi_ambition
+			capital_scope = { has_province_modifier = defence_union } 
+			OR = { government = democracy government = hms_government }
+			election = no
+			OR = { is_greater_power = yes is_secondary_power = yes }
+			political_polarization = 1
+            war = no
+            XPI = { any_core = { owner = { war = no OR = { tag = THIS in_sphere = THIS vassal_of = THIS } has_country_flag = xpi_ambition } } }
+		}
+		effect = {
+			prestige = 20
+			all_core = {
+				add_core = XPI
+			}
+			change_tag = XPI
+			add_accepted_culture = white_anglo
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	
+	xpi_enlarge_union = {
+		picture = "xpi_ambition"
+		potential = {
+			tag = XPI
+			any_neighbor_country = { has_country_flag = xpi_ambition in_sphere = THIS NOT = { has_country_modifier = rejected_union } #has_unclaimed_cores = no }
+		}
+		allow = {
+			OR = { government = democracy government = hms_government }
+			election = no
+			OR = { is_greater_power = yes is_secondary_power = yes }
+			political_polarization = 1
+            war = no
+		}
+		effect = {
+			prestige = 20
+			any_neighbor_country = { limit = { has_country_flag = xpi_ambition OR = { vassal_of = THIS in_sphere = THIS } } country_event = 11106 }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}		
+}

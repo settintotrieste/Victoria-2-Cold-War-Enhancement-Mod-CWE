@@ -1,0 +1,204 @@
+political_decisions = {
+
+	allow_form_korea = {
+		picture = "claim_greater_korea"
+		potential = {
+			OR = { 
+				is_sphere_leader_of = SKO
+				is_sphere_leader_of = NKO
+				SKO = { vassal_of = THIS }
+				NKO = { vassal_of = THIS }
+			}
+			NOT = { exists = KOR }
+			NOT = { has_country_flag = allow_form_korea }
+			1624 = { OR = { owned_by = SKO owned_by = NKO } }
+			1619 = { OR = { owned_by = SKO owned_by = NKO } }
+		}
+		allow = {
+			war = no
+			NKO = { OR = { exists = no in_sphere = THIS vassal_of = THIS } }
+			SKO = { OR = { exists = no in_sphere = THIS vassal_of = THIS } }
+		}
+		effect = {
+			set_country_flag = allow_form_korea
+			prestige = 20
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	
+	form_korea = {
+		picture = "claim_greater_korea"
+		potential = {
+			OR = {
+				tag = SKO
+				tag = NKO
+			}
+		}
+		allow = {
+			war = no
+			OR = { 
+				AND = { 
+					exists = SKO
+					exists = NKO
+					NOT = { has_global_flag = korea_reformed }
+					SKO = { NOT = { war_with = NKO } }
+					OR = { # both can't be ai - find with multi player
+						AND = {
+							tag = SKO
+							NKO = {ai = yes is_vassal = no part_of_sphere = no }
+							is_vassal = no
+						}
+						AND = {
+							ai = no
+							tag = NKO
+							SKO = {ai = yes is_vassal = no part_of_sphere = no}
+							is_vassal = no
+						}
+					}
+					OR = {
+						AND = {
+							SKO = {government = proletarian_dictatorship}
+							NKO = {government = proletarian_dictatorship}
+						}
+						AND = {
+							SKO = {government = presidential_dictatorship}
+							NKO = {government = presidential_dictatorship}
+						}
+						AND = {
+							SKO = {government = populist_dictatorship}
+							NKO = {government = populist_dictatorship}
+						}
+						AND = {
+							SKO = {government = absolute_monarchy}
+							NKO = {government = absolute_monarchy}
+						}
+						AND = {
+							SKO = {government = hms_government}
+							NKO = {government = hms_government}
+						}
+						AND = {
+							SKO = {government = democracy}
+							NKO = {government = democracy}
+						}
+					}
+				}
+				sphere_owner = { has_country_flag = allow_form_korea }
+			}
+		}
+		effect = {
+			prestige = 20
+			change_tag = KOR
+			SKO = {
+				all_core = { add_core = KOR }
+
+			}
+			NKO = {
+				all_core = { add_core = KOR }
+			}
+			inherit = SKO
+			inherit = NKO
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	
+	claim_greater_korea = {
+			picture = "claim_greater_korea"
+			potential = {
+					tag = KOR
+					NOT = { has_country_flag = claim_greater_korea }
+			}
+
+			allow = {
+				   tag = KOR
+					part_of_sphere = no
+					has_unclaimed_cores = no
+					NOT = {	
+						has_country_flag = claim_greater_korea
+						ruling_party_ideology = socialist
+						ruling_party_ideology = progressive
+						ruling_party_ideology = liberal 
+					}
+					is_vassal = no
+					prestige = 45
+					OR = {
+							ruling_party_ideology = populist
+							jingoism = 24
+					}
+			}
+
+			effect = {
+					badboy = 12
+					set_country_flag = claim_greater_korea
+					1554 = { add_core = KOR }
+					1082 = { add_core = KOR }
+					1083 = { add_core = KOR }
+			}
+
+	}
+
+	abandon_claim_greater_korea = {
+			picture = "claim_greater_korea"
+			potential = {
+					tag = KOR
+					has_country_flag = claim_greater_korea
+					OR = {
+							government = democracy
+							government = hms_government
+					}
+			}
+
+			allow = {
+					war = no
+					is_vassal = no
+					has_country_flag = claim_greater_korea
+					OR = {
+							ruling_party_ideology = socialist
+							ruling_party_ideology = progressive
+							ruling_party_ideology = liberal
+					}
+			}
+
+			effect = {
+					prestige = 10
+					any_pop = {
+							consciousness = 1
+					}
+					clr_country_flag = claim_greater_korea
+					all_core = { 
+							limit = { NOT = { owned_by = THIS } }
+							remove_core = KOR
+					}
+			}
+
+	}
+
+	korea_trusteeship = {
+			picture = "korea_trusteeship"
+			potential = {
+				OR = {
+					AND = { 1624 = { controlled_by = USA } tag = USA NOT = { exists = SKO }}
+					AND = { 1619 = { controlled_by = RUS } tag = RUS NOT = { exists = NKO } }
+				}
+				NOT = { has_country_flag = korea_trusteeship }
+			}
+
+			allow = {
+				OR = {
+					tag = USA
+					tag = RUS
+				}
+				public_switched_telephone_network = 1
+				war = no
+				year = 1947
+			}
+
+			effect = {
+				prestige = 5
+				set_country_flag = korea_trusteeship
+			}
+	}
+}

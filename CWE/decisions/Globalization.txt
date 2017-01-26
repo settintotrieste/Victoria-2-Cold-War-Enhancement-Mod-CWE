@@ -1,0 +1,388 @@
+political_decisions = {
+
+	internationalism = {
+		picture = "internationalism"
+		potential = {
+			NOT = { has_country_modifier = internationalism }
+			OR = { tag = XEU tag = XCC tag = XAU tag = XEW tag = XEC tag = XSA tag = XSU tag = XMS tag = XAC tag = XAL tag = XMU tag = XAN tag = XCI tag = XNA tag = XPI tag = XEA tag = XTC }	
+		}
+		allow = {
+			war = no
+			money = 24000
+		}
+		effect = {
+			any_neighbor_country = { limit = { has_country_flag = trade_block_ambition } add_country_modifier = { name = internationalism duration = 1000 } }
+			add_country_modifier = { name = internationalism duration = 1000 }
+			treasury = -20000
+			random_pop = { limit = { type = capitalists } money = 20000 }
+		}		
+		ai_will_do = { factor = 0 }
+	}
+
+	cyber_warfare = {
+		picture = "cyber_warfare"
+		potential = {
+			NOT = { has_country_modifier = cyber_warfare }
+			rank = 8
+			strd_internet = 1
+		}
+		allow = {
+			NOT = { has_country_modifier = cyber_warfare }
+			war = no
+			rank = 2
+			OR = { government = hms_government government = democracy }	
+			uni_internet = 1
+			money = 24000
+		}
+		effect = {
+			add_country_modifier = { name = cyber_warfare duration = 3500 }
+			treasury = -20000
+			random_pop = { limit = { type = capitalists } money = 10000 }
+			random_pop = { limit = { type = capitalists } money = 10000 }
+		}		
+		ai_will_do = { factor = 1 }
+	}
+	
+#An Open Market
+# trade_block_ambition - called during elections in on_action.txt
+# this events regulates the nations engagement in the trade block
+	trade_block_ambition = {
+		picture = "trade_block_ambition"
+		potential = {
+			NOT = { has_country_flag = trade_block_ambition }		
+		}
+
+		allow = {
+			war = no
+			OR = {
+				AND = { has_country_flag = market_communism government = proletarian_dictatorship }
+				AND = { election = yes trade_policy = free_trade }
+			}
+			OR = { has_country_flag = schuman_declaration new_synthesis = 1 }
+		}
+		
+		effect = {
+			set_country_flag = trade_block_ambition
+			artisans = {
+				militancy = 0.5
+				consciousness = 1
+			}
+			capitalists = {
+				militancy = -0.5
+				consciousness = -1
+			}
+			any_pop = {
+				dominant_issue = {
+					factor = 0.30
+					value = free_trade
+				}
+			}
+			any_pop = {
+				scaled_militancy = {
+					issue = protectionism
+					factor = 3
+				}
+				scaled_consciousness = {
+					issue = protectionism
+					factor = 3
+				}
+			}
+		}
+		ai_will_do = { factor = 1 }
+	}
+			
+	the_imf = {
+		picture = "the_imf"
+		potential = {
+			capital_scope = { continent = europe }
+			NOT = { has_country_flag = the_imf }
+			has_country_modifier = special_drawing_rights
+			year = 1952
+		}
+		allow = {
+			any_greater_power = { 
+				NOT = { tag = THIS }
+				OR = { has_country_flag = dev_bank has_country_flag = the_imf }
+				OR = { NOT = { money = 100000 } has_country_modifier = in_bankrupcy } 
+				has_country_modifier = special_drawing_rights
+			}
+		}
+		effect = {
+			random_country = { 
+				limit = { 
+					OR = { has_country_flag = dev_bank has_country_flag = the_imf }
+					NOT = { tag = THIS }
+					OR = { NOT = { money = 100000 } has_country_modifier = in_bankrupcy } 
+					has_country_modifier = special_drawing_rights
+				}
+				country_event = 15602 
+			}
+			set_country_flag = the_imf
+			country_event = 15605 
+			any_country = { limit = { has_country_modifier = special_drawing_rights } remove_country_modifier = special_drawing_rights clr_country_flag = financial_attack }
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	dev_bank = {
+		picture = "dev_bank"
+		potential = {
+			NOT = { has_country_flag = dev_bank }
+			has_country_modifier = special_drawing_rights
+			year = 1952
+		}
+		allow = {
+			any_greater_power = { 
+				NOT = { tag = THIS }
+				OR = { has_country_flag = dev_bank has_country_flag = the_imf }
+				OR = { NOT = { money = 100000 } has_country_modifier = in_bankrupcy } 
+				has_country_modifier = special_drawing_rights
+			}
+		}
+		effect = {
+			random_country = { 
+				limit = { 
+					OR = { has_country_flag = dev_bank has_country_flag = the_imf }
+					NOT = { tag = THIS }
+					OR = { NOT = { money = 100000 } has_country_modifier = in_bankrupcy } 
+					has_country_modifier = special_drawing_rights 
+				}
+				country_event = 15602
+			}
+			set_country_flag = dev_bank
+			clr_country_flag = financial_attack
+			country_event = 15605 
+			any_country = { limit = { has_country_modifier = special_drawing_rights } remove_country_modifier = special_drawing_rights clr_country_flag = financial_attack }
+		}
+		ai_will_do = { factor = 1 }
+	}
+
+	world_bank = {
+		picture = "world_bank"
+		potential = {
+			rank = 1
+			NOT = { has_country_flag = world_bank }
+			has_country_modifier = special_drawing_rights
+			year = 1952
+		}
+		allow = {
+			rank = 1
+			any_greater_power = { 
+				NOT = { tag = THIS }
+				has_country_flag = world_bank
+				OR = { NOT = { money = 100000 } has_country_modifier = in_bankrupcy } 
+				has_country_modifier = special_drawing_rights
+			}
+		}
+		effect = {
+			random_country = { 
+				limit = { 
+					has_country_flag = world_bank
+					NOT = { tag = THIS }
+					OR = { NOT = { money = 100000 } has_country_modifier = in_bankrupcy } 
+					has_country_modifier = special_drawing_rights
+				}
+				country_event = 15602 
+			}
+			set_country_flag = world_bank
+			clr_country_flag = financial_attack
+			country_event = 15605
+			any_country = { limit = { has_country_modifier = special_drawing_rights } remove_country_modifier = special_drawing_rights clr_country_flag = financial_attack }
+		}
+		ai_will_do = { factor = 1 }
+	}	
+
+	bretton_system = {
+		picture = "bretton_system"
+		potential = {
+NOT = { year = 1992 }
+NOT = { has_global_flag = end_of_bretton_system }
+			NOT = { has_country_modifier = comecon }
+	NOT = { has_country_modifier = bretton_system_excluded }
+			NOT = { has_country_modifier = bretton_system }
+			OR = { NOT = { government = proletarian_dictatorship } has_country_flag = market_communism }
+			NOT = { OR = { is_vassal = yes tag = RUS } government = proletarian_dictatorship }
+			OR = { USA = { has_country_modifier = bretton_system } tag = USA } # USA should get Bretton Woods first!
+		}
+		allow = {
+			war = no
+			#cold_war_doctrine = 1
+			OR = { 
+				overlord = { has_country_flag = world_bank } 
+				sphere_owner = { has_country_flag = world_bank } 
+				has_country_flag = world_bank
+				AND = { relation = { who = USA value = 150 } USA = { has_country_flag = world_bank } }
+				government = democracy
+				government = hms_government
+				government = presidential_dictatorship
+				government = absolute_monarchy
+				has_country_flag = market_communism
+				keynesian_economics = 1
+			}
+		}
+		effect = {
+			add_country_modifier = { name = bretton_system duration = -1 }
+		}
+		ai_will_do = { factor = 1 }
+	}		
+
+	market_communism = {
+		picture = "market_communism"
+		potential = {
+			government = proletarian_dictatorship
+			NOT = { has_country_flag = market_communism }
+			NOT = { has_country_modifier = comecon_excluded }
+			NOT = { has_country_modifier = bretton_system }
+		}
+		allow = {
+			strd_internet = 1 # i.e 1990+
+			OR = {
+				is_secondary_power = yes
+				is_greater_power = yes
+				sphere_owner = { has_country_modifier = bretton_system } 
+			}
+		}
+		effect = {
+			set_country_flag = market_communism
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+		
+	international_court_of_justice = { 
+		picture = "international_court_of_justice"
+		alert = no
+		potential = {
+year = 1947
+NOT = { has_country_flag = international_court_of_justice }
+			}
+		allow = {
+war = no
+election = no
+OR = { government = democracy government = hms_government }
+		NOT = { ruling_party_ideology = populist }
+NOT = { ruling_party_ideology = communist }
+		}
+		effect = {
+		set_country_flag = international_court_of_justice
+			prestige = 10
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	wb_loan = {
+		picture = "wb_loan"
+		potential = {
+			# these institution may move - but hard coded of performance reasons
+			USA = { is_greater_power = yes has_country_flag = world_bank money = 220000 }
+			NOT = { is_greater_power = yes }
+			NOT = { has_country_modifier = wb_loan }
+			NOT = { has_country_modifier = wb_loan_rejected }
+		}
+		allow = {
+			has_country_modifier = bretton_system
+			NOT = { money = 1000 }
+		}
+		effect = { 
+			add_country_modifier = { name = wb_loan duration = 700 }
+			USA = { country_event = 15600 }
+			prestige = -2
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	wb_credit_facillity = {
+		picture = "wb_credit_facillity"
+		potential = {
+			tag = USA
+			rank = 1
+			# avoid start year ugly! How about 1992?
+			year = 1948 
+			NOT = { has_country_modifier = wb_credit_facillity }
+		}
+		allow = {
+			NOT = { money = 220000 }
+			is_greater_power = yes 
+			has_country_flag = world_bank 
+			has_country_modifier = bretton_system
+		}
+		effect = {
+			add_country_modifier = { name = wb_credit_facillity duration = 700 } # every second year
+			any_country = { limit = { money = 120000 in_sphere = USA } USA = { treasury = 100000 } country_event = 15601 }
+			any_country = { limit = { money = 210000 has_country_flag = the_imf rank = 1 } USA = { treasury = 200000 } country_event = 15609 } 
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	uk_war_debt = {
+		picture = "uk_war_debt"
+		potential = {
+			tag = USA
+			NOT = { year = 1992 }
+			NOT = { has_country_modifier = uk_war_debt }
+			ENG = { money = 5000000 } # TODO add condition if GBR does not decolonlialize
+			NOT = { check_variable = { which = "uk_war_debt" value = 5 }
+}
+		}
+		allow = {
+			NOT = { money = 200000 }
+			war = no
+		}
+		effect = {
+			change_variable  = { which = "uk_war_debt" value = 1 }
+			add_country_modifier = { name = uk_war_debt duration = 700 } # every second year
+			treasury = 100000
+			ENG = { country_event = 15611 } 
+		}
+		ai_will_do = { factor = 1 }
+	}
+
+	peace_mission = {
+		picture = "peace_mission"
+		potential = {
+			ai = no # performance reasons
+			OR = {
+				tag = XGC
+				tag = XEF
+				tag = XCC
+				tag = XAU
+				tag = XEW
+				tag = XEC
+				tag = XSA
+				tag = XSU
+				tag = XMS
+				tag = XAC
+				tag = XAL
+				tag = XMU
+				tag = XAN
+				tag = XCI
+				tag = XNA
+				tag = XPI
+				tag = XEA
+				tag = XTC
+				tag = XUM
+				tag = XEU
+			}
+		}
+		allow = {
+			NOT = { has_country_modifier = peace_mission }
+			any_neighbor_country = { 
+				has_unclaimed_cores = yes 
+				has_country_flag = in_trade_block
+			}
+		}
+		effect = {
+			any_country = {
+				limit = {
+					neighbour = THIS
+					has_unclaimed_cores = yes
+					has_country_flag = in_trade_block
+				}
+				 country_event = 15615
+			}
+			add_country_modifier = { name = peace_mission duration = 1200 } # every 10 year
+		}
+		ai_will_do = { factor = 1 }
+	}	
+
+}

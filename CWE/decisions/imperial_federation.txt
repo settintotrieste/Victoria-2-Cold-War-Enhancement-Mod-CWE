@@ -1,0 +1,260 @@
+political_decisions = {
+
+	IMP_ambition = {
+		picture = "IMP_ambition"
+		potential = {
+			OR = {
+				primary_culture = white_anglo
+				primary_culture = english
+				primary_culture = black_anglo
+			}
+			NOT = { tag = USA }
+			NOT = { has_country_flag = xeu_ambition }
+			NOT = { has_country_flag = imp_ambition }
+			NOT = { has_country_flag = xpi_ambition }
+			NOT = { has_country_flag = xna_ambition }
+		}
+		allow = {
+			new_synthesis = 1
+			OR = {
+				is_greater_power = yes
+				AND = {
+					part_of_sphere = yes
+					sphere_owner = { has_country_flag = imp_ambition }
+				}
+			}
+			NOT = { has_country_flag = trade_block_ambition } 
+			NOT = { has_country_modifier = in_bankrupcy } 
+			government = hms_government
+			war = no
+		}
+		effect = {
+			set_country_flag = trade_block_ambition
+			set_country_flag = imp_ambition
+			set_country_flag = in_trade_block
+			any_pop = {
+				scaled_militancy = {
+					issue = protectionism
+					factor = 3
+				}
+				scaled_consciousness = {
+					issue = protectionism
+					factor = 3
+				}
+			}
+			tech_school = IMP_tech_school			
+		}
+		ai_will_do = { factor = 1 modifier = { factor = 0 sphere_owner = { NOT = { has_country_flag = imp_ambition } } } } # need to avoid a race
+	}
+
+	end_IMP_ambition = {
+		picture = "IMP_parliament"
+		alert = no
+		potential = {
+			has_country_flag = IMP_ambition
+			NOT = { tag = IMP }
+			OR = { 
+				AND = { part_of_sphere = yes sphere_owner = { NOT = { has_country_flag = IMP_ambition } } }
+				NOT = { OR = { government = democracy government = hms_government } }
+				has_country_modifier = in_bankrupcy
+			}
+		}
+		allow = {
+			war = no
+		}
+		effect = {
+			clr_country_flag = IMP_ambition
+			clr_country_flag = trade_block_ambition
+			clr_country_flag = in_trade_block
+			all_core = { remove_core = IMP }
+			any_pop = {
+				scaled_militancy = {
+					issue = free_trade
+					factor = 3
+				}
+				scaled_consciousness = {
+					issue = free_trade
+					factor = 3
+				}
+			}
+			tech_school = traditional_academic
+			capital_scope = { 
+				remove_province_modifier = single_market			
+		remove_province_modifier = currency_union_province
+				remove_province_modifier = defence_union
+			}
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	IMP_single_market = {
+		picture = "single_market"
+		potential = {
+			NOT = { capital_scope = { has_province_modifier = single_market } }
+			OR = {
+				primary_culture = white_anglo
+				primary_culture = english
+			}
+			has_country_flag = IMP_ambition
+			has_country_flag = trade_block_ambition 
+		}
+		allow = {
+			OR = {
+				primary_culture = white_anglo
+				primary_culture = english
+			}
+			government = hms_government
+			capitalism = 1
+			war = no
+		}
+		effect = {
+			capital_scope = {  add_province_modifier = { name = single_market duration = -1 } }
+		}
+		ai_will_do = { factor = 1 }
+	}
+
+	IMP_currency_union = {
+		picture = "currency_union"
+		potential = {
+			NOT = { capital_scope = { has_province_modifier = currency_union_province } }
+			OR = {
+				primary_culture = white_anglo
+				primary_culture = english
+			}
+			has_country_flag = IMP_ambition
+			capital_scope = { has_province_modifier = single_market }
+		}
+		allow = {
+			government = hms_government
+			economic_globalization = 1
+			election = no
+			war = no
+		}
+		effect = {
+			capital_scope = {  add_province_modifier = { name = currency_union_province duration = -1 } }
+		}
+		ai_will_do = { factor = 1 } 
+	}
+
+	IMP_political_union = {
+		picture = "IMP_ambition"
+		potential = {
+			NOT = { capital_scope = { is_core = IMP } }
+			OR = {
+				primary_culture = english
+				primary_culture = white_anglo
+			}
+			has_country_flag = IMP_ambition
+			capital_scope = { has_province_modifier = currency_union_province }
+		}
+		allow = {
+			OR = { government = democracy government = hms_government }
+			election = no
+			#has_unclaimed_cores = no
+			war = no
+			commodities_and_credit = 1
+		}
+		effect = {
+			all_core = { add_core = IMP }
+			add_accepted_culture = english
+			add_accepted_culture = white_anglo
+		}
+		ai_will_do = { factor = 1 } # modifier = { factor = 1 consciousness = 2 } }
+	}
+	IMP_defence_union = {
+		picture = "IMP_defence_union"
+		potential = {
+			NOT = { capital_scope = { has_province_modifier = defence_union } }
+			OR = {
+				primary_culture = english
+				primary_culture = white_anglo
+			}
+			has_country_flag = IMP_ambition
+			capital_scope = { is_core = IMP }
+		}
+		allow = {
+			OR = { government = democracy government = hms_government }
+			election = no
+			war = no
+			age_of_protests = 1
+			#has_unclaimed_cores = no
+		}
+		effect = {
+			capital_scope = { add_province_modifier = { name = defence_union duration = -1 } }
+		}
+		ai_will_do = { factor = 1 } 
+	}
+
+#
+# Leader Decision: Political Union
+#
+	IMP_form_union = {
+		picture = "IMP_parliament"
+		potential = {
+			IMP = { exists = no }
+			OR = {
+				primary_culture = english
+				primary_culture = white_anglo
+			}
+			has_country_flag = IMP_ambition
+			capital_scope = { has_province_modifier = defence_union } 
+		}
+		allow = {
+			OR = { government = democracy government = hms_government }
+			election = no
+			is_greater_power = yes 
+			political_polarization = 1
+            war = no
+            IMP = {
+                any_core = {
+                    owner = {
+                        war = no
+						OR = {
+							tag = THIS
+							in_sphere = THIS
+							vassal_of = THIS
+						}
+						has_country_flag = IMP_ambition
+                    }
+                }
+            }
+		}
+		effect = {
+			prestige = 20
+			all_core = {
+				add_core = IMP
+			}
+			change_tag = IMP
+			add_accepted_culture = english
+			add_accepted_culture = white_anglo
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	
+	IMP_enlarge_union = {
+		picture = "IMP_ambition"
+		potential = {
+			tag = IMP
+			OR = {
+				AST = {	exists = yes in_sphere = THIS }
+				CAN = { exists = yes in_sphere = THIS }
+				NZL = { exists = yes in_sphere = THIS }
+			}
+		}
+		allow = {
+			government = hms_government
+			election = no
+			is_greater_power = yes 
+			political_polarization = 1
+            war = no
+		}
+		effect = {
+			any_country = { limit = { has_country_flag = IMP_ambition OR = { vassal_of = THIS in_sphere = THIS } } country_event = 11106 }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+}

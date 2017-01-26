@@ -1,0 +1,224 @@
+political_decisions = {
+
+develop_the_atomic_bomb = {
+		picture = "atomic_bomb"
+
+potential = {
+NOT = { tag = USA }
+NOT = { has_country_modifier = develop_atomic_bomb }
+NOT = { has_country_modifier = develop_hydrogen_bomb }
+NOT = { has_country_modifier = atomic_nation }	
+NOT = { has_country_modifier = hydrogen_nation }
+is_vassal = no
+NOT = { has_country_modifier = non_proliferation_treaty }
+NOT = { has_country_flag = atomic_bomb_developed }
+part_of_sphere = no
+
+}
+
+allow = {
+
+election = no
+
+OR = { 
+
+AND = { tag = RUS ai = yes year = 1945 }
+AND = { tag = ENG ai = yes year = 1949 money = 2000000 }
+AND = { tag = FRA ai = yes year = 1956 money = 2000000 }
+AND = { tag = CHI ai = yes year = 1960 money = 2000000 }
+
+AND = { tag = HND ai = yes year = 1970 money = 2000000 }
+AND = { tag = PAK ai = yes year = 1980 money = 2000000 }
+AND = { tag = NKO ai = yes year = 2003 }
+AND = { tag = ISR ai = yes year = 1963 money = 2000000 }
+AND = { tag = SAF ai = yes year = 1979 money = 2000000 }
+
+AND = { 
+ai = yes
+year = 1969
+money = 2000000
+NOT = { has_country_modifier = alliance_nato }
+NOT = { has_country_modifier = warsaw_pact }
+NOT = { has_country_modifier = non_proliferation_treaty }
+#NOT = { government = democracy }
+#NOT = { government = democracy1 }
+#NOT = { government = hms_government }
+#NOT = { government = hms_government1 }
+NOT = { government = sar_government }
+NOT = { government = colonial_government }
+any_neighbor_country = { OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation } badboy = 15 NOT = { relation = { who = THIS value = -190 } } }
+war_policy = jingoism
+}
+
+AND = { ai = no money = 2000000 }
+
+}
+
+war = no
+		}
+
+effect = {
+add_country_modifier = { name = develop_atomic_bomb duration = 1460 }
+set_country_flag = atomic_bomb_developed
+prestige = 50
+badboy = 10
+money = -1000000
+		}
+	}
+develop_the_hydrogen_bomb = {
+		picture = "hydrogen_bomb"
+potential = {
+has_country_modifier = atomic_nation
+NOT = { has_country_modifier = hydrogen_nation }
+NOT = { has_country_modifier = develop_atomic_bomb }
+NOT = { has_country_modifier = develop_hydrogen_bomb }
+NOT = { has_country_flag = hydrogen_bomb_developed }
+		}
+
+allow = {
+is_greater_power = yes
+OR = { AND = { ai = yes money = 2000000 } ai = no }
+icbm = 1
+	}
+
+		effect = {
+add_country_modifier = { name = develop_hydrogen_bomb duration = 1460 }
+set_country_flag = hydrogen_bomb_developed
+prestige = 50
+badboy = 10
+money = -1000000
+		}
+	}
+
+air_bomb = {
+picture = "air_bomb"
+potential = {
+strategic_bomber = 1
+OR = { has_country_modifier = atomic_nation
+has_country_modifier = hydrogen_nation }
+NOT = { has_country_modifier = air_bomb }
+		}
+
+allow = {
+strategic_bomber = 1
+OR = { has_country_modifier = atomic_nation
+has_country_modifier = hydrogen_nation }
+NOT = { has_country_modifier = air_bomb }
+
+	}
+
+		effect = {
+add_country_modifier = { name = air_bomb duration = -1 }
+		}
+	}
+
+sub_bomb = {
+picture = "sub_bomb"
+potential = {
+OR = { has_country_modifier = atomic_nation
+has_country_modifier = hydrogen_nation }
+NOT = { has_country_modifier = sub_bomb }
+num_of_ports = 1
+submarine_launched_ballistic_missile = 1
+has_country_modifier = hydrogen_nation
+		}
+
+allow = {
+OR = { has_country_modifier = atomic_nation
+has_country_modifier = hydrogen_nation }
+NOT = { has_country_modifier = sub_bomb }
+num_of_ports = 1
+
+OR = { is_secondary_power = yes is_greater_power = yes }
+submarine_launched_ballistic_missile = 1
+	}
+
+effect = {
+add_country_modifier = { name = sub_bomb duration = -1 }	
+}
+	}
+
+icbm_bomb = {
+picture = "icbm_bomb"
+potential = {
+OR = { has_country_modifier = atomic_nation
+has_country_modifier = hydrogen_nation }
+NOT = { has_country_modifier = icbm_bomb }
+icbm = 1
+		}
+
+allow = {
+OR = { has_country_modifier = atomic_nation
+has_country_modifier = hydrogen_nation }
+NOT = { has_country_modifier = icbm_bomb }
+icbm = 1
+has_country_modifier = hydrogen_nation
+is_greater_power = yes
+	}
+
+effect = {
+add_country_modifier = { name = icbm_bomb duration = -1 }		}
+}
+
+reset_bomb = {
+picture = "reset_bomb"
+alert = no
+potential = {
+
+OR = { has_country_modifier = atomic_nation
+has_country_modifier = hydrogen_nation }
+OR = { has_country_modifier = icbm_bomb
+has_country_modifier = sub_bomb has_country_modifier = air_bomb }
+		}
+
+allow = {
+OR = { 
+ai = no 
+AND = { ai = yes is_greater_power = no is_secondary_power = no has_country_modifier = icbm_bomb has_country_modifier = sub_bomb }
+AND = { ai = yes is_greater_power = no has_country_modifier = icbm_bomb }
+} 
+	}
+
+effect = {
+remove_country_modifier = icbm_bomb
+remove_country_modifier = sub_bomb
+remove_country_modifier = air_bomb
+}
+
+}
+
+disarm_bomb = {
+picture = "disarm_bomb"
+potential = {
+OR = { has_country_modifier = atomic_nation
+has_country_modifier = hydrogen_nation }
+has_country_modifier = nuke_sanctions
+		}
+
+allow = {
+war = no
+election = no
+OR = { ai = no AND = { ai = yes badboy = 15 NOT = { government = proletarian_dictatorship } } }
+	}
+
+effect = {
+remove_country_modifier = icbm_bomb
+remove_country_modifier = sub_bomb
+remove_country_modifier = air_bomb
+sphere_owner = { relation = { who = THIS value = 100 } }
+remove_country_modifier = nuke_sanctions
+remove_country_modifier = hydrogen_nation 
+remove_country_modifier = atomic_nation
+remove_country_modifier = develop_atomic_bomb 
+remove_country_modifier = develop_hydrogen_bomb  
+clr_country_flag = atomic_bomb_developed
+clr_country_flag = hydrogen_bomb_developed
+country_event = 1231439
+prestige = -50
+}
+
+}
+
+
+
+}
