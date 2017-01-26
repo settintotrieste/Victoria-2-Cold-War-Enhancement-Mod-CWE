@@ -1,0 +1,1861 @@
+# INSTRUCTIONS:
+# -------------
+# constructing_cb - default to yes. if "no", cant be picked for generation or as add_wargoal if no CB already
+# is_triggered_only - Triggered from within the code or by event effects. DO NOT REMOVE THE STOCK ONES.
+# mutual - The CB effects will also be used by the defender in peace treaties
+# months - The number of months this CB will be valid. Only works for triggered CBs.
+# prerequisites - A condition that automatically activates a CB. Does not work for triggered CBs. 'THIS' scope is the target country.
+# badboy_factor - Multiplied with any badboy increase normally associated with a peace option.
+# prestige_factor - Multiplied with any prestige increase normally associated with a peace option.
+# peace_cost_factor - Multiplied with the cost of the peace options in the peace treaty
+# po_xxx - Peace options. If toggled on, badboy_factor and prestige_factor are multiplied with any associated base changes to these (see defines.txt.)
+# allowed_states - If 'po_demand_states' is on, badboy_factor applies to these provinces. 'THIS' scope is us.
+# on_add - effect triggered when war goal added (triggering country's scope)
+# construction_speed - base modifier for how long creating this CB will take. default is 1. 1.2 means 20% faster
+# great_war_obligatory - cb is always added to the peace offer/demand in great wars.
+# po_remove_cores - may be used only with: po_transfer_provinces, po_demand_state, po_annex
+# crisis - can be offered as a wargoal in a crisis
+#
+# The peace options are:
+#po_annex
+#po_demand_state
+#po_add_to_sphere
+#po_disarmament
+#po_reparations
+#po_transfer_provinces
+#po_remove_prestige
+#po_make_puppet
+#po_release_puppet
+#po_status_quo
+#po_install_communist_gov_type
+#po_uninstall_communist_gov_type
+#po_remove_cores
+#po_colony
+
+# NOTE: The order in which the peace options are listed is the order in which the AI will normally prioritize them in peace treaties
+
+# TRIGGERED - Triggered from within the code or by event effects
+# --------------------------------------------------------------
+
+# Order that CBs are executed in a peace treaty
+peace_order = {
+become_independent
+dismantle_cb
+dismantle_cb_add
+dismantle_cb_add_new 
+acquire_core_state 
+annex_core_country
+free_allied_cores
+install_democracy
+add_to_sphere 
+take_from_sphere 
+status_quo 
+gunboat 
+free_peoples
+liberate_country
+install_theocratic_regime
+install_authoritarian_regime
+install_communist_gov_cb
+uninstall_communist_gov_cb
+acquire_state 
+conquest 
+civil_war
+colonial_war
+cut_down_to_size 
+release_puppet
+make_puppet
+humiliate
+territorial_dispute
+sanctions
+rude_boy
+great_war_penalty_cb
+}
+
+gunboat = {
+	sprite_index = 1
+	is_triggered_only = yes
+	months = 12
+	constructing_cb = no
+	crisis = no
+	
+	badboy_factor = 1
+	prestige_factor = 5
+	peace_cost_factor = 1
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 0
+	break_truce_infamy_factor = 0
+	break_truce_militancy_factor = 0
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+	
+	can_use = {
+		NOT = { is_our_vassal = THIS }
+		OR = {
+			has_country_modifier = in_bankrupcy
+			has_country_modifier = generalised_debt_default
+		}
+		always = no
+		in_default = THIS
+	}
+
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+	
+	po_gunboat = yes
+	
+	war_name = WAR_GUNBOAT_NAME
+}
+
+# Colonial war
+colonial_war = {
+	sprite_index = 7
+	is_triggered_only = yes
+	months = 12
+	constructing_cb = no
+	crisis = no
+	
+	badboy_factor = 0
+	prestige_factor = 2
+	peace_cost_factor = 0.9
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	po_annex = yes
+	
+	war_name = WAR_COLONIAL_NAME
+	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+}
+
+status_quo = {
+	sprite_index = 1
+	is_triggered_only = yes
+	months = 12
+	constructing_cb = no
+	
+	can_use = {
+		NOT = { is_our_vassal = THIS }
+		always = no
+	}
+
+	break_truce_prestige_factor = 5
+	break_truce_infamy_factor = 2
+	break_truce_militancy_factor = 2
+	truce_months = 0
+	
+	badboy_factor = 1
+	prestige_factor = 1
+	peace_cost_factor = 1
+	penalty_factor = 1
+	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+	
+	po_status_quo = yes
+	
+	war_name = WAR_NAME
+}
+
+# Conquest
+conquest = {
+	sprite_index = 2
+	is_triggered_only = yes
+	months = 12
+	crisis = no
+	
+	can_use = {
+		NOT = { is_our_vassal = THIS }
+		THIS = { war_policy = jingoism }
+		# only one state or unciv
+		NOT = { number_of_states = 5 }
+		OR = {
+			AND = {
+				civilized = yes
+				NOT = { number_of_states = 2 }
+			}
+			AND = {
+				civilized = no
+				THIS = { civilized = no }
+				NOT = { number_of_states = 2 }
+			}
+		}
+		is_independant = yes
+	}
+
+	badboy_factor = 2.2
+	prestige_factor = 5
+	peace_cost_factor = 1
+	penalty_factor = 1
+	
+	break_truce_prestige_factor = 5
+	break_truce_infamy_factor = 2
+	break_truce_militancy_factor = 2
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+	
+	construction_speed = 0.5
+	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+	
+	po_annex = yes
+	
+	war_name = WAR_CONQUEST_NAME
+}
+
+# Civil war
+civil_war = {
+	sprite_index = 2
+	is_triggered_only = yes
+	months = 1
+	constructing_cb = no
+	crisis = no
+	
+	can_use = {
+		NOT = { is_our_vassal = THIS }
+		always = no
+	}
+
+	badboy_factor = 0
+	prestige_factor = 1
+	peace_cost_factor = 1
+	penalty_factor = 1
+	is_civil_war = yes #this is a civil war
+
+	break_truce_prestige_factor = 5
+	break_truce_infamy_factor = 2
+	break_truce_militancy_factor = 2
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	po_annex = yes
+	
+	war_name = CIVIL_WAR_NAME
+	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+}
+
+# Sphere of Influence Gain
+add_to_sphere = {
+	sprite_index = 3
+	is_triggered_only = yes
+	months = 12
+	crisis = no
+
+	badboy_factor = 2
+	prestige_factor = 2
+	peace_cost_factor = 50
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 5
+	break_truce_infamy_factor = 2
+	break_truce_militancy_factor = 2
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	can_use = {
+		THIS = { is_greater_power = yes }
+		THIS = { war_policy = jingoism }
+		is_greater_power = no
+		is_independant = yes
+		part_of_sphere = no
+		NOT = { relation = { who = THIS value = 0 } }
+	}
+	
+	is_valid = {
+		THIS = { is_greater_power = yes }
+		is_greater_power = no
+	}
+	
+	po_add_to_sphere = yes
+	
+	war_name = WAR_ADD_SPHERE_NAME
+	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+}
+
+take_from_sphere = {
+	sprite_index = 4
+	is_triggered_only = yes
+	months = 12
+	
+	badboy_factor = 2
+	prestige_factor = 3
+	peace_cost_factor = 20
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 5
+	break_truce_infamy_factor = 2
+	break_truce_militancy_factor = 2
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	can_use = {
+		NOT = { is_our_vassal = THIS }
+		THIS = { NOT = { war_policy = pacifism } }
+		THIS = { is_greater_power = yes }
+		is_greater_power = yes
+	}
+
+	
+	# THIS - us
+	# FROM - country scope is possible match?
+	# war target country of goal is scope
+	allowed_countries = {
+		is_sphere_leader_of = FROM
+		FROM = { is_vassal = no }
+	}
+	
+	po_add_to_sphere = yes
+	
+	war_name = WAR_TAKE_SPHERE_NAME
+	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+}
+
+# Acquire Core State
+acquire_core_state = {
+	sprite_index = 5
+	is_triggered_only = yes
+	months = 12
+	
+	construction_speed = 0.8
+	
+	badboy_factor = 0
+	prestige_factor = 5
+	peace_cost_factor = 0.7
+	penalty_factor = 1
+	always = yes
+
+	break_truce_prestige_factor = 5
+	break_truce_infamy_factor = 2
+	break_truce_militancy_factor = 2
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	can_use = {
+		NOT = { is_our_vassal = THIS }
+	NOT = { relation = { who = THIS value = 0 } }
+		THIS = { NOT = { war_policy = pacifism } }
+		number_of_states = 2 # annex if you want their last state
+		any_owned_province = {
+			is_core = THIS
+		}
+		THIS = { OR = { NOT = { war_policy = pacifism } war = yes } }
+		NOT = { AND = { THIS = { ai = yes } part_of_sphere  = yes }} # the ai shall not attack a sphered nation.
+	}
+	
+	allowed_states = {
+		any_owned_province = {
+			is_core = THIS
+		}
+		NOT = { any_owned_province = { is_capital = yes } }
+	}
+
+	po_demand_state = yes
+	
+	war_name = WAR_TAKE_CORE_NAME
+	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+
+	on_po_accepted = {
+		country_event =	2651	# Territorial Loss event
+	}	
+}
+
+# Annex Core Country
+annex_core_country = {
+	sprite_index = 5
+	is_triggered_only = yes
+	months = 12
+	crisis = no
+
+	badboy_factor = 0
+	prestige_factor = 5
+	peace_cost_factor = 0.7
+	penalty_factor = 1
+	always = yes
+
+	break_truce_prestige_factor = 5
+	break_truce_infamy_factor = 2
+	break_truce_militancy_factor = 2
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	can_use = {
+		THIS = { NOT = { war_policy = pacifism } }
+		NOT = { is_our_vassal = THIS }
+		any_owned_province = {
+			is_core = THIS
+		}
+		NOT = {
+			any_owned_province = {
+				NOT = {
+					is_core = THIS
+				}
+			}
+		}
+		THIS = { NOT = { war_policy = pacifism } }
+		NOT = { AND = { THIS = { ai = yes } part_of_sphere  = yes }} # the ai shall not attack a sphered nation.
+	}
+
+	po_annex = yes
+	
+	war_name = WAR_RESTORE_ORDER_NAME
+	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+}
+
+# Gain control of State
+acquire_state = {
+	sprite_index = 6
+	is_triggered_only = yes
+	months = 12
+	construction_speed = 0.5
+	
+	badboy_factor = 2.2
+	prestige_factor = 2
+	peace_cost_factor = 1
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 2
+	break_truce_militancy_factor = 2
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	can_use = { # TODO add AI limits
+		NOT = { is_our_vassal = THIS }
+		number_of_states = 2 # annex if you want their last state
+		THIS = { war_policy = jingoism }
+		
+		any_owned_province = {
+			NOT = { is_core = THIS }
+			#is_colonial = no
+		}
+		OR = {
+			AND = {
+				civilized = yes
+				THIS = {
+					civilized = yes
+				}
+			}
+			AND = {
+				civilized = no
+				THIS = {
+					civilized = no
+				}
+			}
+		}
+		is_independant = yes
+	}
+	
+	allowed_states = {
+		any_owned_province = {
+			NOT = { is_core = THIS }
+			#is_colonial = no
+		}
+		NOT = { any_owned_province = { is_capital = yes } }
+	}
+	
+	allowed_states_in_crisis = {
+		any_owned_province = {
+			any_neighbor_province = {
+				owner = { tag = THIS }
+			}
+		}
+	}		
+
+	po_demand_state = yes
+	
+	war_name = WAR_TAKE_NAME
+	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+}
+
+# Cut Down to size
+cut_down_to_size = {
+	sprite_index = 8
+	is_triggered_only = yes
+	months = 12
+	
+	badboy_factor = 1.3
+	prestige_factor = 1
+	peace_cost_factor = 25
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	po_disarmament = yes
+	po_reparations = yes
+
+	war_name = WAR_NAME
+	
+	can_use = {
+		NOT = { is_our_vassal = THIS }
+		is_disarmed = no
+		THIS = { NOT = { war_policy = pacifism } }
+	}
+	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+}
+
+free_allied_cores = {
+	sprite_index = 9
+	is_triggered_only = yes
+	months = 12
+	
+	construction_speed = 0.75
+
+	badboy_factor = 1.0
+	prestige_factor = 2
+	peace_cost_factor = 0.8
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	can_use = {
+		NOT = { is_our_vassal = THIS }
+		is_vassal = no
+THIS = { OR = { war_policy = jingoism war_policy = pro_military } }
+
+		number_of_states = 2
+	}
+
+	# THIS - us
+	# FROM - country scope is possible match?
+	# war target country of goal is scope
+	allowed_countries = {
+		any_owned_province = { is_core = FROM }
+		NOT = {
+			tag = FROM
+			is_our_vassal = FROM
+		}
+		OR = {
+			NOT = { alliance_with = FROM }
+			war_with = THIS
+		}
+		OR = {
+			FROM = { alliance_with = THIS }
+			war_with = THIS
+		}
+		FROM = {
+			exists = yes
+			in_sphere = THIS
+			NOT = {
+				any_core = { owned_by = THIS }
+			}
+		}
+	}
+
+	# THIS - us
+	# FROM - country scope is possible match?
+	# war target country of goal's state
+	allowed_states = {
+		#NOT = { any_owned_province = { is_capital = yes } }
+		NOT = { any_owned_province = { is_core = THIS } }
+		any_owned_province = { is_core = FROM }
+	}
+
+	po_transfer_provinces = yes
+
+	war_name = WAR_FREE_ALLIED_CORE_NAME
+
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+	
+	on_po_accepted = {
+		country_event =	2651	# Territorial Loss event
+	}
+}
+
+# Free Peoples
+free_peoples = {
+	sprite_index = 9
+	is_triggered_only = yes
+	months = 12
+
+	badboy_factor = 1.5
+	prestige_factor = 1
+	peace_cost_factor = 1
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+	
+	
+	can_use = {
+		NOT = { is_our_vassal = THIS }
+THIS = { war_policy = jingoism }
+
+		OR = { 
+			ai = no
+			part_of_sphere = no # if we are part of spher the spher ruler guides policies - not us.
+		}
+	}
+
+	# THIS - us
+	# FROM - country scope is possible match?
+	# war target country of goal is scope
+	allowed_countries = {
+		number_of_states = 2 # the event prevents all cores beeing given
+		NOT = {
+			tag = FROM
+			#this_culture_union = FROM	
+		}
+		FROM = {
+			exists = yes
+		}
+		
+		any_owned_province = {
+			is_core = FROM
+			is_capital = no
+			NOT = { is_core = THIS }
+		}
+		is_releasable_vassal = FROM
+		NOT = { relation = { who = THIS value = 0 } } # make ai less likely to start this
+	}
+
+	# THIS - us
+	# FROM - country scope is possible match?
+	# war target country of goal's state
+	allowed_states = {
+		any_owned_province = {
+			is_core = FROM
+		}
+	}
+
+	po_transfer_provinces = yes
+
+	war_name = WAR_FREE_NAME
+	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+	
+	on_po_accepted = {
+		country_event =	2651	# Territorial Loss event
+	}	
+}
+
+# Liberate country
+liberate_country = {
+	sprite_index = 15
+	is_triggered_only = yes
+	months = 12
+
+	badboy_factor = 2.2
+	prestige_factor = 1
+	peace_cost_factor = 1
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+	
+	
+	can_use = {
+		NOT = { is_our_vassal = THIS }
+THIS = { war_policy = jingoism }
+	}
+
+	# THIS - us
+	# FROM - country scope is possible match?
+	# war target country of goal is scope
+	allowed_countries = {
+		# number_of_states = 2
+		NOT = { tag = FROM }
+		FROM = { exists = no }
+		any_owned_province = {
+			is_core = FROM
+			is_capital = no
+		}
+		is_releasable_vassal = FROM
+	}
+
+	# THIS - us
+	# FROM - country scope is possible match?
+	# war target country of goal's state
+	allowed_states = {
+		any_owned_province = {
+			is_core = FROM
+		}
+	}
+	all_allowed_states = yes
+	po_transfer_provinces = yes
+	#po_remove_cores = yes
+
+	war_name = WAR_LIBERATE_NAME
+	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+	
+	on_po_accepted = {
+		country_event =	2651	# Territorial Loss event
+	}
+}
+
+# Release Puppet
+release_puppet = {
+	sprite_index = 10
+	is_triggered_only = yes
+	months = 12
+
+	badboy_factor = 1
+	prestige_factor = 1
+	peace_cost_factor = 15
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	can_use = {
+		NOT = { is_our_vassal = THIS }
+		THIS = { NOT = { war_policy = pacifism } }
+		num_of_vassals_no_substates = 1
+	}
+	
+	# THIS - us
+	# FROM - country scope is possible match?
+	# war target country of goal is scope
+	allowed_countries = {
+		is_our_vassal = FROM
+		FROM = { is_substate = no }
+	}
+	
+	po_release_puppet = yes
+	po_add_to_sphere = yes
+
+	war_name = WAR_NAME
+	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+}
+
+# Make Puppet
+make_puppet = {
+	sprite_index = 10
+	is_triggered_only = yes
+	months = 12
+	crisis = no
+
+	badboy_factor = 3.0
+	prestige_factor = 1
+	peace_cost_factor = 1
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	can_use = {
+		NOT = { is_our_vassal = THIS }
+		NOT = { number_of_states = 9 }
+THIS = { OR = { war_policy = jingoism war_policy = pro_military } }
+		is_greater_power = no
+		is_vassal = no
+	}
+	
+	# THIS - us
+	# FROM - country scope is possible match?
+	# war target country of goal is scope
+	
+	po_make_puppet = yes
+
+	war_name = WAR_PUPPET_NAME
+	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+	
+	on_po_accepted = {
+		country_event = 19370
+	}
+}
+
+# Become Independent
+become_independent = {
+	sprite_index = 10
+	is_triggered_only = yes
+	months = 12
+	crisis = no
+	
+	always = yes
+
+	badboy_factor = 1
+	prestige_factor = 1
+	peace_cost_factor = 15
+	penalty_factor = 1
+	is_civil_war = yes
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	can_use = {
+		is_our_vassal = THIS
+		THIS = { NOT = { war_policy = pacifism } }
+	}
+	
+	# THIS - us
+	# FROM - country scope is possible match?
+	# war target country of goal is scope
+	allowed_countries = {
+		OR = {
+			FROM = { is_our_vassal = THIS }
+			war_with = THIS
+		}
+	}
+	
+	po_release_puppet = yes
+	po_add_to_sphere = yes
+
+	war_name = WAR_INDEPENDENCE_NAME
+	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+		add_war_goal = {
+			casus_belli = make_puppet
+		}
+		leave_alliance = FROM
+		release_vassal = THIS
+	}
+}
+
+# Humiliate
+humiliate = {
+	sprite_index = 11
+	is_triggered_only = yes
+	months = 12
+
+	badboy_factor = 1.5
+	prestige_factor = 1
+	peace_cost_factor = 15
+	penalty_factor = 1
+	
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+	
+	po_remove_prestige = yes
+
+	tws_battle_factor = 2.0
+	
+	war_name = WAR_HUMILIATE_NAME
+
+	can_use = {
+		NOT = { is_our_vassal = THIS }
+		THIS = { NOT = { war_policy = pacifism } }
+		is_vassal = no
+		THIS = {
+			OR = { 
+				ai = no
+				AND = { 
+					NOT = { war_policy = pacifism }
+					NOT = { has_country_flag = international_court_of_justice }
+					NOT = { OR = { government = democracy government = hms_government } }
+				}
+			}
+		}
+ 	}	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+}
+
+# territorial_dispute
+territorial_dispute = {
+	sprite_index = 11
+	is_triggered_only = yes
+	months = 12
+
+	construction_speed = 0.8
+	
+	badboy_factor = 1.5
+	prestige_factor = 5
+	peace_cost_factor = 0.7
+	penalty_factor = 1
+	always = yes
+
+	break_truce_prestige_factor = 5
+	break_truce_infamy_factor = 2
+	break_truce_militancy_factor = 2
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+	
+	po_remove_prestige = yes
+
+	war_name = WAR_HUMILIATE_NAME
+
+	can_use = {
+		NOT = { is_our_vassal = THIS }
+		is_vassal = no
+		THIS = {
+			part_of_sphere = no
+			NOT = { war_policy = pacifism }
+			NOT = { has_country_flag = international_court_of_justice }
+			NOT = { OR = { government = democracy government = hms_government } }
+		}
+		THIS = { OR = { AND = { NOT = { war_policy = pro_military } NOT = { war_policy = pacifism } } war = yes } }
+		OR = { 
+			# Israel alone in the Arab world
+			AND = { tag = ISR exists = ISR THIS = { OR  = { primary_culture = sunni_arab primary_culture = shia_arab } } } 
+			AND = { tag = ISR exists = ISR THIS = { government = theocracy OR = { pop_majority_religion = sunni pop_majority_religion = shiite } } } 
+			# Africa
+			AND = { tag = ERI exists = ERI THIS = { tag = ETH } } AND = { tag = ETH exists = ETH THIS = { tag = ERI } } # Badme
+			AND = { tag = CMR exists = CMR THIS = { tag = NGE } } AND = { tag = NGE exists = NGE THIS = { tag = CMR } } # Bakassi
+			AND = { tag = MAD exists = MAD THIS = { tag = COM } } AND = { tag = COM exists = COM THIS = { tag = MAD } } # Banc du Geyser
+			AND = { tag = MAD exists = MAD THIS = { tag = FRA } } AND = { tag = FRA exists = FRA THIS = { tag = MAD } } # Bassas da India
+			AND = { tag = MRT exists = MRT THIS = { tag = ENG } } AND = { tag = ENG exists = ENG THIS = { tag = MRT } } # Chagos Archipelago
+			AND = { tag = MRT exists = MRT THIS = { tag = FRA } } AND = { tag = FRA exists = FRA THIS = { tag = MRT } } # Tromelin Island
+			AND = { tag = SEY exists = SEY THIS = { tag = FRA } } AND = { tag = FRA exists = FRA THIS = { tag = SEY } } # Glorioso Islands
+			AND = { tag = KEN exists = KEN THIS = { tag = SSU } } AND = { tag = SSU exists = SSU THIS = { tag = KEN } } # Ilemi Triangle
+			AND = { tag = SPA exists = SPA THIS = { tag = MOR } } AND = { tag = MOR exists = MOR THIS = { tag = SPA } } # Islas Chafarinas
+			AND = { tag = SSU exists = SSU THIS = { tag = SUD } } AND = { tag = SUD exists = SUD THIS = { tag = SSU } } # Heglig,Kafia Kingi
+			AND = { tag = UGA exists = UGA THIS = { tag = RWA } } AND = { tag = RWA exists = RWA THIS = { tag = UGA } } # Kabale District
+			AND = { tag = CNG exists = CNG THIS = { tag = ANG } } AND = { tag = ANG exists = ANG THIS = { tag = CNG } } # Kahemba
+			AND = { tag = BUR exists = BUR THIS = { tag = BEN } } AND = { tag = BEN exists = BEN THIS = { tag = BUR } } # Koualou
+			AND = { tag = IVC exists = IVC THIS = { tag = GUI } } AND = { tag = GUI exists = GUI THIS = { tag = IVC } } # Sipilou
+			AND = { tag = SSU exists = SSU THIS = { tag = UGA } } AND = { tag = UGA exists = UGA THIS = { tag = SSU } } # Moyo District
+			AND = { tag = MLW exists = MLW THIS = { tag = TAN } } AND = { tag = TAN exists = TAN THIS = { tag = MLW } } # Lake Malawi
+			AND = { tag = GAB exists = GAB THIS = { tag = EQG } } AND = { tag = EQG exists = EQG THIS = { tag = GAB } } # Congas Island
+			AND = { tag = UGA exists = UGA THIS = { tag = KEN } } AND = { tag = KEN exists = KEN THIS = { tag = UGA } } # Migingo Island
+			AND = { tag = CNG exists = CNG THIS = { tag = ROC } } AND = { tag = ROC exists = ROC THIS = { tag = CNG } } # Congo River
+			AND = { tag = CMR exists = CMR THIS = { tag = EQG } } AND = { tag = EQG exists = EQG THIS = { tag = CMR } } # Ntem River
+			AND = { tag = NAM exists = NAM THIS = { tag = SAF } } AND = { tag = SAF exists = SAF THIS = { tag = NAM } } # Okpara River
+			AND = { tag = ERI exists = ERI THIS = { tag = DJI } } AND = { tag = DJI exists = DJI THIS = { tag = ERI } } # Ras Doumeira and Doumeira Island
+			AND = { tag = UGA exists = UGA THIS = { tag = CNG } } AND = { tag = CNG exists = CNG THIS = { tag = UGA } } # Rukwanzi Island 
+			AND = { tag = ZAM exists = ZAM THIS = { tag = ZIM } } AND = { tag = ZIM exists = ZIM THIS = { tag = ZAM } } # Sindabezi Island
+			AND = { tag = EGY exists = EGY THIS = { tag = SAA } } AND = { tag = SAA exists = SAA THIS = { tag = EGY } } # Tiran Island
+			AND = { tag = TRI exists = TRI THIS = { tag = ALG } } AND = { tag = ALG exists = ALG THIS = { tag = TRI } } # South East Algeria
+			# Asia and the Pacific
+			AND = { tag = SYR exists = SYR THIS = { tag = LEB } } AND = { tag = LEB exists = LEB THIS = { tag = SYR } } # Aarsal
+			AND = { tag = PER exists = PER THIS = { tag = UAE } } AND = { tag = UAE exists = UAE THIS = { tag = PER } } # Abu Musa
+			AND = { tag = NKO exists = NKO THIS = { tag = JAP } } AND = { tag = JAP exists = JAP THIS = { tag = NKO } } # Liancourt Rocks
+			AND = { tag = NKO exists = NKO THIS = { tag = CHI } } AND = { tag = CHI exists = CHI THIS = { tag = NKO } } # Baekdu Mountain
+			AND = { tag = BHU exists = BHU THIS = { tag = CHI } } AND = { tag = CHI exists = CHI THIS = { tag = BHU } } # Bhutanese enclaves
+			AND = { tag = DAI exists = DAI THIS = { tag = CAM } } AND = { tag = CAM exists = CAM THIS = { tag = DAI } } # Koh Thonsay
+			AND = { tag = AZB exists = AZB THIS = { tag = GEO } } AND = { tag = GEO exists = GEO THIS = { tag = AZB } } # David Gareja monastery complex
+			AND = { tag = BUR exists = BUR THIS = { tag = THI } } AND = { tag = THI exists = THI THIS = { tag = BUR } } # Doi Lang
+			AND = { tag = BAH exists = BAH THIS = { tag = QAT } } AND = { tag = QAT exists = QAT THIS = { tag = BAH } } # Fasht Ad Dibal
+			AND = { tag = UZB exists = UZB THIS = { tag = KYR } } AND = { tag = KYR exists = KYR THIS = { tag = UZB } } # Fergana Valley
+			AND = { tag = TAJ exists = TAJ THIS = { tag = KYR } } AND = { tag = KYR exists = KYR THIS = { tag = TAJ } } # Isfara Valley
+			AND = { tag = MSY exists = MSY THIS = { tag = IDO } } AND = { tag = IDO exists = IDO THIS = { tag = MSY } } # Karang Unarang
+			AND = { tag = NEP exists = NEP THIS = { tag = HND } } AND = { tag = HND exists = HND THIS = { tag = NEP } } # Kalapani 
+			AND = { tag = ARM exists = ARM THIS = { tag = AZB } } AND = { tag = AZB exists = AZB THIS = { tag = ARM } } # Artsvashen 
+			AND = { tag = OMA exists = OMA THIS = { tag = SYE } } AND = { tag = SYE exists = SYE THIS = { tag = OMA } } # Khuriya Muriya Islands
+			AND = { tag = SKO exists = SKO THIS = { tag = JAP } } AND = { tag = JAP exists = JAP THIS = { tag = SKO } } # Liancourt Rocks
+			AND = { tag = VAN exists = VAN THIS = { tag = FRA } } AND = { tag = FRA exists = FRA THIS = { tag = VAN } } # Matthew and Hunter Islands
+			AND = { tag = FIJ exists = FIJ THIS = { tag = TON } } AND = { tag = TON exists = TON THIS = { tag = FIJ } } # Minerva Reefs
+			AND = { tag = HND exists = HND THIS = { tag = BNG } } AND = { tag = BNG exists = BNG THIS = { tag = HND } } # Indo-Bangladesh enclaves
+			AND = { tag = BUR exists = BUR THIS = { tag = BNG } } AND = { tag = BNG exists = BNG THIS = { tag = BUR } } # Naf River
+			AND = { tag = MSY exists = MSY THIS = { tag = SNG } } AND = { tag = SNG exists = SNG THIS = { tag = MSY } } # Pedra Branca
+			AND = { tag = CAM exists = CAM THIS = { tag = THI } } AND = { tag = THI exists = THI THIS = { tag = CAM } } # Prachinburi 
+			AND = { tag = KUW exists = KUW THIS = { tag = SAA } } AND = { tag = SAA exists = SAA THIS = { tag = KUW } } # Qarooh
+			AND = { tag = PHI exists = PHI THIS = { tag = MSY } } AND = { tag = MSY exists = MSY THIS = { tag = PHI } } # Sabah
+			AND = { tag = UAE exists = UAE THIS = { tag = SAA } } AND = { tag = SAA exists = SAA THIS = { tag = UAE } } # Saudi Arabia–UAEborder dispute
+			AND = { tag = IRQ exists = IRQ THIS = { tag = PER } } AND = { tag = PER exists = PER THIS = { tag = IRQ } } # Shatt al-Arab
+			AND = { tag = LEB exists = LEB THIS = { tag = ISR } } AND = { tag = ISR exists = ISR THIS = { tag = LEB } } # Shebaa Farms
+			AND = { tag = TOK exists = TOK THIS = { tag = USA } } AND = { tag = USA exists = USA THIS = { tag = TOK } } # Swains Island
+			AND = { tag = KAZ exists = KAZ THIS = { tag = RUS } } AND = { tag = RUS exists = RUS THIS = { tag = KAZ } } # Malozhemchuzny
+			AND = { tag = KAZ exists = KAZ THIS = { tag = UZB } } AND = { tag = UZB exists = UZB THIS = { tag = KAZ } } # Vozrozhdeniya Island
+			# North America			
+			AND = { tag = CUB exists = CUB THIS = { tag = USA } } AND = { tag = USA exists = USA THIS = { tag = CUB } } # Gulf of Mexico
+			AND = { tag = GRN exists = GRN THIS = { tag = CAN } } AND = { tag = CAN exists = CAN THIS = { tag = GRN } } # Hans Island
+			# Europe
+			AND = { tag = GRE exists = GRE THIS = { tag = TUR } } AND = { tag = TUR exists = TUR THIS = { tag = GRE } } # Aegean dispute
+			AND = { tag = SPA exists = SPA THIS = { tag = POR } } AND = { tag = POR exists = POR THIS = { tag = SPA } } # Olivenza
+			AND = { tag = SER exists = SER THIS = { tag = CRO } } AND = { tag = CRO exists = CRO THIS = { tag = SER } } # Croatia-Serbia border dispute
+			AND = { tag = SLO exists = SLO THIS = { tag = CRO } } AND = { tag = CRO exists = CRO THIS = { tag = SLO } } # Gulf of Piran
+			AND = { tag = MON exists = MON THIS = { tag = CRO } } AND = { tag = CRO exists = CRO THIS = { tag = MON } } # Prevlaka
+			AND = { tag = SER exists = SER THIS = { tag = BOS } } AND = { tag = BOS exists = BOS THIS = { tag = SER } } # Sastavci
+			AND = { tag = MON exists = MON THIS = { tag = BOS } } AND = { tag = BOS exists = BOS THIS = { tag = MON } } # Sutorina
+			AND = { tag = CRO exists = CRO THIS = { tag = BOS } } AND = { tag = BOS exists = BOS THIS = { tag = CRO } } # Neum
+			# South America
+			#AND = { tag = TG1 exists = TG1 THIS = { tag = TG2 } } AND = { tag = TG2 exists = TG2 THIS = { tag = TG1 } } # TerrName
+		}
+ 	}	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+}
+
+# sanctions
+sanctions = {
+	sprite_index = 13
+	is_triggered_only = yes
+	months = 12
+	construction_speed = 1.5
+	crisis = no
+
+	badboy_factor = 0.5
+	prestige_factor = 1
+	peace_cost_factor = 15
+	penalty_factor = 1
+	
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+	
+	po_remove_prestige = yes
+
+	tws_battle_factor = 2.0
+	
+	war_name = WAR_SANCTIONS_NAME
+
+	can_use = {
+		NOT = { is_our_vassal = THIS }
+		THIS = {
+			OR = { 
+				is_greater_power = yes
+				produces = credit
+			}
+			war = no
+		}
+		war = no
+		is_greater_power = no
+		NOT = { relation = { who = THIS value = -100 } }
+	}
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.05
+		}
+	}
+
+	on_po_accepted = {
+		country_event = 96086
+	}	
+}
+
+install_democracy = {
+	sprite_index = 13
+	is_triggered_only = yes
+	months = 12
+	construction_speed = 1.5
+	crisis = no
+
+	badboy_factor = 1.5
+	prestige_factor = 5
+	peace_cost_factor = 50
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	can_use = {
+		THIS = {
+	war_policy = jingoism			
+			OR = {
+				is_greater_power = yes
+				is_secondary_power = yes
+			}
+			OR = {
+				government = hms_government
+				government = democracy
+			}
+		}
+		is_vassal = no
+		civilized = yes
+		is_greater_power = no
+		NOT = { is_our_vassal = THIS }
+		NOT = { government = hms_government }
+		NOT = { government = democracy }
+		THIS = {
+			NOT = {
+				war_policy = pacifism
+			}
+		}
+	}
+	
+	po_remove_prestige = yes
+
+	war_name = WAR_NAME
+	
+	on_add = {
+		move_issue_percentage = {
+			from = jingoism 
+			to = pro_military
+			value = 0.05
+		}
+	}
+	
+	on_po_accepted = {
+		THIS = {
+			set_country_flag = friendly_democracy
+			any_country = {
+				limit = {
+				NOT = { government = hms_government }
+					NOT = { government = democracy }
+				}
+				relation = { who = THIS value = -50 }
+			}
+		}
+		country_event = 96085
+	}
+}
+
+install_authoritarian_regime = {
+	sprite_index = 13
+	is_triggered_only = yes
+	months = 12
+	construction_speed = 1.5
+	crisis = no
+
+	badboy_factor = 1.5
+	prestige_factor = 5
+	peace_cost_factor = 50
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	can_use = {
+		THIS = {
+	OR = { war_policy = jingoism war_policy = pro_military }
+			OR = {
+				is_greater_power = yes
+				is_secondary_power = yes
+			}
+		NOT = { government = proletarian_dictatorship }
+			NOT = { government = theocracy }
+		}
+		OR = { is_vassal = no is_our_vassal = THIS }
+		civilized = yes
+		is_greater_power = no
+	}
+	
+	po_remove_prestige = yes
+
+	war_name = WAR_NAME
+	
+	on_add = {
+		move_issue_percentage = {
+			from = jingoism 
+			to = pro_military
+			value = 0.05
+		}
+	}
+	
+	on_po_accepted = {
+		THIS = { set_country_flag = friendly_authoritarian_regime }
+		country_event = 96088
+	}
+}
+
+install_theocratic_regime = {
+	sprite_index = 13
+	is_triggered_only = yes
+	months = 12
+	construction_speed = 1.5
+	crisis = no
+
+	badboy_factor = 1.5
+	prestige_factor = 5
+	peace_cost_factor = 50
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	can_use = {
+		THIS = {
+			government = theocracy
+	OR = { war_policy = jingoism war_policy = pro_military }
+
+			}
+		OR = { is_vassal = no is_our_vassal = THIS }
+		civilized = yes
+		
+		# There are some amount of traditionalist already in the country
+		traditionalist = 0.1
+		is_greater_power = no
+		# If reciever current gov is not a theochracy
+		NOT = {
+			government = theocracy
+		}
+		
+	}
+	
+	po_remove_prestige = yes
+
+	war_name = WAR_NAME
+	
+	on_add = {
+		move_issue_percentage = {
+			from = jingoism 
+			to = pro_military
+			value = 0.05
+		}
+	}
+	
+	on_po_accepted = {
+		THIS = { set_country_flag = friendly_theocratic_regime }
+		country_event = 96089
+	}
+}
+
+install_communist_gov_cb = {
+	sprite_index = 12
+	is_triggered_only = yes
+	months = 12
+	crisis = no
+
+	badboy_factor = 1.5
+	prestige_factor = 1
+	peace_cost_factor = 1
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	can_use = {
+		THIS = { OR = { war_policy = pro_military
+		war_policy = jingoism } }
+		THIS = {
+			# If actor is a great power
+			is_greater_power = yes
+			
+			# If actor gov truly communist
+			government = proletarian_dictatorship
+			
+			# If actor ruling party is communist
+			ruling_party_ideology = communist
+		}
+		
+		# If reciever ruling party is not a communist
+		#NOT = {
+		#	ruling_party_ideology = communist
+		#}
+		
+		# There are some amount of communist already in the country
+		communist = 0.1
+		is_greater_power = no
+		# If reciever current gov is not proletarian_dictatorship
+		NOT = {
+			government = proletarian_dictatorship
+		}
+
+		OR = { is_vassal = no is_our_vassal = THIS }
+		
+		# If reciever is not a great power
+		#is_greater_power = no
+	}
+	
+	po_install_communist_gov_type = yes
+
+	war_name = WAR_NAME
+	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+	
+	on_po_accepted = {
+		country_event = 800052
+	}
+}
+
+# Revert from Communist Government
+uninstall_communist_gov_cb = {
+	sprite_index = 13
+	is_triggered_only = yes
+	months = 12
+	crisis = no
+	
+	# Is automatically added to countries that intervened at while install_communist_gov_cb
+	# so they can revert those countries government.
+	constructing_cb = no
+
+	badboy_factor = 1
+	prestige_factor = 1
+	peace_cost_factor = 5
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	can_use = {
+		THIS = {
+			# If actor ruling party is not communist
+			NOT = {
+				ruling_party_ideology = communist
+			}
+		}
+		is_greater_power = no
+		# If reciever current gov is proletarian_dictatorship
+		government = proletarian_dictatorship
+	}
+	
+	po_uninstall_communist_gov_type = yes
+
+	war_name = WAR_NAME
+	
+	on_add = {
+		move_issue_percentage = {
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+}
+# Great War CB's
+dismantle_cb = {
+	sprite_index = 11
+	is_triggered_only = yes
+	months = 12
+	crisis = no
+	
+	construction_speed = 0.25
+
+	badboy_factor = 2
+	prestige_factor = 10
+	peace_cost_factor = 35
+	penalty_factor = 3
+
+	break_truce_prestige_factor = 5
+	break_truce_infamy_factor = 3
+	break_truce_militancy_factor = 1
+	truce_months = 0
+	
+	good_relation_prestige_factor = 0
+	good_relation_infamy_factor = 0
+	good_relation_militancy_factor = 0
+	
+	can_use = {
+		THIS = { war_policy = jingoism }
+		OR = {
+			is_greater_power = yes
+			is_secondary_power = yes
+			colonial_nation = yes
+			any_owned_province = { is_overseas = yes }
+		}	
+		is_disarmed = no
+		is_vassal = no
+		NOT = { is_our_vassal = THIS }
+		NOT = { has_country_flag = dismantle_declared }
+		NOT = {
+			relation = {
+				who = THIS
+				value = -100
+			}
+		}
+		THIS = {
+			is_greater_power = yes
+			is_disarmed = no
+			containment = 1
+		}
+		THIS = {
+			NOT = { has_country_flag = in_great_war }
+			NOT = { has_country_modifier = no_more_war }
+		}
+		NOT = { has_country_modifier = neutrality }
+		THIS = {
+			NOT = { has_country_modifier = neutrality }
+			#NOT = { war_policy = pacifism }
+		}	
+	}
+	
+	po_disarmament = yes
+	po_reparations = yes
+	
+	war_name = WAR_DISMANTLE_NAME
+	
+	on_add = {
+		FROM = {
+			set_country_flag = dismantle_declared
+		}
+		move_issue_percentage = { 
+			from = pro_military 
+			to = jingoism
+			value = 0.10
+		}
+		country_event = 96000
+	}
+	
+	on_po_accepted = {
+		set_country_flag = dismantling_treaty
+add_country_modifier = { name = abm_treaty duration = -1 }
+	}
+}
+
+dismantle_cb_add = {
+	sprite_index = 11
+	is_triggered_only = yes
+	months = 12
+	crisis = no
+	
+	construction_speed = 1.5
+
+	badboy_factor = 0
+	prestige_factor = 10
+	peace_cost_factor = 35
+	penalty_factor = 3
+	always = yes
+
+	break_truce_prestige_factor = 5
+	break_truce_infamy_factor = 3
+	break_truce_militancy_factor = 1
+	truce_months = 0
+	
+	good_relation_prestige_factor = 0
+	good_relation_infamy_factor = 0
+	good_relation_militancy_factor = 0
+	
+	can_use = {
+		NOT = { is_our_vassal = THIS }
+		NOT = { has_country_modifier = neutrality }
+		NOT = { has_country_flag = dismantle_declared }
+		THIS = { war_policy = jingoism }
+		has_country_flag = in_great_war
+		OR = {
+			is_greater_power = yes
+			is_secondary_power = yes
+			colonial_nation = yes
+			any_owned_province = { is_overseas = yes }
+		}
+		civilized = yes
+		is_disarmed = no
+		is_vassal = no
+		war_with = THIS
+		THIS = {
+			NOT = { has_country_modifier = neutrality }
+			has_country_flag = in_great_war
+			is_greater_power = yes
+			is_disarmed = no
+			is_vassal = no
+			containment = 1
+		}		
+	}
+	
+	po_disarmament = yes
+	po_reparations = yes
+	
+	war_name = WAR_DISMANTLE_NAME
+	
+	on_add = {
+		FROM = {
+			set_country_flag = dismantle_declared
+		}
+		move_issue_percentage = { 
+			from = pro_military 
+			to = jingoism
+			value = 0.10
+		}
+	}
+	
+	on_po_accepted = {
+		set_country_flag = dismantling_treaty
+	}
+}
+
+dismantle_cb_add_new = {
+	sprite_index = 11
+	is_triggered_only = yes
+	months = 12
+	crisis = no
+	
+	construction_speed = 1.5
+
+	badboy_factor = 0
+	prestige_factor = 10
+	peace_cost_factor = 35
+	penalty_factor = 3
+	always = yes
+
+	break_truce_prestige_factor = 5
+	break_truce_infamy_factor = 3
+	break_truce_militancy_factor = 1
+	truce_months = 0
+	
+	good_relation_prestige_factor = 0
+	good_relation_infamy_factor = 0
+	good_relation_militancy_factor = 0
+	
+	can_use = {
+		THIS = { war_policy = jingoism }
+		NOT = { is_our_vassal = THIS }
+		NOT = { has_country_flag = dismantle_declared }
+		NOT = { has_country_modifier = neutrality }
+		is_greater_power = yes		
+		is_disarmed = no
+		is_vassal = no
+		war_with = THIS
+		THIS = {
+			NOT = { has_country_modifier = neutrality }
+			NOT = { has_country_flag = in_great_war }
+			is_greater_power = yes
+			is_disarmed = no
+			is_vassal = no
+			containment = 1
+		}
+	}
+	
+	po_disarmament = yes
+	po_reparations = yes
+	
+	war_name = WAR_DISMANTLE_NAME
+	
+	on_add = {
+		FROM = {
+			set_country_flag = dismantle_declared
+		}
+		move_issue_percentage = { 
+			from = pro_military 
+			to = jingoism
+			value = 0.10
+		}
+		country_event = 96000
+	}
+	
+	on_po_accepted = {
+		set_country_flag = dismantling_treaty
+	}
+}
+
+#Placeholder for calling allies
+call_allies_cb = {
+	sprite_index = 11
+	is_triggered_only = yes
+	months = 1
+	constructing_cb = no
+	crisis = no
+	
+	badboy_factor = 0
+	prestige_factor = 0
+	peace_cost_factor = 1
+	penalty_factor = 0
+	
+	break_truce_prestige_factor = 0
+	break_truce_infamy_factor = 0
+	break_truce_militancy_factor = 0
+	truce_months = 0
+	
+	good_relation_prestige_factor = 0
+	good_relation_infamy_factor = 0
+	good_relation_militancy_factor = 0
+	
+	can_use = {
+		THIS = { ai = yes }
+		always = no
+	}
+
+	po_remove_prestige = yes
+	
+	war_name = WAR_NAME
+	
+	on_add = {
+	}
+}
+
+# Bad Boy
+rude_boy = {
+	sprite_index = 11
+	is_triggered_only = no
+	months = 12
+	construction_speed = 2
+	crisis = no
+
+	badboy_factor = 0
+	prestige_factor = 0.5
+	peace_cost_factor = 1.5
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 0
+	
+	good_relation_prestige_factor = 0
+	good_relation_infamy_factor = 0
+	good_relation_militancy_factor = 0
+	
+	always = yes
+
+	can_use = {
+		NOT = { is_our_vassal = THIS }
+		THIS = { NOT = { war_policy = pacifism } }
+		badboy = 1
+	}
+	
+	po_remove_prestige = yes
+	po_disarmament = yes
+	po_reparations = yes
+	
+	war_name = WAR_RUDEBOI_NAME
+	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.1
+		}
+	}
+on_po_accepted = {
+		badboy = -25
+	}
+}
+
+# Great War Penalty
+great_war_penalty_cb = {
+	sprite_index = 14
+	is_triggered_only = yes
+	months = 0
+	crisis = no
+	
+	constructing_cb = no
+	
+	great_war_obligatory = yes
+	
+	badboy_factor = 1.3
+	prestige_factor = 1.8
+	peace_cost_factor = 1
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 0
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	po_disarmament = yes
+	po_reparations = yes
+
+	war_name = WAR_NAME
+	
+	#can_use = {
+	#	NOT = { is_our_vassal = THIS }
+	#	is_disarmed = no
+	#}
+	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+}
+
