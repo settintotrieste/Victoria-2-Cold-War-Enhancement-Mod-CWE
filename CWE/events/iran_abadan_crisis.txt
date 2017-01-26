@@ -1,0 +1,277 @@
+country_event = {
+  id = 8501001
+  title = EVT_8501001_NAME
+  desc = EVT_8501001_DESC
+  picture = "nwo2_mohammed_mossadegh"
+  fire_only_once = yes
+
+  trigger = {
+    tag = PER
+    year = 1951
+    
+  }
+  immediate = { set_global_flag = event_fired_8501001 }
+
+  mean_time_to_happen = { months = 1  }
+
+  option = {
+    name = EVT_8501001_A # Nationalize the fields
+	nationalize = yes
+	relation = { who = GBR value = -100 } 
+	GBR = { country_event =  { id = 8501002 days = 30 } }
+  }
+
+  option = {
+    name = EVT_8501001_B # Remain on good terms
+	any_pop = { militancy = 1.5 }
+  }
+}
+country_event = {
+  id = 8501002
+  title = EVT_8501002_NAME
+  desc = EVT_8501002_DESC
+  picture = "nwo2_abadan_crisis"
+  fire_only_once = yes
+
+  is_triggered_only = yes
+  
+  option = { # Impose sanctions
+    name = EVT_8501002_A
+	badboy = 10 
+	relation = { who = PER value = -100 } 
+	set_global_flag = abadan_crisis
+	ai_chance = { factor = 100 }
+  }
+
+  option = {
+    name = EVT_8501002_B
+	PER = { add_country_modifier = { name = great_depression duration = 60 } }
+	relation = { who = PER value = 100 } 
+	ai_chance = { factor = 0 }
+  }
+}
+country_event = {
+  id = 8501003
+  title = EVT_8501003_NAME
+  desc = EVT_8501003_DESC
+  picture = "nwo2_abadan_crisis"
+  fire_only_once = yes
+
+  trigger = {
+    tag = PER
+    year = 1953
+    has_global_flag = abadan_crisis
+  }
+  immediate = { set_global_flag = event_fired_8501003 }
+
+  mean_time_to_happen = { months = 2  }
+
+  option = {
+    name = EVT_8501003_A # Sanctions are successful
+	add_country_modifier = { name = stock_market_crash duration = 365 }
+	any_pop = { militancy = 0.5  consciousness = 1 }
+	country_event =  { id = 8501004 days = 30 } 
+	country_event =  { id = 8501020 days = 60 } # Operation Ajax
+	ai_chance = { factor = 80 }
+  }
+
+  option = {
+    name = EVT_8501003_B # Sanctions are a failure
+	any_pop = {  consciousness = 2 }
+	ai_chance = { factor = 20 }
+  }
+}
+
+# Economic sanctions are successful, we ask Soviets, otherwise its going to end up in Operation Ajax
+country_event = {
+  id = 8501004
+  title = EVT_8501004_NAME
+  desc = EVT_8501004_DESC
+  picture = "nwo2_abadan_crisis"
+  fire_only_once = yes
+
+  is_triggered_only = yes
+  immediate = { set_global_flag = event_fired_8501004 }
+
+  option = {
+    name = EVT_8501004_A # Try to persevere
+	any_pop = { militancy = 0.5 }
+	ai_chance = { factor = 70 }
+  }
+
+  option = {
+    name = EVT_8501004_B # Ask Soviets for help
+	RUS = { country_event = 8501005 }
+	ai_chance = { factor = 30 }
+  }
+}
+# Soviet are asked for help
+country_event = {
+  id = 8501005
+  title = EVT_8501005_NAME
+  desc = EVT_8501005_DESC
+  picture = "nwo2_abadan_crisis"
+
+  is_triggered_only = yes
+
+  option = {
+    name = EVT_8501005_A # Help out
+	relation = { who = PER value = 50 } 
+	USA = { country_event = 8501006 }  # American ultimatum
+	ai_chance = { factor = 75 }
+  }
+
+  option = {
+    name = EVT_8501005_B # Refrain
+	relation = { who = PER value = -50 } 
+	ai_chance = { factor = 25 }
+  }
+}
+country_event = {
+  id = 8501006
+  title = EVT_8501006_NAME
+  desc = EVT_8501006_DESC
+  picture = "nwo2_abadan_crisis"
+
+  is_triggered_only = yes
+  immediate = { set_global_flag = event_fired_8501006 }
+
+  option = {
+    name = EVT_8501006_A # Soviet reaction
+	relation = { who = PER value = -50 } 
+	RUS = { country_event = 8501007 } 
+	ai_chance = { factor = 60 }
+  }
+
+  option = {
+    name = EVT_8501006_B
+	RUS = { country_event = 8501010 } # Soviets are able to send Iranians help
+	relation = { who = GBR value = -150 } 
+	ai_chance = { factor = 40 }
+  }
+}
+country_event = {
+  id = 8501007
+  title = EVT_8501007_NAME
+  desc = EVT_8501007_DESC
+  picture = "nwo2_abadan_crisis"
+
+  is_triggered_only = yes
+
+  option = {
+    name = EVT_8501007_A
+	relation = { who = PER value = -50 } 
+	ai_chance = { factor = 75 }
+  }
+
+  option = {
+    name = EVT_8501007_B
+	PER = { country_event = 8501010 } 
+	USA = { country_event = 8501008 }
+	ai_chance = { factor = 25 }
+  }
+}
+country_event = {
+  id = 8501008
+  title = EVT_8501008_NAME
+  desc = EVT_8501008_DESC
+  picture = "nwo2_abadan_crisis"
+
+  is_triggered_only = yes
+
+  option = {
+    name = EVT_8501008_A
+	casus_belli = { target = RUS type = humiliate months = 24 }
+	war = RUS 
+	ai_chance = { factor = 0 }
+	any_pop = { militancy = 0.5  consciousness = 1 }
+  }
+
+  option = {
+    name = EVT_8501008_B
+	ai_chance =  { factor = 100 }
+	any_pop = {  consciousness = 2 }
+	random_state = { any_pop = { dominant_issue = { value = jingoism factor = 0.05 } } }
+  }
+}
+
+country_event = {
+  id = 8501010
+  title = EVT_8501010_NAME
+  desc = EVT_8501010_DESC
+  picture = "nwo2_abadan_crisis"
+
+  is_triggered_only = yes
+
+  option = {
+    name = EVT_8501010_A
+	any_pop = { militancy = -0.5  consciousness = -1 }
+  }
+}
+
+country_event = {
+  id = 8501020
+  title = EVT_8501020_NAME
+  desc = EVT_8501020_DESC
+  picture = "nwo2_operation_ajax"
+  fire_only_once = yes
+
+  is_triggered_only = yes
+
+  mean_time_to_happen = { months = 3  }
+
+  option = {
+    name = EVT_8501020_A
+	any_pop = { militancy = 1.0  consciousness = 1 }
+	country_event =  { id = 8501022 days = 360 } 
+	country_event = { id = 8011407 days = 360 }  
+  }
+
+  option = {
+    name = EVT_8501020_B
+	any_pop = { militancy = -1.0  consciousness = -1 }
+	country_event = { id = 8011407 days = 360 } 
+  }
+}
+country_event = {
+  id = 8501021
+  title = EVT_8501021_NAME
+  desc = EVT_8501021_DESC
+  picture = "nwo2_abadan_crisis"
+  fire_only_once = yes
+
+  trigger = {
+    tag = GBR
+    year = 1954
+    has_global_flag = abadan_crisis
+    
+  }
+
+  mean_time_to_happen = { months = 6  }
+
+  option = {
+    name = EVT_8501021_A
+	any_pop = {  consciousness = 2 }
+  }
+}
+country_event = {
+  id = 8501022
+  title = EVT_8501022_NAME
+  desc = EVT_8501022_DESC
+  picture = "nwo2_abadan_crisis"
+  fire_only_once = yes
+
+  trigger = {
+    tag = GBR
+    year = 1954
+    has_global_flag = abadan_crisis
+    
+  }
+
+  mean_time_to_happen = { months = 12 }
+
+  option = {
+    name = EVT_8501022_A
+	any_pop = { militancy = 1 }
+  }
+}

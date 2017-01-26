@@ -1,0 +1,261 @@
+#Check the ilegality of the war
+
+country_event = {
+	id = 0101231
+	title = "Involved in an war"
+	desc = "Our current war may not be an internationally accepted one and this will trigger a UN reponse to cease hostilities."
+	picture = "united_nations"
+	
+	major = yes
+	trigger = {
+		has_country_flag = disabled
+		is_vassal = no
+		war = yes
+		year = 1960
+		NOT = { has_country_flag = legalitychecked1 }
+			}
+	option = {
+		name = "Check the legality"
+		set_country_flag = legalitychecked1
+country_event = 0101232
+	#any_country = { limit = { war_with = THIS NOT = #{ alliance_with = THIS } casus_belli = THIS } country_event = #0101232 }
+			}
+}
+
+#Illegal War
+country_event = {
+	id = 0101232
+	title = "Involved in an illegal war"
+	desc = "Our justification for war is not an internationally accepted one and this will trigger a UN reponse to cease hostilities."
+	picture = "united_nations"
+	is_triggered_only = yes
+	
+		major = yes
+	option = {
+		name = "We shall defy the UN!"
+add_country_modifier = { name = illegal_war duration = -1 }
+	set_country_flag = uninterventioninwar
+
+	any_country = { limit = { has_country_modifier = unsc_permanent_member } country_event = 0101233 }
+		}
+option = {
+		name = "We shall sue for peace!"
+any_country = { limit = { war_with = THIS } end_war = THIS }
+prestige = -0.20
+any_pop = { militancy = 5 }
+		}
+}
+#UNSC votes on the War's legality
+country_event = {
+	id = 0101233
+	title = "Security Council Votes on course of action"
+	desc = "The United Nations Security Council is about to vote on whether to intervene in our aggressive war."
+	picture = "united_nations"
+	
+	mean_time_to_happen = { days = 10 }
+
+	trigger = {
+		has_country_flag = uninterventioninwar
+		has_country_modifier = illegal_war
+		war = yes
+			}
+	
+	option = {
+		name = "We shall condemn any intervention!"
+any_country = { limit = { has_country_modifier = unsc_permanent_member } country_event = 0101234 }
+		}
+}
+
+#UNSC Vote
+country_event = {
+	id = 0101234
+	title = "Security Council Chapter VII Resolution"
+	desc = EVTDESC0101234
+	picture = "united_nations"
+	
+	is_triggered_only = yes
+
+	
+#######################################
+option = {
+		name = "Support the resolution"
+	relation = { who = FROM value = 100 }
+	FROM = { set_country_flag = resolution_passed_unsc }
+ai_chance = { factor = 1 
+
+modifier = { 
+
+has_country_flag = na
+NOT = { 
+OR = { 
+THIS = { relation = { who = FROM value = 100 } }  
+AND = { FROM = { has_country_modifier = communistbloc } OR = { has_country_modifier = communist_bloc_leader has_country_modifier = communist_bloc  } } 
+AND = { FROM = { has_country_modifier = democracticbloc } OR = { has_country_modifier = democractic_bloc_leader has_country_modifier = democractic_bloc  } } 
+} 
+}
+
+factor = 0  } 
+
+}
+		}
+
+
+########################################
+	option = {
+		name = "Veto the resolution"
+FROM = { add_country_modifier = { name = resolution_veoted duration = -1 } }
+relation = { who = FROM value = -100 }
+ai_chance = { factor = 0 
+
+modifier = { 
+has_country_flag = na
+OR = { THIS = { relation = { who = FROM value = 100 } }  
+AND = { FROM = { has_country_modifier = communistbloc } OR = { has_country_modifier = communist_bloc_leader has_country_modifier = communist_bloc  } } } 
+AND = { FROM = { has_country_modifier = democracticbloc } OR = { has_country_modifier = democractic_bloc_leader has_country_modifier = democractic_bloc  } }
+
+factor = 0  } 
+
+}
+		}
+
+#####################################
+	option = {
+		name = "Abstain from voting"
+		ai_chance = { factor = 0 }
+		prestige = -10
+		}
+
+#####################################
+}
+
+#Successful vote on resolution
+country_event = {
+	id = 1012352
+title = "Security Council condemns $COUNTRY$'s War"
+	desc = "The United Nations Security Council has voted on a resolution condemning our war."
+	picture = "united_nations"
+	
+major = yes
+
+	trigger = {
+		has_country_flag = uninterventioninwar
+		has_country_modifier = illegal_war
+		war = yes
+		NOT = { has_country_modifier = resolution_veoted  }
+		has_country_flag = resolution_passed_unsc
+		NOT = { has_country_flag = uninterventionactive }
+			}
+	
+	option = {
+		name = "We condemn their action!"
+		set_country_flag = uninterventionactive
+		prestige = -10
+		badboy = 5
+		}
+}
+# UN resolution fails
+country_event = {
+	id = 0101236
+	title = "Security Council resolution on $COUNTRY$'s War vetoed"
+	desc = "The United Nations Security Council has vetoed a resolution condemning our war."
+	picture = "united_nations"
+	major = yes
+	trigger = {
+		has_country_flag = uninterventioninwar
+		has_country_modifier = illegal_war
+		war = yes
+		has_country_modifier = resolution_veoted
+		has_country_flag = resolution_passed_unsc
+			}
+	
+	option = {
+		name = "Hurray for aggression!"
+		prestige = 10
+		badboy = -5
+		remove_country_modifier = illegal_war
+		remove_country_modifier = resolution_vetoed
+		clr_country_flag = uninterventioninwar
+		#clr_country_flag = legalitychecked1
+		}
+}
+# UN sanctions military
+country_event = {
+	id = 0101237
+	title = "UN Military Sanctions against $COUNTRY$!"
+	desc = "The United Nations has placed a sanction on all military goods entering our country."
+	picture = "united_nations"
+	major = yes
+	mean_time_to_happen = { months = 1 }
+
+	trigger = {
+		has_country_flag = uninterventioninwar
+		has_country_modifier = illegal_war
+		war = yes
+		NOT = { has_country_modifier = resolution_veoted }
+		has_country_flag = resolution_passed_unsc
+		
+			}
+	
+	option = {
+		name = "Resist the UN!"
+prestige = 10
+badboy = 5
+any_pop = { militancy = 1 }
+add_country_modifier = { name = unsanctionslevel1 duration = -1 }
+				}
+	option = {
+		name = "Sue for Peace!"
+ai_chance = { factor = 0 modifier = { badboy = 20 factor = 1 } }
+any_country = { limit = { war_with = THIS } end_war = THIS }
+prestige = -0.25
+any_pop = { militancy = 5 }
+		remove_country_modifier = illegal_war
+		remove_country_modifier = resolution_vetoed
+		clr_country_flag = uninterventioninwar
+		clr_country_flag = uninterventionactive
+		clr_country_flag = legalitychecked1
+		}
+}
+# UN sanctions economic
+country_event = {
+	id = 0101238
+	title = "UN Economic Sanctions against $COUNTRY$!"
+	desc = "The United Nations has now placed a sanctions on all economic goods entering our country."
+	picture = "united_nations"
+	major = yes
+	mean_time_to_happen = { months = 1 }
+
+	trigger = {
+		has_country_flag = uninterventioninwar
+		has_country_flag = uninterventionactive
+		has_country_modifier = illegal_war
+		has_country_modifier = unsanctionslevel1
+		war = yes
+		has_country_modifier = resolution_veoted
+		NOT = { has_country_flag = resolution_passed_unsc }
+			}
+	
+	option = {
+		name = "Resist the UN!"
+prestige = 10
+badboy = 5
+any_pop = { militancy = 1 }
+add_country_modifier = { name = unsanctionslevel2 duration = -1 }
+				}
+	option = {
+		name = "Sue for Peace!"
+ai_chance = { factor = 0 modifier = { badboy = 20 factor = 1 } }
+
+any_country = { limit = { war_with = THIS } end_war = THIS }
+prestige = -0.25
+any_pop = { militancy = 5 }
+		remove_country_modifier = unsanctionslevel1
+		remove_country_modifier = unsanctionslevel2
+		remove_country_modifier = illegal_war
+		remove_country_modifier = resolution_vetoed
+		clr_country_flag = uninterventioninwar
+		clr_country_flag = uninterventionactive
+		clr_country_flag = legalitychecked1
+		}
+}
+

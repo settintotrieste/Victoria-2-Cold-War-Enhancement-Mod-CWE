@@ -1,0 +1,384 @@
+# Soviet support communist regimes not in our sphere, may by decision improve relation with us thus targeting membership in comecon
+country_event = { # Soviet-$COUNTRY$ Friendship
+	id = 19800
+	title = "EVTNAME19800"
+	desc = "EVTDESC19800"
+	picture = "soviet_economy"
+
+	trigger = {
+		NOT = { tag = RUS }
+		government = proletarian_dictatorship
+		NOT = { has_country_flag = soviet_friendship }
+		RUS = { is_greater_power = yes government = proletarian_dictatorship } 
+		NOT = { has_country_modifier = comecon }
+		NOT = { has_country_modifier = bretton_system }
+		# TODO somehow china soviet rivality
+		#AND = {
+		#	NOT = { relation = { who = CHI value = 100 } }
+		#	CHI = { is_greater_power = yes government = proletarian_dictatorship }
+		#}
+		is_greater_power = no
+		war = no
+		year = 1948 # allow game start nations to become members of commecon
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+
+	option = {
+		name = "EVTOPTA19800"
+		ai_chance = { factor = 100 }
+		RUS = { country_event =  19801 }
+		set_country_flag = soviet_friendship
+		any_country = {
+			limit = { NOT = { government = proletarian_dictatorship } }
+			relation = { who = THIS value = -100 } 
+			diplomatic_influence = { who = THIS value = -50 } 
+		}
+	}
+	
+	option = {
+		name = "EVTOPTB19800"
+		ai_chance = { factor = 0 }
+		set_country_flag = soviet_friendship
+		any_country = { 
+			limit = { NOT = { government = proletarian_dictatorship } } 
+			relation = { who = THIS value = -50 } 
+			diplomatic_influence = { who = THIS value = -50 } 
+		}
+	}
+}
+
+country_event = {
+	id = 19801
+	title = "EVTNAME19801"
+	desc = "EVTDESC19801"
+	picture = "soviet_economy"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPTA19800"
+		ai_chance = { factor = 100 }
+		relation = { who = FROM value = 50 }
+		diplomatic_influence = { who = FROM value = 50 }
+	}
+	
+	option = {
+		name = "EVTOPTB19801"
+		ai_chance = { factor = 0 }
+		relation = { who = FROM value = -10 }
+	}
+
+}
+
+country_event = {
+	id = 19802
+	title = "EVTNAME19802" # Demand recognition of the new regime
+	desc = "EVTDESC19802"
+	picture = "recognized_government"
+
+	trigger = {
+		year = 1947
+		NOT = { has_country_flag = recognized_government }
+		NOT = { has_country_modifier = unrecognized_government }
+		OR = { 
+			government = proletarian_dictatorship
+			government = populist_dictatorship
+			government = nationalist_dictatorship 
+			government = theocracy 
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 24
+	}
+
+	option = {
+		name = "EVTOPTA19802"
+		ai_chance = { factor = 100 }
+		any_greater_power = { 
+			limit = { rank = 1 }
+			country_event =  19803
+		}
+		add_country_modifier = { name = unrecognized_government duration = 3600 }
+	}
+	
+}
+
+# US install_democracy war on any nation not having the flag recognized_government (set by startup event 19355)
+country_event = {
+	id = 19803
+	title = "EVTNAME19803"
+	desc = "EVTDESC19803"
+	picture = "castro_triumph"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPTA19803"
+		ai_chance = { factor = 100 }
+		relation = { who = THIS value = -100 }
+		casus_belli = {
+	        target = THIS
+			type = install_democracy
+			months = 24
+		}
+		any_pop = {
+			dominant_issue = {
+				factor = 0.02
+				value = jingoism
+			}
+		}
+	}
+	
+	option = {
+		name = "EVTOPTB19803"
+		ai_chance = { factor = 0 }
+		relation = { who = FROM value = -50 }
+		any_pop = {
+			dominant_issue	= {
+				factor = 0.01
+				value = jingoism
+			}
+		}
+		FROM = { set_country_flag = recognized_government }
+	}
+
+}
+
+##################Enable Blocs under events###################
+
+country_event = {
+	id = 19804
+	title = "EVT_19804_NAME"
+	desc = "EVT_19804_DESC"
+	picture = "cold_war"
+	fire_only_once = yes
+
+	trigger = {
+		ai = no # in an multi player env this may fire multiple times but no worry as it only sets flags
+		NOT = { has_global_flag = blocsenabled }
+		NOT = { year = 1991 }
+		RUS = { government = proletarian_dictatorship }
+		USA = { government = democracy }
+	}
+
+	option = {
+		name = "EVT_19804_A"
+		set_global_flag = blocsenabled
+		
+		PER = { nationalvalue = nv_order }
+		ENG = { relation = { who = USA value = 200 } }
+		FRA = { relation = { who = USA value = 200 } }
+		CAN = { relation = { who = USA value = 200 } }
+		NET = { relation = { who = USA value = 200 } }
+		AST = { relation = { who = USA value = 200 } }
+		NZL = { relation = { who = USA value = 200 } }
+		JAP = { relation = { who = USA value = 200 } }
+		BEL = { relation = { who = USA value = 200 } }
+		LUX = { relation = { who = USA value = 200 } }
+		ITA = { relation = { who = USA value = 200 } }
+		RUS = { add_country_modifier = { name = communist_bloc_leader duration = -1 } add_country_modifier = { name = soviet_stability duration = 13000 }  set_country_flag = joincomm }
+		USA = { add_country_modifier = { name = atomic_nation duration = -1 } add_country_modifier = { name = democratic_bloc_leader duration = -1 } set_country_flag = joindemo }
+	}
+
+}
+
+###### Set up NAM ######
+
+country_event = {
+	id = 19805
+	title = "EVT_19805_NAME" # EVT_19805_NAME;Non Aligned Movement
+	desc = "EVT_19805_DESC" # EVT_19805_ESC;The Non-Aligned Movement is a Movement of 115 members representing the interests and priorities of developing countries. (To remove the independent bloc modifier, join a bloc)
+	picture = "nam"
+
+	trigger = {
+		year = 1950
+		NOT = { year = 1991 }
+		exists = HND
+		NOT = { has_country_modifier = nam_bloc } 
+		NOT = { has_country_flag = joindemo }
+		NOT = { has_country_flag = namformformed }
+		NOT = { has_country_flag = joincomm }
+	}
+
+	immediate = {
+		set_global_flag = namformed
+	}
+	
+	option = {
+		name = "EVT_19805_A" # EVT_19805_A;Interesting
+		set_country_flag = namformformed
+USA =  { relation =  { who = THIS value = 50 } }
+USA =  { diplomatic_influence =  { who = THIS value = 10 } }
+	add_country_modifier = { name = nam_bloc duration = -1 }
+	}
+
+}
+
+############### Disable Blocs under events ###################
+
+country_event = {
+	id = 19806
+	title = "EVT_19806_NAME" # EVT_19806_NAME;End of the Bi-polar world
+	desc = "EVT_19806_DESC" # EVT_19806_ESC;With the end of the Cold War, all blocs are now dissolved!
+	picture = "endofcoldwar"
+
+	trigger = {
+		OR = { RUS = { NOT = { government = proletarian_dictatorship } } USA = { NOT = { government = democracy } } }
+
+		NOT = { has_country_flag = endofthecoldwar }
+	}
+
+	immediate = {
+		clr_global_flag =  blocsenabled
+	}
+	
+	option = {
+		name = "EVT_19806_A" # EVT_19806_A;Is that good news?
+any_country = { remove_country_modifier = cold_war_high
+remove_country_modifier = cold_war_medium
+remove_country_modifier = cold_war_low }
+RUS = { 
+remove_country_modifier = cold_war_high
+remove_country_modifier = cold_war_medium
+remove_country_modifier = cold_war_low
+remove_country_modifier = commhigh_gp
+			remove_country_modifier = commmedium_gp
+			remove_country_modifier = commlow_gp
+			remove_country_modifier = commhigh
+			remove_country_modifier = commmedium
+			remove_country_modifier = commlow
+			clr_global_flag = commhigh
+			clr_global_flag = commmedium
+			clr_global_flag = commlow }
+any_country = { limit = { has_country_modifier = communist_bloc } 
+			remove_country_modifier = commhigh
+			remove_country_modifier = commmedium
+			remove_country_modifier = commlow
+			clr_country_flag = commhigh
+			clr_country_flag = commmedium
+			clr_country_flag = commlow
+}
+		remove_country_modifier = independent_bloc
+		remove_country_modifier = communist_bloc
+		remove_country_modifier = democratic_bloc
+		remove_country_modifier = nam_bloc
+		remove_country_modifier = communist_bloc_leader
+		remove_country_modifier = democratic_bloc_leader
+	USA = {
+remove_country_modifier = cold_war_high
+remove_country_modifier = cold_war_medium
+remove_country_modifier = cold_war_low	
+			remove_country_modifier = demohigh_gp
+			remove_country_modifier = demomedium_gp
+			remove_country_modifier = demolow_gp
+			remove_country_modifier = demohigh
+			remove_country_modifier = demomedium
+			remove_country_modifier = demolow
+			clr_global_flag = demohigh
+			clr_global_flag = demomedium
+			clr_global_flag = demolow }
+any_country = { limit = { has_country_modifier = democratic_bloc } 
+			remove_country_modifier = demohigh
+			remove_country_modifier = demomedium
+			remove_country_modifier = demolow
+			clr_country_flag = demohigh
+			clr_country_flag = demomedium
+			clr_country_flag = demolow
+}
+		set_country_flag = endofthecoldwar
+	}
+
+}
+
+#
+################## USSR victory ###################
+
+country_event = {
+	id = 19807
+	title = EVT_19807_NAME #EVT_19807_NAME;End of the Cold War
+	desc = EVT_19807_DESC #EVT_19807_DESC;With the fall of the USSR, the Cold War has ended!
+	picture = "endofcoldwar"
+
+	trigger = {
+		RUS = { government = proletarian_dictatorship }
+		NOT = { USA = { government = democracy } }
+		
+		NOT = { has_country_flag = cold_warussr1 }
+		has_global_flag = blocsenabled
+		
+	}
+
+	immediate = {
+		set_global_flag = cold_warussr
+	}
+	
+	option = {
+		name = EVT_19807_A # EVT_19807_A;A New World Order is emerging
+		set_country_flag = cold_warussr1
+	}
+
+}
+
+#
+################## USA victory ###################
+
+country_event = {
+	id = 19808
+	title = EVT_19808_NAME # EVT_19808_NAME;End of the Cold War
+	desc = EVT_19808_DESC # EVT_19808_DESC;With the fall of the USA, the Cold War has ended!
+	picture = "endofcoldwar"
+
+	trigger = {
+		USA = { government = democracy }
+		NOT = { RUS = { government = proletarian_dictatorship } }
+		
+		NOT = { has_country_flag = cold_warusa1 }
+		has_global_flag = blocsenabled
+		
+	}
+
+	immediate = {
+		set_global_flag = cold_warusa
+	}
+	
+	option = {
+		name = EVT_19808_A #EVT_19808_A;A New World Order is emerging
+		set_country_flag = cold_warusa1
+	}
+}
+#
+################## Bloc strenghtens ###################
+
+country_event = {
+	id = 19809
+	title = EVT_19809_NAME # EVT_19809_NAME;Our Bloc strengthens!
+	desc = EVT_19809_DESC # EVT_19809_DESC;One more nation has joined our glorious Bloc!
+	picture = "blocstrengthens"
+	is_triggered_only = yes
+	
+	option = {
+		name = EVT_19809_A #EVT_19809_A;That is good news indeed
+		prestige = 1
+	}
+}
+
+#
+################## Bloc weakens ###################
+
+country_event = {
+	id = 19810
+	title = EVT_19810_NAME # EVT_19810_NAME;Our Bloc weakens!
+	desc = EVT_19810_DESC # EVT_19810_DESC;On nation has left our glorious Bloc!
+	picture = "blocstrengthens"
+	is_triggered_only = yes
+	
+	option = {
+		name = EVT_19810_A #EVT_19810_A;Oh no
+		prestige = -1
+	}
+}
+

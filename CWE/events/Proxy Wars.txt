@@ -1,0 +1,356 @@
+#Request for superpower help received sphere leader
+country_event = {
+	id = 1400071
+	title = "$FROMCOUNTRY$ requests our assistance"
+	desc = "The rapidly growing crisis in their country has become regional. They now request our help."
+	picture = "crisis_internationalisation"
+	
+is_triggered_only = yes
+
+option = {
+name = "We will get involved!"
+prestige = 10
+random_country = { limit = { rank = 2 NOT = { tag = THIS } } country_event = 1400072 }
+ai_chance = { 
+factor = 1
+}
+		}
+
+option = {
+name = "We won't want to be involved!"
+prestige = -100
+FROM = { clr_country_flag = country_that_requested_support }
+ai_chance = { 
+factor = 0
+}
+		}
+
+}
+
+#Request for superpower help received other SP
+country_event = {
+	id = 1400072
+	title = "Crisis Brewing"
+	desc = "The rapidly growing crisis in a country has become regional. They now request our help."
+	picture = "crisis_internationalisation"
+	
+is_triggered_only = yes
+
+option = {
+name = "We will get involved!"
+prestige = 10
+
+set_country_flag = crisis_level_1
+
+set_global_flag = crisis_activated_now
+
+add_country_modifier = { name = crisis_timer duration = 10 }
+
+FROM = { 
+set_country_flag = crisis_level_1
+
+add_country_modifier = { name = crisis_timer duration = 10 }
+}
+
+ai_chance = { 
+factor = 1
+}
+		}
+
+option = {
+name = "We won't want to be involved!"
+prestige = -100
+any_country = { 
+clr_country_flag = country_that_requested_support }
+ai_chance = { 
+factor = 0
+}
+		}
+
+}
+
+#Rank 1 proposes solution
+country_event = {
+	id = 1400073
+	title = "Crisis Summit at $CAPITAL$"
+	desc = "We have to decide which side of the conflict we will take, the rebels or government."
+	picture = "crisis_internationalisation_summit"
+	major = yes
+trigger = {
+rank = 1 
+NOT = { has_country_modifier = crisis_timer }
+has_country_flag = crisis_level_1
+has_global_flag = crisis_activated_now
+}
+
+option = {
+name = "Support the current Government!"
+prestige = 10
+clr_country_flag = crisis_level_1
+set_country_flag = crisis_level_2
+random_country = { limit = { has_country_flag = country_that_requested_support } country_event = 1400074 }
+add_country_modifier = { name = crisis_timer duration = 10 }
+set_country_flag = rank_1_supporting_government
+
+random_country = { limit = { rank = 2 NOT = { rank = 1 } }  
+set_country_flag = rank_2_supporting_rebels
+clr_country_flag = crisis_level_1
+set_country_flag = crisis_level_2
+add_country_modifier = { name = crisis_timer duration = 10 }
+random_country = { limit = { has_country_flag = country_that_requested_support } country_event = 1400075 }
+prestige = 10
+}
+ai_chance = { 
+factor = 0.5
+}
+		}
+
+option = {
+name = "Support the Rebels!"
+prestige = 10
+clr_country_flag = crisis_level_1
+set_country_flag = crisis_level_2
+random_country = { limit = { has_country_flag = country_that_requested_support } country_event = 1400075 }
+add_country_modifier = { name = crisis_timer duration = 10 }
+set_country_flag = rank_1_supporting_rebels
+
+random_country = { limit = { rank = 2 NOT = { rank = 1 } }  
+set_country_flag = rank_2_supporting_government
+clr_country_flag = crisis_level_1
+set_country_flag = crisis_level_2
+add_country_modifier = { name = crisis_timer duration = 10 }
+random_country = { limit = { has_country_flag = country_that_requested_support } country_event = 1400074 }
+prestige = 10
+}
+ai_chance = { 
+factor = 0.5
+}
+		}
+
+}
+
+#Inform of solution choice - Government
+country_event = {
+	id = 1400074
+	title = "$FROMCOUNTRY$ choses to support us"
+	desc = "$FROMCOUNTRY$ choses to support our government. If they win, they will gain significant influence over us."
+	picture = "crisis_internationalisation_summit"
+	
+is_triggered_only = yes
+
+option = {
+name = "We hope our patrons win!"
+		}
+}
+
+#Inform of solution choice - Rebels
+country_event = {
+	id = 1400075
+	title = "$FROMCOUNTRY$ choses to support the rebels"
+	desc = "$FROMCOUNTRY$ choses to support the rebels. If the rebels win, they will gain significant influence over our nation."
+	picture = "crisis_internationalisation_summit"
+	
+is_triggered_only = yes
+
+option = {
+name = "We hope our enemy lose!"
+		}
+
+}
+
+#Rank 2 accept or refuse the accept rank 1's proposal
+country_event = {
+	id = 1400076
+	title = "Crisis Summit at $CAPITAL$"
+	desc = "We have to decide whether we wish to support the foremost nation's crisis solution."
+	picture = "crisis_internationalisation_summit"
+	major = yes
+trigger = {
+rank = 2
+NOT = { has_country_modifier = crisis_timer }
+has_country_flag = crisis_level_2
+has_global_flag = crisis_activated_now
+}
+
+option = {
+name = "Accept their solution!"
+prestige = -100
+clr_country_flag = crisis_level_2
+clr_global_flag = crisis_activated_now
+random_country = { limit = { rank = 1 has_country_flag = rank_1_supporting_government }
+
+random_country = { limit = { has_country_flag = country_that_requested_support }
+diplomatic_influence = { who = THIS value = 400 } }
+
+}
+
+random_country = { limit = { rank = 1 has_country_flag = rank_1_supporting_rebels }
+
+random_country = { limit = { has_country_flag = country_that_requested_support }
+any_owned = { limit = { is_colonial = no } controller = REB } }
+
+}
+
+ai_chance = { 
+factor = 0
+}
+		}
+
+option = {
+name = "Reject their solution!"
+prestige = 10
+clr_country_flag = crisis_level_2
+set_country_flag = crisis_level_3
+add_country_modifier = { name = crisis_timer duration = 15 }
+random_country = { limit = { rank = 1 } add_country_modifier = { name = crisis_timer duration = 15 } set_country_flag = crisis_level_3 }
+ai_chance = { 
+factor = 1
+}
+		}
+
+}
+
+#Rank 1 accept or refuse the accept rank 2's rejection
+country_event = {
+	id = 1400077
+	title = "Crisis Summit at $CAPITAL$"
+	desc = "Our rival nation in this crisis has refused our solution. We need to decide whether to continue this crisis."
+	picture = "crisis_internationalisation_summit"
+	major = yes
+trigger = {
+rank = 1
+NOT = { has_country_modifier = crisis_timer }
+has_country_flag = crisis_level_3
+has_global_flag = crisis_activated_now
+}
+
+option = {
+name = "Give in to our rival!"
+prestige = -100
+clr_country_flag = crisis_level_3
+clr_global_flag = crisis_activated_now
+random_country = { limit = { rank = 2 has_country_flag = rank_2_supporting_government }
+
+random_country = { limit = { has_country_flag = country_that_requested_support }
+diplomatic_influence = { who = THIS value = 400 } }
+
+}
+
+random_country = { limit = { rank = 2 has_country_flag = rank_2_supporting_rebels }
+
+random_country = { limit = { has_country_flag = country_that_requested_support }
+any_owned = { limit = { is_colonial = no } controller = REB } }
+
+}
+
+ai_chance = { 
+factor = 0
+}
+		}
+
+option = {
+name = "Continue the crisis!"
+prestige = 10
+clr_country_flag = crisis_level_3
+set_country_flag = crisis_level_4
+add_country_modifier = { name = crisis_timer duration = 10 }
+random_country = { limit = { rank = 2 } add_country_modifier = { name = crisis_timer duration = 15 } set_country_flag = crisis_level_4 }
+ai_chance = { 
+factor = 1
+}
+		}
+
+}
+
+#War or compromise - initiator
+country_event = {
+	id = 1400078
+	title = "Crisis reaching critical point!"
+	desc = "The Crisis has reached a critical juncture, if we do not find a compromise solution, war will break out."
+	picture = "crisis_internationalisation_summit"
+	major = yes
+trigger = {
+rank = 2
+NOT = { has_country_modifier = crisis_timer }
+has_country_flag = crisis_level_4
+has_global_flag = crisis_activated_now
+}
+
+option = {
+name = "Propose the UN resolution route!"
+prestige = 10
+clr_country_flag = rank_2_supporting_government
+clr_country_flag = rank_2_supporting_rebels
+clr_country_flag = crisis_level_4
+random_country = { limit = { rank = 1 } country_event = 1400079 }
+ai_chance = { 
+factor = 0.99
+}
+		}
+
+option = {
+name = "Reject their solution!"
+clr_country_flag = crisis_level_4
+clr_global_flag = crisis_activated_now
+clr_country_flag = rank_2_supporting_government
+clr_country_flag = rank_2_supporting_rebels
+prestige = 100
+random_country = { 
+limit = { rank = 1 } 
+war = {
+	target = THIS
+	attacker_goal = { casus_belli = humiliate }
+	defender_goal = { casus_belli = humiliate }
+	call_ally = yes
+}
+}
+ai_chance = { 
+factor = 0.01
+}
+		}
+
+}
+
+#War or compromise - reciever
+country_event = {
+	id = 1400079
+	title = "$FROMCOUNTRY$ proposes a compromise solution!"
+	desc = "The Crisis has reached a critical juncture, if we do not find a compromise solution, war will break out."
+	picture = "crisis_internationalisation_summit"
+	major = yes
+is_triggered_only = yes
+option = {
+name = "Accept the UN resolution route!"
+prestige = 10
+clr_country_flag = crisis_level_4
+clr_global_flag = crisis_activated_now
+clr_country_flag = rank_1_supporting_government
+clr_country_flag = rank_1_supporting_rebels
+random_country = { limit = { has_country_flag = country_that_requested_support } clr_country_flag = country_that_requested_support add_country_modifier = { name = stalemate duration = 730 } }
+ai_chance = { 
+factor = 0.99
+}
+		}
+
+option = {
+name = "Reject their solution!"
+prestige = 100
+clr_country_flag = crisis_level_4
+clr_global_flag = crisis_activated_now
+clr_country_flag = rank_1_supporting_government
+clr_country_flag = rank_1_supporting_rebels
+random_country = { 
+limit = { rank = 1 } 
+war = {
+	target = THIS
+	attacker_goal = { casus_belli = humiliate }
+	defender_goal = { casus_belli = humiliate }
+	call_ally = yes
+}
+}
+ai_chance = { 
+factor = 0.01
+}
+		}
+
+}

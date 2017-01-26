@@ -1,0 +1,560 @@
+# End of Colonialism
+# Basline is militanyc and conciousness caused by nationalist_movments.txt events
+# Once it becommes high enough it triggers demand for autonomy and unrest.
+
+province_event = { # Demand Autonomy
+	id = 15500
+	title = "EVT_15500_NAME" 
+	desc = "EVT_15500_DESC"
+	picture = "demand_autonomy"
+	
+	trigger = {
+		is_primary_culture = no
+		is_accepted_culture = no
+		controlled_by = owner
+
+	NOT = { province_id = 1678 }
+
+	NOT = { province_id = 1453 }
+	
+	NOT = { province_id = 1452 }
+
+	NOT = { province_id = 1454 }
+
+	NOT = { province_id = 1460 }
+	 
+	NOT = { province_id = 1498 }
+	 
+	NOT = { province_id = 1496 }
+	
+ 	NOT = { province_id = 1481 }
+
+	NOT = { province_id = 1755 }
+	
+	NOT = { province_id = 1723 }
+
+	NOT = { province_id = 1303 }
+
+	NOT = { province_id = 1312 }
+	owner = { NOT = { AND = { tag = NET war_with = IDO } } }
+
+		#owner = { has_global_flag = namformed }
+		OR = { year = 1950 exists = HND }
+		owner = {
+			OR = { 
+				tag = BEL
+				tag = NET
+				tag = POR
+				tag = SPA
+				tag = USA
+				tag = FRA
+				tag = NZL
+				tag = AST
+				tag = ENG
+				}
+			OR = { 
+				has_country_flag = sectarianism
+			#minorities_reform = minorities_equal_rights
+				colonial_nation = yes
+			}
+		}
+		NOT = { is_core = THIS }
+	}
+	
+	mean_time_to_happen = {
+		months = 80
+
+		modifier = {
+			factor = -2
+			ai = no
+		}
+
+		modifier = {
+			factor = 0.5
+			any_neighbor_province = {
+				has_province_modifier = promised_autonomy
+			}
+		}
+		modifier = {
+			factor = 0.8
+			state_scope = { flashpoint_tension  = 10 }
+		}
+		# a dominating majority primary culture makes us even more likely to request autonomy
+		modifier = {
+			factor = 0.5
+			is_primary_culture = no
+			is_accepted_culture = no
+		}
+		modifier = {
+			factor = 0.9
+			average_militancy = 5
+		}
+		modifier = {
+			factor = 0.9
+			average_consciousness = 5
+		}
+		modifier = {
+			factor = 1.5
+			NOT = {
+				AND = {
+					average_consciousness = 5
+					average_militancy = 5
+				}
+			}
+		}
+		modifier = {
+			factor = 1.5
+			owner = { NOT = { age_of_protests = 1 } }
+		}
+		modifier = {
+			factor = 4
+			owner = { NOT = { minorities_reform = minorities_equal_rights } }
+		}
+	}
+	
+	option = {
+		name = "EVT_15500_B"		# Promised autonomy
+		any_pop = {
+			militancy = -2
+			consciousness = 0.5
+		}
+		add_province_modifier = { name = promised_autonomy duration = 1080 }
+		ai_chance = { factor = 0.5 modifier = { NOT = { minorities_reform = minorities_equal_rights } factor = 0  } }
+	}
+	option = {
+		name = "EVT_15500_A"		#Deny Autonomy
+		any_pop = {
+			militancy = 1
+			consciousness = 1
+		}
+		add_province_modifier = { name = denied_independence duration = 1080 }
+		ai_chance = { factor = 0.5 modifier = { minorities_reform = minorities_equal_rights factor = 0 } }
+	}
+}
+province_event = { # Separatists demands freedom
+	id = 15501
+	title = "EVT_15501_NAME"
+	desc = "EVT_15501_DESC"
+	picture = "deny_autonomy"
+	
+	trigger = {
+		has_province_modifier = promised_autonomy
+	}
+	
+	mean_time_to_happen = {
+		months = 36
+		modifier = {
+			factor = 0.5
+			average_militancy = 5
+		}
+		modifier = {
+			factor = 0.5
+			average_consciousness = 5
+		}
+		modifier = {
+			factor = 1.5
+			NOT = {
+				AND = {
+					average_consciousness = 5
+					average_militancy = 5
+				}
+			}
+		}
+		modifier = {
+			factor = 1.5
+			NOT = { age_of_protests = 1 }
+		}
+		modifier = {
+			factor = 0.9
+			NOT = { minorities_reform = minorities_equal_rights }
+		}
+	}	
+	
+	option = {
+		name = "EVT_15501_A"		#Accept
+		add_province_modifier = { name = grant_independence duration = 1080 }
+
+any_country = { 
+		limit = { 
+			NOT = { tag = THIS } 
+			any_core = { has_province_modifier = grant_independence } 
+		} 
+		country_event = 1540333 
+	}
+
+		#set_global_flag = grant_independence
+
+		ai_chance = { factor = 0.1 }
+	}
+	option = {
+		name = "EVT_15501_B" #Reject
+		remove_province_modifier = promised_autonomy
+		add_province_modifier = { name = denied_independence duration = 1080 }
+any_country = { 
+		limit = { 
+			NOT = { tag = THIS } 
+			any_core = { has_province_modifier = grant_independence } 
+		} 
+		country_event = 1540333 
+	}
+	release_vassal = FROM 
+	end_military_access = FROM 
+	badboy = 5
+	war = {
+			target = FROM
+			defender_goal = {
+				casus_belli = status_quo
+				   	}
+			attacker_goal = {
+				casus_belli = colonial_war
+			}
+		}
+		ai_chance = { factor = 0.9 modifier = { owner = { minorities_reform = minorities_equal_rights citizenship_policy = full_citizenship } factor = 0 } }
+	}
+}
+country_event = { # $FROMCOUNTRY$ offers the return of provinces
+	id = 15502
+	title = "EVT_15502_NAME"
+	desc = "EVT_15502_DESC"
+	picture = "separation"
+	#is_triggered_only = yes
+
+	trigger = {
+		has_global_flag = grant_independence
+
+		any_core = { has_province_modifier = grant_independence owner = { NOT = { tag = THIS } } }
+	}
+	
+	immediate =  { clr_global_flag = grant_independence }
+	
+	mean_time_to_happen = { months = 6 }
+	
+	option = {
+		name = "EVT_15502_A"		
+		any_core = { 
+			limit = { has_province_modifier = grant_independence owner = { NOT = { tag = THIS } }  }
+			FROM = { secede_province = THIS }
+			
+			remove_province_modifier = grant_independence
+			remove_province_modifier = promised_autonomy
+			remove_province_modifier = denied_independence
+				} 
+FROM = { diplomatic_influence = { who = THIS value = 200 } }
+		ai_chance = {
+			factor = 1
+		}
+	}
+
+	option = {
+		name = "EVT_15502_B"
+		any_core = { 
+			limit = { has_province_modifier = promised_autonomy owner = { NOT = { tag = THIS } }  }
+			remove_province_modifier = promised_autonomy
+			remove_province_modifier = denied_independence
+		} 
+		ai_chance = {
+			factor = 0
+		}		
+	}
+}
+
+province_event = { # Colonial unrest in $PROVINCENAME$
+  id = 15400
+  title = "EVT_15400_NAME"
+  desc = "EVT_15400_DESC"
+
+  trigger = {
+	is_overseas = yes
+	is_colonial = yes
+	NOT ={ has_province_modifier = colonial_unrest }
+	OR = { 
+		has_province_modifier = denied_independence
+		any_neighbor_province = { has_province_modifier = colonial_unrest } 
+    }
+  }
+
+  mean_time_to_happen = { 
+	months = 120 
+	modifier = { continent = asia factor = 0.1 }
+	modifier = { continent = mena factor = 0.5 }
+	modifier = { continent = africa factor = 2 }
+	modifier = { continent = north_america factor = 3 }
+	modifier = { continent = south_america factor = 3 }
+	modifier = { continent = oceania factor = 3 }
+  } 
+
+  option = {
+    name = "EVT_15400_A"
+	any_pop = { limit = { is_accepted_culture = no is_primary_culture = no } consciousness = 1 militancy = 0.5 }
+	add_province_modifier = { name = colonial_unrest duration = 1750 }
+	ai_chance = { factor = 0.1 modifier = { factor = 100 owner = { NOT = { government = democracy government = hms_government } } } }
+  }
+
+  option = {
+    name = "EVT_15400_B"
+	any_pop = { limit = { is_accepted_culture = no is_primary_culture = no } consciousness = 0.5 }
+	add_province_modifier = { name = colonial_promise duration = -1 }
+	add_province_modifier = { name = colonial_dry_spell duration = 3500 }
+	ai_chance = { factor = 1 }
+  }
+}
+province_event = { # Colonials in $PROVINCENAME$ accuses us of breaking promises
+  id = 15401
+  title = EVT_colonial_promise_broken_NAME 
+  desc = EVT_colonial_promise_broken_DESC
+
+  trigger = {
+	has_province_modifier = colonial_promise 
+	NOT = { has_province_modifier = colonial_dry_spell }
+  }
+
+  mean_time_to_happen = { months = 1  }
+
+  option = {
+    name = EVT_colonial_promise_broken_A
+	any_pop = { limit = { is_accepted_culture = no is_primary_culture = no } consciousness = 1 militancy = 1.0 }
+	add_province_modifier = { name = colonial_unrest duration = 1750 }
+	remove_province_modifier = colonial_promise 
+  }
+}
+province_event = { # $PROVINCECULTURE$ Demands Independence
+  id = 15402
+  title = EVT_15402_NAME
+  desc = EVT_15400_DESC
+  picture = "colonialism_end"
+  trigger = {
+	
+	THIS = { has_province_modifier = colonial_unrest }
+	
+	NOT = { province_id = 1678 }
+	 
+	NOT = { province_id = 1498 }
+	 
+	NOT = { province_id = 1496 }
+	
+ 	NOT = { province_id = 1481 }
+
+	NOT = { province_id = 1755 }
+	
+	NOT = { province_id = 1723 }
+
+	NOT = { province_id = 1303 }
+
+	NOT = { province_id = 1312 }
+
+  }
+  
+  mean_time_to_happen = { months = 1 }
+
+  option = {
+    name = EVT_15402_A
+	any_country = { 
+		limit = { 
+			exists = no
+			AND = { NOT = { tag = THIS }
+			NOT = { tag = KLM } }
+			any_core = { has_province_modifier = colonial_unrest } 
+		} 
+		country_event = 15403 
+	}
+  }
+}
+country_event = { # Self-rule of $FROMCOUNTRY$ 
+  id = 15403 # ai only event
+  title = EVT_15403_NAME
+  desc = EVT_15403_DESC
+  picture = "colonialism_self_rule"
+  is_triggered_only = yes
+
+  option = {
+    name = EVT_15402_A
+	FROM = { country_event = 15404 }
+  }
+}  
+
+  ##########################
+
+country_event = { # Independence of $FROMCOUNTRY$ 
+  id = 1540333 # ai only event
+  title = "Independence of $COUNTRY$"
+  desc = EVT_fullindependence_DESC
+  picture = "colonialism_end"
+  is_triggered_only = yes
+
+
+  option = {
+    name = EVT_fullindependence_A
+	FROM = { country_event = 1540666 }
+  }
+}  
+
+######################
+
+country_event = { # Self-rule of $FROMCOUNTRY$
+  id = 15404
+  title = EVT_15403_NAME
+  desc = EVT_15403_DESC
+  picture = "colonialism_self_rule"
+  is_triggered_only = yes # colonial power. FROM freed colony
+
+  option = {
+    name = EVT_liberate
+	release = FROM
+	create_vassal = FROM
+	diplomatic_influence = { who = FROM value = 200 }
+	FROM = { 
+	government = colonial_government country_event = 800054 
+		any_owned = { remove_province_modifier = colonial_promise remove_province_modifier = colonial_unrest  }
+		set_country_flag = former_colonial_nation # TODO only militant should get...
+	}
+	ai_chance = { factor = 1.0 } # TODO?
+  }
+  option = {
+    name = EVT_dontliberate
+	release = FROM
+	war = {
+			target = FROM
+			defender_goal = {
+				casus_belli = status_quo
+				   	}
+			attacker_goal = {
+				casus_belli = colonial_war
+			}
+		}
+	set_country_flag = colonial_peristance
+	# if we are bancrupt they will go anyhow
+	any_country = { limit = { tag = FROM THIS = { has_country_modifier = in_bankrupcy } } country_event = 15410 }
+	ai_chance = { factor = 0 } # TODO?
+  }
+}
+country_event = { # Full independence of $COUNTRY$
+  id = 15405
+  title = EVT_fullindependence_NAME
+  desc = EVT_fullindependence_DESC
+  picture = "colonialism_end"
+
+  trigger = {
+	#has_country_flag = full_independance
+	NOT = { ruling_party_ideology = communist }
+OR = { ruling_party_ideology = nationalist
+	ruling_party_ideology = populist ruling_party_ideology = traditionalist }
+    	is_vassal = yes
+	year = 1954
+	war = no
+	NOT = { tag = VIR }
+	NOT = { AND = { tag = MSY NOT = { year = 1961 } } }
+	NOT = { AND = { tag = CAF NOT = { year = 1965 } } }
+	NOT = { OR = { tag = TRE tag = SAL tag = IAR
+tag = PUR tag = CUB } }
+	overlord = { OR = { tag = ENG tag = SPA tag = POR tag = FRA tag = BEL tag = NET tag = USA tag = AST } }
+  }
+
+  mean_time_to_happen = { months = 24 }
+
+  option = {
+    name = EVT_fullindependence_A
+	government = hms_government
+	country_event = 800054
+	overlord = { country_event = 15406 }
+add_country_modifier = { name = post_colonial_chaos duration = 3650 }
+	set_country_flag = former_colonial_nation
+	clr_country_flag = full_independance
+  }
+}
+country_event = { # Full independence of $FROMCOUNTRY$
+  id = 15406
+  title = EVT_fullindependence_overloard_NAME
+  desc = EVT_fullindependence_DESC
+  picture = "colonialism_end"
+  is_triggered_only = yes
+
+  option = {
+    name = EVT_fullindependence_A
+	release_vassal = FROM 
+	end_military_access = FROM 
+	prestige = -5
+	FROM = { set_country_flag = former_colonial_nation }
+	ai_chance = { factor = 100 }
+  }
+  option = {
+    name = EVT_fullindependence_B
+	release_vassal = FROM 
+	end_military_access = FROM 
+	badboy = 5
+	war = {
+			target = FROM
+			defender_goal = {
+				casus_belli = status_quo
+				   	}
+			attacker_goal = {
+				casus_belli = colonial_war
+			}
+		}
+	prestige = -5
+	ai_chance = { factor = 0 }
+  }
+  
+}
+
+############################################
+
+country_event = { # Full independence of $FROMCOUNTRY$
+  id = 1540666
+  title = EVT_fullindependence_overloard_NAME
+  desc = EVT_fullindependence_DESC
+  picture = "colonialism_end"
+  is_triggered_only = yes
+
+  option = {
+    name = EVT_fullindependence_A
+	release = FROM 
+	prestige = -2
+	FROM = { set_country_flag = former_colonial_nation }
+	
+	diplomatic_influence = { who = FROM value = 200 } }
+  }
+    
+}
+
+#########################################
+
+country_event = { # Full independence of $COUNTRY$
+  id = 15410
+  title = EVT_fullindependence_NAME
+  desc = EVT_fullindependence_DESC
+  picture = "colonialism_end"
+  is_triggered_only = yes
+
+  option = {
+    name = EVT_fullindependence_A
+	FROM = { release = THIS } 
+	overlord = { release = THIS }
+	set_country_flag = former_colonial_nation
+
+	any_greater_power = { limit = { tag = FROM } diplomatic_influence = { who = THIS value = 200 } }
+  }
+}
+
+country_event = { # Demand Immediate Repay 1mil of WW2 War Dept!
+  id = 15503
+  title = EVT_15503_NAME
+  # EVT_15503_NAME;Demand Immediate Repay 1mil of WW2 War Dept!
+  desc = EVT_15503_DESC
+  # EVT_15503_DESC;$FROMCOUNTRY$ has large WW2 war debt bods owed by us. Some of these bonds are expiring. They demand repayment. 
+  picture = "ww2_war_debt"
+  is_triggered_only = yes
+
+  option = {
+    name = EVT_15503_A
+	# EVT_15503_A;We have to repay!
+	treasury = -1000000 
+	change_variable = { which = ww2_war_debt value = 1 }
+	relation = { who = FROM value = -10 }
+	ai_chance = { factor = 1 }
+  }
+  
+}
+# If as a consequence of 15503 we are bancryot we have to give all countrie we previously denied independance independance.
+
+
+

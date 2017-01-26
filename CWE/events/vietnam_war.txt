@@ -1,0 +1,1041 @@
+# South Vietnam 
+country_event = {
+	id = 1228001
+	title = EVT_1228001_NAME
+	desc = EVT_1228001_DESC
+	picture = "french_vietnam"
+
+	fire_only_once = yes
+	
+	trigger = {
+		tag = FRA
+		NOT = { exists = SVI }
+		exists = DAI
+		NOT = { year = 1990 }
+		war = no
+		1380 = { controlled_by = FRA } # Saigon
+		1369 = { NOT = { controlled_by = FRA } } # Hanoi
+	}
+
+	mean_time_to_happen = {
+		months = 2
+	}
+
+	option = {
+		name = EVT_1228001_A # South Vietnam Independence
+		ai_chance = { factor = 0 }
+		prestige = -20 
+		release = SVI
+		release_vassal = CAM diplomatic_influence = { who = CAM value = -100 }
+relation = { who = CAM value = -200 }
+		release_vassal = LUA diplomatic_influence = { who = LUA value = -100 }
+relation = { who = LUA value = -200 }
+	}
+	
+	option = {
+		name = EVT_1228001_B # Leave Vietnam to it's faith
+		ai_chance = { factor = 100 }
+		USA = { country_event = 1228002 }
+		release_vassal = CAM diplomatic_influence = { who = CAM value = -100 }
+		release_vassal = LUA diplomatic_influence = { who = LUA value = -100 }
+	}
+
+	option = {
+		name = EVT_1228001_C
+		ai_chance = { factor = 0 }
+		any_pop = {
+			limit = {
+				culture = vietnamese
+				is_primary_culture = no
+				is_accepted_culture = no
+			}
+			militancy = 4
+			consciousness = 2
+	   }
+	   release_vassal = SVI
+	}
+
+}
+
+country_event = {
+	id = 1228002
+	title = EVT_1228002_NAME
+	desc = EVT_1228002_DESC
+	picture = "nwo2_chinese_vietnam"
+	is_triggered_only = yes # USA
+
+	option = {
+		name = EVT_1228002_A # South Vietnam Independence
+		ai_chance = { factor = 100 }
+		FRA = { release = SVI }
+		DAI = { country_event = 8228005 }
+		diplomatic_influence = {
+			who = SVI
+			value = 200
+		}
+		diplomatic_influence = {
+			who = CAM
+			value = 50
+		}
+		diplomatic_influence = {
+			who = LUA
+			value = 50
+		}
+	}
+	
+	option = {
+		name = EVT_1228002_B # Leave Vietnam to it's faith
+		ai_chance = { factor = 0 }
+		FRA = { release = DAI }
+	}
+	
+	option = {
+		name = EVT_8228002_A # Let's ask Chiang to help
+		FRA = { release = SVI }
+		FRA = { release = DAI }
+		KMT = { country_event = 8228003 }
+		ai_chance = { factor = 0 }
+	}
+
+}
+
+# French won Vietnam war
+country_event = {
+	id = 1228003
+	title = EVT_1228003_NAME
+	desc = EVT_1228003_DESC
+	picture = "french_vietnam"
+	fire_only_once = yes
+
+	trigger = {
+		tag = FRA
+		NOT = { exists = SVI }
+		NOT = { exists = DAI }
+		war = no
+		owns = 1380 # Saigon
+		owns = 1369 # Hanoi
+		NOT = { year = 1990 }
+	}
+
+	mean_time_to_happen = {
+		months = 24 # militanyc modifier
+	}
+
+	option = {
+		name = EVT_1228003_A # Vietnam Independence
+		ai_chance = { factor = 0 }
+		prestige = -2
+		release_vassal = DAI
+		DAI = { government = hms_government }
+	}
+	
+	option = {
+		name = EVT_1228003_B
+		ai_chance = { factor = 0 }
+		any_pop = {
+			limit = {
+				culture = vietnamese
+				is_primary_culture = no
+				is_accepted_culture = no
+			}
+			militancy = 4
+			consciousness = 2
+	   }
+	   badboy = 1
+	}
+
+}
+country_event = {
+  id = 8228003
+  title = EVT_8228003_NAME
+  desc = EVT_8228003_DESC
+  picture = "nwo2_chinese_vietnam"
+  is_triggered_only = yes # KMT
+
+  option = {
+    name = EVT_8228003_A
+	ai_chance = { factor = 100 }
+  }
+
+  option = {
+    name = EVT_8228003_B
+	war = { target = DAI attacker_goal = { casus_belli = make_puppet } defender_goal = { casus_belli = status_quo } }
+	ai_chance = { factor = 0 }
+	badboy = 10 
+	relation = { who = FRA value = -150 } 
+  }
+}
+country_event = {
+  id = 8228005
+  title = EVT_8228005_NAME
+  desc = EVT_8228005_DESC
+  picture = "nwo2_american_support_for_vietnam"
+  is_triggered_only = yes # DAI
+  
+  option = {
+    name = EVT_8228005_A
+	any_pop = { militancy = -1.5 consciousness = -1 }
+	relation = { who = USA value = -100 } 
+	add_country_modifier = { name = military_man duration = 3500 } 
+  }
+}
+country_event = {
+  id = 8228010
+  title = EVT_8228010_NAME
+  desc = EVT_8228010_DESC
+  picture = "nwo2_first_indochina_war"
+  fire_only_once = yes
+
+  trigger = {
+    tag = SVI
+    year = 1948 NOT = { year = 1964 }
+    NOT = { SVI = { war_with = DAI } }
+    exists = DAI
+    
+	DAI = { brigades_compare = 1.5 } 
+  }
+
+  mean_time_to_happen = { months = 4  }
+
+  option = {
+    name = EVT_8228010_A
+	war = { target = DAI attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } }
+	ai_chance = { factor = 100 }
+  }
+
+  option = {
+    name = EVT_8228010_B
+	relation = { who = DAI value = 25 } 
+	ai_chance = { factor = 0 }
+  }
+}
+country_event = {
+  id = 8228011
+  title = EVT_8228011_NAME
+  desc = EVT_8228011_DESC
+  picture = "nwo2_first_indochina_war"
+  fire_only_once = yes
+
+  trigger = {
+    tag = DAI
+    year = 1948 NOT = { year = 1964 }
+    NOT = { SVI = { war_with = DAI } }
+    exists = SVI
+    
+	SVI = { brigades_compare = 1.5 } 
+  }
+
+  mean_time_to_happen = { months = 4  }
+
+  option = {
+    name = EVT_8228011_A
+	war = { target = SVI attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } }
+	ai_chance = { factor = 100 }
+  }
+
+  option = {
+    name = EVT_8228011_B
+	relation = { who = SVI value = 25 }
+	ai_chance = { factor = 0 }
+  }
+}
+country_event = {
+  id = 8228020
+  title = EVT_8228020_NAME
+  desc = EVT_8228020_DESC
+  picture = "nwo2_north_vietnam"
+  fire_only_once = yes
+
+  trigger = {
+    tag = DAI
+    year = 1949 NOT = { year = 1955 }
+    war_with = DAI
+  }
+
+  mean_time_to_happen = { months = 6  }
+
+  option = {
+    name = EVT_8228020_A
+	ai_chance = { factor = 100 }
+	add_country_modifier = { name = lord_admiral duration = 350 }
+  }
+
+  option = {
+    name = EVT_8228020_B
+	ai_chance = { factor = 0 }
+	small_arms = 200
+	weaponry = 100
+  }
+}
+country_event = {
+  id = 8228021
+  title = EVT_8228021_NAME
+  desc = EVT_8228021_DESC
+  picture = "nwo2_south_vietnam"
+  fire_only_once = yes
+
+  trigger = {
+    tag = SVI
+    year = 1949 NOT = { year = 1955 }
+    war_with = DAI
+  }
+
+  mean_time_to_happen = { months = 6  }
+
+   option = {
+    name = EVT_8228021_A
+	ai_chance = { factor = 100 }
+	add_country_modifier = { name = lord_admiral duration = 150 }
+  }
+
+  option = {
+    name = EVT_8228021_B
+	ai_chance = { factor = 0 }
+	small_arms = 200
+	weaponry = 100
+  }
+}
+country_event = {
+  id = 8228022
+  title = EVT_8228022_NAME
+  desc = EVT_8228022_DESC
+  picture = "nwo2_french_in_south_vietnam"
+  fire_only_once = yes
+
+  trigger = {
+    tag = FRA
+    year = 1947 NOT = { year = 1955 }
+    war_with = DAI
+  }
+
+  mean_time_to_happen = { months = 2 }
+
+  option = {
+    name = EVT_8228022_A
+	money = -500 
+	any_pop = { militancy = 0.2 consciousness = 0.5 }
+	ai_chance = { factor = 100 }
+  }
+
+  option = {
+    name = EVT_8228022_B
+	any_pop = { militancy = -0.2 consciousness = -0.1 }
+	ai_chance = { factor = 0 }
+  }
+
+}
+country_event = {
+  id = 8228030
+  title = EVT_8228030_NAME
+  desc = EVT_8228030_DESC
+  picture = "nwo2_south_vietnam"
+  fire_only_once = yes
+
+  trigger = {
+    tag = DAI
+    year = 1949 NOT = { year = 1955 }
+    war_with = FRA
+  }
+
+  mean_time_to_happen = { months = 24  }
+
+  option = {
+    name = EVT_8228030_A
+	war_exhaustion = -1
+  }
+}
+country_event = {
+  id = 8228031
+  title = EVT_8228031_NAME
+  desc = EVT_8228031_DESC
+  picture = "nwo2_south_vietnam"
+  fire_only_once = yes
+
+  trigger = {
+    tag = FRA
+    year = 1948 NOT = { year = 1952 }
+    war_with = DAI
+  }
+
+  mean_time_to_happen = { months = 24  }
+
+  option = {
+    name = EVT_8228031_A
+	any_pop = { militancy = 0.1 consciousness = 0.5 }
+  }
+}
+country_event = {
+  id = 8228032
+  title = EVT_8228032_NAME
+  desc = EVT_8228032_DESC
+  picture = "nwo2_north_vietnam"
+  fire_only_once = yes
+
+  trigger = {
+    tag = DAI
+    year = 1948 NOT = { year = 1955 }
+    has_global_flag = CHI_won_civil_war
+    war = yes
+  }
+
+  mean_time_to_happen = { months = 24  }
+
+  option = {
+    name = EVT_8228032_A
+	any_pop = { militancy = -1.0 consciousness = -0.5 }
+	small_arms = 200
+	weaponry = 100
+	relation = { who = CHI value = 50 }
+	diplomatic_influence = { who = RUS value = 100 }
+  }
+}
+country_event = {
+  id = 8228033
+  title = EVT_8228033_NAME
+  desc = EVT_8228033_DESC
+  picture = "nwo2_dien_bien_phu"
+  fire_only_once = yes
+
+  trigger = {
+    tag = DAI
+    year = 1948 NOT = { year = 1955 }
+    war_with = FRA
+  }
+
+  mean_time_to_happen = { months = 24  }
+
+  option = {
+    name = EVT_8228033_A
+	war_exhaustion = -1
+	any_pop = { militancy = -1.0 consciousness = -0.2 }
+  }
+}
+country_event = {
+  id = 8228034
+  title = EVT_8228034_NAME
+  desc = EVT_8228034_DESC
+  picture = "nwo2_south_vietnam"
+  fire_only_once = yes
+
+  trigger = {
+    tag = FRA
+    year = 1948 NOT = { year = 1955 }
+    war_with = DAI
+  }
+
+  mean_time_to_happen = { months = 2 }
+
+  option = {
+    name = EVT_8228034_A
+	any_pop = { limit = { culture = vietnamese } militancy = 3.5 consciousness = 3 }
+	any_owned = { limit = { pop_majority_culture = vietnamese controlled_by = THIS } change_controller = REB }
+  }
+}
+country_event = {
+  id = 8228040
+  title = EVT_8228040_NAME
+  desc = EVT_8228040_DESC
+  picture = "nwo2_geneva_conference"
+  fire_only_once = yes
+
+  trigger = {
+    tag = FRA
+    year = 1952 NOT = { year = 1963 }
+    war = no
+  }
+
+  mean_time_to_happen = { months = 1  }
+
+  option = {
+    name = EVT_8228040_B
+	DAI = { country_event = 8228041 } 
+  }
+}
+country_event = {
+  id = 8228041
+  title = EVT_8228041_NAME
+  desc = EVT_8228041_DESC
+  picture = "nwo2_geneva_conference"
+  is_triggered_only = yes # DAI
+
+  option = {
+    name = EVT_8228041_A
+	any_pop = { militancy = 0.3 consciousness = 0.6 }
+	ai_chance = { factor = 100 }
+  }
+
+  option = {
+    name = EVT_8228041_B
+	any_pop = { militancy = -0.5 consciousness = -0.1 }
+	casus_belli = { target = FRA type = annex_core_country } 
+	ai_chance = { factor = 0 }
+  }
+}
+
+country_event = {
+  id = 8228050
+  title = EVT_8228050_NAME
+  desc = EVT_8228050_DESC
+  picture = "nwo2_vietnam_elections"
+  fire_only_once = yes
+
+  trigger = {
+    tag = DAI
+    year = 1955 NOT = { year = 1963 }
+    exists = SVI
+  }
+
+  mean_time_to_happen = { months = 2 }
+
+  option = {
+    name = EVT_8228050_A
+	any_pop = { militancy = -0.3 consciousness = -0.1 }
+	SVI = { country_event = 8228051 } 
+	ai_chance = { factor = 100 }
+  }
+
+  option = {
+    name = EVT_8228050_B
+	any_pop = { militancy = 1.0 consciousness = 2.0 }
+	ai_chance = { factor = 0 }
+  }
+}
+country_event = {
+  id = 8228051
+  title = EVT_8228051_NAME
+  desc = EVT_8228051_DESC
+  picture = "nwo2_vietnam_elections"
+  is_triggered_only = yes # SVI
+
+  option = {
+    name = EVT_8228051_A
+	any_pop = { militancy = 1.0 consciousness = 2.0 }
+	ai_chance = { factor = 0 }
+  }
+
+  option = {
+    name = EVT_8228051_B
+	any_pop = { militancy = -0.3 consciousness = -0.1 }
+	DAI = { country_event = 8228052 }
+	ai_chance = { factor = 100 }
+  }
+}
+country_event = {
+  id = 8228052
+  title = EVT_8228052_NAME
+  desc = EVT_8228052_DESC
+  picture = "nwo2_vietnam_elections"
+  is_triggered_only = yes # DAI
+
+  option = {
+    name = EVT_8228052_A
+	any_pop = { militancy = 0.5 consciousness = 0.6 }
+	set_global_flag = vietnamese_elections_rigged_by_DAI 
+	SVI = { country_event = 8228060 }
+	ai_chance = { factor = 100 }
+  }
+
+  option = {
+    name = EVT_8228052_B
+	SVI = { country_event = 8228053 }
+	any_pop = { militancy = -0.5 consciousness = -0.1 }
+	ai_chance = { factor = 0 }
+  }
+}
+country_event = {
+  id = 8228053
+  title = EVT_8228053_NAME
+  desc = EVT_8228053_DESC
+  picture = "nwo2_vietnam_elections"
+  is_triggered_only = yes # SVI
+
+  option = {
+    name = EVT_8228053_A
+	any_pop = { militancy = 0.5 consciousness = 0.8 }
+	set_global_flag = vietnamese_elections_rigged_by_SVI 
+	DAI = { country_event = 8228062 }
+	ai_chance = { factor = 100 }
+  }
+
+  option = {
+	name = EVT_8228053_B
+	any_pop = { militancy = -0.5 consciousness = -0.1 }
+	SVI = { country_event = 8228064 }
+	ai_chance = { factor = 0 }
+  }
+}
+country_event = {
+  id = 8228060
+  title = EVT_8228060_NAME
+  desc = EVT_8228060_DESC
+  picture = "nwo2_vietnam_elections"
+  is_triggered_only = yes # SVI
+  
+  option = {
+    name = EVT_8228060_A
+	war = DAI any_pop = { militancy = 1.2 consciousness = 1.0 }
+  }
+
+  option = {
+    name = EVT_8228060_B
+	DAI = { country_event = 8228061 }
+  }
+}
+country_event = {
+  id = 8228061
+  title = EVT_8228061_NAME
+  desc = EVT_8228061_DESC
+  picture = "nwo2_united_vietnam_under_hanoi"
+  is_triggered_only = yes # DAI
+
+  option = {
+    name = EVT_8228061_A
+	inherit = SVI 
+  }
+}
+country_event = {
+  id = 8228062
+  title = EVT_8228062_NAME
+  desc = EVT_8228062_DESC
+  picture = "nwo2_vietnam_elections"
+  is_triggered_only = yes # DAI
+
+  option = {
+    name = EVT_8228060_A
+	war = SVI 
+	any_pop = { militancy = 1.5 consciousness = 1.0 }
+  }
+
+  option = {
+    name = EVT_8228062_B
+    country_event = 8228063 
+  }
+}
+country_event = {
+  id = 8228063
+  title = EVT_8228063_NAME
+  desc = EVT_8228063_DESC
+  picture = "nwo2_united_vietnam_under_saigon"
+  is_triggered_only = yes # SVI
+
+  option = {
+    name = EVT_8228063_A
+    inherit = DAI 
+  }
+}
+country_event = {
+  id = 8228064
+  title = EVT_8228064_NAME
+  desc = EVT_8228064_DESC
+  picture = "nwo2_vietnam_elections"
+  is_triggered_only = yes # SVI
+
+  option = {
+    name = EVT_8228064_A
+	war = DAI 
+	any_pop = { militancy = 0.8 consciousness = 1 }
+  }
+
+  option = {
+    name = EVT_8228060_B
+	DAI = { country_event = 8228061 }
+  }
+}
+country_event = {
+  id = 8228100
+  title = EVT_8228100_NAME
+  desc = EVT_8228100_DESC
+  picture = "nwo2_second_indochina_war"
+  fire_only_once = yes
+
+  trigger = {
+    tag = DAI
+    year = 1954 NOT = { year = 1964 }
+    NOT = { DAI = { war_with = SVI } }
+    exists = SVI
+    
+  }
+
+  mean_time_to_happen = { months = 4  }
+
+  option = {
+    name = EVT_8228100_A
+	war = { target = SVI attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } }
+	ai_chance = { factor = 100 }
+  }
+
+  option = {
+    name = EVT_8228100_B
+	relation = { who = SVI value = 50 } 
+  }
+}
+country_event = {
+  id = 8228110
+  title = EVT_8228110_NAME
+  desc = EVT_8228110_DESC
+  picture = "nwo2_vietcong"
+  fire_only_once = yes
+
+  trigger = {
+    tag = DAI
+    year = 1956 NOT = { year = 1975 }
+    DAI = { war_with = SVI }
+  }
+
+  mean_time_to_happen = { months = 8  }
+
+  option = {
+    name = EVT_8228110_A
+	ai_chance = { factor = 100 }
+	add_country_modifier = { name = lord_admiral duration = 350 }
+  }
+
+  option = {
+    name = EVT_8228110_B
+	ai_chance = { factor = 0 }
+	small_arms = 200
+	weaponry = 100
+  }
+}
+country_event = {
+  id = 8228111
+  title = EVT_8228111_NAME
+  desc = EVT_8228111_DESC
+  picture = "nwo2_americans_in_vietnam"
+  fire_only_once = yes
+
+  trigger = {
+    tag = SVI
+    year = 1956 NOT = { year = 1975 }
+    DAI = { war_with = SVI }
+  }
+
+  mean_time_to_happen = { months = 2 }
+
+  option = {
+    name = EVT_8228111_A
+	ai_chance = { factor = 100 }
+	any_pop = { militancy = -0.1 consciousness = -0.1 }
+	USA = { 	diplomatic_influence = { who = SVI value = 100 } }
+  }
+
+  option = {
+    name = EVT_8228111_B
+	ai_chance = { factor = 0 }
+	small_arms = 200
+	weaponry = 100
+  }
+}
+country_event = {
+  id = 8228120
+  title = EVT_8228120_NAME
+  desc = EVT_8228120_DESC
+  picture = "nwo2_vietnam_war"
+  fire_only_once = yes
+
+  trigger = {
+    tag = USA
+    year = 1957 NOT = { year = 1963 }
+    DAI = { war_with = SVI }
+  }
+
+  mean_time_to_happen = { months = 24  }
+
+  option = {
+    name = EVT_8228120_A
+	relation = { who = SVI value = 50 } 
+	relation = { who = DAI value = -50 } 
+	diplomatic_influence = { who = SVI value = 100 }
+	any_pop = { militancy = -0.5 consciousness = -0.1 }
+	ai_chance = { factor = 100 }
+  }
+
+  option = {
+    name = EVT_8228120_B
+	relation = { who = SVI value = 100 } 
+	relation = { who = DAI value = -100 } 
+	any_pop = { militancy = 0.5 consciousness = 0.5 }
+	ai_chance = { factor = 0 }
+  }
+
+  option = {
+    name = EVT_8228120_C
+	any_pop = { militancy = 0.8 consciousness = 1 }
+	ai_chance = { factor = 0 }
+  }
+}
+country_event = {
+  id = 8228130
+  title = EVT_8228130_NAME
+  desc = EVT_8228130_DESC
+  picture = "nwo2_strategic_hamlet_program"
+  fire_only_once = yes
+
+  trigger = {
+    tag = SVI
+    year = 1957 NOT = { year = 1963 }
+    DAI = { war_with = SVI }
+  }
+
+  mean_time_to_happen = { months = 4  }
+
+  option = {
+    name = EVT_8228130_A
+	any_pop = { militancy = -0.5 consciousness = -0.1 }
+  }
+
+}
+country_event = {
+  id = 8228131
+  title = EVT_8228131_NAME
+  desc = EVT_8228131_DESC
+  picture = "nwo2_le_duan"
+  fire_only_once = yes
+
+  trigger = {
+    tag = DAI
+    year = 1958 NOT = { year = 1963 }
+    DAI = { war_with = SVI }
+  }
+
+  mean_time_to_happen = { months = 4  }
+
+  option = {
+    name = EVT_8228131_A
+	any_pop = { militancy = -0.5 consciousness = -0.1 }
+	ai_chance = { factor = 100 }
+  }
+
+  option = {
+    name = EVT_8228131_B
+	random_state = { any_pop = { dominant_issue = { value = free_opinion factor = 0.05 } } }
+	ai_chance = { factor = 0 }
+  }
+}
+country_event = {
+  id = 8228132
+  title = EVT_8228132_NAME
+  desc = EVT_8228132_DESC
+  picture = "nwo2_ngo_dinh_diem_dead"
+  fire_only_once = yes
+
+  trigger = {
+    tag = SVI
+    year = 1958 NOT = { year = 1963 }
+    DAI = { war_with = SVI }
+  }
+
+  mean_time_to_happen = { months = 4  }
+
+  option = {
+    name = EVT_8228132_A
+	any_pop = { militancy = 1.0 consciousness = 2 }
+  }
+
+  option = {
+    name = EVT_8228132_B
+	any_pop = { militancy = 2.0 consciousness = 1 }
+  }
+}
+country_event = {
+  id = 8228140
+  title = EVT_8228140_NAME
+  desc = EVT_8228140_DESC
+  picture = "nwo2_vietcong_attacks"
+  fire_only_once = yes
+
+  trigger = {
+    tag = SVI
+    year = 1970 NOT = { year = 1990 }
+    DAI = { war_with = SVI }
+  }
+
+  mean_time_to_happen = { months = 6  }
+
+  option = {
+    name = EVT_8228140_A
+	any_pop = { militancy = 0.4 consciousness = 0.8 }
+  }
+}
+country_event = {
+  id = 8228150
+  title = EVT_8228150_NAME
+  desc = EVT_8228150_DESC
+  picture = "nwo2_vietnam_war_protests"
+  fire_only_once = yes
+
+  trigger = {
+    tag = USA
+    year = 1958 NOT = { year = 1963 }
+    DAI = { war_with = SVI }
+  }
+
+  mean_time_to_happen = { months = 1 }
+
+  option = {
+    name = EVT_8228150_A
+	any_pop = { militancy = 0.3 consciousness = 0.6 }
+  }
+}
+country_event = {
+  id = 8228198
+  title = EVT_8228198_NAME
+  desc = EVT_8228198_DESC
+  picture = "nwo2_north_vietnam"
+  fire_only_once = yes
+
+  trigger = {
+    tag = DAI
+    year = 1945 NOT = { year = 1963 }
+  }
+
+  mean_time_to_happen = { months = 6  }
+
+  option = {
+    name = EVT_8228198_A
+	add_country_modifier = { name = five_year_plan duration = 3500 }
+  }
+}
+country_event = {
+  id = 8228199
+  title = EVT_8228199_NAME
+  desc = EVT_8228199_DESC
+  picture = "nwo2_south_vietnam"
+  fire_only_once = yes
+
+  trigger = {
+    tag = SVI
+    year = 1945 NOT = { year = 1963 }
+  }
+
+  mean_time_to_happen = { months = 6  }
+
+  option = {
+    name = EVT_8228199_A
+  }
+}
+country_event = {
+  id = 8228200
+  title = EVT_8228200_NAME
+  desc = EVT_8228200_DESC
+  picture = "nwo2_ho_chi_minh_trail"
+  fire_only_once = yes
+
+  trigger = {
+    tag = DAI
+    NOT = { war_with = LUA }
+    exists = LUA
+	OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+    owns = 1380 # Saigon
+  }
+
+  mean_time_to_happen = { months = 1 }
+
+  option = {
+    name = EVT_8228200_A
+	casus_belli = { target = LUA type = make_puppet months = 24 }
+	casus_belli = { target = LUA type = install_communist_gov_cb months = 24 }
+	LUA = { country_event = 8228201 }
+	ai_chance = { factor = 100 }
+   }
+
+  option = {
+    name = EVT_8228200_B
+ 	ai_chance = { factor = 0 }
+  }
+}
+country_event = {
+  id = 8228201
+  title = EVT_8228201_NAME
+  desc = EVT_8228201_DESC
+  picture = "nwo2_ho_chi_minh_trail"
+  is_triggered_only = yes
+
+  option = {
+    name = EVT_8228201_A
+	DAI = { war = { target = LUA attacker_goal = { casus_belli = make_puppet } attacker_goal = { casus_belli = install_communist_gov_cb } defender_goal = { casus_belli = status_quo } } } 
+	ai_chance = { factor = 100 }
+   }
+  
+  option = {
+    name = EVT_8228201_B
+	DAI = { military_access = THIS } 
+ 	ai_chance = { factor = 0 }
+  }
+  
+}
+country_event = {
+  id = 8228101
+  title = EVT_8228101_NAME
+  desc = EVT_8228101_DESC
+  picture = "ngo_dinh_diem"
+  fire_only_once = yes
+
+  trigger = {
+    tag = SVI
+    year = 1963
+	government = nationalist_dictatorship
+	}
+
+  mean_time_to_happen = { months = 4  }
+
+  option = {
+    name = EVT_8228101_A
+	random_country = {
+		limit = { is_sphere_leader_of = THIS }
+		country_event = 8228102
+	}
+	ai_chance = { factor = 100 }
+  }
+
+  option = {
+    name = EVT_8228101_B
+	country_event = 8228104
+	ai_chance = { factor = 0 }
+  }
+}
+country_event = {
+  id = 8228102
+  title = EVT_8228102_NAME
+  desc = EVT_8228102_DESC
+  picture = "ngo_dinh_diem"
+  is_triggered_only = yes # USA
+
+  option = {
+    name = EVT_8228102_A
+	SVI = { country_event = 8228104 }
+	ai_chance = { factor = 0.9 }
+  }
+
+  option = {
+    name = EVT_8228102_B
+	SVI = { country_event = 8228103 }
+	ai_chance = { factor = 0.1 }
+  }
+}
+country_event = {
+  id = 8228103
+  title = EVT_8228103_NAME
+  desc = EVT_8228103_DESC
+  picture = "ngo_dinh_diem"
+  is_triggered_only = yes # SVI
+
+  option = {
+    name = EVT_8228103_A
+	SVI = { any_pop = { limit = { religion = buddhist } militancy = 0.8 consciousness = 0.1 } }
+  }
+}
+country_event = {
+  id = 8228104
+  title = EVT_8228104_NAME
+  desc = EVT_8228104_DESC
+  picture = "ngo_dinh_diem"
+  is_triggered_only = yes # SVI
+
+  option = {
+    name = EVT_8228104_A
+	government = presidential_dictatorship country_event = 800050
+	primary_culture = vietnamese
+	SVI = { any_pop = { limit = { religion = buddhist } militancy = -0.5 consciousness = 0.1 } }
+  }
+}

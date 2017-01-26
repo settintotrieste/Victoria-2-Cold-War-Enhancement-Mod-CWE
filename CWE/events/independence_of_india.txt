@@ -1,0 +1,354 @@
+country_event = { # Interim Government of India
+	id = 1214010
+	title = EVT_1214010_NAME
+	desc = EVT_1214010_DESC
+	picture = "independence_of_india"
+	
+	trigger = {
+		tag = ENG 
+		NOT = { year = 1990 }
+		is_our_vassal = RAJ
+		exists = RAJ
+		NOT = { exists = HND }
+		war = no
+		RAJ = { owns = 1236 } # Delhi
+	}
+
+	mean_time_to_happen = {
+		months = 10
+	}
+
+	option = {
+		name = EVT_1214010_A 
+		prestige = -2 
+		RAJ = { 
+			any_pop = {
+				limit = {
+					culture = indian_muslim
+				}
+				consciousness = 1
+				militancy = 2
+			}
+			country_event = { id = 1214011 days = 90 }
+		}
+		ai_chance = { factor = 0 }
+	}
+	
+	option = {
+		name = EVT_1214010_B 
+		RAJ = { 
+			any_pop = {
+				limit = {
+					culture = indian
+				}
+				consciousness = 1
+				militancy = 1
+			}
+			country_event = { id = 1214011 days = 90 }
+		}
+		ai_chance = { factor = 100 }
+	}
+
+	option = {
+		name = EVT_1214010_C
+		RAJ = { 
+			any_pop = {
+				limit = {
+					OR = { culture = indian culture = indian_muslim }
+				}
+				militancy = 5
+			}
+		}
+		ai_chance = { factor = 0 }
+	}
+
+}
+
+country_event = {
+	id = 1214011
+
+	title = EVT_1214011_NAME
+	desc = EVT_1214011_DESC
+	picture = "ali_jinnah_negotiating"
+	is_triggered_only = yes # RAJ
+	
+	option = {
+		name = EVT_1214011_A 
+		ai_chance = { factor = 100 }
+		ENG = { country_event = 1214012 }
+	}
+	
+	option = {
+		name = EVT_1214011_B
+		ai_chance = { factor = 0 }
+		badboy = 1.0
+		any_pop = {
+			limit = {
+				culture = indian
+			}
+			militancy = 3
+		}
+	}
+
+}
+
+country_event = {
+	id = 1214012
+	title = EVT_1214012_NAME
+	# EVT_1214012_NAME;Direct Action Day
+	desc = EVT_1214012_DESC
+	picture = "independence_of_india"
+	is_triggered_only = yes # ENG
+
+	option = {
+		name = EVT_1214012_A 
+		ai_chance = { factor = 100 }
+		prestige = 2
+		release_vassal = RAJ
+		random_country = { limit = { tag = UAE vassal_of = RAJ } RAJ = { release_vassal = UAE } ENG = { create_vassal = UAE } UAE = { government = colonial_government } }
+		any_country = { limit = { OR = { vassal_of = RAJ tag = TIB tag = NET tag = SIK } } country_event = 8214019 }
+		RAJ = { country_event = { id = 8214013 days = 10 } }
+	}
+
+	option = {
+		name = EVT_1214012_B 
+		ai_chance = { factor = 0 }
+		prestige = -2
+		any_pop = {
+			limit = {
+				culture = indian
+			}
+			consciousness = 1
+			militancy = 4
+		}
+		# country_event = { id = 1214010 days = 30 } 
+	}
+
+}
+
+country_event = { # Mountbatten Plan 
+	id = 8214013
+	title = EVT_8214013_NAME
+	desc = EVT_8214013_DESC
+	picture = "independence_of_india"
+	is_triggered_only = yes # RAJ
+
+	option = {
+		name = EVT_8214013_A 
+		ai_chance = { factor = 100 }
+		
+		any_pop = {
+			limit = { OR = { culture = indian culture = indian_muslim } }
+			consciousness = 2
+			militancy = -10
+		}		
+		prestige = -10
+		#release = PAK
+		primary_culture = indian
+		country_event = 8007205
+	}
+	
+	option = {
+		name = EVT_8214013_B 
+		ai_chance = { factor = 0 }
+		ENG = { diplomatic_influence = { who = RAJ value = -100 } }
+		prestige = -20
+		any_pop = {
+			limit = {
+				culture = indian_muslim
+			}
+			consciousness = 2
+			militancy = 5
+		}
+		any_pop = {
+			limit = {
+				culture = indian
+			}
+			consciousness = 2
+			militancy = -10
+		}		
+		any_owned = {
+			limit = { is_core = PAK }
+			add_core = HND
+		}
+		primary_culture = indian
+		country_event = 8007205
+	}
+
+}
+country_event = {
+	id = 8214019
+	title = EVT_8214019_NAME
+	# EVT_8214019_NAME;Britain Leaves India
+	desc = EVT_8214019_DESC
+	# EVT_8214019_DESC;Neither paramountcy nor the subsidiary alliances could continue after Indian independence. The British took the view that because they had been established directly between the British crown and the princely states, they could not be transferred to the newly independent dominions of India and Pakistan.[11] At the same time, the alliances imposed obligations on Britain that it was not prepared to continue to carry out, such as the obligation to maintain troops in India for the defence of the princely states. The British government therefore decided that paramountcy, together with all treaties between them and the princely states, would come to an end upon the British departure from India.
+	picture = "princely_states"
+	is_triggered_only = yes # ENG
+	
+	option = {
+		name = EVT_8214019_A 
+		FROM = { diplomatic_influence = { who = THIS value = -200 } }
+		# EVT_8214019_A;We have to handle this new political environment!
+	}
+}
+country_event = {
+  id = 8007205
+  title = EVT_8007205_NAME
+  desc = EVT_8007205_DESC
+  picture = "nwo2_independence_of_india"
+  #is_triggered_only = yes # RAJ
+
+	trigger = { # either by trigger event call or if UK does not allow indian independance, when the RAJ becomes a GP
+		tag = RAJ
+		exists = RAJ
+		is_vassal = no
+		war = no
+		RAJ = { owns = 1236 } # Delhi
+	}
+	
+  option = {
+    name = EVT_8007205_A
+any_owned = {
+					limit = { is_core = PAK }
+					secede_province = PAK
+				}
+	PAK = { government = hms_government }
+	PAK = { capital = 1288 }
+	release_vassal = NEP
+	release_vassal = JAK
+	leave_alliance = TIB
+	leave_alliance = JAK
+	leave_alliance = ENG
+	government = hms_government country_event = 800054
+	change_tag = HND
+	ENG = { diplomatic_influence = { who = HND value = -50 } }
+	
+  }
+}
+country_event = {
+	id = 8214016
+	title = EVT_8214016_NAME
+	desc = EVT_8214016_DESC
+	picture = "independence_of_india"
+
+	trigger = { 
+		NOT = { year = 1960 }
+		vassal_of = HND 
+		OR = { 
+			tag = MNP tag = RAA tag = IND tag = GWA tag = BER tag = ORI tag = NAX tag = BOD tag = MYS tag = TRA 
+			AND = { NOT = { exists = PAK } tag = AZK }  AND = { NOT = { exists = PAK }  tag = BLO }
+		}
+		NOT = { has_country_flag = princely_state_stay_independent }
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = EVT_8214015_A
+		relation = { who = HND value = -200 }
+		set_country_flag = princely_state_stay_independent
+		HND = { release_vassal = THIS } 
+		HND = { leave_alliance = THIS }
+		ENG = { diplomatic_influence = { who = THIS value = -100 } }
+		HND = { casus_belli = { target = THIS type = annex_core_country } }
+		# TODO inform HND about this
+		ai_chance = { factor = 0 }
+	}
+
+	option = {
+		name = EVT_8214015_C 
+		HND = { inherit = THIS }
+		# TODO inform HND about this
+		ai_chance = { factor = 100 }
+	}
+
+}
+country_event = {
+	id = 8214017
+	title = EVT_8214016_NAME
+	desc = EVT_8214016_DESC
+	picture = "independence_of_india"
+
+	trigger = { 
+		NOT = { year = 1960 }
+		vassal_of = HND 
+		OR = { tag = AZK tag = BLO }
+		exists = PAK
+		NOT = { has_country_flag = princely_state_stay_independent }
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = EVT_8214015_A
+		relation = { who = HND value = -200 }
+		relation = { who = PAK value = -200 }
+		set_country_flag = princely_state_stay_independent
+		HND = { release_vassal = THIS } 
+		HND = { leave_alliance = THIS }
+		ENG = { diplomatic_influence = { who = THIS value = -100 } }
+		PAK = { casus_belli = { target = THIS type = annex_core_country } }
+		# TODO inform PAK about this
+		# TODO inform HND about this
+		ai_chance = { factor = 0 }
+	}
+
+	option = {
+		name = EVT_8214015_B 
+		PAK = { inherit = THIS }
+		# TODO inform PAK about this
+		# TODO inform HND about this
+		ai_chance = { factor = 100 }
+	}
+
+	option = {
+		name = EVT_8214015_C 
+		HND = { inherit = THIS }
+		# TODO inform PAK about this
+		# TODO inform HND about this
+		ai_chance = { factor = 0 }
+	}
+
+}
+country_event = {
+	id = 8214018
+	title = EVT_8214016_NAME
+	desc = EVT_8214016_DESC
+	picture = "independence_of_india"
+	fire_only_once = yes
+
+	trigger = { 
+		NOT = { year = 1960 }
+		vassal_of = HND 
+		tag = HYD
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = EVT_8214015_A
+		relation = { who = HND value = -200 }
+		set_country_flag = princely_state_stay_independent
+		HND = { release_vassal = THIS } 
+		HND = { leave_alliance = THIS }
+		ENG = { diplomatic_influence = { who = THIS value = -100 } }
+		HND = { casus_belli = { target = THIS type = annex_core_country } }
+		# TODO inform HND about this # will trigger 8007229
+		ai_chance = { factor = 100 }
+	}
+
+	option = {
+		name = EVT_8214015_C 
+		HND = { inherit = THIS }
+		# TODO inform HND about this
+		ai_chance = { factor = 0 }
+	}
+
+}
+

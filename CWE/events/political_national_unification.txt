@@ -1,0 +1,207 @@
+# Pan-Nationalist
+country_event = {
+	id = 11106
+	title = "EVTNAME11106"
+	desc = "EVTDESC11106"
+	picture = "annexation_into_union"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTA11106"
+		all_core = { add_core = FROM }
+		FROM = { country_event = 11107 }
+		ai_chance = { factor = 100 }
+	}
+
+	option = {
+		name = "EVTOPTC11106"
+		add_country_modifier = { name = rejected_union duration = 3500 }
+		prestige = 1
+		relation = {
+			who = FROM
+			value = -100
+		}
+		FROM = {
+			prestige = -20
+			diplomatic_influence = {
+				who = THIS
+				value = -50
+			}
+		}
+		leave_alliance = FROM
+		any_pop = {
+			militancy = 3
+			consciousness = 2
+		}
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 11107
+	title = "EVT_11107_NAME"
+	desc = "EVT_11107_DESC"
+	picture = "annexation_into_union"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVT_11107_A"
+		inherit = FROM
+		prestige = 20
+		ai_chance = { factor = 100 }
+	}
+
+}
+country_event = { # this is dead code, as I can't get the "acting country". is_primary_culture = THIS, THIS is oddly enough "any_neighbor_country" not "THIS" countrys culture.
+	id = 11108
+	title = "EVT_11108_NAME"
+	desc = "EVT_11108_DESC"
+	picture = "gain_core"
+
+	fire_only_once = yes
+	
+	trigger = {
+		has_country_flag = dead_code
+		any_neighbor_country = { 
+			any_owned_province = { is_primary_culture = THIS NOT = { is_core = THIS is_primary_culture = yes } NOT = { continent = north_america continent = south_america } } 
+			relation = { who = THIS value = -100 }
+		}
+	}
+	
+	mean_time_to_happen = { months = 120 }
+
+	option = {
+		name = "EVT_11108_A"
+		prestige = -5
+		any_neighbor_country = { 
+			limit = { 
+				any_owned_province = { is_primary_culture = THIS NOT = { is_core = THIS is_primary_culture = yes } NOT = { continent = north_america continent = south_america } } 
+			}
+			any_owned = { 
+				limit = {
+					is_primary_culture = THIS NOT = { is_core = THIS is_primary_culture = yes } NOT = { continent = north_america continent = south_america }
+				}
+				add_core = THIS
+			}
+			relation = { who = THIS value = -100 }
+		}
+		ai_chance = { factor = 0 }
+	}
+
+	option = {
+		name = "EVT_11108_B"
+		prestige = 5
+		any_neighbor_country = { 
+			limit = { 
+				any_owned_province = { is_primary_culture = THIS NOT = { is_core = THIS is_primary_culture = yes } NOT = { continent = north_america continent = south_america } } 
+			}  
+			relation = { who = THIS value = 50 }
+		}
+		ai_chance = { factor = 1 }
+	}	
+}
+
+# Event to Inherit - causd by master
+country_event = {
+	id = 11100
+	title = "EVTNAME11100"
+	desc = "EVTDESC11100"
+	picture = "annexation_into_union"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPTA11101"
+		random_country = { limit = { NOT = { tag = THIS } OR = { tag = GER tag = DDR } } country_event = 11101 }
+		ai_chance = { factor = 100 }
+	}
+
+	option = {
+		name = "EVTOPTB11101"
+		prestige = 1
+		relation = {
+			who = FROM
+			value = -100
+		}
+		any_pop = {
+			militancy = 3
+			consciousness = 2
+		}
+		ai_chance = { factor = 0 }
+	}	
+}
+
+
+# Event to Inherit
+country_event = {
+	id = 11101
+	title = "EVTNAME11101"
+	desc = "EVTDESC11101"
+	picture = "annexation_into_union"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVTOPTA11101"
+		FROM = {
+			inherit = THIS
+		}
+		ai_chance = { factor = 100 }
+	}
+
+	option = {
+		name = "EVTOPTB11101"
+		prestige = 1
+		relation = {
+			who = FROM
+			value = -100
+		}
+		any_pop = {
+			militancy = 3
+			consciousness = 2
+		}
+		ai_chance = { factor = 0 }
+	}
+}
+country_event = { # Event to switch core
+	id = 11102
+	title = EVT_11102_NAME
+	desc = EVT_11102_DESC
+	picture = "annexation_into_union"
+
+	trigger = {
+		OR = {
+			AND = { tag = GER government = proletarian_dictatorship NOT = { exists = DDR } }
+			AND = { tag = CNG government = proletarian_dictatorship NOT = { exists = UCS } }
+			AND = { tag = SKO government = proletarian_dictatorship NOT = { exists = NKO } }
+			AND = { tag = GRE government = proletarian_dictatorship NOT = { exists = UGR } }
+
+			AND = { tag = DDR NOT = { government = proletarian_dictatorship } NOT = { exists = GER } }
+			AND = { tag = UCS NOT = { government = proletarian_dictatorship } NOT = { exists = CNG } }
+			AND = { tag = NKO NOT = { government = proletarian_dictatorship } NOT = { exists = SKO } }
+			AND = { tag = UGR NOT = { government = proletarian_dictatorship } NOT = { exists = GRE } }
+		}
+		ai = yes
+	}
+
+	mean_time_to_happen = { months = 1 }
+	
+	option = {
+		name = EVT_11102_A
+		random_country = { limit = { tag = GER government = proletarian_dictatorship NOT = { exists = DDR } } change_tag = DDR }
+		random_country = { limit = { tag = CNG government = proletarian_dictatorship NOT = { exists = UCS } } change_tag = UCS }
+		random_country = { limit = { tag = SKO government = proletarian_dictatorship NOT = { exists = NKO } } change_tag = NKO }
+		random_country = { limit = { tag = GRE government = proletarian_dictatorship NOT = { exists = UGR } } change_tag = UGR }
+
+		random_country = { limit = { tag = DDR NOT = { government = proletarian_dictatorship } NOT = { exists = GER } } change_tag = GER }
+		random_country = { limit = { tag = UCS NOT = { government = proletarian_dictatorship } NOT = { exists = CNG } } change_tag = CNG }
+		random_country = { limit = { tag = NKO NOT = { government = proletarian_dictatorship } NOT = { exists = SKO } } change_tag = SKO }
+		random_country = { limit = { tag = UGR NOT = { government = proletarian_dictatorship } NOT = { exists = GRE } } change_tag = GRE }
+
+		ai_chance = { factor = 100 }
+	}
+
+}
+

@@ -1,0 +1,200 @@
+# common with russia
+# EVT_32506_NAME;$COUNTRY_ADJ$ Oligarchs
+# EVT_32507_NAME;$COUNTRY_ADJ$ financial crisis
+
+country_event = {
+	id = 1014200
+	title = EVT_1014200_NAME
+	# EVT_1014200_NAME;Orange Revolution
+	desc = EVT_1014200_DESC
+	# EVT_1014200_DESC;The Orange Revolution was a series of protests and political events that took place in Ukraine from late November 2004 to January 2005, in the immediate aftermath of the run-off vote of the 2004 Ukrainian presidential election which was claimed to be marred by massive corruption, voter intimidation and direct electoral fraud. Kiev, the Ukrainian capital, was the focal point of the movement's campaign of civil resistance, with thousands of protesters demonstrating daily.[5] Nationwide, the democratic revolution was highlighted by a series of acts of civil disobedience, sit-ins, and general strikes organized by the opposition movement.
+	picture = "orange_revolution"
+	fire_only_once = yes
+	
+	trigger = {
+		war = no
+		year = 2004
+		exists = UKR
+		UKR = { in_sphere = RUS }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = EVT_1014200_A
+		# EVT_1014200_A;Freedom!
+		USA = { country_event = 1014201 }
+		GER = { country_event = 1014201 }
+		ai_chance = { factor = 100 }
+	}
+
+	option = {
+		name = EVT_1014200_B
+		# EVT_1014200_B;Stay in power
+		any_pop = { militancy = 3 consciousness = 2 }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 1014201
+	title = EVT_1014201_NAME
+	desc = EVT_1014201_DESC
+	picture = "orange_revolution"
+	is_triggered_only = yes
+	
+	option = {
+		name = EVT_1014201_A
+		# EVT_1014201_A;Spread democracy
+		diplomatic_influence = { who = FROM value = 100 }
+		ai_chance = { factor = 100 }
+	}
+	option = {
+		name = EVT_1014201_B
+		# EVT_1014201_B;Don't get involved
+		diplomatic_influence = { who = FROM value = -50 }
+		ai_chance = { factor = 0 }
+	}
+}	
+
+country_event = {
+	id = 1014202
+	title = EVT_1014202_NAME
+	# EVT_1014202_NAME;Euromaidan
+	desc = EVT_1014202_DESC
+	# EVT_1014202_DESC;The Ukrainian revolution of February 2014 (also known as the Euromaidan Revolution) took place after a series of violent events involving protesters, riot police and unknown shooters in capital Kiev that resulted in the ousting of the then-President of Ukraine, Viktor Yanukovych. This was immediately followed by a series of changes in quick succession in Ukraine's sociopolitical system, including the formation of a new interim government, the restoration of the previous constitution, and the call to hold impromptu presidential elections within months.
+	picture = "euromaidan"
+	fire_only_once = yes
+	
+	trigger = {
+		war = no
+		tag = UKR
+		OR = { year = 2010 UKR = { has_country_modifier = in_bankrupcy } } # year or bankrupt by 32506/32507
+		UKR = { in_sphere = RUS }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = EVT_1014202_A
+		# EVT_1014202_A;Turn to Europe
+		GER = { country_event = 1014203 }
+		random_country = { limit = { tag = RUS war = no UKR = { owns = 964 } } country_event = 1014204 }
+		ai_chance = { factor = 100 }
+	}
+
+	option = {
+		name = EVT_1014202_B
+		# EVT_1014202_B;Stay in power
+		any_pop = { militancy = 3 consciousness = 1 }
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 1014203
+	title = EVT_1014202_NAME
+	desc = EVT_1014202_DESC
+	picture = "euromaidan"
+	is_triggered_only = yes
+	
+	option = {
+		name = EVT_1014203_A
+		# EVT_1014203_A;Spread democracy
+		diplomatic_influence = { who = FROM value = 100 }
+		ai_chance = { factor = 100 }
+	}
+	option = {
+		name = EVT_1014203_B
+		# EVT_1014203_B;Don't get involved
+		diplomatic_influence = { who = FROM value = 100 }
+		ai_chance = { factor = 0 }
+	}
+}	
+	
+country_event = {
+	id = 1014204
+	title = EVT_1014204_NAME
+	# EVT_1014204_NAME;Annexation of Crimea by the $COUNTRY$
+	desc = EVT_1014204_DESC
+	# EVT_1014204_DESC;The military intervention and annexation by Russia took place in the aftermath of the Ukrainian Revolution. It was a part of the wider unrest across southern and eastern Ukraine.[31][32] On 22–23 February, Russian President Vladimir Putin convened an all-night meeting with security services chiefs to discuss extrication of deposed President, Viktor Yanukovych, and at the end of that meeting Putin had remarked that "we must start working on returning Crimea to Russia.
+	picture = "crimea_annexation"
+	fire_only_once = yes
+	
+	trigger = {
+		war = no
+		tag = RUS
+		exists = UKR
+		government = populist_dictatorship
+		NOT = { relation = { who = UKR value = -50 } }
+		UKR = { NOT = { in_sphere = RUS } owns = 964 }
+		NOT = { has_country_flag = euromaidan_UKR }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	immediate = { diplomatic_influence = { who = UKR value = -100 } set_country_flag = euromaidan_UKR }
+	
+	option = {
+		name = EVT_1014204_A
+		# EVT_1014204_A;Demand return of Criema
+		war = {
+			target = UKR
+			attacker_goal = { casus_belli = acquire_core_state state_province_id = 964 }
+			attacker_goal = { casus_belli = liberate_country country = NRO }
+			defender_goal = { casus_belli = status_quo }
+		}
+		ai_chance = { factor = 100 }
+	}
+	option = {
+		name = EVT_1014204_B
+		# EVT_1014204_B;Never mind
+		any_pop = {
+			scaled_militancy = {
+				ideology = populist
+				factor = 2
+			}
+			scaled_consciousness = {
+				ideology = populist
+				factor = 2
+			}
+		}
+		prestige = -20
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 1014205
+	title = EVT_1014205_NAME
+	# EVT_1014205_NAME;The Donetsk People's Republic and Luhansk People's Republic
+	desc = EVT_1014205_DESC
+	# EVT_1014205_DESC;Attempts to seize the Donetsk Regional State Administration (RSA) building began since pro-Russian protests erupted in the eastern and southern regions of Ukraine, in the wake of the 2014 Ukrainian revolution. Pro-Russian protesters occupied the Donetsk RSA from 1–6 March, before being removed by the Security Service of Ukraine (SBU).[59][60] On 6 April, 1,000–2,000 people gathered at a rally in Donetsk to demand a status referendum similar to the one held in Crimea in March.
+	picture = "donetsk"
+	fire_only_once = yes
+	
+	trigger = {
+		war = no
+		tag = RUS
+		exists = NRO
+		has_country_flag = euromaidan_UKR
+		owns = 964
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = EVT_1014205_B
+		# EVT_1014205_B;Support our Russian Brothers and Sisters
+		NRO = { diplomatic_influence = { who = RUS value = 200 } }
+	}
+}
+

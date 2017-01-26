@@ -1,0 +1,289 @@
+#~~~~~~~~~~~~~~~~~~~~~~~~~ADD EVENT MODIFIER WB_loan2, same as wb_loan~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#Made by: Hiddengearz
+
+country_event = { # this event is fired in the nation that is about to go bankrupt
+	id = 1234
+	title = EVT_1234_NAME
+	desc = EVT_1234_DESC
+	picture = "eu_current_account_imbalances"
+
+	trigger = {
+		any_greater_power = { 
+				has_country_flag = xeu_ambition 
+			}	
+		has_country_modifier = in_bankrupcy
+		has_country_flag = xeu_ambition # we have to be part of EU
+		NOT = { has_country_flag = eu_debt_crisis }
+	}
+
+	mean_time_to_happen = { months = 1 }
+ 
+	option = {
+		name = EVT_1234_A
+		country_event = 1243
+		random_country = {
+			limit = {
+				is_greater_power = yes 
+				has_country_flag = xeu_ambition 
+				money = 100000 
+
+			} 
+			country_event = 1235 
+		} 
+		ai_chance = { factor = 100 } #testing
+	}
+	
+	option = {
+		name = EVT_1234_B
+		clr_country_flag = xeu_ambition
+		clr_country_flag = in_trade_block
+		all_core = { remove_core = XEU }
+		capital_scope = { 
+			remove_province_modifier = single_market			
+			remove_province_modifier = currency_union_province
+			remove_province_modifier = defence_union
+		}
+		remove_country_modifier = currency_union
+		any_pop = {
+			scaled_militancy = {
+				issue = free_trade
+				factor = 3
+			}
+		}
+		tech_school = traditional_academic
+		clr_country_flag = eu_debt_crisis_started
+	}
+}
+	
+	
+
+# and then you have an event 1235 which is the GP that is asked for money
+country_event = {
+	id = 1235
+	title = EVT_1235_NAME
+	desc = EVT_1235_DESC
+	picture = "eu_current_account_imbalances"
+	is_triggered_only = yes
+ 
+	option = {
+		name = EVT_1235_A
+		FROM = {
+			country_event = 1236
+		}
+		ai_chance = { factor = 100 }
+	}		
+	
+	option = {
+		name =  EVT_1235_B
+		FROM = {
+			country_event = 1237
+		}
+	}
+	
+	option = {
+		name = EVT_1235_C
+		From = {
+			country_event = 1238
+			#clr_country_flag = xeu_ambition
+		}
+
+	}
+}
+
+
+country_event = { #accept bailout
+	id = 1236
+	title = EVT_1236_NAME
+	desc = EVT_1236_DESC
+	picture = "eu_bailout"
+	is_triggered_only = yes
+	
+	option = { #accept bailout
+		name =  EVT_1236_A
+		treasury = 100000
+		FROM = {
+			treasury = -100000
+		}	
+		#add_country_modifier = {  name = TU_bankrupcy duration = 730 }
+		ai_chance = { factor = 100 }
+	}
+	
+	option = { #decline bailout, leave the union
+		name =  EVT_1236_B
+		clr_country_flag = xeu_ambition
+		clr_country_flag = in_trade_block
+		all_core = { remove_core = XEU }
+		capital_scope = { 
+			remove_province_modifier = single_market			
+			remove_province_modifier = currency_union_province
+			remove_province_modifier = defence_union
+		}
+		remove_country_modifier = currency_union
+		any_pop = {
+			scaled_militancy = {
+				issue = free_trade
+				factor = 3
+			}
+		}
+		tech_school = traditional_academic
+		random_country = {
+			limit = {
+			money = 150000
+				OR = {
+					has_country_flag = world_bank
+					has_country_flag = the_imf
+				}
+				not = { has_country_modifier = wb_loan2 }
+			}
+			add_country_modifier = { name = wb_loan2 duration = 350 } # stops the loop. 
+			country_event = 1235 # ask wb/imf to bail us out. Basically repeating the process.
+
+		}
+	}
+}
+
+country_event = { #accept bailout with austerity measures
+	id = 1237
+	title = EVT_1237_NAME
+	desc = EVT_1237_DESC
+	picture = "eu_bailout"
+	is_triggered_only = yes
+	
+	option = { #accept bailout
+		name =  EVT_1237_A
+		treasury = 100000
+		FROM = {
+			treasury = -100000
+		}	
+		add_country_modifier = {  name = tu_austerity duration = 730 }
+		ai_chance = { factor = 100 }
+	}
+	
+	option = { #decline bailout and leave union
+		name =  EVT_1237_B
+		clr_country_flag = xeu_ambition
+		clr_country_flag = in_trade_block
+		all_core = { remove_core = XEU }
+		capital_scope = { 
+			remove_province_modifier = single_market			
+			remove_province_modifier = currency_union_province
+			remove_province_modifier = defence_union
+		}
+		remove_country_modifier = currency_union
+		any_pop = {
+			scaled_militancy = {
+				issue = free_trade
+				factor = 3
+			}
+		}
+		tech_school = traditional_academic
+				random_country = {
+			limit = {
+			money = 150000
+				OR = {
+					has_country_flag = world_bank
+					has_country_flag = the_imf
+				}
+				not = { has_country_modifier = wb_loan2 }
+			}
+			add_country_modifier = { name = wb_loan2 duration = 350 } # stops the loop. 
+			country_event = 1235 # ask wb/imf to bail us out. Basically repeating the process.
+
+		}
+	}
+}
+
+country_event = { #they didnt offer us anything, leave the union
+	id = 1238
+	title = EVT_1238_NAME
+	desc = EVT_1238_DESC
+	picture = "eu_debt_crisis"
+	is_triggered_only = yes
+	
+	option = { #leave union
+		name =  EVT_1238_A
+		clr_country_flag = xeu_ambition
+		clr_country_flag = in_trade_block
+		all_core = { remove_core = XEU }
+		capital_scope = { 
+			remove_province_modifier = single_market			
+			remove_province_modifier = currency_union_province
+			remove_province_modifier = defence_union
+		}
+		remove_country_modifier = currency_union
+		any_pop = {
+			scaled_militancy = {
+				issue = free_trade
+				factor = 3
+			}
+		}
+		tech_school = traditional_academic
+	}
+}
+
+country_event = { #end of eu debt crisis
+	id = 1242
+	title = EVT_1242_NAME
+	desc = EVT_1242_DESC
+	picture = "eu_debt_crisis"
+	major = yes
+
+	trigger = {
+		NOT = { has_country_modifier = in_bankrupcy }
+		has_country_flag = eu_debt_crisis
+	}
+	
+	option = { 
+		name =  EVT_1242_A
+		clr_country_flag = eu_debt_crisis
+	}
+}
+
+country_event = { #start of eu debt crisis
+	id = 1243
+	title = EVT_1243_NAME
+	desc = EVT_1243_DESC
+	picture = "eu_debt_crisis"
+	is_triggered_only = yes
+	major = yes
+	
+	option = {
+		name =  EVT_1243_A
+		set_country_flag = eu_debt_crisis
+	}
+}
+#testing events, sets xeu_ambition flag
+#country_event = { #start of eu debt crisis
+#	id = 1244
+#	title = "set flag"
+#	desc = "A member of the EU is on the verge of bankruptcy! The global financial system is at risk."
+#	picture = "eu_debt_crisis"
+#	allow_multiple_instances = no
+#	is_triggered_only = no
+#	major = yes
+#	trigger = { tag = GRE not = {has_country_flag = xeu_ambition} }
+#	option = {
+#		name =  "oh no"
+#		set_country_flag = xeu_ambition
+#	}
+#}
+
+#country_event = { #start of eu debt crisis
+#	id = 1245
+#	title = "set flag"
+#	desc = "A member of the EU is on the verge of bankruptcy! The global financial system is at risk."
+#	picture = "eu_debt_crisis"
+#	allow_multiple_instances = no
+#
+#	is_triggered_only = no
+#	major = yes
+#	trigger = { 
+#		tag = GRE 
+#		not = {has_country_flag = xeu_ambition} 
+#	}
+#	
+#	option = {
+#		name =  "oh no"
+#		set_country_flag = xeu_ambition
+#	}
+#}

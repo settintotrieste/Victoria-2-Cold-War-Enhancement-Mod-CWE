@@ -1,0 +1,166 @@
+#$STATE$ Joins $COUNTRY$
+
+# Nation that owns your debt goes bankrupt
+country_event = {
+	id = 70002
+	title = "EVTNAME70002"
+	desc = "EVTDESC70002"
+	picture = "Bankruptcy"
+
+	is_triggered_only = yes
+
+	trigger = {
+		NOT = { tag = FROM }
+		part_of_sphere = no
+		is_vassal = no
+		FROM = {
+			part_of_sphere = no
+			is_vassal = no
+		}
+	}
+
+	option = {
+		name = "EVTOPTA70002"
+		casus_belli = {
+			type = gunboat
+			target = FROM
+		}
+	}
+}
+
+# Nation that owns your debt goes bankrupt in definace of our gunboats
+country_event = {
+	id = 70003
+	title = "EVTNAME70002"
+	desc = "EVTDESC70002"
+	picture = "Bankruptcy"
+
+	is_triggered_only = yes
+
+	trigger = {
+		NOT = { tag = FROM }
+		# limitations same as for gunboat war
+		part_of_sphere = no
+		is_vassal = no
+		FROM = {
+			part_of_sphere = no
+			is_vassal = no
+		}		
+	}
+
+	option = {
+		name = "EVTOPTA70002"
+		casus_belli = {
+			type = cut_down_to_size
+			target = FROM
+		}
+	}
+}
+
+
+country_event = {
+	id = 70005
+	title = "EVTNAME70005"
+	desc = "EVTDESC70005"
+	picture = "Bankruptcy"
+	trigger = {
+		NOT = { tag = FROM }
+		is_our_vassal = FROM
+	}
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTA70005"
+		leave_alliance = FROM
+		diplomatic_influence = { who = FROM value = -200 }
+		FROM = { country_event = 70006 }
+		ai_chance = { factor = 100 }
+	}
+	option = {
+		name = "EVTOPTB70005" # never mind
+		ai_chance = { factor = 0 }
+	}
+	
+}
+
+country_event = {
+	id = 70006
+	title = "EVTNAME70006"
+	desc = "EVTDESC70006"
+	picture = "Bankruptcy"
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTA70006" # accept
+		annex_to = FROM
+        ai_chance = {
+			factor = 0.1
+            modifier = {
+                factor = 10
+				FROM = { is_primary_culture = THIS }
+			}
+        }
+	}
+	option = {
+		name = "EVTOPTB70006" # become_independent
+		FROM = { release_vassal = THIS }
+		relation = { who = FROM value = -100 }
+		add_casus_belli = {
+			target = FROM
+			type  = make_puppet
+			months = 24
+		}
+        ai_chance = {
+			factor = 0.9
+            modifier = {
+                factor = 0.1
+				FROM = { is_primary_culture = THIS }
+            }
+            modifier = {
+                factor = 10
+                average_militancy = 5
+            }
+            modifier = {
+                factor = 10
+                average_militancy = 10
+            }
+        }
+	}
+	
+}
+
+country_event = {
+	id = 70010
+	title = EVT_70010_NAME
+	desc = EVT_70010_DESC
+	picture = war_support
+
+	trigger = { # filter call for help. May only call once every year
+		war = yes
+		NOT = { has_country_modifier = call_for_support_against_democracy }
+		NOT = { has_country_modifier = call_for_support_against_communism }
+		NOT = { has_country_modifier = call_for_support_against_dictatorship }
+	}	
+	
+	is_triggered_only = yes
+
+	option = {
+		name = EVT_70010_A
+		any_country = { limit = { tag = THIS OR = { government = democracy government = hms_government } } add_country_modifier = { name = call_for_support_against_democracy duration = 350 } }
+		any_country = { limit = { ai = no NOT = { war_with = THIS } } add_country_modifier = { name = call_for_support_against_democracy duration = 90 } }
+		any_country = { limit = { tag = THIS OR = { government = democracy government = hms_government } } add_country_modifier = { name = call_for_support_against_communism duration = 350 } }
+		any_country = { limit = { ai = no NOT = { war_with = THIS } } add_country_modifier = { name = call_for_support_against_communism duration = 90 } }
+		any_country = { limit = { tag = THIS OR = { government = democracy government = hms_government } } add_country_modifier = { name = call_for_support_against_dictatorship duration = 350 } }
+		any_country = { limit = { ai = no NOT = { war_with = THIS } } add_country_modifier = { name = call_for_support_against_dictatorship duration = 90 } }
+		prestige = -2
+		ai_chance = { factor = 100 }
+	}
+
+	option = {
+		name = EVT_70010_B
+		prestige = 2
+		ai_chance = { factor = 0 }
+	}
+}

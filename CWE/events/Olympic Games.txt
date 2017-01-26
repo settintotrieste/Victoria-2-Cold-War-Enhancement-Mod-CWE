@@ -1,0 +1,333 @@
+#Olympics Doping scandal
+country_event = {
+	id = 123416
+	title = "National Teams caught for doping!"
+	desc = "Our National Teams have been caught using drugs to improve their performance and have been banned from the next olympics by the IOC!"
+	picture = "olympics_doping"
+	is_triggered_only = yes
+option = {
+name = "Terrible!"
+add_country_modifier = { name = olympics_dope_ban duration = 2190 }
+prestige = -50
+		}
+}
+#Olympics Win Bigly
+country_event = {
+	id = 123419
+	title = "National Teams won BIGLY at the $YEAR$ Olympics"
+	desc = "They have won so many medals that we can make bullet proof vests out of them."
+	picture = "olympics_win_big"
+	is_triggered_only = yes
+option = {
+name = "They are our National Heroes!"
+prestige = 50
+		}
+}
+
+#Olympics Win Moderately
+country_event = {
+	id = 123418
+	title = "National Teams did acceptably at the $YEAR$ Olympics"
+	desc = "They got enough medals to keep our heads high and our nation proud."
+	picture = "olympics_win_medium"
+	is_triggered_only = yes
+option = {
+name = "We shall strive higher next time!"
+prestige = 25
+		}
+}
+
+#Olympics Lose Bigly
+country_event = {
+	id = 123417
+	title = "National Teams did terribly at the $YEAR$ Olympics"
+	desc = "They hardly got a single medal despite trying their level best at the games."
+	picture = "olympics_win_small"
+	is_triggered_only = yes
+option = {
+name = "They are LOSERS, we shouldn't be spending so much on them!"
+prestige = -25
+		}
+}
+
+
+#1948 Olympics in London (Kick Start off Olympics selection)
+country_event = {
+	id = 123420
+	title = "1948 London Olympics"
+	desc = EVTDESC123420
+	picture = "olympics_london"
+	major = yes
+trigger = {
+tag = ENG
+year = 1948
+NOT = { year = 1949 }
+month = 7
+day = 29
+USA = { NOT = { war_with = RUS } }
+NOT = { has_country_modifier = defcon1 }
+any_owned_province = { NOT = { has_province_modifier = olympics_city } }
+NOT = { has_country_modifier = recently_held_olympics }
+NOT = { has_country_flag = 1948_olympics_done }
+}
+
+option = {
+name = "Great!"
+add_country_modifier = { name = recently_held_olympics duration = 3285 }
+any_owned = { limit = { is_capital = yes }
+add_province_modifier = { name = olympics_city duration = 16 } }
+add_country_modifier = { name = olympics_in_session duration = 16 }
+
+country_event = 123421
+any_country = { country_event = 123422 } #Join the Olympics?
+set_country_flag = 1948_olympics_done
+set_country_flag = olympics_ongoing
+set_global_flag = 1948_olympics_completed
+		}
+}
+
+#Olympics Opening cermony (Host Nation Only)
+country_event = {
+	id = 123421
+	title = "$YEAR$ $CAPITAL$ Olympics Opening Ceremony"
+	desc = EVTDESC123421
+	picture = "olympics_opening_ceremony"
+	is_triggered_only = yes
+option = {
+name = "Let the Games Begin!"
+prestige = 50
+
+random_country = { limit = { NOT = { has_country_modifier = recently_held_olympics } is_greater_power = no is_secondary_power = no is_vassal = no war = no } country_event = 123424 }
+
+random_list = {
+	15 = { country_event = 123419 }
+	60 = { country_event = 123418 }
+	25 = { country_event = 123417 }
+}
+badboy = -5
+		}
+}
+
+#Participate in the Olympics? (All Guest Nations)
+country_event = {
+	id = 123422
+	title = "Participate in the $YEAR$ Olympics held in $FROMCOUNTRY$"
+	desc = EVTDESC123422
+	picture = "olympics_participation"
+	is_triggered_only = yes
+option = {
+name = "Yes!"
+random_list = {
+	15 = { country_event = 123419 }
+	60 = { country_event = 123418 }
+	25 = { country_event = 123417 }
+}
+prestige = 5
+badboy = -1
+ai_chance = { 
+factor = 1 
+modifier = { 
+OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 government = colonial_government government = sar_government government = absolute_monarchy } 
+factor = 0 } 
+}
+		}
+
+option = {
+name = "Yes and we shall get our athletes to dope!"
+random_list = {
+	40 = { country_event = 123416 }
+	60 = { country_event = 123419 }
+}
+prestige = 10
+badboy = -1
+ai_chance = { factor = 0 
+modifier = { 
+NOT = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 government = colonial_government government = sar_government government = absolute_monarchy } }
+factor = 1 } }
+
+		}
+
+option = {
+name = "No, boycott the games!"
+relation = { who = FROM value = -50 }
+prestige = -10
+ai_chance = { factor = 0 }
+		}
+
+}
+
+#Olympics Closing Ceremony Generic
+country_event = {
+	id = 123423
+	title = "$YEAR$ $CAPITAL$ Olympics have come to an end"
+	desc = EVTDESC123423
+	picture = "olympics_closing_ceremony"
+	
+trigger = {
+has_country_flag = olympics_ongoing
+NOT = { has_country_modifier = olympics_in_session }
+}
+
+option = {
+name = "We had fun!"
+prestige = 50
+clr_country_flag = olympics_ongoing
+		}
+}
+
+#Olympics Selection Event NON GP SP (Post 1948)
+country_event = {
+	id = 123424
+	title = "We have an opportunity to host the next olympics"
+	desc = "We have the opportunity to host the next Olympic Games. Should we accept the opportunity? It will be quite costly though"
+	picture = "olympics_bid"
+	
+is_triggered_only = yes
+option = {
+name = "Yes!"
+ai_chance = { factor = 0.20 }
+set_country_flag = next_olympics_host_nation
+add_country_modifier = { name = next_olympics_host_nation duration = 1460 }
+prestige = 20
+		}
+option = {
+name = "Perhaps another time?"
+
+random_country = { limit = { NOT = { has_country_modifier = recently_held_olympics } OR = { is_greater_power = yes is_secondary_power = yes } is_vassal = no war = no OR = { money = 110000 ai = no } } country_event = 123425 }
+
+ai_chance = { factor = 0.80 }
+		}
+
+}
+
+#Olympics Selection Event GP SP (Post 1948)
+country_event = {
+	id = 123425
+	title = "We have an opportunity to host the next olympics"
+	desc = "We have the opportunity to host the next Olympic Games. Should we accept the opportunity? It will be quite costly though"
+	picture = "olympics_bid"
+	
+is_triggered_only = yes
+option = {
+name = "Yes!"
+ai_chance = { factor = 0.80 }
+add_country_modifier = { name = next_olympics_host_nation duration = 1460 }
+set_country_flag = next_olympics_host_nation
+prestige = 50
+		}
+option = {
+name = "Perhaps another time?"
+
+random_country = { limit = { is_greater_power = no is_secondary_power = no is_vassal = no war = no OR = { money = 110000 ai = no } } country_event = 123424 }
+
+ai_chance = { factor = 0.20 }
+		}
+
+}
+
+#Olympics Opening Ceremony Generic
+country_event = {
+	id = 123426
+	title = "$YEAR$ $CAPITAL$ Olympics have begun"
+	desc = EVTDESC123426
+	picture = "olympics_opening_ceremony"
+	major = yes
+trigger = {
+war = no
+has_country_flag = next_olympics_host_nation
+NOT = { has_country_modifier = next_olympics_host_nation }
+}
+
+option = {
+name = "Great!"
+add_country_modifier = { name = recently_held_olympics duration = 3285 }
+any_owned = { limit = { is_capital = yes }
+add_province_modifier = { name = olympics_city duration = 16 } }
+add_country_modifier = { name = olympics_in_session duration = 16 }
+prestige = 50
+country_event = 123421
+any_country = { limit = { NOT = { has_country_modifier = olympics_dope_ban } } country_event = 123422 } #set_country_flag = 1948_olympics_done
+set_country_flag = olympics_ongoing
+clr_country_flag = next_olympics_host_nation
+		}
+}
+
+#Olympics failure
+country_event = {
+	id = 123427
+	title = "$YEAR$ $CAPITAL$ Olympics wrought with havoc"
+	desc = "Our faliure to provide adequete infrastructure to cater for the games has caused it to become a stain on the history of the Olympics."
+	picture = "olympics_opening_ceremony_fail"
+trigger = {
+
+has_country_modifier = olympics_in_session
+any_owned_province = { 
+limit = { is_capital = yes }
+NOT = { has_province_modifier = olympics_media }
+NOT = { has_province_modifier = olympics_sport }
+NOT = { has_province_modifier = olympics_village }
+}
+
+}
+
+option = {
+name = "A disaster!"
+prestige = -100
+add_country_modifier = { name = disaster_olympics duration = 365 }
+		}
+}
+
+#Olympics change city if at war
+country_event = {
+	id = 123428
+	title = "IOC has decided to move the Olympics to another city"
+	desc = "Due to the war we are in, the olympics will be moved to another city."
+	picture = "olympics_bid"
+trigger = {
+war = no
+has_country_flag = next_olympics_host_nation
+}
+
+option = {
+name = "A calamity!"
+prestige = -100
+remove_country_modifier = next_olympics_host_nation
+random_country = { limit = { NOT = { has_country_modifier = recently_held_olympics } OR = { is_greater_power = yes is_secondary_power = yes } is_vassal = no war = no OR = { money = 110000 ai = no } } country_event = 123425 }
+		}
+}
+
+#1992 Olympics in Spain (Kick Start off Olympics selection)
+country_event = {
+	id = 123429
+	title = "1992 $CAPITAL$ Olympics"
+	desc = EVTDESC123429
+	picture = "olympics_spain"
+	major = yes
+trigger = {
+NOT = { has_global_flag = 1948_olympics_completed }
+tag = SPA
+year = 1992
+NOT = { year = 1993 }
+month = 7
+USA = { NOT = { war_with = RUS } }
+NOT = { has_country_modifier = defcon1 }
+any_owned_province = { NOT = { has_province_modifier = olympics_city } }
+NOT = { has_country_modifier = recently_held_olympics }
+
+NOT = { has_country_flag = 1992_olympics_done }
+}
+
+option = {
+name = "Great!"
+add_country_modifier = { name = recently_held_olympics duration = 3285 }
+any_owned = { limit = { is_capital = yes }
+add_province_modifier = { name = olympics_city duration = 16 } }
+add_country_modifier = { name = olympics_in_session duration = 16 }
+
+country_event = 123421
+any_country = { country_event = 123422 } #Join the Olympics?
+set_country_flag = 1992_olympics_done
+set_country_flag = olympics_ongoing
+		}
+}
+
