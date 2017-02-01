@@ -52,3 +52,331 @@ add_country_modifier = { name = revolution_chaos duration = 10950 }
 		ai_chance = { factor = 0.1 }
 		}
 	}
+
+###### Civil War ######
+
+#Demonstrations against the government (Start Civil War)
+country_event = {
+	id = 1412002
+	title = "Peaceful protests against our Government"
+	desc = "Due to the increasing unpopularity of our government, the $COUNTRYCULTURE$ citizens have started protesting against the regime."
+	picture = "peaceful_protests"
+
+	trigger = {
+		average_militancy = 9
+	NOT = { has_country_modifier = government_consensus }
+	NOT = { has_country_modifier = violent_crackdown }
+	NOT = { num_of_revolts = 1 }
+	}
+	
+mean_time_to_happen = { 
+months = 12 
+modifier = { militancy = 10 factor = 0.1 } 
+}
+	option = {
+		name = "Send the police to suppress them!"
+add_country_modifier = { name = violent_crackdown duration = 150 }
+prestige = -10
+poor_strata = {
+	consciousness = 3
+}
+middle_strata = {
+	consciousness = 6
+}
+rich_strata = {
+	consciousness = 1.5
+}
+		ai_chance = { factor = 0.9 }
+		}
+
+	option = {
+		name = "Negotiate with the protesters!"
+add_country_modifier = { name = government_consensus duration = 180 }
+set_country_flag = government_extends_peace_hand
+		prestige_factor = -0.10
+		ai_chance = { factor = 0.1 }
+		}
+	}
+
+#Protests against our nation turns violent (Civil War stage 1)
+country_event = {
+	id = 1412003
+	title = "Protests turn violent"
+	desc = "The police used tear gas and riot weapons against the protesters to suppress the protests but it has only sparked more violent actions to end our rule."
+	picture = "violent_protests"
+
+	trigger = {
+		average_militancy = 9
+	NOT = { has_country_modifier = government_consensus }
+	has_country_modifier = violent_crackdown
+	NOT = { num_of_revolts = 1 }
+	}
+	
+mean_time_to_happen = { 
+months = 4
+modifier = { militancy = 10 factor = 0.1 } 
+}
+	option = {
+		name = "Send the army to kill the troublemakers!"
+add_country_modifier = { name = military_crackdown duration = 150 }
+prestige = -10
+poor_strata = {
+	consciousness = 3
+	militancy = 3
+}
+middle_strata = {
+	consciousness = 6
+	militancy = 8
+}
+rich_strata = {
+	consciousness = 1.5
+	militancy = 4
+}
+		ai_chance = { factor = 0.8 }
+		}
+
+	option = {
+		name = "Give in to the protesters!"
+add_country_modifier = { name = government_consensus duration = 180 }
+set_country_flag = government_extends_peace_hand
+		prestige_factor = -0.20
+		ai_chance = { factor = 0.2 }
+		}
+	}
+
+#Army Defection (Civil War stage 2)
+country_event = {
+	id = 1412004
+	title = "Parts of the army defects to the rebels"
+	desc = "Some sections of the $COUNTRYCULTURE$ Army have defected and joined the anti-government forces. A Civil War is brewing!"
+	picture = "army_defects"
+
+	trigger = {
+		average_militancy = 9
+	NOT = { has_country_modifier = government_consensus }
+	has_country_modifier = military_crackdown
+	NOT = { num_of_revolts = 1 }
+	}
+	
+mean_time_to_happen = { 
+months = 1
+modifier = { militancy = 10 factor = 0.1 } 
+}
+	option = {
+		name = "Punish the defectors!"
+add_country_modifier = { name = army_defects duration = 150 }
+prestige = -10
+poor_strata = {
+	consciousness = 3
+	militancy = 3
+}
+middle_strata = {
+	consciousness = 6
+	militancy = 9
+}
+rich_strata = {
+	consciousness = 3
+	militancy = 7
+}
+		ai_chance = { factor = 0.6 }
+		}
+
+	option = {
+		name = "Let the rebels win!"
+add_country_modifier = { name = government_consensus duration = 180 }
+set_country_flag = government_extends_peace_hand
+		prestige_factor = -0.30
+		ai_chance = { factor = 0.4 }
+		}
+	}
+
+#Civil War Breaks Out (Civil War stage 3)
+country_event = {
+	id = 1412005
+	title = "Civil War breaks out"
+	desc = "The current unrest in our country has boiled into a full blown Civil War between the rebels and the Government. It is only a matter of time before a coup occurs!"
+	picture = "civil_war"
+
+	trigger = {
+		average_militancy = 9
+	NOT = { has_country_modifier = government_consensus }
+	has_country_modifier = army_defects
+	NOT = { num_of_revolts = 1 }
+	}
+	
+mean_time_to_happen = { 
+months = 1
+modifier = { militancy = 10 factor = 0.1 } 
+}
+	option = {
+		name = "We shall fight the revolutionaries!"
+
+add_country_modifier = { name = civil_war duration = 150 }
+
+prestige = -10
+poor_strata = {
+	consciousness = 2
+	militancy = 2
+}
+middle_strata = {
+	consciousness = 3
+	militancy = 3
+}
+rich_strata = {
+	consciousness = 1
+	militancy = 1
+}
+any_owned = { limit = { average_militancy = 9.5 } change_controller = REB }
+		ai_chance = { factor = 0.8 }
+		}
+
+	option = {
+		name = "Accede to the revolutionary demands!"
+
+set_country_flag = government_extends_peace_hand
+		prestige_factor = -0.40
+		ai_chance = { factor = 0.2 }
+		}
+	}
+
+#Government Conference (Civil War Finish stage 1)
+country_event = {
+	id = 1412006
+	title = "Government-Rebels Conference"
+	desc = "A peace conference is underway between the Rebels and the Government to find a means to end the unrests peacefully. The rebels demand that we accede or face conflict!"
+	picture = "government_consensus"
+
+	trigger = {
+	has_country_flag = government_extends_peace_hand
+		}
+	
+mean_time_to_happen = { 
+months = 6
+modifier = { militancy = 10 factor = 0.1 }
+modifier = { militancy = 9 factor = 0.2 } 
+modifier = { militancy = 8 factor = 0.3 } 
+modifier = { militancy = 7 factor = 0.4 } 
+modifier = { militancy = 6 factor = 0.5 }
+modifier = { militancy = 5 factor = 0.6 }
+modifier = { militancy = 4 factor = 0.7 }
+modifier = { militancy = 3 factor = 0.8 }
+}
+	option = {
+		name = "We shall reject their demands!"
+	prestige = -20
+	random_list = {
+	20 = { country_event = 1412005 } #Civil War
+	80 = { country_event = 1412008 } #Rebels give up
+	}
+		ai_chance = { factor = 0.2 }
+		}
+
+	option = {
+		name = "Accede to the anti-government demands!"
+add_country_modifier = { name = government_consensus duration = 180 }
+country_event = 1412007 #Rebels Sieze Power
+		prestige_factor = -0.10
+		ai_chance = { factor = 0.8 }
+		}
+	}
+
+#Peaceful transition of Power (Civil War Finish peace)
+country_event = {
+	id = 1412007
+	title = "Democractic Transfer of Power"
+	desc = "As agreed upon by the Government in the recent peace deal, the current regime will now formally transfer power to the revolutionary Interim Government"
+	picture = "peaceful_transfer_of_power"
+
+is_triggered_only = yes
+	
+	option = {
+		name = "Vive la révolution!"
+		prestige = 20
+		government = democracy
+		country_event = 800054
+		any_pop = { militancy = -9 }
+		any_pop = { consciousness = -6 }
+clr_country_flag = government_extends_peace_hand
+add_country_modifier = { name = revolution_chaos duration = 730 }
+		}
+
+}
+
+#Rebels agree to our demands (Civil War Finish peace)
+country_event = {
+	id = 1412008
+	title = "Rebels agree to our demands"
+	desc = "Due to the increasingly unfavourable conditions for the rebels, they have decided to surrender to the Government. In exchange the regime has allowed the rebels to be exiled."
+	picture = "rebels_give_up"
+
+is_triggered_only = yes
+	
+	option = {
+		name = "Victory for the Government!"
+		prestige = 20
+		any_pop = { militancy = -9 }
+		any_pop = { consciousness = -6 }
+clr_country_flag = government_extends_peace_hand
+add_country_modifier = { name = revolution_chaos duration = 1102 }
+		}
+
+}
+
+#Military Coup (Civil War Finish - Coup)
+country_event = {
+	id = 1412009
+	title = "Coup d'état in $COUNTRY$"
+	desc = "A rougue General has lead a batallion into Government House and forced the incumbent regime to surrender and plant a new regime headed by the military. Their goals are peace, security and stability."
+	picture = "military_coup"
+
+	trigger = {
+	average_militancy = 9
+	NOT = { government = democracy }
+	NOT = { government = democracy1 }
+	NOT = { government = hms_government }
+	NOT = { government = hms_government1 }
+	NOT = { government = sar_government }
+	NOT = { has_country_modifier = government_consensus }
+	has_country_modifier = army_defects
+	num_of_revolts = 1
+		}
+	
+mean_time_to_happen = { 
+months = 4
+modifier = { militancy = 10 factor = 0.1 }
+modifier = { militancy = 9 factor = 0.2 } 
+modifier = { militancy = 8 factor = 0.3 } 
+modifier = { militancy = 7 factor = 0.4 } 
+modifier = { militancy = 6 factor = 0.5 }
+modifier = { militancy = 5 factor = 0.6 }
+modifier = { militancy = 4 factor = 0.7 }
+modifier = { militancy = 3 factor = 0.8 }
+}
+	option = {
+		name = "Long live the Revolution!"
+	prestige_factor = -0.20
+	random_list = {
+	35 = { 
+	government = presidential_dictatorship 
+	country_event = 800050 
+	add_country_modifier = { name = revolution_chaos duration = 1102 }
+	}
+	30 = { 
+	government = nationalist_dictatorship 
+	country_event = 800050 
+	add_country_modifier = { name = revolution_chaos duration = 1102 }
+	}
+	30 = { 
+	government = populist_dictatorship 
+	country_event = 800050 
+	add_country_modifier = { name = revolution_chaos duration = 1102 }
+	}
+	5 = { 
+	government = theocracy 
+	country_event = 800050
+	add_country_modifier = { name = revolution_chaos duration = 1102 } 
+	}
+		}
+	}
+
+}
