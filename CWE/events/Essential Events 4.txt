@@ -377,3 +377,183 @@ modifier = { militancy = 3 factor = 0.8 }
 	}
 
 }
+
+#Anti-War Protest Beginning
+country_event = {
+	id = 1412010
+	title = "Anti-War Protest in $CAPITAL$"
+	desc = "A protest has broken out against our current involvement in wars. The protesters have demanded a complete end to the hostilities and a pursuit to end the current conflict peacefully via diplomatic means."
+	picture = "war_protest"
+
+	trigger = {
+	war = yes
+OR = { pop_majority_ideology = socialist pop_majority_ideology = liberal pop_majority_ideology = progressive pop_majority_ideology = big_tent }
+is_vassal = no
+NOT = { has_country_modifier = anti_war_movement }
+NOT = { national_provinces_occupied = 0.05 }
+OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+		}
+	
+mean_time_to_happen = { 
+months = 2
+modifier = { militancy = 10 factor = 0.1 }
+modifier = { militancy = 9 factor = 0.2 } 
+modifier = { militancy = 8 factor = 0.3 } 
+modifier = { militancy = 7 factor = 0.4 } 
+modifier = { militancy = 6 factor = 0.5 }
+modifier = { militancy = 5 factor = 0.6 }
+modifier = { militancy = 4 factor = 0.7 }
+modifier = { militancy = 3 factor = 0.8 }
+}
+	option = {
+		name = "The War still continues!"
+	prestige = -20
+add_country_modifier = { name = anti_war_movement duration = -1 }
+any_pop = { limit = { OR = { has_pop_ideology = socialist has_pop_ideology = big_tent has_pop_ideology = progressive has_pop_ideology = liberal is_accepted_culture = no } } militancy = 4 consciousness = 3 }
+		}
+	}
+
+#Anti-War Protest Level 2
+country_event = {
+	id = 1412011
+	title = "Anti-War Civil Disobedience"
+	desc = "The protest against our current involvement in wars has escalated into Civil Disobedience. The protesters have demanded a complete end to the hostilities and a pursuit to end the current conflict peacefully via diplomatic means."
+	picture = "war_protest"
+
+	trigger = {
+	war = yes
+OR = { pop_majority_ideology = socialist pop_majority_ideology = liberal pop_majority_ideology = progressive pop_majority_ideology = big_tent }
+is_vassal = no
+has_country_modifier = anti_war_movement
+NOT = { has_country_modifier = anti_war_strike }
+NOT = { national_provinces_occupied = 0.05 }
+OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+		}
+	
+mean_time_to_happen = { 
+months = 2
+modifier = { militancy = 10 factor = 0.1 }
+modifier = { militancy = 9 factor = 0.2 } 
+modifier = { militancy = 8 factor = 0.3 } 
+modifier = { militancy = 7 factor = 0.4 } 
+modifier = { militancy = 6 factor = 0.5 }
+modifier = { militancy = 5 factor = 0.6 }
+modifier = { militancy = 4 factor = 0.7 }
+modifier = { militancy = 3 factor = 0.8 }
+}
+	option = {
+		name = "They are pesky aren't they?"
+	prestige = -20
+add_country_modifier = { name = anti_war_strike duration = -1 }
+any_pop = { limit = { OR = { has_pop_ideology = socialist has_pop_ideology = big_tent has_pop_ideology = progressive has_pop_ideology = liberal is_accepted_culture = no } } militancy = 4 consciousness = 3 }
+		}
+	}
+
+#Anti-War Protest End
+country_event = {
+	id = 1412012
+	title = "Anti-War Movement Disspates"
+	desc = "Due to the changing nature of our current conflict with our enemies, the Anti-War Movement has re-evaluated their stance and has decided that it is no longer in the National Interest to continue the Movement."
+	picture = "war_protest"
+
+	trigger = {
+	OR = { war = no national_provinces_occupied = 0.05 }
+OR = { has_country_modifier = anti_war_movement has_country_modifier = anti_war_strike }
+		}
+	
+	option = {
+		name = "At last!"
+remove_country_modifier = anti_war_movement 
+remove_country_modifier = anti_war_strike 
+		}
+	}
+
+#UNSC Veto Option
+country_event = {
+	id = 1412013
+	title = "UN Resolution to end $FROMCOUNTRY$'s conflict"
+	desc = "$FROMCOUNTRY$ is currently facing an war with another country and has requested United Nations intervention to stop the war. As a Permanent Member of the UNSC, should we let the resolution pass?"
+	picture = "unsc_vote"
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "Support the Resolution!"
+
+ai_chance = { 
+factor = 1 
+modifier = { 
+factor = 0 
+NOT = { relation = { who = THIS value = 0 } }
+		}
+}
+
+any_country = { 
+limit = { war_policy = pacifism } 
+relation = { who = THIS value = 100 } 
+}
+
+any_pop = {
+move_issue_percentage = { 
+	from = jingoism 
+	to = pacifism
+	value = 0.2
+	}
+}
+
+relation = { who = FROM value = 100 }
+
+		}
+	option = {
+		name = "Vote against the Resolution!"
+badboy = 5
+prestige = 20
+relation = { who = FROM value = -100 }
+
+		any_country = { 
+limit = { war_policy = pacifism } 
+relation = { who = THIS value = -100 } 
+}
+
+any_pop = {
+move_issue_percentage = { 
+	from = pacifism 
+	to = jingoism
+	value = 0.2
+	}
+}
+
+ai_chance = { 
+factor = 1 
+modifier = { 
+factor = 0 
+NOT = { AND = { NOT = { relation = { who = FROM value = 150 } } relation = { who = FROM value = 0 } } }
+		}
+}
+		}
+
+	option = {
+		name = "Veto the Resolution!"
+prestige = -20
+FROM = { add_country_modifier = { name = resolution_vetoed_unsc duration = 100 } }
+
+relation = { who = FROM value = -200 }
+
+		any_country = { 
+limit = { war_policy = pacifism } 
+relation = { who = THIS value = -200 } 
+}
+
+any_pop = {
+move_issue_percentage = { 
+	from = pacifism 
+	to = jingoism
+	value = 0.4
+	}
+}
+ai_chance = { 
+factor = 1 
+modifier = { factor = 0 NOT = { relation = { who = FROM value = 150 } } }
+}
+		}
+	}

@@ -458,6 +458,9 @@ country_event = {
 		crisis_exists = no
 		NOT = { has_country_modifier = cold_war_medium }
 		NOT = { has_country_modifier = cold_war_high }
+		
+		NOT = { has_country_modifier = world_high }
+		NOT = { has_country_modifier = world_medium }
 		OR = { 
 		NOT = { has_country_modifier = defcon5 }
 		has_country_modifier = defcon1
@@ -487,7 +490,7 @@ country_event = {
 		war = no
 		#involved_in_crisis = yes
 		#NOT = { crisis_temperature = 90 }
-		has_country_modifier = cold_war_medium
+OR = { has_country_modifier = cold_war_medium has_country_modifier = world_medium }
 		NOT = { has_country_modifier = defcon4 }
 		}
 	
@@ -511,7 +514,7 @@ country_event = {
 		war = no
 		#involved_in_crisis = yes
 		#crisis_temperature = 90
-		has_country_modifier = cold_war_high
+		OR = { has_country_modifier = cold_war_high has_country_modifier = world_high }
 		NOT = { has_country_modifier = defcon3 }
 		}
 	
@@ -1720,6 +1723,7 @@ major = yes
 option = {
 name = "A small step for man, a giant leap for mankind!"
 prestige = 500
+set_global_flag = moon_mission_win_1
 add_country_modifier = { name = space_project_attempted duration = 365 }
 set_country_flag = space_moon
 remove_country_modifier = develop_moon_mission
@@ -2884,3 +2888,133 @@ country_event = {
 	set_country_flag = wallace
 			}
 	}
+
+#UN Peace Resolution Passes
+country_event = {
+	id = 1410098
+	title = "UN Peace Resolution to end conflict passes"
+	desc = "Our request to end the current conflict that we are involved in has been accepted by the United Nations Security Council. The UN will now demand all warring parties to reach an armistice or face international intervention."
+	picture = "unsc_vote"
+
+	trigger = {
+		war = yes
+		has_country_modifier = called_allies_un
+NOT = { has_country_modifier = resolution_vetoed_unsc }
+
+}
+mean_time_to_happen = { 
+months = 2
+}
+	option = {
+	name = "May peace come soon!"
+	prestige = 30
+any_country = { limit = { war_with = THIS } country_event = 1410099 }
+			}
+	}
+
+#UN Peace Resolution Passes (Warring Parties)
+country_event = {
+	id = 1410099
+	title = "UN Peace Resolution to end conflict passes"
+	desc = "$FROMCOUNTRY$ request to end the current conflict that we are involved in has been accepted by the United Nations Security Council. The UN will now demand all warring parties to reach an armistice or face international intervention."
+	picture = "unsc_vote"
+
+is_triggered_only = yes
+
+			
+	option = {
+	name = "Accept the UN led armistice!"
+		end_war = FROM
+any_country = { limit = { AND = { war_with = THIS alliance_with = FROM } } end_war = THIS }
+		prestige = -10
+		ai_chance = { factor = 0.99 }
+			}
+
+	option = {
+	name = "Reject the UN led armistice!"
+		prestige = 10
+add_country_modifier = { name = unsanctionslevel1 duration = 365 }
+		badboy = 25
+	ai_chance = { factor = 0.01 }
+			}
+
+	}
+
+#Rotating Chairmanship of the OIC
+country_event = {
+	id = 1410100
+	title = "Chairmanship of the OIC"
+	desc = "The Chairmanship of the Organisation for Islamic Cooperation is rotating again. The Chairmanship only lasts 5 years." 
+	picture = "oic_chairman"
+	
+	trigger = {
+		year = 1946
+		NOT = { has_country_modifier = oic_chairmanship }
+		has_country_flag = oic_chairmanship
+	}
+	
+	option = {
+	name = "We had a good run."
+random_country = { limit = { AND = { NOT = { has_country_modifier = oic_chairmanship } has_country_modifier = oic_member } } country_event = 1410101 }
+	remove_country_modifier = oic_chairmanship
+	clr_country_flag = oic_chairmanship
+		}
+}
+
+#Rotating Chairmanship of the OIC - select the new leader
+country_event = {
+	id = 1410101
+	title = "Chairmanship of the OIC"
+	desc = "The Chairmanship of the Organisation for Islamic Cooperation is rotating and the Chairmanship has come to us. The Chairmanship only lasts 5 years." 
+	picture = "oic_chairman"
+	
+is_triggered_only = yes
+
+	option = {
+	name = "Splendid!"
+prestige = 10
+any_country = { limit = { has_country_modifier = oic_member } country_event = 1410102 }
+add_country_modifier = { name = oic_chairmanship duration = 1825 }
+set_country_flag = oic_chairmanship
+		}
+}
+
+#Rotating Chairmanship of the OIC - inform OIC members of change
+country_event = {
+	id = 1410102
+	title = "$FROMCOUNTRY$ has become new OIC Chairman"
+	desc = "The Chairmanship of the Organisation for Islamic Cooperation is rotating and the Chairmanship has come to $FROMCOUNTRY$. The Chairmanship only lasts 5 years." 
+	picture = "oic_chairman"
+	
+is_triggered_only = yes
+
+	option = {
+	name = "Great!"
+	relation = { who = FROM value = 20 }
+		}
+	option = {
+	name = "Terrible!"
+	relation = { who = FROM value = -20 }
+		}
+}
+#Rotating Chairmanships first - OIC
+country_event = {
+	id = 1410103
+	title = "Chairmanship of the OIC"
+	desc = "The Chairmanship of the Organisation for Islamic Cooperation is rotating and we get the first one as we are the founder. The Chairmanship only lasts 5 years." 
+	picture = "oic_chairman"
+	
+trigger = { 
+tag = IDO
+has_country_modifier = oic_member
+NOT = { has_global_flag = oicfirst }
+}
+	option = {
+	name = "Splendid!"
+prestige = 10
+add_country_modifier = { name = oic_chairmanship duration = 1825 }
+set_country_flag = oic_chairmanship
+set_global_flag = oicfirst
+		}
+}
+
