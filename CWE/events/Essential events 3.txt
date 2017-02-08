@@ -2997,6 +2997,7 @@ is_triggered_only = yes
 	relation = { who = FROM value = -20 }
 		}
 }
+
 #Rotating Chairmanships first - OIC
 country_event = {
 	id = 1410103
@@ -3017,4 +3018,159 @@ set_country_flag = oic_chairmanship
 set_global_flag = oicfirst
 		}
 }
+
+#Announce WHO aid
+country_event = {
+	id = 1410104
+	title = "$COUNTRY$ seeks WHO help in combating epidemic"
+	desc = "As the public health situation in $COUNTRY$ has become increasingly strained by the virus outbreak, the government has decided to seek the help of the World Health Organisation to help them cope with the Influenza Epidemic in the country." 
+	picture = "oic_chairman"
+	is_triggered_only = yes
+	major = yes
+	option = {
+	name = "We shall overcome this challenge together"
+		}
+}
+
+#End World Epidemic
+country_event = {
+	id = 1410105
+	title = "WHO declare the Virus Epidemic over"
+	desc = "As the number of countries with sizable proportions of infected dwindling, the World Health Organisation has decided that the current world viral outbreak is over." 
+	picture = "oic_chairman"
+	major = yes
+trigger = { 
+has_country_flag = patient_zero
+has_global_flag = epidemic_start
+NOT = { has_country_modifier = local_epidemic }
+NOT = { any_neighbor_country = { has_country_modifier = foreign_epidemic } } 
+}
+	option = {
+	name = "The worst is now behind us!"
+	clr_country_flag = patient_zero
+	clr_global_flag = epidemic_start
+		}
+}
+
+#Establish Polar Military Base
+country_event = {
+	id = 1410106
+	title = "Polar Military Base Established"
+	desc = EVTDESC1410106
+	picture = "polar_military_base"
+	
+is_triggered_only = yes
+
+	option = {
+	name = "Brrr... Its cold out there!"
+add_country_modifier = { name = polar_military_base duration = -1 }
+			}
+}
+
+#Polar Expedition Result
+country_event = {
+	id = 1410107
+	title = "Result of the Polar Expedition"
+	desc = "We recently sent some Explorers to scout our Polar regions to see if there are any new scientific discoveries in the region."
+	picture = "polar_expedition"
+	
+trigger = { 
+NOT = { has_country_modifier = polar_expedition_underway }
+has_country_flag = polar_expedition_underway
+}
+
+	option = {
+	name = "I can't wait to hear from them!"
+
+random_list = {
+	60 = { country_event = 1410108 } #success
+	40 = { country_event = 1410109 } #failure
+}
+
+			}
+}
+
+#Polar Expedition Result - success
+country_event = {
+	id = 1410108
+	title = "Polar Expedition Successful"
+	desc = "The explorers have returned safely with loads of highly facinating Scientific discoveries."
+	picture = "polar_expedition_successful"
+	
+is_triggered_only = yes
+
+	option = {
+	name = "They are our national heroes!"
+	prestige = 50
+	clr_country_flag = polar_expedition_underway
+	set_country_flag = not_eaten_by_bears
+			}
+}
+
+#Polar Expedition Result - failure
+country_event = {
+	id = 1410109
+	title = "Polar Expedition Fails"
+	desc = "The Polar Expedition has failed as the explorers have gone missing and failed to transmit back any useful new scientific discoveries. The Nation mourns their loss."
+	picture = "polar_expedition_fails"
+	
+is_triggered_only = yes
+
+	option = {
+	name = "They were eaten by Polar Bears?!"
+	prestige = -10
+	clr_country_flag = polar_expedition_underway
+				}
+}
+
+#1995 Tokyo Sarin Attack
+country_event = {
+	id = 1410110
+	title = "1995 Tokyo Subway Sarin Attack"
+	desc = EVTDESC1410110
+	picture = "tokyo_sarin_attack"
+	
+trigger = { 
+year = 1995
+tag = JAP
+capital = 1649
+government = hms_government
+NOT = { has_country_flag = tokyo_sarin_attack }
+}
+
+mean_time_to_happen = { 
+months = 6
+}
+
+	option = {
+	name = "What a tragedy!"
+set_country_flag = tokyo_sarin_attack
+any_pop = { militancy = 1 consciousness = 4 }
+			}
+}
+
+#Nuclear Blackmail
+country_event = {
+	id = 1410111
+	title = "Nuclear Blackmail Result"
+	desc = "We have proposed to pause our nuclear program in exchange for international aid."
+	picture = "nuclear_blackmail"
+	
+is_triggered_only = yes
+
+	option = {
+	name = "Let's roll the dice of fate"
+
+random_list = {
+	10 = { badboy = 25 }
+	90 = { 
+add_country_modifier = { name = nuke_blackmail duration = 730 } 
+prestige = 50 
+remove_country_modifier = develop_atomic_bomb
+add_country_modifier = { name = develop_atomic_bomb duration = 2555 }
+}
+
+}
+	}
+			}
 
