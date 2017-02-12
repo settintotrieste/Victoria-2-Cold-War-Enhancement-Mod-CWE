@@ -3695,3 +3695,143 @@ set_country_flag = war_with_un
 			}
 
 }
+
+#Concorde Offer
+country_event = {
+	id = 1410129
+title = "Offer from $FROMCOUNTRY$ to develop Supersonic Jet"
+	desc = EVTDESC1410129
+	picture = "concorde_offer"
+	
+is_triggered_only = yes	
+
+option = {
+	name = "Accept!"
+money = -100000
+prestige = 50
+add_country_modifier = { name = concorde_development duration = 3650 }
+FROM = { add_country_modifier = { name = concorde_development duration = 3650 } }
+set_country_flag = concorde_proposed
+set_country_flag = concorde_accepted
+FROM = { set_country_flag = concorde_accepted }
+set_global_flag = concorde_started
+country_event = 1410133
+ai_chance = { factor = 1 modifier = { factor = 0 NOT = { money = 200000 } } }
+			}
+
+option = {
+	name = "Reject!"
+set_country_flag = concorde_proposed
+prestige = -10
+relation = { who = FROM value = -50 }
+ai_chance = { factor = 1 modifier = { factor = 0 money = 200000 } }
+			}
+
+}
+
+#Concorde finish construction
+country_event = {
+	id = 1410130
+title = "Development of Concorde Completed!"
+	desc = EVTDESC1410130
+	picture = "concorde_finish"
+	
+trigger = {
+has_global_flag = concorde_started
+has_country_flag = concorde_accepted
+exists = FRA
+exists = ENG
+
+OR = { 
+AND = { tag = FRA ai = no } 
+AND = { tag = ENG ai = no } 
+
+AND = { tag = ENG 
+AND = { FRA = { ai = yes } ENG = { ai = yes } tag = ENG }
+} 
+
+}
+
+NOT = { has_country_modifier = concorde }
+NOT = { has_country_modifier = concorde_development }
+}	
+
+option = {
+	name = "It is an amazing day for $FROMCOUNTRY$!"
+prestige = 50
+FRA = { add_country_modifier = { name = concorde duration = -1 } }
+ENG = { add_country_modifier = { name = concorde duration = -1 } }
+country_event = 1410131
+			}
+
+}
+
+#Concorde sale
+country_event = {
+	id = 1410131
+title = "Sale of Concorde"
+	desc = "Britain and France have managed to develop the world's first supersonic commercial jet aircraft. The Concorde will be avaliable for sale to all nations interested and friendly to the two nations."
+	picture = "concorde_sale"
+	
+is_triggered_only = yes	
+major = yes
+option = {
+	name = "Let's see how many we can sell."
+any_country = { limit = { NOT = { tag = ENG } NOT = { tag = FRA } is_vassal = no NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = sar_government government = colonial_government government = theocracy } } } country_event = 1410132 }
+			}
+
+}
+
+#Concorde sale
+country_event = {
+	id = 1410132
+title = "Concordes for sale"
+	desc = EVTDESC1410132
+	picture = "concorde_sale"
+	
+is_triggered_only = yes	
+
+option = {
+	name = "Let's buy many"
+prestige = 50
+FRA = { money = 10000 prestige = 5 }
+ENG = { money = 10000 prestige = 5 }
+money = -200000
+
+ai_chance = { factor = 1 modifier = { factor = 0 
+NOT = { money = 1000000 } } }
+			}
+option = {
+	name = "Buy a few"
+
+FRA = { money = 5000 prestige = 2 }
+ENG = { money = 5000 prestige = 2 }
+
+prestige = 20
+money = -100000
+ai_chance = { factor = 1 modifier = { factor = 0 
+NOT = { money = 500000 } } }
+			}
+option = {
+	name = "Don't buy any"
+ai_chance = { factor = 1 modifier = { factor = 0 
+money = 500000 }  }
+			}
+
+}
+
+#Concorde Acceptance
+country_event = {
+	id = 1410133
+	title = "Offer to build Supersonic Jet accepted"
+	desc = EVTDESC1410133
+	picture = "concorde_accepted"
+	
+is_triggered_only = yes	
+
+option = {
+	name = "Success"
+prestige = 10
+			}
+
+}
