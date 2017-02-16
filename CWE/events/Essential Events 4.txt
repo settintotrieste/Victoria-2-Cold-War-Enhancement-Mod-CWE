@@ -933,3 +933,143 @@ any_owned_province = { has_province_modifier = death_camp }
 any_owned = { limit = { has_province_modifier = death_camp } remove_province_modifier = death_camp }
 		}
 	}
+
+#Announce ICJ case against us
+country_event = {
+	id = 1412029
+	title = "$FROMCOUNTRY$ disputes our ownership of the South China Sea Islands"
+	desc = "As they have claims over the South China Sea Islands, they will not stand our presence on the Islands. They have sent an appeal to the ICJ for arbiteration in this matter."
+	picture = "south_china_sea_court"
+
+is_triggered_only = yes
+
+	option = {
+		name = "Condemn them!"
+prestige = 5
+relation = { who = FROM value = -50 }
+any_country = { limit = { relation = { who = FROM value = 100 } } relation = { who = FROM value = 50 } }
+ai_chance = { factor = 1 modifier = { factor = 0 NOT = { tag = CHI } } }
+		}
+
+	option = {
+		name = "SEE YOU IN COURT!"
+prestige = -10
+relation = { who = FROM value = 20 }
+any_country = { limit = { relation = { who = FROM value = 100 } } relation = { who = FROM value = 10 } }
+set_country_flag = scs_race
+ai_chance = { factor = 1 modifier = { factor = 0 tag = CHI } }
+		}
+	}
+
+#Announce Court Judgement
+country_event = {
+	id = 1412030
+	title = "The ICJ rules in our favour in the South China Sea Dispute"
+	desc = EVTDESC1412030
+	picture = "south_china_sea_court"
+
+trigger = { 
+NOT = { has_country_modifier = dispute_south_china_sea }
+has_country_flag = dispute_south_china_sea1
+}
+
+	option = {
+		name = "This is excellent news!"
+prestige = 10
+clr_country_flag = dispute_south_china_sea
+set_country_flag = dispute_south_china_sea_done
+random_country = { limit = { controls = 2576 } country_event = 1412031 }
+		}
+	}
+
+#Announce Court Judgement Recipent
+country_event = {
+	id = 1412031
+	title = "$FROMCOUNTRY$'s ICJ case disputing our ownership over the South China Sea Islands succeeds"
+	desc = EVTDESC1412031
+	picture = "south_china_sea_court"
+
+is_triggered_only = yes
+
+	option = {
+		name = "IGNORE THE COURT RULING!"
+prestige = 10
+relation = { who = FROM value = -50 }
+any_country = { limit = { relation = { who = FROM value = 100 } } relation = { who = FROM value = 20 } }
+badboy = 5
+ai_chance = { factor = 1 modifier = { factor = 0 NOT = { tag = CHI } } }
+set_country_flag = scs_race
+		}
+
+option = {
+		name = "Graciously accept the ruling!"
+prestige = -20
+relation = { who = FROM value = 50 }
+country_event = { id = 1412032 days = 30 }
+badboy = -5
+ai_chance = { factor = 1 modifier = { factor = 0 tag = CHI } }
+		}
+	}
+
+#Form South China Sea Islands International Zone
+country_event = {
+	id = 1412032
+	title = "Multilateral Compromise over the South China Sea Islands"
+	desc = "As the current owner of the South China Sea Islands have decided to adhere to the International Court of Justice Ruling, a compromise was struck between all nations with a claim to the Islands whereby they will be turned into an International Zone."
+	picture = "south_china_sea"
+
+is_triggered_only = yes
+
+	option = {
+		name = "I hope we can put this case to rest"
+2576 = { secede_province = SCS }
+SCS = { government = sar_government }
+2576 = { remove_core = KMT }
+2576 = { remove_core = CHI }
+2576 = { remove_core = MSY }
+2576 = { remove_core = PHI }
+2576 = { remove_core = DAI }
+2576 = { remove_core = IDO }
+2576 = { remove_core = BRU }
+2576 = { add_core = SCS }
+set_global_flag = dispute_south_china_sea_done
+		}
+
+	}
+
+#South China Sea Islands Come under our Control
+country_event = {
+	id = 1412033
+	title = "Recognition of South China Sea Islands Ownership"
+	desc = "As all the claimants are now under our sphere of influence or are protectorates of our nation, we have managed to get all of them to agree to our sovereignty over the South China Sea Islands."
+	picture = "south_china_sea"
+
+trigger = {
+OR = { tag = KMT OR = { is_sphere_leader_of = KMT is_our_vassal = KMT } }
+OR = { tag = CHI OR = { is_sphere_leader_of = CHI is_our_vassal = CHI } }
+OR = { tag = MSY OR = { is_sphere_leader_of = MSY is_our_vassal = MSY } }
+OR = { tag = PHI OR = { is_sphere_leader_of = PHI is_our_vassal = PHI } }
+OR = { tag = DAI OR = { is_sphere_leader_of = DAI is_our_vassal = DAI } }
+OR = { tag = IDO OR = { is_sphere_leader_of = IDO is_our_vassal = IDO } }
+OR = { tag = BRU OR = { is_sphere_leader_of = BRU is_our_vassal = BRU } }
+2576 = { has_province_modifier = pop_field }
+THIS = { controls = 2576 }
+has_country_flag = scs_marked
+}
+
+	option = {
+		name = "A victory for $COUNTRY$!"
+prestige = 50
+set_global_flag = dispute_south_china_sea_done
+2576 = { remove_core = KMT }
+2576 = { remove_core = CHI }
+2576 = { remove_core = MSY }
+2576 = { remove_core = PHI }
+2576 = { remove_core = DAI }
+2576 = { remove_core = IDO }
+2576 = { remove_core = BRU }
+
+2576 = { add_core = THIS }
+		}
+
+	}
