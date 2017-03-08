@@ -2913,6 +2913,7 @@ country_event = {
 	trigger = {
 		war = yes
 		has_country_modifier = called_allies_un
+NOT = { has_country_modifier = cold_war_hot }
 NOT = { has_country_modifier = resolution_vetoed_unsc }
 
 }
@@ -3614,7 +3615,7 @@ country_event = {
 	
 trigger = {
 has_country_modifier = spez_gp
-any_owned_province = { has_province_modifier = spez }
+#any_owned_province = { has_province_modifier = spez }
 NOT = { OR = { government = presidential_dictatorship government = proletarian_dictatorship government = proletarian_dictatorship1 government = theocracy government = nationalist_dictatorship government = populist_dictatorship } }
 }	
 
@@ -4389,6 +4390,169 @@ ideology = {
 	}
 
 set_country_flag = arg_election_fire1
+		}
+
+}
+
+#AI Nuke Money
+country_event = {
+	id = 1410151
+	title = "$COUNTRY$ Nuclear Weapons Development Push"
+	desc = "$COUNTRY$ has decided to push its Nuclear Weapons development forward by sourcing the funds required from the treasury and black budgets."
+	picture = "1410150"
+	
+trigger = { 
+ai = yes
+NOT = { has_country_modifier = develop_atomic_bomb }
+NOT = { has_country_modifier = develop_hydrogen_bomb }
+NOT = { has_country_modifier = hydrogen_nation }
+NOT = { has_country_modifier = atomic_nation }
+OR = { 
+AND = { tag = ENG ai = yes year = 1949 }
+AND = { tag = FRA ai = yes year = 1956 }
+AND = { tag = CHI ai = yes year = 1960 }
+
+AND = { tag = HND ai = yes year = 1970 }
+AND = { tag = PAK ai = yes year = 1980 }
+AND = { tag = NKO ai = yes year = 2003 }
+AND = { tag = ISR ai = yes year = 1963 }
+AND = { tag = SAF ai = yes year = 1979 }
+}
+NOT = { has_country_flag = nuke_money_aid }
+}
+
+mean_time_to_happen = { 
+months = 4
+}
+
+option = {
+name = "Onwards!"
+set_country_flag = nuke_money_aid
+money = 1900000
+		}
+
+}
+
+#AI Open Borders
+country_event = {
+	id = 1410152
+	title = "$COUNTRY$ Opens its Borders"
+	desc = "$COUNTRY$ has decided to open its borders to the world once again to take advantage of the benefits international trade can bring."
+	picture = "1410150"
+	
+trigger = { 
+ai = yes
+NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = theocracy } }
+immigration_policy = nobody_gets_out
+}
+
+mean_time_to_happen = { 
+months = 2
+}
+
+option = {
+name = "Welcome to $COUNTRY$!"
+political_reform = quota_immigration
+		}
+
+}
+
+#Nuclear False Warning - USA
+country_event = {
+	id = 1410153
+	title = "Nuclear Attack Imminent"
+	desc = EVTDESC1410153
+	picture = "1410153"
+	
+trigger = { 
+tag = USA
+OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation }
+USA = { government = democracy }
+RUS = { OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation } }
+assymetric_warfare = 1
+RUS = { government = proletarian_dictatorship }
+}
+
+mean_time_to_happen = { 
+months = 60
+}
+
+option = {
+name = "Unleash Nuclear Armaggeddon!"
+	war = { 
+target = RUS
+attacker_goal = { casus_belli = dismantle_cb } 
+defender_goal = { casus_belli = dismantle_cb }
+call_ally = yes }
+
+RUS = { 
+
+add_country_modifier = { name = nukes_used_recently duration = 30 }
+
+random_country = { limit = { tag = USA has_country_modifier = nuclear_cap_high } 
+country_event = 1331431 }
+random_country = { limit = { tag = USA has_country_modifier = nuclear_cap_medium } 
+country_event = 1331430 }
+random_country = { limit = { tag = USA has_country_modifier = nuclear_cap_low } 
+country_event = 1331429 } }
+
+ai_chance = { factor = 0 }
+		}
+
+option = {
+name = "Ignore it"
+ai_chance = { factor = 1 }
+		}
+
+}
+
+#Nuclear False Warning - RUS
+country_event = {
+	id = 1410154
+	title = "Nuclear Attack Imminent"
+	desc = EVTDESC1410153
+	picture = "1410154"
+	
+trigger = { 
+tag = RUS
+OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation }
+
+USA = { OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation } }
+
+USA = { government = democracy }
+assymetric_warfare = 1
+RUS = { government = proletarian_dictatorship }
+}
+
+mean_time_to_happen = { 
+months = 60
+}
+
+option = {
+name = "Unleash Nuclear Armaggeddon!"
+	war = { 
+target = USA
+attacker_goal = { casus_belli = dismantle_cb } 
+defender_goal = { casus_belli = dismantle_cb }
+call_ally = yes }
+
+USA = { add_country_modifier = { name = nukes_used_recently duration = 30 } }
+
+USA = { 
+
+random_country = { limit = { tag = RUS has_country_modifier = nuclear_cap_high } 
+country_event = 1331431 }
+random_country = { limit = { tag = RUS has_country_modifier = nuclear_cap_medium } 
+country_event = 1331430 }
+random_country = { limit = { tag = RUS has_country_modifier = nuclear_cap_low } 
+country_event = 1331429 } }
+
+ai_chance = { factor = 0 }
+		}
+
+option = {
+name = "Ignore it"
+ai_chance = { factor = 1 }
 		}
 
 }
