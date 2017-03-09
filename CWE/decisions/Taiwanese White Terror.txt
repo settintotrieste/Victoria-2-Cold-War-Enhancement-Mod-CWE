@@ -46,4 +46,100 @@ add_country_modifier = { name = taiwan_economy duration = -1 }
 			}
 	}
 
+one_china_policy = {
+		picture = "one_china_policy"
+	potential = {
+		OR = { tag = KMT tag = CHI }
+	CHI = { government = proletarian_dictatorship }
+	KMT = { NOT = { government = proletarian_dictatorship } } 	KMT = { NOT = { has_country_modifier = unsc_permanent_member } }
+CHI = { has_country_modifier = unsc_permanent_member }
+	NOT = { exists = TAI }
+	exists = KMT 
+	exists = CHI
+	NOT = { has_country_modifier = one_china_policy }
+			}
+		allow = {
+			war = no
+			election = no
+			is_vassal = no
+					}
+		effect = {
+prestige = 25
+add_country_modifier = { name = one_china_policy duration = -1 }
+set_global_flag = one_china_policy
+country_event = 1410160
+	}
+		ai_will_do = { 
+			factor = 1 
+			}
+	}
+
+end_one_china_policy = {
+		picture = "end_one_china_policy"
+	potential = {
+		tag = KMT
+	NOT = { exists = TAI }
+	exists = CHI
+	NOT = { has_global_flag = two_china }
+	CHI = { has_country_modifier = one_china_policy }
+	has_country_modifier = one_china_policy
+	has_global_flag = one_china_policy
+			}
+		allow = {
+			war = no
+			election = no
+			is_vassal = no
+has_ruling_party_ideology = nationalist
+NOT = { has_global_flag = blocsenabled }
+
+OR = { 
+ai = no
+AND = { ai = yes CHI = { NOT = { government = proletarian_dictatorship } } } 
+
+AND = { ai = yes CHI = { is_greater_power = no } }
+
+AND = { ai = yes KMT = { is_greater_power = yes } }
+
+}
+					}
+		effect = {
+prestige = 25
+any_owned = { add_core = TAI }
+set_global_flag = two_china
+remove_country_modifier = one_china_policy 
+CHI = { remove_country_modifier = one_china_policy }
+CHI = { country_event = 1410161 }
+	}
+		ai_will_do = { 
+			factor = 1 
+			}
+	}
+
+become_taiwan = {
+		picture = "become_taiwan"
+	potential = {
+		tag = KMT
+	NOT = { exists = TAI }
+	exists = CHI
+any_owned_province = { is_core = TAI }
+	has_global_flag = two_china
+CHI = { NOT = { has_country_modifier = one_china_policy } }
+	NOT = { has_country_modifier = one_china_policy }
+			}
+		allow = {
+			war = no
+			election = no
+NOT = { has_global_flag = blocsenabled }
+					}
+		effect = {
+prestige = 50
+change_tag = TAI
+any_owned = { remove_core = CHI }
+any_owned = { remove_core = KMT }
+	}
+		ai_will_do = { 
+			factor = 1 
+			}
+	}
+
 }

@@ -2942,6 +2942,7 @@ is_triggered_only = yes
 		end_war = FROM
 any_country = { limit = { AND = { war_with = THIS alliance_with = FROM } } end_war = THIS }
 		prestige = -10
+add_country_modifier = { name = un_armistice duration = 1825 }
 		ai_chance = { factor = 0.99 }
 			}
 
@@ -3469,7 +3470,7 @@ NOT = { has_global_flag = fbu_fired }
 }
 	
 mean_time_to_happen = { 
-months = 11
+months = 6
 }
 
 option = {
@@ -4553,6 +4554,247 @@ ai_chance = { factor = 0 }
 option = {
 name = "Ignore it"
 ai_chance = { factor = 1 }
+		}
+
+}
+
+#Terrorists Steal Nukes
+country_event = {
+	id = 1410155
+	title = "Terrorists have siezed Nuclear bombs"
+	desc = "Due to the current Civil War in our nation, terrorists have managed to sieze some of our nuclear bombs. We have reasons to suspect that they will use it to blackmail a Great Power. Our international standing has been gravely hit by this."
+	picture = "1410156"
+	
+trigger = { 
+OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation }
+is_greater_power = no
+revolt_percentage = 0.80
+average_militancy = 7
+}
+
+mean_time_to_happen = { 
+months = 8
+}
+
+option = {
+name = "Hunt them down at all costs!"
+prestige_factor = -0.1
+random_country = { limit = { is_greater_power = yes } country_event = { id = 1410156 days = 57 } relation = { who = THIS value = -100 } }
+		}
+
+}
+
+#Terrorists Steal Nukes
+country_event = {
+	id = 1410156
+	title = "Terrorists demand money or armageddon"
+	desc = EVTDESC1410156
+	picture = "1410155"
+	
+is_triggered_only = yes
+
+option = {
+name = "Pay the ransom"
+prestige = -1000
+money = -1000000
+ai_chance = { factor = 1 modifier = { factor = 0 NOT = { money = 1100000 } } }
+		}
+
+option = {
+name = "Launch the Operation"
+
+random_list = { 
+
+50 = { country_event = { id = 1410157 days = 10 } }
+
+50 = { country_event = { id = 1410158 days = 10 } }
+
+}
+
+ai_chance = { factor = 1 modifier = { factor = 0 money = 1100000 } }
+		}
+
+}
+
+#Terrorist operation - success
+country_event = {
+	id = 1410157
+	title = "Operation to neutralise terrorists succeeds"
+	desc = "The nuclear weapons have been recovered and the terrorists have been either killed or arrested. The world is safe again."
+	picture = "1410157"
+	
+is_triggered_only = yes
+
+option = {
+name = "Great"
+prestige = 100
+		}
+}
+
+#Terrorist operation - fail
+country_event = {
+	id = 1410158
+	title = "Operation to neutralise terrorists failed"
+	desc = "The nuclear weapons were not recovered and not all the terrorists have been captured or killed. This allowed the terrorists to set off the Nuclear Bomb in $CAPITAL$."
+	picture = "1410158"
+	
+is_triggered_only = yes
+
+option = {
+name = "Oh no"
+prestige = -2000
+any_owned = { limit = { is_capital = yes } add_province_modifier = { name = nuke_low duration = 3650 } }
+		}
+}
+
+#Taiwanese Independence
+country_event = {
+	id = 1410159
+	title = "Stirrings of Taiwanese Independence"
+	desc = EVTDESC1410159
+	picture = "taiwan_independence_core"
+	
+trigger = { 
+tag = KMT
+NOT = { any_owned_province = { is_core = TAI } }
+government = democracy
+ruling_party_ideology = nationalist
+NOT = { war_with = CHI }
+OR = { CHI = { exists = yes } CHI = { government = proletarian_dictatorship } }
+}
+
+mean_time_to_happen = { 
+months = 8
+}
+
+option = {
+name = "Interesting"
+any_owned = { add_core = TAI }
+		}
+
+}
+
+#One China Policy - start
+country_event = {
+	id = 1410160
+	title = "One China Policy"
+	desc = "$COUNTRY$ claims that they are the legitimate rulers of the whole of China and that the other Chinese Government is just a rebel government. Therefore only one Government can receive diplomatic recognition as the true China."
+	picture = "taiwan_independence_core"
+	
+is_triggered_only = yes
+
+major = yes
+
+option = {
+name = "We are the rulers of the whole China"
+prestige = 25
+		}
+
+}
+
+#One China Policy - end
+country_event = {
+	id = 1410161
+	title = "One China Policy Collaspe"
+	desc = "$FROMCOUNTRY$ claims that they are no longer bound by the One China Policy. That means that we will lose a claim over The Republic of China."
+	picture = "taiwan_independence_core"
+	
+is_triggered_only = yes
+
+major = yes
+
+option = {
+name = "WARR!!"
+war = { 
+target = KMT
+attacker_goal = { casus_belli = conquest } 
+defender_goal = { casus_belli = status_quo }
+}
+ai_chance = { factor = 1 modifier = { factor = 0 government = democracy } }
+		}
+
+option = {
+name = "Let them be"
+prestige_factor = -0.1
+ai_chance = { factor = 1 modifier = { factor = 0 NOT = { government = democracy } } }
+		} 
+
+}
+
+#One China Policy - Cleanup
+country_event = {
+	id = 1410162
+	title = "United China"
+	desc = "China has now been united under a single Government so the One China Policy will cease to bee in effect. Long live $COUNTRY$!"
+	picture = "taiwan_independence_core"
+	
+trigger = { 
+OR = { tag = KMT tag = CHI }
+NOT = { exists = TAI }
+has_global_flag = one_china_policy 
+OR = { CHI = { exists = no } KMT = { exists = no } }
+has_country_modifier = one_china_policy
+}
+
+major = yes
+
+option = {
+name = "Great"
+prestige = 50
+remove_country_modifier = one_china_policy
+		}
+
+}
+
+#Travel Ban Condemnation
+country_event = {
+	id = 1410163
+	title = "UN condemns $COUNTRY$'s Travel Ban"
+	desc = EVTDESC1410163
+	picture = "travel_ban_chaos"
+	
+is_triggered_only = yes
+
+option = {
+name = "We must keep the BAD DUDES out of this country!"
+prestige = -50
+		}
+
+}
+
+#Dalai Lama
+country_event = {
+	id = 1410164
+	title = "Visit to the Dalai Lama"
+	desc = EVTDESC1410164
+	picture = "dalai_lama"
+	
+trigger = {
+NOT = { exists = TIB }
+tag = USA
+year = 1959
+war = no
+NOT = { has_country_flag = tibet_visit_by_usa_1 }
+has_country_modifier = superpower
+CHI = { government = proletarian_dictatorship }
+USA = { government = democracy }
+}
+
+mean_time_to_happen = { 
+months = 8
+}
+
+option = {
+name = "Gift a watch"
+prestige = 10
+relation = { who = CHI value = -100 }
+set_country_flag = tibet_visit_by_usa_1
+ai_chance = { factor = 1 }
+		}
+option = {
+name = "Gift a War for Tibetan Freedom"
+war = { target = CHI attacker_goal = { casus_belli = liberate_country country = TIB } defender_goal = { casus_belli = status_quo } call_ally = yes }
+ai_chance = { factor = 0 }
 		}
 
 }
