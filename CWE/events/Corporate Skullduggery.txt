@@ -1,0 +1,404 @@
+#Skullduggery Initiation
+country_event = {
+	id = 214000
+title = "Multi-National Corporations begin operating in $CAPITAL$"
+	desc = EVTDESC214000
+	picture = "mnc_start"
+	
+	trigger = {
+NOT = { has_country_modifier = investor_flight }
+capital_scope = { NOT = { has_province_modifier = mnc_start } }
+OR = { has_country_modifier = mnchigh has_country_modifier = mncmedium }
+NOT = { ruling_party_ideology = communist }
+NOT = { government = theocracy }
+	}
+
+mean_time_to_happen = {
+		months = 60
+	}
+	
+	option = {
+	name = "They will bring us much money"
+prestige = 25
+any_owned = { limit = { is_capital = yes } add_province_modifier = { name = mnc_start duration = -1 } }
+any_owned = { limit = { is_capital = no } add_province_modifier = { name = mnc_operations duration = -1 } }
+				}
+}
+
+#Skullduggery Initiation Cleanup
+country_event = {
+	id = 214001
+title = "Multi-National Corporations close branches in $CAPITAL$"
+	desc = "A Multi-National Comapny has decided that $COUNTRY$ is no longer a good place to operate their business and have decided to cease all their operations in the country."
+	picture = "mnc_end"
+	
+	trigger = {
+capital_scope = { has_province_modifier = mnc_start }
+OR = { ruling_party_ideology = communist government = theocracy AND = { war = yes is_secondary_power = no is_greater_power = no } AND = { revolt_percentage = 0.25 is_secondary_power = no is_greater_power = no } }
+	}
+	
+	option = {
+	name = "They would have brought us much money"
+prestige = -25
+remove_country_modifier = mnc_corruption
+remove_country_modifier = mnc_corrupt_leadership
+add_country_modifier = { name = investor_flight duration = 365 }
+any_owned = { remove_province_modifier = mnc_start }
+any_owned = { remove_province_modifier = mnc_operations }
+any_owned = { remove_country_modifier = unfair_concessions }
+any_owned = { remove_country_modifier = unfair_rights }
+any_owned = { remove_country_modifier = unfair_lobbying }
+any_owned = { remove_country_modifier = unfair_privileges  }
+any_owned = { remove_country_modifier = unfair_crimes }
+any_owned = { remove_country_modifier = unfair_money }
+				}
+}
+
+#Skullduggery Level 1 - Putting the pieces in place
+country_event = {
+	id = 214002
+title = "Multi-National Companies deepens influence in Government"
+	desc = EVTDESC214002 
+	picture = "mnc_extend"
+	
+	trigger = {
+NOT = { has_country_modifier = mnc_corruption }
+capital_scope = { has_province_modifier = mnc_start }
+OR = { has_country_modifier = mnchigh has_country_modifier = mncmedium }
+NOT = { OR = { has_country_modifier = low_government_corruption has_country_modifier = minimal_government_corruption } }
+NOT = { ruling_party_ideology = communist }
+	}
+	
+mean_time_to_happen = {
+		months = 120
+modifier = { factor = 0.5 has_country_modifier = mnchigh }
+modifier = { factor = 0.75 has_country_modifier = mncmedium }
+modifier = { factor = 0.90 has_country_modifier = low_societal_corruption }
+modifier = { factor = 0.80 has_country_modifier = medium_societal_corruption }
+modifier = { factor = 0.60 has_country_modifier = large_societal_corruption }
+modifier = { factor = 0.50 has_country_modifier = massive_societal_corruption }
+	}
+
+	option = {
+	name = "Embrace it?"
+add_country_modifier = { name = mnc_corruption duration = -1 }
+				}
+	}
+
+#Skullduggery Level 2 - Putting the pieces in place
+country_event = {
+	id = 214003
+title = "Multi-National Companies control the Leadership"
+	desc = EVTDESC214003
+	picture = "mnc_control"
+	
+	trigger = {
+has_country_modifier = mnc_corruption
+NOT = { has_country_modifier = mnc_corrupt_leadership }
+capital_scope = { has_province_modifier = mnc_start }
+OR = { has_country_modifier = mnchigh has_country_modifier = mncmedium }
+NOT = { OR = { has_country_modifier = low_government_corruption has_country_modifier = minimal_government_corruption } }
+NOT = { ruling_party_ideology = communist }
+	}
+	
+mean_time_to_happen = {
+		months = 120
+modifier = { factor = 0.5 has_country_modifier = mnchigh }
+modifier = { factor = 0.75 has_country_modifier = mncmedium }
+modifier = { factor = 0.80 has_country_modifier = medium_societal_corruption }
+modifier = { factor = 0.60 has_country_modifier = large_societal_corruption }
+modifier = { factor = 0.50 has_country_modifier = massive_societal_corruption }
+	}
+
+	option = {
+	name = "Embrace it?"
+prestige = -25
+add_country_modifier = { name = mnc_corrupt_leadership duration = -1 }
+				}
+	}
+
+#Skullduggery Cleanup - Remove the pieces
+country_event = {
+	id = 214004
+title = "Multi-National Companies influence over Government diminishes"
+	desc = EVTDESC214004
+	picture = "mnc_control_end"
+	
+	trigger = {
+OR = { has_country_modifier = mnc_corruption has_country_modifier = mnc_corrupt_leadership }
+capital_scope = { has_province_modifier = mnc_start }
+OR = { has_country_modifier = low_government_corruption has_country_modifier = minimal_government_corruption }
+NOT = { ruling_party_ideology = communist }
+	}
+	
+mean_time_to_happen = {
+		months = 120
+modifier = { factor = 0.5 has_country_modifier = mnclow }
+modifier = { factor = 0.75 has_country_modifier = mncmedium }
+modifier = { factor = 0.90 has_country_modifier = low_societal_corruption }
+modifier = { factor = 0.80 has_country_modifier = medium_societal_corruption }
+modifier = { factor = 0.60 has_country_modifier = minimal_government_corruption }
+	}
+
+	option = {
+	name = "Great news!"
+prestige = 25
+remove_country_modifier = mnc_corruption
+remove_country_modifier = mnc_corrupt_leadership
+any_owned = { remove_country_modifier = unfair_concessions }
+any_owned = { remove_country_modifier = unfair_rights }
+any_owned = { remove_country_modifier = unfair_lobbying }
+any_owned = { remove_country_modifier = unfair_privileges  }
+any_owned = { remove_country_modifier = unfair_crimes }
+any_owned = { remove_country_modifier = unfair_money }
+				}
+	}
+
+#Skullduggery Attack 1 - Gain Unfair Concessions
+country_event = {
+	id = 214005
+title = "Multi-National Companies demand Unfair Concessions"
+	desc = EVTDESC214005
+	picture = "mnc_concessions"
+	
+	trigger = {
+
+NOT = { any_owned_province = { has_province_modifier = unfair_concessions } }
+OR = { has_country_modifier = mnc_corruption has_country_modifier = mnc_corrupt_leadership }
+capital_scope = { has_province_modifier = mnc_start }
+NOT = { OR = { has_country_modifier = low_government_corruption has_country_modifier = minimal_government_corruption } }
+NOT = { ruling_party_ideology = communist }
+	}
+	
+mean_time_to_happen = {
+		months = 46
+modifier = { factor = 1.36 has_country_modifier = mnclow }
+modifier = { factor = 1.02 has_country_modifier = mncmedium }
+modifier = { factor = 0.75 has_country_modifier = mnchigh }
+	}
+
+	option = {
+	name = "Accept!"
+prestige = -10
+any_owned = { limit = { is_colonial = no } add_province_modifier = { name = unfair_concessions duration = 3650 } }
+ai_chance = { factor = 0.99 }
+				}
+	option = {
+	name = "Reject!"
+prestige = 10
+country_event = { id = 214006 days = 57 }
+ai_chance = { factor = 0.01 }
+				}
+	}
+
+#Skullduggery Attack Consequence - Regime Change
+country_event = {
+	id = 214006
+title = "Multi-National Companies have forced a regime change"
+	desc = EVTDESC214006
+	picture = "mnc_regime_change"
+	
+is_triggered_only = yes
+
+	option = {
+	name = "We have no choice but to accept"
+prestige = -50
+
+add_country_modifier = { name = revolution_chaos duration = 365 }
+
+poor_strata = {
+	consciousness = 2
+	militancy = 4
+}
+middle_strata = {
+	consciousness = 3
+	militancy = 5
+}
+ruling_party_ideology = conservative
+				}
+	}
+
+#Skullduggery Attack 2 - Gain Unfair Worker's Rights
+country_event = {
+	id = 214007
+title = "Multi-National Companies demand Unfair Worker's Rights"
+	desc = EVTDESC214007
+	picture = "mnc_rights"
+	
+	trigger = {
+
+NOT = { any_owned_province = { has_province_modifier = unfair_rights } }
+OR = { has_country_modifier = mnc_corruption has_country_modifier = mnc_corrupt_leadership }
+capital_scope = { has_province_modifier = mnc_start }
+NOT = { OR = { has_country_modifier = low_government_corruption has_country_modifier = minimal_government_corruption } }
+NOT = { ruling_party_ideology = communist }
+	}
+	
+mean_time_to_happen = {
+		months = 38
+modifier = { factor = 1.36 has_country_modifier = mnclow }
+modifier = { factor = 1.02 has_country_modifier = mncmedium }
+modifier = { factor = 0.75 has_country_modifier = mnchigh }
+	}
+
+	option = {
+	name = "Accept!"
+prestige = -10
+any_owned = { limit = { is_colonial = no } add_province_modifier = { name = unfair_rights duration = 3650 } }
+ai_chance = { factor = 0.99 }
+				}
+	option = {
+	name = "Reject!"
+prestige = 10
+country_event = { id = 214006 days = 57 }
+ai_chance = { factor = 0.01 }
+				}
+	}
+
+#Skullduggery Attack 3 - Political Lobbying
+country_event = {
+	id = 214008
+title = "Multi-National Companies throw their weight behind us"
+	desc = EVTDESC214008
+	picture = "mnc_lobby"
+	
+	trigger = {
+
+NOT = { any_owned_province = { has_province_modifier = unfair_lobbying } }
+has_country_modifier = mnc_corrupt_leadership
+capital_scope = { has_province_modifier = mnc_start }
+NOT = { OR = { has_country_modifier = low_government_corruption has_country_modifier = minimal_government_corruption } }
+NOT = { ruling_party_ideology = communist }
+	}
+	
+mean_time_to_happen = {
+		months = 48
+modifier = { factor = 1.36 has_country_modifier = mnclow }
+modifier = { factor = 1.02 has_country_modifier = mncmedium }
+modifier = { factor = 0.75 has_country_modifier = mnchigh }
+	}
+
+	option = {
+	name = "Embrace them!"
+prestige = -10
+any_owned = { limit = { is_colonial = no } add_province_modifier = { name = unfair_lobbying duration = 3650 } }
+ai_chance = { factor = 0.99 }
+				}
+	option = {
+	name = "Distance from them!"
+prestige = 10
+country_event = { id = 214006 days = 57 }
+ai_chance = { factor = 0.01 }
+				}
+	}
+
+#Skullduggery Attack 4 - Unfair Contrating privileges
+country_event = {
+	id = 214009
+title = "Multi-National Companies demand Unfair Contrating Privileges"
+	desc = EVTDESC214009	
+	picture = "mnc_privileges"
+	
+	trigger = {
+
+NOT = { any_owned_province = { has_province_modifier = unfair_privileges } }
+has_country_modifier = mnc_corrupt_leadership
+capital_scope = { has_province_modifier = mnc_start }
+NOT = { OR = { has_country_modifier = low_government_corruption has_country_modifier = minimal_government_corruption } }
+NOT = { ruling_party_ideology = communist }
+	}
+	
+mean_time_to_happen = {
+		months = 44
+modifier = { factor = 1.36 has_country_modifier = mnclow }
+modifier = { factor = 1.02 has_country_modifier = mncmedium }
+modifier = { factor = 0.75 has_country_modifier = mnchigh }
+	}
+
+	option = {
+	name = "Give them what they want"
+prestige = -10
+any_owned = { limit = { is_colonial = no } add_province_modifier = { name = unfair_privileges duration = 3650 } }
+ai_chance = { factor = 0.99 }
+				}
+	option = {
+	name = "Reject!"
+prestige = 10
+country_event = { id = 214006 days = 57 }
+ai_chance = { factor = 0.01 }
+				}
+	}
+
+#Skullduggery Attack 5 - Cover up Crimes
+country_event = {
+	id = 214010
+title = "Multi-National Companies requests for covering up of crimes"
+	desc = EVTDESC214010
+	picture = "mnc_crimes"
+	
+	trigger = {
+
+NOT = { any_owned_province = { has_province_modifier = unfair_crimes } }
+has_country_modifier = mnc_corrupt_leadership
+capital_scope = { has_province_modifier = mnc_start }
+NOT = { OR = { has_country_modifier = low_government_corruption has_country_modifier = minimal_government_corruption } }
+NOT = { ruling_party_ideology = communist }
+	}
+	
+mean_time_to_happen = {
+		months = 40
+modifier = { factor = 1.36 has_country_modifier = mnclow }
+modifier = { factor = 1.02 has_country_modifier = mncmedium }
+modifier = { factor = 0.75 has_country_modifier = mnchigh }
+	}
+
+	option = {
+	name = "Give them what they want"
+prestige = -10
+any_owned = { limit = { is_colonial = no } add_province_modifier = { name = unfair_crimes duration = 3650 } }
+ai_chance = { factor = 0.99 }
+				}
+	option = {
+	name = "Reject!"
+prestige = 10
+country_event = { id = 214006 days = 57 }
+ai_chance = { factor = 0.01 }
+				}
+	}
+
+#Skullduggery Attack 6 - Embezzelment of State Funds
+country_event = {
+	id = 214011
+title = "Multi-National Companies embezzling our national funds"
+	desc = EVTDESC214011
+	picture = "mnc_steal"
+	
+	trigger = {
+
+NOT = { any_owned_province = { has_province_modifier = unfair_money } }
+has_country_modifier = mnc_corrupt_leadership
+capital_scope = { has_province_modifier = mnc_start }
+NOT = { OR = { has_country_modifier = low_government_corruption has_country_modifier = minimal_government_corruption } }
+NOT = { ruling_party_ideology = communist }
+	}
+	
+mean_time_to_happen = {
+		months = 36
+modifier = { factor = 1.36 has_country_modifier = mnclow }
+modifier = { factor = 1.02 has_country_modifier = mncmedium }
+modifier = { factor = 0.75 has_country_modifier = mnchigh }
+	}
+
+	option = {
+	name = "Give them what they want"
+prestige = -10
+any_owned = { limit = { is_colonial = no } add_province_modifier = { name = unfair_money duration = 3650 } }
+ai_chance = { factor = 0.99 }
+				}
+	option = {
+	name = "Reject!"
+prestige = 10
+country_event = { id = 214006 days = 57 }
+ai_chance = { factor = 0.01 }
+				}
+	}
