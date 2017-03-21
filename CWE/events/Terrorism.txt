@@ -252,9 +252,10 @@ province_event = {
 		owner = { NOT = { immigration_policy = nobody_gets_out } }
 		has_national_minority = yes
 		NOT = { has_province_modifier = terrorist_chaos }
+		NOT = { has_province_modifier = terror_strike_impending }
 	}
 
-	mean_time_to_happen = { 
+	mean_time_to_happen = {
 		months = 60
 
 		#Reduce based on reforms
@@ -449,24 +450,11 @@ province_event = {
 		}
 	}
 	
-	#immediate = { set_province_flag = terrorism_in_progress }
-
 	option = {
-		name = "What form did it take?"
+		name = EVT_1511119_A
 		prestige = -5
-
-		random_list = {
-			100	= { province_event = { id = 1511110 } }
-			100	= { province_event = { id = 1511111 } }
-			100	= { province_event = { id = 1511112 } }
-			60	= { province_event = { id = 1511113 } }
-			#60	= { province_event = { id = 1511114 } }
-			100	= { province_event = { id = 1511115 } }
-			60	= { province_event = { id = 1511116 } }
-			60	= { province_event = { id = 1511117 } }
-			60	= { province_event = { id = 1511118 } }
-		}
-		
+		add_country_modifier = { name = recent_terrorist_attack duration = 183 }
+		add_province_modifier = { name = terror_strike_impending duration = -1 }
 	}
 }
 
@@ -477,10 +465,16 @@ province_event = {
 	desc = EVTDESC1511110
 	#picture = "un_counter_terrorism_committee"
 	
-	is_triggered_only = yes
+	trigger = { has_province_modifier = terror_strike_impending }
+	mean_time_to_happen = { days = 6 }
+	
+	immediate = {
+		remove_province_modifier = terror_strike_impending
+	}
 
 	option = {
 		name = "Hunt down the terrorists"
+		add_province_modifier = { name = terrorist_chaos duration = 365 }
 	}
 }
 
@@ -491,7 +485,12 @@ province_event = {
 	desc = EVTDESC1511111
 	#picture = "un_counter_terrorism_committee"
 	
-	is_triggered_only = yes
+	trigger = { has_province_modifier = terror_strike_impending }
+	mean_time_to_happen = { days = 6 }
+
+	immediate = {
+		remove_province_modifier = terror_strike_impending
+	}
 
 	option = {
 		name = "Stop the terrorists"
@@ -505,19 +504,26 @@ province_event = {
 	desc = EVTDESC1511112
 	#picture = "un_counter_terrorism_committee"
 	
-	is_triggered_only = yes
+	trigger = { has_province_modifier = terror_strike_impending }
+	mean_time_to_happen = { days = 6 }
+
+	immediate = {
+		remove_province_modifier = terror_strike_impending
+	}
 	
 	option = {
 		name = "Pay the ransom"
 		money = -5000
+		add_province_modifier = { name = terrorist_chaos duration = 365 }
 	}
 
 	option = {
 		name = "Attempt a hostage rescue operation"
 		random_list = {
-			1 =	{ prestige = 10 }
-			1 =	{ prestige = -30 }
+			1 =	{ prestige = 10 state_scope = { any_pop = { consciousness = -1 } } }
+			1 =	{ prestige = -20 state_scope = { any_pop = { militancy = -1 } } }
 		}
+		add_province_modifier = { name = terrorist_chaos duration = 365 }
 	}
 }
 
@@ -528,11 +534,21 @@ province_event = {
 	desc = EVTDESC1511113
 	#picture = "un_counter_terrorism_committee"
 	
-	is_triggered_only = yes
+	trigger = {
+		has_province_modifier = terror_strike_impending
+		is_state_capital = yes
+	}
+	mean_time_to_happen = { days = 10 }
+
+	immediate = {
+		remove_province_modifier = terror_strike_impending
+	}
 	
 	option = {
 		name = "Oh, no"
 		prestige = -15
+		add_province_modifier = { name = terrorist_chaos duration = 450 }
+		add_country_modifier = { name = shipping_insecurity duration = 60 }
 	}
 
 }
@@ -544,216 +560,22 @@ province_event = {
 	desc = EVTDESC1511114
 	#picture = "un_counter_terrorism_committee"
 	
-trigger = {
-owner = { NOT = { immigration_policy = nobody_gets_out } }
-location = { port = yes } 
-location = { has_national_minority = yes }
-location = { NOT = { has_province_modifier = terrorist_chaos } }
-}	
+	trigger = {
+		has_province_modifier = terror_strike_impending
+		location = { port = yes }
+	}	
+	mean_time_to_happen = { days = 10 }
 
-mean_time_to_happen = { 
-months = 100
+	immediate = {
+		remove_province_modifier = terror_strike_impending
+	}
 
-#Reduce based on reforms
-modifier = { 
-factor = 1.2
-owner = { security_reform = security_service }
-}
-modifier = { 
-factor = 1.4
-owner = { security_reform = security_data_cohesion }
-}
-modifier = { 
-factor = 1.6
-owner = { security_reform = security_clearance_for_gov_services }
-}
-modifier = { 
-factor = 1.8
-owner = { security_reform = preemptive_security_actions }
-}
-
-#Reduce based on year
-modifier = { 
-factor = 1.5
-NOT = { year = 1950 }
-}
-modifier = { 
-factor = 1.5
-NOT = { year = 1960 }
-}
-modifier = { 
-factor = 1.5
-NOT = { year = 1970 }
-}
-modifier = { 
-factor = 1.5
-NOT = { year = 1980 }
-}
-modifier = { 
-factor = 1.5
-NOT = { year = 1990 }
-}
-modifier = { 
-factor = 1.5
-NOT = { year = 2000 }
-}
-modifier = { 
-factor = 1.5
-NOT = { year = 2010 }
-}
-modifier = { 
-factor = 1.5
-NOT = { year = 2020 }
-}
-
-#Increase - Age of Terrorism
-
-modifier = { 
-factor = 0.5
-owner = { has_country_modifier = war_on_terror }
-}
-
-modifier = { 
-factor = 0.5
-owner = { government = nationalist_dictatorship }
-}
-
-modifier = { 
-factor = 0.8
-is_primary_culture = no is_accepted_culture = no
-}
-
-modifier = { 
-factor = 0.9
-average_militancy = 5
-}
-
-modifier = { 
-factor = 0.8
-average_militancy = 6
-}
-
-modifier = { 
-factor = 0.7
-average_militancy = 7
-}
-
-modifier = { 
-factor = 0.6
-average_militancy = 8
-}
-
-modifier = { 
-factor = 0.5
-average_militancy = 9
-}
-
-modifier = { 
-factor = 0.4
-average_militancy = 10
-}
-
-#Increase - UN Resolutions
-modifier = { 
-factor = 0.9 
-has_global_flag = 1963_un_terror_convention 
-}
-modifier = { 
-factor = 0.9
-has_global_flag = 1970_un_terror_convention 
-}
-modifier = { 
-factor = 0.8 
-has_global_flag = 1971_un_terror_convention 
-}
-modifier = { 
-factor = 0.8 
-has_global_flag = 1973_un_terror_convention 
-}
-modifier = { 
-factor = 0.7
-has_global_flag = 1979_un_terror_convention 
-}
-modifier = { 
-factor = 0.7
-has_global_flag = 1988_un_terror_convention 
-}
-modifier = { 
-factor = 0.6
-has_global_flag = 1991_un_terror_convention 
-}
-modifier = { 
-factor = 0.6 
-has_global_flag = 1997_un_terror_convention 
-}
-modifier = { 
-factor = 0.5
-has_global_flag = 1999_un_terror_convention 
-}
-
-#Reduction
-modifier = { 
-factor = 1.5 
-owner = { has_country_flag = 1963_un_terror_convention }
-}
-modifier = { 
-factor = 1.5 
-owner = { has_country_flag = 1970_un_terror_convention }
-}
-modifier = { 
-factor = 1.5 
-owner = { has_country_flag = 1971_un_terror_convention }
-}
-modifier = { 
-factor = 1.5 
-owner = { has_country_flag = 1973_un_terror_convention }
-}
-modifier = { 
-factor = 1.5 
-owner = { has_country_flag = 1979_un_terror_convention }
-}
-modifier = { 
-factor = 1.5 
-owner = { has_country_flag = 1988_un_terror_convention }
-}
-modifier = { 
-factor = 1.5 
-owner = { has_country_flag = 1991_un_terror_convention }
-}
-modifier = { 
-factor = 1.5 
-owner = { has_country_flag = 1997_un_terror_convention }
-}
-modifier = { 
-factor = 1.5 
-owner = { has_country_flag = 1999_un_terror_convention }
-}
-modifier = { 
-factor = 1.5 
-owner = { has_country_flag = un_counter_terrorism_committee }
-}
-modifier = { 
-factor = 2 
-owner = { has_country_modifier = interpol }
-}
-modifier = { 
-factor = 2
-owner = { government = theocracy }
-}
-modifier = { 
-factor = 2
-owner = { has_country_modifier = freedom_fighters_definition }
-}
-
-
-}
-
-option = {
-	name = "Oh, no"
-prestige = -20
-add_country_modifier = { name = recent_terrorist_attack duration = 183 }
-add_province_modifier = { name = terrorist_chaos duration = 365 }
-			}
+	option = {
+		name = "Oh, no"
+		prestige = -15
+		add_province_modifier = { name = terrorist_chaos duration = 365 }
+		add_country_modifier = { name = shipping_insecurity duration = 30 }
+	}
 
 }
 
@@ -764,10 +586,16 @@ province_event = {
 	desc = EVTDESC1511115
 	#picture = "un_counter_terrorism_committee"
 
-	is_triggered_only = yes
+	trigger = { has_province_modifier = terror_strike_impending }
+	mean_time_to_happen = { days = 6 }
+
+	immediate = {
+		remove_province_modifier = terror_strike_impending
+	}
 
 	option = {
 		name = "We pray for the victims"
+		add_province_modifier = { name = terrorist_chaos duration = 365 }
 	}
 }
 
@@ -778,12 +606,17 @@ province_event = {
 	desc = EVTDESC1511116
 	#picture = "un_counter_terrorism_committee"
 
-	is_triggered_only = yes
+	trigger = { has_province_modifier = terror_strike_impending }
+	mean_time_to_happen = { days = 10 }
+
+	immediate = {
+		remove_province_modifier = terror_strike_impending
+	}
 
 	option = {
 		name = "We pray for the deceased"
+		add_province_modifier = { name = terrorist_chaos duration = 365 }
 	}
-
 }
 
 #Knifing
@@ -793,10 +626,16 @@ province_event = {
 	desc = EVTDESC1511117
 	#picture = "un_counter_terrorism_committee"
 	
-	is_triggered_only = yes
+	trigger = { has_province_modifier = terror_strike_impending }
+	mean_time_to_happen = { days = 10 }
+
+	immediate = {
+		remove_province_modifier = terror_strike_impending
+	}
 	
 	option = {
 		name = "Condemn the act"
+		add_province_modifier = { name = terrorist_chaos duration = 365 }
 	}
 
 }
@@ -808,10 +647,16 @@ province_event = {
 	desc = EVTDESC1511118
 	#picture = "un_counter_terrorism_committee"
 	
-	is_triggered_only = yes
+	trigger = { has_province_modifier = terror_strike_impending }
+	mean_time_to_happen = { days = 10 }
+
+	immediate = {
+		remove_province_modifier = terror_strike_impending
+	}
 	
 	option = {
 		name = "A national tragedy"
+		add_province_modifier = { name = terrorist_chaos duration = 365 }
 	}
 
 }
