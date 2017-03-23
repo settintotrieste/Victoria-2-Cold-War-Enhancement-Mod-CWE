@@ -1,0 +1,179 @@
+political_decisions = {
+
+cyber_warfare = {
+		picture = "cyber_warfare"
+		potential = {
+			NOT = { has_country_modifier = cyber_warfare }
+	is_greater_power = yes
+		has_country_modifier = spy_agency
+			strd_internet = 1
+		}
+		allow = {
+			NOT = { has_country_modifier = cyber_warfare }
+			war = no
+			election = no	
+			neodigital = 1
+			money = 1000000
+		}
+		effect = {
+prestige = -10
+add_country_modifier = { name = cyber_warfare duration = -1 }
+			treasury = -500000
+any_country = { limit = { has_country_modifier = cyber_warfare } relation = { who = THIS value = -25 } }
+						}		
+		ai_will_do = { factor = 1 }
+	}
+
+change_cyber_warfare = {
+		picture = "change_cyber_warfare"
+		potential = {
+			has_country_modifier = cyber_warfare
+OR = { has_country_modifier = cyber_counter_aim has_country_modifier = cyber_economic_aim has_country_modifier = cyber_political_aim }
+			}
+alert = no
+		allow = {
+OR = {
+
+ai = no
+
+AND = { 
+NOT = { has_country_modifier = cyber_political_aim } war_policy = jingoism 
+} 
+AND = { 
+NOT = { has_country_modifier = cyber_economic_aim } 
+war_policy = pro_military 
+} 
+AND = { 
+NOT = { has_country_modifier = cyber_counter_aim } 
+war_policy = pacifism 
+} 
+}
+		}
+		effect = {
+	remove_country_modifier = cyber_economic_aim
+	remove_country_modifier = cyber_political_aim
+	remove_country_modifier = cyber_counter_aim
+	remove_country_modifier = cyber_warfare_preparation
+						}		
+		ai_will_do = { factor = 1 }
+	}
+
+cyber_political_aim = {
+		picture = "cyber_political_aim"
+		potential = {
+			has_country_modifier = cyber_warfare
+NOT = { has_country_modifier = cyber_economic_aim }
+NOT = { has_country_modifier = cyber_political_aim }
+NOT = { has_country_modifier = cyber_counter_aim }
+			}
+alert = no
+		allow = {
+	OR = { ai = no war_policy = jingoism }
+		}
+		effect = {
+add_country_modifier = { name = cyber_political_aim duration = -1 }
+add_country_modifier = { name = cyber_warfare_preparation duration = 800 }	
+							}		
+		ai_will_do = { factor = 1 }
+	}
+
+cyber_economic_aim = {
+		picture = "cyber_economic_aim"
+		potential = {
+			has_country_modifier = cyber_warfare
+NOT = { has_country_modifier = cyber_economic_aim }
+NOT = { has_country_modifier = cyber_political_aim }
+NOT = { has_country_modifier = cyber_counter_aim }					}
+alert = no
+		allow = {
+	OR = { ai = no war_policy = pro_military }
+		}
+		effect = {
+add_country_modifier = { name = cyber_economic_aim duration = -1 }
+add_country_modifier = { name = cyber_warfare_preparation duration = 400 }	
+						}		
+		ai_will_do = { factor = 1 }
+	}
+
+cyber_counter_aim = {
+		picture = "cyber_counter_aim"
+		potential = {
+			has_country_modifier = cyber_warfare
+NOT = { has_country_modifier = cyber_economic_aim }
+NOT = { has_country_modifier = cyber_political_aim }
+NOT = { has_country_modifier = cyber_counter_aim }					}
+alert = no
+		allow = {
+	OR = { ai = no war_policy = pacifism }
+		}
+		effect = {
+add_country_modifier = { name = cyber_counter_aim duration = -1 }					
+}		
+		ai_will_do = { factor = 1 }
+	}
+
+cyber_economic_attack = {
+		picture = "cyber_economic_attack"
+		potential = {
+			has_country_modifier = cyber_warfare
+has_country_modifier = cyber_economic_aim
+NOT = { has_country_modifier = recent_cyber_warfare }
+NOT = { has_country_modifier = cyber_warfare_preparation }
+					}
+		allow = {
+money = 200000
+	any_neighbor_country = { NOT = { has_country_modifier = cyber_counter_aim } NOT = { relation = { who = THIS value = -100 } } }
+		}
+		effect = {
+money = -150000
+add_country_modifier = { name = recent_cyber_warfare duration = 800 }
+
+add_country_modifier = { name = cyber_warfare_preparation duration = 1200 }
+
+		random_country = { 
+limit = { 
+neighbour = THIS 
+NOT = { has_country_modifier = cyber_counter_aim } 
+NOT = { relation = { who = THIS value = -100 } } 
+} 
+country_event = 1412058
+}				
+			}		
+		ai_will_do = { factor = 1 }
+	}
+
+cyber_political_attack = {
+		picture = "cyber_political_attack"
+		potential = {
+			has_country_modifier = cyber_warfare
+has_country_modifier = cyber_political_aim
+NOT = { has_country_modifier = recent_cyber_warfare }
+NOT = { has_country_modifier = cyber_warfare_preparation }
+					}
+		allow = {
+money = 200000
+	any_neighbor_country = { election = yes NOT = { has_country_modifier = cyber_counter_aim } NOT = { relation = { who = THIS value = -100 } } }
+		}
+		effect = {
+
+money = -100000
+
+add_country_modifier = { name = recent_cyber_warfare duration = 800 }
+
+add_country_modifier = { name = cyber_warfare_preparation duration = 1200 }
+
+		random_country = { 
+limit = { 
+election = yes 
+neighbour = THIS 
+NOT = { has_country_modifier = cyber_counter_aim } 
+NOT = { relation = { who = THIS value = -100 } } 
+} 
+country_event = 1412059 
+relation = { who = THIS value = -25 }
+}				
+				}		
+		ai_will_do = { factor = 1 }
+	}
+
+}
