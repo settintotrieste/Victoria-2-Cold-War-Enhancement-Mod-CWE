@@ -1542,3 +1542,140 @@ add_province_modifier = { name = cyber_political_attack duration = 180 }
 }
 					}
 		}
+
+#Cyber Attack Nuke Sabotage
+country_event = {
+	id = 1412060
+	title = "Nuclear Weapons Development Systems Hacked"
+	desc = EVTDESC1412060
+	picture = "nuclear_cyber_attack"
+
+is_triggered_only = yes
+
+	option = {
+		name = "Find those hackers!"
+prestige = -25
+remove_country_modifier = develop_atomic_bomb
+add_country_modifier = { name = develop_atomic_bomb duration = 1460 }
+any_pop = { 
+ideology = {
+	factor = 0.2
+	value = nationalist
+}
+	}
+					}
+		}
+
+#Biological weapons developed
+country_event = {
+	id = 1412061
+	title = "Biological Weapons Developed"
+	desc = EVTDESC1412061
+	picture = "biological_weapons"
+
+trigger = {
+has_country_flag = develop_bio_weapons
+NOT = { has_country_modifier = develop_bio_weapons }
+NOT = { has_country_modifier = bio_nation }
+}
+
+	option = {
+		name = "Excellent!"
+		prestige = 10
+clr_country_flag = develop_bio_weapons
+add_country_modifier = { name = bio_nation duration = -1 }
+					}
+		}
+
+#Biological weapons attack
+country_event = {
+	id = 1412062
+	title = "$COUNTRY$ has been struck by Biological Weapons"
+	desc = "Our nation has been struck by biological weapons, our population has been severely damaged by the weapons."
+	picture = "biological_weapons_attack"
+
+is_triggered_only = yes
+	option = {
+		name = "A disaster!"
+		prestige = -50
+add_country_modifier = { name = biological_attack duration = -1 }
+random = {
+	chance = 50
+	country_event = 1412063
+}					
+			}
+		}
+
+#Biological weapons Epidemic
+country_event = {
+	id = 1412063
+	title = "Biological Weapons Especially Infectious"
+	desc = "The biological weapon that was unleashed on our nation was especially infectious has has caused an epidemic in our nation. This will allow the weapons to spread to other nations."
+	picture = "biological_weapons_attack"
+major = yes
+is_triggered_only = yes
+
+	option = {
+		name = "This can spread!"
+poor_strata = {
+	consciousness = 1
+	militancy = 1
+}
+middle_strata = {
+	consciousness = 3
+	militancy = 2
+}
+rich_strata = {
+	consciousness = 4
+	militancy = 3
+}
+set_country_flag = spreading_bio_weapon				
+	}
+		}
+
+#Biological Weapons spread
+country_event = {
+	id = 1412064
+	title = "Biological Weapons spreads to our nation"
+	desc = "A nation has been struck by biological weapons and the agents have been highly infectious allowing it to spread to $COUNTRY$ due to our proximity to a nation which is currently infected with the agents."
+	picture = "agent_spreads"
+
+trigger = {
+NOT = { has_country_flag = spreading_bio_weapon }
+NOT = { has_country_modifier = biological_attack }
+any_neighbor_country = { has_country_flag = spreading_bio_weapon has_country_modifier = biological_attack }
+
+}
+	
+mean_time_to_happen = { 
+months = 2
+}
+
+	option = {
+		name = "We need to find a vaccine for it!"
+prestige = -25
+set_country_flag = spreading_bio_weapon
+add_country_modifier = { name = biological_attack duration = -1 }
+					}
+		}
+
+#Biological weapons Vaccine developed
+country_event = {
+	id = 1412065
+	title = "Biological Weapons Vaccine Developed"
+	desc = "Our Scientists, after much toil and expense have managed to create a vaccine to eradicate the impact of the biological agents that ended up spreading in our nation."
+	picture = "biological_weapons_cure"
+
+trigger = {
+has_country_flag = vaccine_development
+NOT = { has_country_modifier = vaccine_development }
+}
+
+	option = {
+		name = "That's a relief!"
+clr_country_flag = vaccine_development
+remove_country_modifier = biological_attack
+clr_country_flag = spreading_bio_weapon
+any_country = { clr_country_flag = spreading_bio_weapon }
+					}
+		}
