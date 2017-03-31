@@ -656,9 +656,9 @@ pops = {
 	POP_SAVINGS = 0.15, 
 	
 	STATE_CREATION_ADMIN_LIMIT = 0.01,
-	MIL_TO_JOIN_REBEL = 7, -- Rebels over this will join a faction
-	MIL_TO_JOIN_RISING = 8, -- Rebels over this will join a general rising
-	MIL_TO_AUTORISE = 9, -- Rebels over this rise no matter what
+	MIL_TO_JOIN_REBEL = 8, -- Rebels over this will join a faction
+	MIL_TO_JOIN_RISING = 9, -- Rebels over this will join a general rising
+	MIL_TO_AUTORISE = 10, -- Rebels over this rise no matter what
 	REDUCTION_AFTER_RISEING = 1, -- After a pop spawns a rebellion, its militancy will be reduced this much
 	REDUCTION_AFTER_DEFEAT = 9.0, -- After a rebellion is being defeated in combat, its pop militancy will be divided by this number.
 																-- (if value < 1.0, the MIL will be increased) (Beware! value must be > 0)
