@@ -2209,27 +2209,46 @@ country_event = {
 	title = "Transition to Democracy"
 	desc = EVTDESC1412082
 	picture = "indonesia_democracy"
+	fire_only_once = yes
 
 	trigger = {
-	tag = IDO
-	government = presidential_dictatorship
-	OR = { average_militancy = 9 year = 1997 }
-	NOT = { has_country_flag = indoneisa_thaw }
+		tag = IDO
+		government = presidential_dictatorship
+		OR = {
+			average_militancy = 9
+			AND = {
+				year = 1997
+				NOT = { poor_strata_life_needs = 0.95 }
+			}
+		}
 	}
 
-mean_time_to_happen = { month = 18 }
+	mean_time_to_happen = {
+		months = 18
+		modifier = {
+			factor = 0.9
+			NOT = { poor_strata_life_needs = 0.8 }
+		}
+		modifier = {
+			factor = 0.7
+			NOT = { poor_strata_life_needs = 0.5 }
+		}
+		modifier = {
+			factor = 0.7
+			NOT = { unemployment_by_type = { type = farmers value = 0.5 } }
+		}
+	}
 
 	option = {
 		name = "Yes!"
 		prestige = 10
-government = democracy
-country_event = 800054
-	set_country_flag = indoneisa_thaw
-					}
+		government = democracy
+		country_event = 800054
+		ai_chance = { factor = 0.9 }
+	}
 	option = {
 		name = "No"
 		prestige = -50
-		set_country_flag = indoneisa_thaw
 		ai_chance = { factor = 0.1 }
-					}
-		}
+	}
+}
