@@ -6,16 +6,66 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-    tag = LEB
-    year = 1975 NOT = { year = 1990 }
-    government = democracy
+	tag = LEB
+	year = 1975 NOT = { year = 1990 }
+	government = democracy
   }
 
   mean_time_to_happen = { months = 11 }
 
   option = {
-    name = EVT_8008751_A
+	name = EVT_8008751_A
 	any_pop = { militancy = 5.0  consciousness = 4 }
 	any_owned = { limit = { is_capital  = no } change_controller = REB }
+	random_country = { limit = { NOT = { exists = PAL } tag = ISR } country_event = { id = 8008752 days = 60 } } # israel.txt
+  }
+}
+
+country_event = {
+  id = 8008753
+  title = EVT_8008753_NAME # Operation Litani
+  desc = EVT_8008753_DESC # The rebels in the south, most of whom are Palestinian refugees, have crossed the Sidon border and attacked Israel, who is now occupying land up to the Litani River. Fortunately for us, they plan to use the land to support our faction of the civil war. Unfortunately for us, they have not revealed their plans to return the land.
+  picture = "nwo2_lebanese_civil_war"
+  is_triggered_only = yes # ISR event 8008752 israel.txt
+
+  option = {
+	name = EVT_8008753_A #This is a disaster!
+	war = {
+		target = PAL
+		attacker_goal = { casus_belli = annex_core_country }
+		call_ally = no
+	}
+  }
+}
+
+country_event = {
+  id = 8008754
+  title = EVT_8008754_NAME # May 17 Agreement
+  desc = EVT_8008754_DESC # With the civil war over, Israel, assisted by the UN, has proposed a treaty. If we agree to end our state of war with Israel, one that has lasted since the Arab-Israeli war, they will withdraw from South Lebabon. This will pave the way to further diplomacy with Israel.
+  picture = "nwo2_lebanese_civil_war"
+  fire_only_once = yes
+
+  trigger = {
+	ISR = { owns = 915 }
+	915 = { is_core = THIS }
+	any_owned_province = { NOT = { controlled_by = REB } }
+	primary_culture = christian_arab
+  }
+
+  option = {
+	name = EVT_8008754_A #Sign the treaty
+	ISR = {
+		country_event = 8008755
+		relation = { who = THIS value = 50 }
+	}
+	ai_chance = { factor = 0.95 }
+  }
+  
+  option = {
+	name = EVT_8008754_B #That land is more trouble than it's worth
+	prestige = -30
+	915 = { remove_core = THIS }
+	any_pop = { consciousness = 1 }
+	ai_chance = { factor = 0.05 modifier = { factor = 0 relation = { who = ISR value = 0 } } }
   }
 }
