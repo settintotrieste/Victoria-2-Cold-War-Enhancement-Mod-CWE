@@ -272,28 +272,45 @@ country_event = { # Philippeville massacre
   fire_only_once = yes
 
   trigger = {
-    tag = FRA
+	owns = 425 # Paris
 	owns = 1700 # Algiers
-    year = 1955 NOT = { year = 1970 }
+	year = 1955 NOT = { year = 1970 }
 	war = no
   }
 
   mean_time_to_happen = { months = 8 }
 
-  option = {
-    name = EVT_8000323_A
-	any_pop = { limit = { culture = sunni_arab } militancy = 2 consciousness = 1 }
+  immediate = {
 	release = ALG
 	ALG = { any_owned = { limit = { NOT = { OR = { province_id = 1707 province_id = 1700 province_id = 1706 province_id = 1703 province_id = 1701 province_id = 1702 province_id = 1710 } } } change_controller = FRA } }
 	casus_belli = { target = ALG type = annex_core_country months = 12 }
 	war = { target = ALG attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } }
-	any_country = { 
-		limit = { tag = FRA OR = { is_our_vassal = MOR NOT = { exists = MOR } } owns = 1685 }
+  }
+
+  option = {
+	name = EVT_8000323_A
+	any_pop = { limit = { culture = sunni_arab } militancy = 2 consciousness = 1 }
+	MOR = { random_country = { #First switch to MOR because can't switch to own scope
+		limit = {
+			owns = 425 #Paris
+			OR = {
+				is_our_vassal = MOR
+				is_possible_vassal = MOR
+			}
+		}
+		release = MOR
 		release_vassal = MOR
-		MOR = { country_event = 8009927 }
-		FRA = { diplomatic_influence = { who = MOR value = -200 } }
-		FRA = { casus_belli = { target = MOR type = make_puppet months = 24 } }
-	}
+		leave_alliance = MOR
+		diplomatic_influence = { who = MOR value = -200 }
+		add_casus_belli = { target = MOR type = become_independent months = 24 }
+		casus_belli = { target = MOR type = make_puppet months = 24 }
+		#MOR = { country_event = 8009927 }
+		war = {
+			target = MOR
+			attacker_goal = { casus_belli = make_puppet }
+			defender_goal = { casus_belli = become_independent }
+		}
+	} }
 	prestige = -10
 	ai_chance = { factor = 0 }
   }
@@ -301,17 +318,21 @@ country_event = { # Philippeville massacre
     option = {
     name = EVT_8000323_B
 	any_pop = { limit = { culture = sunni_arab } militancy = 1 consciousness = 2 }
-	release = ALG
-	ALG = { any_owned = { limit = { NOT = { OR = { province_id = 1707 province_id = 1700 province_id = 1706 province_id = 1703 province_id = 1701 province_id = 1702 province_id = 1710 } } }  change_controller = FRA } }
-	casus_belli = { target = ALG type = annex_core_country months = 12 }
-	war = { target = ALG attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } }
-	any_country = { 
-		limit = { tag = FRA OR = { is_our_vassal = MOR NOT = { exists = MOR } } owns = 1685 } 
+	MOR = { random_country = { #First switch to MOR because can't switch to own scope
+		limit = {
+			owns = 425 #Paris
+			OR = {
+				is_our_vassal = MOR
+				is_possible_vassal = MOR
+			}
+		}
+		release = MOR
 		release_vassal = MOR
+		diplomatic_influence = { who = MOR value = 50 }
+		relation = { who = MOR value = 50 }
 		MOR = { country_event = 8009927 }
-		FRA = { diplomatic_influence = { who = MOR value = 50 } } 
-		FRA = { relation = { who = MOR value = 50 } }
-	}
+	} }
+
 	prestige = 5
 	ai_chance = { factor = 100 }
   }
