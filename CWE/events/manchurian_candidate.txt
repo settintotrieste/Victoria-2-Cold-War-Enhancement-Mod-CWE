@@ -1,0 +1,214 @@
+#Manchurian Candidate Program Result
+country_event = {
+	id = 1412083
+	title = MANCAN_RESULT_NAME
+	desc = MANCAN_RESULT_DESC
+	picture = "manchurian_candidate"
+
+	is_triggered_only = yes
+
+	option = {
+		name = MANCAN_RESULT_A
+		random_list = {
+			25 = { country_event = 1412084 } #Succeed
+			75 = { country_event = 1412085 } #Fail
+		}
+	}
+}
+
+#Manchurian Candidate Program Success
+country_event = {
+	id = 1412084
+	title = MANCAN_WIN_NAME
+	desc = MANCAN_WIN_DESC
+	picture = "manchurian_candidate_win"
+
+	is_triggered_only = yes
+
+	option = {
+		name = MANCAN_WIN_A
+		prestige = 1000
+		random_country = { 
+			limit = { OR = { government = democracy government = democracy1 government = socialist_democracy } rank = 1 } 
+			relation = { who = THIS value = -50 } 
+			country_event = 1412086 #Effects
+		}
+	}
+}
+
+#Manchurian Candidate Program Fails
+country_event = {
+	id = 1412085
+	title = MANCAN_LOSE_NAME
+	desc = MANCAN_LOSE_DESC
+	picture = "manchurian_candidate_lose"
+
+	is_triggered_only = yes
+
+	option = {
+		name = MANCAN_LOSE_A
+		prestige_factor = -0.40
+		random_country = { 
+			limit = { OR = { government = democracy government = democracy1 government = socialist_democracy } rank = 1 } 
+			relation = { who = THIS value = -200 } 
+			country_event = 1412091 #Inform of failure
+		}
+	}
+}
+
+#Manchurian Candidate Program Target Step 1
+country_event = {
+	id = 1412086
+	title = MANCAN_1_NAME
+	desc = MANCAN_1_DESC
+	picture = "manchurian_candidate_1"
+
+	is_triggered_only = yes
+
+	option = {
+		name = MANCAN_LOSE_A
+		any_pop = { militancy = 5 }
+		add_country_modifier = { name = revolution_chaos duration = 1460 }
+		country_event = { id = 1412087 days = 30 }
+	}
+}
+
+#Manchurian Candidate Program Target Step 2
+country_event = {
+	id = 1412087
+	title = MANCAN_2_NAME
+	desc = MANCAN_2_DESC
+	picture = "manchurian_candidate_2"
+
+	is_triggered_only = yes
+
+	option = {
+		name = MANCAN_2_A
+		any_pop = { militancy = 2 }
+		country_event = { id = 1412088 days = 10 }
+	}
+}
+
+#Manchurian Candidate Program Target Step 3
+country_event = {
+	id = 1412088
+	title = MANCAN_3_NAME
+	desc = MANCAN_3_DESC
+	picture = "manchurian_candidate_3"
+
+	is_triggered_only = yes
+
+	option = {
+		name = MANCAN_3_A
+		government = presidential_dictatorship 
+		country_event = 800050
+		prestige_factor = -0.40
+		country_event = { id = 1412089 days = 15 }
+	}
+}
+
+#Manchurian Candidate Program Target Step 4
+country_event = {
+	id = 1412089
+	title = MANCAN_4_NAME
+	desc = MANCAN_4_DESC
+	picture = "manchurian_candidate_4"
+
+	is_triggered_only = yes
+
+	option = {
+		name = MANCAN_4_A
+		any_country = { limit = { exists = no any_core = { owned_by = THIS } } country_event = 1412090 }
+
+		any_country = { limit = { in_sphere = THIS } diplomatic_influence = { who = THIS value = -100 } }
+
+		prestige_factor = -0.50
+	}
+}
+
+#Manchurian Candidate Program Target Step 5
+country_event = {
+	id = 1412090
+	title = MANCAN_5_NAME
+	desc = MANCAN_5_DESC
+	picture = "manchurian_candidate_4"
+
+	is_triggered_only = yes
+
+	option = {
+		name = MANCAN_5_A
+		FROM = { release = THIS }
+		add_country_modifier = { name = revolution_chaos duration = 1460 }
+		FROM = { war = {
+				target = THIS
+				attacker_goal = { casus_belli = annex_core_country }
+				defender_goal = { casus_belli = status_quo }
+				call_ally = no } }
+	}
+}
+
+#Manchurian Candidate Program Target Step 5
+country_event = {
+	id = 1412091
+	title = MANCAN_FOIL_NAME
+	desc = MANCAN_FOIL_DESC
+	picture = "manchurian_candidate_lose"
+
+	is_triggered_only = yes
+
+	option = {
+		name = MANCAN_FOIL_A
+		prestige = 100
+		any_pop = { militancy = -5 }
+		relation = { who = FROM value = -400 }
+	}
+}
+
+#CSA Territorial Expansion
+country_event = {
+	id = 1412092
+	title = MANCAN_CSA_NAME
+	desc = MANCAN_CSA_DESC
+	picture = "manchurian_candidate_4"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = CSA
+		war_with = USA
+	}
+
+	option = {
+		name = MANCAN_CSA_A
+		USA = {
+			any_owned = {
+				limit = {
+					#port = yes
+					is_capital = no
+					is_core = USA
+					NOT = { any_pop = { has_pop_culture = white_spanish } }
+					any_pop = { has_pop_culture = black_anglo }
+				}
+				add_core = CSA
+			}
+		}
+		USA = {
+			any_owned = {
+				limit = {
+					is_core = CSA
+					any_neighbor_province = {
+						OR = {
+							owner = { tag = CSA }
+								#Secede all neighboring eligible provinces
+							AND = { any_neighbor_province = { owner = { tag = CSA } } is_core = CSA }
+								#Secede all eligible provinces one province away
+								#In playtesting, more than two layers would begin to secede northern provinces
+						}
+					}
+				}
+				secede_province = CSA
+			}
+		}
+		USA = { any_owned = { limit = { is_core = USA } add_core = CSA } }
+	}
+}
