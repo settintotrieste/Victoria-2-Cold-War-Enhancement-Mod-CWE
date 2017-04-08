@@ -2339,10 +2339,182 @@ fire_only_once = yes
 	tag = YUG
 	government = proletarian_dictatorship
 	year = 1946
+	has_country_flag = not_disabled
 	NOT = { year = 1947 }
 	}
 	option = {
 		name = "Onwards $COUNTRY$!"
 add_country_modifier = { name = yugoslaveia_economic_boom duration = 7300 }
 	}
+}
+
+#Select First UN Secretary General
+country_event = {
+	id = 1412087
+	title = "$YEAR$ UN Secretary General Election"
+	desc = EVTDESC1412087
+	picture = "UNSG_Selection"
+
+fire_only_once = yes
+
+	trigger = {
+	ai = no
+	NOT = { has_global_flag = UNSG_aggressive }
+	NOT = { has_global_flag = UNSG_normal }
+	NOT = { has_global_flag = UNSG_passive }
+	year = 1950
+		}
+	option = {
+		name = "Let's see who got the job"
+		random_list = {
+		34 = { country_event = 1412088 } #Aggressive
+		33 = { country_event = 1412089 } #Normal
+		33 = { country_event = 1412090 } #Passive
+		}
+	}
+}
+
+#Select Aggressive UN Secretary General
+country_event = {
+	id = 1412088
+	title = "Proactive UN Secretary General Elected"
+	desc = "The new UN Secretary General does not subscribe to Non-Interventionism and the belief in acting only with the General Assembly's support. He believes that the UNSG should have independence in acting. He will launch strong sanctions against warring nations."
+	picture = "UNSG_aggressive"
+
+is_triggered_only = yes
+
+	option = {
+		name = "I hope he doesn't meddle in our affairs"
+
+		clr_global_flag = UNSG_aggressive
+		clr_global_flag = UNSG_normal
+		clr_global_flag = UNSG_passive
+
+
+		set_global_flag = UNSG_aggressive
+any_pop = { consciousness = 3 }
+any_country = { any_pop = { consciousness = 3 } }
+			}
+}
+
+#Select Normal UN Secretary General
+country_event = {
+	id = 1412089
+	title = "Uninspiring UN Secretary General Elected"
+	desc = "The new UN Secretary General usually subscribes to Non-Interventionism and the belief in acting only with the General Assembly's support. He will launch weak sanctions against warring nations."
+	picture = "UNSG_normal"
+
+is_triggered_only = yes
+
+	option = {
+		name = "Who even is he?"
+
+		clr_global_flag = UNSG_aggressive
+		clr_global_flag = UNSG_normal
+		clr_global_flag = UNSG_passive
+
+		set_global_flag = UNSG_normal
+		any_pop = { consciousness = 2 }
+any_country = { any_pop = { consciousness = 2 } }
+			}
+}
+
+#Select Passive UN Secretary General
+country_event = {
+	id = 1412090
+	title = "Passive UN Secretary General Elected"
+	desc = "The new UN Secretary General subscribes to Non-Interventionism and believes in acting only with the General Assembly's support. He will not launch sanctions against warring nations."
+	picture = "UNSG_passive"
+
+is_triggered_only = yes
+
+	option = {
+		name = "He's no threat against anyone"
+
+		clr_global_flag = UNSG_aggressive
+		clr_global_flag = UNSG_normal
+		clr_global_flag = UNSG_passive
+
+		set_global_flag = UNSG_passive
+		any_pop = { consciousness = 1 }
+any_country = { any_pop = { consciousness = 1 } }
+			}
+}
+
+#Select Subsequent UN Secretary General
+country_event = {
+	id = 1412091
+	title = "$YEAR$ UN Secretary General Election"
+	desc = EVTDESC1412087
+	picture = "UNSG_Selection"
+
+	trigger = {
+	ai = no
+	OR = { has_global_flag = UNSG_aggressive
+	has_global_flag = UNSG_normal
+	has_global_flag = UNSG_passive }
+	year = 1950
+		}
+
+mean_time_to_happen = { 
+months = 120
+}
+
+	option = {
+		name = "Let's see who got the job"
+		random_list = {
+		34 = { country_event = 1412088 } #Aggressive
+		33 = { country_event = 1412089 } #Normal
+		33 = { country_event = 1412090 } #Passive
+		}
+	}
+}
+
+#UN Secretary General Aggressive
+country_event = {
+	id = 1412092
+	title = "UN Sanctions imposed against our nation"
+	desc = "The United Nations Secretary General has imposed strong sanctions on our nation to persuade us to seek peace."
+	picture = "UNSG_sanctions"
+
+	trigger = {
+	war = yes
+	has_country_modifier = united_nations_ga_member
+	NOT = { has_country_modifier = unsc_permanent_member }
+	NOT = { OR = { any_neighbor_country = { war_with = THIS casus_belli = THIS } any_greater_power = { war_with = THIS casus_belli = THIS } } }
+	has_global_flag = UNSG_aggressive
+	NOT = { has_country_modifier = un_sanctions_strong }
+			}
+
+	option = {
+		name = "Lodge a strong complain against the UN"
+	prestige = -50
+add_country_modifier = { name = un_sanctions_strong duration = 365 }
+			}
+}
+
+#UN Secretary General Normal
+country_event = {
+	id = 1412093
+	title = "UN Sanctions imposed against our nation"
+desc = "The United Nations Secretary General has imposed weak sanctions on our nation to persuade us to seek peace."
+	picture = "UNSG_sanctions"
+
+	trigger = {
+	war = yes
+has_country_modifier = united_nations_ga_member
+NOT = { has_country_modifier = unsc_permanent_member }
+	NOT = { OR = { any_neighbor_country = { war_with = THIS casus_belli = THIS } any_greater_power = { war_with = THIS casus_belli = THIS } } }
+	has_global_flag = UNSG_normal
+	NOT = { has_country_modifier = un_sanctions_weak }
+			}
+
+mean_time_to_happen = { 
+months = 2
+}
+	option = {
+		name = "Lodge a strong complain against the UN"
+	prestige = -25
+add_country_modifier = { name = un_sanctions_weak duration = 365 }
+			}
 }
