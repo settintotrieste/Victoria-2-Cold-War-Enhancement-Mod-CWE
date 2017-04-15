@@ -35,6 +35,15 @@ any_country = { limit = { has_country_flag = joincomm } country_event = 19809 }
 		}
 		ai_will_do = {
 			factor = 1
+			modifier = {
+				factor = 0
+				ruling_party_ideology = communist_social
+			}
+			modifier = {
+				factor = 0
+				part_of_sphere = yes
+				sphere_owner = { has_country_modifier = democratic_bloc_leader }
+			}
 		}		
 		
 	}
@@ -77,7 +86,12 @@ any_country = { limit = { has_country_flag = joindemo } country_event = 19809 }
 
 		ai_will_do = {
 			factor = 1
-		}		
+			modifier = {
+				factor = 0
+				part_of_sphere = yes
+				sphere_owner = { has_country_modifier = communist_bloc_leader }
+			}
+		}	
 
 	}
 
@@ -129,7 +143,19 @@ leave_communist_bloc = {
 			NOT = { has_country_modifier = independent_bloc }
 		}
 		allow = {
-			NOT = { OR = { government = proletarian_dictatorship1 government = proletarian_dictatorship ruling_party_ideology = communist ruling_party_ideology = communist_social } }
+			OR = {
+				NOT = {
+					OR = {
+						government = proletarian_dictatorship1
+						government = proletarian_dictatorship
+					}
+				}
+				NOT = { ruling_party_ideology = communist }
+				AND = {
+					part_of_sphere = yes
+					sphere_owner = { has_country_modifier = democratic_bloc_leader }
+				}
+			}
 		}
 		effect = {
 			clr_country_flag = joincomm
@@ -164,7 +190,14 @@ leave_democratic_bloc = {
 			NOT = { has_country_modifier = independent_bloc }
 		}
 		allow = {
-			OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+			OR = {
+				government = proletarian_dictatorship
+				government = proletarian_dictatorship1
+				AND = {
+					part_of_sphere = yes
+					sphere_owner = { has_country_modifier = communist_bloc_leader }
+				}
+			}
 		}
 		effect = {
 			clr_country_flag = joindemo
@@ -183,40 +216,51 @@ leave_democratic_bloc = {
 		}		
 	}
 
-######Leave NAM bloc for non communists#######################
+###### Leave NAM bloc #######################
 
 leave_nam_bloc = {
 		picture = "leavebloc"
 		potential = {
-			NOT = { OR = { tag = RUS tag = USA } }
-			RUS = { government = proletarian_dictatorship }
-			USA = { government = democracy }
-			exists = USA
-			exists = RUS
-			has_country_flag = joinnam
-			has_global_flag = blocsenabled
-			NOT = { government = proletarian_dictatorship }
-			NOT = { government = proletarian_dictatorship1 }
-			NOT = { has_country_modifier = independent_bloc }
+		has_country_modifier = nam_bloc	
 		}
 		allow = {
-			relation = { who = USA value = 150 }
-			OR = {   
-				ruling_party_ideology = liberal 
-				ruling_party_ideology = socialist
-				ruling_party_ideology = conservative
-				ruling_party_ideology = big_tent 
+			OR = {
+				AND = {
+					relation = { who = USA value = 150 } # TODO dynamic
+					OR = {   
+						ruling_party_ideology = liberal 
+						ruling_party_ideology = socialist
+						ruling_party_ideology = conservative
+						ruling_party_ideology = big_tent 
+					}
+					NOT = {
+						part_of_sphere = yes
+						sphere_owner = { has_country_modifier = communist_bloc_leader }
+					}
+				}
+				AND = {
+					relation = { who = RUS value = 150 } # TODO dynamic
+					OR = {
+						government = proletarian_dictatorship
+						government = proletarian_dictatorship1
+					}
+					ruling_party_ideology = communist
+					NOT = {
+						part_of_sphere = yes
+						sphere_owner = { has_country_modifier = democratic_bloc_leader }
+					}
+				}
 			}
 		}
 		effect = {
-			clr_country_flag = joinnam
 			prestige = -10
-			relation = { who = RUS value = 25 }
-			relation = { who = USA value = 25 }
-			RUS =  { diplomatic_influence =  { who = THIS value = 10 } }
-			USA =  { diplomatic_influence =  { who = THIS value = 10 } }
+			any_country = {
+				limit = { OR = { has_country_modifier = communist_bloc_leader has_country_modifier = democratic_bloc_leader } }
+				relation = { who = THIS value = 25 }
+				diplomatic_influence =  { who = THIS value = 10 }
+			}
+			clr_country_flag = joinnam
 			add_country_modifier = { name = independent_bloc duration = -1 }
-			remove_country_modifier = nam_bloc
 		}
 		alert = no
 		ai_will_do = {
@@ -224,41 +268,7 @@ leave_nam_bloc = {
 		}		
 	}
 
-########Leave NAM bloc for communists #######################
-
-leave_nam_bloc_comm = {
-		picture = "leavebloc"
-		potential = {
-			NOT = { OR = { tag = RUS tag = USA } }
-			RUS = { government = proletarian_dictatorship }
-			USA = { government = democracy }
-			exists = USA
-			exists = RUS
-			has_country_flag = joinnam
-			has_global_flag = blocsenabled
-			OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
-			NOT = { has_country_modifier = independent_bloc }
-		}
-		allow = {
-			relation = { who = RUS value = 150 }
-		}
-		effect = {
-			clr_country_flag = joinnam
-			prestige = -10
-			relation = { who = RUS value = 50 }
-			relation = { who = USA value = 20 }
-			RUS =  { diplomatic_influence =  { who = THIS value = 10 } }
-			USA =  { diplomatic_influence =  { who = THIS value = -10 } }
-			add_country_modifier = { name = independent_bloc duration = -1 }
-			remove_country_modifier = nam_bloc
-		}
-		alert = no
-		ai_will_do = {
-			factor = 1
-		}		
-	}
-
-	###################### Alliances #######################
+###################### Alliances #######################
 
 	# NATO
 	alliance_nato = {
