@@ -27,10 +27,18 @@ join_communist_bloc = {
 			relation = { who = USA value = -100 }
 			remove_country_modifier = independent_bloc
 			remove_country_modifier = nam_bloc
-			RUS =  { diplomatic_influence =  { who = THIS value = 25 } }
-			add_country_modifier = { name = communist_bloc duration = -1 }
-			random_country = { limit = { tag = RUS year = 1947 } country_event = 8225000 }
-any_country = { limit = { has_country_flag = joincomm } country_event = 19809 }
+
+			random_country = {
+				limit = { has_country_modifier = communist_bloc_leader }
+				relation = { who = THIS value = 50 }
+				diplomatic_influence = { who = THIS value = 25 }
+			}
+			random_country = {
+				limit = { has_country_modifier = democratic_bloc_leader }
+				relation = { who = THIS value = -100 }
+			}
+			random_country = { limit = { has_country_modifier = communist_bloc_leader year = 1947 } country_event = 8225000 }
+			any_country = { limit = { has_country_flag = joincomm } country_event = 19809 }
 
 		}
 		ai_will_do = {
@@ -77,11 +85,17 @@ join_democratic_bloc = {
 			prestige = 10
 			remove_country_modifier = independent_bloc
 			remove_country_modifier = nam_bloc
-			relation = { who = USA value = 50 }
-			relation = { who = RUS value = -100 }
-			USA =  { diplomatic_influence =  { who = THIS value = 25 } }
-			add_country_modifier = { name = democratic_bloc duration = -1 }
-any_country = { limit = { has_country_flag = joindemo } country_event = 19809 }
+			random_country = {
+				limit = { has_country_modifier = democratic_bloc_leader }
+				relation = { who = THIS value = 50 }
+				diplomatic_influence =  { who = THIS value = 25 }
+			}
+			random_country = {
+				limit = { has_country_modifier = communist_bloc_leader }
+				relation = { who = THIS value = -100 }
+			}
+			any_country = { limit = { has_country_flag = joindemo } country_event = 19809 }
+
 		}
 
 		ai_will_do = {
@@ -117,11 +131,11 @@ join_nam_bloc = {
 			set_country_flag = joinnam
 			prestige = 10
 			remove_country_modifier = independent_bloc
-			relation = { who = USA value = -10 }
-			relation = { who = RUS value = -10 }
-			USA =  { diplomatic_influence =  { who = THIS value = -50 } }
-			RUS =  { diplomatic_influence =  { who = THIS value = -50 } }
-			add_country_modifier = { name = nam_bloc duration = -1 }
+			any_country = {
+				limit = { OR = { has_country_modifier = communist_bloc_leader has_country_modifier = democratic_bloc_leader } }
+				relation = { who = THIS value = -10 }
+				diplomatic_influence = { who = THIS value = -50 }
+			}
 		}
 		ai_will_do = {
 			factor = 1
@@ -160,10 +174,17 @@ leave_communist_bloc = {
 		effect = {
 			clr_country_flag = joincomm
 			prestige = -10
-			relation = { who = RUS value = -200 }
-			relation = { who = USA value = 100 }
-			RUS =  { diplomatic_influence =  { who = THIS value = -200 } }
-			USA =  { diplomatic_influence =  { who = THIS value = 10 } }
+			random_country = {
+				limit = { has_country_modifier = communist_bloc_leader }
+				relation = { who = THIS value = -200 }
+				diplomatic_influence =  { who = THIS value = -200 }
+				country_event = 8225001
+			}
+			random_country = {
+				limit = { has_country_modifier = democratic_bloc_leader }
+				relation = { who = THIS value = 100 }
+				diplomatic_influence = { who = THIS value = 10 }
+			}
 			any_country = { limit = { has_country_flag = joincomm } country_event = 19810 }
 			add_country_modifier = { name = independent_bloc duration = -1 }
 			remove_country_modifier = communist_bloc
@@ -202,10 +223,16 @@ leave_democratic_bloc = {
 		effect = {
 			clr_country_flag = joindemo
 			prestige = -10
-			relation = { who = RUS value = 100 }
-			relation = { who = USA value = -200 }
-			RUS =  { diplomatic_influence =  { who = THIS value = 10 } }
-			USA =  { diplomatic_influence =  { who = THIS value = -200 } }
+			random_country = {
+				limit = { has_country_modifier = communist_bloc_leader }
+				relation = { who = THIS value = 100 }
+				diplomatic_influence =  { who = THIS value = 10 }
+			}
+			random_country = {
+				limit = { has_country_modifier = democratic_bloc_leader }
+				relation = { who = THIS value = -200 }
+				diplomatic_influence = { who = THIS value = -200 }
+			}
 			any_country = { limit = { has_country_flag = joindemo } country_event = 19810 }
 			add_country_modifier = { name = independent_bloc duration = -1 }
 			remove_country_modifier = democratic_bloc
@@ -221,7 +248,7 @@ leave_democratic_bloc = {
 leave_nam_bloc = {
 		picture = "leavebloc"
 		potential = {
-		has_country_modifier = nam_bloc	
+		has_country_flag = joinnam
 		}
 		allow = {
 			OR = {
