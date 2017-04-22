@@ -1,0 +1,735 @@
+country_event = {
+	id = 8023300
+	title = EVT_8023300_NAME # The $PARTY$ Conference of $YEAR$ 
+	desc = EVT_8023300_DESC # While all members of the $COUNTRY_ADJ$ leadership are loyal, some are beginning to stray from traditional communism. For a while, we have purged these revisionist elements, but these new ideas are subtle, and some secretly envy the success of the West. It is time to stop ignoring these ideas and have an earnest discussion about the path $COUNTRY$ is to take to achieve socialism. Broadly, there are three ideas about this: to continue as we have been, to adopt some free market reforms, or to adopt limited democratic elements. We have gathered our people, but be warned: "The democracy of capitalist society is democracy for the rich."
+	picture = "communism"
+	is_triggered_only = yes # Various; universally by market_communism decision
+
+	option = {
+		name = EVT_8023300_A
+		set_country_flag = communist_plebiscite
+		government = socialist_democracy
+		political_reform = registered_voting
+		election = yes
+		any_pop = {
+			limit = { strata = rich }
+			ideology = {
+				factor = 0.1
+				value = communist
+			}
+		}
+	}
+}
+
+# Election events; ones about the state of the dictatorship show economic policy opinions and boost social democracy, economic issues show trade policy and boost market communism
+# Secret Police
+country_event = {
+	id = 8023301
+	title = EVT_8023301_NAME # Cleanup
+	desc = EVT_8023301_DESC # There are certain elements among the people who are the sworn enemy of any Marxist state. They are worse than capitalist sympathizers, worse than ethnic nationalists: they are the revisionists, who seek to destroy everything we have so carefully built in for the sake of pushing their own interpretation of socialism. Naturally, this is forbidden in $COUNTRY$. At this crucial point, perhaps it is time to pay them a visit and remind them what being a $COUNTRY_ADJ$ citizen really means?
+	election = yes
+	issue_group = economic_policy
+
+	trigger = {
+		has_country_flag = communist_plebiscite
+		election = yes
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = { # Give them a visit
+		name = EVT_8023301_A
+		any_pop = {
+			limit = { pop_majority_ideology = communist_social }
+			random_list = {
+				10 = { ideology = { factor = 0.1 value = communist } }
+				10 = { reduce_pop = 0.99 }
+				10 = { consciousness = 1 militancy = 1 }
+			}
+		}
+		any_pop = {
+			limit = { pop_majority_ideology = socialist }
+			random_list = {
+				10 = { ideology = { factor = 0.1 value = communist } }
+				20 = { reduce_pop = 0.99 }
+				10 = { consciousness = 1 militancy = 1 }
+			}
+		}
+	}
+
+	option = { # We cannot turn against our own people!
+		name = EVT_8023301_B
+		plurality = 1
+		any_pop = {
+			ideology = {
+				factor = 0.1
+				value = socialist
+			}
+			consciousness = 1
+		}
+	}
+}
+
+# Tiananmen Square
+country_event = {
+	id = 8023302
+	title = EVT_8023302_NAME # Monument Protests
+	desc = EVT_8023302_DESC # The figure stood, alone in front of a column of tanks. He had had enough: the nighttime raids, the disappearances, the control of thought and discourse. Undoubtedly necessary measures of state security. Recently, it is true, there had been some...extra measures taken against a new wave of agitators throughout $COUNTRY$. A swift response, more than they deserved. And yet, if this man feels strongly enough in his convictions to stop the tanks, and if so many have gathered in peaceful protest...\n\n$here is no time for idle thought. The police stand ready to put this man away forever. Just give the word.
+	election = yes
+	issue_group = economic_policy
+
+	trigger = {
+		has_country_flag = communist_plebiscite
+		election = yes
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = EVT_8023302_A # Crack down
+		random_state = {
+			any_pop = {
+				limit = { pop_majority_ideology = communist_social }
+				random_list = {
+					10 = { ideology = { factor = 0.25 value = communist } }
+					20 = { reduce_pop = 0.8 }
+					10 = { consciousness = 4 militancy = -3 }
+				}
+			}
+		}
+		random_state = {
+			any_pop = {
+				limit = { pop_majority_ideology = socialist }
+				random_list = {
+					10 = { ideology = { factor = 0.25 value = communist } }
+					30 = { reduce_pop = 0.8 }
+					10 = { consciousness = 4 militancy = -3 }
+				}
+			}
+		}
+	}
+
+	option = {
+		name = EVT_8023301_B # We cannot turn against our own people!
+		plurality = 1
+		any_pop = {
+			ideology = {
+				factor = 0.3
+				value = socialist
+			}
+			consciousness = 4
+		}
+	}
+}
+
+# Foreign investment
+country_event = {
+	id = 8023303
+	title = EVT_8023303_NAME # Proposals from Private Investors
+	desc = EVT_8023303_DESC # A message we have received recently has completely divided our leadership along ideological lines: a Western corporation wishes to invest in our infrastructure. While we can, of course, direct the investment, it comes with terms one could almost describe as capitalist. Undoubtedly we must build socialism, but how much capitalism can we tolerate if it helps achieve achieve our final result?
+	election = yes
+	issue_group = trade_policy
+
+	trigger = {
+		has_country_flag = communist_plebiscite
+		election = yes
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = EVT_8023303_A # We will permit some investment under our direction
+		prestige = 5
+		random_state
+			life_rating = 1
+			any_pop = {
+				limit = { strata = rich }
+				ideology = {
+					factor = 0.25
+					value = communist_social
+				}
+			}
+		}
+		add_country_modifier = { name = dirigisme duration = 1460 } #4 yrs; https://en.wikipedia.org/wiki/Dirigisme#cite_ref-2
+	}
+
+	option = {
+		name = EVT_8023303_B # Absolutely not!
+		random_state
+			any_pop = {
+				limit = { strata = rich }
+				ideology = {
+					factor = 0.1
+					value = communist
+				}
+			}
+		}
+		remove_country_modifier = dirigisme
+		add_country_modifier = { name = economic_malaise duration = 180 }
+	}
+}
+
+# Fast food restaurants as in USSR
+country_event = {
+	id = 8023304
+	title = EVT_8023304_NAME # A McCapitalist
+	desc = EVT_8023304_DESC # We have received a bizarre request: a multinational fast-food chain has applied to open a branch in $CAPITAL$. Some regard this as the beginning of the end, as multinational corporations are the clearly a new bourgeois imperialism. There is no suitable counter-argument for a true Marxist. Really, it is a laughable proposal.\nA bureaucrat enters the chamber to report that the bread line in $CAPITAL$ has reached record lengths, and has had to lower rations. What's worse, without food, some people are getting strange ideas about our benevolent rule.\nOnce he leaves, the chamber goes quiet. Some officials grimace, others look toward the paintings of our founders on the wall. A moment passes - what were we discussing?
+	election = yes
+	issue_group = trade_policy
+
+	trigger = {
+		has_country_flag = communist_plebiscite
+		election = yes
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = { # Za Gorbacheva! # From Gorbachev fast food ad
+		name = EVT_8023304_A
+		prestige = 15
+		capital_scope = {
+			life_rating = 1
+			any_pop = {
+				ideology = {
+					factor = 0.45
+					value = communist_social
+				}
+			}
+			add_province_modifier = { name = mnc_operations	duration = 1460 } #4 yrs
+			add_province_modifier = { name = baby_boom		duration = 1460 }
+		}
+	}
+
+	option = { # Western spies!
+		name = EVT_8023304_B
+		capital_scope = {
+			any_pop = {
+				limit = { strata = rich }
+				ideology = {
+					factor = 0.1
+					value = communist
+				}
+			}
+			any_pop = {
+				limit = { NOT = { strata = rich } }
+				militancy = 3
+				counsciousness = 1
+			}
+			add_province_modifier = { name = unfair_money duration = 180 }
+		}
+	}
+}
+
+# Luxury goods
+country_event = {
+	id = 8023305
+	title = EVT_8023305_NAME # Luxury Goods Policy
+	desc = EVT_8023305_DESC # Recently, some people have begun to openly petition the government for a loosening of restrictions on luxury goods in $COUNTRY$. Whether people just want to eat in restaurants, try out electronics, or simply wear a white suit, they are stirring up trouble and questioning longstanding $COUNTRY_ADJ$ policy.
+	election = yes
+	issue_group = trade_policy
+
+	trigger = {
+		has_country_flag = communist_plebiscite
+		election = yes
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = EVT_8023305_A # We must change course so we do not sink. # Reference to Raul Castro
+		prestige = 10
+		any_pop = {
+			ideology = {
+				factor = 0.35
+				value = communist_social
+			}
+		}
+		add_country_modifier = { name = foreign_trading_post duration = 1460 } #4 yrs
+	}
+
+	option = {
+		name = EVT_8023305_B # Bourgeois distractions!
+		prestige = -5
+		remove_country_modifier = foreign_trading_post
+		any_pop = {
+			ideology = {
+				factor = 0.1
+				value = communist
+			}
+			consciousness = 2.5
+		}
+	}
+}
+
+# Religious funeral
+country_event = {
+	id = 8023306
+	title = EVT_8023306_NAME # Party Member Requests Religious Funeral
+	desc = EVT_8023306_DESC # A Party member of some importance has died recently. His family was closely tied to the Revolution, and we were planning the standard mourning events in his home town, but it seems he has put something unusual in his will. We almost missed it among the usual devotions to the party, but it is there: he has clearly requested a funeral in the traditions of his ancestral religion. While the people, and even low-level party members, do this frequently, a practice to which we have turned a blind eye, the funeral of a man such as this, who has monuments in his family's honor, will make waves among the people.
+	election = yes
+	issue_group = economic_policy
+
+	trigger = {
+		has_country_flag = communist_plebiscite
+		election = yes
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = EVT_8023306_A # What's the harm? Anything for a hero of the Revolution.
+		prestige = 10
+		plurality = 1
+		any_pop = {
+			ideology = {
+				factor = 0.2
+				value = socialist
+			}
+		}
+		add_country_modifier = { name = may_day duration = 1460 } #4 yrs
+	}
+
+	option = {
+		name = EVT_8023306_B # Senile fool! Religion is the opiate of the masses. No funeral.
+		prestige = -5
+		plurality = -1
+		any_pop = {
+			consciousness = 2.5
+			ideology = {
+				factor = 0.1
+				value = communist
+			}
+		}
+	}
+}
+
+
+# Communism was chosen
+country_event = {
+	id = 8023320
+	title = EVT_8023320_NAME # Actually Existing Socialism - Communism
+	desc = EVT_8023320_DESC # Party leaders and representatives of the people have decided the best way to build socialism is to reject all capitalist and bourgeois influences. Talk of market reform or democracy is nothing but revisionism. The system laid out by Marx and Engels is eternal, and we will stick with it until the day when true socialism is finally built and all men are equal.\n\nOur leaders estimate 20 years.
+	picture = "nwo2_communism_gets_stronger"
+
+	trigger = {
+		has_country_flag = communist_plebiscite
+		election = no
+		ruling_party_ideology = communist
+	}
+
+	mean_time_to_happen = { days = 1 }
+
+	immediate = {
+		clr_country_flag = communist_plebiscite
+		political_reform = none_voting
+		government = proletarian_dictatorship
+	}
+
+	option = {
+		name = EVT_8023320_A #The People's Republic has spoken
+		prestige = 20
+	}
+}
+
+# Market Communism was chosen
+country_event = {
+	id = 8023321
+	title = market_communism_title # Socialism with $COUNTRY_ADJ$ Characteristics - Market Communism
+	desc = EVT_8023321_DESC # The benefits that capitalist influences have brought our country are indisputable. If we are to serve the interests of our people and grow our economy, it is impossible to remain perfectly committed to the idea of communism. There are still some who are unwilling to accept the change, and doing so as state policy may cause a schism in leadership. While some may call this revisionism, we call it adaptation. We will not forget our past.\n\n§RWarning: This is a split from the communism of Lenin and Mao! If you are in any way beholden to greater communist powers who want to keep the status quo, continuing on this path could be very dangerous. It will also lock you out of any membership in or benefits from the International - unless a new one is established, of course.§W
+	picture = "nwo2_chinese_economy"
+
+	trigger = {
+		has_country_flag = communist_plebiscite
+		election = no
+		ruling_party_ideology = communist_social
+	}
+
+	mean_time_to_happen = { days = 1 }
+
+	immediate = {
+		clr_country_flag = communist_plebiscite
+		political_reform = none_voting
+		government = proletarian_dictatorship
+	}
+
+	option = {
+		name = EVT_8023321_A #We will weed out the revisionists!
+		ruling_party_ideology = communist
+		any_pop = {
+			limit = {
+				OR = {
+					strata = rich
+					type = officers
+				}
+				NOT = { pop_majority_ideology = communist }
+			}
+			reduce_pop = 0.25
+		}
+		ai_chance = { factor = 0 }
+	}
+
+	option = {
+		name = EVT_8023320_A #The People's Republic has spoken
+		prestige = 20
+		random_country = {
+			limit = {
+				is_sphere_leader_of = THIS
+				ruling_party_ideology = communist
+				OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+			}
+			country_event = 8023340
+		}
+	}
+}
+
+# Democratic socialism was chosen
+country_event = {
+	id = 8023322
+	title = EVT_8023322_NAME # Socialism from Below - Democratic Socialism
+	desc = EVT_8023322_DESC # Economic reform is not enough. The strength of the West is not in their market economics, but their adaptability. While we remain committed to an equal society for all, perhaps communism is not the way to go about it.\n\n§RWarning: This is a split from the communism of Lenin and Mao! If you are in any way beholden to greater communist powers who want to keep the status quo, continuing on this path could be very dangerous. It will also lock you out of any membership in or benefits from the International - unless a new one is established, of course.§W
+	picture = "Socialism"
+
+	trigger = {
+		has_country_flag = communist_plebiscite
+		election = no
+		ruling_party_ideology = socialist
+	}
+
+	mean_time_to_happen = { days = 1 }
+
+	immediate = {
+		clr_country_flag = communist_plebiscite
+	}
+
+	option = {
+		name = EVT_8023321_A
+		ruling_party_ideology = communist
+		political_reform = none_voting
+		government = proletarian_dictatorship
+		any_pop = {
+			limit = {
+				OR = {
+					strata = rich
+					type = officers
+				}
+				NOT = { pop_majority_ideology = communist }
+			}
+			reduce_pop = 0.25
+		}
+		ai_chance = { factor = 0 }
+	}
+
+	option = {
+		name = EVT_8023320_A
+		prestige = 20
+		political_reform = none_voting
+		government = proletarian_dictatorship
+		set_country_flag = market_communism
+		random_country = {
+			limit = {
+				is_sphere_leader_of = THIS
+				ruling_party_ideology = communist
+				OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+			}
+			country_event = 8023340
+		}
+	}
+
+	option = {
+		name = EVT_8023322_C #No, the people have spoken!
+		prestige = 20
+		random_country = {
+			limit = {
+				is_sphere_leader_of = THIS
+				ruling_party_ideology = communist
+				OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+			}
+			country_event = 8023340
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				NOT = { strd_internet = 1 }
+			}
+		}
+	}
+}
+
+# Vassal event
+country_event = {
+	id = 8023330
+	title = EVT_8023330_NAME # The $YEAR$ $FROMCOUNTRY_ADJ$ Revolution
+	desc = EVT_8023330_DESC # Greater communist powers have interpreted our new policies as a collapse of the government, and we are being pressured to end the "rebellion." We will never do this, as we are a free nation, but we fear war is inevitable. Shall we be the ones to declare it?
+
+	trigger = {
+		is_vassal = yes
+		NOT = { ruling_party_ideology = communist }
+		overlord = {
+			ruling_party_ideology = communist
+			OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+		}
+	}
+
+	mean_time_to_happen = { months = 4 }
+
+	option = {
+		name = EVT_8501102_A
+		any_pop = { consciousness = 2 }
+		overlord = {
+			release_vassal = THIS
+			add_casus_belli = { target = THIS type = become_independent months = 12 }
+			casus_belli = { target = THIS type = make_puppet }
+			# Vassal gets independence CB, overlord gets puppet CB
+			war = {
+				target = THIS
+				defender_goal = { casus_belli = become_independent }
+				attacker_goal = { casus_belli = make_puppet }
+			}
+			diplomatic_influence = { who = THIS value = -200 }
+		}
+		ai_chance = { factor = 0.25 modifier = { factor = 0 is_secondary_power = no } } # One-fifth
+	}
+
+	option = {
+		name = EVT_8501102_B
+		any_pop = { militancy = 2.0 }
+		overlord = {
+			diplomatic_influence = { who = THIS value = -200 }
+			release_vassal = THIS
+			country_event = { id = 8023331 days = 23 }
+		}
+		random_country = {
+			limit = { has_country_modifier = democratic_bloc_leader } #Only works during Cold War
+			country_event =  { id = 8023332 days = 24 }
+		}
+		ai_chance = { factor = 1 }
+	}
+}
+
+# Overlord event
+country_event = {
+	id = 8023331
+	title = EVT_8023330_NAME
+	desc = EVT_8023331_DESC # The communist party in $FROMCOUNTRY$ has been compromised. It has fallen to revisionist elements, and even declared independence from bloc politics and severed all ties to our party.
+	picture = "nwo2_hungarian_revolution_1956"
+	is_triggered_only = yes
+
+	option = {
+		name = EVT_8501103_A
+		prestige = -10
+		any_pop = { consciousness = 2 }
+		casus_belli = { target = FROM type = install_communist_gov_cb months = 12 }
+		casus_belli = { target = FROM type = make_puppet months = 12 }
+		casus_belli = { target = FROM type = add_to_sphere months = 12 }
+		war = { target = FROM attacker_goal = { casus_belli = make_puppet } defender_goal = { casus_belli = status_quo } }
+		ai_chance = {
+			factor = 0.90
+			modifier = {
+				factor = 0.5
+				war = yes
+			}
+			modifier = {
+				factor = 0.05
+				NOT = { stronger_army_than = FROM }
+			}
+		}
+	}
+
+	option = {
+		name = EVT_8501103_B
+		prestige = -20
+		any_pop = { militancy = 1.0 }
+		relation = { who = FROM value = -200 }
+		add_casus_belli = { target = FROM type = humiliate months = 12 }
+		ai_chance = {
+			factor = 0.10
+			modifier = {
+				factor = 0
+				is_greater_power = yes
+			}
+		}
+	}
+}
+
+# Democratic bloc event
+country_event = {
+	id = 8023332
+	title = EVT_8023330_NAME
+	desc = EVT_8023332_DESC # A situation we have been monitoring closely may be about to erupt: $FROMCOUNTRY$, once nominally communist, has officially decided to split from the eastern bloc and adopt capitalist reforms. We have noticed some suspicious troop movements which may suggest a war, or an imminent one, to restore communist rule.
+	picture = "nwo2_allied_intervention"
+	is_triggered_only = yes # Democratic bloc leader
+
+	option = {
+		name = EVT_8501113_A # Intervene
+		diplomatic_influence = { who = FROM value = 200 }
+		relation = { who = FROM value = 200 }
+		create_alliance = FROM
+		ai_chance = {
+			factor = 50
+			modifier = { # Not jingoist or nation has nukes
+				factor = 0
+				OR = {
+					war_policy = pacifism
+					war_policy = pro_military
+					any_country = { war_with = FROM has_country_modifier = atomic_nation } 
+				}
+			}
+		}
+	}
+
+	option = {
+		name = EVT_8023332_B # Secretly support them
+		treasury = -5000
+		small_arms = -600
+		weaponry = -150
+		FROM = { country_event = 8023333 }
+		diplomatic_influence = { who = FROM value = 40 }
+		relation = { who = FROM value = 20 }
+		ai_chance = {
+			factor = 100
+			modifier = { factor = 2 war_policy = pro_military }
+			modifier = { factor = 2 relation = { who = FROM value = 100 } }
+		}
+	}
+
+	option = {
+		name = EVT_8501113_B
+		ai_chance = { factor = 100 modifier = { factor = 0 war_policy = jingoism } }
+	}
+	# Pacifist, equal chance of support or not; pro military, double chance to support as to not; jingoist, always support
+}
+
+country_event = {
+	id = 8023333
+	title = EVT_8023333_NAME # Support from the democratic bloc!
+	desc = EVT_8023333_DESC # $FROMCOUNTRY$, the leader of the free world, has seen the justice in our cause. Though they may not agree with our drive for socialism, they can clearly see the injustice in the use of might to prevent us from taking our country in the direction we have chosen, though we hope for peace. On an unrelated note, we have received a discreet and unofficial gift of surplus military equipment "for economic purposes."
+
+	is_triggered_only = yes
+
+	option = {
+		name = EVT_8023333_A # We know who our true friends are.
+		treasury = 5000
+		small_arms = 600
+		weaponry = 150
+		relation = { who = FROM value = 20 }
+		random = {
+			chance = 0.10
+			FROM = { country_event = 8023334 }
+		}
+	}
+}
+
+# Iran-Contra Affair
+country_event = {
+	id = 8023334
+	title = EVT_8023334_NAME # The $FROMCOUNTRY$ Affair
+	desc = EVT_8023334_DESC # It seems that, in attempting to keep our support for the $FROMCOUNTRY_ADJ$ anti-communists a secret, we have diverted funds in a way that is slightly...illegal. Even worse, the faction we supported is committing minor breaches of international law. Although we have blamed this on the military, some of our people, especially pacifists and isolationists, are accusing the leadership of wrongdoing, and even calling for the administration to step down.
+	picture = "news"
+
+	is_triggered_only = yes # Democratic bloc leader
+
+	option = {
+		name = EVT_8023334_A # It's nothing
+		prestige = -15
+		plurality = -1
+		add_country_modifier = {
+			name = ruling_party_scandal
+			duration = 730
+		}
+		any_pop = {
+			scaled_consciousness = {
+				ideology = communist
+				factor = 8
+			}
+			scaled_consciousness = {
+				ideology = progressive
+				factor = 5
+			}
+			scaled_consciousness = {
+				ideology = liberal
+				factor = 4
+			}
+		}
+		any_country = { limit = { war_with = FROM } relation = -150 }
+	}
+}
+
+# Sphere Owner Event
+country_event = {
+	id = 8023340
+	title = EVT_8023340_NAME # $FROMCOUNTRY$ declares neutrality
+	desc = EVT_8023340_DESC # Following a change in party leadership, $FROMCOUNTRY$ no longer wishes to align with our form of communism, and has blamed $COUNTRY_ADJ$ influence on the ills in society. This is a clear insult, especially after everything we have done for them, but what can we do?
+	picture = "nwo2_josip_broz_tito"
+	is_triggered_only = yes
+
+	option = {
+		name = EVT_8022726_C # War upon Trotskyists!
+		badboy = 5
+		any_pop = { militancy = -0.2 consciousness = -0.1 }
+		casus_belli = { target = FROM type = make_puppet months = 12 }
+		leave_alliance = FROM
+		war = { target = FROM attacker_goal = { casus_belli = make_puppet } defender_goal = { casus_belli = status_quo } }
+		ai_chance = { # only for neighbors
+			factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.8
+			}
+			modifier = {
+				NOT = { neighbour = FROM }
+				factor = 0
+			}
+			modifier = {
+				factor = 1.2
+				FROM = { government = socialist_democracy }
+			}
+		}
+	}
+
+	option = {
+		name = EVT_8023340_B # They will regret this
+		any_pop = { militancy = 0.3 consciousness = 0.6 }
+		FROM = { country_event = 8023341 }
+		ai_chance = { factor = 1 }
+	}
+}
+
+# Sphereling event
+country_event = {
+	id = 8023341
+	title = EVT_8023341_NAME # $FROMCOUNTRY_ADJ$ Relations
+	desc = EVT_8023341_DESC # $FROMCOUNTRY$, with whose communism we were, until recently, aligned, has begrudingly accepted our choice for a different direction in building socialism in our country. One question remains: what kind of diplomatic relations should we keep with the eastern bloc?
+	picture = "nwo2_tito_stalin"
+	is_triggered_only = yes
+
+	option = {
+		name = EVT_8023341_A # None at all
+		FROM = {
+			relation = { who = THIS value = -100 }
+			diplomatic_influence = { who = THIS value = -250 }
+		}
+		any_pop = { militancy = 0.3 consciousness = 0.6 }
+		add_country_modifier = { name = comecon_excluded duration = -1 }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				alliance_with = FROM
+			}
+		}
+	}
+
+	option = {
+		name = EVT_8023341_B # They made us who we are
+		FROM = { diplomatic_influence = { who = THIS value = -150 } }
+		any_pop = { militancy = 1.5 consciousness = 1 }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				ruling_party_ideology = socialist
+			}
+		}
+	}
+}
