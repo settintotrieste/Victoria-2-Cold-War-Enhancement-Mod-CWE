@@ -2831,6 +2831,8 @@ country_event = {
 		NOT = { year = 1991 }
 	}
 
+mean_time_to_happen = { months = 3 }
+
 	option = {
 		name = "The King's power shall not be curtailed"
 		prestige = -10
@@ -2845,4 +2847,50 @@ country_event = {
 		country_event = 800054
 		ai_chance = { factor = 0.9 }
 	}
+}
+
+#Rise of the Metropolitan elite
+country_event = {
+	id = 1412100
+	title = "Rise of the Metropolitan Elite"
+	desc = "Due to the increasingly powerful role that the cities in $COUNTRY$ play to the national economy, they have started to gain an increasingly disproportionate amount of political representation and influence in $COUNTRY$."
+	picture = "city_voting_more"
+
+	trigger = {
+		globalization = 1
+NOT = { any_owned_province = { has_province_modifier = city_politics_boost } }
+	OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+			}
+
+mean_time_to_happen = { 
+months = 7300 
+modifier = { factor = 0.4 vote_franschise = universal_voting }
+modifier = { factor = 0.8 vote_franschise = promoted_voting }
+modifier = { factor = 1.5 vote_franschise = universal_weighted_voting } 
+modifier = { factor = 3 vote_franschise = registered_voting } 
+}
+
+	option = {
+		name = "The City rules"
+		any_owned = { limit = { is_state_capital = yes } add_province_modifier = { name = city_politics_boost duration = -1 } }
+			}
+}
+
+#End of the Metropolitan elite
+country_event = {
+	id = 1412101
+	title = "End of the Metropolitan Elite"
+	desc = "As we are no longer a proper demcracy, the cities' disproportionate amount of political representation and influence in $COUNTRY$ have been lost to the central government."
+	picture = "city_voting_less"
+
+	trigger = {
+		globalization = 1
+any_owned_province = { has_province_modifier = city_politics_boost }
+	NOT = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } }
+			}
+
+	option = {
+		name = "The City loses"
+any_owned = { remove_province_modifier = city_politics_boost }
+			}
 }
