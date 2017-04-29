@@ -2880,7 +2880,10 @@ modifier = { factor = 3 vote_franschise = registered_voting }
 
 	option = {
 		name = "The City rules"
-		any_owned = { limit = { is_state_capital = yes } add_province_modifier = { name = city_politics_boost duration = -1 } }
+		any_owned = { limit = { 
+OR = { is_capital = yes AND = { is_state_capital = yes total_pops = 1000000 } } 
+} 
+add_province_modifier = { name = city_politics_boost duration = -1 } }
 			}
 }
 
@@ -2901,4 +2904,125 @@ any_owned_province = { has_province_modifier = city_politics_boost }
 		name = "The City loses"
 any_owned = { remove_province_modifier = city_politics_boost }
 			}
+}
+
+#Special Drawing Rights
+country_event = {
+	id = 1412102
+	title = "Special Drawing Rights Revoked"
+	desc = "As we are either no longer a substantial global power or a proper functioning capitalist system, the IMF has decided to withdraw our SDR to prevent misuse of it."
+	picture = "sdr_revoked"
+
+	trigger = {
+		has_country_flag = special_imf_dr
+	OR = { government = theocracy government = proletarian_dictatorship government = proletarian_dictatorship1 is_greater_power = no NOT = { has_country_modifier = imf_member } NOT = { any_owned_province = { trade_goods = credit } } }
+			}
+
+	option = {
+		name = "A loss for our nation"
+clr_country_flag = special_imf_dr
+prestige = -25
+any_owned = { remove_province_modifier = imf_sdr }
+			}
+}
+
+#South Vietnam Reunification
+country_event = {
+	id = 1412103
+	title = "Reunification of Vietnam"
+	desc = EVTDESC1412103
+	picture = "vietnam_svi_reunion"
+
+	trigger = {
+		tag = SVI
+		NOT = { exists = DAI }
+		owns = 1369
+		owns = 1380
+					}
+
+	option = {
+		name = "Let's celebrate!"
+		change_tag = DAI
+		prestige = 50
+			}
+}
+
+#Ruling Party Scandal
+country_event = {
+	id = 1412104
+	title = "Scandals engulfing the Ruling Party"
+	desc = EVTDESC1412104
+	picture = "ruling_party_scandal_shift"
+
+	trigger = {
+	OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+						}
+
+mean_time_to_happen = { months = 120
+modifier = { factor = 0.5 election = yes }
+
+modifier = { factor = 0.5 has_country_modifier = massive_government_corruption }
+
+modifier = { factor = 0.7 has_country_modifier = large_government_corruption }
+
+modifier = { factor = 0.9 has_country_modifier = medium_government_corruption } 
+
+modifier = { factor = 0.9 has_country_modifier = mnc_corruption } 
+
+modifier = { factor = 0.8 has_country_modifier = mnc_corrupt_leadership }
+
+modifier = { factor = 2 war = yes }
+
+modifier = { factor = 2 publishing_rights = censored_publishing }
+
+modifier = { factor = 1.5 publishing_rights = firewall_publishing }
+
+modifier = { factor = 1.25 publishing_rights = unregulated_publishing }
+
+modifier = { factor = 0.9 publishing_rights = responsible_publishing }
+
+}
+
+	option = {
+		name = "Disaster!"
+prestige = -30
+		random = {
+			chance = 25
+any_pop = { ideology = { factor = 0.2 value = conservative } }
+					}
+
+		random = {
+			chance = 25
+any_pop = { ideology = { factor = 0.2 value = liberal } }
+					}
+
+		random = {
+			chance = 25
+any_pop = { ideology = { factor = 0.2 value = populist } }
+					}
+
+		random = {
+			chance = 25
+any_pop = { ideology = { factor = 0.2 value = progressive } }
+					}
+
+		random = {
+			chance = 25
+any_pop = { ideology = { factor = 0.2 value = traditionalist } }
+					}
+
+		random = {
+			chance = 25
+any_pop = { ideology = { factor = 0.2 value = nationalist } }
+					}
+
+		random = {
+			chance = 25
+any_pop = { ideology = { factor = 0.2 value = big_tent } }
+					}
+		random = {
+			chance = 25
+any_pop = { ideology = { factor = 0.2 value = socialist } }
+					}
+		}	
 }
