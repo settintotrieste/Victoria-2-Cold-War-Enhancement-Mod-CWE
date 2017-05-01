@@ -2866,25 +2866,25 @@ country_event = {
 
 	trigger = {
 		globalization = 1
-NOT = { any_owned_province = { has_province_modifier = city_politics_boost } }
-	OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
-			}
+		NOT = { any_owned_province = { has_province_modifier = city_politics_boost } }
+		OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+	}
 
-mean_time_to_happen = { 
-months = 7300 
-modifier = { factor = 0.4 vote_franschise = universal_voting }
-modifier = { factor = 0.8 vote_franschise = promoted_voting }
-modifier = { factor = 1.5 vote_franschise = universal_weighted_voting } 
-modifier = { factor = 3 vote_franschise = registered_voting } 
-}
+	mean_time_to_happen = { 
+		months = 7300 
+		modifier = { factor = 0.4 vote_franschise = universal_voting }
+		modifier = { factor = 0.8 vote_franschise = promoted_voting }
+		modifier = { factor = 1.5 vote_franschise = universal_weighted_voting } 
+		modifier = { factor = 3 vote_franschise = registered_voting } 
+	}
 
 	option = {
 		name = "The City rules"
 		any_owned = { limit = { 
-OR = { is_capital = yes AND = { is_state_capital = yes total_pops = 1000000 } } 
-} 
-add_province_modifier = { name = city_politics_boost duration = -1 } }
-			}
+				OR = { is_capital = yes AND = { is_state_capital = yes total_pops = 1000000 } } 
+			} 
+			add_province_modifier = { name = city_politics_boost duration = -1 } }
+	}
 }
 
 #End of the Metropolitan elite
@@ -2896,14 +2896,14 @@ country_event = {
 
 	trigger = {
 		globalization = 1
-any_owned_province = { has_province_modifier = city_politics_boost }
-	NOT = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } }
-			}
+		any_owned_province = { has_province_modifier = city_politics_boost }
+		NOT = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } }
+	}
 
 	option = {
 		name = "The City loses"
-any_owned = { remove_province_modifier = city_politics_boost }
-			}
+		any_owned = { remove_province_modifier = city_politics_boost }
+	}
 }
 
 #Special Drawing Rights
@@ -2915,15 +2915,15 @@ country_event = {
 
 	trigger = {
 		has_country_flag = special_imf_dr
-	OR = { government = theocracy government = proletarian_dictatorship government = proletarian_dictatorship1 is_greater_power = no NOT = { has_country_modifier = imf_member } NOT = { any_owned_province = { trade_goods = credit } } }
-			}
+		OR = { government = theocracy government = proletarian_dictatorship government = proletarian_dictatorship1 is_greater_power = no NOT = { has_country_modifier = imf_member } NOT = { any_owned_province = { trade_goods = credit } } }
+	}
 
 	option = {
 		name = "A loss for our nation"
-clr_country_flag = special_imf_dr
-prestige = -25
-any_owned = { remove_province_modifier = imf_sdr }
-			}
+		clr_country_flag = special_imf_dr
+		prestige = -25
+		any_owned = { remove_province_modifier = imf_sdr }
+	}
 }
 
 #South Vietnam Reunification
@@ -2938,57 +2938,92 @@ country_event = {
 		NOT = { exists = DAI }
 		owns = 1369
 		owns = 1380
-					}
+	}
 
 	option = {
 		name = "Let's celebrate!"
 		change_tag = DAI
 		prestige = 50
-			}
+	}
 }
 
-#Dissolution of the TTIP
+#Dissolution of the TTPI
 country_event = {
 	id = 1412104
 	title = "Dissolution of $COUNTRY$?"
-	desc = EVTDESC1412104
+	desc = EVTDESC1412104 # TODO Change this to mention that, in becoming Micronesia, three out of seven countries elected not to join
 	picture = "ttip_end"
-
 	fire_only_once = yes
 
 	trigger = {
 		tag = XPI
-		NOT = { year = 2010 }
-		is_vassal = no
-					}
+		OR = {
+			AND = {
+				year = 2010
+				OR = {
+					ruling_party_ideology = nationalist
+					any_province = { controlled_by_rebels = yes }
+					militancy = 8
+				}
+			}
+			is_vassal = no
+		}
+	}
 
-mean_time_to_happen = { months = 4 }
+	mean_time_to_happen = { months = 4 }
 
 	option = {
 		name = "Dissolve the federation!"
 		release = PAU
 		release = MAR
-		release = NMI
+		NMI = { random_country = { limit = { tag = THIS NOT = { exists = NMI } } release = NMI USA = { diplomatic_influence = { who = NMI value = 200 } } } }
 		change_tag = MIC
 		PAU = { government = democracy }
 		MAR = { government = democracy }
 		NMI = { government = democracy }
-		MCI = { government = democracy }
-	USA = { diplomatic_influence = { who PAU value = 200 } }
-	USA = { diplomatic_influence = { who MAR value = 200 } }
-	USA = { diplomatic_influence = { who NMI value = 200 } }
-	USA = { diplomatic_influence = { who MCI value = 200 } }
-		ai_chance = { factor = 0.8 }
-					}
+		government = democracy
+		USA = { diplomatic_influence = { who = PAU value = 200 } }
+		USA = { diplomatic_influence = { who = MAR value = 200 } }
+		USA = { diplomatic_influence = { who = THIS value = 200 } }
+		ai_chance = {
+			factor = 0.8
+			modifier = {
+				factor = 0
+				is_secondary_power = yes
+			}
+			modifier = {
+				factor = 0.25
+				rank = 50
+			}
+			modifier = {
+				factor = 0.5
+				year = 2010
+			}
+		}
+	}
 	option = {
 		name = "Keep the federation!"
-		prestige = 10
-		any_pop = { militancy = 10 }
+		primary_culture = micronesian
+		prestige = 30
+		NMI = {
+			any_owned_province = { add_core = THIS } # If coming from USA
+			overlord = { relation = { who = THIS value = -100 } }
+		}
+		any_owned = {
+			limit = {
+				NOT = { is_core = MIC } 
+			}
+			add_province_modifier = { name = nationalist_agitation duration = 1095 }
+			any_pop = {
+				militancy = 10
+				consciousness = 8
+			}
+		}
 		ai_chance = { factor = 0.2 }
-					}
+	}
 }
 
-#Dissolution of the TTIP
+#Dissolution of the TTPI
 country_event = {
 	id = 1412105
 	title = "Independence of the Pacific Islands?"
@@ -2998,26 +3033,58 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		tag = USA
-		year = 1986
+		year = 1985
 		XPI = { government = mandatory_government }
 		is_our_vassal = XPI
-				}
+	}
 
-mean_time_to_happen = { months = 6 }
+	mean_time_to_happen = {
+		months = 24
+		modifier = {
+			factor = 0.5
+			year = 1986
+		}
+	}
 
 	option = {
 		name = "Grant independence!"
 		release_vassal = XPI
 		prestige = 10
-		XPI = { government = democracy }
-		ai_chance = { factor = 1 }
-					}
+		XPI = {
+			government = democracy
+			release = NMI
+			country_event = 1412104
+		}
+		NMI = { government = democracy }
+		create_vassal = NMI
+		diplomatic_influence = { who = NMI value = 200 }
+		ai_chance = {
+			factor = 0.95
+			modifier = {
+				factor = 0
+				ruling_party_ideology = populist
+			}
+		}
+	}
 	option = {
 		name = "Refuse independence!"
 		prestige_factor = -0.1
-		ai_chance = { factor = 0 }
-					}
+		badboy = 2.5
+		ai_chance = {
+			factor = 0.05
+			modifier = {
+				factor = 0
+				badboy = 0.9
+			}
+			modifier = {
+				factor = 0
+				OR = {
+					ruling_party_ideology = liberal
+					ruling_party_ideology = progressive
+				}
+			}
+		}
+	}
 }
 
 #Formation of the Territory of Papua and New Guinea
@@ -3026,32 +3093,62 @@ country_event = {
 	title = "Establishment of Papua and New Guinea?"
 	desc = EVTDESC1412106
 	picture = "tppng_start"
-
 	fire_only_once = yes
 
 	trigger = {
-		tag = AST
-		AST = { government = hms_government }
+		OR = {
+			government = hms_government
+			government = democracy
+		}
 		PPN = { exists = no }
+		is_possible_vassal = PPN
 		war = no
-		year = 1949
-			}
+		year = 1948
+	}
 
-mean_time_to_happen = { months = 6 }
+	mean_time_to_happen = {
+		months = 24
+		modifier = {
+			factor = 0.5
+			year = 1949
+		}
+	}
 
 	option = {
 		name = "Form the state!"
 		prestige = 10
 		release_vassal = PPN
 		PPN = { government = mandate_government }
-ENG = { diplomatic_influence = { who = PPN value = 200 } }
-		ai_chance = { factor = 1 }
-					}
+		sphere_owner = { diplomatic_influence = { who = PPN value = 200 } }
+		ai_chance = {
+			factor = 0.75
+			modifier = {
+				factor = 0
+				ruling_party_ideology = populist
+			}
+		}
+	}
 	option = {
 		name = "Refuse!"
 		prestige_factor = -0.1
-		ai_chance = { factor = 0 }
-					}
+		badboy = 10
+		PPN = { any_core = { add_province_modifier = { name = nationalist_agitation duration = 1095 } } }
+		ai_chance = {
+			factor = 0.25
+			modifier = {
+				factor = 0
+				badboy = 0.6
+			}
+			modifier = {
+				factor = 0.5
+				OR = {
+					ruling_party_ideology = liberal
+					ruling_party_ideology = progressive
+					ruling_party_ideology = socialist
+				}
+			}
+		}
+	}
 }
 
 #Formation of Mandatory French Togo
@@ -3060,30 +3157,74 @@ country_event = {
 	title = "French Togoland autonomy?"
 	desc = EVTDESC1412107
 	picture = "togm_start"
-
 	fire_only_once = yes
 
 	trigger = {
-		tag = FRA
-		FRA = { government = democracy }
+		OR = {
+			government = hms_government
+			government = democracy
+		}
 		TOG = { exists = no }
 		owns = 1914
-		year = 1955
+		1914 = { is_overseas = yes }
+		OR = {
+			year = 1954
+			any_owned_province = {
+				is_core = TOG
+				OR = {
+					has_province_modifier = nationalist_agitation
+					controlled_by_rebels = yes
+				}
 			}
+		}
+	}
 
-mean_time_to_happen = { months = 6 }
+	mean_time_to_happen = {
+		months = 24
+		modifier = {
+			factor = 0.5
+			year = 1955
+		}
+		modifier = {
+			factor = 0.1
+			any_owned_province = {
+				is_core = TOG
+				OR = {
+					has_province_modifier = nationalist_agitation
+					controlled_by_rebels = yes
+				}
+			}
+		}
+	}
 
 	option = {
 		name = "Form the state!"
 		prestige = 10
 		release_vassal = TOG
 		TOG = { government = mandate_government }
-FRA = { diplomatic_influence = { who = TOG value = 200 } }
-		ai_chance = { factor = 1 }
-					}
+		FRA = { diplomatic_influence = { who = TOG value = 200 } }
+		ai_chance = { factor = 0.95 }
+	}
 	option = {
 		name = "Refuse!"
 		prestige_factor = -0.1
-		ai_chance = { factor = 0 }
-					}
+		badboy = 4
+		TOG = { any_core = { add_province_modifier = { name = nationalist_agitation duration = 1095 } } }
+		ai_chance = {
+			factor = 0.05
+			modifier = {
+				factor = 0
+				OR = {
+					badboy = 0.84
+					ruling_party_ideology = liberal
+					ruling_party_ideology = progressive
+					ruling_party_ideology = socialist
+				}
+			}
+			modifier = {
+				factor = 2
+				NOT = { exists = ALG }
+			}
+		}
+	}
 }
