@@ -625,26 +625,61 @@ assimilation_chance = { # 1
 
 #general conversion mtth, same for all pops
 conversion_chance = { # 1.0
-	factor = 0.5
+	factor = 0.3
+
+	modifier = { factor = -100 NOT = { location = { controlled_by = owner } } }
 
 	group = {
-		modifier = { factor = 0.05 literacy = 0.1 }
-		modifier = { factor = 0.05 literacy = 0.2 }
-		modifier = { factor = 0.05 literacy = 0.3 }
-		modifier = { factor = 0.05 literacy = 0.4 }
-		modifier = { factor = 0.05 literacy = 0.5 }
-		modifier = { factor = 0.05 literacy = 0.6 }
-	}	
-
-	group = {
-		modifier = { factor = 0.2 NOT = { has_pop_religion = secularism } country = { religious_policy = pro_atheism } }
-		modifier = { factor = 0.8 NOT = { has_pop_religion = secularism } country = { government = proletarian_dictatorship } }
+		# It would be nice to eliminate this for one religion converting to another
+		modifier = { factor = 0.05 literacy = 0.1 NOT = { has_pop_religion = secularism } }
+		modifier = { factor = 0.05 literacy = 0.2 NOT = { has_pop_religion = secularism } }
+		modifier = { factor = 0.05 literacy = 0.3 NOT = { has_pop_religion = secularism } }
+		modifier = { factor = 0.05 literacy = 0.4 NOT = { has_pop_religion = secularism } }
+		modifier = { factor = 0.05 literacy = 0.5 NOT = { has_pop_religion = secularism } }
+		modifier = { factor = 0.05 literacy = 0.6 NOT = { has_pop_religion = secularism } }
 	}
 
-	modifier = { factor = 0.2 NOT = { has_pop_religion = secularism } culture = THIS }
+	group = {
+		modifier = { factor = 0.2 country = { religious_policy = moralism } }
+		modifier = { factor = 0.2 country = { religious_policy = pro_atheism } }
+	}
 
-	modifier = { factor = -2 country = { religious_policy = moralism } }
-	modifier = { factor = -2 OR = { has_pop_religion = jewish has_pop_religion = mennonite has_pop_religion = secularism } }
-	modifier = { factor = -2 OR = { AND = { OR = { has_pop_religion = sunni has_pop_religion = shiite } country = { government = absolute_monarchy } } } country = { government = theocracy } } 
+	modifier = { factor = 0.2 culture = THIS }
+
+	modifier = {
+		factor = -2
+		OR = {
+			AND = {
+				# Muslims and Amish will only convert if 80% literate, not militant, and in their home country or culture converted (see note)
+				# e.g. Greater India will never be able to convert Pakistanis unless they are accepted
+				OR = {
+					has_pop_religion = mennonite
+					has_pop_religion = sunni
+					has_pop_religion = shiite
+					has_pop_religion = ibad
+				}
+				literacy = 0.8
+				NOT = { militancy = 1 }
+				OR = {
+					culture = THIS
+					has_culture_core = no
+				}
+			}
+			AND = { # Jews will only convert in Israel ... should we also do this for Sikhs and Punjab?
+				#OR = {
+					has_pop_religion = jewish
+					#has_pop_religion = sikh
+				#}
+				NOT = { culture = THIS }
+			}
+			AND = { # Secular pops will only convert in a theocracy or if poor and scared
+				has_pop_religion = secularism
+				OR = {
+					NOT = { country = { government = theocracy } }
+					NOT = { AND = { strata = poor militancy = 5 } }
+				}
+			}
+		}
+	}
 
 }
