@@ -1,138 +1,248 @@
+# SUMMARY:
+# Askar Akayev was the president of the Kyrgyz SSR selected by the Soviet Union and stayed in power post-independence. He was friendly with Putin.
+# The Tulip Revolution was for democracy, but the acting president and subsequent president-elect, Bakiyev, did not follow through on promises for reform and the presidency was marked by dictatorial actions, including a(n allegedly false) referendum. He was friendly with both Putin and China, but lost Putin's support when he grew too close to China and away from Russia.
+# Russia took measures to kill his dwindling support, which led to the 2010 Revolution, and he fled to the Russian sphere amidst a popular constitutional referendum called by the still pro-Russia opposition, who seized power.
+# The Russians were disappointed by the referendum, but voters chose pro-Russian parties, who formed a coalition.
+# The government role in subsequent Kyrgyz-Uzbek riots is unclear.
+
 country_event = {
-  id = 8008101
-  title = EVT_8008101_NAME
-  desc = EVT_8008101_DESC
-  picture = "tulip_revolution"
-  fire_only_once = yes
+	id = 8008101
+	title = EVT_8008101_NAME
+	desc = EVT_8008101_DESC
+	picture = "tulip_revolution"
+	fire_only_once = yes
 
-  mean_time_to_happen = { months = 3  }
-  
-  trigger = {
-    tag = KYR
-	war = no
-	government = presidential_dictatorship
-	year = 2005
-  }
+	mean_time_to_happen = {
+		months = 80
+		modifier = {
+			factor = 0.75
+			election = yes
+		}
+		modifier = {
+			factor = 0.75
+			average_militancy = 1
+		}
+	}
 
-  option = {
-    name = EVT_8008101_A
-	government = democracy country_event = 800054
-	set_country_flag = tulip_revolution_aftermath
-	ai_chance = { factor = 100 }
-  }
-  
-  option = {
-    name = EVT_8008101_B
-	any_pop = { militancy = 3 consciousness = 2 }
-	ai_chance = { factor = 0 }
-  }
-  
+	trigger = {
+		tag = KYR
+		war = no
+		government = presidential_dictatorship
+		year = 2000
+	}
+
+	option = {
+		name = EVT_8008101_A
+		government = democracy
+		election = yes
+		random_country = { limit = { NOT = { government = democracy } is_sphere_leader_of = THIS } diplomatic_influence = { who = THIS value = -50 } }
+		set_country_flag = tulip_revolution_aftermath
+		ai_chance = {
+			factor = 0.5
+			modifier = {
+				factor = 2
+				average_militancy = 4
+			}
+			modifier = {
+				factor = 2
+				NOT = { political_opinions = ruling_party_opinion }
+			}
+			modifier = {
+				factor = 0
+				NOT = { average_militancy = 0.5 }
+			}
+		}
+	}
+
+	option = {
+		name = EVT_8008101_B
+		any_pop = { militancy = 3 consciousness = 2 }
+		ai_chance = { factor = 0.5 }
+	}
+
 }
 
 country_event = {
-  id = 8008102
-  title = EVT_8008102_NAME
-  desc = EVT_8008102_DESC
-  picture = "2010_kyrgyz_revolution"
-  fire_only_once = yes
+	id = 8008102
+	title = EVT_8008102_NAME
+	desc = EVT_8008102_DESC
+	picture = "2010_kyrgyz_revolution"
+	fire_only_once = yes
 
-  mean_time_to_happen = { months = 3  }
-  
-  trigger = {
-    tag = KYR
-	has_country_flag = tulip_revolution_aftermath
-	war = no
-	government = democracy
-	year = 2010
-  }
+	mean_time_to_happen = {
+		months = 80
+		modifier = {
+			factor = 0.75
+			average_consciousness = 3
+		}
+	}
 
-  option = {
-    name = EVT_8008102_A
-	any_pop = { militancy = -3 consciousness = -2 }
-	clr_country_flag = tulip_revolution_aftermath
-	country_event = 8008103
-	ai_chance = { factor = 100 }
-  }
-  
-  option = {
-    name = EVT_8008102_B
-	any_pop = { militancy = 3 consciousness = 2 }
-	ai_chance = { factor = 0 }
-  }
-  
+	trigger = {
+		has_country_flag = tulip_revolution_aftermath
+		war = no
+		OR = {
+			NOT = { government = democracy }
+			sphere_owner = { NOT = { government = democracy } }
+			NOT = { OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive } }
+		}
+	}
+
+	immediate = {
+		country_event = { id = 8008103 days = 60 }
+	}
+
+	option = {
+		name = EVT_8008102_A
+		clr_country_flag = tulip_revolution_aftermath
+		government = democracy
+		ruling_party_ideology = socialist # Social Democratic Party
+		any_pop = { militancy = -3 consciousness = -2 }
+		election = yes
+		country_event = 800054
+		ai_chance = {
+			factor = 0.9
+			modifier = {
+				factor = 0.5
+				part_of_sphere = no
+			}
+		}
+	}
+
+	option = {
+		name = EVT_8008102_B
+		ruling_party_ideology = socialist # Social Democratic Party
+		any_pop = { militancy = 3 consciousness = 2 }
+		ai_chance = {
+			factor = 0.05
+			modifier = {
+				factor = 20
+				NOT = { average_consciousness = 0.5 }
+			}
+		}
+	}
+	
+	option = {
+		name = EVT_8008102_C
+		clr_country_flag = tulip_revolution_aftermath
+		government = democracy
+		ruling_party_ideology = progressive
+		any_pop = { militancy = -3 consciousness = -2 }
+		election = yes
+		country_event = 800054
+		sphere_owner = {
+			relation = { who = THIS value = -150 }
+			leave_alliance = THIS
+			diplomatic_influence = { who = THIS value = -250 }
+			casus_belli = { target = THIS type = add_to_sphere months = 12 }
+		}
+		ai_chance = {
+			factor = 0.05
+			modifier = {
+				factor = 10
+				part_of_sphere = no
+			}
+		}
+	}
+
 }
 
 country_event = {
-  id = 8008103
-  title = EVT_8008103_NAME
-  desc = EVT_8008103_DESC
-  picture = "2010_kyrgyz_uzbek_ethnic_clashes"
-  fire_only_once = yes
-is_triggered_only = yes
+	id = 8008103
+	title = EVT_8008103_NAME
+	desc = EVT_8008103_DESC
+	picture = "2010_kyrgyz_uzbek_ethnic_clashes"
+	fire_only_once = yes
+	is_triggered_only = yes # KYR
 
-  option = {
-    name = EVT_8008103_A
-	any_pop = { limit = { culture = kirgiz } militancy = -1.5  consciousness = 0.5 }
-	any_pop = { limit = { culture = uzbek } militancy = 3  consciousness = 2 }
-clr_country_flag = second_kyrgz_revolution
-	1203 = { add_province_modifier = { name = ethnic_cleansing duration = 6 } }
-	UZB = { country_event = 8008104 }
-	ai_chance = { factor = 95 }
-  }
-  
-  option = {
-    name = EVT_8008103_B
-	any_pop = { limit = { culture = kirgiz } militancy = 1.5  consciousness = 0.5 }
-	any_pop = { limit = { culture = uzbek } militancy = -2  consciousness = -1 }
-	ai_chance = { factor = 5 }
-  }
-  
+	option = {
+		name = EVT_8008103_A
+		any_pop = { limit = { has_pop_culture = kirgiz } militancy = -1.5  consciousness = 0.5 }
+		any_pop = { limit = { has_pop_culture = uzbek } militancy = 3  consciousness = 2 }
+		clr_country_flag = second_kyrgz_revolution
+		1203 = { add_province_modifier = { name = ethnic_cleansing duration = 6 } }
+		UZB = { country_event = 8008104 }
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = EVT_8008103_B
+		any_pop = { limit = { has_pop_culture = kirgiz } militancy = 1.5  consciousness = 0.5 }
+		any_pop = { limit = { has_pop_culture = uzbek } militancy = -2  consciousness = -1 }
+		ai_chance = {
+			factor = 0.1
+			modifier = {
+				factor = 10
+				ruling_party_ideology = progressive
+			}
+			modifier = {
+				factor = 0
+				ruling_party_ideology = nationalist
+			}
+		}
+	}
+
 }
 
 country_event = {
-  id = 8008104
-  title = EVT_8008104_NAME
-  desc = EVT_8008104_DESC
-  picture = "2010_kyrgyz_uzbek_ethnic_clashes"
-  fire_only_once = yes
+	id = 8008104
+	title = EVT_8008103_NAME
+	desc = EVT_8008103_DESC
+	picture = "2010_kyrgyz_uzbek_ethnic_clashes"
+	fire_only_once = yes
+	is_triggered_only = yes # UZB
 
-is_triggered_only = yes
+	option = {
+		name = EVT_8008104_A
+		any_pop = { limit = { has_pop_culture = uzbek } militancy = -1.5  consciousness = -0.5 }
+		ai_chance = {
+			factor = 0.75
+			modifier = {
+				factor = 0.5
+				AND = {
+					stronger_army_than = FROM
+					FROM = { part_of_sphere = no }
+				}
+			}
+		}
+	}
 
-  option = {
-    name = EVT_8008104_A
-	any_pop = { limit = { culture = uzbek } militancy = -1.5  consciousness = -0.5 }
-	ai_chance = { factor = 85 }
-  }
-  
-  option = {
-    name = EVT_8008104_B
-	any_pop = { limit = { culture = uzbek } militancy = -2  consciousness = -1 }
-	relation = { who = KYR value = -100 }
-	1203 = { 
-		add_core = UZB	
+	option = {
+		name = EVT_8008104_B
+		any_pop = { limit = { has_pop_culture = uzbek } militancy = -2  consciousness = -1 }
+		relation = { who = FROM value = -100 }
+		1203 = { add_core = THIS }
+		ai_chance = {
+			factor = 0.15
+			modifier = {
+				factor = 0
+				FROM = { part_of_sphere = no }
+			}
+		}
 	}
-	ai_chance = { factor = 10 }
-  }
-  
-  option = {
-    name = EVT_8008104_C
-	any_pop = { limit = { culture = uzbek } militancy = -2.5  consciousness = -1.5 }
-	relation = { who = KYR value = -150 }
-	war = {
-		target = KYR
-		attacker_goal = { casus_belli = acquire_core_state state_province_id = 1203 } # Osh
-		defender_goal = { casus_belli = status_quo }
-	}
-	1203 = { 
-		add_core = UZB	
-	}
-	ai_chance = { factor = 5 }
-  }
 
-  option = {
-    name = EVT_8008104_D
-	any_pop = { limit = { culture = uzbek } militancy = 2  consciousness = 1 }
-	ai_chance = { factor = 5 }
-  }
+	option = {
+		name = EVT_8008104_C
+		any_pop = { limit = { has_pop_culture = uzbek } militancy = -2.5  consciousness = -1.5 }
+		relation = { who = FROM value = -150 }
+		1203 = { add_core = THIS }
+		war = {
+			target = FROM
+			attacker_goal = { casus_belli = acquire_core_state state_province_id = 1203 } # Osh
+			defender_goal = { casus_belli = status_quo }
+		}
+		ai_chance = {
+			factor = 0.10
+			modifier = {
+				factor = 2.5
+				FROM = { part_of_sphere = no }
+			}
+		}
+	}
+
+	option = {
+		name = EVT_8008104_D
+		any_pop = { limit = { has_pop_culture = uzbek } militancy = 2  consciousness = 1 }
+		ai_chance = { factor = 0 }
+	}
 
 }
