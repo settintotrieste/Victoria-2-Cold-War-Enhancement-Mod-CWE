@@ -4,7 +4,7 @@ country_event = {
 	desc = "EVT_1004902_DESC"
 	picture = "sudan_independence"
 	fire_only_once = yes
-	
+
 	trigger = {
 		NOT = { exists = SUD }
 		NOT = { year = 1990 }
@@ -16,23 +16,24 @@ country_event = {
 	mean_time_to_happen = {
 		months = 3
 	}
-	
+
 	option = {
 		name = "EVT_1004902_A"
 		ENG = { country_event = 1004903 }
 		prestige = 5
-		ai_chance = { factor = 100 }
+		ai_chance = { factor = 0.8 }
 	}
-	
+
 	option = {
 		name = "EVT_1004902_B"
 		prestige = -5
 		set_country_flag = claim_the_sudan
 		any_pop = { limit = { culture = sunni_arab } consciousness = 2 }
-		ai_chance = { factor = 0 }
+		ai_chance = { factor = 0.2 }
 	}
-		
+	
 }
+
 country_event = {
 	id = 1004903
 	title = EVT_1004903_NAME
@@ -47,7 +48,9 @@ country_event = {
 		EGY = { government = presidential_dictatorship }
 		NOT = { year = 1990 }
 	}
-	
+
+	mean_time_to_happen = { months = 24 }
+
 	option = {
 		name = "Prepare Sudan for independence" 
 		release_vassal = SUD
@@ -58,7 +61,7 @@ country_event = {
 		ENG = { diplomatic_influence = { who = SUD value = 200 } }
 		ai_chance = { factor = 100 }
 	}
-	
+
 	option = {
 		name = EVT_1004903_B
 		ai_chance = { factor = 0 }
@@ -66,201 +69,318 @@ country_event = {
 		relation = { who = EGY value = -200 }
 		any_pop = { limit = { culture = sunni_arab } militancy = 6  consciousness = 5.0 }
 	}
-	
+
 }
+
 country_event = {
 	id = 1004904
 	title = EVT_1004904_NAME
 	desc = EVT_1004904_DESC
 	picture = "sudan_independence"
 	is_triggered_only = yes # EGY
-	
+
 	option = {
 		name = EVT_1004904_A 
 		casus_belli = { target = SUD type = make_puppet months = 240 }
-		ai_chance = { factor = 0 }
+		ai_chance = {
+			factor = 0.01
+		}
 	}
-	
+
 	option = {
 		name = EVT_1004904_B
-		ai_chance = { factor = 100 }
 		relation = { who = SUD value = 200 }
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				ruling_party_ideology = populist
+			}
+		}
+	}
+
+}
+
+#Full Independence for the Sudan
+country_event = {
+	id = 1004905
+	title = "Full Independence for the Sudan"
+	desc = EVT_1004905_DESC
+	picture = "sudanese_independence_choice"
+	fire_only_once = yes
+
+	mean_time_to_happen = {
+		months = 48
+		modifier = {
+			factor = 0.05
+			SUD = { ruling_party_ideology = nationalist }
+		}
 	}
 	
+	trigger = {
+		capital_scope = { continent = europe } # ENG or FBU
+		# Egyptian Revolution generally happens in 1952
+		OR = {
+			EGY = {
+				exists = yes
+				NOT = { OR = { government = hms_government government = absolute_monarchy government = democracy } }
+			}
+			UAR = {
+				exists = yes
+				NOT = { OR = { government = hms_government government = absolute_monarchy government = democracy } }
+			}
+		}
+		SUD = { government = colonial_government }
+		is_our_vassal = SUD
+	}
+
+	option = {
+		name = "Grant Sudan Independence"
+		prestige = 10
+		random_country = { limit = { capital = 1745 } relation = { who = THIS value = 25 } } # Cairo
+		release_vassal = SUD
+		SUD = {
+			government = democracy
+			country_event = 1004906
+		}
+		ai_chance = { factor = 0.99 }
+	}
+
+	option = {
+		name = EVT_1004905_A
+		prestige_factor = -0.05
+		random_country = { limit = { capital = 1745 } relation = { who = THIS value = -100 } } # Cairo
+		ai_chance = { factor = 0.01 }
+	}
+
+}
+
+#Full Independence for the Sudan
+country_event = {
+	id = 1004906
+	title = "Future of the $COUNTRY$"
+	desc = EVT_1004905_DESC
+	picture = "sudanese_independence_choice"
+	is_triggered_only = yes # SUD
+
+	option = {
+		name = "We will offer to continue the union"
+		random_country = {
+			#TODO: allow Egypt to decline
+			limit = { capital = 1745 }
+			prestige = 10
+			create_vassal = THIS
+		}
+		ai_chance = {
+			factor = 0.1
+			modifier = {
+				factor = 2
+				any_neighbor_country = {
+					capital = 1745
+					OR = {
+						has_country_flag = claim_the_sudan
+						casus_belli = THIS
+					}
+				}
+			}
+		}
+	}
+
+	# Disabling so as not to break the civil wars, TODO modifty civil wars to fire for Egypt which owns Sudan
+	#option = {
+	#	name = "Integrate into Egypt"
+	#	EGY = { prestige = 25 }
+	#	EGY = { inherit = SUD }
+	#	ai_chance = { factor = 0.1 }
+	#}
+
+	option = {
+		name = "Remain independent"
+		prestige = 25
+		random_country = {
+			limit = { capital = 1745 }
+			relation = {
+				who = THIS
+				value = -100
+			}
+		}
+		ai_chance = { factor = 0.8 }
+	}
+
 }
 
 country_event = {
-  id = 8014520
-  title = EVT_8014520_NAME
-  desc = EVT_8014520_DESC
-  picture = "nwo2_unrest_in_sudan"
-  fire_only_once = yes
+	id = 8014520
+	title = EVT_8014520_NAME
+	desc = EVT_8014520_DESC
+	picture = "nwo2_unrest_in_sudan"
+	fire_only_once = yes
 
-  trigger = {
-    tag = SUD
-    year = 1969
-	NOT = { year = 1990 }
-    any_owned_province = { province_id = 360 }  
-  }
+	trigger = {
+		tag = SUD
+		year = 1969
+		NOT = { year = 1990 }
+		any_owned_province = { province_id = 360 }  
+	}
 
-  mean_time_to_happen = { months = 11 }
+	mean_time_to_happen = { months = 11 }
 
-  option = {
-    name = EVT_8014520_A
-	government = populist_dictatorship country_event = 800050
-	any_pop = { limit = { NOT = { religion = sunni } } militancy = 5.0  consciousness = 5.0 }
-	any_owned = { 
-		limit = { OR = { province_id = 1843 province_id = 1844  province_id = 1845  province_id = 1846 province_id = 1847} }
-		change_controller = REB 
-	} 
-  }
+	option = {
+		name = EVT_8014520_A
+		government = populist_dictatorship country_event = 800050
+		any_pop = { limit = { NOT = { religion = sunni } } militancy = 5.0  consciousness = 5.0 }
+		any_owned = { 
+			limit = { OR = { province_id = 1843 province_id = 1844  province_id = 1845  province_id = 1846 province_id = 1847} }
+			change_controller = REB 
+		} 
+	}
 }
 
 country_event = {
-  id = 8014521
-  title = EVT_8014521_NAME
-  # EVT_8014521_NAME;Second Sudanese Civil War
-  desc = EVT_8014521_DESC
-  # EVT_8014521_DESC;The Second Sudanese Civil War was a conflict from 1983 to 2005 between the central Sudanese government and the Sudan People's Liberation Army. It was largely a continuation of the First Sudanese Civil War of 1955 to 1972. Although it originated in southern Sudan, the civil war spread to the Nuba mountains and Blue Nile.
-  picture = "second_sudanese_civil_war"
-  fire_only_once = yes
+	id = 8014521
+	title = EVT_8014521_NAME
+	# EVT_8014521_NAME;Second Sudanese Civil War
+	desc = EVT_8014521_DESC
+	# EVT_8014521_DESC;The Second Sudanese Civil War was a conflict from 1983 to 2005 between the central Sudanese government and the Sudan People's Liberation Army. It was largely a continuation of the First Sudanese Civil War of 1955 to 1972. Although it originated in southern Sudan, the civil war spread to the Nuba mountains and Blue Nile.
+	picture = "second_sudanese_civil_war"
+	fire_only_once = yes
 
-  trigger = {
-    tag = SUD
-    year = 1983
-	NOT = {year = 1990}
-    owns = 1843  
-	NOT = { exists = SSU }
-  }
+	trigger = {
+		tag = SUD
+		year = 1983
+		NOT = {year = 1990}
+		owns = 1843  
+		NOT = { exists = SSU }
+	}
 
-  mean_time_to_happen = { months = 2 }
+mean_time_to_happen = { months = 2 }
 
-  option = {
-    name = EVT_8014521_A
+option = {
+	name = EVT_8014521_A
 	# EVT_8014521_A;This is a Islamic country!
 	any_pop = { limit = { NOT = { religion = sunni } } militancy = 2.0  consciousness = 2.0 }
 	release = SSU
 	war = { target = SSU attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } }
 	ai_chance = { factor = 100 }
-  }
-  option = {
-    name = EVT_8014521_B
+}
+option = {
+	name = EVT_8014521_B
 	# EVT_8014521_B;Stick with the Addis Abebba agreement give South Sudan Autonomy
 	any_pop = { limit = { religion = sunni } militancy = 2.0  consciousness = 2.0 }
 	release_vassal = SSU
 	3277 = { add_core = SSU } # Blue Nile
 	ai_chance = { factor = 0 }
-  }
+}
 }
 
 country_event = {
-  id = 8014522
-  title = EVT_8014522_NAME
-  # EVT_8014522_NAME;War in Darfur
-  desc = EVT_8014522_DESC
-  # EVT_8014522_DESC;The War in Darfur is a major armed conflict in the Darfur region of Sudan, that began in February 2003 when the Sudan Liberation Movement (SLM) and Justice and Equality Movement (JEM) rebel groups began fighting the government of Sudan, which they accused of oppressing Darfur's non-Arab population. The government responded to attacks by carrying out a campaign of ethnic cleansing against Darfur's non-Arabs.
-  picture = "war_in_darfur"
-  fire_only_once = yes
+	id = 8014522
+	title = EVT_8014522_NAME
+	# EVT_8014522_NAME;War in Darfur
+	desc = EVT_8014522_DESC
+	# EVT_8014522_DESC;The War in Darfur is a major armed conflict in the Darfur region of Sudan, that began in February 2003 when the Sudan Liberation Movement (SLM) and Justice and Equality Movement (JEM) rebel groups began fighting the government of Sudan, which they accused of oppressing Darfur's non-Arab population. The government responded to attacks by carrying out a campaign of ethnic cleansing against Darfur's non-Arabs.
+	picture = "war_in_darfur"
+	fire_only_once = yes
 
-  trigger = {
-    tag = SUD
-	war = no
-    year = 2003
-    any_owned_province = { province_id = 1842 }  
-	NOT = { exists = DAR }
-  }
+	trigger = {
+		tag = SUD
+		war = no
+		year = 2003
+		any_owned_province = { province_id = 1842 }  
+		NOT = { exists = DAR }
+	}
 
-  mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 2 }
 
-  option = {
-    name = EVT_8014522_A
-	# EVT_8014522_A;This is an Arabic country!
-	any_pop = { limit = { NOT = { religion = sunni } } militancy = 2.0  consciousness = 2.0 }
-	release = DAR
-	war = { target = DAR attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } }
-	random_country = { 
-		limit = { tag = SUD NOT = { exists = SSU } owns = 1843 }
+	option = {
+		name = EVT_8014522_A
+		# EVT_8014522_A;This is an Arabic country!
+		any_pop = { limit = { NOT = { religion = sunni } } militancy = 2.0  consciousness = 2.0 }
+		release = DAR
+		war = { target = DAR attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } }
+		random_country = { 
+			limit = { tag = SUD NOT = { exists = SSU } owns = 1843 }
+			release = SSU
+			war = { target = SSU attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } }
+		}
+		ai_chance = { factor = 100 }
+	}
+	option = {
+		name = EVT_8014522_B
+		# EVT_8014522_B;Favour a federal structure
+		any_pop = { limit = { religion = sunni } militancy = 5.0  consciousness = 5.0 }
+		release_vassal = DAR
+		random_country = { 
+			limit = { tag = SUD NOT = { exists = SSU } owns = 1843 }
+			release_vassal = SSU
+			3277 = { add_core = SSU } # Blue Nile
+		}
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = {
+	id = 8014523
+	title = EVT_8014523_NAME
+	# EVT_8014523_NAME;South Sudanese Independence
+	desc = EVT_8014523_DESC
+	# EVT_8014523_DESC;The Comprehensive Peace Agreement, also known as the Naivasha Agreement, was a set of agreements culminating in January 2005 that were signed between the Sudan People's Liberation Movement (SPLM) and the Government of Sudan. The CPA was meant to end the Second Sudanese Civil War, develop democratic governance countrywide, and share oil revenues. It further set a timetable by which Southern Sudan had a referendum on its independence.
+	picture = "south_sudanese_independence"
+	fire_only_once = yes
+
+	trigger = {
+		tag = SUD
+		year = 2005
+		war = no
+		any_owned_province = { province_id = 1843 }  
+		OR = { is_our_vassal = SSU NOT = { exists = SSU } }
+	}
+
+	mean_time_to_happen = { months = 2 }
+
+	option = {
+		name = EVT_8014523_A
+		# EVT_8014523_A;Let the South leave
+		any_pop = { limit = { NOT = { religion = sunni } } militancy = 2.0  consciousness = 4.0 }
 		release = SSU
-		war = { target = SSU attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } }
-	}
-	ai_chance = { factor = 100 }
-  }
-  option = {
-    name = EVT_8014522_B
-	# EVT_8014522_B;Favour a federal structure
-	any_pop = { limit = { religion = sunni } militancy = 5.0  consciousness = 5.0 }
-	release_vassal = DAR
-	random_country = { 
-		limit = { tag = SUD NOT = { exists = SSU } owns = 1843 }
-		release_vassal = SSU
 		3277 = { add_core = SSU } # Blue Nile
+		ai_chance = { factor = 100 }
 	}
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = EVT_8014523_B
+		# EVT_8014523_B;Continue the war
+		any_pop = { limit = { NOT = { religion = sunni } } militancy = 5.0  consciousness = 4.0 }
+		release = SSU
+		3277 = { add_core = SSU } # Blue Nile
+		war = { target = SSU attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } }
+		ai_chance = { factor = 0 }
+	}
 }
 
 country_event = {
-  id = 8014523
-  title = EVT_8014523_NAME
-  # EVT_8014523_NAME;South Sudanese Independence
-  desc = EVT_8014523_DESC
-  # EVT_8014523_DESC;The Comprehensive Peace Agreement, also known as the Naivasha Agreement, was a set of agreements culminating in January 2005 that were signed between the Sudan People's Liberation Movement (SPLM) and the Government of Sudan. The CPA was meant to end the Second Sudanese Civil War, develop democratic governance countrywide, and share oil revenues. It further set a timetable by which Southern Sudan had a referendum on its independence.
-  picture = "south_sudanese_independence"
-  fire_only_once = yes
+	id = 8014524
+	title = EVT_8014524_NAME
+	desc = EVT_8014524_DESC
+	picture = "south_sudanese_civil_war"
+	fire_only_once = yes
 
-  trigger = {
-    tag = SUD
-    year = 2005
-	war = no
-    any_owned_province = { province_id = 1843 }  
-	OR = { is_our_vassal = SSU NOT = { exists = SSU } }
-  }
+	trigger = {
+		tag = SSU
+		year = 2013
+		war = no
+	}
 
-  mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 6 }
 
-  option = {
-    name = EVT_8014523_A
-	# EVT_8014523_A;Let the South leave
-	any_pop = { limit = { NOT = { religion = sunni } } militancy = 2.0  consciousness = 4.0 }
-	release = SSU
-	3277 = { add_core = SSU } # Blue Nile
-	ai_chance = { factor = 100 }
-  }
-  option = {
-    name = EVT_8014523_B
-	# EVT_8014523_B;Continue the war
-	any_pop = { limit = { NOT = { religion = sunni } } militancy = 5.0  consciousness = 4.0 }
-	release = SSU
-	3277 = { add_core = SSU } # Blue Nile
-	war = { target = SSU attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } }
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = EVT_8014524_A
+		any_owned = { limit = { OR = { province_id = 1844 province_id = 1847 province_id = 1832 } } change_controller = REB }
+		any_pop = { limit = { culture = nuer } militancy = 5.0  consciousness = 4.0 }
+		ai_chance = { factor = 95 }
+	}
+	option = {
+		name = EVT_8014524_B
+		any_pop = { limit = { culture = dinka } militancy = 5.0  consciousness = 4.0 }
+		ai_chance = { factor = 5 }
+	}
 }
-country_event = {
-  id = 8014524
-  title = EVT_8014524_NAME
-  desc = EVT_8014524_DESC
-  picture = "south_sudanese_civil_war"
-  fire_only_once = yes
-
-  trigger = {
-    tag = SSU
-    year = 2013
-	war = no
-  }
-
-  mean_time_to_happen = { months = 6 }
-
-  option = {
-    name = EVT_8014524_A
-	any_owned = { limit = { OR = { province_id = 1844 province_id = 1847 province_id = 1832 } } change_controller = REB }
-	any_pop = { limit = { culture = nuer } militancy = 5.0  consciousness = 4.0 }
-	ai_chance = { factor = 95 }
-  }
-  option = {
-    name = EVT_8014524_B
-	any_pop = { limit = { culture = dinka } militancy = 5.0  consciousness = 4.0 }
-	ai_chance = { factor = 5 }
-  }
-}
-
