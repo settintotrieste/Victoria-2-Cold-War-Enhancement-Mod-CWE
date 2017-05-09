@@ -1,0 +1,113 @@
+political_decisions = {
+
+	jihad = {
+		picture = "jihad"
+		potential = {
+			tag = ISI
+			exists = yes
+			any_core = { owner = { NOT = { tag = THIS truce_with = THIS war_with = THIS } } }
+		}
+		allow = {
+			war = no
+			government = theocracy
+		}
+		effect = {
+			badboy = 5
+			random_country = {
+				limit = { war = no NOT = { truce_with = THIS } NOT = { tag = THIS } any_owned_province = { is_core = THIS } }
+				country_event = 1014800
+			}
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = { factor = 0 badboy = 5 }
+			modifier = { factor = 0 war_exhaustion = 0.2 }
+		}
+	}
+
+	sponsor_terror = {
+		picture = "jihad"
+		potential = {
+			has_country_modifier = war_on_terror
+			has_country_flag = desecularized
+			NOT = { has_country_modifier = relations_timer }
+			OR = {
+				government = theocracy
+				government = absolute_monarchy
+			}
+			OR = {
+				ruling_party_ideology = traditionalist
+				ruling_party_ideology = populist
+				ruling_party_ideology = nationalist
+			}
+		}
+
+		effect = {
+			prestige = 40
+			random_country = {
+				limit = {
+					NOT = { alliance_with = THIS }
+					any_owned_province = { any_pop = { religion = THIS } }
+					NOT = { pop_majority_religion = THIS }	# This one doesn't seem to work, unsure how to effectively do
+															# For now, think about it as extremists vs. moderates
+					#NOT = { immigration_policy = nobody_gets_out } # Need communists to get this, too
+				}
+				relation = { who = THIS value = -40 }
+				random_owned = {
+					limit = { any_pop = { religion = THIS } has_national_minority = yes }
+					province_event = { id = 1511119 }
+					state_scope = {
+						any_pop = {
+							limit = { religion = THIS }
+							militancy = 3
+							ideology = {
+								value = traditionalist
+								factor = 0.35
+							}
+						}
+						any_pop = {
+							limit = { NOT = { religion = THIS } }
+							consciousness = -3
+							ideology = {
+								value = populist
+								factor = 0.35
+							}
+						}
+					}
+				}
+				# CBs against sponsor; democratically elected communists get both kinds
+				random_owned = { limit = { owner = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } } owner = { casus_belli = { target = THIS type = install_communist_gov_cb months = 36 } } }
+				random_owned = { limit = { owner = { OR = { government = democracy government = hms_government government = hms_government1 government = socialist_democracy } } } owner = { casus_belli = { target = THIS type = install_democracy months = 36 } } }
+				#random_owned = { limit = { owner = { OR = { government = presidential_dictatorship government = nationalist_dictatorship government = populist_dictatorship } } } owner = { casus_belli = { target = THIS type = install_authoritarian_regime months = 36 } } }
+				#random_owned = { limit = { owner = { government = theocracy } } owner = { casus_belli = { target = THIS type = install_theocratic_regime months = 36 } } }
+			}
+			any_pop = {
+				limit = { religion = THIS }
+				ideology = {
+					value = traditionalist
+					factor = 0.5
+				}
+			}
+			badboy = 5
+			add_country_modifier = { name = relations_timer duration = 400 }
+			add_country_modifier = { name = support_the_government duration = 400 }
+		}
+
+		ai_will_do = {
+			factor = 1
+			# Yes if over infamy limit or far below
+			# So that ISIS will always do but e.g. Saudis will be more restrained
+			modifier = {
+				factor = 0
+				badboy = 0.8
+				NOT = { badboy = 1 }
+			}
+			modifier = {
+				factor = 0
+				government = absolute_monarchy
+				NOT = { number_of_cities = 3 }
+			}
+		}
+	}
+
+}
