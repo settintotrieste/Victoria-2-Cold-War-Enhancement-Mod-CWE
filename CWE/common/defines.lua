@@ -115,7 +115,7 @@ economy = {
 	FACTORY_PAYCHECKS_LEFTOVER_FACTOR = 0.9, -- % of how much we pay to the pops and capitalists, from the leftovers.
 	MAX_FACTORY_MONEY_SAVE = 5000,	-- how much money is stored maximum in a factory.
 	SMALL_DEBT_LIMIT = 5000, 
-	FACTORY_UPGRADE_EMPLOYEE_FACTOR = 0.95, -- determines how close to the employee limit we need to be before "upgrade all" will upgrade/expand a given factory (1 = 100%).
+	FACTORY_UPGRADE_EMPLOYEE_FACTOR = 0.75, -- determines how close to the employee limit we need to be before "upgrade all" will upgrade/expand a given factory (1 = 100%).
 	RGO_SUPPLY_DEMAND_FACTOR_HIRE_HI = 0.2,	-- how fast pops are Hired when there is a high demand
 	RGO_SUPPLY_DEMAND_FACTOR_HIRE_LO = 0.1,	-- how fast pops are Hired when there is a medium demand
 	RGO_SUPPLY_DEMAND_FACTOR_FIRE = 0.05,		-- how fast pops are Fired when there is a low demand
