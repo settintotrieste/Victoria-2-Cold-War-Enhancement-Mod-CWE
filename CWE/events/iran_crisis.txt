@@ -1,3 +1,5 @@
+# Rebel victory handled in Sovietisation of Eastern Europe
+
 country_event = {
   id = 8500901
   title = EVT_8500901_NAME
@@ -50,6 +52,8 @@ country_event = {
 	RUS = { military_access = THIS } 
   }
 }
+
+# Start, Soviets choose whether to withdraw
 country_event = {
   id = 8500903
   title = EVT_8500903_NAME
@@ -58,10 +62,11 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-    tag = RUS
+    government = proletarian_dictatorship
 	year = 1946 NOT = { year = 1947 }
 	exists = KUR
 	is_our_vassal = KUR
+	KUR = { war_with = PER }
     exists = PER
   }
 
@@ -71,9 +76,9 @@ country_event = {
     name = EVT_8500903_A
 	relation = { who = PER value = 50 } 
 	relation = { who = KUR value = -200 } 
-	country_event = 8500911 
+	KUR = { country_event = 8500911 }
 	#country_event =  { id = 8500921 days = 1 } 
-	ai_chance = { factor = 100 }
+	ai_chance = { factor = 0.5 }
   }
 
   option = {
@@ -81,140 +86,170 @@ country_event = {
 	relation = { who = PER value = -100 } 
 	relation = { who = KUR value = 200 } 
 	USA = { country_event = 8500904 } 
-	ai_chance = { factor = 0 }
+	ai_chance = { factor = 0.5 }
   }
 }
+
+# Soviets stay in Iran
 country_event = {
   id = 8500904
   title = EVT_8500904_NAME
   desc = EVT_8500904_DESC
   picture = "nwo2_iran_crisis_1946"
-  is_triggered_only = yes
+  is_triggered_only = yes # USA
 
   option = {
     name = EVT_8500904_A
-	RUS = { country_event = 8500905 } 
-	relation = { who = RUS value = -50 } 
+	FROM = { country_event = 8500905 } 
+	relation = { who = FROM value = -50 } 
 	any_pop = { consciousness = 0.1 }
 	ai_chance = { factor = 100 }
   }
 
   option = {
     name = EVT_8500904_B
-	relation = { who = PER value = -100 } 
-	relation = { who = KUR value = 200 } 
-	country_event = 8500910 
-	country_event = 8500909 
-	country_event =  { id = 8500908 days = 1 } 
+	relation = { who = PER value = -100 }
+	relation = { who = KUR value = 200 }
+	FROM = { country_event = 8500910 }
+	PER = {
+		country_event = 8500909
+		country_event =  { id = 8500908 days = 1 }
+	}
 	any_pop = { consciousness = 0.5 }
 	ai_chance = { factor = 0 }
   }
 }
+
+# American ultimatum in Iran Crisis
 country_event = {
   id = 8500905
   title = EVT_8500905_NAME
   desc = EVT_8500905_DESC
   picture = "nwo2_iran_crisis_1946"
-  is_triggered_only = yes
+  is_triggered_only = yes # RUS
 
   option = {
     name = EVT_8500905_A
 	any_pop = { consciousness = 0.3 }
 	KUR = { country_event = 8500911 } 
-	ai_chance = { factor = 100 }
+	ai_chance = { factor = 1 }
   }
 
   option = {
     name = EVT_8500905_B
 	relation = { who = PER value = -100 } 
 	relation = { who = KUR value = 200 } 
-	USA = { country_event = 8500906 }
+	FROM = { country_event = 8500906 }
 	any_pop = { consciousness = 0.5 }
-	ai_chance = { factor = 0 }
+	ai_chance = {
+		factor = 1
+		modifier = {
+			factor = 0
+			NOT = { has_country_modifier = atomic_nation }
+		}
+	}
   }
 }
+
+# USSR ignores the ultimatum
 country_event = {
   id = 8500906
   title = EVT_8500906_NAME
   desc = EVT_8500906_DESC
   picture = "nwo2_iran_crisis_1946"
-  is_triggered_only = yes
+  is_triggered_only = yes # USA
 
   option = {
     name = EVT_8500906_A
 	random_state = { any_pop = { dominant_issue = { value = jingoism factor = 0.55 } } }
-	RUS = { country_event = 8500910 } 
-	PER = { country_event = 8500909 } 
-	country_event =  { id = 8500908 days = 1 } 
-	ai_chance = { factor = 100 }
+	FROM = { country_event = 8500910 } 
+	PER = { country_event = 8500909 }
+	ai_chance = { factor = 1 }
   }
 
   option = {
     name = EVT_8500906_B
 	create_alliance = PER 
 	PER = { country_event =  8500908 } 
-	ai_chance = { factor = 100 }
+	ai_chance = {
+		factor = 1
+		modifier = {
+			factor = 0.5
+			FROM = { has_country_modifier = atomic_nation }
+		}
+	}
   }
 }
+
+# Reassertion of control over Northern Iran
 country_event = {
   id = 8500908
   title = EVT_8500908_NAME
   desc = EVT_8500908_DESC
   picture = "nwo2_republic_of_mahabad"
   fire_only_once = yes
-  is_triggered_only = yes
+  is_triggered_only = yes # PER
   
   mean_time_to_happen = { months = 2  }
 
   option = {
     name = EVT_8500908_A
-	war = { target = KUR  attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } }
 	ai_chance = { factor = 100 }
   }
 
   option = {
     name = EVT_8500908_B
+	end_war = KUR
 	any_pop = { militancy = 2.0  consciousness = 1 }
 	ai_chance = { factor = 0 }
   }
 }
+
+# American betrayal notification
 country_event = {
   id = 8500909
   title = EVT_8500909_NAME
   desc = EVT_8500909_DESC
   picture = "nwo2_iran_crisis_1946"
-  is_triggered_only = yes
+  is_triggered_only = yes # PER
 
   option = {
     name = EVT_8500909_A
-	country_event =  8500908
+	country_event = { id = 8500908 days = 1 }
   }
 }
+
+# Kurds get full Soviet backing notification
 country_event = {
   id = 8500910
   title = EVT_8500910_NAME
   desc = EVT_8500910_DESC
   picture = "nwo2_iran_crisis_1946"
-  is_triggered_only = yes
+  is_triggered_only = yes # RUS
 
   option = {
     name = EVT_8500910_A
-	create_alliance = KUR 
+	create_alliance = KUR
+	diplomatic_influence = { who = KUR value = 200 }
   }
 }
+
+# Withdrawal of Soviet support notification
 country_event = {
   id = 8500911
   title = EVT_8500911_NAME
   desc = EVT_8500911_DESC
   picture = "nwo2_iran_crisis_1946"
-  is_triggered_only = yes
+  is_triggered_only = yes # KUR
   
 
   option = {
     name = EVT_8500911_A
-	overlord = { release_vassal = THIS } 
-	RUS = { end_military_access = THIS } 
-	leave_alliance = RUS
+	overlord = {
+		release_vassal = THIS
+		end_military_access = THIS
+		leave_alliance = THIS
+	}
 	PER = { country_event = 8500908 }
   }
 }
@@ -227,7 +262,7 @@ country_event = {
 
   trigger = {
     tag = RUS
-	year = 1954 NOT = { year = 1947 }
+	year = 1944 NOT = { year = 1947 }
     NOT = { exists = KUR }
     exists = PER
     
