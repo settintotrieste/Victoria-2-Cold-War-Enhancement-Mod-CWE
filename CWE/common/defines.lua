@@ -662,7 +662,7 @@ pops = {
 	REDUCTION_AFTER_RISEING = 1, -- After a pop spawns a rebellion, its militancy will be reduced this much
 	REDUCTION_AFTER_DEFEAT = 9.0, -- After a rebellion is being defeated in combat, its pop militancy will be divided by this number.
 																-- (if value < 1.0, the MIL will be increased) (Beware! value must be > 0)
-	INVENTION_IMPACT_ON_DEMAND = 0.10, -- how much each invention in a country increases demand for a product in percent
+	INVENTION_IMPACT_ON_DEMAND = 0.01, -- how much each invention in a country increases demand for a product in percent
 	POP_TO_LEADERSHIP = 0.0001, -- how much leadership every 1000 officers gives each day.
 	ARTISAN_MIN_PRODUCTIVITY = 4, -- Minimum efficieny of an artisan
 	SLAVE_GROWTH_DIVISOR = 0.05, -- Slaves have N times lower growth
@@ -675,11 +675,11 @@ pops = {
 	MOVEMENT_CON_FACTOR = 0.2,
 	MOVEMENT_LIT_FACTOR = 0.1,
 	MIL_ON_REB_MOVE = 1,
-	POPULATION_SUPPRESSION_FACTOR = 0.05, -- controls base pop size for factor of supression/radicalness cost. zero  disables the feature and jsut uses radicalness
+	POPULATION_SUPPRESSION_FACTOR = 0.0, -- controls base pop size for factor of supression/radicalness cost. zero  disables the feature and jsut uses radicalness
 	POPULATION_MOVEMENT_RADICAL_FACTOR = 300,
 	NATIONALIST_MOVEMENT_MIL_CAP = 5.0,
 	MOVEMENT_SUPPORT_UH_FACTOR = 3, --  3x means 30% country support equals full UH support
-	REBEL_OCCUPATION_STRENGTH_BONUS = 0.05, -- the amount of strength given to rebel movements when they occupy a province
+	REBEL_OCCUPATION_STRENGTH_BONUS = 0.01, -- the amount of strength given to rebel movements when they occupy a province
 	LARGE_POPULATION_LIMIT = 9000000,
 	LARGE_POPULATION_INFLUENCE_PENALTY_CHUNK = 9000000, -- TODO
 },
