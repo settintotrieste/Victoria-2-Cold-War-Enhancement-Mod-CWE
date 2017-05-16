@@ -1,0 +1,539 @@
+#Modular, more can be added slowly
+# Make sure any new modifiers are also added to Cold War Tensions Level.txt
+political_decisions = {
+
+	coexistence_pledge = {
+		picture = "coexistence_pledge"
+		potential = {
+			primary_culture = russian # RUS
+			government = proletarian_dictatorship
+			NOT = { has_global_flag = coexistence_pledge }
+			detente = 1
+			has_global_flag = blocsenabled
+			NOT = { has_country_modifier = us_ussr_timer }
+		}
+		allow = {
+			war = no
+			election = no
+			has_country_modifier = cold_war_low
+		}
+		effect = {
+			prestige = -50
+			set_global_flag = coexistence_pledge
+			add_country_modifier = { name = us_ussr_timer duration = 400 }
+			add_country_modifier = { name = relations_timer duration = 400 } # Prevent other large diplomatic actions
+			random_country = { limit = { has_country_modifier = democratic_bloc_leader } country_event = 8023400 }
+			any_country = {
+				limit = {
+					NOT = { tag = THIS }
+					OR = {
+						has_country_modifier = communist_bloc
+						AND = {
+							has_country_flag = nam_bloc
+							OR = {
+								government = proletarian_dictatorship
+								government = proletarian_dictatorship1
+							}
+						}
+					}
+				}
+				country_event = 8023420
+			}
+			any_pop = {
+				limit = { strata = rich }
+				ideology = {
+					factor = 0.25
+					value = communist_social
+				}
+				consciousness = 4
+			}
+			set_variable = {
+				which = detente_efforts
+				value = 0
+			}
+			change_variable = {
+				which = detente_efforts
+				value = 1
+			}
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				rank = 1
+			}
+		}
+	}
+
+	cultural_outreach = {
+		picture = "cultural_outreach"
+		potential = {
+			OR = {
+				has_global_flag = coexistence_pledge
+				any_greater_power = {
+					has_country_modifier = communist_bloc_leader
+					NOT = { primary_culture = russian } # In case communism ever survives beyond the USSR
+				}
+			}
+			NOT = { has_global_flag = cultural_outreach }
+			detente = 1
+			has_global_flag = blocsenabled
+			has_country_modifier = superpower
+			any_greater_power = {
+				has_country_modifier = democratic_bloc_leader
+				neoliberalism = 1
+			}
+			any_greater_power = {
+				has_country_modifier = communist_bloc_leader
+				neoliberalism = 1
+			}
+			NOT = { has_country_modifier = us_ussr_timer }
+		}
+
+		allow = {
+			war = no
+			election = no
+			OR = {
+				NOT = { war_policy = jingoism }
+				government = proletarian_dictatorship
+			}
+			has_country_modifier = cold_war_low
+		}
+		effect = {
+			prestige = 50
+			set_global_flag = cultural_outreach
+			add_country_modifier = { name = cultural_outreach duration = -1 }
+			add_country_modifier = { name = us_ussr_timer duration = 400 }
+			add_country_modifier = { name = relations_timer duration = 400 }
+			random_country = { limit = { has_country_modifier = superpower NOT = { tag = THIS } } country_event = 8023402 }
+			any_pop = {
+				limit = { strata = rich }
+				ideology = {
+					factor = 0.25
+					value = communist_social
+				}
+				consciousness = 2
+			}
+			change_variable = {
+				which = detente_efforts
+				value = 1
+			}
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				has_country_modifier = communist_bloc_leader
+				rank = 1
+			}
+		}
+	}
+
+	space_meeting = {
+		picture = "space_meeting"
+		potential = {
+			OR = {
+				has_global_flag = coexistence_pledge
+				any_greater_power = {
+					has_country_modifier = communist_bloc_leader
+					NOT = { primary_culture = russian }
+				}
+			}
+			NOT = { has_global_flag = space_meeting }
+			detente = 1
+			has_country_modifier = space_agency
+			has_global_flag = blocsenabled
+			has_country_modifier = superpower
+			NOT = { has_country_modifier = us_ussr_timer }
+		}
+
+		allow = {
+			war = no
+			OR = {
+				NOT = { war_policy = jingoism }
+				government = proletarian_dictatorship
+			}
+			election = no
+			NOT = {
+				any_greater_power = {
+					has_country_modifier = superpower
+					NOT = { has_country_modifier = space_station }
+				}
+			}
+			has_country_modifier = cold_war_low
+		}
+		effect = {
+			prestige = 50
+			set_global_flag = space_meeting
+			add_country_modifier = { name = space_meeting duration = -1 }
+			add_country_modifier = { name = us_ussr_timer duration = 400 }
+			add_country_modifier = { name = relations_timer duration = 400 }
+			random_country = { limit = { has_country_modifier = superpower NOT = { tag = THIS } } country_event = 8023404 }
+			change_variable = {
+				which = detente_efforts
+				value = 1
+			}
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				has_country_modifier = communist_bloc_leader
+				rank = 1
+			}
+		}
+	}
+
+	open_market = {
+		picture = "open_market"
+		potential = {
+			OR = {
+				has_global_flag = coexistence_pledge
+				any_greater_power = {
+					has_country_modifier = communist_bloc_leader
+					NOT = { primary_culture = russian }
+				}
+			}
+			NOT = { has_global_flag = open_market }
+			detente = 1
+			flexible_exchange_rates = 1
+			has_global_flag = blocsenabled
+			has_country_modifier = superpower
+			NOT = { has_country_modifier = us_ussr_timer }
+		}
+
+		allow = {
+			war = no
+			election = no
+			OR = {
+				NOT = { war_policy = jingoism }
+				government = proletarian_dictatorship
+			}
+			NOT = {
+				any_greater_power = {
+					has_country_modifier = superpower
+					NOT = { flexible_exchange_rates = 1 }
+				}
+			}
+			has_country_modifier = cold_war_low
+		}
+		effect = {
+			prestige = 50
+			set_global_flag = open_market
+			add_country_modifier = { name = open_market duration = -1 }
+			add_country_modifier = { name = us_ussr_timer duration = 400 }
+			add_country_modifier = { name = relations_timer duration = 400 }
+			random_country = { limit = { has_country_modifier = superpower NOT = { tag = THIS } } country_event = 8023406 }
+			any_pop = {
+				ideology = {
+					factor = 0.1
+					value = communist_social
+				}
+				consciousness = 2
+			}
+			change_variable = {
+				which = detente_efforts
+				value = 1
+			}
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				has_country_modifier = communist_bloc_leader
+				rank = 1
+			}
+		}
+	}
+
+	research_partnership = {
+		picture = "research_partnership"
+		potential = {
+			OR = {
+				has_global_flag = coexistence_pledge
+				any_greater_power = {
+					has_country_modifier = communist_bloc_leader
+					NOT = { primary_culture = russian }
+				}
+			}
+			NOT = { has_global_flag = research_partnership }
+			detente = 1
+			has_global_flag = blocsenabled
+			has_country_modifier = superpower
+			NOT = { has_country_modifier = us_ussr_timer }
+		}
+
+		allow = {
+			war = no
+			election = no
+			OR = {
+				NOT = { war_policy = jingoism }
+				government = proletarian_dictatorship
+			}
+			NOT = {
+				any_greater_power = {
+					has_country_modifier = superpower
+					OR = {
+						NOT = { medical_science = 1 }
+						NOT = { microcomputer = 1 }
+						NOT = { austrian_school = 1 }
+					}
+				}
+			}
+			has_country_modifier = cold_war_low
+		}
+		effect = {
+			prestige = 50
+			set_global_flag = research_partnership
+			add_country_modifier = { name = research_partnership duration = -1 }
+			add_country_modifier = { name = us_ussr_timer duration = 400 }
+			add_country_modifier = { name = relations_timer duration = 400 }
+			random_country = { limit = { has_country_modifier = superpower NOT = { tag = THIS } } country_event = 8023408 }
+			change_variable = {
+				which = detente_efforts
+				value = 1
+			}
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				has_country_modifier = communist_bloc_leader
+				rank = 1
+			}
+		}
+	}
+
+	joint_nuclear_controls = {
+		picture = "joint_nuclear_controls"
+		potential = {
+			OR = {
+				has_global_flag = coexistence_pledge
+				any_greater_power = {
+					has_country_modifier = communist_bloc_leader
+					NOT = { primary_culture = russian }
+				}
+			}
+			NOT = { has_global_flag = joint_nuclear_controls }
+			detente = 1
+			OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation }
+			has_global_flag = blocsenabled
+			has_country_modifier = superpower
+			NOT = { has_country_modifier = us_ussr_timer }
+		}
+
+		allow = {
+			war = no
+			election = no
+			NOT = {
+				any_greater_power = {
+					has_country_modifier = superpower
+					NOT = { arms_race_doctrine = 1 }
+				}
+			}
+			OR = {
+				NOT = { war_policy = jingoism }
+				government = proletarian_dictatorship
+			}			
+			NOT = {
+				any_greater_power = {
+					has_country_modifier = superpower
+					NOT = {
+						has_country_modifier = atomic_nation
+						has_country_modifier = hydrogen_nation
+					}
+				}
+			}
+			has_country_modifier = cold_war_low
+		}
+		effect = {
+			prestige = 50
+			set_global_flag = joint_nuclear_controls
+			add_country_modifier = { name = joint_nuclear_controls duration = -1 }
+			add_country_modifier = { name = us_ussr_timer duration = 400 }
+			add_country_modifier = { name = relations_timer duration = 400 }
+			random_country = { limit = { has_country_modifier = superpower NOT = { tag = THIS } } country_event = 8023410 }
+			change_variable = {
+				which = detente_efforts
+				value = 1
+			}
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				has_country_modifier = communist_bloc_leader
+				rank = 1
+			}
+		}
+	}
+
+	open_borders = {
+		picture = "open_borders"
+		potential = {
+			OR = {
+				has_global_flag = coexistence_pledge
+				any_greater_power = {
+					has_country_modifier = communist_bloc_leader
+					NOT = { primary_culture = russian }
+				}
+			}
+			NOT = { has_global_flag = open_borders }
+			detente = 1
+			second_cold_war = 1
+			has_global_flag = blocsenabled
+			has_country_modifier = superpower
+			NOT = { has_country_modifier = us_ussr_timer }
+		}
+
+		allow = {
+			war = no
+			election = no
+			OR = {
+				NOT = { war_policy = jingoism }
+				government = proletarian_dictatorship
+			}
+			USA = { second_cold_war = 1 }
+			RUS = { second_cold_war = 1 }
+			has_country_modifier = cold_war_low
+		}
+		effect = {
+			prestige = 25
+			set_global_flag = open_borders
+			add_country_modifier = { name = open_borders duration = -1 }
+			add_country_modifier = { name = us_ussr_timer duration = 400 }
+			add_country_modifier = { name = relations_timer duration = 400 }
+			random_country = { limit = { has_country_modifier = superpower NOT = { tag = THIS } } country_event = 8023412 }
+			random_country = { limit = { has_country_modifier = communist_bloc_leader } political_reform = quota_immigration }
+			any_pop = {
+				limit = { strata = rich }
+				ideology = {
+					factor = 0.25
+					value = socialist
+				}
+				consciousness = 3
+			}
+			any_country = {
+				limit = {
+					NOT = { tag = THIS }
+					OR = {
+						has_country_modifier = communist_bloc
+						AND = {
+							has_country_flag = nam_bloc
+							OR = {
+								government = proletarian_dictatorship
+								government = proletarian_dictatorship1
+							}
+						}
+					}
+				}
+				country_event = 8023425
+			}
+			change_variable = {
+				which = detente_efforts
+				value = 1
+			}
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				has_country_modifier = communist_bloc_leader
+				rank = 1
+			}
+		}
+	}
+
+	start_joint_aid = {
+		picture = "joint_aid"
+		potential = {
+			OR = {
+				has_global_flag = coexistence_pledge
+				any_greater_power = {
+					has_country_modifier = communist_bloc_leader
+					NOT = { primary_culture = russian }
+				}
+			}
+			NOT = { has_global_flag = joint_aid }
+			detente = 1
+			has_global_flag = blocsenabled
+			has_country_modifier = superpower
+			NOT = { has_country_modifier = us_ussr_timer }
+		}
+
+		allow = {
+			war = no
+			election = no
+			NOT = {
+				any_greater_power = {
+					has_country_modifier = superpower
+					OR = {
+						NOT = { medical_science = 1 }
+						NOT = { microcomputer = 1 }
+						NOT = { austrian_school = 1 }
+					}
+				}
+			}
+			OR = {
+				NOT = { war_policy = jingoism }
+				government = proletarian_dictatorship
+			}
+			has_country_modifier = cold_war_low
+		}
+		effect = {
+			prestige = 50
+			set_global_flag = joint_aid
+			add_country_modifier = { name = joint_aid duration = -1 }
+			add_country_modifier = { name = us_ussr_timer duration = 400 }
+			add_country_modifier = { name = relations_timer duration = 400 }
+			random_country = { limit = { has_country_modifier = superpower NOT = { tag = THIS } } country_event = 8023414 }
+			change_variable = {
+				which = detente_efforts
+				value = 1
+			}
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				has_country_modifier = communist_bloc_leader
+				rank = 1
+			}
+		}
+	}
+
+	#Removed via event
+	receive_joint_aid = {
+		picture = "joint_aid"
+		potential = {
+			NOT = { has_country_modifier = receive_joint_aid }
+			has_global_flag = blocsenabled
+			has_global_flag = joint_aid
+			has_country_flag = nam_bloc
+			is_greater_power = no
+			is_secondary_power = no
+		}
+
+		allow = {
+			war = no
+			part_of_sphere = no
+			election = no
+			NOT = {
+				any_greater_power = {
+					has_country_modifier = joint_aid
+					NOT = { relation = { who = THIS value = -50 } }
+				}
+			}
+			has_country_modifier = cold_war_low
+		}
+		effect = {
+			prestige = 10
+			any_country = { limit = { has_country_modifier = joint_aid } diplomatic_influence = { who = THIS value = 25 } }
+			set_country_flag = joint_aid_reciept
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+}
