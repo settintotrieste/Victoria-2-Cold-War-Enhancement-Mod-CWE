@@ -233,25 +233,36 @@ country_event = {
 	desc = EVT_8214016_DESC
 	picture = "independence_of_india"
 
-	trigger = { 
-		NOT = { year = 1960 }
-		vassal_of = HND 
-		OR = { 
-			tag = MNP tag = RAA tag = IND tag = GWA tag = BER tag = ORI tag = NAX tag = BOD tag = MYS tag = TRA 
-			AND = { NOT = { exists = PAK } tag = AZK }  AND = { NOT = { exists = PAK }  tag = BLO }
+	trigger = {
+		OR = {
+			NOT = { year = 1960 }
+			tag = SIK
+		}
+		vassal_of = HND
+		OR = {
+			tag = MNP tag = RAA tag = IND tag = GWA tag = BER tag = ORI tag = NAX tag = BOD tag = MYS tag = TRA tag = SIK
+			AND = { # AZK and BLO
+				NOT = { tag = JAK }
+				capital_scope = { is_core = PAK }
+				NOT = { exists = PAK }
+			}
 		}
 		NOT = { has_country_flag = princely_state_stay_independent }
 	}
-	
+
 	mean_time_to_happen = {
 		months = 1
+		modifier = {
+			factor = 360
+			tag = SIK
+		}
 	}
 
 	option = {
 		name = EVT_8214015_A
-		relation = { who = HND value = -200 }
+		overlord = { relation = { who = THIS value = -200 } }
 		set_country_flag = princely_state_stay_independent
-		HND = { release_vassal = THIS } 
+		HND = { release_vassal = THIS }
 		HND = { leave_alliance = THIS }
 		ENG = { diplomatic_influence = { who = THIS value = -100 } }
 		HND = { casus_belli = { target = THIS type = annex_core_country } }
@@ -260,8 +271,12 @@ country_event = {
 	}
 
 	option = {
-		name = EVT_8214015_C 
-		HND = { inherit = THIS }
+		name = EVT_8214015_C
+		random_country = {
+			limit = { tag = HND is_possible_vassal = PAK }
+			THIS = { all_core = { add_core = HND } }
+		}
+		overlord = { inherit = THIS }
 		# TODO inform HND about this
 		ai_chance = { factor = 100 }
 	}
@@ -276,7 +291,8 @@ country_event = {
 	trigger = { 
 		NOT = { year = 1960 }
 		vassal_of = HND 
-		OR = { tag = AZK tag = BLO }
+		capital_scope = { is_core = PAK } # AZK and BLO
+		NOT = { tag = JAK }
 		exists = PAK
 		NOT = { has_country_flag = princely_state_stay_independent }
 	}
@@ -302,6 +318,10 @@ country_event = {
 	option = {
 		name = EVT_8214015_B 
 		PAK = { inherit = THIS }
+		random_country = {
+			limit = { tag = HND have_core_in = PAK }
+			THIS = { all_core = { add_core = HND } }
+		}
 		# TODO inform PAK about this
 		# TODO inform HND about this
 		ai_chance = { factor = 100 }
@@ -309,7 +329,7 @@ country_event = {
 
 	option = {
 		name = EVT_8214015_C 
-		HND = { inherit = THIS }
+		overlord = { inherit = THIS }
 		# TODO inform PAK about this
 		# TODO inform HND about this
 		ai_chance = { factor = 0 }
