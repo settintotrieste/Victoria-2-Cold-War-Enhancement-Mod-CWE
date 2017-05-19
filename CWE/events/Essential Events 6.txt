@@ -250,29 +250,61 @@ country_event = {
 
 	trigger = {
 		year = 1951
-	NOT = { year = 1990 }
-	tag = ENG
-	government = hms_government
-	owns = 2024
-	owns = 2019
-	owns = 2036
-		}
+		NOT = { year = 1990 }
+		capital_scope = { continent = europe } # ENG or FBU
+		#government = hms_government
+		2024 = { owner = { OR = { tag = THIS vassal_of = THIS } } } # Nairobi
+		2019 = { owner = { OR = { tag = THIS vassal_of = THIS } } } # Entebbe
+		2036 = { owner = { OR = { tag = THIS vassal_of = THIS } } } # Dar Es Salaam
+	}
 
 	mean_time_to_happen = { months = 10 }
 
 	option = {
 		name = "Form the federation"
-any_owned = { limit = { OR = { is_core = KEN is_core = TAN is_core = UGA } } secede_province = XEF }
-create_vassal = XEF
-XEF = { government = colonial_government country_event = 800054 ruling_party_ideology = conservative }
-diplomatic_influence = { who = XEF value = 200 }
-ai_chance = { factor = 0.05 }
+		inherit = KEN
+		inherit = TAN
+		inherit = UGA
+		any_owned = {
+			limit = {
+				OR = {
+					is_core = KEN
+					is_core = TAN
+					# What to do about Zanzibar?
+					is_core = UGA
+					is_core = RWA
+					is_core = BRN
+					AND = { is_core = SSU NOT = { is_core = SUD } }
+				}
+			}
+			secede_province = XEF
+		}
+		create_vassal = XEF
+		XEF = {
+			government = colonial_government
+			country_event = 800054
+			ruling_party_ideology = conservative
+			capital = 2047 # Arusha
+		}
+		diplomatic_influence = { who = XEF value = 200 }
+		ai_chance = {
+			factor = 0.05
+			modifier = {
+				factor = 19 # Equal chance
+				tag = FBU
+			}
+			modifier = {
+				factor = 9
+				exists = CAF # Rhodesia and Nyasaland
+				CAF = { in_sphere = THIS }
+			}
+		}
 	}
 
 	option = {
 		name = "Abandon the idea"
-prestige = 25
-ai_chance = { factor = 0.95 }
+		prestige = 25
+		ai_chance = { factor = 0.95 }
 	}
 }
 
@@ -284,22 +316,23 @@ country_event = {
 	picture = "por_hnd_colonies"
 
 	trigger = {
-tag = POR
-NOT = { has_global_flag = por_hnd_colonies }
-OR = { 
-1292 = { NOT = { has_province_modifier = daman } }
-1296 = { NOT = { has_province_modifier = diu } }
-}
+		capital_scope = { continent = europe }
+		owns = 1303 # Goa
+		NOT = { has_global_flag = por_hnd_colonies }
+		OR = { 
+			1292 = { NOT = { has_province_modifier = daman } }
+			1296 = { NOT = { has_province_modifier = diu } }
 		}
+	}
 	
 	option = {
-name = "If Goa ever reverted to Indian rule we will lose them"
-
-add_country_modifier = { name = portugese_indian_colonies duration = -1 }
-1292 = { add_province_modifier = { name = daman duration = -1 } }
-1296 = { add_province_modifier = { name = diu duration = -1 } }
-					}
-		}
+		name = "If Goa ever reverted to Indian rule we will lose them"
+		add_country_modifier = { name = portugese_indian_colonies duration = -1 }
+		1292 = { add_province_modifier = { name = daman duration = -1 } }
+		1296 = { add_province_modifier = { name = diu duration = -1 } }
+		1303 = { add_province_modifier = { name = colonial_exploitation duration = -1 } }
+	}
+}
 
 #French Colonies of Karikal & Yanaon
 country_event = {
@@ -309,18 +342,20 @@ country_event = {
 	picture = "fra_hnd_colonies"
 
 	trigger = {
-tag = FRA
-NOT = { has_global_flag = fra_hnd_colonies }
-OR = { 
-1310 = { NOT = { has_province_modifier = karikal } }
-1306 = { NOT = { has_province_modifier = yanaon } }
-}
+		capital_scope = { continent = europe }
+		owns = 1312 # Pondicherry
+		NOT = { has_global_flag = fra_hnd_colonies }
+		OR = { 
+			1310 = { NOT = { has_province_modifier = karikal } }
+			1306 = { NOT = { has_province_modifier = yanaon } }
 		}
+	}
 	
 	option = {
-name = "If Pondicherry ever reverted to Indian rule we will lose them"
-add_country_modifier = { name = french_indian_colonies duration = -1 }
-1310 = { add_province_modifier = { name = karikal duration = -1 } }
-1306 = { add_province_modifier = { name = yanaon duration = -1 } }
-					}
-		}
+		name = "If Pondicherry ever reverted to Indian rule we will lose them"
+		add_country_modifier = { name = french_indian_colonies duration = -1 }
+		1310 = { add_province_modifier = { name = karikal duration = -1 } }
+		1306 = { add_province_modifier = { name = yanaon duration = -1 } }
+		1312 = { add_province_modifier = { name = colonial_exploitation duration = 7300 } }
+	}
+}
