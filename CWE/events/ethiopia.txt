@@ -6,20 +6,29 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		tag = ENG
+		capital_scope = { continent = europe } # ENG or FBU
 		NOT = { exists = ERI }
 		exists = ETH
 		war = no
-		1848 = { controlled_by = ENG } # Assmara
+		owns = 1848 # Assmara
 	}
 
 	mean_time_to_happen = {
 		months = 18
+		modifier = {
+			factor = 0.1
+			any_owned_province = {
+				is_core = ERI
+				OR = {
+					has_province_modifier = nationalist_agitation
+					controlled_by_rebels = yes
+				}
+			}
+		}
 	}
 
 	option = {
-		name = EVT_1005301_A 
-		ai_chance = { factor = 100 }
+		name = EVT_1005301_A
 		prestige = -2
 		any_pop = {
 			limit = {
@@ -29,22 +38,46 @@ country_event = {
 			militancy = 2
 		}
 		release = ERI
-		ERI = { government = absolute_monarchy country_event = 800050  }
-		ETH = { create_vassal = ERI }
+		random_country = { limit = { tag = ETH OR = { government = absolute_monarchy government = hms_government government = hms_government1 } } ERI = { government = absolute_monarchy country_event = 800050 } }
+		diplomatic_influence = { who = ERI value = 100 }
+		ETH = {
+			create_vassal = ERI
+			sphere_owner = { diplomatic_influence = { who = ERI value = 100 } }
+		}
+		ai_chance = {
+			factor = 0.9
+			modifier = {
+				factor = 0.1
+				ETH = { ruling_party_ideology = communist }
+			}
+			modifier = {
+				factor = 0.25
+				ruling_party_ideology = populist
+			}
+		}
 	}
-	
+
 	option = {
-		name = EVT_1005301_B 
-		ai_chance = { factor = 0 }
+		name = EVT_1005301_B
 		relation = { who = ETH value = -100 }
 		diplomatic_influence = { who = ETH value = -100 }
 		release_vassal = ERI
-ENG = { diplomatic_influence = { who = ERI value = 200 } }
+		diplomatic_influence = { who = ERI value = 200 }
+		ai_chance = {
+			factor = 0.1
+			modifier = {
+				factor = 5
+				NOT = { relation = { who = ETH value = 0 } }
+			}
+			modifier = {
+				factor = 0.25
+				ruling_party_ideology = populist
+			}
+		}
 	}
 
 	option = {
 		name = EVT_1005301_C
-		ai_chance = { factor = 0 }
 		any_pop = {
 			limit = {
 				OR = { culture = tigre culture = afar }
@@ -53,20 +86,32 @@ ENG = { diplomatic_influence = { who = ERI value = 200 } }
 			militancy = 8
 		}
 		badboy = 10
-		add_country_modifier = { name = denied_independence duration = 365 }
+		any_owned = {
+			limit = { is_core = ERI }
+			add_province_modifier = {
+				name = nationalist_agitation
+				duration = 1095
+			}
+		}
+		ai_chance = {
+			factor = 0.01
+			modifier = {
+				factor = 0
+				badboy = 0.6
+			}
+		}
 	}
 
 }
 
 country_event = {
 	id = 1005302
-
 	title = EVT_1005302_NAME
 	desc = EVT_1005302_DESC
 	picture = "haile_selassie"
 
 	fire_only_once = yes
-	
+
 	trigger = {
 		tag = ETH
 		exists = ERI
@@ -76,11 +121,13 @@ country_event = {
 
 	mean_time_to_happen = {
 		months = 48 # TODO depend on ETH reforms
+		modifier = {
+			factor = 2
+		}
 	}
 
 	option = {
-		name = EVT_1005302_A 
-		ai_chance = { factor = 100 }
+		name = EVT_1005302_A
 		badboy = 4
 		any_pop = {
 			limit = {
@@ -89,12 +136,23 @@ country_event = {
 			consciousness = 2
 			militancy = 8
 		}
-		ERI = {annex_to = THIS }
+		ERI = {
+			annex_to = THIS
+			all_core = {
+				add_province_modifier = { name = nationalist_agitation duration = 1095 }
+			}
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.84
+			}
+		}
 	}
-	
+
 	option = {
-		name = EVT_1005302_B 
-		ai_chance = { factor = 0 }
+		name = EVT_1005302_B
 		any_pop = {
 			limit = {
 				OR = { culture = tigre culture = tigray }
@@ -102,129 +160,290 @@ country_event = {
 			consciousness = 2
 			militancy = 5
 		}
+		ai_chance = {
+			factor = 0.1
+		}
+	}
+
+}
+
+# Ethiopian government change - possibilities
+# 1. Reform into a constitutional monarchy
+# 2. Constitutional coup
+# 3. Communist coup
+# 4. Hold out until 1990
+
+country_event = {
+	id = 8005303
+	title = EVT_8005303_NAME
+	desc = EVT_8005303_DESC
+	picture = "nwo2_haile_selassie_old"
+	fire_only_once = yes
+
+	trigger = {
+		tag = ETH
+		year = 1960 NOT = { year = 1990 }
+		government = absolute_monarchy
+	}
+
+	mean_time_to_happen = {
+		months = 96
+		modifier = {
+			factor = 0.75
+			part_of_sphere = yes
+			sphere_owner = { government = democracy }
+		}
+		modifier = {
+			factor = 0.75
+			ruling_party_ideology = liberal
+		}
+		modifier = {
+			factor = 0.5
+			ruling_party_ideology = progressive
+		}
+		modifier = {
+			factor = 0.8
+			average_consciousness = 4
+		}
+		modifier = {
+			factor = 0.8
+			OR = {
+				pop_majority_ideology = liberal
+				pop_majority_ideology = progressive
+			}
+		}
+		modifier = {
+			factor = 0.9
+			capital_scope = {
+				OR = {
+					pop_majority_ideology = liberal
+					pop_majority_ideology = progressive
+				}
+			}
+		}
+	}
+
+	immediate = {
+		government = hms_government # Prevent simultaneous coup events
+	}
+
+	option = {
+		name = EVT_8005303_A
+		define_general = { name = "Amha Selassie" personality = energetic background = no_background }
+		country_event = 800044
+		any_pop = {
+			limit = {
+				type = soldiers
+				type = officers
+			}
+			militancy = 3
+			consciousness = 3
+		}
+		any_pop = {
+			scaled_militancy = {
+				ideology = traditionalist
+				factor = 4
+			}
+			scaled_consciousness = {
+				ideology = traditionalist
+				factor = 4
+			}
+			scaled_militancy = {
+				ideology = conservative
+				factor = 2
+			}
+			scaled_consciousness = {
+				ideology = conservative
+				factor = 2
+			}
+		}
+	}
+}
+country_event = {
+	id = 8005305
+	title = EVT_8005305_NAME
+	desc = EVT_8005305_DESC
+	picture = "nwo2_derg"
+	fire_only_once = yes
+
+	trigger = {
+		tag = ETH
+		year = 1960 NOT = { year = 1990 }
+		government = absolute_monarchy
+		NOT = { has_country_flag = derg }
+	}
+
+	mean_time_to_happen = {
+		months = 96
+		modifier = {
+			factor = 0.75
+			part_of_sphere = yes
+			sphere_owner = { government = proletarian_dictatorship }
+		}
+		modifier = {
+			factor = 1.2
+			ruling_party_ideology = socialist
+		}
+		modifier = {
+			factor = 0.5
+			ruling_party_ideology = communist
+		}
+		modifier = {
+			factor = 0.75
+			ruling_party_ideology = communist_social
+		}
+		modifier = {
+			factor = 0.8
+			average_consciousness = 4
+		}
+		modifier = {
+			factor = 0.8
+			OR = {
+				pop_majority_ideology = socialist
+				pop_majority_ideology = communist
+				pop_majority_ideology = communist_social
+			}
+		}
+		modifier = {
+			factor = 0.9
+			capital_scope = {
+				OR = {
+					pop_majority_ideology = socialist
+					pop_majority_ideology = communist
+					pop_majority_ideology = communist_social
+				}
+			}
+		}
+	}
+
+	immediate = {
+		government = proletarian_dictatorship
+	}
+
+	option = {
+		name = EVT_8005305_A
+		country_event = 800042
+		set_country_flag = derg
+		random_state = { any_pop = { dominant_issue = { value = planned_economy factor = 0.15 } } }
+		ai_chance = { factor = 0 }
 	}
 
 }
 country_event = {
-  id = 8005303
-  title = EVT_8005303_NAME
-  desc = EVT_8005303_DESC
-  picture = "nwo2_haile_selassie_old"
-  fire_only_once = yes
+	id = 8005309
+	title = EVT_8005309_NAME
+	desc = EVT_8005309_DESC
+	picture = "nwo2_fall_of_derg"
+	fire_only_once = yes
 
-  trigger = {
-    tag = ETH
-    year = 1960 NOT = { year = 1961 }
-    government = absolute_monarchy
-  }
+	trigger = {
+		has_country_flag = derg # ETH
+		NOT = { any_greater_power = { has_country_modifier = communist_bloc_leader } } # End of the Cold War
+		government = proletarian_dictatorship
+	}
 
-  mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8005303_A
-	any_pop = { consciousness = 1 }
-	ai_chance = { factor = 100 }
-  }
+	immediate = {
+		clr_country_flag = derg
+	}
 
-  option = {
-    name = EVT_8005303_B
-	define_general = { name = " Amha Selassie" personality = energetic background = no_background }
-	government = hms_government country_event = 800054 
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = EVT_8005309_A
+		government = democracy country_event = 800054
+		random_state = { any_pop = { dominant_issue = { value = parties_allowed factor = 0.15 } } }
+		release = ERI
+		ai_chance = { factor = 100 }
+	}
+
+	option = {
+		name = EVT_8005309_B
+		any_pop = { militancy = 5.0 }
+		country_event = 8023300 # communist_plebiscite.txt
+		ai_chance = { factor = 0 }
+	}
 }
 country_event = {
-  id = 8005305
-  title = EVT_8005305_NAME
-  desc = EVT_8005305_DESC
-  picture = "nwo2_derg"
-  fire_only_once = yes
+	id = 8005312
+	title = EVT_8005312_NAME
+	desc = EVT_8005312_DESC
+	picture = "nwo2_eritrea"
+	fire_only_once = yes
 
-  trigger = {
-    tag = ETH
-	year = 1960 NOT = { year = 1974 }
-  }
+	trigger = {
+		tag = ETH
+		year = 1961
+		is_possible_vassal = ERI
+		NOT = { accepted_culture = tigre }
+	}
 
-  mean_time_to_happen = { months = 8 }
+	mean_time_to_happen = { months = 9 }
 
-  option = {
-    name = EVT_8005305_A
-	government = proletarian_dictatorship country_event = 800052
-	random_state = { any_pop = { dominant_issue = { value = planned_economy factor = 0.15 } } }
-	ai_chance = { factor = 0 }
-  }
-
-  option = {
-    name = EVT_8005305_B
-	any_pop = { militancy = 3.0 }
-	government = hms_government country_event = 800054
-	random_state = { any_pop = { dominant_issue = { value = planned_economy factor = 0.19 } } }
-	country_event =  { id = 8005306 days = 360 } 
-	ai_chance = { factor = 100 }
-  }
+	option = {
+		name = EVT_8005312_A
+		any_owned = {
+			limit = {
+				is_core = ERI
+				OR = {
+					is_primary_culture = ERI
+					is_accepted_culture = ERI
+					# All but Assab
+				}
+			}
+			any_pop = {
+				militancy = 5
+				ideology = {
+					factor = 0.5
+					value = nationalist
+				}
+			}
+		}
+	}
 }
+
+#End the occupation of Ogaden
 country_event = {
-  id = 8005306
-  title = EVT_8005306_NAME
-  desc = EVT_8005306_DESC
-  picture = "nwo2_derg"
-  is_triggered_only = yes
+	id = 8005306
+	title = EVT_8005306_NAME
+	desc = EVTDESC1400030
+	picture = "ogaden"
+	fire_only_once = yes
 
-  option = {
-    name = EVT_8005306_A
-	government = proletarian_dictatorship country_event = 800052
-	relation = { who = USA value = -150 } 
-	relation = { who = ENG value = -150 } 
-	relation = { who = RUS value = 150 } 
-  }
+	mean_time_to_happen = {
+		months = 24
+	}
+
+	trigger = {
+		capital_scope = { continent = europe } # ENG or FBU
+		any_owned_province = { is_core = ETH }
+		NOT = { war_with = ETH }
+	}
+
+	option = {
+		name = EVT_8005306_A
+		prestige = 10
+		release = ETH
+		ai_chance = {
+			factor = 0.5
+			modifier = {
+				factor = 1.5
+				ETH = { in_sphere = THIS }
+			}
+		}
+	}
+
+	option = {
+		name = EVT_8005306_B
+		ETH_1865 = { add_core = SML }
+		diplomatic_influence = { who = ETH value = -200 }
+		random_country = { limit = { tag = ETH NOT = { government = proletarian_dictatorship } } USA = { relation = { who = THIS value = -50 } } } # America is unhappy unless ETH is communist
+		ai_chance = {
+			factor = 0.5
+			modifier = {
+				factor = 2
+				NOT = { relation = { who = USA value = 0 } }
+			}
+		}
+	}
+
 }
-country_event = {
-  id = 8005309
-  title = EVT_8005309_NAME
-  desc = EVT_8005309_DESC
-  picture = "nwo2_fall_of_derg"
-  fire_only_once = yes
-
-  trigger = {
-    tag = ETH
-	year = 1991 NOT = { year = 1999 }
-    government = proletarian_dictatorship
-  }
-
-  mean_time_to_happen = { months = 1 }
-
-  option = {
-    name = EVT_8005309_A
-	government = democracy country_event = 800054
-	random_state = { any_pop = { dominant_issue = { value = parties_allowed factor = 0.15 } } }
-	release = ERI
-	ai_chance = { factor = 100 }
-  }
-
-  option = {
-    name = EVT_8005309_B
-	any_pop = { militancy = 5.0 }
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8005312
-  title = EVT_8005312_NAME
-  desc = EVT_8005312_DESC
-  picture = "nwo2_eritrea"
-  fire_only_once = yes
-
-  trigger = {
-    tag = ETH
-    year = 1961 NOT = { year = 1963 }
-    any_owned_province = { province_id = 1848 }  
-  }
-
-  mean_time_to_happen = { months = 1 }
-
-  option = {
-    name = EVT_8005312_A
-	1848 = { any_pop = { militancy = 5 } }1849 = { any_pop = { militancy = 5 } }1850 = { any_pop = { militancy = 5 } }
-  }
-}
-

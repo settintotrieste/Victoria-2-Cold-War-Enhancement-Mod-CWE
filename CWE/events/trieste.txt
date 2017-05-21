@@ -42,13 +42,28 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-	tag = YUG
+	OR = {
+		769 = { # Postojna; YUG, SLO, BKF, etc.
+			owner = {
+				OR = {
+					AND = { # Regular Yugoslavia
+						tag = THIS
+						is_vassal = no
+					}
+					AND = { # Yugoslavia released Slovenia, but not USSR with vassal Yugoslavia
+						is_vassal = yes
+						overlord = { tag = THIS }
+						NOT = { owns = 794 } # Belgrade
+					}
+				}
+			}
+		}
+	}
 	year = 1954 NOT = { year = 1990 }
-	NOT = { YUG = { war_with = ITA } }
+	NOT = { war_with = ITA }
 	exists = TRE
 	USA = { is_our_vassal = TRE }
 	TRE = { ai = yes }
-	TRE = { is_vassal = yes }
   }
 
   mean_time_to_happen = { months = 9 }
@@ -101,6 +116,7 @@ country_event = {
 			factor = 0
 			part_of_sphere = yes
 			sphere_owner = { OR = { tag = ITA tag = USA } }
+			NOT = { ruling_party_ideology = populist }
 		}
 	}
   }
@@ -139,15 +155,54 @@ country_event = {
   option = {
     name = EVT_8020303_A
 	any_pop = { militancy = 0.3  consciousness = 1.0 }
+	ai_chance = {
+		factor = 0.5
+		modifier = {
+			factor = 0
+			FROM = { ai = no }
+			ITA = { ai = yes }
+		}
+	}
   }
 
   option = {
-    name = EVT_8020303_B
-	YUG = { country_event = 8020304 }
+	name = EVT_8020303_B
+	FROM = { country_event = 8020304 }
 	any_pop = { militancy = 0.5  consciousness = 0.5 }
-	relation = { who = YUG value = 100 } 
+	relation = { who = FROM value = 100 } 
 	relation = { who = ITA value = -100 } 
-	relation = { who = RUS value = 25 } 
+	relation = { who = RUS value = 25 }
+	ai_chance = {
+		factor = 0.5
+		modifier = {
+			factor = 0.1
+			ruling_party_ideology = populist
+		}
+		modifier = {
+			factor = 0.5
+			NOT = { relation = { who = FROM value = 0 } }
+		}
+		modifier = {
+			factor = 1.5
+			NOT = { relation = { who = ITA value = 50 } }
+		}
+		modifier = {
+			factor = 2
+			FROM = { has_country_modifier = neutrality }
+		}
+		modifier = {
+			factor = 2
+			ITA = { has_country_modifier = neutrality }
+		}
+		modifier = {
+			factor = 2
+			ITA = { ruling_party_ideology = communist }
+		}
+		modifier = {
+			factor = 3
+			NOT = { FROM = { ruling_party_ideology = communist } }
+		}
+	}
   }
 }
 country_event = {
@@ -161,10 +216,13 @@ country_event = {
   option = {
     name = EVT_8020304_A
 	inherit = TRE
-	736 = {
-		add_core = SLO
-		change_province_name = "Trst"
+	any_country = {
+		limit = {
+			is_core = 769 # Postojna; SLO, YUG, BKF, etc.
+		}
+		add_core = 736
 	}
+	736 = { change_province_name = "Trst" }
 	any_owned = { remove_core = TRE }
   }
 }
