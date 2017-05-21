@@ -1,224 +1,422 @@
 country_event = { # Federation of Rhodesia and Nyasaland
-  id = 8012200
-  title = EVT_8012200_NAME
-  desc = EVT_8012200_DESC
-  picture = "rhodesia_and_nyasaland"
-  fire_only_once = yes
+	id = 8012200
+	title = EVT_8012200_NAME
+	desc = EVT_8012200_DESC
+	picture = "rhodesia_and_nyasaland"
+	fire_only_once = yes
 
-  trigger = {
-    tag = ENG
-    year = 1953 NOT = { year = 1990 }
-    OR = { 
-		AND = { is_our_vassal = RHO exists = RHO }
-		AND = { owns = 2068 NOT = { exists = RHO } } # Harare
-	}
-	owns = 2067 # Lilongwe
-	owns = 2012 # Lusaka
-	war = no
-  }
-
-  mean_time_to_happen = { months = 2 }
-
-  option = {
-    name = EVT_8012200_A
-	prestige = 10
-	badboy = -2
-	release = RHO
-	any_owned = { limit = { OR = { is_core = MLW is_core = ZAM } } secede_province = CAF }
-	RHO = { country_event = 8012201 }
-	ENG = { create_vassal = CAF }
-	ENG = { diplomatic_influence = { who = CAF value = 200 } }
-	ai_chance = { factor = 100 }
-  }
-  option = {
-    name = EVT_8012200_B
-	prestige = -5
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = { # Federation of Rhodesia and Nyasaland
-  id = 8012201
-  title = EVT_8012200_NAME
-  desc = EVT_8012200_DESC
-  picture = "rhodesia_and_nyasaland"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8012200_A
-	prestige = 10
-	badboy = -2
-	CAF = { inherit = RHO }
+	trigger = {
+		capital_scope = { continent = europe } # ENG or FBU
+		year = 1950 NOT = { year = 1990 }
+		OR = {
+			AND = { is_our_vassal = RHO exists = RHO }
+			AND = { owns = 2068 NOT = { exists = RHO } } # Harare
 		}
+		2067 = { owner = { OR = { tag = THIS AND = { is_vassal = yes overlord = { tag = THIS } } } } } # Lilongwe
+		2012 = { owner = { OR = { tag = THIS AND = { is_vassal = yes overlord = { tag = THIS } } } } } # Lusaka
+		war = no
+	}
+
+	mean_time_to_happen = { months = 36 } # Must be possible to occur before Tanzania
+
+	option = {
+		name = EVT_8012200_A
+		prestige = 10
+		badboy = -2
+		release = RHO
+		any_owned = { limit = { OR = { is_core = MLW is_core = ZAM } } secede_province = CAF }
+		RHO = { change_tag_no_core_switch = CAF } # For player
+		CAF = { country_event = { id = 8012201 days = 1 } } # Explain to the player what happened
+		create_vassal = CAF
+		diplomatic_influence = { who = CAF value = 200 }
+		ai_chance = { factor = 0.9 }
+	}
+	option = {
+		name = EVT_8012200_B
+		prestige = -5
+		ai_chance = {
+			factor = 0.1
+			modifier = {
+				factor = 0
+				ruling_party_ideology = nationalist
+			}
+			modifier = {
+				factor = 20
+				any_owned_province = {
+					OR = {
+						is_core = MLW
+						is_core = ZAM
+					}
+					OR = {
+						has_province_modifier = nationalist_agitation
+						controlled_by_rebels = yes
+					}
+				}
+			}
+		}
+	}
 }
+
+# Separate event to transition for a player-controlled South Rhodesia
+country_event = { # Federation of Rhodesia and Nyasaland
+	id = 8012201
+	title = EVT_8012200_NAME
+	desc = EVT_8012200_DESC
+	picture = "rhodesia_and_nyasaland"
+	is_triggered_only = yes
+
+	option = {
+		name = EVT_8012200_A
+		prestige = 10
+		badboy = -2
+		inherit = RHO
+	}
+}
+
+# If CAF not formed
 country_event = {
 	id = 8012210
 	title = EVT_8012210_NAME # Independence of Zambia and Malawi
 	desc = EVT_8012210_DESC
-	picture = "independence_zambia" 
-	
+	picture = "independence_zambia"
+
 	fire_only_once = yes
-	
+
 	trigger = {
-		tag = ENG
+		capital_scope = { continent = europe } # ENG or FBU
 		owns = 2067 # Lilongwe
 		owns = 2012 # Lusaka
-		year = 1963 NOT = { year = 1990 }
-		exists = TAN
+		OR = {
+			exists = TAN
+			exists = XEF
+			year = 1965
+		}
 	}
-	
-	mean_time_to_happen = { months = 3 }
-	
-    option = {
-	  name = EVT_8012210_A
-	  prestige = 10
-	  release = ZAM
-	  release = MLW
-	  diplomatic_influence = { who = ZAM value = 200 } 
-	  diplomatic_influence = { who = MLW value = 200 } 
-  	  ai_chance = { factor = 100 }
-    }
-  
-  option = {
-	name = EVT_8012210_B
-	prestige = -10
-	any_pop = { limit = { location = { OR = { is_core = ZAM is_core = MLW } } } militancy = 8 consciousness = 5  }
-	# TODO ZAM and MLW UDI
-	ai_chance = { factor = 0 }
-  }	
+
+	mean_time_to_happen = {
+		months = 72
+		modifier = {
+			factor = 0.1
+			any_owned_province = {
+				OR = {
+					is_core = MLW
+					is_core = ZAM
+				}
+				OR = {
+					has_province_modifier = nationalist_agitation
+					controlled_by_rebels = yes
+				}
+			}
+		}
+	}
+
+	option = {
+		name = EVT_8012210_A
+		prestige = 10
+		release = ZAM
+		release = MLW
+		diplomatic_influence = { who = ZAM value = 200 }
+		diplomatic_influence = { who = MLW value = 200 }
+		ai_chance = {
+			factor = 0.9
+			modifier = {
+				factor = 0.05
+				ruling_party_ideology = populist
+			}
+		}
+	}
+
+	option = {
+		name = EVT_8012210_B
+		prestige = -10
+		any_owned = {
+			limit = {
+				OR = {
+					is_core = ZAM
+					is_core = MLW
+				}
+			}
+			add_province_modifier = { name = nationalist_agitation duration = 1095 }
+			any_pop = {
+				limit = {
+					NOT = { culture = white_anglo }
+				}
+				militancy = 8
+				consciousness = 5
+			}
+		}
+		# TODO ZAM and MLW UDI
+		ai_chance = { factor = 0.1 }
+	}
 }
+
+# Collapse of CAF
 country_event = {
 	id = 8012211
 	title = EVT_8012210_NAME # Independence of Zambia and Malawi
 	desc = EVT_8012210_DESC
-	picture = "independence_zambia" 
-	
+	picture = "independence_zambia"
 	fire_only_once = yes
-	
-	trigger = {
-		tag = ENG
-		exists = CAF
-		
-		is_our_vassal = CAF
-		year = 1963 NOT = { year = 1990 }
-	}
-	
-	mean_time_to_happen = { months = 3 }
 
-    option = {
-	  name = EVT_8012210_A
-	CAF = { change_tag = RHO }
-	RHO = { country_event = 8012212 }
-	  prestige = 5
-  	  ai_chance = { factor = 100 }
-    }
-    option = {
-	  name = EVT_8012210_B
-	  prestige = -10
-	  any_pop = { limit = { location = { OR = { is_core = ZAM is_core = MLW } } } militancy = 8 consciousness = 5 }
-RHO = { inherit = CAF }
-	  random_country = { limit = { tag = ZAM } release = ZAM ZAM = { government = democracy country_event = 800054 } add_casus_belli = { target = ZAM type = make_puppet } primary_culture = black_anglo }
-	  random_country = { limit = { tag = MLW } release = MLW MLW = { government = democracy country_event = 800054 } add_casus_belli = { target = MLW type = make_puppet } primary_culture = chewa }
-ENG = { diplomatic_influence = { who = ZAM value = 200 } }
-ENG = { diplomatic_influence = { who = MLW value = 200 } }
-	  ai_chance = { factor = 0 }
-    }	
+	trigger = {
+		capital_scope = { continent = europe } # ENG or FBU
+		exists = CAF
+		is_our_vassal = CAF
+		CAF = { primary_culture = white_anglo }
+		OR = {
+			exists = TAN
+			exists = XEF
+			year = 1965
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 72
+		modifier = {
+			factor = 0.1
+			CAF = { any_owned_province = { controlled_by_rebels = yes } }
+		}
+	}
+
+	option = {
+		name = EVT_8012211_A # Order Rhodesia to introduce Black Majority Rule; South Rhodesia decides whether to secede
+		CAF = { country_event = 8012212 }
+		prestige = 5
+		ai_chance = {
+			factor = 0.85
+			modifier = {
+				factor = 0
+				ruling_party_ideology = nationalist
+			}
+			modifier = {
+				factor = 0.5
+				alliance_with = SAF
+			}
+		}
+	}
+	option = {
+		name = EVT_8012211_B # Stay with the current federation; Northern Rhodesia and Nyasaland secede
+		prestige = -10
+		CAF = { any_owned = {
+			limit = {
+				OR = {
+					is_core = ZAM
+					is_core = MLW
+				}
+			}
+			any_pop = {
+				limit = {
+					NOT = { culture = white_anglo }
+				}
+				militancy = 8
+				consciousness = 5
+			}
+			add_province_modifier = { name = nationalist_agitation duration = 1095 }
+		} }
+		# Zambia and Malawi UDI
+		CAF = {
+			any_owned = { add_core = CAF }
+			release = ZAM
+			release = MLW
+			ZAM = { inherit = MLW }
+			add_casus_belli = { target = ZAM type = annex_core_country }
+		}
+		ZAM = {
+			government = democracy country_event = 800054
+			relation = { who = THIS value = -200 }
+			relation = { who = CAF value = -200 }
+			add_casus_belli = { target = THIS type = free_allied_cores months = 72 }
+		}
+		casus_belli = { target = ZAM type = free_allied_cores }
+		ai_chance = {
+			factor = 0.15
+			modifier = {
+				factor = 0.5
+				OR = {
+					ruling_party_ideology = liberal
+					ruling_party_ideology = progressive
+					ruling_party_ideology = socialist
+				}
+			}
+			modifier = {
+				factor = 2.5
+				NOT = { CAF = { average_consciousness = 3 } }
+			}
+		}
+	}
 }
 country_event = { # Unilateral Declaration of Independence
-  id = 8012212
-  title = EVT_8012212_NAME
-  desc = EVT_8012212_DESC
-  picture = "nwo2_rhodesian_udi"
-  is_triggered_only = yes # RHO
+	id = 8012212
+	title = EVT_8012212_NAME
+	desc = EVT_8012212_DESC
+	picture = "nwo2_rhodesian_udi"
+	is_triggered_only = yes # CAF
 
-  option = {
-    name = EVT_8012212_A
-	any_pop = { militancy = 0.5 consciousness = 1 }
-	release = ZAM ZAM = { government = democracy country_event = 800054 } ZAM = { primary_culture = black_anglo }
-	release = MLW MLW = { government = democracy country_event = 800054 } MLW = { primary_culture = chewa }
-	overlord = { release_vassal = THIS country_event = 8012213 } 
-	badboy = 5
-	government = populist_dictatorship country_event = 800050 
-ENG = { diplomatic_influence = { who = ZAM value = 200 } }
-ENG = { diplomatic_influence = { who = MLW value = 200 } }
-	ai_chance = { factor = 100 }
-  }
-  option = {
-    name = EVT_8012212_B
-	any_pop = { militancy = 0.5 consciousness = 1 }
-	random_country = { limit = { tag = MLW } release = MLW MLW = { government = democracy country_event = 800054 } primary_culture = chewa }
-	overlord = { release_vassal = THIS country_event = 8012213 } 
-	badboy = 20
-	government = populist_dictatorship country_event = 800050
-ENG = { diplomatic_influence = { who = ZAM value = 200 } }
-ENG = { diplomatic_influence = { who = MLW value = 200 } }
-	ai_chance = { factor = 0 }
-  }  
-  option = {
-    name = EVT_8012212_C
-	any_pop = { militancy = 0.5 }
-	release = ZAM ZAM = { government = democracy country_event = 800054 } ZAM = { primary_culture = black_anglo }
-	release = MLW MLW = { government = democracy country_event = 800054 } MLW = { primary_culture = chewa }
-	overlord = { release_vassal = THIS country_event = 8012213 } 
-	government = democracy country_event = 800054
-	primary_culture = shona
-	change_tag = ZIM
-ENG = { diplomatic_influence = { who = ZAM value = 200 } }
-ENG = { diplomatic_influence = { who = MLW value = 200 } }
-ENG = { diplomatic_influence = { who = ZIM value = 200 } }
-	ai_chance = { factor = 0 }
-  }
-  
+	option = {
+		name = EVT_8012212_A
+		badboy = 5
+		release = ZAM
+		ZAM = { government = democracy country_event = 800054 }
+		FROM = { diplomatic_influence = { who = ZAM value = 100 } }
+		release = MLW
+		MLW = { government = democracy country_event = 800054 relation = { who = THIS value = -200 } }
+		FROM = { diplomatic_influence = { who = MLW value = 100 } }
+		any_owned = {
+			add_province_modifier = { name = nationalist_agitation duration = 180 }
+			any_pop = {
+				limit = {
+					NOT = { culture = white_anglo }
+				}
+				militancy = 0.5
+				consciousness = 1
+				dominant_issue = {
+					value = minorities_equal_rights
+					factor = 0.5
+				}
+			}
+		}
+		change_tag = RHO
+		government = populist_dictatorship country_event = 800040
+		ai_chance = {
+			factor = 0.7
+			modifier = {
+				factor = 0.75
+				badboy = 0.8
+			}
+			modifier = {
+				factor = 0
+				stronger_army_than = FROM
+			}
+		}
+	}
+	option = {
+		name = EVT_8012212_B
+		badboy = 20
+		release = MLW
+		MLW = { government = democracy country_event = 800054 }
+		FROM = { diplomatic_influence = { who = MLW value = 200 } }
+		any_owned = {
+			limit = { is_core = ZAM }
+			add_province_modifier = { name = nationalist_agitation duration = 180 }
+		}
+		any_pop = {
+			limit = {
+				NOT = { culture = white_anglo }
+			}
+			militancy = 4
+			consciousness = 4
+			dominant_issue = {
+				value = minorities_equal_rights
+				factor = 0.5
+			}
+		}
+		government = populist_dictatorship
+		country_event = 800040
+		ai_chance = {
+			factor = 0.2
+			modifier = {
+				factor = 0.75
+				badboy = 0.2
+			}
+			modifier = {
+				factor = 1.5
+				FROM = { NOT = { is_sphere_leader_of = THIS } }
+			}
+			modifier = {
+				factor = 5
+				FROM = { is_greater_power = no }
+			}
+		}
+	}
+	option = {
+		name = EVT_8012212_C
+		any_pop = { militancy = 0.5 }
+		release = ZAM ZAM = { government = democracy country_event = 800054 }
+		release = MLW MLW = { government = democracy country_event = 800054 }
+		government = democracy country_event = 800044
+		primary_culture = shona
+		change_tag = ZIM
+		FROM = { diplomatic_influence = { who = ZAM value = 100 } }
+		FROM = { diplomatic_influence = { who = MLW value = 100 } }
+		FROM = { diplomatic_influence = { who = ZIM value = 100 } }
+		ai_chance = {
+			factor = 0.1
+			modifier = {
+				factor = 8
+				average_militancy = 7
+			}
+			modifier = {
+				factor = 0
+				stronger_army_than = FROM
+			}
+		}
+	}
+
 }
-country_event = {
-  id = 8012213
-  title = EVT_8012212_NAME
-  desc = EVT_8012212_DESC
-  picture = "nwo2_rhodesian_udi"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8012213_A
-	casus_belli = { target = RHO type = install_democracy months = 24 }
-	random_country = { limit = { tag = ZAM vassal_of = RHO } war = { target = RHO attacker_goal = { casus_belli = release_puppet } defender_goal = { casus_belli = status_quo }  } }
-	ai_chance = { factor = 0 }
-  }
-  option = {
-    name = EVT_8012213_A
-	prestige = -10
-	casus_belli = { target = RHO type = install_democracy months = 24 }
-	ai_chance = { factor = 100 }
-}  
-  
-}
 
 country_event = {
-  id = 8012214
-  title = EVT_8012214_NAME
-  desc = EVT_8012214_DESC
-  picture = "nwo2_zimbabwe"
-  fire_only_once = yes
+	id = 8012214
+	title = EVT_8012214_NAME
+	desc = EVT_8012214_DESC
+	picture = "nwo2_zimbabwe"
+	fire_only_once = yes
 
-  trigger = {
-    tag = RHO
-    year = 1978
-	NOT = { year = 1990 }
-  }
+	trigger = {
+		OR = {
+			tag = RHO
+			tag = CAF
+		}
+		primary_culture = white_anglo
+		OR = {
+			year = 1978
+			NOT = { minorities_reform = minorities_oppression }
+		}
+		NOT = { year = 1990 }
+	}
 
-  mean_time_to_happen = { months = 3 }
+	mean_time_to_happen = { months = 3 }
 
-  option = {
-    name = EVT_8012214_A
-	government = democracy country_event = 800054
-	primary_culture = shona
-	change_tag = ZIM
-	release = ZAM
-	ENG = { diplomatic_influence = { who = ZIM value = 200 } }
-	ai_chance = { factor = 100 }
-  }
+	option = {
+		name = EVT_8012214_A
+		government = democracy country_event = 800054
+		primary_culture = shona
+		random_owned = { limit = { owner = { NOT = { is_possible_vassal = ZAM } } } owner = { change_tag = ZIM } } # Only become Zimbabwe if Southern Rhodesia
+		random_owned = { limit = { owner = { is_possible_vassal = MLW } } owner = { add_accepted_culture = chewa } }
+		overlord = {
+			release_vassal = THIS
+			casus_belli = { target = THIS type = make_puppet months = 12 }
+		}
+		any_pop = {
+			militancy = -2
+			consciousness = -2
+		}
+		any_pop = {
+			limit = { culture = white_anglo }
+			consciousness = 4
+		}
+		any_owned = { add_core = THIS }
+		all_core = { limit = { NOT = { owner = { tag = THIS } } } remove_core = THIS } # Prevent Greater Zimbabwe from if ENG tried to keep the federation
+		#release = ZAM
+		#ENG = { diplomatic_influence = { who = ZIM value = 200 } }
+		ai_chance = { factor = 1 }
+	}
 
-  option = {
-    name = EVT_8012214_B
-	any_pop = { militancy = 3.0 consciousness = 4 }
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = EVT_8012214_B
+		political_reform = minorities_oppression
+		remove_accepted_culture = black_anglo
+		any_owned = { limit = { is_primary_culture = no } add_province_modifier = { name = nationalist_agitation duration = 1095 } }
+		any_pop = {
+			limit = { is_primary_culture = no } }
+			militancy = 3.0 consciousness = 4
+		}
+		badboy = 5
+		ai_chance = {
+			factor = 0
+			modifier = {
+				factor = 0
+				badboy = 0.8
+			}
+		}
+	}
 }
