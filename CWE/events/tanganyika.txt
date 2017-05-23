@@ -188,7 +188,7 @@ country_event = {
 	option = {
 		name = EVT_8029701_B
 		prestige = -10
-		any_pop = { limit = { location = { is_core = ZAN } } militancy = 5  consciousness = 5.0 }
+		any_pop = { limit = { OR = { is_primary_culture = ZAN is_accepted_culture = ZAN } } militancy = 5  consciousness = 5.0 }
 		# TODO ZAN UDI
 		ai_chance = { factor = 0 }
 	}
@@ -211,16 +211,25 @@ country_event = {
 	mean_time_to_happen = { months = 15 }
 
 	option = {
-		name = EVT_8029700_A
+		name = EVT_8029702_A
 		primary_culture = swahili
 		badboy = 10
 		add_country_modifier = { name = ethnic_cleansing duration = 350 }
-		random_country = { limit = { owns = 300 } diplomatic_influence = { who = THIS value = -100 } } # London, ENG
+		random_list = {
+			1 = {
+				government = proletarian_dictatorship
+				country_event = 800042
+			}
+			1 = {
+				government = nationalist_dictatorship
+				country_event = 800040
+			}
+		}
 		ai_chance = { factor = 100 }
 	}
 
 	option = {
-		name = EVT_8029700_B
+		name = EVT_8029702_B
 		prestige = -10
 		any_pop = { limit = { culture = swahili } militancy = 5  consciousness = 5.0 }
 		ai_chance = { factor = 0 }
@@ -230,7 +239,7 @@ country_event = {
 
 country_event = {
 	id = 8029720
-	title = EVT_8029720_NAME # Union of Tanganyika and Zanzibar
+	title = EVT_8029720_NAME # Union of $COUNTRY$ and Zanzibar
 	desc = EVT_8029720_DESC
 	picture = "nwo2_tanzania"
 	fire_only_once = yes
@@ -241,10 +250,27 @@ country_event = {
 		is_vassal = no
 		year = 1964 NOT = { year = 1990 }
 		exists = ZAN
-		ZAN = { ai = yes NOT = { government = hms_government } is_vassal = no part_of_sphere = no }
+		ZAN = {
+			OR = {
+				AND = { ai = yes primary_culture = swahili }
+				has_country_flag = xef_zan_union
+			}
+			is_vassal = no
+			OR = {
+				part_of_sphere = no
+				AND = { part_of_sphere = yes sphere_owner = { tag = THIS } }
+			}
+		}
 	}
 
-	mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = {
+		months = 8
+		modifier = {
+			factor = 0.5
+			ZAN = { OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social } }
+			OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social }
+		}
+	}
 
 	option = {
 		name = EVT_8029720_A
@@ -259,3 +285,40 @@ country_event = {
 
 }
 
+country_event = {
+	id = 8029721
+	title = EVT_8029721_NAME # Union of $FROMCOUNTRY$ and $COUNTRY$
+	desc = EVT_8029720_DESC
+	picture = "nwo2_tanzania"
+	is_triggered_only = yes # ZAN
+
+	option = {
+		name = EVT_8029721_A
+		set_country_flag = xef_zan_union
+		sphere_owner = {
+			diplomatic_influence = { who = THIS value = -200 }
+			casus_belli = { target = THIS type = add_to_sphere months = 6 }
+		}
+		ai_chance = {
+			factor = 0.75
+			modifier = {
+				factor = 0.8
+				NOT = { primary_culture = swahili }
+			}
+		}
+	}
+
+	option = {
+		name = EVT_8029721_B
+		prestige = -5
+		any_pop = { limit = { has_pop_culture = ibad_arab } consciousness = -3 }
+		ai_chance = {
+			factor = 0.25
+			modifier = {
+				factor = 0
+				FROM = { ai = no }
+			}
+		}
+	}
+
+}
