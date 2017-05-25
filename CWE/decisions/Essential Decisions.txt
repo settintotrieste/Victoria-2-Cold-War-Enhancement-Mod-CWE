@@ -105,8 +105,11 @@ AND = { NOT = { in_sphere = ENG } NOT = { relation = { who = ENG value = 0 } } }
 		}
 		effect = {
 			prestige = 20
-ENG = { diplomatic_influence = { who = HND value = -200 } }
-			relation = { who = ENG value = -100 }
+			random_country = {
+				limit = { owns = 300 } # London
+				diplomatic_influence = { who = THIS value = -200 }
+				relation = { who = THIS value = -100 }
+			}
 			government = democracy
 		}
 		ai_will_do = { 
@@ -114,68 +117,50 @@ ENG = { diplomatic_influence = { who = HND value = -200 } }
 			}
 	}
 
-exportfocus = {
+	exportfocus = {
 		picture = "exportfocus"
 		potential = {
-		war = no
-		NOT = { has_country_flag = exportfocus }
-		NOT = { has_country_flag = importfocus }
-					}
-		allow = {
-	OR = { 
-
-has_country_flag = notapplicable OR = { AND = { is_greater_power = yes } AND = { is_secondary_power = yes } } }
-					}
-		effect = {
-			
-			set_country_flag = exportfocus
-		any_owned = { limit = { is_colonial = no } add_province_modifier = { name = exportfocus duration = -1 } }
-		}
-		ai_will_do = { 
-			factor = 1 
+			war = no
+			NOT = { has_country_flag = exportfocus }
+			OR = {
+				is_greater_power = yes
+				is_secondary_power = yes
 			}
-	}
-
-importfocus = {
-		picture = "importfocus"
-		potential = {
-		war = no
-		NOT = { has_country_flag = importfocus }
-		NOT = { has_country_flag = exportfocus }
-					}
-		allow = {
-	OR = { 
-ai = no OR = { AND = { is_greater_power = no ai = yes } AND = { is_secondary_power = no ai = yes } } }
-					}
-		effect = {
-			
-			set_country_flag = importfocus
-		any_owned = { limit = { is_colonial = no } add_province_modifier = { name = importsubstitutionfocus duration = -1 } }
 		}
-		ai_will_do = { 
-			factor = 1 
-			}
-	}
-
-changefocus = {
-		picture = "changefocus"
-		potential = {
-		war = no
-		OR = { has_country_flag = importfocus has_country_flag = exportfocus } 
-					}
-		allow = {
-	OR = { has_country_flag = importfocus has_country_flag = exportfocus } 
-OR = { AND = { is_secondary_power = yes NOT = { has_country_flag = exportfocus } } AND = { is_greater_power = yes NOT = { has_country_flag = exportfocus } } } 
-					}
+		allow = { }
 		effect = {
 			clr_country_flag = importfocus
-			clr_country_flag = exportfocus
-
-any_owned = { remove_province_modifier = importsubstitutionfocus }
-any_owned = { remove_province_modifier = exportfocus }
+			any_owned = { remove_province_modifier = importsubstitutionfocus }
+			set_country_flag = exportfocus
+			any_owned = { limit = { is_colonial = no } add_province_modifier = { name = exportfocus duration = -1 } }
 		}
-ai_will_do = { factor = 1	}
-alert = no
+		ai_will_do = { 
+			factor = 1 
+		}
+	}
+
+	importfocus = {
+		picture = "importfocus"
+		potential = {
+			war = no
+			NOT = { has_country_flag = importfocus }
+			NOT = { has_country_flag = exportfocus }
+		}
+		allow = { }
+		effect = {
+			set_country_flag = importfocus
+			any_owned = { limit = { is_colonial = no } add_province_modifier = { name = importsubstitutionfocus duration = -1 } }
+		}
+		ai_will_do = { 
+			factor = 1
+			modifier = {
+				factor = 0
+				OR = {
+					is_greater_power = yes
+					is_secondary_power = yes
+				}
+			}
+		}
 	}
 
 becomearepublicpak = {
