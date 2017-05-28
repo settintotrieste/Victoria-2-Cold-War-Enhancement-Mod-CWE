@@ -1,4 +1,40 @@
 political_decisions = {
+
+stop_loan = {
+		picture = "stop_loan"
+	potential = {
+OR = { has_country_modifier = creditor_nation num_of_vassals = 1 }
+NOT = { has_country_flag = stop_loan }
+		}
+alert = no
+	allow = {
+
+					}
+		effect = {
+set_country_flag = stop_loan
+		}
+		ai_will_do = { 
+			factor = 0 
+			}
+	}
+
+start_loan = {
+		picture = "start_loan"
+	potential = {
+has_country_flag = stop_loan
+		}
+alert = no
+	allow = {
+
+					}
+		effect = {
+clr_country_flag = stop_loan
+		}
+		ai_will_do = { 
+			factor = 1 
+			}
+	}
+
 imf_loan = {
 		picture = "imf_loan"
 	potential = {
@@ -45,13 +81,13 @@ NOT = { money = 60000 }
 		election = no
 		war = no
 OR = { 
-overlord = { AND = { is_vassal = no money = 1000000 } }
+overlord = { NOT = { has_country_flag = stop_loan } AND = { is_vassal = no money = 1000000 } }
 any_greater_power = { AND = { is_sphere_leader_of = THIS money = 1000000 } } 
 }
 OR = { ai = no AND = { ai = yes NOT = { money = 50000 } } }
 			}
 		effect = {
-random_country = { limit = { OR = { is_sphere_leader_of = THIS AND = { is_our_vassal = THIS is_vassal = no } } } country_event = 624912 }
+random_country = { limit = { NOT = { has_country_flag = stop_loan } OR = { is_sphere_leader_of = THIS AND = { is_our_vassal = THIS is_vassal = no } } } country_event = 624912 }
 prestige = -15
 add_country_modifier = { name = overlord_loan_requested duration = 1825 }
 
@@ -85,7 +121,7 @@ is_vassal = no
 OR = { ai = no AND = { ai = yes NOT = { money = 25000 } } }
 			}
 		effect = {
-any_country = { limit = { has_country_modifier = creditor_nation } country_event = 624914 }
+any_country = { limit = { NOT = { has_country_flag = stop_loan } has_country_modifier = creditor_nation } country_event = 624914 }
 prestige = -20
 add_country_modifier = { name = foreign_loan_requested duration = 1825 }
 
