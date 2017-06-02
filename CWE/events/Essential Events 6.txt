@@ -422,3 +422,128 @@ relation = { who = RUS value = 100 }
 		}
 }
 
+#Strategic Bombardment
+country_event = {
+	id = 1412135
+title = "Strategic Bombardment by $FROMCOUNTRY$"
+	desc = EVTDESC1412135
+	picture = "strategic_bombardment"
+	
+trigger = { 
+OR = { any_greater_power = { war_with = THIS has_country_flag = strategic_bombardment } any_neighbor_country = { war_with = THIS has_country_flag = strategic_bombardment } }
+NOT = { any_owned_province = { has_province_modifier = aerial_bombed } }
+}
+
+mean_time_to_happen = { months = 1 }
+
+option = {
+name = "Oh the humanity!"
+prestige = -25
+any_owned = { limit = { total_pops = 125000 } add_province_modifier = { name = aerial_bombed duration = 365 } }
+		}
+}
+
+#War Crimes Trial - start
+country_event = {
+	id = 1412136
+title = "UN demands punishment for $COUNTRY$ war crimes"
+	desc = EVTDESC1412136
+	picture = "defeat_day"
+	
+trigger = { 
+war = no
+is_vassal = no
+has_recently_lost_war = yes
+is_disarmed = yes
+badboy = 0.5
+NOT = { has_country_modifier = unsc_permanent_member }
+NOT = { has_country_modifier = war_crimes_trial }
+NOT = { has_country_modifier = un_watch_list }
+}
+
+mean_time_to_happen = { months = 6 }
+
+option = {
+name = "We are now in the hands of the UNSC!"
+any_country = { limit = { has_country_modifier = unsc_permanent_member } country_event = 1412137 }
+add_country_modifier = { name = un_watch_list duration = 2190 }
+		}
+}
+
+#War Crimes Trial - UNSC
+country_event = {
+	id = 1412137
+title = "War Trial for $FROMCOUNTRY$'s War Crimes?"
+	desc = EVTDESC1412137
+	picture = "war_crimes_tribunal"
+
+is_triggered_only = yes
+
+option = {
+name = "Support!"
+FROM = { prestige = -50 }
+ai_chance = { factor = 1 
+modifier = { 
+factor = 0 
+relation = { who = FROM value = 100 } 
+} 
+	}
+}
+
+option = {
+name = "Veto!"
+FROM = { add_country_modifier = { name = trials_vetoed duration = 2190 } }
+FROM = { prestige = 10 }
+ai_chance = { factor = 1 
+modifier = { factor = 0 
+NOT = { relation = { who = FROM value = 100 } }
+} 
+	}
+}
+
+}
+
+#War Crimes Trial - Finish
+country_event = {
+	id = 1412138
+title = "War Trial for $COUNTRY_ADJ$ War Crimes"
+	desc = EVTDESC1412138
+	picture = "war_crimes_tribunal"
+	
+trigger = { 
+NOT = { has_country_modifier = trials_vetoed }
+NOT = { has_country_modifier = war_crimes_trial }
+has_country_modifier = un_watch_list
+}
+
+major = yes
+
+mean_time_to_happen = { months = 6 }
+
+option = {
+name = "This is a show trial!"
+prestige_factor = -0.2
+add_country_modifier = { name = war_crimes_trial duration = 2190 }
+		}
+}
+
+#Ravages of War
+country_event = {
+	id = 1412139
+title = "Ravages of War"
+	desc = EVTDESC1412139
+	picture = "war_damage"
+	
+trigger = { 
+war = yes
+any_owned_province = { NOT = { controlled_by = THIS } NOT = { has_province_modifier = war_bombed } }
+}
+
+mean_time_to_happen = { months = 12 }
+
+option = {
+name = "May peace come soon"
+prestige = -25
+any_owned = { limit = { NOT = { controlled_by = THIS } } add_province_modifier = { name = war_bombed duration = 1750 } }
+		}
+}
