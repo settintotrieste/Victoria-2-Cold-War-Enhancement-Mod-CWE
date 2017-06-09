@@ -1,4 +1,5 @@
 #Don't touch this, start of new event thread
+#No more new events to this thread
 
 #Currency Manipulation
 country_event = {
@@ -586,4 +587,76 @@ remove_country_modifier = arctic_route_control
 prestige = -100
 relation = { who = FROM value = -25 }
 		}
+}
+
+#World Economic Forum
+country_event = {
+	id = 1412142
+title = "$YEAR$ World Economic Forum"
+	desc = EVTDESC1412142
+	picture = "wef"
+	
+trigger = { 
+NOT = { any_greater_power = { OR = { has_country_modifier = wef_1 has_country_modifier = wef_2 has_country_modifier = wef_3 } } }
+year = 1971
+has_country_modifier = g8
+}
+
+mean_time_to_happen = { months = 72 }
+
+option = {
+name = "Give a rousing speech on free trade!"
+prestige = 10
+any_country = { limit = { trade_policy = protectionism } relation = { who = THIS value = -20 } }
+any_country = { limit = { trade_policy = free_trade } relation = { who = THIS value = 20 } }
+add_country_modifier = { name = wef_1 duration = 2190 }
+
+any_country = { limit = { NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } } add_country_modifier = { name = wef_1 duration = 2190 } }
+		}
+
+option = {
+name = "Encourage economic aid to the third world"
+prestige = 25
+any_country = { limit = { economic_policy = intervention } relation = { who = THIS value = 20 } }
+any_country = { limit = { trade_policy = laissez_faire } relation = { who = THIS value = -20 } }
+add_country_modifier = { name = wef_2 duration = 2190 }
+any_country = { limit = { NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } } add_country_modifier = { name = wef_2 duration = 2190 } }
+		}
+
+option = {
+name = "Promote climate controls!"
+prestige = -10
+any_country = { limit = { OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive } } relation = { who = THIS value = 25 } }
+
+any_country = { limit = { NOT = { OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive } } } relation = { who = THIS value = -25 } }
+
+add_country_modifier = { name = wef_3 duration = 2190 }
+any_country = { limit = { NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } } add_country_modifier = { name = wef_3 duration = 2190 } }
+		}
+
+}
+
+#Protect Neutral Countries
+country_event = {
+	id = 1412143
+title = "Diplomatic neutrality violated"
+	desc = "Neutral $COUNTRY$'s diplomatic immunity has been violated. All nations at war with $COUNTRY$ will be punished by the international community."
+	picture = "arctic_r_lose"
+	major = yes
+
+trigger = { 
+any_neighbor_country = { war_with = THIS }
+war = yes
+NOT = { has_country_flag = declared_neutrality_active }
+has_country_modifier = declared_neutrality
+}
+
+option = {
+name = "We need their support"
+set_country_flag = declared_neutrality_active
+any_country = { limit = { war_with = THIS } country_event = 1412144 }
+
+any_country = { limit = { has_country_modifier = united_nations_ga_member exists = yes NOT = { war_with = THIS } } create_alliance = THIS relation = { who = THIS value = 50 } }
+		}
+
 }

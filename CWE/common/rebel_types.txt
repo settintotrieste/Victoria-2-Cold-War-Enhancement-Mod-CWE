@@ -10,6 +10,234 @@
 ##############################################
 
 ###################################
+# Pan Nationalist Rebels
+###################################
+pan_nationalist_rebels = {
+	icon = 6
+	
+	area = culture_group
+	break_alliance_on_win = no
+	
+	# <this is the governement in the country> = <this is what the rebels want>
+	government = {
+	proletarian_dictatorship1 = proletarian_dictatorship1
+		colonial_government = colonial_government
+		democracy1 = democracy1
+		sar_government = sar_government
+		socialist_democracy = socialist_democracy
+mandate_government = mandate_government
+		theocracy = theocracy
+		proletarian_dictatorship = proletarian_dictatorship
+		presidential_dictatorship = presidential_dictatorship
+		nationalist_dictatorship = nationalist_dictatorship
+		populist_dictatorship = populist_dictatorship
+		absolute_monarchy = absolute_monarchy
+		hms_government = hms_government
+		hms_government1 = hms_government1
+		democracy = democracy
+	}
+
+	defection = pan_nationalist		# If the country seeks independence, defection specifies what type of provinces it wants.
+	independence = none
+	defect_delay = 12			# Can spontaneously declare independence after 12 months (earliest)
+	
+	#ideology = liberal
+
+	allow_all_cultures = yes
+	allow_all_culture_groups = no
+	allow_all_religions = yes
+	allow_all_ideologies = yes
+	
+	resilient = yes					# Disbands on retreat
+	reinforcing = yes				# Does not receive reinforcements
+	general = yes					# Does not use generals
+	smart = yes					# Does not assault forts, tactically withdraw from battle, etc.
+	unit_transfer = no				# Units remain after enforcing demands.
+	
+	occupation_mult = 3.0			# The amount of strength this rebel gains from taking provinces
+
+	# triggers a general rising, modifier will be multiplied with the countrys army strength and compared to the factions strenght
+	will_rise = 
+	{
+		factor = 0.5
+			
+		modifier = {
+			war = yes
+			factor = 0.8
+		}
+		
+		modifier = {
+			war_exhaustion = 4
+			factor = 0.95
+		}
+		
+		modifier = {
+			war_exhaustion = 6
+			factor = 0.95
+		}
+		modifier = {
+			factor = 1.3
+			OR = {
+country = { has_country_modifier = world_high }
+country = { has_country_modifier = cold_war_high }
+			}
+		}
+		modifier = {
+			war_exhaustion = 8
+			factor = 0.95
+		}
+	}
+	
+	# The rebel type with the highest modifier for this pop gets picked
+	spawn_chance = {
+		factor = 1.1
+		
+		modifier = {
+			factor = 0
+			OR = { 
+				culture_has_union_tag = no
+				is_cultural_union = THIS
+				NOT = { is_culture_group = THIS }
+			}
+		}
+		modifier = {
+			factor = 0
+			cultural_union = {
+				exists = yes
+			}
+		}
+		
+		modifier = {
+			factor = 0
+			war = yes
+		}
+
+		modifier = {
+			factor = 0
+			country = { is_vassal = yes }
+		}
+		
+		modifier = {
+			factor = 0
+			country = {
+				is_greater_power = yes
+			}
+		}
+		
+		modifier = {
+			factor = 1.3
+			OR = {
+country = { has_country_modifier = world_high }
+country = { has_country_modifier = cold_war_high }
+			}
+		}
+
+		modifier = {
+			factor = 1.15
+			OR = {
+country = { has_country_modifier = world_medium }
+country = { has_country_modifier = cold_war_medium }
+			}
+		}
+		
+		modifier = {
+			factor = 1.2
+			pop_majority_ideology = liberal
+		}
+		
+		modifier = {
+			factor = 1.1
+			pop_majority_ideology = big_tent
+		}
+
+		modifier = {
+			factor = 1.5
+			pop_majority_ideology = progressive
+		}
+
+		modifier = {
+			factor = 1.015
+			political_reform_want = 0.05
+		}
+		modifier = {
+			factor = 1.015
+			political_reform_want = 0.1
+		}
+		modifier = {
+			factor = 1.015
+			political_reform_want = 0.15
+		}
+	}
+ 
+ 	#This is checked for EACH province in the Area of Operations
+	movement_evaluation = {
+		factor = 1
+		modifier = {
+			factor = 0.1
+			units_in_province = 1
+		}
+		modifier = {
+			factor = 0.001
+			controlled_by = REB
+		}
+		modifier = {
+			factor = 1.5
+			average_militancy = 4
+		}
+		modifier = {
+			factor = 1.5
+			average_militancy = 6
+		}
+		modifier = {
+			factor = 1.5
+			average_militancy = 8
+		}
+		modifier = {
+			factor = 2.0
+			is_capital = yes
+		}
+	}
+	
+ 	# Province Scope
+ 	#siege_won_trigger = {
+ 	#}
+	
+	#siege_won_effect = {
+	#}
+	
+
+	# Country scope
+	demands_enforced_trigger = {
+		capital_scope = {
+			controlled_by = REB
+			province_control_days = 30
+		}
+	}
+	
+	demands_enforced_effect = {
+		political_reform = wealth_voting
+		political_reform = population_equal_weight
+		political_reform = yes_meeting
+		political_reform = free_press
+		political_reform = non_socialist
+		political_reform = secret_ballots
+		random_country = {
+			limit = {
+				is_culture_group = THIS
+					is_greater_power = yes
+				NOT = {
+					is_cultural_union = yes
+				}
+				NOT = {
+					cultural_union = { exists = yes }
+				}
+			}
+			country_event = { id= 11100 days= 0 }
+		}
+	}
+}
+
+###################################
 # Reactionary Rebels
 ###################################
 reactionary_rebels = {
@@ -20,12 +248,13 @@ reactionary_rebels = {
 	
 	# <this is the governement in the country> = <this is what the rebels want>
 	government = {
+hms_government1 = presidential_dictatorship
 	proletarian_dictatorship1 = presidential_dictatorship
 		colonial_government = presidential_dictatorship
 		democracy1 = presidential_dictatorship
 		sar_government = presidential_dictatorship
 		socialist_democracy = presidential_dictatorship
-
+mandate_government = presidential_dictatorship
 		theocracy = presidential_dictatorship
 		proletarian_dictatorship = presidential_dictatorship
 		presidential_dictatorship = presidential_dictatorship
@@ -231,9 +460,9 @@ populist_rebels = {
 	proletarian_dictatorship1 = populist_dictatorship
 
 		colonial_government = populist_dictatorship
-
+hms_government1 = populist_dictatorship
 		democracy1 = populist_dictatorship
-
+mandate_government = populist_dictatorship
 		sar_government = populist_dictatorship
 		socialist_democracy = populist_dictatorship
 		populist_dictatorship = populist_dictatorship
@@ -439,9 +668,9 @@ communist_rebels = {
 		colonial_government = proletarian_dictatorship
 
 		democracy1 = proletarian_dictatorship
-
+hms_government1 = proletarian_dictatorship
 		sar_government = proletarian_dictatorship
-
+mandate_government = proletarian_dictatorship
 		nationalist_dictatorship = proletarian_dictatorship
 		populist_dictatorship = proletarian_dictatorship
 		presidential_dictatorship = proletarian_dictatorship
@@ -658,16 +887,16 @@ proletarian_dictatorship1 = presidential_dictatorship
 		colonial_government = presidential_dictatorship
 
 		democracy1 = presidential_dictatorship
-
+mandate_government = presidential_dictatorship
 		sar_government = presidential_dictatorship
-
+hms_government1 = democracy
 		proletarian_dictatorship = presidential_dictatorship
 		presidential_dictatorship = presidential_dictatorship
 		theocracy = presidential_dictatorship
 		nationalist_dictatorship = presidential_dictatorship
 		populist_dictatorship = presidential_dictatorship
 		absolute_monarchy = presidential_dictatorship
-		hms_government = hms_government
+		hms_government = democracy
 		democracy = democracy
 	}
 	
@@ -891,9 +1120,9 @@ proletarian_dictatorship1 = democracy
 
 		colonial_government = democracy
 socialist_democracy = democracy
-
+hms_government1 = democracy
 		sar_government = democracy
-
+mandate_government = democracy
 		proletarian_dictatorship = democracy
 		presidential_dictatorship = democracy
 		theocracy = democracy
@@ -1116,11 +1345,11 @@ proletarian_dictatorship1 = theocracy
 
 
 		democracy1 = theocracy
-
+hms_government1 = theocracy
 socialist_democracy = theocracy
 		sar_government = theocracy
 
-
+mandate_government = theocracy
 		theocracy = theocracy
 		proletarian_dictatorship = theocracy
 		presidential_dictatorship = theocracy
