@@ -1,60 +1,214 @@
+#Mandatory Camerun
+country_event = {
+	id = 1412123
+	title = "Grant Mandatory Cameroun self-rule"
+	desc = EVTDESC1412123
+	picture = "cameroon_mandate"
+
+	fire_only_once = yes
+
+	trigger = {
+		capital_scope = { continent = europe }
+		owns = 1959
+		year = 1956
+		NOT = { year = 1990 }
+		NOT = { exists = CMR }
+	}
+
+	mean_time_to_happen = {
+		months = 8
+		modifier = {
+			factor = 0.1
+			any_owned_province = {
+				is_core = CMR
+				OR = {
+					has_province_modifier = nationalist_agitation
+					controlled_by_rebels = yes
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "Grant self-rule!"
+		prestige = -10
+		random_owned = { limit = { owner = { is_possible_vassal = ABZ } } owner = { country_event = 8002500 } } # If FBU, immediately trigger South Cameroons plebiscite
+		release_vassal = CMR
+		CMR = {
+			government = mandate_government
+			# reform setting already in CMR events
+		}
+		diplomatic_influence = { who = CMR value = 200 }
+		ai_chance = {
+			factor = 0.9
+			modifier = {
+				factor = 0.5
+				ruling_party_ideology = populist
+			}
+		}
+	}
+
+	option = {
+		name = "Hold on to the territory at any cost!"
+		prestige_factor = -0.1
+		any_owned = {
+			limit = { is_core = CMR }
+			add_province_modifier = { name = nationalist_agitation duration = 1095 }
+			any_pop = { militancy = 5 }
+		}
+		ai_chance = {
+			factor = 0.1
+		}
+	}
+
+}
+
 country_event = { # Southern Cameroons Plebiscite
-  id = 8002500
-  title = "EVT_8002500_NAME"
-  desc = "EVT_8002500_DESC"
-  picture = "south_cameroon_plebiscite"
-  fire_only_once = yes
+	id = 8002500
+	title = "EVT_8002500_NAME"
+	desc = "EVT_8002500_DESC"
+	picture = "south_cameroon_plebiscite"
+	fire_only_once = yes
 
-  trigger = {
-	tag = ENG
-	owns = 1957 # Buea
-	exists = CMR
-	NOT = { exists = ABZ }
-	war = no
-  }
+	trigger = {
+		capital_scope = { continent = europe } # ENG or FBU
+		is_possible_vassal = ABZ # Ambazonia
+		exists = CMR
+		NOT = { 1957 = { is_core = NGE } } # In case Nigeria was chosen but does not yet exist
+		war = no
+	}
 
-  mean_time_to_happen = { months = 4 }
+	mean_time_to_happen = { months = 22 }
 
-  option = {
-    name = "EVT_8002500_A"
-	any_owned = { limit = { is_core = CMR } secede_province = CMR } 
-	prestige = 5
-	ai_chance = { factor = 100 }
-  }
-  option = {
-    name = "EVT_8002500_B"
-	badboy = 1
-	prestige = -10
-	any_owned = { limit = { is_core = CMR } secede_province = NGE } 
-	ai_chance = { factor = 0 }
-  }
-  option = {
-    name = "EVT_8002500_C"
-	badboy = 1
-	prestige = -10
-	release = ABZ
-	diplomatic_influence = { who = ENG value = 200 }
-	ai_chance = { factor = 0 }
-  }  
+	immediate = {
+		ABZ = { all_core = { remove_core = CMR } } # This is needed in case this event is called for the FBU, so that South Cameroon is not released along with the Cameroun mandate
+	}
+
+	option = {
+		name = "EVT_8002500_A"
+		ABZ = { all_core = { add_core = CMR } }
+		any_owned = { limit = { is_core = CMR } secede_province = CMR }
+		prestige = 5
+		ai_chance = {
+			factor = 0.8
+			modifier = {
+				factor = 0
+				NGE = { ai = no }
+				CMR = { ai = yes }
+			}
+			modifier = {
+				factor = 0.1
+				truce_with = CMR
+			}
+		}
+	}
+	option = {
+		name = "EVT_8002500_B"
+		ABZ = { all_core = { add_core = CMR } }
+		badboy = 1
+		prestige = -10
+		any_owned = { limit = { is_core = ABZ exists = NGE } secede_province = NGE }
+		any_owned = { limit = { is_core = ABZ NOT = { exists = NGE } } add_core = NGE } # To be removed on independence unless manually released
+		relation = { who = CMR value = -100 }
+		relation = { who = NGE value = 200 }
+		ai_chance = {
+			factor = 0.1
+			modifier = {
+				factor = 0
+				CMR = { ai = no }
+				NGE = { ai = yes }
+			}
+			modifier = {
+				factor = 0
+				badboy = 0.96
+			}
+			modifier = {
+				factor = 0.25
+				primary_culture = french
+			}
+			modifier = {
+				factor = 2
+				NOT = { relation = { who = CMR value = 0 } }
+			}
+		}
+	}
+	option = {
+		name = "EVT_8002500_C"
+		ABZ = { all_core = { add_core = CMR } }
+		badboy = 1
+		prestige = -10
+		release = ABZ
+		diplomatic_influence = { who = ABZ value = 200 }
+		relation = { who = CMR value = -100 }
+		ai_chance = {
+			factor = 0.1
+			modifier = {
+				factor = 0
+				OR = {
+					CMR = { ai = no }
+					NGE = { ai = no }
+				}
+			}
+			modifier = {
+				factor = 0
+				badboy = 0.96
+			}
+		}
+	}
+
+	option = {
+		name = "EVT_8002500_D"
+		ABZ = { all_core = { add_core = CMR } }
+		badboy = 3
+		prestige = -15
+		release = ABZ
+		any_owned = {
+			limit = { OR = { province_id = 1937 province_id = 1950 province_id = 1953 } }
+			secede_province = ABZ
+			add_province_modifier = { name = nationalist_agitation duration = 1095 }
+		}
+		ranom_country = {
+			limit = {
+				tag = NGE
+				is_vassal = yes
+				overlord = { tag = THIS }
+			}
+			any_owned = {
+				limit = { OR = { province_id = 1937 province_id = 1950 province_id = 1953 } }
+				secede_province = ABZ
+				add_province_modifier = { name = nationalist_agitation duration = 1095 }
+			}
+		}
+		diplomatic_influence = { who = ABZ value = 200 }
+		relation = { who = CMR value = -100 }
+		relation = { who = NGE value = -200 }
+		ai_chance = {
+			factor = 0
+			modifier = {
+				factor = 0
+				badboy = 0.88
+			}
+		}
+	}
 }
 country_event = {
-  id = 8002512
-  title = "EVT_8002512_NAME"
-  desc = "EVT_8002512_DESC"
-  picture = "nwo2_cameroon_independence"
-  fire_only_once = yes
+	id = 8002512
+	title = "EVT_8002512_NAME"
+	desc = "EVT_8002512_DESC"
+	picture = "nwo2_cameroon_independence"
+	fire_only_once = yes
 
-  trigger = {
-    tag = CMR
-	owns = 1959 # Yaounde
-    year = 1954 NOT = { year = 1990 }
-	is_vassal = yes
-  }
+	trigger = {
+		tag = CMR
+		owns = 1959 # Yaounde
+		year = 1954 NOT = { year = 1990 }
+		is_vassal = yes
+	}
 
-  mean_time_to_happen = { months = 12 }
+	mean_time_to_happen = { months = 12 }
 
-  option = {
-    name = "EVT_8002512_A"
-	country_event = 15405
-  }
+	option = {
+		name = "EVT_8002512_A"
+		country_event = 15405
+	}
 }
