@@ -1,32 +1,186 @@
 political_decisions = {
 
-energy_triangle = {
+	energy_triangle = {
 		picture = "energy_triangle"
-	potential = {
-OR = { tag = CYP tag = ISR tag = GRE }
-NOT = { has_global_flag = energy_triangle }
-hydraulic_fracturing = 1
+		potential = {
+			is_vassal = no
+			OR = { # owns or vassal owns any of the provinces affected
+				846 = { owner = { OR = { tag = THIS AND = { is_vassal = yes overlord = { tag = THIS } } } } }
+				856 = { owner = { OR = { tag = THIS AND = { is_vassal = yes overlord = { tag = THIS } } } } }
+				916 = { owner = { OR = { tag = THIS AND = { is_vassal = yes overlord = { tag = THIS } } } } }
+			}
+			NOT = { # decision already taken
+				846 = { trade_goods = gas }
+				856 = { trade_goods = gas }
+				916 = { trade_goods = gas }
+			}
+			hydraulic_fracturing = 1
 		}
 
-	allow = {
-	money = 500000
-ISR = { relation = { who = THIS value = 20 } is_vassal = no war = no }
-CYP = { relation = { who = THIS value = 20 } is_vassal = no war = no }
-GRE = { relation = { who = THIS value = 20 } is_vassal = no war = no }
+		allow = {
+			money = 500000
+			846 = { # Dodecanese
+				owner = {
+					war = no
+					OR = {
+						tag = THIS
+						NOT = { have_core_in = THIS }
 					}
+					OR = {
+						tag = THIS
+						AND = {
+							is_vassal = yes
+							overlord = {
+								OR = {
+									tag = THIS
+									AND = {
+										relation = { who = THIS value = 20 }
+										NOT = { have_core_in = THIS }
+									}
+								}
+							}
+						}
+						AND = {
+							is_vassal = no
+							OR = {
+								relation = { who = THIS value = 20 }
+								in_sphere = THIS
+							}
+						}
+					}
+					OR = { # make the decision easier if owner historical and not a union
+						tag = GRE
+						tag = THIS
+						trade_policy = free_trade
+					}
+				}
+			}
+			856 = { # Limasol
+				owner = {
+					war = no
+					OR = {
+						tag = THIS
+						NOT = { have_core_in = THIS }
+					}
+					OR = {
+						tag = THIS
+						AND = {
+							is_vassal = yes
+							overlord = {
+								OR = {
+									tag = THIS
+									AND = {
+										relation = { who = THIS value = 20 }
+										NOT = { have_core_in = THIS }
+									}
+								}
+							}
+						}
+						AND = {
+							is_vassal = no
+							OR = {
+								relation = { who = THIS value = 20 }
+								in_sphere = THIS
+							}
+						}
+					}
+					OR = {
+						tag = CYP
+						tag = THIS
+						trade_policy = free_trade
+					}
+				}
+			}
+			916 = { # Acre
+				owner = {
+					war = no
+					OR = {
+						tag = THIS
+						NOT = { have_core_in = THIS }
+					}
+					OR = {
+						tag = THIS
+						AND = {
+							is_vassal = yes
+							overlord = {
+								OR = {
+									tag = THIS
+									AND = {
+										relation = { who = THIS value = 20 }
+										NOT = { have_core_in = THIS }
+									}
+								}
+							}
+						}
+						AND = {
+							is_vassal = no
+							OR = {
+								relation = { who = THIS value = 20 }
+								in_sphere = THIS
+							}
+						}
+					}
+					OR = {
+						tag = ISR
+						tag = THIS
+						trade_policy = free_trade
+					}
+				}
+			}
+		}
 		effect = {
-prestige = 25
-money = -250000
-set_global_flag = energy_triangle
-any_country = { limit = { OR = { tag = ISR tag = CYP tag = GRE } } prestige = 10 relation = { who = THIS value = 25 } }
-
-846 = { trade_goods = gas }
-856 = { trade_goods = gas }
-916 = { trade_goods = gas }
+			prestige = 25
+			money = -250000
+			any_country = { limit = { OR = { owns = 846 owns = 856 owns = 916 } } prestige = 10 relation = { who = THIS value = 25 } }
+			# TODO: also raise relations betweent the other two
+			846 = {
+				trade_goods = gas
+				any_core = { # country who claims these provinces is upset with exploitation
+					limit = {
+						NOT = { OR = { owns = 846 owns = 856 owns = 916 } }
+					}
+					relation = { who = THIS value = -50 }
+				}
+			}
+			856 = {
+				trade_goods = gas
+				any_core = {
+					limit = {
+						NOT = { OR = { owns = 846 owns = 856 owns = 916 } }
+					}
+					relation = { who = THIS value = -50 }
+				}
+			}
+			916 = {
+				trade_goods = gas
+				any_core = {
+					limit = {
+						NOT = { OR = { owns = 846 owns = 856 owns = 916 } }
+					}
+					relation = { who = THIS value = -50 }
+				}
+			}
+			any_country = {
+				limit = {
+					big_producer = gas
+					NOT = { OR = { owns = 846 owns = 856 owns = 916 } }
+					NOT = { tag = THIS } # TODO: do not lower relations for a big producer whose vassal owns any of the provinces, as good relations were already checked
+				}
+				prestige = -10
+				relation = { who = THIS value = -100 }
+			}
 		}
 		ai_will_do = { 
 			factor = 1
-modifier = { factor = 0 OR = { AND = { tag = ISR ai = no } AND = { tag = GRE ai = no } AND = { tag = CYP ai = no } } }
+			modifier = {
+				factor = 0
+				OR = {
+					846 = { owner = { ai = no } }
+					856 = { owner = { ai = no } }
+					916 = { owner = { ai = no } }
+				}
 			}
+		}
 	}
+
 }
