@@ -72,3 +72,51 @@ prestige = -25
 add_country_modifier = { name = hacking_incident duration = 183 }
 		}
 }
+
+#End of Commerce raiding
+country_event = {
+	id = 1412148
+title = "Enemy commerce raiding subsides"
+	desc = "Active commerce raiding by our enemies have ceased."
+	picture = "commerce_raiding"
+
+
+trigger = {
+has_country_modifier = commerce_raiding
+
+OR = {
+NOT = { any_owned_province = { has_building = naval_base } } 
+war = no 
+AND = { NOT = { any_greater_power = { war_with = THIS has_country_flag = commerce_raiding } }
+NOT = { any_neighbor_country = { war_with = THIS has_country_flag = commerce_raiding } } }
+	} 
+
+
+}
+
+option = {
+name = "Hooray!"
+war_exhaustion = -10
+remove_country_modifier = commerce_raiding
+		}
+}
+
+#End of Commerce raiding ability
+country_event = {
+	id = 1412149
+title = "Lost ability to raid enemy shipping"
+	desc = "We no longer have any ports or sufficient naval ships to conduct raids on enemy shipping."
+	picture = "end_commerce_raiding"
+
+
+trigger = {
+has_country_flag = commerce_raiding
+OR = { NOT = { total_amount_of_ships = 40 } NOT = { any_owned_province = { has_building = naval_base } } }
+}
+
+option = {
+name = "NOOOO!"
+prestige = -50
+clr_country_flag = commerce_raiding
+		}
+}
