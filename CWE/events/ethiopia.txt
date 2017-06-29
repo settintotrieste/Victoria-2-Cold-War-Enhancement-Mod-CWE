@@ -325,7 +325,6 @@ country_event = {
 		country_event = 800042
 		set_country_flag = derg
 		random_state = { any_pop = { dominant_issue = { value = planned_economy factor = 0.15 } } }
-		ai_chance = { factor = 0 }
 	}
 
 }
@@ -426,7 +425,13 @@ country_event = {
 		name = EVT_8005306_A
 		prestige = 10
 		release = ETH
-		ai_chance = { factor = 0.9 }
+		ai_chance = {
+			factor = 0.5
+			modifier = {
+				factor = 1.5
+				ETH = { in_sphere = THIS } # true at game start
+			}
+		}
 	}
 
 	option = {
@@ -436,11 +441,22 @@ country_event = {
 			add_core = SML
 		} }
 		diplomatic_influence = { who = ETH value = -200 }
-		random_country = { limit = { tag = ETH NOT = { government = proletarian_dictatorship } } USA = { relation = { who = THIS value = -50 } } } 
-
-# America is unhappy unless ETH is communist
-
-		ai_chance = { factor = 0.1 }
+		random_country = { limit = { tag = ETH NOT = { government = proletarian_dictatorship } } USA = { relation = { who = THIS value = -50 } } } # America is unhappy unless ETH is communist
+		ai_chance = {
+			factor = 0.25
+			modifier = { # Disable if player is ETH
+				factor = 0
+				ETH = { ai = no }
+				OR = {
+					SOM = { ai = yes }
+					SOM = { exists = no }
+				}
+			}
+			modifier = {
+				factor = 2
+				NOT = { relation = { who = USA value = 0 } }
+			}
+		}
 	}
 
 }
