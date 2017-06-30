@@ -137,3 +137,161 @@ name = "They will pay for this!"
 prestige = -50
 		}
 }
+
+#Peaceful region
+country_event = {
+	id = 1412151
+title = "Peaceful Region"
+	desc = "Due to the relative stability of our region in the last few years, our area has boomed in regional trade and cultural vibrancy as investors and citizens alike feel a tide of peace sweeping through the region."
+	picture = "peace_region"
+
+trigger = { 
+
+NOT = { any_owned_province = { has_province_modifier = peace_region } }
+
+NOT = { 
+any_neighbor_country = { 
+OR = { 
+
+war_with = THIS
+
+AND = { war = yes national_provinces_occupied = 0.10 } 
+
+AND = { war = yes num_of_revolts = 1 }
+
+	} 
+				} 
+	} 
+		}
+
+mean_time_to_happen = { 
+months = 60
+}
+
+option = {
+name = "Great News!"
+any_owned = { remove_province_modifier = unstable_region }
+any_owned = { add_province_modifier = { name = peace_region duration = -1 } }
+		}
+
+}
+
+#Unstable region
+country_event = {
+	id = 1412152
+title = "Unstable Region"
+	desc = "Due to the presence of war and rebellions in our region, our area has declined in regional trade and cultural vibrancy as investors and citizens alike flee the tide of strife sweeping the region."
+	picture = "unstable_region"
+
+trigger = { 
+
+NOT = { any_owned_province = { has_province_modifier = unstable_region } }
+
+any_neighbor_country = { 
+OR = { 
+
+war_with = THIS
+
+AND = { war = yes national_provinces_occupied = 0.10 } 
+
+AND = { war = yes num_of_revolts = 1 }
+
+	} 
+				} 
+	
+		}
+
+mean_time_to_happen = { 
+months = 6
+}
+
+option = {
+name = "We must strive to stabilise the region!"
+any_owned = { remove_province_modifier = peace_region }
+any_owned = { add_province_modifier = { name = unstable_region duration = -1 } }
+		}
+
+}
+
+#Rank 1 Receive offer for Relations boost
+country_event = {
+	id = 1412153
+title = "$FROMCOUNTRY$ offers to host Summit Talks"
+	desc = EVTDESC1412153
+	picture = "crisis_talks"
+
+is_triggered_only = yes
+
+option = {
+name = "Accept!"
+random_country = { limit = { has_country_modifier = un_king2 } country_event = 1412154 }
+ai_chance = { factor = 0.8 }
+		}
+
+option = {
+name = "Reject!"
+prestige = -10
+FROM = { country_event = 1412155 }
+ai_chance = { factor = 0.2 }
+		}
+}
+
+#Rank 2 Receive offer for Relations boost
+country_event = {
+	id = 1412154
+title = "$FROMCOUNTRY$ offers us to join them in Summit Talks"
+	desc = EVTDESC1412154
+
+	picture = "crisis_talks"
+
+is_triggered_only = yes
+
+option = {
+name = "Accept!"
+random_country = { limit = { has_country_modifier = crisis_talk } country_event = 1412156 }
+ai_chance = { factor = 0.8 }
+		}
+
+option = {
+name = "Reject!"
+prestige = -10
+random_country = { limit = { has_country_modifier = crisis_talk } country_event = 1412155 }
+ai_chance = { factor = 0.2 }
+		}
+}
+
+#Failed Outcome
+country_event = {
+	id = 1412155
+title = "Superpowers reject offer to have Summit Talks"
+	desc = "The superpowers have decided to reject our offer to host summit talks to soothe tensions between the superpowers as they are unable to reconcile their deep divisions at the moment."
+
+	picture = "crisis_talks"
+
+is_triggered_only = yes
+
+option = {
+name = "Terrible!"
+prestige = -25
+		}
+}
+
+#Successful Outcome
+country_event = {
+	id = 1412156
+title = "Superpowers accept offer to have Summit Talks"
+	desc = "The superpowers have decided to accept our offer to host summit talks to soothe tensions between the superpowers. Our nation managed to get some limelight in the international scene for this, in addition to gaining more superpower goodwill."
+
+	picture = "crisis_talks"
+
+major = yes
+
+is_triggered_only = yes
+
+option = {
+name = "Tremendous!"
+prestige = 50
+random_country = { limit = { has_country_modifier = un_king1 } relation = { who = THIS value = 25 } prestige = 25 random_country = { limit = { has_country_modifier = un_king2 } relation = { who = THIS value = 75 } } }
+random_country = { limit = { has_country_modifier = un_king2 } relation = { who = THIS value = 25 } prestige = 25 }
+		}
+}
