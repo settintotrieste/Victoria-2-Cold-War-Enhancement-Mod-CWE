@@ -8,11 +8,16 @@ country_event = {
 
 	trigger = {
 		year = 1944 NOT = { year = 1963 }
-		AUS = { exists = no }
-		owns = 619 # Wien
+		#AUS = { exists = no }
+		NOT = { primary_culture = german } # In case of SGF
+		owns = 619 # Wien, RUS
 	}
 
 	mean_time_to_happen = { months = 3 }
+
+	immediate = {
+		inherit = AUS
+	}
 
 	option = {
 		name = "EVT_8203000_A"
@@ -54,7 +59,17 @@ country_event = {
 		619 = { owner = { has_country_flag = keep_austria } } # Wien
 	}
 
-	mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = {
+		months = 6
+		modifier = {
+			factor = 0.75
+			has_country_modifier = democratic_bloc_leader # USA
+		}
+		modifier = {
+			factor = 0.5
+			ai = no
+		}
+	}
 
 	option = {
 		name = "EVT_8203001_A"
@@ -84,10 +99,11 @@ country_event = {
 	title = "EVT_8203002_NAME" # Renner's cabinet
 	desc = "EVT_8203002_DESC"
 	picture = "nwo2_karl_renner"
-	is_triggered_only = yes
+	is_triggered_only = yes # RUS
 
 	option = {
 		name = "EVT_8203002_A"
+		prestige = 10
 		release = AUS
 		random_country = { limit = { has_country_modifier = democratic_bloc_leader } diplomatic_influence = { who = AUS value = 50 } } # USA
 		diplomatic_influence = { who = AUS value = 100 }
@@ -100,17 +116,25 @@ country_event = {
 			}
 			country_event = { id = 8203003 days = 90 }
 		}
-		ai_chance = { factor = 0.8 }
+		ai_chance = {
+			factor = 0.65
+			modifier = {
+				factor = 0.5
+				OR = { owns = 613 owns = 614 owns = 615 } # Tricky player tried releasing Austria as vassal
+			}
+			modifier = {
+				factor = 0
+				NOT = { AUS = { any_core = { NOT = { owner = { tag = THIS } } } } } # Owns all of Austria
+			}
+		}
 	}
 
 	option = {
 		name = "EVT_8203002_B"
 		release_vassal = AUS
 		AUS = { country_event = { id = 8203004 days = 180 } }
-		prestige = -10
-		badboy = 2
 		ai_chance = {
-			factor = 0.2
+			factor = 0.35
 			modifier = {
 				factor = 0
 				badboy = 0.92
@@ -133,6 +157,7 @@ country_event = {
 
 	option = {
 		name = "EVT_8203003_A"
+		prestige = 10
 		release = AUS
 		diplomatic_influence = { who = AUS value = 100 }
 		random_country = {
@@ -150,27 +175,19 @@ country_event = {
 	option = {
 		name = "EVT_8203003_B"
 		AUS = { country_event = 8203004 }
-		prestige = -10
-		badboy = 5
 		any_country = { # If allies already gave land to Renner, lose relations
 			limit = {
-				NOT = { any_owned = { is_core = AUS } }
+				NOT = { any_owned_province = { is_core = AUS } }
 				OR = { tag = FRA tag = ENG tag = USA }
 			}
 			relation = { who = THIS value = -75 }
 		}
-		# country_event to write - choice for what type of occupation to have
-		ai_chance = {
-			factor = 0
-			modifier = {
-				factor = 0
-				badboy = 0.8
-			}
-		}
+		country_event = 8203005
+		ai_chance = { factor = 0 }
 	}
 
 	option = {
-		name = "EVT_8203003_C" # To write
+		name = "EVT_8203001_B"
 		any_pop = { limit = { culture = german } militancy = 4 consciousness = 2 }
 		set_country_flag = keep_austria
 		badboy = 15
@@ -192,6 +209,88 @@ country_event = {
 		}
 	}
 }
+
+###########
+# Communism
+###########
+
+country_event = {
+	id = 8203005
+	title = "EVT_8203005_NAME"
+	desc = "EVT_8203005_DESC"
+	# To write
+
+	trigger = {
+		any_owned_province = { is_core = AUS }
+		NOT = { tag = AUS }
+		NOT = { has_country_flag = keep_austria }
+		AUS = { government = proletarian_dictatorship }
+	}
+
+	mean_time_to_happen = {
+		months = 6
+		modifier = {
+			factor = 0.75
+			has_country_modifier = democratic_bloc_leader
+		}
+		modifier = {
+			factor = 0.5
+			ai = no
+		}
+	}
+
+	option = {
+		name = "EVT_8203005_A" # Recognize communist Austria
+		random_owned = {
+			limit = { owner = { NOT = { government = proletarian_dictatorship } } }
+			owner = { prestige = -20 }
+		}
+		release = AUS
+		ai_chance = {
+			factor = 1
+			modifier = { # Only take this option if is communist or another ally already has (player-controlled)
+				factor = 0
+				NOT = { government = proletarian_dictatorship }
+				NOT = { any_greater_power = {
+					OR = { tag = ENG tag = FRA tag = USA }
+					NOT = { any_owned_province = { is_core = AUS } }
+				} }
+			}
+		}
+	}
+
+	option = {
+		name = "EVT_8203005_B" # Hand Austria over to our German administration
+		any_owned = { limit = { is_core = AUS } add_core = GER }
+		ai_chance = {
+			factor = 0.5
+			modifier = { # Take this option if ally took this option
+				factor = 2
+				GER = { any_core = { is_core = AUS } }
+			}
+		}
+	}
+
+	option = {
+		name = "EVT_8203005_C" # The Iron Curtain goes no further.
+		# TODO partition Austria
+	}
+
+	option = {
+		name = "EVT_8203001_B"
+		any_pop = { limit = { culture = german } militancy = 4 consciousness = 2 }
+		set_country_flag = keep_austria
+		badboy = 15
+		ai_chance = {
+			factor = 0
+			modifier = {
+				factor = 0
+				badboy = 0.4
+			}
+		}
+	}
+}
+
 country_event = {
 	id = 8203004
 	title = "EVT_8203004_NAME" # Lack of recognition
@@ -202,11 +301,25 @@ country_event = {
 	option = {
 		name = "EVT_8203004_A"
 		country_event = 120001
-		all_core = { add_core = GER }
+		#all_core = { add_core = GER }
 		clr_country_flag = neutrality
 		clr_country_flag = renounced_war_rights
 	}
 }
+
+# Choice to unify Bavaria and Austria to oppose Soviet influence
+#country_event = {
+#	id = 8203006
+#	title = "EVT_8203006_NAME" # To write
+#	desc = "EVT_8203006_DESC" # To write
+
+#	trigger = {
+#		is_possible_vassal = BAV
+#	}
+#}
+
+###########
+
 country_event = {
 	id = 8203010
 	title = "EVT_8203010_NAME"
@@ -290,7 +403,7 @@ country_event = {
 		AUS = { has_country_flag = neutrality }
 	}
 
-	mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 1 }
 
 	option = {
 		name = "EVT_8203014_A"
