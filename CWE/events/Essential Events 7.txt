@@ -366,3 +366,161 @@ inherit = DDR
 prestige = 50
 		}
 }
+
+#Return of Territories Giver
+country_event = {
+	id = 1412160
+title = "Return of $FROMCOUNTRY$'s former territories?"
+	desc = EVTDESC1412160
+	picture = "sovereignty_talk"
+
+is_triggered_only = yes
+
+option = {
+name = "Return the territories!"
+prestige = 0.1
+badboy = -5
+diplomatic_influence = { who = FROM value = 200 }
+any_owned = { limit = { is_core = FROM } secede_province = FROM }
+FROM = { country_event = 1412161 }
+ai_chance = { factor = 1 
+modifier = { factor = 0.1 OR = { ruling_party_ideology = populist ruling_party_ideology = nationalist ruling_party_ideology = traditionalist } }
+modifier = { factor = 0 NOT = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 government = socialist_democracy } } } }
+		}
+
+option = {
+name = "Hold onto the territories!"
+relation = { who = FROM value = -100 }
+FROM = { country_event = 1412162 }
+ai_chance = { factor = 1 
+modifier = { factor = 2 OR = { ruling_party_ideology = populist ruling_party_ideology = nationalist ruling_party_ideology = traditionalist } }
+}
+		}
+
+}
+
+#Return of Territories Success
+country_event = {
+	id = 1412161
+title = "$FROMCOUNTRY$ agrees to return our lands"
+	desc = EVTDESC1412161
+	picture = "sovereignty_return"
+
+is_triggered_only = yes
+
+option = {
+name = "Excellent!"
+prestige = 0.1
+any_pop = { militancy = -5 }
+		}
+}
+
+#Return of Territories Failure
+country_event = {
+	id = 1412162
+title = "$FROMCOUNTRY$ refuses to return our lands"
+	desc = "$FROMCOUNTRY$ finds that the time is not right yet to return our sacred and sovereign lands back to us. They cite reasons as disagreements over how to transfer the territories to us. We believe that it is an excuse to keep them in perpetuity."
+	picture = "sovereignty_talk"
+
+is_triggered_only = yes
+
+option = {
+name = "Terrible!"
+prestige = -50
+ai_chance = { factor = 1 modifier = { factor = 0 stronger_army_than = FROM } }
+		}
+
+option = {
+name = "We have to reseize the lands by force!"
+prestige = -50
+war = {
+target = FROM
+	attacker_goal = { casus_belli = territorial_dispute }
+	defender_goal = { casus_belli = territorial_dispute }
+	call_ally = yes
+}
+ai_chance = { factor = 1 modifier = { factor = 0 NOT = { stronger_army_than = FROM } } }
+		}
+
+}
+
+#Leader flees
+country_event = {
+	id = 1412163
+title = "The $MONARCHTITLE$ flees the country"
+	desc = EVTDESC1412163
+	picture = "flee_the_nation"
+
+trigger = {
+any_owned_province = { is_capital = yes controlled_by_rebels = yes }
+NOT = { has_country_modifier = headless_chicken }
+}
+
+mean_time_to_happen = { 
+months = 0.5
+}
+
+option = {
+name = "He is a coward!"
+prestige = -50
+add_country_modifier = { name = headless_chicken duration = 730 }
+
+		remove_country_modifier = expert_diplomat
+		remove_country_modifier = successful_industrialist
+		remove_country_modifier = ivory_tower_intellectual
+		remove_country_modifier = man_of_the_people
+		remove_country_modifier = landed_gentleman
+		remove_country_modifier = military_man
+		remove_country_modifier = lord_admiral
+		remove_country_modifier = raving_loon
+		remove_country_modifier = luddite
+		remove_country_modifier = great_statesman
+		remove_country_modifier = backroom_boy
+		remove_country_modifier = great_reformer
+		remove_country_modifier = gauche_buffoon
+		remove_country_modifier = administrative_genius
+		remove_country_modifier = visionary_thinker
+		remove_country_modifier = competent_placeholder
+		remove_country_modifier = imperious_autocrat
+		remove_country_modifier = prince_of_terror
+		remove_country_modifier = efficient_sociopath
+		remove_country_modifier = pig_headed_isolationist
+		remove_country_modifier = ambitious_union_boss
+		remove_country_modifier = dour_economist
+
+clr_country_flag = right_set_up
+clr_country_flag = far_right_set_up
+clr_country_flag = centre_set_up
+clr_country_flag = left_set_up
+clr_country_flag = far_left_set_up
+
+random_owned = { limit = { owner = { NOT = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } } } } owner = { random_country = { limit = { is_vassal = no NOT = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } } } country_event = 1412164 } } }
+
+random_owned = { limit = { owner = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } } } owner = { random_country = { limit = { is_vassal = no OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } } country_event = 1412164 } } }
+
+
+		}
+}
+
+#Leader flees
+country_event = {
+	id = 1412164
+title = "$FROMCOUNTRY$'s leader flees to our country"
+	desc = EVTDESC1412164
+	picture = "flee_the_nation"
+
+is_triggered_only = yes
+
+option = {
+name = "Give him asylum!"
+badboy = -2
+prestige = 10
+relation = { who = FROM value = -50 }
+		}
+
+option = {
+name = "Deport him back to $FROMCOUNTRY$ to face execution"
+relation = { who = FROM value = 50 }
+		}
+
+}
