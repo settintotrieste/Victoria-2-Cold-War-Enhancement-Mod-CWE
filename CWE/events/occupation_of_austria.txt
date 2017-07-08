@@ -132,12 +132,24 @@ country_event = {
 	option = {
 		name = "EVT_8203002_B"
 		release_vassal = AUS
-		AUS = { country_event = { id = 8203004 days = 180 } }
+		AUS = {
+			country_event = { id = 8203004 days = 180 }
+			any_pop = {
+				scaled_consciousness = {
+					value = 3
+					ideology = liberal
+				}
+				scaled_consciousness = {
+					value = 4
+					ideology = conservative
+				}
+			}
+		}
 		ai_chance = {
 			factor = 0.35
 			modifier = {
-				factor = 0
-				badboy = 0.92
+				factor = 2
+				619 = { pop_majority_ideology = communist } # Wien
 			}
 		}
 	}
@@ -261,7 +273,14 @@ country_event = {
 
 	option = {
 		name = "EVT_8203005_B" # Hand Austria over to our German administration
-		any_owned = { limit = { is_core = AUS } add_core = GER }
+		any_owned = {
+			limit = { is_core = AUS }
+			add_core = GER
+			any_pop = {
+				limit = { has_pop_culture = AUS }
+				consciousness = 3
+			}
+		}
 		ai_chance = {
 			factor = 0.5
 			modifier = { # Take this option if ally took this option
@@ -273,7 +292,22 @@ country_event = {
 
 	option = {
 		name = "EVT_8203005_C" # The Iron Curtain goes no further.
-		# TODO partition Austria
+		any_owned = { limit = { is_core = AUS } remove_core = AUS add_core = ROA }
+		release = ROA
+		random_country = {
+			limit = {
+				tag = SGF
+				exists = yes
+			}
+			inherit = ROA
+		}
+		ai_chance = {
+			factor = 0.5
+			modifier = { # Take this option if ally took this option
+				factor = 2
+				exists = ROA
+			}
+		}
 	}
 
 	option = {
@@ -308,15 +342,82 @@ country_event = {
 }
 
 # Choice to unify Bavaria and Austria to oppose Soviet influence
-#country_event = {
-#	id = 8203006
-#	title = "EVT_8203006_NAME" # To write
-#	desc = "EVT_8203006_DESC" # To write
+country_event = {
+	id = 8203006
+	title = "EVT_8203006_NAME" # To write
+	desc = "EVT_8203006_DESC" # To write
+	# To write
 
-#	trigger = {
-#		is_possible_vassal = BAV
-#	}
-#}
+	trigger = {
+		exists = ROA
+		is_possible_vassal = BAV # USA
+		NOT = { primary_culture = german }
+	}
+
+	mean_time_to_happen = {
+		months = 48
+		modifier = {
+			factor = 0.5
+			ROA = { ruling_party_ideology = socialist }
+		}
+		modifier = {
+			factor = 0.01
+			ROA = {
+				OR = {
+					ruling_party_ideology = communist
+					ruling_party_ideology = communist_social
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "EVT_8203006_A" # To write
+		any_country = {
+			limit = {
+				OR = { tag = AUS tag = ROA }
+			}
+			scaled_militancy = {
+				factor = 5
+				ideology = nationalist
+			}
+		}
+		any_pop = {
+			limit = {
+				has_pop_culture = german
+				has_pop_religion = catholic
+			}
+			consciousness = -4
+		}
+		release = BAV
+		BAV = {
+			change_tag = SGF
+			inherit = ROA
+		}
+		ROA = {
+			all_core = {
+				remove_core = ROA
+				add_core = SGF
+				add_core = AUS
+			}
+		}
+		random = {
+			chance = 50
+			571 = { add_core = SGF } # Kaiserslautern
+			571 = { owner = { relation = { who = THIS value = -20 } } } # FRA
+		}
+		ai_chance = {
+			factor = 0.5
+		}
+	}
+
+	option = {
+		name = "EVT_8203006_B" # To write
+		ai_chance = {
+			factor = 0.5
+		}
+	}
+}
 
 ###########
 
@@ -335,6 +436,7 @@ country_event = {
 		FRA = { military_access = THIS }
 		set_country_flag = neutrality
 		set_country_flag = renounced_war_rights
+		neutrality = yes
 	}
 }
 country_event = {
