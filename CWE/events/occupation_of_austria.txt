@@ -190,6 +190,7 @@ country_event = {
 		any_country = { # If allies already gave land to Renner, lose relations
 			limit = {
 				NOT = { any_owned_province = { is_core = AUS } }
+				NOT = { has_country_flag = keep_austria }
 				OR = { tag = FRA tag = ENG tag = USA }
 			}
 			relation = { who = THIS value = -75 }
@@ -258,15 +259,13 @@ country_event = {
 			owner = { prestige = -20 }
 		}
 		release = AUS
+		set_global_flag = communist_austria
 		ai_chance = {
 			factor = 1
 			modifier = { # Only take this option if is communist or another ally already has (player-controlled)
 				factor = 0
 				NOT = { government = proletarian_dictatorship }
-				NOT = { any_greater_power = {
-					OR = { tag = ENG tag = FRA tag = USA }
-					NOT = { any_owned_province = { is_core = AUS } }
-				} }
+				NOT = { has_global_flag = communist_austria }
 			}
 		}
 	}
@@ -349,8 +348,20 @@ country_event = {
 	# To write
 
 	trigger = {
-		exists = ROA
 		is_possible_vassal = BAV # USA
+		ROA = {
+			exists = yes
+			OR = { # American Austria; USA supported ROA or tried to release Austria manually (mostly)
+				# Will block against, for example, all the allies recognizing neutral Renner Austria but one
+				owns = 613
+				owns = 622
+				AND = {
+					AUS = { owns = 613 }
+					AUS = { owns = 622 }
+					NOT = { has_global_flag = communist_austria }
+				}
+			}
+		}
 		NOT = { primary_culture = german }
 	}
 
@@ -403,8 +414,10 @@ country_event = {
 		}
 		random = {
 			chance = 50
-			571 = { add_core = SGF } # Kaiserslautern
-			571 = { owner = { relation = { who = THIS value = -20 } } } # FRA
+			571 = { # Kaiserslautern
+				add_core = SGF
+				owner = { relation = { who = THIS value = -20 } } # FRA
+			}
 		}
 		ai_chance = {
 			factor = 0.5
