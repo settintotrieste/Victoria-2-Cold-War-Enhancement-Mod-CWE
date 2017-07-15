@@ -48,13 +48,13 @@ country_event = {
 # If Soviets occupy Austria, Allies release Renner, but non-neutral
 country_event = {
 	id = 8203001
-	title = "EVT_8203001_NAME" # To write
-	desc = "EVT_8203001_DESC" # To write
-	picture = "nwo2_allied_occupation_of_austria"
+	title = "EVT_8203000_NAME"
+	desc = "EVT_8203001_DESC"
+	picture = "nwo2_karl_renner"
 
 	trigger = {
 		any_owned_province = { is_core = AUS }
-		NOT = { tag = AUS }
+		NOT = { primary_culture = german }
 		NOT = { has_country_flag = keep_austria }
 		619 = { owner = { has_country_flag = keep_austria } } # Wien
 	}
@@ -79,7 +79,7 @@ country_event = {
 	}
 
 	option = {
-		name = "EVT_8203001_B"
+		name = "keep_austria"
 		any_pop = { limit = { culture = german } militancy = 4 consciousness = 2 }
 		set_country_flag = keep_austria
 		badboy = 15
@@ -200,7 +200,7 @@ country_event = {
 	}
 
 	option = {
-		name = "EVT_8203001_B"
+		name = "keep_austria"
 		any_pop = { limit = { culture = german } militancy = 4 consciousness = 2 }
 		set_country_flag = keep_austria
 		badboy = 15
@@ -231,7 +231,7 @@ country_event = {
 	id = 8203005
 	title = "EVT_8203005_NAME"
 	desc = "EVT_8203005_DESC"
-	# To write
+	picture = "nwo2_allied_occupation_of_austria"
 
 	trigger = {
 		any_owned_province = { is_core = AUS }
@@ -249,6 +249,10 @@ country_event = {
 		modifier = {
 			factor = 0.5
 			ai = no
+		}
+		modifier = {
+			factor = 0.1
+			exists = ROA
 		}
 	}
 
@@ -286,6 +290,10 @@ country_event = {
 				factor = 2
 				GER = { any_core = { is_core = AUS } }
 			}
+			modifier = {
+				factor = 1.9
+				NOT = { AUS = { lost_national = 3 } } # We're the only ones to not recognize, does not apply to Britain
+			}
 		}
 	}
 
@@ -299,6 +307,13 @@ country_event = {
 				exists = yes
 			}
 			inherit = ROA
+			ROA = {
+				all_core = {
+					remove_core = ROA
+					add_core = SGF
+					add_core = AUS
+				}
+			}
 		}
 		ai_chance = {
 			factor = 0.5
@@ -310,7 +325,7 @@ country_event = {
 	}
 
 	option = {
-		name = "EVT_8203001_B"
+		name = "keep_austria"
 		any_pop = { limit = { culture = german } militancy = 4 consciousness = 2 }
 		set_country_flag = keep_austria
 		badboy = 15
@@ -334,7 +349,16 @@ country_event = {
 	option = {
 		name = "EVT_8203004_A"
 		country_event = 120001
-		#all_core = { add_core = GER }
+		any_pop = {
+			limit = {
+				NOT = { type = aristocrats }
+				NOT = { type = capitalists }
+			}
+			ideology = {
+				factor = 0.5
+				value = communist
+			}
+		}
 		clr_country_flag = neutrality
 		clr_country_flag = renounced_war_rights
 	}
@@ -343,9 +367,9 @@ country_event = {
 # Choice to unify Bavaria and Austria to oppose Soviet influence
 country_event = {
 	id = 8203006
-	title = "EVT_8203006_NAME" # To write
-	desc = "EVT_8203006_DESC" # To write
-	# To write
+	title = "SGF"
+	desc = "EVT_8203006_DESC"
+	picture = "austrian_lands"
 
 	trigger = {
 		is_possible_vassal = BAV # USA
@@ -380,10 +404,11 @@ country_event = {
 				}
 			}
 		}
+		# TODO: lower if Soviet meddling is found
 	}
 
 	option = {
-		name = "EVT_8203006_A" # To write
+		name = "EVT_8203006_A"
 		any_country = {
 			limit = {
 				OR = { tag = AUS tag = ROA }
@@ -425,7 +450,7 @@ country_event = {
 	}
 
 	option = {
-		name = "EVT_8203006_B" # To write
+		name = "EVT_8203006_B"
 		ai_chance = {
 			factor = 0.5
 		}
@@ -465,15 +490,22 @@ country_event = {
 		AUS = { has_country_flag = neutrality }
 	}
 
-	mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 1 }
 
 	option = {
 		name = "EVT_8203011_A"
 		any_pop = { consciousness = 2 }
 		badboy = 1
 		relation = { who = AUS value = -100 }
-		ai_chance = { factor = 30 }
+		treasury = 10000 # TODO balance the money to make these choices desirable
 		AUS = { country_event = 8203012 }
+		ai_chance = {
+			factor = 0.30
+			modifier = {
+				factor = 0
+				badboy = 0.96
+			}
+		}
 	}
 
 	option = {
@@ -481,15 +513,28 @@ country_event = {
 		any_pop = { militancy = 1 }
 		badboy = 2
 		relation = { who = AUS value = -250 }
-		ai_chance = { factor = 35 }
+		treasury = 25000
 		AUS = { country_event = 8203012 }
+		ai_chance = {
+			factor = 0.35
+			modifier = {
+				factor = 0
+				badboy = 0.92
+			}
+		}
 	}
 
 	option = {
 		name = "EVT_8203011_C"
 		badboy = -1
 		relation = { who = AUS value = 100 }
-		ai_chance = { factor = 35 }
+		ai_chance = {
+			factor = 0.35
+			modifier = {
+				factor = 0.1
+				NOT = { money = 1000 }
+			}
+		}
 	}
 }
 country_event = {
@@ -513,9 +558,31 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		tag = RUS
-		year = 1954 NOT = { year = 1963 }
-		AUS = { has_country_flag = neutrality }
+		year = 1954 NOT = { year = 1963 } # TODO: more complex starting, happen after Stalin's death
+		OR = {
+			AND = {
+				tag = RUS
+				OR = {
+					any_owned_province = { is_core = AUS }
+					is_our_vassal = AUS
+					AND = {
+						exists = ROA
+						OR = {
+							is_sphere_leader_of = AUS
+							is_our_vassal = AUS
+						}
+					}
+				}
+			}
+			AND = {
+				tag = AUS
+				exists = ROA
+				OR = {
+					NOT = { has_global_flag = blocsenabled }
+					NOT = { government = proletarian_dictatorship }
+				}
+			}
+		}
 	}
 
 	mean_time_to_happen = { months = 1 }
@@ -525,45 +592,78 @@ country_event = {
 		badboy = -10
 		relation = { who = AUS value = 100 }
 		relation = { who = USA value = 50 }
+		# TODO check for an existing ROA or AUS and give them the choice to decline forced neutrality
+		random_country = {
+			limit = {
+				exists = yes
+				tag = ROA
+			}
+			inherit = AUS
+			change_tag = AUS
+			all_core = { remove_core = ROA }
+		}
 		release = AUS
-		ai_chance = { factor = 100 }
+		AUS = {
+			capital = 619 # Wien
+			set_country_flag = neutrality
+			set_country_flag = renounced_war_rights
+			neutrality = yes
+		}
+		any_country = {
+			limit = {
+				any_owned_province = { is_core = AUS }
+				NOT = { tag = AUS }
+				NOT = { tag = ROA }
+			}
+			country_event = 1400050
+		}
+		ai_chance = { factor = 1 }
 	}
 
 	option = {
 		name = "EVT_8203014_B"
 		any_pop = { militancy = 0.5 consciousness = 1 }
 		badboy = 10
-		overlord = { country_event = 8203015 }
-		ai_chance = { factor = 0 }
+		ai_chance = {
+			factor = 0
+			modifier = {
+				factor = 0
+				badboy = 0.6
+			}
+			modifier = {
+				factor = 0
+				primary_culture = german
+			}
+		}
 	}
 }
-country_event = {
-	id = 8203015
-	title = "EVT_8203015_NAME"
-	desc = "EVT_8203015_DESC"
-	picture = "nwo2_austrian_state_treaty"
-	is_triggered_only = yes
+# country_event = {
+	# id = 8203015
+	# title = "EVT_8203015_NAME"
+	# desc = "EVT_8203014_DESC"
+	# picture = "nwo2_austrian_state_treaty"
+	# is_triggered_only = yes # AUS
 
-	option = {
-		name = "EVT_8203015_A"
-		any_pop = { militancy = -0.1 consciousness = 1 }
-		AUS = { country_event = 8203016 }
-	}
-}
-country_event = {
-	id = 8203016
-	title = "EVT_8203016_NAME"
-	desc = "EVT_8203016_DESC"
-	picture = "nwo2_austrian_state_treaty"
-	is_triggered_only = yes
+	# option = {
+		# name = "EVT_8203015_A"
+		# any_pop = { militancy = -0.1 consciousness = 1 }
+		# country_event = 8203016
+	# }
+# }
+# country_event = {
+	# id = 8203016
+	# title = "EVT_8203016_NAME"
+	# desc = "EVT_8203016_DESC"
+	# picture = "nwo2_austrian_state_treaty"
+	# is_triggered_only = yes
 
-	option = {
-		name = "EVT_8203016_A"
-		any_pop = { militancy = -2.0 consciousness = -2 }
-		overlord = { release_vassal = THIS }
-		neutrality = yes
-	}
-}
+	# option = {
+		# name = "EVT_8203016_A"
+		# any_pop = { militancy = -2.0 consciousness = -2 }
+		# overlord = { release_vassal = THIS }
+		# neutrality = yes
+	# }
+# }
 country_event = {
 	id = 8203030
 	title = "EVT_8203030_NAME"
@@ -572,12 +672,19 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		tag = AUS
+		OR = { tag = AUS tag = ROA tag = SGF }
 		year = 1954 NOT = { year = 1963 }
 		is_vassal = no
+		NOT = { government = proletarian_dictatorship }
 	}
 
-	mean_time_to_happen = { months = 8 }
+	mean_time_to_happen = {
+		months = 8
+		modifier = {
+			factor = 0.75
+			tag = ROA
+		}
+	}
 
 	option = {
 		name = "EVT_8203030_A"
@@ -589,22 +696,36 @@ country_event = {
 country_event = {
 	id = 1400050
 	title = "$FROMCOUNTRY$ demands that we return our Austrian Lands!"
-	desc = "Since the end of WW2 the protection of Austria's territorial integrity has been sought by the international community."
+	desc = "Since the end of WW2, the protection of Austria's territorial integrity has been sought by the international community."
 	picture = "austrian_lands"
 	is_triggered_only = yes
 
 	option = {
 		name = "We shall return the lands!"
-		release = AUS
-		any_owned = { limit = { is_core = AUS } remove_core = GER }
-		any_owned = { limit = { is_core = AUS } remove_core = DDR }
 		prestige = 10
-		ai_chance = { factor = 1 }
+		any_owned = { limit = { is_core = AUS } remove_core = THIS }
+		release = AUS
+		AUS = { capital = 619 } # Wien
+		random_owned = {
+			limit = { owner = { tag = SGF } }
+			owner = { change_tag = BAV }
+		}
+		ai_chance = {
+			factor = 1
+			modifier = {
+				factor = 0.03 # 3:1 chance
+				has_country_flag = keep_austria # Chose to occupy
+			}
+			modifier = {
+				factor = 0.01 # 1:1 chance
+				tag = SGF
+			}
+		}
 	}
 	option = {
 		name = "We will not return the lands!"
 		relation = { who = FROM value = -100 }
 		prestige = -10
-		ai_chance = { factor = 0 }
+		ai_chance = { factor = 0.01 }
 	}
 }
