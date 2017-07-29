@@ -33,6 +33,7 @@ tag = HND
 NOT = { has_country_flag = indo_con }
 PAK = { NOT = { has_country_flag = indo_con } }
 exists = PAK
+war_with = PAK
 PAK = { is_vassal = no }
 HND = { is_vassal = no }
 }
@@ -745,6 +746,98 @@ random_list = {
 50 = { add_country_modifier = { name = media_conspiracy1 duration = 365 } }
 50 = { add_country_modifier = { name = media_conspiracy2 duration = 365 } }
 }
+		}
+
+}
+
+#Civil Defence - Nuke Protection
+country_event = {
+	id = 1412169
+title = "Nuclear Shelters Activated"
+	desc = "A significant part of the population in nuclear hit areas have managed to seek refuge in purpose built bunkers to tide through the nuclear fallout."
+	picture = "nuclear_shelter"
+
+trigger = { 
+	has_country_modifier = nuke_fallout
+OR = { has_country_modifier = cdhigh has_country_modifier = cdmedium has_country_modifier = cdlow }
+	NOT = { has_country_flag = nuke_protection }
+}
+
+option = {
+name = "A moment of silence for those who didn't make it"
+
+random_owned = { 
+
+limit = { owner = { has_country_modifier = cdhigh } } 
+
+owner = { 
+
+any_owned = { 
+
+limit = { OR = { has_province_modifier = nuke_high has_province_modifier = nuke_medium has_province_modifier = nuke_low } } 
+
+add_province_modifier = { name = nuke_pro_high duration = 18250 } 
+
+		} 
+	} 
+}
+
+random_owned = { 
+
+limit = { owner = { has_country_modifier = cdmedium } } 
+
+owner = { 
+
+any_owned = { 
+
+limit = { OR = { has_province_modifier = nuke_high has_province_modifier = nuke_medium has_province_modifier = nuke_low } } 
+
+add_province_modifier = { name = nuke_pro_medium duration = 18250 } 
+
+		} 
+	} 
+}
+
+
+random_owned = { 
+
+limit = { owner = { has_country_modifier = cdlow } } 
+
+owner = { 
+
+any_owned = { 
+
+limit = { OR = { has_province_modifier = nuke_high has_province_modifier = nuke_medium has_province_modifier = nuke_low } } 
+
+add_province_modifier = { name = nuke_pro_low duration = 18250 } 
+
+		} 
+	} 
+}
+
+set_country_flag = nuke_protection
+		}
+
+}
+
+#Civil Defence - END Nuke Protection
+country_event = {
+	id = 1412170
+title = "All clear to leave the Nuclear Shelters"
+	desc = "It is now safe to leave the nuclear shelters so our population is now slowly rebuilding the nuclear hit areas back to their glory days."
+	picture = "nuclear_shelter_clear"
+
+trigger = { 
+	NOT = { has_country_modifier = nuke_fallout }
+	has_country_flag = nuke_protection
+}
+
+option = {
+name = "We will rebuild civilisation"
+clr_country_flag = nuke_protection
+any_owned = { remove_province_modifier = nuke_pro_high
+remove_province_modifier = nuke_pro_medium
+remove_province_modifier = nuke_pro_low }
 		}
 
 }
