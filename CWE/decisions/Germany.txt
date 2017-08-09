@@ -423,7 +423,8 @@ any_owned = { limit = { is_core = DDR } add_core = GER }
 		potential = {
 			exists = DDR
 			exists = GER
-			OR = { tag = DDR tag = GER DDR = { in_sphere = THIS } DDR = { vassal_of = THIS } GER = { in_sphere = THIS } GER = { vassal_of = THIS } }
+	OR = { tag = GER tag = DDR }
+			OR = { DDR = { in_sphere = THIS } DDR = { vassal_of = THIS } GER = { in_sphere = THIS } GER = { vassal_of = THIS } }
 			NOT = { has_global_flag = german_reunification }
 		}
 		allow = {
@@ -450,16 +451,65 @@ any_owned = { limit = { is_core = DDR } add_core = GER }
 				}
 			}
 			OR = { 
-				AND = { GER = { government = proletarian_dictatorship } DDR = { government = proletarian_dictatorship} } 
+				AND = { GER = { government = proletarian_dictatorship } DDR = { government = proletarian_dictatorship } } 
 				AND = { GER = { government = democracy } DDR = { government = democracy} } 
+				AND = { GER = { government = socialist_democracy } DDR = { government = socialist_democracy } } 
 			}
 		}
 		effect = {
 			set_global_flag = german_reunification
-			prestige = 20
-			random_country = { limit = { NOT = { tag = THIS } THIS = { OR = { tag = GER tag = DDR } } OR = { tag = GER tag = DDR } } country_event = 11101 }
-			random_country = { limit = { THIS = { NOT = { tag = GER } NOT = { tag = DDR } } OR = { tag = GER tag = DDR } } country_event = 11100 }
+			prestige = 50
+			random_country = { limit = { OR = { tag = DDR tag = GER } } country_event = 11101 }
+			random_owned = { limit = { owner = { tag = DDR } } owner = { change_tag = GER } }
 		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
+german_reunification_1 = {
+		picture = "german_reunification"
+		potential = {
+			exists = DDR
+			exists = GER
+	NOT = { OR = { tag = GER tag = DDR } }
+OR = { DDR = { in_sphere = THIS } DDR = { vassal_of = THIS } } OR = { GER = { in_sphere = THIS } GER = { vassal_of = THIS } }
+			NOT = { has_global_flag = german_reunification }
+		}
+		allow = {
+			DDR = {
+				all_core = {
+					owner = {
+						OR = {
+							tag = THIS
+							in_sphere = THIS
+							vassal_of = THIS
+						}
+					}
+				}
+			}		
+			GER = {
+				all_core = {
+					owner = {
+						OR = {
+							tag = THIS
+							in_sphere = THIS
+							vassal_of = THIS
+						}
+					}
+				}
+			}
+			OR = { 
+				AND = { GER = { government = proletarian_dictatorship } DDR = { government = proletarian_dictatorship } } 
+				AND = { GER = { government = democracy } DDR = { government = democracy} } 
+				AND = { GER = { government = socialist_democracy } DDR = { government = socialist_democracy } } 
+			}
+		}
+		effect = {
+			set_global_flag = german_reunification
+			prestige = 50
+			GER = { inherit = DDR }
+					}
 		ai_will_do = {
 			factor = 1
 		}

@@ -33,6 +33,7 @@ tag = HND
 NOT = { has_country_flag = indo_con }
 PAK = { NOT = { has_country_flag = indo_con } }
 exists = PAK
+war_with = PAK
 PAK = { is_vassal = no }
 HND = { is_vassal = no }
 }
@@ -40,6 +41,7 @@ HND = { is_vassal = no }
 option = {
 name = "Unite the subcontinent under one flag"
 relation = { who = PAK value = -100 }
+HND = { set_country_flag = inc_support }
 HND = { set_country_flag = indo_con }
 PAK = { set_country_flag = indo_con }
 		}
@@ -670,6 +672,248 @@ badboy = 1
 prestige = -25
 any_owned = { limit = { OR = { is_core = CUR is_core = SUR } } any_pop = { militancy = 8 } }
 ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Operation Barracuda
+country_event = {
+	id = 1412167
+title = "Opération Barracuda"
+	desc = EVTDESC1412167
+	picture = "1412167"
+
+fire_only_once = yes
+
+trigger = { 
+year = 1979
+tag = FRA
+is_greater_power = yes
+government = democracy
+CAR = { government = absolute_monarchy }
+NOT = { war_with = CAR }
+CAR = { is_greater_power = no }
+}
+
+mean_time_to_happen = { 
+months = 10
+}
+
+option = {
+name = "Depose Bokassa!"
+badboy = 5
+prestige = 10
+diplomatic_influence = { who = CAR value = 50 }
+CAR = { government = democracy country_event = 800054 }
+relation = { who = CAR value = 50 }
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Let the banana empire remain"
+prestige = -10
+diplomatic_influence = { who = CAR value = -50 }
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Media Conspiracy
+country_event = {
+	id = 1412168
+title = "Media conspiracy to influence the $YEAR$ election"
+	desc = EVTDESC1412168
+	picture = "media_conspiracy"
+
+trigger = {
+election = yes
+war = no
+social_networking = 1
+OR = { average_militancy = 3 average_consciousness = 3 }
+NOT = { has_country_modifier = media_conspiracy1 }
+NOT = { has_country_modifier = media_conspiracy2 }
+}
+
+mean_time_to_happen = { 
+months = 3
+}
+
+option = {
+name = "Interesting"
+prestige = -10
+any_pop = { militancy = 1 }
+any_pop = { consciousness = 3 }
+random_list = {
+50 = { add_country_modifier = { name = media_conspiracy1 duration = 365 } }
+50 = { add_country_modifier = { name = media_conspiracy2 duration = 365 } }
+}
+		}
+
+}
+
+#Civil Defence - Nuke Protection
+country_event = {
+	id = 1412169
+title = "Nuclear Shelters Activated"
+	desc = "A significant part of the population in nuclear hit areas have managed to seek refuge in purpose built bunkers to tide through the nuclear fallout."
+	picture = "nuclear_shelter"
+
+trigger = { 
+	has_country_modifier = nuke_fallout
+OR = { has_country_modifier = cdhigh has_country_modifier = cdmedium has_country_modifier = cdlow }
+	NOT = { has_country_flag = nuke_protection }
+}
+
+option = {
+name = "A moment of silence for those who didn't make it"
+
+random_owned = { 
+
+limit = { owner = { has_country_modifier = cdhigh } } 
+
+owner = { 
+
+any_owned = { 
+
+limit = { OR = { has_province_modifier = nuke_high has_province_modifier = nuke_medium has_province_modifier = nuke_low } } 
+
+add_province_modifier = { name = nuke_pro_high duration = 18250 } 
+
+		} 
+	} 
+}
+
+random_owned = { 
+
+limit = { owner = { has_country_modifier = cdmedium } } 
+
+owner = { 
+
+any_owned = { 
+
+limit = { OR = { has_province_modifier = nuke_high has_province_modifier = nuke_medium has_province_modifier = nuke_low } } 
+
+add_province_modifier = { name = nuke_pro_medium duration = 18250 } 
+
+		} 
+	} 
+}
+
+
+random_owned = { 
+
+limit = { owner = { has_country_modifier = cdlow } } 
+
+owner = { 
+
+any_owned = { 
+
+limit = { OR = { has_province_modifier = nuke_high has_province_modifier = nuke_medium has_province_modifier = nuke_low } } 
+
+add_province_modifier = { name = nuke_pro_low duration = 18250 } 
+
+		} 
+	} 
+}
+
+set_country_flag = nuke_protection
+		}
+
+}
+
+#Civil Defence - END Nuke Protection
+country_event = {
+	id = 1412170
+title = "All clear to leave the Nuclear Shelters"
+	desc = "It is now safe to leave the nuclear shelters so our population is now slowly rebuilding the nuclear hit areas back to their glory days."
+	picture = "nuclear_shelter_clear"
+
+trigger = { 
+	NOT = { has_country_modifier = nuke_fallout }
+	has_country_flag = nuke_protection
+}
+
+option = {
+name = "We will rebuild civilisation"
+clr_country_flag = nuke_protection
+any_owned = { remove_province_modifier = nuke_pro_high
+remove_province_modifier = nuke_pro_medium
+remove_province_modifier = nuke_pro_low }
+		}
+
+}
+
+#Jordan Returns West Bank
+country_event = {
+	id = 1412171
+title = "Question over the West Bank"
+	desc = EVTDESC1412171
+	picture = "west_bank"
+
+fire_only_once = yes
+
+trigger = {
+war = no
+is_vassal = no
+tag = JOR
+owns = 917
+owns = 918
+year = 1968
+NOT = { year = 1991 }
+NOT = { exists = PAL }
+exists = EGY
+exists = ISR
+EGY = { truce_with = ISR }
+EGY = { has_recently_lost_war = yes }
+ISR = { has_recently_lost_war = no }
+}
+
+mean_time_to_happen = { 
+months = 2
+}
+
+option = {
+name = "Give the West Bank to Israel"
+prestige = -25
+sphere_owner = { diplomatic_influence = { who = THIS value = -50 } }
+any_pop = { limit = { is_primary_culture = yes } militancy = 4 }
+relation = { who = ISR value = 100 }
+917 = { secede_province = ISR }
+918 = { secede_province = ISR }
+ai_chance = { factor = 0.7 modifier = { factor = 0 stronger_army_than = ISR } }
+		}
+
+option = {
+name = "Grant limited autonomy to the Palestinians"
+prestige = 10
+release_vassal = PAL
+PAL = { government = sar_government country_event = 800054 }
+relation = { who = ISR value = -50 }
+badboy = 2
+any_pop = { limit = { is_primary_culture = yes } militancy = 2 }
+ai_chance = { factor = 0.2 modifier = { factor = 0 stronger_army_than = ISR } }
+		}
+
+option = {
+name = "Revert back to the UN partition Plan"
+prestige_factor = -0.5
+badboy = -5
+any_pop = { limit = { is_primary_culture = yes } militancy = 3 }
+relation = { who = ISR value = -50 }
+release = JRU
+JRU = { government = sar_government country_event = 800054 ruling_party_ideology = big_tent }
+release = PAL
+PAL = { government = democracy country_event = 800054 ruling_party_ideology = nationalist }
+ai_chance = { factor = 0 }
+		}
+
+option = {
+name = "Hold onto the West Bank!"
+prestige_factor = -0.2
+badboy = 10
+any_pop = { limit = { is_primary_culture = yes } militancy = -2 }
+relation = { who = ISR value = -100 }
+ai_chance = { factor = 0.1 modifier = { factor = 1 stronger_army_than = ISR } }
 		}
 
 }
