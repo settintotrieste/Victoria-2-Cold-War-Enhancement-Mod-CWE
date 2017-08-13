@@ -1,7 +1,10 @@
+#Monarchy Events - Juliana, Beatrix, and Willem-Alexander
+
+#Juliana
 country_event = {
-  id = 8006704
-  title = EVT_8006704_NAME
-  desc = EVT_8006704_DESC
+  id = 8006701
+  title = EVT_8006701_NAME
+  desc = EVT_8006701_DESC
   picture = "nwo2_queen_juliana"
   fire_only_once = yes
 
@@ -15,21 +18,22 @@ country_event = {
       }
     }
     year = 1948 NOT = { year = 1951 }
-	government = hms_government
+    government = hms_government
   }
 
   mean_time_to_happen = { months = 2 }
   
   option = {
-    name = EVT_8006704_A
+    name = EVT_8006701_A
     prestige = 10
   }
 }
 
+#Beatrix
 country_event = {
-  id = 8006715
-  title = EVT_8006715_NAME
-  desc = EVT_8006715_DESC
+  id = 8006702
+  title = EVT_8006702_NAME
+  desc = EVT_8006702_DESC
   picture = "nwo2_queen_beatrix"
   fire_only_once = yes
 
@@ -42,14 +46,203 @@ country_event = {
         NOT = { exists = NET } 
       }
     }
-    year = 1980 NOT = { year = 1990 }
+    year = 1980 NOT = { year = 1983 }
     government = hms_government
   }
 
   mean_time_to_happen = { months = 2 }
 
   option = {
-    name = EVT_8006715_A
+    name = EVT_8006702_A
     prestige = 10
   }
 }
+
+#Willem-Alexander
+country_event = {
+  id = 8006703
+  title = EVT_8006703_NAME
+  desc = EVT_8006703_DESC
+  picture = "nwo2_king_willem"
+  fire_only_once = yes
+
+  trigger = {
+    OR = { 
+      tag = NET 
+      AND = { 
+        has_country_flag = dutch_monarch 
+        tag = BNL 
+        NOT = { exists = NET } 
+      }
+    }
+    year = 2013 NOT = { year = 2016 }
+    government = hms_government
+  }
+
+  mean_time_to_happen = { months = 2 }
+
+  option = {
+    name = EVT_8006703_A
+    prestige = 10
+  }
+}
+
+
+#Misc events
+
+#Peace Palace
+country_event = {
+  id = 8006705
+  title = EVT_8006705_NAME
+  desc = EVT_8006705_DESC
+  picture = "peace_palace"
+  fire_only_once = yes
+
+  trigger = {
+    tag = NET 
+    owns = 375
+    year = 1945
+  }
+
+  mean_time_to_happen = { months = 0 }
+
+  option = {
+    name = EVT_8006705_A
+    prestige = 10
+    375 = { add_province_modifier = { name = peace_palace duration = -1 } }
+  }
+}
+
+#Black Tulip - Expulsion of the Germans
+#As of 2017/08/13 these pops don't exist so no actual pop migration/displacement takes place
+#The event will eventually have flavour when a pop overhaul takes place, for now it's just flavour
+country_event = {
+  id = 8006706
+  title = EVT_8006706_NAME
+  desc = EVT_8006706_DESC
+  picture = "nwo2_german_expulsion"
+  fire_only_once = yes
+
+  trigger = {
+    tag = NET 
+    year = 1946 NOT = { year = 1948 }
+  }
+  
+  mean_time_to_happen = { months = 7 }
+
+  option = {
+    name = EVT_8006706_A
+    badboy = 0.5 #Not sure about this one, will have to look into the infamy effect of the polish/soviet pop transfers
+    plurality = 1
+    #Movement pops to (German) province closest to MariënBosch/Nijmegen
+    NET = {
+      any_pop = { limit = { culture = german } move_pop = 581 } #Westfalen 
+    }
+    #Movement from German border provinces to nearest Dutch province 
+    576 = {
+      any_pop = { limit = { culture = dutch } move_pop = 381 } #Limburg
+    }
+    577 = {
+      any_pop = { limit = { culture = dutch } move_pop = 379 } #Eindhoven
+    }
+    581 = {
+      any_pop = { limit = { culture = dutch } move_pop = 382 } #Arnhem
+    }
+    542 = {
+      any_pop = { limit = { culture = dutch } move_pop = 384 } #Zwolle 
+    }
+    543 = {
+      any_pop = { limit = { culture = dutch } move_pop = 386 } #Assen
+    }
+    ai_chance = { factor = 1 }
+  }
+
+  option = {
+    name = EVT_8006706_B
+    NET = {
+      any_pop = { limit = { culture = dutch } militancy = 1 } 
+    }
+    ai_chance = { factor = 0 }
+  }
+}
+
+#North Sea Flood
+country_event = {
+  id = 8006707
+  title = EVT_8006707_NAME
+  desc = EVT_8006707_DESC
+  picture = "nwo2_1953_flood"
+  fire_only_once = yes
+
+  trigger = {
+    owns = 378 #Using province id instead of country tag just to be sure, someone might have formed the Benelux at this point
+    year = 1953 NOT = { year = 1954 }
+  }
+  
+  mean_time_to_happen = { months = 2  }
+
+  option = {
+    name = EVT_8006707_A
+    random_owned = { limit = { province_id = 378 has_building = railroad } any_pop = { reduce_pop = 0.99 } infrastructure = -1 add_province_modifier = { name = flooded duration = 365 } }
+    random_owned = { limit = { province_id = 376 has_building = railroad } infrastructure = -1 add_province_modifier = { name = flooded duration = 365 } }
+    random_owned = { limit = { province_id = 380 has_building = railroad } infrastructure = -1 add_province_modifier = { name = flooded duration = 365 } }
+  }
+}
+
+#De-Pillarisation
+#Event to depillarise the Netherlands after it has been pillarised
+country_event = {
+  id = 8006708
+  title = EVT_8006708_NAME
+  desc = EVT_8006708_DESC
+  picture = "nwo2_depillarised_society"
+  fire_only_once = yes
+
+  trigger = {
+    year = 1960 NOT = { year = 1980 } #60's and 70's
+    pstn_network = 1 #Widespread media acces
+    third_way = 1 #Economic growth
+    tag = NET 
+    OR = { government = democracy government = hms_government } #check if country hasn't become a dictatorship
+  }
+  
+  mean_time_to_happen = { months = 6 }
+
+  option = {
+    name = EVT_8006708_A
+    NET = {
+      any_pop = { ideology = { value = traditionalist factor = -0.10 } }  
+      any_pop = { ideology = { value = conservative factor = -0.10 } } 
+      any_pop = { ideology = { value = liberal factor = 0.10 } }   
+      any_pop = { ideology = { value = socialist factor = 0.10 } }  
+    }
+  }
+}
+
+#Pillarisation
+#Event which will fire from the start to pillarise the Netherlands (1945 start only)
+country_event = {
+  id = 8006709
+  title = EVT_8006709_NAME
+  desc = EVT_8006708_DESC
+  picture = "nwo2_depillarised_society"
+  fire_only_once = yes
+
+  trigger = {
+    tag = NET 
+    year = 1946 NOT = { year = 1947 }
+  }
+  
+  mean_time_to_happen = { months = 0 }
+
+  option = {
+    name = EVT_8006708_A
+    NET = {
+      any_pop = { limit = { culture = dutch } ideology = { value = big_tent factor = 0.25 } }  
+    }
+  }
+}
+
+
+#Assassination of Pim Fortuyn
+
