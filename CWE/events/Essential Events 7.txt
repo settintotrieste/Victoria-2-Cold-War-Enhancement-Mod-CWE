@@ -2361,7 +2361,10 @@ tag = ENG
 exists = SCO
 exists = IRE
 exists = WAE
-	
+
+NOT = { is_our_vassal = SCO }
+NOT = { is_our_vassal = IRE }
+NOT = { is_our_vassal = WAE }
 
 }
 
@@ -2374,6 +2377,263 @@ name = "It's the end of an era"
 prestige_factor = -0.25
 change_tag = END
 any_owned = { limit = { is_core = ENG } add_core = END }
+		}
+
+}
+
+#Reformation of the United Kingdom
+country_event = {
+	id = 1412214
+title = "$YEAR$ Act of Union"
+	desc = "As the former constituent nations of the United Kingdom are now under our nation, we have the opportunity to reform the United Kingdom."
+	picture = "fuk"
+
+fire_only_once = yes
+
+trigger = { 
+
+NOT = { exists = ENG }
+
+tag = END
+
+OR = { NOT = { exists = SCO } is_our_vassal = SCO }
+OR = { NOT = { exists = IRE } is_our_vassal = IRE }
+OR = { NOT = { exists = WAE } is_our_vassal = WAE }
+	
+
+}
+
+mean_time_to_happen = { 
+months = 6
+	}
+
+option = {
+name = "Britishmen of the World unite!"
+prestige_factor = 0.1
+change_tag = ENG
+inherit = SCO
+inherit = IRE
+inherit = WAE
+inherit = NIR
+		}
+
+option = {
+name = "Remain English"
+		}
+
+}
+
+#Faroe Independence Referendum 1946
+country_event = {
+	id = 1412215
+title = "Faroese Independence Referendum of $YEAR$"
+	desc = EVTDESC1412215
+	picture = "far_indy"
+
+fire_only_once = yes
+
+trigger = {
+
+year = 1946
+
+NOT = { year = 1990 } 
+
+tag = DEN
+
+NOT = { exists = FAR }
+
+owns = 253	
+
+}
+
+mean_time_to_happen = { 
+months = 9
+	}
+
+option = {
+name = "Grant Independence"
+prestige = 20
+release = FAR
+ai_chance = { factor = 0.1 }
+		}
+
+option = {
+name = "Refuse Independence"
+prestige = -20
+set_country_flag = far_dominion
+ai_chance = { factor = 0.9 }
+		}
+
+}
+
+#Faroe Islands Self-Rule
+country_event = {
+	id = 1412216
+title = "Home Rule for the Faroe Islands"
+	desc = EVTDESC1412216
+	picture = "far_indy2"
+
+fire_only_once = yes
+
+trigger = {
+
+year = 1948
+
+NOT = { year = 1990 } 
+
+tag = DEN
+
+NOT = { exists = FAR }
+
+has_country_flag = far_dominion
+
+owns = 253	
+
+}
+
+mean_time_to_happen = { 
+months = 6
+	}
+
+option = {
+name = "Grant Self-Rule"
+release_vassal = FAR
+FAR = { government = colonial_government 
+country_event = 800054 }
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Retain Direct Rule"
+prestige = 10
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Keep the Empire - All Colonial Provinces add modifier
+country_event = {
+	id = 1412217
+title = "Dissent amongst our Colonial Subjects"
+	desc = EVTDESC1412217
+	picture = "colonial_dissent"
+
+trigger = {
+
+has_country_flag = decolonise_yes
+
+minorities_reform = minorities_oppression
+
+any_owned_province = { pop_majority_ideology = nationalist is_colonial = yes NOT = { has_province_modifier = decolonise_yes } }
+
+}
+
+option = {
+name = "A necessary evil to preserve the empire"
+badboy = 1
+prestige = -10
+any_owned = { limit = { pop_majority_ideology = nationalist is_colonial = yes NOT = { has_province_modifier = decolonise_yes } } add_province_modifier = { name = decolonise_yes duration = -1 } }
+		}
+
+}
+
+#Keep the Empire - Remove Province Modifier
+country_event = {
+	id = 1412218
+title = "Colonial Dissent Review"
+	desc = EVTDESC1412218
+	picture = "dissant_reduce"
+
+trigger = {
+
+has_country_flag = decolonise_yes
+
+NOT = { minorities_reform = minorities_oppression }
+
+any_owned_province = { NOT = { pop_majority_ideology = nationalist } is_colonial = yes has_province_modifier = decolonise_yes }
+
+}
+
+mean_time_to_happen = { 
+months = 120
+	}
+
+option = {
+name = "Some colonial subjects are gradually accepting $COUNTRY_ADJ$ rule"
+any_owned = { limit = { NOT = { pop_majority_ideology = nationalist } has_province_modifier = decolonise_yes } remove_province_modifier = decolonise_yes }
+		}
+
+}
+
+#Keep the Empire - Gain Legitimacy
+country_event = {
+	id = 1412219
+title = "Colonial Legitimacy"
+	desc = "As we have ruled over some of our colonies for so long, the international community has now accepted our legitimacy to rule over those areas."
+	picture = "gain_colony_core"
+
+trigger = {
+
+minorities_reform = minorities_affirmative_action
+
+has_country_flag = decolonise_yes
+
+any_owned_province = { NOT = { is_core = THIS } NOT = { pop_majority_ideology = nationalist } NOT = { pop_majority_ideology = populist } is_colonial = yes NOT = { has_province_modifier = decolonise_yes } }
+
+}
+
+mean_time_to_happen = { 
+months = 240
+	}
+
+option = {
+name = "Our empire is finally gaining acceptance"
+any_owned = { limit = { NOT = { is_core = THIS } NOT = { pop_majority_ideology = nationalist } NOT = { pop_majority_ideology = populist } is_colonial = yes NOT = { has_province_modifier = decolonise_yes } } add_core = THIS }
+		}
+
+}
+
+#Greenland Self-Rule
+country_event = {
+	id = 1412220
+title = "Home Rule for Greenland"
+	desc = EVTDESC1412220
+	picture = "greenland_indy"
+
+fire_only_once = yes
+
+trigger = {
+
+year = 1979
+
+NOT = { year = 1990 } 
+
+tag = DEN
+
+NOT = { exists = GRN }
+
+is_our_vassal = FAR
+
+owns = 251	
+
+}
+
+mean_time_to_happen = { 
+months = 6
+	}
+
+option = {
+name = "Grant Self-Rule"
+release_vassal = GRN
+GRN = { government = colonial_government 
+country_event = 800054 }
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Retain Direct Rule"
+prestige = 10
+ai_chance = { factor = 0.1 }
 		}
 
 }
