@@ -2782,3 +2782,188 @@ add_province_modifier = { name = haze_in_effect duration = 120 }
 }
 		}
 }
+
+#Martial Law Future decide
+country_event = {
+	id = 1412225
+title = "Provisional Government Conference"
+	desc = EVTDESC1412225
+	picture = "martial_law_choice"
+
+trigger = {
+
+war = no
+
+election = no
+
+has_country_modifier = martial_law	
+
+}
+
+mean_time_to_happen = { 
+months = 3
+	}
+
+option = {
+name = "Return to democracy"
+remove_country_modifier = martial_law
+ai_chance = { factor = 0.7 }
+		}
+
+option = {
+name = "Extend the $MONARCHTITLE$'s term indefinitely"
+prestige = -100
+government = presidential_dictatorship
+country_event = 800050
+ai_chance = { factor = 0.19 }
+		}
+
+option = {
+name = "Replace parliament with a National Patriotic Council"
+prestige = -100
+government = populist_dictatorship
+country_event = 800050
+ai_chance = { factor = 0.1 }
+		}
+
+option = {
+name = "Embrace the proletarian revolution"
+prestige = -100
+government = proletarian_dictatorship
+country_event = 800050
+ai_chance = { 
+factor = 0.01
+modifier = { factor = 100 ruling_party_ideology = communist }
+}
+		}
+
+}
+
+#Chaos in the High Command
+country_event = {
+	id = 1412226
+title = "$COUNTRY_ADJ$ High Command in disarray"
+	desc = EVTDESC1412226
+	picture = "high_command_chaos"
+
+trigger = {
+
+war = yes
+
+national_provinces_occupied = 0.1
+
+NOT = { has_country_modifier = high_command_reformed }
+
+NOT = { has_country_modifier = high_command_chaos }
+
+}
+
+mean_time_to_happen = { 
+months = 6
+	}
+
+option = {
+name = "Reform the High Command"
+add_country_modifier = { name = high_command_reformed duration = 365 }
+ai_chance = { factor = 0.5 }
+		}
+
+option = {
+name = "Let them bicker"
+add_country_modifier = { name = high_command_chaos duration = 365 }
+ai_chance = { factor = 0.5 }
+		}
+
+}
+
+#Extra-Ordinary session
+country_event = {
+	id = 1412227
+title = "$YEAR$ $CAPITAL$ Rally"
+	desc = EVTDESC1412227
+	picture = "special_session"
+
+is_triggered_only = yes
+
+option = {
+name = "Long Live the $MONARCHTITLE$!"
+
+prestige = 50
+
+			random_owned = { 
+			limit = { owner = { ruling_party_ideology = communist } } owner = { any_pop = { ideology = { value = communist factor = 0.25 } } }
+			}
+
+			random_owned = { 
+				limit = { owner = { ruling_party_ideology = communist_social } } owner = { any_pop = { ideology = { value = communist_social factor = 0.25 } } }
+			}
+
+			random_owned = { 
+				limit = { owner = { ruling_party_ideology = populist } } owner = { any_pop = { ideology = { value = populist factor = 0.25 } } } 
+			}
+
+			random_owned = { 
+				limit = { owner = { ruling_party_ideology = conservative } } owner = { any_pop = { ideology = { value = conservative factor = 0.25 } } }
+			}
+
+			random_owned = { 
+				limit = { owner = { ruling_party_ideology = nationalist } } owner = { any_pop = { ideology = { value = nationalist factor = 0.25 } } }
+			}
+
+			random_owned = { 
+				limit = { owner = { ruling_party_ideology = traditionalist } } owner = { any_pop = { ideology = { value = traditionalist factor = 0.25 } } }
+			}
+
+ai_chance = { factor = 0.50 }
+}
+
+option = {
+name = "Build $COUNTRY_ADJ$ia!"
+prestige = 50
+money = -1000000
+add_country_modifier = { name = germania duration = 3650 }
+set_country_flag = germania
+ai_chance = { factor = 0.50 }
+}
+		
+}
+
+#Germania built
+country_event = {
+	id = 1412228
+title = "$COUNTRY_ADJ$ia"
+	desc = EVTDESC1412228
+	picture = "germania"
+
+trigger = {
+has_country_flag = germania
+NOT = { has_country_modifier = germania }
+}
+
+option = {
+name = "A city that will last a 1000 years"
+prestige = 200
+clr_country_flag = germania
+		}
+}
+
+#Clear Special Session flag
+country_event = {
+	id = 1412229
+title = "Toppling of the $COUNTRY_ADJ$ dictorship"
+	desc = EVTDESC1412229
+	picture = "toppling_dictator"
+
+trigger = {
+NOT = { OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship } }
+has_country_flag = extraord
+}
+
+option = {
+name = "Rejoice"
+prestige = 20
+remove_country_modifier = germania
+clr_country_flag = germania
+clr_country_flag = extraord
+		}
+}
