@@ -738,23 +738,38 @@ FRA = { diplomatic_influence = { who = THIS value = 200 } }
 
 country_event = {
 	id = 989899
-	title = "Federation of Mali and Senegal!"
-	desc = "Federation of Mali and Senegal!"
-  	picture = "end_of_the_french_empire"
+	title = "Federation of Mali and Senegal"
+	desc = EVTDESC989899
+  	picture = "form_the_mali_fed"
 	
+fire_only_once = yes
+
 	trigger = {
-		year = 1959
+		year = 1958
 		NOT = { year = 1990 }
 		tag = MLI
+		SEN = { exists = yes }
 		NOT = { has_country_flag = fedmalsen }
 		has_country_flag = frenchcommunity
 	}
+
+	mean_time_to_happen = { months = 1 }
 		
 	option = {
 		name = "Form the Federation!"
 		inherit = SEN
+		government = democracy1
 		prestige = 10
+		any_pop = { militancy = 2 }
 		set_country_flag = fedmalsen
+		ai_chance = { factor = 0.9 }
+			}
+
+	option = {
+		name = "Decline"
+		prestige = 20
+		set_country_flag = fedmalsen
+		ai_chance = { factor = 0.1 }
 			}
 }
 
@@ -924,6 +939,9 @@ limit = { OR = {
 	is_core = KYR 
 	is_core = TAJ 
 	is_core = KAZ 
+	is_core = LIT
+	is_core = LAT
+	is_core = EST
 } } 
 remove_core = RUS
 }
@@ -966,24 +984,51 @@ ideology = {
 #Senegal leave
 country_event = {
 	id = 1294
-	title = "Senegal leaves the Mali Federation"
-	desc = "Senegal secedes from the Union!"
-	picture = "dev_bank"
+	title = "Mali Federation Disintegration"
+	desc = EVTDESC1294
+	picture = "mali_federation_pic"
 	
-	
+	fire_only_once = yes
+
 	trigger = {
 		tag = MLI
+		SEN = { exists = no }
 		is_vassal = no
+		owns = 1783
+		NOT = { year = 1990 }
 		NOT = { has_country_flag = senegalleaves }
 	}
+
+mean_time_to_happen = { months = 2 }
 	
 	option = {
-		name = "That's bad but we must still announce it to the world at noon today"
+		name = "Oh well"
+		government = democracy
 		release = SEN
-		SEN = { government = democracy }
-		prestige = -20
+SEN = { government = democracy country_event = 800054 }
+		prestige = 20
 		set_country_flag = senegalleaves
+	ai_chance = { factor = 0.9 }
 		}
+
+	option = {
+		name = "Preserve the Federation!"
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+any_pop = { militancy = 2 }
+		prestige = -50
+release = SEN
+
+war = {
+	target = SEN
+	attacker_goal = { casus_belli = civil_war }
+	defender_goal = { casus_belli = status_quo }
+	call_ally = no
+}	
+	
+	set_country_flag = senegalleaves
+	ai_chance = { factor = 0.1 }
+		}
+
 }
 #Post War protectionism
 country_event = {
