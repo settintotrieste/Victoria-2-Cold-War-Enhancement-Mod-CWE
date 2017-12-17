@@ -1410,19 +1410,33 @@ months = 8
 
 option = {
 name = "Federate the Turkish and Greek Cypriots"
+government = democracy
+country_event = 800054
 release_vassal = NCY
+
+NCY = {
+government = democracy
+country_event = 800054
+}
+
 relation = { who = TUR value = 50 }
 relation = { who = GRE value = -50 }
-ai_chance = { factor = 0.8 }
+ai_chance = { factor = 0.1 }
 		}
 
 option = {
 name = "Maintain the status quo"
 prestige = -50
 any_pop = { militancy = 5 }
+release = NCY
+TUR = { create_vassal = NCY }
+
+NCY = { government = populist_dictatorship
+country_event = 800050 }
+
 relation = { who = TUR value = -50 }
 relation = { who = GRE value = -50 }
-ai_chance = { factor = 0.1 }
+ai_chance = { factor = 0.8 }
 		}
 
 option = {
@@ -2655,7 +2669,7 @@ tag = KMT
 
 war = no
 
-TAI = { exists = no }
+TAI = { exists = yes }
 
 CHI = { exists = no }
 
@@ -3304,6 +3318,424 @@ secede_province = TOG
 }
 
 ai_chance = { factor = 0.2 }
+		}
+
+}
+
+#USA joins the Chinese Civil War
+country_event = {
+	id = 1412238
+title = "Alliance with Nationalist China concluded"
+	desc = "With the instrument of alliance between our two great nations concluded, we are now formally involved in the Chinese Civil War. We will get the port of Shanghai as base of operations in China."
+	picture = "ccw_usa_ally"
+
+is_triggered_only = yes
+
+option = {
+name = "We will stop the spread of communism in China"
+
+prestige = 10
+
+badboy = 5
+
+relation = { who = RUS value = -100 }
+
+KMT = { country_event = 1412239 }
+
+war = {
+	target = CHI
+	attacker_goal = { casus_belli = cut_down_to_size }
+	defender_goal = { casus_belli = humiliate }
+	call_ally = yes
+}
+
+		}
+}
+
+#USA occupies the Chinese ports
+country_event = {
+	id = 1412239
+title = "America takes control of the war effort"
+	desc = "The US forces need a staging ground to wage the war from so they have selected Shanghai to be the primary base of operations in China. We have no choice but to accept their demands."
+	picture = "ccw_shg_after"
+
+is_triggered_only = yes
+
+option = {
+name = "We will crush the communist insurgency together"
+
+
+activate_technology = cold_war_doctrine
+activate_technology = proxy_war
+activate_technology = guerrilla
+activate_technology = heavy_tanks
+activate_technology = post_war_radar
+activate_technology = infantry
+
+
+prestige = -25
+
+relation = { who = USA value = 200 }
+
+military_access = USA
+
+relation = { who = RUS value = -100 }
+
+money = 100000
+
+1538 = { naval_base = 2 }
+
+1538 = { secede_province = USA }
+
+		}
+}
+
+#USA occupies Shanghai
+country_event = {
+	id = 1412240
+title = "End of the Chinese Civil War"
+	desc = "With the end of the Chinese Civil War, we now have the question of what to do with the City of Shanghai which we used as a base during the war."
+	picture = "ccw_shg_after"
+
+fire_only_once = yes
+
+trigger = {
+tag = USA
+CHI = { exists = no }
+KMT = { exists = yes }
+KMT = { war = no }
+KMT = { NOT = { government = proletarian_dictatorship } }
+NOT = { year = 1990 }
+owns = 1538
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Occupy in perpetuity in event of another communist insurgency"
+prestige = -50
+badboy = 5
+relation = { who = KMT value = -50 }
+ai_chance = { factor = 0.1 }
+		}
+
+option = {
+name = "Convert into an International Settlement to maintain US presence"
+prestige = -25
+badboy = 2.5
+relation = { who = KMT value = -25 }
+release_vassal = SHG
+KMT = { diplomatic_influence = { who = SHG value = 200 } }
+SHG = { government = mandate_government country_event = 800054 }
+ai_chance = { factor = 0.6 }
+		}
+
+option = {
+name = "Return the City back to China"
+prestige = 10
+badboy = -1
+relation = { who = KMT value = 100 }
+1538 = { secede_province = KMT }
+ai_chance = { factor = 0.3 }
+		}
+
+}
+
+#Return of Shanghai after Cold War
+country_event = {
+	id = 1412241
+title = "Return of the International Settlements"
+	desc = "With the end of the Cold War, we no longer have the need to own International Settlements in China anymore so talks have been initated by China to reclaim the cities."
+	picture = "ccw_shg_return"
+
+fire_only_once = yes
+
+trigger = {
+tag = USA
+NOT = { has_global_flag = blocsenabled }
+CHI = { exists = no }
+KMT = { exists = yes }
+KMT = { war = no }
+KMT = { NOT = { government = proletarian_dictatorship } }
+OR = { owns = 1538 is_our_vassal = SHG is_our_vassal = QGD is_our_vassal = WEI }
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Continue the occupation"
+prestige_factor = -0.1
+badboy = 10
+relation = { who = KMT value = -200 }
+ai_chance = { factor = 0.05 }
+		}
+
+option = {
+name = "Return Shanghai"
+prestige = 10
+badboy = -5
+relation = { who = KMT value = 200 }
+1538 = { secede_province = KMT }
+KMT = { inherit = SHG }
+KMT = { inherit = QGD }
+KMT = { inherit = WEI }
+ai_chance = { factor = 0.95 }
+		}
+
+}
+
+#Return of the other International Settlements
+country_event = {
+	id = 1412242
+title = "International Settlements in China"
+	desc = "As Shanghai has become an International Settlement once more, perhaps we should also offer the USA Qingdao and Weihai to allow them to have a greater presence in China to protect us from the USSR?"
+	picture = "ccw_shg_after"
+
+fire_only_once = yes
+
+trigger = {
+tag = KMT
+has_global_flag = blocsenabled
+CHI = { exists = no }
+KMT = { exists = yes }
+KMT = { war = no }
+KMT = { NOT = { government = proletarian_dictatorship } }
+USA = { is_our_vassal = SHG }
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Offer Qingdao and Weihai"
+prestige = -100
+money = 1000000
+add_country_modifier = { name = economic_boom duration = 1825 }
+release = QGD
+release = WEI
+USA = { create_vassal = QGD create_vassal = WEI }
+WEI = { government = mandate_government country_event = 800054 }
+QGD = { government = mandate_government country_event = 800054 }
+KMT = { diplomatic_influence = { who = WEI value = 200 } }
+KMT = { diplomatic_influence = { who = QGD value = 200 } }
+ai_chance = { factor = 0.5 }
+		}
+
+option = {
+name = "One settlement is already too much"
+prestige = 10
+any_pop = { militancy = -5 }
+ai_chance = { factor = 0.5 }
+		}
+
+}
+
+#Form the Palestinian Authority
+country_event = {
+	id = 1412243
+title = "Palestinian National Authority"
+	desc = EVTDESC1412243
+	picture = "pal_authority"
+
+fire_only_once = yes
+
+trigger = {
+tag = ISR
+war = no
+PAL = { exists = no }
+year = 2005
+any_owned_province = { is_core = PAL }
+}
+
+mean_time_to_happen = { 
+months = 4
+	}
+
+option = {
+name = "Restore the Palestinian National Authority"
+prestige = 10
+badboy = -5
+
+918 = { remove_core = ISR }
+
+920 = { remove_core = ISR }
+
+918 = { secede_province = PAL }
+
+920 = { secede_province = PAL }
+
+create_vassal = PAL
+PAL = { government = sar_government country_event = 800054 } 
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Continue the occupation"
+prestige = -50
+badboy = 5
+any_pop = { militancy = 2 }
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Indonesian Civil War 1958
+country_event = {
+	id = 1412244
+title = "Indonesian Civil War of $YEAR$"
+	desc = EVTDESC1412244
+	picture = "ido_civil_war"
+
+fire_only_once = yes
+
+trigger = {
+tag = IDO
+NOT = { government = proletarian_dictatorship }
+war = no
+ATJ = { exists = no }
+year = 1958
+NOT = { year = 1990 }
+}
+
+mean_time_to_happen = { 
+months = 2
+	}
+
+option = {
+name = "Crush the rebels!"
+
+any_pop = { militancy = 3 }
+
+any_owned = { limit = { 
+
+OR = { 
+province_id = 1407
+province_id = 1406
+province_id = 1408
+province_id = 1409
+province_id = 1401
+province_id = 1400
+province_id = 1398
+province_id = 1410
+province_id = 1403
+province_id = 1399
+} 
+
+} 
+
+any_pop = { militancy = 10 }
+change_controller = REB
+
+}
+
+add_country_modifier = { name = revolution_chaos duration = 1825 }
+
+add_country_modifier = { name = stockcrash duration = 730 }
+
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Accede to the rebels"
+prestige = -100
+government = populist_dictatorship
+country_event = 800050
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Indonesian mass killings of 1965–1966
+country_event = {
+	id = 1412245
+title = "Indonesian mass killings of 1965–1966"
+	desc = EVTDESC1412245
+	picture = "ido_killings"
+
+fire_only_once = yes
+
+trigger = {
+tag = IDO
+war = no
+NOT = { government = proletarian_dictatorship }
+NOT = { government = presidential_dictatorship }
+year = 1965
+NOT = { year = 1990 }
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Unleash the massacre!"
+prestige = -100
+badboy = 10
+
+add_country_modifier = { name = revolution_chaos duration = 1825 }
+
+any_owned = { add_province_modifier = { name = ethnic_cleansing duration = 365 } }
+
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Leave the communists alone"
+any_pop = { 
+militancy = 2
+ideology = {
+	factor = 2
+	value = communist
+}
+	}
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Integration of Sikkim
+country_event = {
+	id = 1412246
+title = "From Indian protectorate to statehood"
+	desc = EVTDESC1412246
+	picture = "sik_statehood"
+
+fire_only_once = yes
+
+trigger = {
+tag = HND
+war = no
+SIK = { exists = yes }
+is_our_vassal = SIK
+year = 1975
+NOT = { year = 1990 }
+}
+
+mean_time_to_happen = { 
+months = 6
+	}
+
+option = {
+name = "Integrate Sikkim"
+prestige = 10
+badboy = 1
+
+inherit = SIK
+
+1328 = { add_core = HND }
+
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Let it continue to be our protectorate"
+relation = { who = CHI value = 50 }
+ai_chance = { factor = 0.1 }
 		}
 
 }
