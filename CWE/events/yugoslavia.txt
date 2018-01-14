@@ -262,7 +262,7 @@ country_event = {
 	any_pop = { militancy = -0.5 consciousness = -0.8 }
 	relation = { who = USA value = 50 } 
 	relation = { who = FRA value = 50 } 
-	relation = { who = GBR value = 50 } 
+	relation = { who = ENG value = 50 } 
 	relation = { who = GER value = 50 } 
 	relation = { who = RUS value = -100 } 
 	ai_chance = { factor = 100 }
@@ -358,7 +358,7 @@ country_event = {
   option = {
     name = EVT_8022741_A
 	government = populist_dictatorship country_event = 800050
-	any_pop = { limit = { NOT = { culture = serb } } militancy = 5.0 consciousness = 2.0 }
+	any_pop = { limit = { NOT = { culture = serb } } militancy = 2.0 consciousness = 2.0 }
 	ai_chance = { factor = 100 }
   }
   option = {
@@ -377,9 +377,9 @@ country_event = {
 
   trigger = {
     tag = YUG
-    RUS = { NOT = { government = proletarian_dictatorship } }
+OR = { has_global_flag = autumn_of_nations RUS = { NOT = { government = proletarian_dictatorship } } }
 	OR = { vassal_of = RUS is_vassal = no }
-	OR = { government = proletarian_dictatorship government = democracy }
+OR = { government = proletarian_dictatorship government = democracy }
 	war = no
   }
 
@@ -388,24 +388,29 @@ country_event = {
   option = {
     name = EVT_8022742_A
 	any_pop = { militancy = 0.5 consciousness = 0.8 }
-	release_vassal = SLO
-	release_vassal = CRO
-	release_vassal = MAC
-	release_vassal = BOS
-	release_vassal = MON
+	release = SLO
+	release = CRO
+	release = MAC
+	release = BOS
+	release_vassal = SLO #If Yugoslavia was federalised if the the 1974 Yugoslav Constitution is adopted
+	release_vassal = CRO #If Yugoslavia was federalised if the the 1974 Yugoslav Constitution is adopted	
+	release_vassal = BOS #If Yugoslavia was federalised if the the 1974 Yugoslav Constitution is adopted
+	release_vassal = MAC #If Yugoslavia was federalised if the the 1974 Yugoslav Constitution is adopted	
+	create_vassal = BOS #Only made a declaration of independent months after	Croatia and Slovenia had already declared themsleves independent from Yugoslavia
+	create_vassal = MAC #Only made a declaration of independent months after	Croatia and Slovenia had already declared themsleves independent from Yugoslavia
 	random_country = { limit = { OR = { NOT = { exists = BUL } is_our_vassal = BUL } } release = BUL }
 	CRO = {	government = democracy country_event = 800054 }
 	SLO = {	government = democracy country_event = 800054 }
-	MAC = {	government = democracy country_event = 800054 }
-	BOS = { release = RSR }
-	RSR = { 786 = { secede_province = BOS } } # Tuzla 
 	create_alliance = RSR
 	relation = { who = RSR value = 200 }
 	relation = { who = BOS value = -200 }
-	change_tag = SER
-	# Serbia get infamy by attack
+	badboy = 10# Serbia get infamy by attack
 	war = { target = CRO attacker_goal = { casus_belli = liberate_country country = SRK } defender_goal = { casus_belli = status_quo } }
-	BOS = { country_event = 8022743 }
+	war = { target = SLO attacker_goal = { casus_belli = make_puppet = SLO } defender_goal = { casus_belli = become_independent } }
+	casus_belli = { target = CRO type = make_puppet months = 12 }
+	set_global_flag = macedonia_independence
+	set_global_flag = ten_day_war
+	set_global_flag = bosnian_war_prelude #Only using this to trigger the event to start the Bosnian War after the 1992 bookmark
 	overlord = { country_event = 8014250 }
 	ai_chance = { factor = 100 }
   }
@@ -415,15 +420,20 @@ country_event = {
 	any_pop = { militancy = 3.0 consciousness = 2.0 }
 	change_tag = SER
 	government = democracy country_event = 800054
-	release_vassal = SLO
-	release_vassal = CRO
-	release_vassal = BOS
-	release_vassal = MAC	
+	release = SLO
+	release = CRO
+	release = BOS
+	release = MAC	
+	release_vassal = SLO #If Yugoslavia was federalised if the the 1974 Yugoslav Constitution is adopted
+	release_vassal = CRO #If Yugoslavia was federalised if the the 1974 Yugoslav Constitution is adopted
+	release_vassal = BOS #If Yugoslavia was federalised if the the 1974 Yugoslav Constitution is adopted
+	release_vassal = MAC #If Yugoslavia was federalised if the the 1974 Yugoslav Constitution is adopted
 	random_country = { limit = { OR = { NOT = { exists = BUL } is_our_vassal = BUL } } release = BUL }
 	CRO = {	government = democracy country_event = 800054 }
 	SLO = {	government = democracy country_event = 800054 }
 	MAC = {	government = democracy country_event = 800054 }
-	release_vassal = MON
+	release = MON
+	create_vassal = MON
 	release_vassal = KOS
 	release_vassal = VOJ
 	country_event = 800054
@@ -437,11 +447,11 @@ country_event = {
 	release = SLO
 	release = CRO
 	release = BOS
-	random_country = { limit = { OR = { NOT = { exists = BUL } is_our_vassal = BUL } } release_vassal = BUL }
+	random_country = { limit = { OR = { NOT = { exists = BUL } is_our_vassal = BUL } } release = BUL }
 	CRO = {	government = democracy country_event = 800054 }
 	SLO = {	government = democracy country_event = 800054 }
 	BOS = {	government = populist_dictatorship country_event = 800050 }
-	# Serbia get infamy by attack
+	badboy = 15
 	war = { target = CRO attacker_goal = { casus_belli = civil_war } defender_goal = { casus_belli = status_quo } }
 	war = { target = SLO attacker_goal = { casus_belli = civil_war } defender_goal = { casus_belli = status_quo } }
 	war = { target = BOS attacker_goal = { casus_belli = civil_war } defender_goal = { casus_belli = status_quo } }
@@ -456,15 +466,41 @@ country_event = {
   desc = EVT_8022743_DESC
   # EVT_8022743_DESC;The Bosnian War was an international armed conflict that took place in Bosnia and Herzegovina between 1992 and 1995. Following a number of violent incidents in early 1992, the war is commonly viewed as having started on 6 April 1992.[10][11][12][13] The war ended on 14 December 1995. The main belligerents were the forces of the Republic of Bosnia and Herzegovina and those of the self-proclaimed Bosnian Serb and Bosnian Croat entities within Bosnia and Herzegovina, Republika Srpska and Herzeg-Bosnia, who were led and supplied by Serbia and Croatia respectively.
   picture = "bosnia_war"
-  is_triggered_only = yes
+  fire_only_once = yes
+  
+  trigger = {
+    tag = BOS
+    has_global_flag = bosnian_war_prelude
+	OR = { vassal_of = YUG is_vassal = yes }
+	OR = { vassal_of = SER is_vassal = yes }
+	OR = { year = 1992 has_global_flag = bosnian_war_prelude2 }
+  }
+  
+  mean_time_to_happen = { months = 3  }
   
   option = {
     name = EVT_8022743_A
 	# EVT_8022743_A;Bosnia is a unified Muslim Nation
 	any_pop = { militancy = 0.5 consciousness = 0.8 }
+	end_war = SLO
+	end_war = CRO
+	end_war = MAC
+	release = RSR
+	YUG = { release_vassal = BOS }
+	YUG = { release = BOS }# In case if Yugoslavia directly controls Bosnia
+	SER = { release_vassal = BOS }
+	SER = { release = BOS }# In case if Yugoslavia directly controls Bosnia	
+	YUG = { create_alliance = RSR }
+	SER = { create_alliance = RSR }
+	YUG = { relation = { who = RSR value = 200 } }
+	SER = { relation = { who = RSR value = 200 } }
+	YUG = { relation = { who = BOS value = -200 } }
+	SER = { relation = { who = BOS value = -200 } }
+	clr_global_flag = bosnian_war_prelude
+	clr_global_flag = bosnian_war_prelude2
 	government = populist_dictatorship country_event = 800050
 	release_vassal = HZB
-	HZB = { 2688 = { secede_province = BOS } }
+	HZB = { 2688 = { state_scope = { any_owned = { secede_province = BOS } } } }
 	# release = RSR in calling event
 	casus_belli = { target = RSR type = annex_core_country months = 12 }
 	war = { target = RSR attacker_goal = { casus_belli = annex_core_country country = RSR } defender_goal = { casus_belli = status_quo } }
@@ -474,7 +510,24 @@ country_event = {
   option = {
     name = EVT_8022743_B
 	# EVT_8022743_B;Accept the division of Bosnia
+	end_war = SLO
+	end_war = CRO
+	end_war = MAC
+	government = democracy country_event = 800054
+	release = RSR
 	any_pop = { militancy = 3.0  consciousness = 1 }
+	YUG = { release_vassal = BOS }
+	YUG = { release = BOS }# In case if Yugoslavia directly controls Bosnia
+	SER = { release_vassal = BOS }
+	SER = { release = BOS }# In case if Yugoslavia directly controls Bosnia	
+	YUG = { create_alliance = RSR }
+	SER = { create_alliance = RSR }
+	YUG = { relation = { who = RSR value = 200 } }
+	SER = { relation = { who = RSR value = 200 } }
+	YUG = { relation = { who = BOS value = -200 } }
+	SER = { relation = { who = BOS value = -200 } }
+	clr_global_flag = bosnian_war_prelude
+	clr_global_flag = bosnian_war_prelude2
 	release = HZB
 	ai_chance = { factor = 0 }
   }
@@ -483,9 +536,9 @@ country_event = {
 country_event = {
   id = 8022744
   title = EVT_8022744_NAME
-  # EVT_8022744_NAME;Croatâ€“Bosniak War
+  # EVT_8022744_NAME;Croat–Bosniak War
   desc = EVT_8022744_DESC
-  # EVT_8022744_DESC;The Croatâ€“Bosniak War was a conflict between the Republic of Bosnia and Herzegovina and the self-proclaimed Croatian Community of Herzeg-Bosnia, supported by the Republic of Croatia, that lasted from 19 June 1992[3] â€“ 23 February 1994. The Croat-Bosniak war is often referred to as a "war within a war" because it was part of the larger Bosnian War. Although initially on the same side,[4] at the end of 1992, tensions between Bosnian Croats and Bosniaks rose and their collaboration fell apart. In January 1993, the two former allies engaged in open conflict.
+  # EVT_8022744_DESC;The Croat–Bosniak War was a conflict between the Republic of Bosnia and Herzegovina and the self-proclaimed Croatian Community of Herzeg-Bosnia, supported by the Republic of Croatia, that lasted from 19 June 1992[3] – 23 February 1994. The Croat-Bosniak war is often referred to as a "war within a war" because it was part of the larger Bosnian War. Although initially on the same side,[4] at the end of 1992, tensions between Bosnian Croats and Bosniaks rose and their collaboration fell apart. In January 1993, the two former allies engaged in open conflict.
   picture = "mostar"
   fire_only_once = yes
 
@@ -495,6 +548,8 @@ country_event = {
 	war = no
 	NOT = { truce_with = BOS }
   }
+  
+  immediate = { create_alliance = CRO }
 
   mean_time_to_happen = { months = 1  }
 
@@ -502,9 +557,9 @@ country_event = {
     name = EVT_8022744_A
 	# EVT_8022744_A;Become independent
 	any_pop = { militancy = 0.5 consciousness = 1.0 }
-	# gets infamy as this is not a internationally recognized move.
+	badboy = 2# gets infamy as this is not a internationally recognized move.
+	BOS = { release = HZB }
 	war = { target = BOS attacker_goal = { casus_belli = become_independent } defender_goal = { casus_belli = annex_core_country } }
-	BIH = { release = HZB }
 	ai_chance = { factor = 100 }
   }
 
@@ -521,7 +576,7 @@ country_event = {
   title = EVT_8022745_NAME
   # EVT_8022745_NAME;Washington Agreement
   desc = EVT_8022745_DESC
-  # EVT_8022745_DESC;The Washington Agreement was a ceasefire agreement between the warring Croatian Republic of Herzeg-Bosnia and the Republic of Bosnia and Herzegovina, signed in Washington on 18 March 1994 and Vienna.[1] It was signed by Bosnian Prime Minister Haris SilajdÅ¾iÄ‡, Croatian Foreign Minister Mate GraniÄ‡ and President of Herzeg-Bosnia KreÅ¡imir Zubak. Under the agreement, the combined territory held by the Croat and Bosnian government forces was divided into ten autonomous cantons, establishing the Federation of Bosnia and Herzegovina. The cantonal system was selected to prevent dominance by one ethnic group over another.
+  # EVT_8022745_DESC;The Washington Agreement was a ceasefire agreement between the warring Croatian Republic of Herzeg-Bosnia and the Republic of Bosnia and Herzegovina, signed in Washington on 18 March 1994 and Vienna.[1] It was signed by Bosnian Prime Minister Haris Silajdži?, Croatian Foreign Minister Mate Grani? and President of Herzeg-Bosnia Krešimir Zubak. Under the agreement, the combined territory held by the Croat and Bosnian government forces was divided into ten autonomous cantons, establishing the Federation of Bosnia and Herzegovina. The cantonal system was selected to prevent dominance by one ethnic group over another.
   picture = "washington_agreement"
   fire_only_once = yes 
 
@@ -572,7 +627,7 @@ country_event = {
   title = EVT_8022746_NAME
   # EVT_8022746_NAME;Operation Storm
   desc = EVT_8022746_DESC
-  # EVT_8022746_DESC;Operation Storm was the last major battle of the Croatian War of Independence and a major decisive factor in the outcome of the Bosnian War. It was a decisive victory for the Croatian Army (HV), which attacked across a 630-kilometre (390 mi) front against the Republic of Serbian Krajina (RSK) and a strategic victory of the Army of the Republic of Bosnia and Herzegovina (ARBiH). The HV was supported by the Croatian special police advancing from the Velebit Mountain, and the ARBiH located in the BihaÄ‡ pocket, in the Army of the Republic of Serb Krajina (ARSK) rear. The battle, launched to restore Croatian control of 10,400 square kilometres (4,000 square miles) of territory, representing 18.4% of the country, and Bosnian control of Western Bosnia, was the largest European land battle since the Second World War. 
+  # EVT_8022746_DESC;Operation Storm was the last major battle of the Croatian War of Independence and a major decisive factor in the outcome of the Bosnian War. It was a decisive victory for the Croatian Army (HV), which attacked across a 630-kilometre (390 mi) front against the Republic of Serbian Krajina (RSK) and a strategic victory of the Army of the Republic of Bosnia and Herzegovina (ARBOS). The HV was supported by the Croatian special no_minimum_wage advancing from the Velebit Mountain, and the ARBOS located in the BOSa? pocket, in the Army of the Republic of Serb Krajina (ARSK) rear. The battle, launched to restore Croatian control of 10,400 square kilometres (4,000 square miles) of territory, representing 18.4% of the country, and Bosnian control of Western Bosnia, was the largest European land battle since the Second World War. 
   picture = "operation_storm"
   is_triggered_only = yes 
 
@@ -586,6 +641,7 @@ country_event = {
 		limit = { tag = CRO exists = SRK } 
 		casus_belli = { target = SRK type = annex_core_country months = 12 }
 		war = { target = SRK attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } } 
+		set_country_flag = operation_storm
 	}
 	ai_chance = { factor = 100 }
   }
@@ -599,11 +655,40 @@ country_event = {
 }
 
 country_event = {
+  id = 8022750
+  title = EVT_8022750_NAME
+  desc = EVT_8022750_DESC
+  picture = "operation_storm_serb_refugee"
+  fire_only_once = yes 
+
+  trigger = {
+	tag = CRO
+	owns = 774
+	war = no
+	has_country_flag = operation_storm
+  }
+
+  mean_time_to_happen = { months = 1  }
+  option = {
+    name = EVT_8022750_A
+	badboy = 4
+	774 = { add_province_modifier = { name = ethnic_cleansing duration = 350 } }
+	ai_chance = { factor = 100 }
+  }
+
+  option = {
+    name = EVT_8022750_B
+	any_pop = { limit = { culture = croat }  militancy = 3.0 consciousness = 2.0 }
+	ai_chance = { factor = 0 }
+  }
+}
+
+country_event = {
   id = 8022747
   title = EVT_8022747_NAME
   # EVT_8022747_NAME;Operation Sana
   desc = EVT_8022747_DESC
-  # EVT_8022747_DESC;Operation Sana was a military offensive undertaken by the Army of the Republic of Bosnia and Herzegovina (Armija Republike Bosne i Hercegovine â€“ ARBiH) in western Bosnia and Herzegovina during the Bosnian War. It was launched from the area of BihaÄ‡ on 13 September 1995, against the Army of Republika Srpska (Vojska Republike Srpske â€“ VRS), and involved advances towards Bosanski Petrovac, Sanski Most and Bosanska Krupa. At the same time, the Croatian Army (Hrvatska vojska â€“ HV) and the Croatian Defence Council (Hrvatsko vijeÄ‡e obrane â€“ HVO) were engaging the VRS in Operation Maestral 2 further to the southeast. After an initial 70-kilometre (43 mi) advance, VRS reinforcements managed to stop the ARBiH short of Sanski Most and Novi Grad, and reversed some of the ARBiH's territorial gains in a counterattack. After a part of the ARBiH 5th Corps was threatened with defeat around the town of Kljuc, the ARBiH requested assistance from the HV.
+  # EVT_8022747_DESC;Operation Sana was a military offensive undertaken by the Army of the Republic of Bosnia and Herzegovina (Armija Republike Bosne i Hercegovine – ARBiH) in western Bosnia and Herzegovina during the Bosnian War. It was launched from the area of Biha? on 13 September 1995, against the Army of Republika Srpska (Vojska Republike Srpske – VRS), and involved advances towards Bosanski Petrovac, Sanski Most and Bosanska Krupa. At the same time, the Croatian Army (Hrvatska vojska – HV) and the Croatian Defence Council (Hrvatsko vije?e obrane – HVO) were engaging the VRS in Operation Maestral 2 further to the southeast. After an initial 70-kilometre (43 mi) advance, VRS reinforcements managed to stop the ARBiH short of Sanski Most and Novi Grad, and reversed some of the ARBiH's territorial gains in a counterattack. After a part of the ARBiH 5th Corps was threatened with defeat around the town of Kljuc, the ARBiH requested assistance from the HV.
   picture = "operation_sana"
   is_triggered_only = yes 
 
@@ -657,7 +742,6 @@ country_event = {
 	# EVT_8022748_A;Sign the Agreement
 	government = democracy country_event = 800054
 	prestige = 10
-	any_country = { limit = { tag = RSR owns = 789 } 789 = { secede_province = BOS } }
 	ai_chance = { factor = 100 }
   }
 
@@ -670,7 +754,6 @@ country_event = {
 	leave_alliance = CRO
 	release_vassal = RSR
 	release = HZB
-	any_country = { limit = { tag = RSR owns = 789 } 789 = { secede_province = HZB } }
 	CRO = { create_vassal = HZB } 
 	ai_chance = { factor = 0 }
   }
@@ -686,7 +769,7 @@ country_event = {
   fire_only_once = yes
 
   trigger = { # Serbia lost the Bosnia/Croatia war
-	year = 1992
+	year = 1998
     tag = SER
 	exists = SER
 	owns = 802
@@ -698,7 +781,7 @@ country_event = {
 	GER = { is_greater_power = yes }
   }
 
-  mean_time_to_happen = { months = 11  }
+  mean_time_to_happen = { months = 2  }
 
   option = {
     name = EVT_8022749_A
@@ -706,9 +789,167 @@ country_event = {
 	any_pop = { militancy = 0.5 consciousness = 0.3 }
 	release = KOS
 	release_vassal = MON
-	# infamy due to events in Kosovo 
+	badboy = 5 # infamy due to events in Kosovo 
 	war = { target = KOS attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } }
 	GER = { diplomatic_influence = { who = KOS value = 200 } }
   }
 
+}
+
+country_event = {
+  id = 8224001
+  title = EVT_8224001_NAME
+  desc = EVT_8224001_DESC
+  picture = "nwo2_yugoslav_lands"
+  fire_only_once = yes
+
+  trigger = {
+    tag = YUG
+    year = 1943 NOT = { year = 1963 }
+	NOT = { government = proletarian_dictatorship }
+    NOT = { has_country_flag  = cores_returned }
+  }
+
+  mean_time_to_happen = { months = 1  }
+
+  option = {
+    name = EVT_8224001_A
+	set_country_flag = cores_returned 
+	any_owned = { add_core =  THIS }
+  }
+}
+country_event = {
+    id = 8224002
+    title = EVT_8224002_NAME # "Lost Great War"
+    desc = EVT_8224002_DESC 
+    picture = "treaty"
+	
+	trigger = {
+		tag = YUG
+		exists = CRO
+		exists = SLO
+		exists = MAC
+		exists = MON
+		exists = VOJ
+		war = no
+		has_country_modifier = no_more_war
+		has_country_modifier = punitive_effects
+	}
+	mean_time_to_happen = { months = 1 }
+    option = {
+    	name = EVT_8224002_A #"We are no longer Yugoslavia"
+    	change_tag = SER
+    }
+        
+}
+
+country_event = {
+  id = 8022751
+  title = EVT_8022751_NAME
+  # EVT_8022751_NAME;Macedonian Independence
+  desc = EVT_8022751_DESC
+  # EVT_8022751_DESC;
+  picture = "macedonian_independence"
+  fire_only_once = yes
+  
+  trigger = {
+    tag = MAC
+    has_global_flag = macedonia_independence
+	OR = { vassal_of = YUG is_vassal = yes }
+  }
+  
+  mean_time_to_happen = { months = 2  }
+  
+  option = {
+    name = EVT_8022751_A
+	any_pop = { militancy = -0.5 consciousness = -0.8 }
+	end_war = SLO
+	end_war = CRO
+	end_war = BOS
+	YUG = { release_vassal = MAC }
+	government = populist_dictatorship country_event = 800050
+	YUG = { country_event = EVT_8022752 }
+	clr_global_flag = macedonia_independence
+	ai_chance = { factor = 100 }
+  }
+
+  option = {
+    name = EVT_8022751_B
+	any_pop = { militancy = 6.0  consciousness = 4 }
+	clr_global_flag = macedonia_independence
+	ai_chance = { factor = 0 }
+  }
+}
+
+country_event = {
+  id = 8022752
+  title = EVT_8022752_NAME
+  desc = EVT_8022752_DESC
+  picture = "macedonia_independence"
+  is_triggered_only = yes
+  
+  option = {
+    name = EVT_8022752_A
+	any_pop = { militancy = 0.5 consciousness = 0.8 }
+	release_vassal = MAC
+	prestige = -5
+	ai_chance = { factor = 100 }
+  }
+
+  option = {
+    name = EVT_8022752_B
+	casus_belli = { target = MAC type = make_puppet months = 12 }
+	war = { target = MAC attacker_goal = { casus_belli = make_puppet country = MAC } defender_goal = { casus_belli = become_independent } }
+	ai_chance = { factor = 0 }
+  }
+}
+
+country_event = {
+  id = 8022753
+  title = EVT_8022753_NAME
+  # EVT_8022753_NAME;Macedonian Independence
+  desc = EVT_8022753_DESC
+  # EVT_8022753_DESC;
+  picture = "ten_day_war"
+  fire_only_once = yes
+  
+  trigger = {
+    tag = MAC
+    has_global_flag = ten_day_war
+	war = yes
+  }
+  
+  mean_time_to_happen = { days = 10 }
+  
+  option = {
+    name = EVT_8022753_A
+	YUG = { country_event = EVT_8022754 }
+	ai_chance = { factor = 100 }
+  }
+
+  option = {
+    name = EVT_8022753_B
+	ai_chance = { factor = 0 }
+  }
+}
+
+country_event = {
+  id = 8022754
+  title = EVT_8022754_NAME
+  desc = EVT_8022754_DESC
+  picture = "ten_day_war"
+  is_triggered_only = yes
+  
+  option = {
+    name = EVT_8022754_A
+	any_pop = { consciousness = 0.4 }
+	end_war = SLO
+	ai_chance = { factor = 100 }
+  }
+
+  option = {
+    name = EVT_8022754_B
+	badboy = 2
+	ai_chance = { factor = 0 }
+  }
 }
