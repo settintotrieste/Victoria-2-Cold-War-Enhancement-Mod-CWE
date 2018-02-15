@@ -313,7 +313,7 @@ ai_chance = { factor = 0.1 }
 
 }
 
-#Oman independence
+#UAE Union
 country_event = {
 	id = 1512005
 title = "United Arab Emirates"
@@ -354,10 +354,230 @@ ai_chance = { factor = 0.2 }
 		}
 
 option = {
-name = "Unite the our Sheikhdoms"
+name = "Unite our Sheikhdoms"
 UAE = { inherit = THIS }
 set_country_flag = uae_union
 ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Asian Financial Crisis - originator
+country_event = {
+	id = 1512006
+title = "Tom Yum Goong Crisis"
+	desc = EVTDESC1512006
+	picture = "asian_financial_crisis_thi"
+
+fire_only_once = yes
+
+trigger = {
+tag = THI
+USA = { is_greater_power = yes }
+JAP = { is_greater_power = yes }
+CHI = { is_greater_power = yes }
+NOT = { has_global_flag = blocsenabled }
+THI = { is_greater_power = no }
+NOT = { has_country_modifier = low_societal_corruption }
+NOT = { has_country_modifier = minimal_societal_corruption }
+OR = { capitalism = 1 year = 1991 }
+}
+
+mean_time_to_happen = { 
+months = 72
+	}
+
+option = {
+name = "Raise interest rates to prevent the Thai Baht from imploding!"
+prestige = 50
+country_event = 1512007
+
+any_country = { 
+
+limit = { 
+NOT = { government = proletarian_dictatorship } 
+OR = { tag = IDO tag = PHI tag = SKO tag = MSY }
+} 
+
+country_event = 1512007
+
+}
+
+
+THI = { set_country_flag = sea_economy_slow }
+PHI = { set_country_flag = sea_economy_slow }
+BUR = { set_country_flag = sea_economy_slow }
+IDO = { set_country_flag = sea_economy_slow }
+
+ai_chance = { factor = 0.8 }
+		}
+
+option = {
+name = "Drop the fixed exchange rate and pump in stimulus"
+prestige_factor = -0.2
+money = -1000000
+add_tax_relative_income = -200
+
+THI = { set_country_flag = sea_economy_slow }
+PHI = { set_country_flag = sea_economy_slow }
+BUR = { set_country_flag = sea_economy_slow }
+IDO = { set_country_flag = sea_economy_slow }
+
+ai_chance = { factor = 0.2 }
+		}
+
+}
+
+#Asian Financial Crisis - reciepeints
+country_event = {
+	id = 1512007
+title = "Asian Financial Crisis of $YEAR$"
+	desc = EVTDESC1512007
+	picture = "asian_financial_crisis"
+
+is_triggered_only = yes
+
+option = {
+name = "Seek IMF assistance!"
+prestige_factor = -0.1
+any_pop = { money = -100 }
+
+add_country_modifier = { name = stockcrash duration = 730 }
+
+add_country_modifier = { name = stock_market_crash duration = 960 }
+
+add_country_modifier = { name = imf_loan duration = 1200 }
+
+add_country_modifier = { name = recession duration = 1000 }
+
+add_country_modifier = { name = economic_malaise duration = 1825 }
+
+set_country_flag = ido_thaw_trigger
+
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Unleash a massive economic stimulus program!"
+prestige = 50
+money = -2000000
+add_tax_relative_income = -300
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Economic tuning - IDO, PHI, BUR, THI economies
+country_event = {
+	id = 1512008
+title = "Economic tuning"
+	desc = "Slow down craftsmen promotion"
+	picture = "asian_financial_crisis"
+
+fire_only_once = yes
+
+trigger = {
+OR = { tag = THI tag = IDO tag = PHI tag = BUR }
+ai = yes
+exists = THI
+exists = IDO
+exists = PHI
+exists = BUR
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Yes"
+THI = { set_country_flag = sea_economy_slow }
+PHI = { set_country_flag = sea_economy_slow }
+BUR = { set_country_flag = sea_economy_slow }
+IDO = { set_country_flag = sea_economy_slow }
+		}
+
+}
+
+#Federation of Arab Republics - start TRI
+country_event = {
+	id = 1512009
+title = "Federation of Arab Republics"
+	desc = EVTDESC1512009
+	picture = "far_union_start"
+
+fire_only_once = yes
+
+trigger = {
+year = 1971
+NOT = { year = 1991 }
+war = no
+UAR = { exists = no }
+tag = TRI
+government = nationalist_dictatorship
+EGY = { exists = yes }
+SUD = { exists = yes }
+SYR = { exists = yes }
+IRQ = { exists = yes }
+}
+
+mean_time_to_happen = { 
+months = 12
+	}
+
+option = {
+name = "Propose the Union"
+random_country = { limit = { OR = { tag = EGY tag = SUD tag = SYR tag = IRQ } } country_event = 1512010 }
+set_country_flag = far_union_flag
+ai_chance = { factor = 0.2 }
+		}
+
+option = {
+name = "Preserve the uniqueness of Libya"
+prestige = 25
+ai_chance = { factor = 0.8 }
+		}
+
+}
+
+#Federation of Arab Republics - Receiver
+country_event = {
+	id = 1512010
+title = "Federation of Arab Republics"
+	desc = EVTDESC1512009
+	picture = "far_union_start"
+
+is_triggered_only = yes
+
+option = {
+name = "Join the union fully"
+random_country = { limit = { OR = { tag = EGY tag = SUD tag = SYR tag = IRQ } } country_event = 1512010 }
+
+random_country = { limit = { exists = yes tag = TRI } change_tag = UAR }
+
+UAR = { inherit = THIS }
+
+ai_chance = { factor = 0.2 }
+		}
+
+option = {
+name = "Join in a confederation"
+random_country = { limit = { OR = { tag = EGY tag = SUD tag = SYR tag = IRQ } } country_event = 1512010 }
+
+random_country = { limit = { exists = yes tag = TRI } change_tag = UAR }
+
+random_country = { limit = { exists = yes OR = { tag = TRI tag = UAR } } create_vassal = THIS } 
+
+prestige = 25
+ai_chance = { factor = 0.2 }
+		}
+
+option = {
+name = "Reject the union"
+prestige = 100
+relation = { who = TRI value = -50 }
+relation = { who = UAR value = -50 }
+ai_chance = { factor = 0.6 }
 		}
 
 }
