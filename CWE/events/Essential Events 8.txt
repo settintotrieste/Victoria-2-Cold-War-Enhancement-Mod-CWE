@@ -378,8 +378,7 @@ JAP = { is_greater_power = yes }
 CHI = { is_greater_power = yes }
 NOT = { has_global_flag = blocsenabled }
 THI = { is_greater_power = no }
-NOT = { has_country_modifier = low_societal_corruption }
-NOT = { has_country_modifier = minimal_societal_corruption }
+NOT = { literacy = 0.25 }
 OR = { capitalism = 1 year = 1991 }
 }
 
@@ -467,7 +466,7 @@ ai_chance = { factor = 0.1 }
 
 }
 
-#Economic tuning - IDO, PHI, BUR, THI economies
+#Economic tuning - IDO, PHI, BUR, THI, ETH economies
 country_event = {
 	id = 1512008
 title = "Economic tuning"
@@ -578,6 +577,123 @@ prestige = 100
 relation = { who = TRI value = -50 }
 relation = { who = UAR value = -50 }
 ai_chance = { factor = 0.6 }
+		}
+
+}
+
+#Chinese democracy
+country_event = {
+	id = 1512011
+title = "Three Principles of the People"
+	desc = EVTDESC1512011
+	picture = "chinese_democracy"
+
+fire_only_once = yes
+
+trigger = {
+tag = CHI
+government = proletarian_dictatorship
+has_country_flag = chinese_democracy
+NOT = { has_country_modifier = chinese_democracy }
+}
+
+mean_time_to_happen = { 
+months = 6
+	}
+
+option = {
+name = "Transition to a full democracy"
+prestige = 200
+government = democracy
+country_event = 800054
+ruling_party_ideology = liberal
+
+random_country = { limit = { tag = HKG is_our_vassal = THIS government = sar_government } CHI = { inherit = HKG } }
+
+random_country = { limit = { tag = MCA is_our_vassal = THIS government = sar_government } CHI = { inherit = MCA } }
+
+ai_chance = { factor = 0.2 }
+		}
+
+option = {
+name = "Establish a Socialist Democracy instead"
+prestige = 100
+government = socialist_democracy
+country_event = 800054
+
+ai_chance = { factor = 0.7 }
+		}
+
+option = {
+name = "Renegade on our promises!"
+prestige_factor = -0.25
+
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+
+any_owned = { 
+limit = { OR = { 
+is_core = FUJ
+is_core = MCK
+is_core = KWA
+is_core = YNN
+is_core = GGX
+is_core = TIB
+is_core = ETS
+is_core = IMN 
+} } 
+
+add_province_modifier = { name = nationalist_agitation duration = 10000 } }
+
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Russian Financial Crisis
+country_event = {
+	id = 1512012
+title = "Russian Financial Crisis of $YEAR$"
+	desc = EVTDESC1512012
+	picture = "rus_financial_1998"
+
+fire_only_once = yes
+
+trigger = {
+tag = RUS
+NOT = { government = proletarian_dictatorship }
+IDO = { has_country_flag = ido_thaw_trigger }
+}
+
+mean_time_to_happen = { 
+months = 12
+	}
+
+option = {
+name = "Seek IMF assistance!"
+
+any_pop = { money = -100 }
+
+add_country_modifier = { name = stockcrash duration = 730 }
+
+add_country_modifier = { name = stock_market_crash duration = 960 }
+
+add_country_modifier = { name = imf_loan duration = 1200 }
+
+add_country_modifier = { name = recession duration = 1000 }
+
+add_country_modifier = { name = economic_malaise duration = 1825 }
+
+set_country_flag = sea_economy_slow
+set_country_flag = economic_malaise
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "We will solve the problem the Russian way!"
+prestige = 50
+money = -2000000
+add_tax_relative_income = -1000
+ai_chance = { factor = 0.1 }
 		}
 
 }
