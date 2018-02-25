@@ -823,3 +823,298 @@ random_list = {
 		}
 
 }
+
+#Independence of New Hebrides
+country_event = {
+	id = 1512016
+title = "Independence of New Hebrides"
+	desc = EVTDESC1512016
+	picture = "independence_of_vanatau"
+
+fire_only_once = yes
+
+trigger = {
+year = 1980
+NOT = { year = 1990 }
+OR = { tag = FRA tag = ENG }
+OR = { government = hms_government government = democracy }
+is_our_vassal = VAN
+}
+
+mean_time_to_happen = { 
+months = 5
+	}
+
+option = {
+name = "Grant independence"
+prestige = 25
+release_vassal = VAN
+VAN = { government = democracy country_event = 800054 }
+diplomatic_influence = { who = VAN value = 200 }
+FRA = { diplomatic_influence = { who = VAN value = -110 } } 
+random_country = { limit = { is_our_vassal = VAN OR = { tag = FRA tag = ENG } } relation = { who = THIS value = -25 } }
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Maintain the Condominium"
+prestige = -100
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Start of the ICJ process
+country_event = {
+	id = 1512017
+title = "$FROMCOUNTRY_ADJ$-$COUNTRY_ADJ$ Territorial Dispute"
+	desc = EVTDESC1512017
+	picture = "icj_territorial_dispute"
+
+is_triggered_only = yes
+
+option = {
+name = "Send a strongly worded complaint to the $FROMCOUNTRY_ADJ$ Embassy!"
+prestige = 25
+relation = { who = FROM value = -50 }
+set_country_flag = icj_marker
+ai_chance = { 
+factor = 1 
+modifier = { factor = 0 relation = { who = FROM value = 0 } }
+}
+		}
+
+option = {
+name = "Release a statement agreeing to cooperate with the ICJ"
+prestige = -25
+relation = { who = FROM value = 50 }
+set_country_flag = icj_marker
+ai_chance = { 
+factor = 1 
+modifier = { factor = 0 NOT = { relation = { who = FROM value = 0 } } }
+}
+		}
+
+}
+
+#ICJ result
+country_event = {
+	id = 1512018
+title = "$COUNTRY_ADJ$ Territorial Dispute Result"
+	desc = EVTDESC1512018
+	picture = "icj_territorial_dispute"
+
+trigger = {
+NOT = { all_core = { owned_by = THIS } }
+NOT = { badboy = 0.8 }
+NOT = { has_country_modifier = icj_in_process }			
+has_country_flag = icj_in_process	
+}
+
+option = {
+name = "The Judges of the ICJ have spoken"
+clr_country_flag = icj_in_process
+add_country_modifier = { name = icj_timer_land duration = 3650 }
+random_list = { 
+	50 = { THIS = { country_event = 1512019 } }
+	50 = { THIS = { country_event = 1512020 } }
+}
+		}
+
+}
+
+#Starter Won
+country_event = {
+	id = 1512019
+title = "International Court of Justice rules in our favour"
+	desc = EVTDESC1512019
+	picture = "icj_territorial_dispute"
+
+is_triggered_only = yes
+
+option = {
+name = "Let's celebrate!"
+prestige = 100
+
+
+random_country = { 
+
+limit = { 
+has_country_flag = international_court_of_justice 
+has_country_flag = icj_marker
+is_vassal = no 
+war = no 
+
+any_owned_province = { is_capital = no is_core = THIS } 
+
+NOT = { any_owned_province = { is_capital = yes is_core = THIS } }
+
+neighbour = THIS 
+} 
+
+clr_country_flag = icj_marker
+
+country_event = { id = 1512021 days = 10 } 
+
+}
+		}
+
+}
+
+#Starter Loss
+country_event = {
+	id = 1512020
+title = "International Court of Justice rules against us"
+	desc = EVTDESC1512020
+	picture = "icj_territorial_dispute"
+
+is_triggered_only = yes
+
+option = {
+name = "A disaster!"
+prestige_factor = -0.1
+
+any_pop = { militancy = 1 }
+
+		}
+
+}
+
+#What to do if win
+country_event = {
+	id = 1512021
+title = "International Court of Justice rules against us"
+	desc = EVTDESC1512021
+	picture = "icj_territorial_dispute"
+
+is_triggered_only = yes
+
+option = {
+name = "Accept the ruling"
+prestige_factor = 0.05
+badboy = -10
+FROM = { relation = { who = THIS value = 100 } }
+clr_country_flag = icj_marker
+any_owned = { limit = { is_capital = no is_core = FROM } remove_core = THIS secede_province = FROM }
+
+
+ai_chance = { 
+factor = 1 
+modifier = { factor = 0 NOT = { OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive } } }
+}
+		}
+
+option = {
+name = "Ignore the ruling!"
+prestige_factor = -0.05
+badboy = 15
+FROM = { relation = { who = THIS value = -100 } country_event = { id = 1512022 days = 10 } }
+
+any_owned = { limit = { is_core = FROM } add_province_modifier = { name = nationalist_agitation duration = 3650 } }
+clr_country_flag = icj_marker
+ai_chance = { 
+factor = 1 
+modifier = { factor = 0 OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive } }
+}
+		}
+
+}
+
+#Starter end
+country_event = {
+	id = 1512022
+title = "$FROMCOUNTRY$ refuses to comply with the ICJ ruling"
+	desc = EVTDESC1512022
+	picture = "icj_territorial_dispute"
+
+is_triggered_only = yes
+
+option = {
+name = "Outrageous!"
+prestige_factor = -0.1
+
+any_pop = { 
+
+limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } } 
+
+ideology = {
+	factor = 0.25
+	value = nationalist
+}
+
+}
+
+ai_chance = { 
+factor = 1 
+modifier = { factor = 0 war_policy = jingoism }
+}
+		}
+
+option = {
+name = "The $COUNTRY_ADJ$ people have enough of useless diplomacy!"
+
+war = {
+	target = FROM
+	attacker_goal = { casus_belli = dismantle_cb }
+	defender_goal = { casus_belli = territorial_dispute }
+	call_ally = yes
+}
+
+ai_chance = { 
+factor = 1 
+modifier = { factor = 0 NOT = { war_policy = jingoism } }
+}
+		}
+
+}
+
+#1959 Tibetan uprising
+country_event = {
+	id = 1512023
+title = "$YEAR$ Tibetan uprising"
+	desc = EVTDESC1512023
+	picture = "tib_sar_chance"
+
+fire_only_once = yes
+
+trigger = {
+year = 1959
+NOT = { year = 1990 }
+tag = CHI
+government = proletarian_dictatorship
+TIB = { exists = no }
+owns = 1587
+}
+
+mean_time_to_happen = { 
+months = 3
+	}
+
+option = {
+name = "Give in to the demand for self-autonomy in Tibet"
+release_vassal = TIB
+diplomatic_influence = { who = TIB value = 200 }
+TIB = { 
+government = sar_government
+country_event = 800054 
+ruling_party_ideology = communist
+}
+ai_chance = { factor = 0.1 }
+		}
+
+option = {
+name = "Crush the rebellion!"
+prestige = -50
+release = TIB
+TIB = { government = absolute_monarchy ruling_party_ideology = traditionalist country_event = 800050 }
+war = {
+	target = TIB
+	attacker_goal = { casus_belli = annex_core_country }
+	defender_goal = { casus_belli = status_quo }
+	call_ally = no
+}
+ai_chance = { factor = 0.9 }
+		}
+
+}
+
