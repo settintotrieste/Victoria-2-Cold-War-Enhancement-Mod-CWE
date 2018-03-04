@@ -1268,3 +1268,286 @@ ai_chance = { factor = 0.1 }
 		}
 
 }
+
+#Ifni War
+country_event = {
+	id = 1512027
+title = "The Ifni War"
+	desc = EVTDESC1512027
+	picture = "ifni_war"
+
+fire_only_once = yes
+
+trigger = {
+year = 1957
+NOT = { year = 1990 }
+tag = MOR
+is_vassal = no
+SPA = { owns = 1695 }
+}
+
+mean_time_to_happen = { 
+months = 10
+	}
+
+option = {
+name = "Fight the Spanish"
+prestige = 50
+
+set_global_flag = spanish_decolonisation_mor 
+
+war = {
+	target = SPA
+	attacker_goal = { casus_belli = territorial_dispute }
+	defender_goal = { casus_belli = territorial_dispute }
+	call_ally = no
+}
+
+relation = { who = FRA value = -100 }
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Let bygones be bygones"
+prestige_factor = -0.25
+relation = { who = SPA value = 100 }
+add_country_modifier = { name = revolution_chaos duration = 1825 }
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Ifni War
+country_event = {
+	id = 1512028
+title = "Treaty of Angra de Cintra"
+	desc = EVTDESC1512028
+	picture = "ifni_war_1"
+
+fire_only_once = yes
+
+trigger = {
+year = 1957
+NOT = { year = 1990 }
+tag = SPA
+is_vassal = no
+owns = 1695
+NOT = { war_with = MOR }
+has_global_flag = spanish_decolonisation_mor
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Sign the Treaty"
+prestige = 50
+badboy = -5
+relation = { who = MOR value = 100 }
+
+#1687 = { secede_province = MOR } 
+#1688 = { secede_province = MOR } 
+
+1695 = { secede_province = MOR }
+ 
+1696 = { secede_province = MOR } 
+
+relation = { who = FRA value = 50 }
+ai_chance = { factor = 0.95 }
+		}
+
+option = {
+name = "Refuse"
+prestige_factor = -0.1
+badboy = 10
+
+MOR = { create_alliance = FRA }
+
+war = {
+	target = MOR
+	attacker_goal = { casus_belli = territorial_dispute }
+	defender_goal = { casus_belli = dismantle_cb }
+	call_ally = no
+}
+
+ai_chance = { factor = 0.05 }
+		}
+
+}
+
+#UN Peace Making - UNSC members vote
+country_event = {
+	id = 1512029
+title = "UN Resolution to restore order in $FROMCOUNTRY$"
+	desc = EVTDESC1512029
+	picture = "un_peace_making_unsc"
+
+is_triggered_only = yes
+
+option = {
+name = "Vote for a Peace Mission to $FROMCOUNTRY$"
+prestige = 25
+relation = { who = FROM value = 50 }
+diplomatic_influence = { who = FROM value = 10 }
+ai_chance = { factor = 0.7 }
+		}
+
+option = {
+name = "Abstain from voting"
+prestige = 50
+any_country = { limit = { has_country_modifier = united_nations_ga_member } relation = { who = THIS value = 25 } }
+relation = { who = FROM value = -25 }
+ai_chance = { factor = 0.2 }
+		}
+
+option = {
+name = "Vote against any form of intervention"
+prestige = -25
+relation = { who = FROM value = -50 }
+any_greater_power = { limit = { has_country_modifier = united_nations_ga_member } relation = { who = THIS value = 50 } }
+FROM = { add_country_modifier = { name = peace_making_veoted duration = 1900 } }
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#UN Peace Making - UNSC passes resolution
+country_event = {
+	id = 1512030
+title = "UN sends a Peacekeeping Mission to $COUNTRY$"
+	desc = EVTDESC1512030
+	picture = "un_peace_making_troops"
+
+trigger = {
+has_country_flag = un_peace_making_marker
+NOT = { has_country_modifier = peace_making_veoted }
+has_country_modifier = requested_un_peacemaking
+}
+
+mean_time_to_happen = { 
+months = 2
+
+modifier = { factor = 0.5 has_global_flag = UNSG_aggressive }
+modifier = { factor = 0.75 has_global_flag = UNSG_normal }
+
+	}
+
+option = {
+name = "We are saved!"
+prestige = 25
+
+money = 10000
+
+add_country_modifier = { name = un_peace_making_aid duration = 1825 }
+
+clr_country_flag = un_peace_making_marker
+
+any_country = { 
+limit = { has_country_modifier = unsc_permanent_member }
+country_event = 1512032 
+}
+
+any_neighbor_country = { 
+limit = { has_country_modifier = united_nations_ga_member }
+country_event = 1512032
+}
+
+		}
+
+}
+
+#UN Peace Making - UNSC resolution fails
+country_event = {
+	id = 1512031
+title = "UN Security Council vetoes Peace Mission to $COUNTRY$"
+	desc = EVTDESC1512031
+	picture = "un_peace_making_unsc_fail"
+
+trigger = {
+has_country_flag = un_peace_making_marker
+has_country_modifier = peace_making_veoted
+has_country_modifier = requested_un_peacemaking
+}
+
+mean_time_to_happen = { 
+months = 1
+
+modifier = { factor = 0.5 has_global_flag = UNSG_aggressive }
+modifier = { factor = 0.75 has_global_flag = UNSG_normal }
+
+	}
+
+option = {
+name = "The UN is truly useless!"
+prestige = -50
+
+clr_country_flag = un_peace_making_marker
+
+any_country = {
+limit = { has_country_modifier = united_nations_ga_member }
+relation = { who = THIS value = -25 }
+prestige = -25
+}
+
+add_country_modifier = { name = revolution_chaos duration = 1825 }
+		}
+
+}
+
+#UN Peace Making - Invite countries into the Peace Mission
+country_event = {
+	id = 1512032
+title = "UN Peace Mission to restore order in $FROMCOUNTRY$"
+	desc = EVTDESC1512032
+	picture = "un_peace_making_unsc_invite"
+
+trigger = {
+has_country_flag = un_peace_making_marker
+has_country_modifier = peace_making_veoted
+has_country_modifier = requested_un_peacemaking
+}
+
+mean_time_to_happen = { 
+months = 1
+
+modifier = { factor = 0.5 has_global_flag = UNSG_aggressive }
+modifier = { factor = 0.75 has_global_flag = UNSG_normal }
+
+	}
+
+option = {
+name = "Join the mission!"
+
+clr_country_flag = un_peace_making_marker
+
+prestige = 50
+relation = { who = FROM value = 200 }
+create_alliance = FROM
+military_access = FROM
+FROM = { military_access = THIS }
+
+ai_chance = { 
+factor = 1
+modifier = { factor = 0 NOT = { relation = { who = FROM value = 0 } } }
+modifier = { factor = 0 war_policy = pacifism }
+}
+
+		}
+
+option = {
+name = "Don't interfere in $FROMCOUNTRY_ADJ$ politics!"
+
+clr_country_flag = un_peace_making_marker
+
+prestige = -25
+relation = { who = FROM value = -25 }
+ai_chance = { 
+factor = 1
+modifier = { factor = 0 relation = { who = FROM value = 0 } }
+modifier = { factor = 0 NOT = { war_policy = pacifism } }
+}
+		}
+
+
+}
