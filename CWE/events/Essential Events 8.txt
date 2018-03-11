@@ -1610,3 +1610,310 @@ ai_chance = { factor = 0.7 }
 		}
 
 }
+
+#The Senegambia Confederation
+country_event = {
+	id = 1512034
+title = "The Senegambia Confederation"
+	desc = EVTDESC1512034
+	picture = "sen_gam_union"
+
+fire_only_once = yes
+
+trigger = {
+tag = SEN
+election = no
+war = no
+is_vassal = no
+GAM = { exists = yes is_vassal = no ai = yes }
+year = 1982
+NOT = { year = 1991 }
+}
+
+mean_time_to_happen = { 
+months = 2
+	}
+
+option = {
+name = "Form a full union!"
+prestige = 100
+inherit = GAM
+any_owned = { add_province_modifier = { name = nationalist_agitation duration = 3650 } }
+ai_chance = { factor = 0.2 }
+		}
+
+option = {
+name = "Adopt a confederation structure"
+prestige = 50
+create_vassal = GAM
+create_alliance = GAM
+GAM = { ruling_party_ideology = conservative }
+ai_chance = { factor = 0.7 }
+		}
+
+option = {
+name = "We want no Gambians in our glorious nation"
+prestige_factor = 0.25
+prestige = 25
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#The Senegambia Confederation end
+country_event = {
+	id = 1512035
+title = "Dissolution of the Senegambia Confederation"
+	desc = EVTDESC1512035
+	picture = "sen_gam_union_end"
+
+fire_only_once = yes
+
+trigger = {
+tag = SEN
+election = no
+is_vassal = no
+is_our_vassal = GAM
+GAM = { exists = yes }
+year = 1989
+NOT = { year = 1991 }
+}
+
+mean_time_to_happen = { 
+months = 9
+	}
+
+option = {
+name = "End the confederation!"
+prestige = 100
+release_vassal = GAM
+ai_chance = { factor = 0.8 }
+		}
+
+option = {
+name = "Cling on Gambia!"
+prestige = -50
+badboy = 5
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+release_vassal = GAM
+
+war = {
+	target = GAM
+	attacker_goal = { casus_belli = make_puppet }
+	defender_goal = { casus_belli = become_independent }
+	call_ally = no
+}
+
+ai_chance = { factor = 0.2 }
+		}
+
+}
+
+#African Dictatorship Chance
+country_event = {
+	id = 1512036
+title = "Coup d'etat in $COUNTRY$"
+	desc = EVTDESC1512036
+	picture = "africa_dictatorship"
+
+trigger = {
+
+capital_scope = { continent = africa }
+
+government = democracy
+
+election = no
+
+is_vassal = no
+
+war = no
+
+OR = { has_recently_lost_war = yes average_militancy = 2 }
+
+NOT = { neoliberalism = 1 }
+
+}
+
+mean_time_to_happen = { 
+months = 36
+
+modifier = { factor = 0.75 average_militancy = 3 }
+
+modifier = { factor = 0.75 average_militancy = 4 }
+
+modifier = { factor = 0.75 average_militancy = 5 }
+
+modifier = { factor = 0.75 average_militancy = 6 }
+
+modifier = { factor = 0.75 average_militancy = 7 }
+
+	}
+
+option = {
+name = "Allow it to proceed unopposed!"
+
+#Socialist Group
+random_owned = { 
+limit = { 
+owner = { 
+OR = { pop_majority_ideology = socialist pop_majority_ideology = communist pop_majority_ideology = communist_social }
+} 
+	} 
+owner = { random_list = {
+	40 = { country_event = 141208 }
+	10 = { country_event = 141509 }
+	50 = { country_event = 141512 } 
+		} }
+}
+
+#Populist Group
+random_owned = { 
+limit = { 
+owner = { 
+OR = { pop_majority_ideology = populist pop_majority_ideology = nationalist }
+} 
+	} 
+owner = { random_list = {
+	70 = { country_event = 141208 }
+	20 = { country_event = 141510 }
+	10 = { country_event = 141509 } 
+		} }
+}
+
+#Conservative Group
+random_owned = { 
+limit = { 
+owner = { 
+OR = { pop_majority_ideology = conservative pop_majority_ideology = big_tent }
+} 
+	} 
+owner = { random_list = {
+	80 = { country_event = 141208 }
+	20 = { country_event = 141510 }
+		} }
+} 
+
+#Traditionalist Group
+random_owned = { 
+limit = { 
+owner = { 
+OR = { pop_majority_ideology = traditionalist }
+} 
+	} 
+owner = { random_list = {
+	10 = { country_event = 141509 }
+	90 = { country_event = 141511 }
+		} }
+}
+
+#Liberal Group
+random_owned = { 
+limit = { 
+owner = { 
+OR = { pop_majority_ideology = liberal pop_majority_ideology = progressive }
+} 
+	} 
+
+owner = { country_event = 141513 }
+
+		
+}
+
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Resist the rebels!"
+
+any_owned = { limit = { is_capital = no average_militancy = 3 } change_controller = REB }
+
+prestige = -50
+
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Genocide options
+country_event = {
+	id = 1512037
+title = "Ethnic Cleansing in $COUNTRY$"
+	desc = EVTDESC1512037
+	picture = "genocide_options"
+
+is_triggered_only = yes
+
+option = {
+name = "Kill as many as possible!"
+
+clr_country_flag = genocide_101
+
+prestige_factor = -0.40
+
+badboy = 35
+
+country_event = 1410080
+
+any_pop = { limit = { AND = { is_primary_culture = no is_accepted_culture = no } } reduce_pop = 0.20 }
+
+any_pop = { limit = { AND = { is_primary_culture = no is_accepted_culture = no } } ideology = { factor = 1 value = nationalist } }
+
+any_pop = { limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } } militancy = -10 }
+
+any_pop = { limit = { AND = { is_primary_culture = no is_accepted_culture = no } } militancy = 10 }
+
+add_country_modifier = {  name = ethnic_cleansing duration = 3650 } 
+
+ai_chance = { factor = 0.5 }
+		}
+
+option = {
+name = "Excercise some restraint in killing"
+
+clr_country_flag = genocide_101
+
+prestige_factor = -0.2
+
+badboy = 25
+
+country_event = 1410080
+
+any_pop = { limit = { AND = { is_primary_culture = no is_accepted_culture = no } } reduce_pop = 0.60 }
+
+any_pop = { limit = { AND = { is_primary_culture = no is_accepted_culture = no } } ideology = { factor = 0.50 value = nationalist } }
+
+any_pop = { limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } } militancy = -5 }
+
+any_pop = { limit = { AND = { is_primary_culture = no is_accepted_culture = no } } militancy = 5 }
+
+add_country_modifier = {  name = ethnic_cleansing duration = 1825 } 
+
+
+ai_chance = { factor = 0.3 }
+		}
+
+option = {
+name = "Massacre only a few"
+
+clr_country_flag = genocide_101
+
+prestige_factor = -0.1
+
+badboy = 15
+
+country_event = 1410080
+
+any_pop = { limit = { AND = { is_primary_culture = no is_accepted_culture = no } } reduce_pop = 0.80 }
+
+any_pop = { limit = { AND = { is_primary_culture = no is_accepted_culture = no } } ideology = { factor = 0.25 value = nationalist } }
+
+any_pop = { limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } } militancy = -2.5 }
+
+any_pop = { limit = { AND = { is_primary_culture = no is_accepted_culture = no } } militancy = 2.5 }
+
+add_country_modifier = {  name = ethnic_cleansing duration = 913 } 
+
+ai_chance = { factor = 0.2 }
+		}
+
+}
