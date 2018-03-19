@@ -1945,3 +1945,291 @@ overlord = { military_access = THIS }
 		}
 
 }
+
+#Brunei monarchy clean up
+country_event = {
+	id = 1512039
+title = "Sultan of Brunei"
+	desc = EVTDESC1512039
+	picture = "sultan_brunei"
+
+fire_only_once = yes
+
+trigger = {
+is_vassal = no
+tag = BRU
+NOT = { OR = { government = hms_government government = hms_government1 government = absolute_monarchy } }
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "We wish to keep the Sultan"
+government = absolute_monarchy
+country_event = 800050
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "We don't need him anymore"
+prestige = 25
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Weaken South Vietnam
+country_event = {
+	id = 1512040
+title = "Chaos in South Vietnam"
+	desc = EVTDESC1512040
+	picture = "viet_south"
+
+fire_only_once = yes
+
+trigger = {
+year = 1975
+tag = SVI
+war_with = DAI
+DAI = { exists = yes }
+}
+
+mean_time_to_happen = { 
+months = 2
+	}
+
+option = {
+name = "The $COUNTRY_ADJ$ people grow weary of war"
+add_country_modifier = { name = high_command_chaos duration = 1825 }
+war_exhaustion = 25
+any_pop = { militancy = 2 }
+		}
+
+}
+
+#China joins the Vietnam War
+country_event = {
+	id = 1512041
+title = "Chinese involvement in the Vietnam War"
+	desc = EVTDESC1512041
+	picture = "viet_china"
+
+fire_only_once = yes
+
+trigger = {
+year = 1974
+tag = CHI
+SVI = { NOT = { in_sphere = USA alliance_with = USA } }
+government = proletarian_dictatorship
+DAI = { ruling_party_ideology = communist }
+SVI = { war_with = DAI }
+DAI = { exists = yes }
+}
+
+mean_time_to_happen = { 
+months = 9
+	}
+
+option = {
+name = "We will liberate the Vietnamese proletariat!"
+relation = { who = DAI value = 200 }
+
+RUS = { diplomatic_influence = { who = SVI value = -200 } leave_alliance = SVI }
+
+war = {
+	target = SVI
+	attacker_goal = { casus_belli = cut_down_to_size }
+	defender_goal = { casus_belli = humiliate }
+	call_ally = no
+}
+CHI = { military_access = DAI }
+ai_chance = { factor = 0.75 }
+		}
+
+option = {
+name = "The Vietcong can fend for themselves!"
+relation = { who = DAI value = -50 }
+ai_chance = { factor = 0.25 }
+		}
+
+
+}
+
+#Viet Cong
+country_event = {
+	id = 1512042
+title = "The Viet Cong"
+	desc = EVTDESC1512042
+	picture = "viet_cong_1"
+
+fire_only_once = yes
+
+trigger = {
+year = 1970
+tag = SVI
+war_with = DAI
+DAI = { exists = yes }
+}
+
+mean_time_to_happen = { 
+months = 2
+	}
+
+option = {
+name = "We must do something about this!"
+add_country_modifier = { name = viet_cong duration = 1825 }
+war_exhaustion = 10
+any_pop = { militancy = 2 }
+		}
+
+}
+
+#Civil Defence high
+country_event = {
+	id = 1512043
+title = "Civil Defence shelters activated"
+	desc = "In response to the strategic bombing campaign wrought upon us by our enemies, we have activated our civil defence bomb shelters to protect our population."
+	picture = "air_raid_shelter"
+
+trigger = {
+has_country_modifier = cdhigh
+
+any_owned_province = { has_province_modifier = aerial_bombed NOT = { has_province_modifier = air_raid_high } }
+
+}
+
+option = {
+name = "Citizens, Protect and Survive!"
+
+any_owned = { remove_province_modifier = air_raid_medium }
+any_owned = { remove_province_modifier = air_raid_low }
+
+any_owned = { limit = { has_province_modifier = aerial_bombed } add_province_modifier = { name = air_raid_high duration = -1 } }
+
+war_exhaustion = -15
+		}
+
+}
+
+#Civil Defence medium
+country_event = {
+	id = 1512044
+title = "Civil Defence shelters activated"
+	desc = "In response to the strategic bombing campaign wrought upon us by our enemies, we have activated our civil defence bomb shelters to protect our population."
+	picture = "air_raid_shelter"
+
+trigger = {
+has_country_modifier = cdmedium
+
+any_owned_province = { has_province_modifier = aerial_bombed NOT = { has_province_modifier = air_raid_medium } }
+
+}
+
+option = {
+name = "Citizens, Protect and Survive!"
+
+any_owned = { remove_province_modifier = air_raid_high }
+any_owned = { remove_province_modifier = air_raid_low }
+
+any_owned = { limit = { has_province_modifier = aerial_bombed } add_province_modifier = { name = air_raid_medium duration = -1 } }
+
+war_exhaustion = -10
+		}
+
+}
+
+#Civil Defence low
+country_event = {
+	id = 1512045
+title = "Civil Defence shelters activated"
+	desc = "In response to the strategic bombing campaign wrought upon us by our enemies, we have activated our civil defence bomb shelters to protect our population."
+	picture = "air_raid_shelter"
+
+trigger = {
+has_country_modifier = cdlow
+
+any_owned_province = { has_province_modifier = aerial_bombed NOT = { has_province_modifier = air_raid_low } }
+
+}
+
+option = {
+name = "Citizens, Protect and Survive!"
+
+any_owned = { remove_province_modifier = air_raid_high }
+any_owned = { remove_province_modifier = air_raid_medium }
+
+any_owned = { limit = { has_province_modifier = aerial_bombed } add_province_modifier = { name = air_raid_low duration = -1 } }
+
+war_exhaustion = -5
+		}
+
+}
+
+#Civil Defence cleanup
+country_event = {
+	id = 1512046
+title = "Civil Defence shelters deactivated"
+	desc = "As the damage from the bombing raids have been fixed, our citizen no longer have to rely on our air raid measures anymore."
+	picture = "air_raid_shelter"
+
+trigger = {
+
+any_owned_province = { NOT = { has_province_modifier = aerial_bombed } OR = { has_province_modifier = air_raid_low has_province_modifier = air_raid_medium has_province_modifier = air_raid_high } }
+
+}
+
+option = {
+name = "Citizens, you have survived the worst!"
+
+any_owned = { 
+
+limit = { NOT = { has_province_modifier = aerial_bombed } } 
+
+remove_province_modifier = air_raid_high
+remove_province_modifier = air_raid_medium
+remove_province_modifier = air_raid_low
+
+}
+
+war_exhaustion = -5
+
+		}
+
+}
+
+#South Vietnam is not socialist
+country_event = {
+	id = 1512047
+title = "Anti-communist sentiments in $COUNTRY$"
+	desc = EVTDESC1512047
+	picture = "south_viet_soc"
+
+trigger = {
+DAI = { exists = yes ruling_party_ideology = communist }
+tag = SVI
+NOT = { government = proletarian_dictatorship }
+ruling_party_ideology = socialist
+NOT = { has_country_flag = south_viet_soc }
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Purge the socialists and communists!"
+ruling_party_ideology = conservative
+ai_chance = { factor = 1 }
+		}
+
+option = {
+name = "Embrace socialism"
+prestige = 25
+set_country_flag = south_viet_soc
+ai_chance = { factor = 0 }
+		}
+
+}
+
