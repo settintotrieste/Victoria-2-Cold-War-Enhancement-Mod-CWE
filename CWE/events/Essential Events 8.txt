@@ -2233,3 +2233,286 @@ ai_chance = { factor = 0 }
 
 }
 
+#Taiwan SAR
+country_event = {
+	id = 1512048
+title = "Taiwan Special Administrative Region"
+	desc = EVTDESC1512048
+	picture = "taiwan_sar"
+
+fire_only_once = yes
+
+trigger = {
+
+is_vassal = no
+
+CHI = { government = proletarian_dictatorship ruling_party_ideology = communist_social exists = yes }
+
+CHI = { is_greater_power = yes }
+KMT = { is_greater_power = no }
+
+KMT = { is_greater_power = no government = democracy OR = { ruling_party_ideology = communist_social ruling_party_ideology = communist } exists = yes }
+
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Unify with the mainland!"
+prestige = 100
+
+any_owned = { limit = { is_core = CHI } remove_core = CHI }
+
+any_owned = { limit = { is_core = KMT } remove_core = KMT }
+
+any_owned = { limit = { OR = { province_id = 1485 province_id = 2562 } } add_core = TAI }
+
+change_tag = TAI
+CHI = { create_vassal = TAI }
+government = sar_government
+CHI = { diplomatic_influence = { who = TAI value = 200 } }
+
+all_core = { limit = { NOT = { OR = { province_id = 1485 province_id = 2562 } } } remove_core = TAI }
+
+ai_chance = { factor = 0.8 }
+		}
+
+option = {
+name = "Remain independent!"
+ai_chance = { factor = 0.2 }
+		}
+
+}
+
+#Tension rises in country - transferred to decisions
+country_event = {
+	id = 1512049
+title = "Crisis in $COUNTRY$"
+	desc = EVTDESC1512049
+	picture = "tension_rises"
+
+trigger = {
+
+has_country_flag = disabled_for_now
+
+is_vassal = no
+
+NOT = { has_country_modifier = unsc_vote_crisis }
+
+any_owned_province = { state_scope = { flashpoint_tension = 75 has_flashpoint = yes } }
+
+}
+
+option = {
+name = "Seek crisis resolution"
+
+any_country = { 
+limit = { has_country_modifier = unsc_permanent_member }
+country_event = 1512050
+}
+
+add_country_modifier = { name = unsc_vote_crisis duration = 365 }
+
+country_event = { id = 1512051 days = 5 }
+
+		}
+
+}
+
+#Tension rises in country - UNSC
+country_event = {
+	id = 1512050
+title = "Geopolitical Crisis in $FROMCOUNTRY$"
+	desc = "$FROMCOUNTRY$ has filed a request to the United Nation to seek a Peace Mission to reduce their flashpoint tension before it escalates into a full blown international crisis."
+	picture = "tension_rises"
+
+is_triggered_only = yes
+
+option = {
+name = "Support the UN Resolution"
+prestige = 25
+badboy = -1
+ai_chance = { factor = 0.90 }
+		}
+
+option = {
+name = "Veto the UN Resolution"
+badboy = 1
+prestige = -25
+FROM = { set_country_flag = unsc_veto_crisis }
+ai_chance = { factor = 0.10 }
+		}
+
+
+}
+
+#Tension rises in country - Originator
+country_event = {
+	id = 1512051
+title = "UN Resolution on the $COUNTRY_ADJ$ Crisis"
+	desc = "The United Nations Security Council is gathering to vote on a resolution authorising a Peace Mission to $COUNTRY$ to reduce flashpoint tension."
+	picture = "tension_rises"
+
+is_triggered_only = yes
+
+option = {
+name = "Let's find out the result"
+
+random_owned = {
+limit = { owner = { has_country_flag = unsc_veto_crisis } } 
+
+owner = { country_event = 1512053 }
+
+}
+
+random_owned = {
+limit = { owner = { NOT = { has_country_flag = unsc_veto_crisis } } }
+
+owner = { country_event = 1512052 }
+
+}
+
+		}
+
+}
+
+
+#Tension rises in country - Originator success
+country_event = {
+	id = 1512052
+title = "UN Peace Mission to $COUNTRY$ approved"
+	desc = "The United Nations Security Council has voted on a resolution authorising a Peace Mission to $COUNTRY$ to reduce flashpoint tension."
+	picture = "tension_rises"
+
+is_triggered_only = yes
+
+option = {
+name = "We thank the United Nations!"
+prestige = 10
+
+clr_country_flag = unsc_veto_crisis
+
+any_state = { flashpoint_tension = -90 }
+		}
+
+}
+
+#Tension rises in country - Originator fail
+country_event = {
+	id = 1512053
+title = "UN Resolution vetoed by UNSC"
+	desc = "The United Nations Security Council has a veoted a resolution authorising a Peace Mission to $COUNTRY$ to reduce flashpoint tension."
+	picture = "tension_rises"
+
+is_triggered_only = yes
+
+option = {
+name = "A disaster!"
+
+clr_country_flag = unsc_veto_crisis
+
+prestige = -10
+any_state = { flashpoint_tension = 10 }
+		}
+
+}
+
+#British Republic 1
+country_event = {
+	id = 1512054
+title = "Death of Diana, Princess of Wales"
+	desc = EVTDESC1512054
+	picture = "death_diana"
+
+fire_only_once = yes
+
+trigger = {
+
+tag = ENG
+
+government = hms_government
+
+year = 1997
+
+FRA = { exists = yes }
+
+NOT = { war_with = FRA }
+
+}
+
+mean_time_to_happen = { 
+months = 9
+	}
+
+option = {
+name = "She was the People's Princess!"
+prestige = 25
+any_pop = { militancy = -5 }
+country_event = { id = 1512055 days = 10 }
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Keep it low key"
+prestige = -200
+any_pop = { militancy = 2 }
+country_event = { id = 1512056 days = 30 }
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#British Republic 2
+country_event = {
+	id = 1512055
+title = "Criticism of the Monarchy Growing"
+	desc = EVTDESC1512055
+	picture = "queen_reaction"
+
+is_triggered_only = yes
+
+option = {
+name = "The Queen address the British Public"
+any_pop = {
+ideology = {
+	factor = 0.25
+	value = conservative
+}
+}
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Stick to the Royal precedents!"
+country_event = { id = 1512056 days = 30 }
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#British Republic 3
+country_event = {
+	id = 1512056
+title = "British Republicanism Rises"
+	desc = EVTDESC1512056
+	picture = "british_republic"
+
+is_triggered_only = yes
+
+option = {
+name = "Force the Queen to abdicate!"
+government = democracy
+prestige = -50
+ai_chance = { factor = 0.5 }
+		}
+
+option = {
+name = "Stick to the monarchy!"
+prestige = 10
+ai_chance = { factor = 0.5 }
+		}
+
+}
+
