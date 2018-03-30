@@ -2561,3 +2561,265 @@ ai_chance = { factor = 0.1 }
 
 }
 
+#Collectivisation - start
+country_event = {
+	id = 1512058
+title = "Collectivisation in $COUNTRY$"
+	desc = EVTDESC1512058
+	picture = "collectivisation"
+
+trigger = {
+
+has_country_flag = collectivise_farms
+
+any_owned_province = { 
+OR = {
+trade_goods = fruit
+trade_goods = grain
+trade_goods = rice
+trade_goods = oil_seeds
+trade_goods = sugar
+trade_goods = tea
+trade_goods = tobacco
+trade_goods = coffee
+trade_goods = cotton
+} 
+
+NOT = { has_province_modifier = collectivisation }
+
+}
+
+
+}
+
+option = {
+name = "This will increase crop yield!"
+
+any_owned = { 
+
+limit = { 
+OR = {
+trade_goods = fruit
+trade_goods = grain
+trade_goods = rice
+trade_goods = oil_seeds
+trade_goods = sugar
+trade_goods = tea
+trade_goods = tobacco
+trade_goods = coffee
+trade_goods = cotton
+} 
+NOT = { has_province_modifier = collectivisation }
+	} 
+
+add_province_modifier = { name = collectivisation duration = -1 }
+
+}
+
+		}
+
+}
+
+#Trade Union conspiracy
+country_event = {
+	id = 1512059
+title = "Trade Unions Threaten Strikes"
+	desc = EVTDESC1512059
+	picture = "trade_union_action"
+
+trigger = {
+
+OR = { government = socialist_democracy government = democracy government = democracy1 government = hms_government government = hms_government1 }
+
+NOT = { gender_rights = gender_role_based }
+NOT = { gender_rights = gender_equal }
+
+OR = { NOT = { wage_and_work_hours = six_hours }
+
+NOT = { safety_regulations = rigid_regulations }
+
+NOT = { unemployment_subsidies = citizen_salary }
+
+NOT = { pensions = good_pensions }
+
+NOT = { social_service_reform = the_safety_grid } }
+
+}
+
+mean_time_to_happen = { 
+months = 120
+
+modifier = { factor = 0.75 pop_majority_ideology = socialist }
+
+modifier = { factor = 0.25 pop_majority_ideology = communist }
+
+modifier = { factor = 0.5 pop_majority_ideology = communist_social }
+
+	}
+
+option = {
+name = "Give in to the Trade Unions"
+
+#Wage and Work
+
+random_owned = { 
+limit = { owner = { wage_and_work_hours = paid_sick_leave_hours } } 
+owner = { social_reform = six_hours } }
+
+random_owned = { 
+limit = { owner = { wage_and_work_hours = paid_vacation_hours } } 
+owner = { social_reform = paid_sick_leave_hours } }
+
+random_owned = { 
+limit = { owner = { wage_and_work_hours = eight_work_hours } } 
+owner = { social_reform = paid_vacation_hours } }
+
+random_owned = { 
+limit = { owner = { wage_and_work_hours = unregulated_hours } } 
+owner = { social_reform = eight_work_hours } }
+
+#Safety Regulations
+
+random_owned = { 
+limit = { owner = { safety_regulations = strict_regulations } } 
+owner = { social_reform = rigid_regulations } }
+
+random_owned = { 
+limit = { owner = { safety_regulations = restrictive_regulations } } 
+owner = { social_reform = strict_regulations } }
+
+random_owned = { 
+limit = { owner = { safety_regulations = balanced_regulations } } 
+owner = { social_reform = restrictive_regulations } }
+
+random_owned = { 
+limit = { owner = { safety_regulations = some_regulations } } 
+owner = { social_reform = balanced_regulations } }
+
+#Unemployment Subsidies
+
+random_owned = { 
+limit = { owner = { unemployment_subsidies = generous_subsidies } } 
+owner = { social_reform = citizen_salary } }
+
+random_owned = { 
+limit = { owner = { unemployment_subsidies = ghent_system } } 
+owner = { social_reform = generous_subsidies } }
+
+random_owned = { 
+limit = { owner = { unemployment_subsidies = minimal_subsidies } } 
+owner = { social_reform = ghent_system } }
+
+random_owned = { 
+limit = { owner = { unemployment_subsidies = no_subsidies } } 
+owner = { social_reform = minimal_subsidies } }
+
+#Pensions
+
+random_owned = { 
+limit = { owner = { pensions = acceptable_pensions } } 
+owner = { social_reform = good_pensions } }
+
+random_owned = { 
+limit = { owner = { pensions = low_pensions } } 
+owner = { social_reform = acceptable_pensions } }
+
+random_owned = { 
+limit = { owner = { pensions = trinket_pensions } } 
+owner = { social_reform = low_pensions } }
+
+random_owned = { 
+limit = { owner = { pensions = no_pensions } } 
+owner = { social_reform = trinket_pensions } }
+
+#Social Service
+
+random_owned = { 
+limit = { owner = { social_service_reform = anti_terror_surveillance } } 
+owner = { social_reform = the_safety_grid } }
+
+random_owned = { 
+limit = { owner = { social_service_reform = social_abuse_protection } } 
+owner = { social_reform = anti_terror_surveillance } }
+
+random_owned = { 
+limit = { owner = { social_service_reform = social_services } } 
+owner = { social_reform = social_abuse_protection } }
+
+random_owned = { 
+limit = { owner = { social_service_reform = no_social_service  } } 
+owner = { social_reform = social_services } }
+
+ai_chance = { 
+factor = 1 
+
+modifier = { 
+
+factor = 0 
+
+NOT = { OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social } } 
+
+} 
+
+}
+
+
+		}
+
+option = {
+name = "Defy the Trade Unions!"
+
+prestige_factor = -0.025
+
+any_owned = { add_province_modifier = { name = trade_union_action duration = 365 } }
+
+any_pop = { militancy = 2 }
+
+ai_chance = { 
+factor = 1 
+
+modifier = { 
+
+factor = 0 
+
+OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social }
+
+} 
+
+	}
+
+		}
+
+}
+
+#Trade Union Question
+country_event = {
+	id = 1512060
+title = "Trade Unions in $COUNTRY$?"
+	desc = EVTDESC1512060
+	picture = "trade_unions"
+
+trigger = {
+NOT = { has_country_flag = banned_trade_uninos }
+
+OR = { gender_rights = gender_role_based gender_rights = gender_equal }
+
+OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+
+}
+
+option = {
+name = "Allow Trade Unions to be formed"
+political_reform = gender_promotive
+ai_chance = { factor = 1 }
+		}
+
+option = {
+name = "Continue to ban Trade Unions"
+prestige_factor = -0.15
+any_pop = { militancy = 3 }
+set_country_flag = banned_trade_uninos
+ai_chance = { factor = 0 }
+		}
+
+}
