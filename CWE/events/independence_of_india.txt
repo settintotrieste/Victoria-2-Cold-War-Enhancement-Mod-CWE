@@ -107,8 +107,8 @@ country_event = {
 		ai_chance = { factor = 100 }
 		prestige = 2
 		release_vassal = RAJ
-		random_country = { limit = { tag = UAE vassal_of = RAJ } RAJ = { release_vassal = UAE } ENG = { create_vassal = UAE } UAE = { government = colonial_government } }
-		any_country = { limit = { OR = { vassal_of = RAJ tag = TIB tag = NET tag = SIK } } country_event = 8214019 }
+
+		any_country = { limit = { OR = { tag = HYD tag = MNP tag = RAA tag = IND tag = GWA tag = BER tag = ORI tag = NAX tag = BOD tag = MYS tag = TRA tag = AZK tag = BLO tag = JAK tag = SIN tag = TIB tag = NEP tag = BHU tag = SIK } } country_event = 8214019 }
 		RAJ = { country_event = { id = 8214013 days = 10 } }
 	}
 
@@ -189,7 +189,9 @@ country_event = {
 	
 	option = {
 		name = EVT_8214019_A 
-		FROM = { diplomatic_influence = { who = THIS value = -200 } }
+FROM = { diplomatic_influence = { who = THIS value = -200 } }
+FROM = { relation = { who = THIS value = -200 } }
+FROM = { leave_alliance = THIS }
 		# EVT_8214019_A;We have to handle this new political environment!
 	}
 }
@@ -217,11 +219,11 @@ any_owned = {
 				}
 	PAK = { government = hms_government }
 	PAK = { capital = 1288 }
-	release_vassal = NEP
-	release_vassal = JAK
-	leave_alliance = TIB
-	leave_alliance = JAK
-	leave_alliance = ENG
+	ENG = { release_vassal = JAK }
+	ENG = { relation = { who = JAK value = -200 } }
+ENG = { diplomatic_influence = { who = JAK value = -200 } }
+	ENG = { leave_alliance = TIB }
+	ENG = { leave_alliance = JAK }
 	government = hms_government country_event = 800054
 	change_tag = HND
 	
@@ -237,13 +239,16 @@ country_event = {
 	picture = "independence_of_india"
 
 	trigger = {
-		OR = {
+
+	exists = HND
+
+		
 			NOT = { year = 1960 }
-			tag = SIK
-		}
-		vassal_of = HND
+			
+		
+		vassal_of = ENG
 		OR = {
-			tag = MNP tag = RAA tag = IND tag = GWA tag = BER tag = ORI tag = NAX tag = BOD tag = MYS tag = TRA tag = SIK
+			tag = MNP tag = RAA tag = IND tag = GWA tag = BER tag = ORI tag = NAX tag = BOD tag = MYS tag = TRA
 			AND = { # AZK and BLO
 				NOT = { tag = JAK }
 				NOT = { tag = SIN }
@@ -256,18 +261,14 @@ country_event = {
 
 	mean_time_to_happen = {
 		months = 1
-		modifier = {
-			factor = 360
-			tag = SIK
 		}
-	}
 
 	option = {
 		name = EVT_8214015_A
 		overlord = { relation = { who = THIS value = -200 } }
 		set_country_flag = princely_state_stay_independent
-		HND = { release_vassal = THIS }
-		HND = { leave_alliance = THIS }
+		ENG = { release_vassal = THIS }
+		ENG = { leave_alliance = THIS }
 		ENG = { diplomatic_influence = { who = THIS value = -100 } }
 		HND = { casus_belli = { target = THIS type = annex_core_country } }
 		# TODO inform HND about this
@@ -280,7 +281,7 @@ country_event = {
 			limit = { tag = HND is_possible_vassal = PAK }
 			THIS = { all_core = { limit = { is_core = PAK } add_core = HND } }
 		}
-		overlord = { inherit = THIS }
+		HND = { inherit = THIS }
 		# TODO inform HND about this
 		ai_chance = { factor = 100 }
 	}
@@ -294,7 +295,7 @@ country_event = {
 
 	trigger = { 
 		NOT = { year = 1960 }
-		vassal_of = HND 
+		vassal_of = ENG 
 		capital_scope = { is_core = PAK } # AZK and BLO
 		NOT = { tag = JAK }
 		NOT = { tag = SIN }
@@ -311,8 +312,8 @@ country_event = {
 		relation = { who = HND value = -200 }
 		relation = { who = PAK value = -200 }
 		set_country_flag = princely_state_stay_independent
-		HND = { release_vassal = THIS } 
-		HND = { leave_alliance = THIS }
+		ENG = { release_vassal = THIS } 
+		ENG = { leave_alliance = THIS }
 		ENG = { diplomatic_influence = { who = THIS value = -100 } }
 		PAK = { casus_belli = { target = THIS type = annex_core_country } }
 		# TODO inform PAK about this
@@ -334,7 +335,7 @@ country_event = {
 
 	option = {
 		name = EVT_8214015_C 
-		overlord = { inherit = THIS }
+		HND = { inherit = THIS }
 		# TODO inform PAK about this
 		# TODO inform HND about this
 		ai_chance = { factor = 0 }
@@ -350,8 +351,9 @@ country_event = {
 
 	trigger = { 
 		NOT = { year = 1960 }
-		vassal_of = HND 
+		vassal_of = ENG 
 		tag = HYD
+		exists = HND
 	}
 	
 	mean_time_to_happen = {
@@ -362,9 +364,10 @@ country_event = {
 		name = EVT_8214015_A
 		relation = { who = HND value = -200 }
 		set_country_flag = princely_state_stay_independent
-		HND = { release_vassal = THIS } 
-		HND = { leave_alliance = THIS }
-		ENG = { diplomatic_influence = { who = THIS value = -100 } }
+		ENG = { release_vassal = THIS } 
+		relation = { who = ENG value = -200 }
+		ENG = { leave_alliance = THIS }
+		ENG = { diplomatic_influence = { who = THIS value = -200 } }
 		HND = { casus_belli = { target = THIS type = annex_core_country } }
 		# TODO inform HND about this # will trigger 8007229
 		ai_chance = { factor = 100 }

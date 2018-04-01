@@ -1826,9 +1826,6 @@ name = "We have finally ended British Rule"
 overlord = { release_vassal = THIS }
 prestige = 100
 government = hms_government1
-release_vassal = BHU
-release_vassal = UAE
-ENG = { create_vassal = UAE }
 country_event = { id = 1412200 days = 10 }
 any_owned = { add_core = RAJ }
 primary_culture = indian
@@ -1852,17 +1849,26 @@ option = {
 name = "Join the Union fully"
 any_owned = { add_core = RAJ }
 RAJ = { inherit = THIS }
-ai_chance = { factor = 100 }
+ai_chance = { factor = 0.75 }
 		}
-option = {
-name = "Join but maintain self-autonomy"
-ai_chance = { factor = 0 }
-		}
+
 option = {
 name = "Declare independence"
-RAJ = { release_vassal = THIS 
-relation = { who = THIS value = -200 } }
-ai_chance = { factor = 0 }
+ENG = { release_vassal = THIS 
+relation = { who = THIS value = -200 } diplomatic_influence = { who = THIS value = -200 } leave_alliance = THIS }
+
+RAJ = { relation = { who = THIS value = -200 } }
+
+RAJ = { 
+war = {
+	target = THIS
+	attacker_goal = { casus_belli = annex_core_country }
+	defender_goal = { casus_belli = status_quo }
+	call_ally = no
+}
+}
+
+ai_chance = { factor = 0.25 }
 		}
 }
 
@@ -1877,13 +1883,20 @@ is_triggered_only = yes
 
 option = {
 name = "Demand integration"
-any_country = { limit = { OR = { tag = HYD tag = MNP tag = RAA tag = IND tag = GWA tag = BER tag = ORI tag = NAX tag = BOD tag = MYS tag = TRA tag = SIK tag = AZK tag = BLO tag = JAK tag = SIN } } country_event = 1412199 }
-ai_chance = { factor = 100 }
+any_country = { limit = { exists = yes OR = { tag = HYD tag = MNP tag = RAA tag = IND tag = GWA tag = BER tag = ORI tag = NAX tag = BOD tag = MYS tag = TRA tag = SIK tag = AZK tag = BLO tag = JAK tag = SIN } } country_event = 1412199 }
+ai_chance = { factor = 0.9 }
 		}
+
 option = {
-name = "Let them maintain self-autonomy"
-ai_chance = { factor = 0 }
+name = "Allow each Princely State self-autonomy"
+any_country = { limit = { vassal_of = ENG OR = { tag = HYD tag = MNP tag = RAA tag = IND tag = GWA tag = BER tag = ORI tag = NAX tag = BOD tag = MYS tag = TRA tag = SIK tag = AZK tag = BLO tag = JAK tag = SIN } } 
+
+country_event = 1512064
+
+}
+ai_chance = { factor = 0.1 }
 		}
+
 }
 
 #Set Development Levels
