@@ -2649,6 +2649,12 @@ NOT = { social_service_reform = the_safety_grid } }
 mean_time_to_happen = { 
 months = 120
 
+modifier = { factor = 1.75 pop_majority_ideology = traditionalist }
+
+modifier = { factor = 1.5 pop_majority_ideology = conservative }
+
+modifier = { factor = 1.25 pop_majority_ideology = big_tent }
+
 modifier = { factor = 0.75 pop_majority_ideology = socialist }
 
 modifier = { factor = 0.25 pop_majority_ideology = communist }
@@ -2901,4 +2907,86 @@ FROM = { create_vassal = THIS }
 		}
 
 }
+
+#Terror support - receiver start
+country_event = {
+	id = 1512065
+title = "Terror Groups Supported by Foreign Nation"
+	desc = "A foreign nation has decided to sponsor terrorist organisations within our nation. This will cause our nation's poor people to rise in traditionalist support."
+	picture = "terrorism_rise_support"
+
+trigger = {
+is_greater_power = no
+any_neighbor_country = { has_country_modifier = promoting_terrorists }
+NOT = { has_country_modifier = terror_groups_in }
+}
+
+option = {
+name = "The only way to stop this is through regime change!"
+add_country_modifier = { name = terror_groups_in duration = -1 }
+set_country_flag = terror_groups_in
+		}
+
+}
+
+#Terror support - receiver end
+country_event = {
+	id = 1512066
+title = "Terror Groups' Foreign Support Ends"
+	desc = "A foreign nation has decided to stop sponsoring terrorist organisations within our nation. This will cause our nation's poor people to decrease in traditionalist support."
+	picture = "terrorism_fall_support"
+
+trigger = {
+NOT = { any_neighbor_country = { has_country_modifier = promoting_terrorists } }
+OR = { has_country_modifier = terror_groups_in has_country_flag = terror_groups_in }
+}
+
+option = {
+name = "This is good news"
+remove_country_modifier = terror_groups_in
+clr_country_flag = terror_groups_in
+		}
+
+}
+
+#Baghdad Pact
+country_event = {
+	id = 1512067
+title = "Middle East Treaty Organisation"
+	desc = EVTDESC1512067
+	picture = "baghdad_pact"
+
+trigger = {
+year = 1955
+war = no
+is_vassal = no
+NOT = { year  = 1990 }
+OR = { tag = ENG tag = PAK tag = PER tag = IRQ tag = TUR }
+NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = theocracy } }
+NOT = { has_country_flag = meto_flag }
+}
+
+mean_time_to_happen = { 
+months = 2
+	}
+
+option = {
+name = "Join the alliance!"
+prestige = 25
+set_country_flag = meto_accept
+set_country_flag = meto_flag
+
+any_country = { limit = { has_country_flag = meto_accept } relation = { who = THIS value = 300 } create_alliance = THIS }
+
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Decline the invitation"
+set_country_flag = meto_flag
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
 
