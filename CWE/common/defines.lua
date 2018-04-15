@@ -561,10 +561,10 @@ diplomacy = {
 	GW_WARGOAL_JINGOISM_REQUIREMENT_MOD = 1, -- % deduction of required jingoists in country
 	GW_WARSCORE_COST_MOD = 0.65, -- cost reduction factor on warscore needed to fulfill goal if great war
 
-	TENSION_DECAY = -0.08,
+	TENSION_DECAY = -0.8,
 	TENSION_FROM_CB = 0.04,
-	TENSION_FROM_MOVEMENT = 0.02, -- tension per 1000 in nationalist movement
-	TENSION_FROM_MOVEMENT_MAX = 1.2, -- max total value no matter the size of the movement
+	TENSION_FROM_MOVEMENT = 0.01, -- tension per 1000 in nationalist movement
+	TENSION_FROM_MOVEMENT_MAX = 1.8, -- max total value no matter the size of the movement
 	AT_WAR_TENSION_DECAY = -0.12, -- for each potentially interested GP at war (value is if all possible GPs are at war) 
 	TENSION_ON_CB_DISCOVERED = 20,
 	TENSION_ON_REVOLT = 50,
