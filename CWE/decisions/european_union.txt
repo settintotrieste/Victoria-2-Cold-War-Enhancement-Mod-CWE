@@ -203,6 +203,52 @@ NOT = { has_country_flag = hide_superstate }
 		ai_will_do = { factor = 1 } 
 	}
 
+choose_eu = {
+		picture = "choose_eu"
+	potential = {
+has_country_flag = maastricht_treaty
+NOT = { has_country_flag = hide_superstate }
+tech_school = XEU_tech_school
+				}
+
+		allow = {
+			war = no
+			election = no
+OR = { ai = no NOT = { OR = { ruling_party_ideology = traditionalist ruling_party_ideology = nationalist ruling_party_ideology = populist } } }
+					}
+
+		effect = {
+		tech_school = XEU_tech_school1
+		}
+
+		ai_will_do = { 
+			factor = 1 
+			}
+	}
+
+choose_eec = {
+		picture = "choose_eec"
+	potential = {
+has_country_flag = maastricht_treaty
+NOT = { has_country_flag = hide_superstate }
+tech_school = XEU_tech_school1
+				}
+alert = no
+		allow = {
+			war = no
+			election = no
+OR = { ai = no ruling_party_ideology = traditionalist ruling_party_ideology = nationalist ruling_party_ideology = populist }
+					}
+
+		effect = {
+		tech_school = XEU_tech_school
+		}
+
+		ai_will_do = { 
+			factor = 1 
+			}
+	}
+
 #
 # Leader Decision: Political Union
 #
@@ -255,14 +301,14 @@ NOT = { has_country_flag = hide_superstate }
 					}
 		allow = {
 			OR = { government = socialist_democracy government = democracy government = hms_government }
-			any_neighbor_country = { NOT = { tag = XEU }  has_country_modifier = eec NOT = { has_country_modifier = wto_chairmanship } NOT = { has_country_modifier = ibrd_chairmanship } NOT = { has_country_modifier = imf_chairmanship } OR = { in_sphere = THIS vassal_of = THIS } NOT = { has_country_modifier = rejected_union } }
+			any_neighbor_country = { tech_school = XEU_tech_school1 NOT = { tag = XEU } NOT = { has_country_modifier = wto_chairmanship } NOT = { has_country_modifier = ibrd_chairmanship } NOT = { has_country_modifier = imf_chairmanship } OR = { in_sphere = THIS vassal_of = THIS } NOT = { has_country_modifier = rejected_union } }
 			election = no
 			is_greater_power = yes 
 			political_polarization = 1
             war = no
 		}
 		effect = {
-			any_country = { limit = { has_country_flag = xeu_ambition OR = { vassal_of = THIS in_sphere = THIS } } country_event = 11106 }
+			any_country = { limit = { has_country_flag = xeu_ambition tech_school = XEU_tech_school1 NOT = { tag = XEU } NOT = { has_country_modifier = wto_chairmanship } NOT = { has_country_modifier = ibrd_chairmanship } NOT = { has_country_modifier = imf_chairmanship } OR = { in_sphere = THIS vassal_of = THIS } NOT = { has_country_modifier = rejected_union } } country_event = 11106 }
 		}
 		ai_will_do = {
 			factor = 1
@@ -276,7 +322,7 @@ NOT = { has_country_flag = hide_superstate }
 			tag = XEU
 		}
 		allow = {
-			any_greater_power = { NOT = { tag = XEU } has_country_modifier = eec NOT = { has_country_modifier = rejected_union } }
+			any_greater_power = { tech_school = XEU_tech_school1 NOT = { tag = XEU } NOT = { has_country_modifier = wto_chairmanship } NOT = { has_country_modifier = ibrd_chairmanship } NOT = { has_country_modifier = imf_chairmanship } NOT = { has_country_modifier = rejected_union } }
 			OR = { government = socialist_democracy government = democracy government = hms_government }
 			election = no
 			is_greater_power = yes 
@@ -284,7 +330,7 @@ NOT = { has_country_flag = hide_superstate }
             	war = no
 		}
 		effect = {
-			any_greater_power = { limit = { has_country_flag = xeu_ambition } country_event = 11106 }
+			any_greater_power = { limit = { has_country_flag = xeu_ambition tech_school = XEU_tech_school1 NOT = { tag = XEU } NOT = { has_country_modifier = wto_chairmanship } NOT = { has_country_modifier = ibrd_chairmanship } NOT = { has_country_modifier = imf_chairmanship } NOT = { has_country_modifier = rejected_union } } country_event = 11106 }
 			add_country_modifier = { name = xeu_enlarge_union_gp duration = 3500 }
 		}
 		ai_will_do = {
@@ -295,26 +341,29 @@ NOT = { has_country_flag = hide_superstate }
 	maastricht_treaty = {
 		picture = "maastricht_treaty"
 		potential = {
-			OR = { tag = FRA tag = SPA tag = POR tag = ITA tag = GER tag = BEL tag = LUX tag = NET tag = ENG tag = IRE tag = GRE tag = DEN }
-			exists = yes
+			has_country_flag = xeu_ambition
 			year = 1992 
-			NOT = { has_global_flag = european_coal_and_steel_community }
+			NOT = { has_global_flag = blocsenabled }
 			NOT = { has_country_flag = maastricht_treaty }
 		}
 
 		allow = {
-			OR = { government = socialist_democracy government = democracy government = hms_government }
+
+NOT = { OR = { ruling_party_ideology = traditionalist ruling_party_ideology = nationalist ruling_party_ideology = populist } }
+
+			OR = { government = socialist_democracy government = democracy government = hms_government government = democracy1 government = hms_government1 }
 			war = no
 			trust_busting = 1
 		}
 
 		effect = {
+			tech_school = XEU_tech_school1
 			set_country_flag = maastricht_treaty
 			set_country_flag = trade_block_ambition
 			set_country_flag = xeu_ambition
 			set_country_flag = in_trade_block
-			capital_scope = {  add_province_modifier = { name = single_market duration = -1 } }	
-			capital_scope = {  add_province_modifier = { name = currency_union_province duration = -1 } }
+			any_owned = { add_province_modifier = { name = single_market duration = -1 } }	
+			any_owned = { add_province_modifier = { name = currency_union_province duration = -1 } }
 			all_core = { add_core = XEU }
 			prestige = 10
 			
