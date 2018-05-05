@@ -647,7 +647,7 @@ pops = {
 	CON_MIDRICH_CLERGY = 12,
 	CON_REFORM_IMPACT = -5,
 	CON_COLONIAL_FACTOR = -0.5,
-	RULING_PARTY_HAPPY_CHANGE = 1,
+	RULING_PARTY_HAPPY_CHANGE = -1,
 	RULING_PARTY_ANGRY_CHANGE = 3,
 
 	PDEF_BASE_CON = 20.0,			-- so half'ed effect.
@@ -659,7 +659,7 @@ pops = {
 	STATE_CREATION_ADMIN_LIMIT = 0.01,
 	MIL_TO_JOIN_REBEL = 8, -- Rebels over this will join a faction
 	MIL_TO_JOIN_RISING = 9, -- Rebels over this will join a general rising
-	MIL_TO_AUTORISE = 10, -- Rebels over this rise no matter what
+	MIL_TO_AUTORISE = 9.9, -- Rebels over this rise no matter what
 	REDUCTION_AFTER_RISEING = 1, -- After a pop spawns a rebellion, its militancy will be reduced this much
 	REDUCTION_AFTER_DEFEAT = 9.0, -- After a rebellion is being defeated in combat, its pop militancy will be divided by this number.
 																-- (if value < 1.0, the MIL will be increased) (Beware! value must be > 0)
