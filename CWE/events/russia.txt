@@ -50,19 +50,19 @@ country_event = {
 			}
 		}
 		FROM = { country_event = 32502 }
-		ai_chance = { factor = 95 }
+		ai_chance = { factor = 0.95 }
 	}
 	
 	option = {
 		name = "kuril_islands_dispute_optb"
 		1089 = { secede_province = JAP remove_core = RUS }
 		FROM = { country_event = 32503 }
-		treasury = 1900000
+		money = 1900000
 		ai_chance = { 
-			factor = 5
-			modifier = { NOT = { money = 100000 } factor = 10 } 
-			modifier = { is_greater_power = no factor = 15 }
-			modifier = { has_recently_lost_war  = yes factor = 5 } 
+			factor = 0.05
+	modifier = { NOT = { money = 100000 } factor = 10 } 
+	modifier = { is_greater_power = no factor = 15 }
+	modifier = { has_recently_lost_war  = yes factor = 5 } 
 		}
 	}
 }
@@ -91,7 +91,8 @@ country_event = {
 	
 	option = {
 		name = "kuril_islands_dispute_accept_opta" # accept
-		clr_country_flag = kuril_islands_dispute treasury = -1900000 
+		clr_country_flag = kuril_islands_dispute 
+		money = -1900000 
 	}
 }
 
@@ -105,11 +106,13 @@ country_event = {
 	fire_only_once = yes
 	
 	trigger = {
+		NOT = { has_global_flag = chechen_war_no }
 		war = no
 		tag = RUS
 		year = 1999
 		exists = CHC
 		NOT = { truce_with = CHC }
+		is_our_vassal = CHC
 		NOT = { government = proletarian_dictatorship }
 	}
 	
@@ -122,13 +125,13 @@ country_event = {
 		casus_belli = { target = CHC type = annex_core_country months = 12 }
 		war = { target = CHC attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } }
 		CHC = { country_event = 32508 }
-		ai_chance = { factor = 100 }
+		ai_chance = { factor = 0.9 }
 	}
 	option = {
 		name = EVT_32504_B
 		# EVT_32504_B;Leave matters as they are. Devolve our Caucasus realm.
-		release = CHC
-		ai_chance = { factor = 0 }
+		release_vassal = CHC
+		ai_chance = { factor = 0.1 }
 	}
 }
 
@@ -142,6 +145,7 @@ country_event = {
 	fire_only_once = yes
 	
 	trigger = {
+		NOT = { has_global_flag = chechen_war_no }
 		war = no
 		tag = RUS
 		year = 1994
@@ -158,13 +162,13 @@ country_event = {
 		prestige = -20
 		casus_belli = { target = CHC type = make_puppet months = 12 }
 		war = { target = CHC attacker_goal = { casus_belli = make_puppet } defender_goal = { casus_belli = status_quo } }
-		ai_chance = { factor = 100 }
+		ai_chance = { factor = 0.9 }
 	}
 	option = {
 		name = EVT_32505_B
 		prestige = -40
 		# EVT_32505_B;Leave matters as they are. Devolve our Caucasus realm.
-		ai_chance = { factor = 0 }
+		ai_chance = { factor = 0.1 }
 	}
 }
 
@@ -194,14 +198,14 @@ country_event = {
 		name = EVT_32506_A
 		treasury = 100000
 		set_country_flag = oligarchs
-		ai_chance = { factor = 100 }
+		ai_chance = { factor = 0.9 }
 	}
 	option = {
 		name = EVT_32506_B
 		set_country_flag = oligarchs_constrained
 		election = yes
 		any_pop = { militancy = 1.0 consciousness = 0.4 }
-		ai_chance = { factor = 0 }
+		ai_chance = { factor = 0.1 }
 	}
 }
 
@@ -231,7 +235,7 @@ country_event = {
 
 	option = {
 		name = EVT_32507_A
-		treasury = -200000 # this hopefully make the country go bancrupt.
+		treasury = -2000000 # this hopefully make the country go bancrupt.
 		set_country_flag = oligarchs_constrained
 		add_country_modifier = { name = financial_crisis duration = 1700 }
 	}
@@ -264,27 +268,27 @@ country_event = {
 	
 	trigger = {
 		war = no
-		tag = CHC
-		year = 1992
-		exists = CHC
-		is_vassal = yes
+		tag = RUS
+		year = 1991
+		CHC = { exists = no }
+		any_owned_province = { is_core = CHC }
 		NOT = { government = proletarian_dictatorship }
 	}
 	
 	mean_time_to_happen = { months = 11 }
 
 	option = {
-		name = EVT_32509_A
-		# EVT_32509_A;Become independent
-		overlord = { release_vassal = THIS }
-		prestige = 10
-		ai_chance = { factor = 100 }
+		name = "We are on the road to the Chechen War"
+		release = CHC
+		prestige = -100
+		ai_chance = { factor = 0.9 }
 	}
 	option = {
-		name = EVT_32509_B
-		prestige = -10
-		# EVT_32509_B;Leave matters as they are. 
-		ai_chance = { factor = 0 }
+		name = "Grant independence"
+		prestige = 25
+		release = CHC
+		set_global_flag = chechen_war_no 
+		ai_chance = { factor = 0.1 }
 	}
 }
 
@@ -1397,7 +1401,8 @@ country_event = {
 
   option = {
     name = EVT_8014274_A
-	government = populist_dictatorship country_event = 800050
+	government = presidential_dictatorship 
+	country_event = 800050
 	badboy = 3
 	any_pop	= {
 		limit = { is_primary_culture = yes } 
@@ -1412,7 +1417,7 @@ country_event = {
 		}
 	}
 	plurality = -20
-	ai_chance = { factor = 100 }
+	ai_chance = { factor = 0.9 }
   }
   option = {
     name = EVT_8014274_B
@@ -1428,7 +1433,7 @@ country_event = {
 			value = communist
 		}
 	}
-	ai_chance = { factor = 0 }
+	ai_chance = { factor = 0.1 }
   }
 }
 country_event = {
@@ -1498,7 +1503,7 @@ country_event = {
 	nationalvalue = nv_order
 	plurality = -20
 	
-	ai_chance = { factor = 70 }
+	ai_chance = { factor = 0.7 }
   }
   
   option = {
@@ -1552,7 +1557,7 @@ country_event = {
 	
 	plurality = 10
   	
-  	ai_chance = { factor = 30 }
+  	ai_chance = { factor = 0.3 }
   	}
 }
 country_event = {
