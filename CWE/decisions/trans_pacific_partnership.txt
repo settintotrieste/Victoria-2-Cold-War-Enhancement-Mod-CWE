@@ -7,7 +7,12 @@ political_decisions = {
 		picture = "tpp_parlament"
 		potential = {
 			has_country_flag = trade_block_ambition 
+		NOT = { has_global_flag = blocsenabled }
+		USA = { is_greater_power = yes }
+		CHI = { is_greater_power = yes }
+		JAP = { is_greater_power = yes }
 			OR = { 
+				tag = TAI
 				tag = JAP 
 				tag = SKO 
 				has_country_flag = xan_ambition 
@@ -17,9 +22,10 @@ political_decisions = {
 			}
 			NOT = { has_country_flag = tpp_ambition }
 			NOT = { has_country_modifier = in_bankrupcy } 
-			NOT = { AND = { part_of_sphere = yes sphere_owner = { NOT = { has_country_flag = tpp_ambition } } } }
 		}
 		allow = {
+OR = { part_of_sphere = no sphere_owner = { has_country_flag = tpp_ambition } }
+OR = { relation = { who = JAP value = 50 } relation = { who = USA value = 50 } }
 			OR = {
 				ruling_party_ideology = socialist
 				ruling_party_ideology = progressive
@@ -29,9 +35,14 @@ political_decisions = {
 			}
 			OR = {
 				government = democracy
+				government = democracy1
 				government = hms_government
+				government = hms_government1
 			}
+
 			globalization = 1
+
+			is_vassal = no
 			election = no
 			war = no
 		}
@@ -47,44 +58,47 @@ political_decisions = {
 					factor = 3
 				}
 			}
-			capital_scope = {  add_province_modifier = { name = trans_pacific_partnership duration = -1 } }
+add_country_modifier = { name = trans_pacific_partnership duration = -1 }
 		}
-		ai_will_do = { factor = 1 modifier = { NOT = { OR = { tag = JAP tag = USA JAP = { has_country_flag = tpp_ambition relation = { who = THIS value = 100 } } USA = { has_country_flag = tpp_ambition relation = { who = THIS value = 100 } } } } factor = 0 } }
+		ai_will_do = { factor = 1 }
 	}
 
 	end_tpp_ambition = {
 		picture = "tpp_protest"
 		potential = {
-			has_country_flag = tpp_ambition
-			OR = { 
-				AND = { part_of_sphere = yes sphere_owner = { NOT = { has_country_flag = tpp_ambition } } }
-				NOT = { OR = { government = democracy government = hms_government } }
-				has_country_modifier = in_bankrupcy
-			}
-		}
+OR = { has_country_flag = tpp_ambition has_country_modifier = trans_pacific_partnership }
+				}
 		allow = {
-			OR = {
-				ruling_party_ideology = communist
-				ruling_party_ideology = populist
-				ruling_party_ideology = traditionalist
-				has_country_modifier = in_bankrupcy
-				AND = { part_of_sphere = yes sphere_owner = { NOT = { has_country_flag = tpp_ambition } } }
+
+election = no
+
+			OR = { 
+AND = { part_of_sphere = yes sphere_owner = { NOT = { has_country_flag = tpp_ambition } } }
+
+NOT = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } }
+
+has_country_modifier = in_bankrupcy
+
+is_vassal = yes
+
+ruling_party_ideology = communist_social
+ruling_party_ideology = communist
+ruling_party_ideology = populist
+ruling_party_ideology = traditionalist
 			}
-			war = no
-		}
+
+					}
 		effect = {
 			clr_country_flag = tpp_ambition
-			capital_scope = { 
-				remove_province_modifier = trans_pacific_partnership	
-				remove_province_modifier = single_market			
-			}
+			
+	remove_country_modifier = trans_pacific_partnership				
 			any_pop = {
 				scaled_militancy = {
 					issue = free_trade
 					factor = 3
 				}
 			}
-			tech_school = traditional_academic			
+				
 		}
 		ai_will_do = { factor = 1 }
 	}
@@ -92,6 +106,7 @@ political_decisions = {
 	tpp_single_market= {
 		picture = "tpp_single_market"
 		potential = {
+has_country_flag = disabled_for_now
 			has_country_flag = trade_block_ambition OR = { tag = JAP tag = SKO has_country_flag = xan_ambition has_country_flag = xna_ambition capital_scope = { continent = oceania } has_country_flag = xac_ambition }
 			OR = {
 				ruling_party_ideology = socialist
