@@ -1,27 +1,31 @@
 country_event = { # form the Malayan Union
   id = 8009700
-  title = EVT_8009700_NAME
+  title = "The Malayan Union"
   desc = EVT_8009701_DESC
   picture = "nwo2_federation_of_malaysia"
   fire_only_once = yes
 
   trigger = {
-    tag = MSY
-    year = 1946 NOT = { year = 1953 }
+    tag = FMS
+    year = 1946 
+	FMS = { government = colonial_government }
+	ENG = { is_our_vassal = FMS }
+	NOT = { year = 1953 }
 	war = no
   }
 
-  mean_time_to_happen = { months = 8  }
+  mean_time_to_happen = { months = 4 }
 
   option = {
-    name = EVT_8009700_A
+    name = "Yes"
 	ENG = { country_event = 8009701 }
-	ai_chance = { factor = 100 }
+	ai_chance = { factor = 0.9 }
   }
   option = {
-    name = EVT_8009700_B
+    name = "No"
 	prestige = -10
-	ai_chance = { factor = 0 }
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+	ai_chance = { factor = 0.1 }
   }
 }
 country_event = { # form the Malayan Union
@@ -33,16 +37,17 @@ country_event = { # form the Malayan Union
 
   option = {
     name = EVT_8009701_A
-	1388 = { secede_province = MSY }
-	1386 = { secede_province = MSY }
-	
+	1388 = { secede_province = FMS }
+	1386 = { secede_province = FMS }
+	FMS = { inherit = JOH inherit = TER inherit = KED }
+FMS = { government = hms_government add_accepted_culture = chinese add_accepted_culture = indian }
 	prestige = 10
 	badboy = -2
 	ai_chance = { factor = 100 }
   }
   option = {
     name = EVT_8009702_A
-	relation = { who = MSY value = -100 }
+	relation = { who = FMS value = -200 }
 	ai_chance = { factor = 0 }
   }
 }
@@ -55,8 +60,9 @@ country_event = { # Singapore independence
 
   trigger = {
     tag = ENG
-    is_our_vassal = MSY
-    year = 1957 NOT = { year = 1963 }
+    is_our_vassal = FMS
+    year = 1957 
+	NOT = { year = 1963 }
 	NOT = { exists = SNG }
 	owns = 1384 # Singapore
   }
@@ -66,7 +72,7 @@ country_event = { # Singapore independence
   option = {
     name = EVT_8009702_A
 	release_vassal = SNG
-	release_vassal = MSY
+	release_vassal = FMS
 	diplomatic_influence = { who = SNG value = 200 }
 	prestige = 10
 	badboy = -2
@@ -88,8 +94,9 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-    tag = MSY
-    year = 1951 NOT = { year = 1953 }
+    tag = FMS
+    year = 1951 
+	NOT = { year = 1953 }
   }
 
   mean_time_to_happen = { months = 8  }
@@ -99,26 +106,43 @@ country_event = {
 	prestige = -5
   }
 }
+
+#Formation of the Federation of Malaya
 country_event = {
   id = 8009719
-  title = EVT_8009719_NAME
+  title = "End of the Malayan Union"
   desc = EVT_8009719_DESC
   picture = "nwo2_malayan_emergency"
   fire_only_once = yes
 
   trigger = {
-    tag = MSY
-    government = colonial_government
-    year = 1948 NOT = { year = 1960 }
+    tag = FMS
+    government = hms_government
+	is_vassal = yes
+    year = 1948 
+	NOT = { year = 1960 }
   }
 
   mean_time_to_happen = { months = 7 }
 
   option = {
-    name = EVT_8009719_A
-    government = hms_government
+    name = "Head on the path to a greater Malaya"
+    government = hms_government1
+
+remove_accepted_culture = chinese 
+remove_accepted_culture = indian
+
 	any_pop = { limit = { culture = chinese } militancy = 4 consciousness = 2 }
+	ai_chance = { factor = 0.8 }
   }
+
+  option = {
+    name = "Maintain the Union"
+	prestige = 10
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+    ai_chance = { factor = 0.2 }
+  }
+
 }
 country_event = {
   id = 8009720
@@ -129,8 +153,9 @@ country_event = {
 
   trigger = {
     tag = SNG
-    year = 1963 NOT = { year = 1966 }
-    exists = MSY
+    year = 1963 
+	NOT = { year = 1966 }
+    exists = FMS
 	ENG = { is_our_vassal = SNG }
   }
 
@@ -138,16 +163,16 @@ country_event = {
 
   option = {
     name = EVT_8009720_A
-	relation = { who = MSY value = 100 }
-	MSY = { country_event = 8009721 }
-	ai_chance = { factor = 100 }
+	relation = { who = FMS value = 100 }
+	FMS = { country_event = { id = 8009721 days = 5 } }
+	ai_chance = { factor = 0.9 }
   }
 
   option = {
     name = EVT_8009720_B
-	any_pop = { militancy = 0.3 consciousness = 2 }
-	relation = { who = MSY value = -100 }
-	ai_chance = { factor = 0 }
+	any_pop = { militancy = 3 consciousness = 2 }
+	relation = { who = FMS value = -100 }
+	ai_chance = { factor = 0.1 }
   }
 }
 country_event = {
@@ -159,9 +184,11 @@ country_event = {
 
   option = {
     name = EVT_8009721_A
+	change_tag = MSY
 	inherit = SNG
-	government = hms_government1
-	any_pop = { militancy = -1  consciousness = -1 }
+	prestige = 25
+	government = hms_government
+	any_pop = { militancy = -5 consciousness = -3 }
   }
 }
 country_event = {
@@ -180,22 +207,22 @@ country_event = {
 	KLM = { exists = no }
   }
 
-  mean_time_to_happen = { months = 1  }
+  mean_time_to_happen = { months = 1 }
 
   option = {
     name = EVT_8009722_A
 	relation = { who = MSY value = 100 } 
 	any_pop = { militancy = 0.5  consciousness = 2 }
-	MSY = { country_event =  8009723 }
+
+	#MSY = { country_event =  8009723 }
+
 	any_owned = { limit = { OR = { province_id = 1394 province_id = 1395 province_id = 1396 province_id = 1397 } } secede_province = MSY } 
+
 	#release_vassal = MSY
+
 	diplomatic_influence = { who = MSY value = 200 } 
 
-	#release_vassal = BRU
-
-	#BRU = { government = absolute_monarchy }
-
-	#diplomatic_influence = { who = BRU value = 200 }
+	BRU = { country_event = 1512113 }
 
 MSY = { inherit = SWK inherit = SAB  }
 	ai_chance = { factor = 0.9 }
