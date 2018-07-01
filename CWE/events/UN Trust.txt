@@ -1,0 +1,216 @@
+#Setting up the Trust - loser nation
+country_event = {
+	id = 10020
+title = "UN Resolution on $COUNTRY_ADJ$ Aggression"
+	desc = EVTDESC10020
+	picture = "un_trust_vote"
+
+is_triggered_only = yes
+
+option = {
+name = "We are now at the mercy of the UN"
+set_country_flag = un_trust_ongoing
+any_country = { limit = { has_country_modifier = unsc_permanent_member } country_event = 10021 }
+		}
+
+}
+
+#Setting up the Trust - UNSC votes
+country_event = {
+	id = 10021
+title = "UN Resolution on $FROMCOUNTRY_ADJ$ Aggression"
+	desc = EVTDESC10021
+	picture = "un_trust_vote"
+
+is_triggered_only = yes
+
+option = {
+name = "Support the resolution!"
+FROM = { prestige_factor = -0.05 relation = { who = THIS value = -100 } }
+ai_chance = { factor = 1 modifier = { factor = 0 relation = { who = FROM value = 100 } } }
+		}
+
+option = {
+name = "Veto the resolution!"
+diplomatic_influence = { who = FROM value = 25 }
+FROM = { relation = { who = THIS value = 100 } }
+FROM = { add_country_modifier = { name = unsc_veto_trust duration = -1 } }
+ai_chance = { factor = 1 modifier = { factor = 0 NOT = { relation = { who = FROM value = 100 } } } }
+		}
+
+}
+
+#Check resolution result - win
+country_event = {
+	id = 10022
+title = "UN Resolution Passes"
+	desc = EVTDESC10022
+	picture = "un_trust_win"
+
+trigger = {
+NOT = { has_country_modifier = unsc_veto_trust }
+has_recently_lost_war = yes
+has_country_flag = un_trust_ongoing
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "The UN will now dismember $COUNTRY$"
+clr_country_flag = un_trust_ongoing
+remove_country_modifier = unsc_veto_trust
+prestige_factor = -0.25
+
+
+any_country = { 
+limit = { exists = no any_core = { NOT = { is_core = THIS } owned_by = THIS } } 
+country_event = 10025
+}
+
+
+country_event = { id = 10026 days = 2 }
+
+
+UNT = { civilized = yes }
+
+UNT = { government = sar_government 
+country_event = 800054 ruling_party_ideology = big_tent }
+
+		}
+
+}
+
+#Check resolution result - Lose
+country_event = {
+	id = 10023
+title = "UN Resolution Veoted"
+	desc = EVTDESC10023
+	picture = "un_trust_win"
+
+trigger = {
+has_country_modifier = unsc_veto_trust
+has_recently_lost_war = yes
+has_country_flag = un_trust_ongoing
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Our national sovereignty is safe"
+clr_country_flag = un_trust_ongoing
+remove_country_modifier = unsc_veto_trust
+		}
+
+}
+
+#Look for a sphere owner for UNT
+country_event = {
+	id = 10024
+title = "Mandate over the UN Trust Territories"
+	desc = EVTDESC10024
+	picture = "un_trust_territory"
+
+trigger = {
+has_country_modifier = unsc_permanent_member
+is_greater_power = yes
+UNT = { part_of_sphere = no }
+has_recently_lost_war = no
+UNT = { exists = yes }
+NOT = { badboy = 1 }
+is_vassal = no
+NOT = { has_country_modifier = decline_mandate }
+}
+
+mean_time_to_happen = { 
+months = 2
+modifier = { ai = no factor = 0.01 }
+	}
+
+option = {
+name = "Accept the mandate"
+diplomatic_influence = { who = UNT value = 200 }
+UNT = { primary_culture = THIS }
+
+any_country = { limit = { vassal_of = UNT } country_event = 10027 }
+
+UNT = { political_reform = minorities_equal_rights }
+
+ai_chance = { factor = 0.8 }
+		}
+
+option = {
+name = "Decline the mandate"
+diplomatic_influence = { who = UNT value = -200 }
+add_country_modifier = { name = decline_mandate duration = 360 }
+ai_chance = { factor = 0.2 }
+		}
+
+}
+
+#Setting up the Trust - Free non-existent nations
+country_event = {
+	id = 10025
+title = "United Nations Trust Territories"
+	desc = EVTDESC10021
+	picture = "un_trust_vote"
+
+is_triggered_only = yes
+
+option = {
+name = "Support the resolution!"
+FROM = { 
+any_owned = { 
+limit = { is_core = THIS } 
+secede_province = THIS 
+		} 
+	}
+
+UNT = { create_vassal = THIS }
+
+government = mandate_government
+
+country_event = 800054
+
+UNT = { sphere_owner = { diplomatic_influence = { who = THIS value = 200 } } }
+
+		}
+}
+
+#Setting up the Trust - Free non-existent nations
+country_event = {
+	id = 10026
+title = "UN Occupation Begins"
+	desc = "UN Occupation Forces for $COUNTRY$ have arrived to dismember our nation."
+	picture = "un_trust_territory"
+
+is_triggered_only = yes
+
+option = {
+name = "Our fate is sealed!"
+any_owned = { limit = { is_capital = no OR = { has_building = naval_base NOT = { is_core = THIS } } } secede_province = UNT }
+		}
+
+}
+
+#Setting up the Trust - Grant diplomatic Infleunce
+country_event = {
+	id = 10027
+title = "UN Trust Territories"
+	desc = "UN Occupation Forces for $COUNTRY$ have arrived to dismember our nation."
+	picture = "un_trust_territory"
+
+is_triggered_only = yes
+
+option = {
+name = "Our fate is sealed!"
+FROM = { diplomatic_influence = { who = THIS value = 200 } }
+		}
+
+}
+
+
+
