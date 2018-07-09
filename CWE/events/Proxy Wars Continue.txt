@@ -1,82 +1,109 @@
-
-
-#Set up Rebel Tag
+#Set up Rebel Tag in target country
 country_event = {
-	id = 1400072
-	title = "Rebellion grows stronger"
+	id = 1400071
+	title = "$FROMCOUNTRY$ Supporting $COUNTRY_ADJ$ Rebels"
 	desc = "$FROMCOUNTRY$ is supporting rebel groups in our country, allowing them to be much more organised and a much greater threat to our nation."
 	picture = "crisis_internationalisation"
 	
 is_triggered_only = yes
 
 option = {
-name = "Good"
+name = "Lodge a strong complaint"
+prestige = -10
+relation = { who = FROM value = -50 }
 
-FROM = { any_owned = { limit = { is_capital = no controlled_by_rebels = yes } secede_province = THIS } }
+FROM = { country_event = 1400076 }
 
-civilized = yes
+country_event = { id = 1400077 days = 2 }
 
-primary_culture = FROM
+any_country = { 
+limit = {
+exists = no
+OR = { tag = R01 tag = R02 tag = R03 tag = R04 tag = R05 tag = R06 tag = R07 tag = R08 tag = R09 tag = R10 }
+} 
+country_event = 1400072 
 
-relation = { who = FROM value = -200 }
-
-money = 500000
-weaponry = 100
-small_arms = 100
-FROM = {
-war = {
-	target = THIS
-	attacker_goal = { casus_belli = civil_war }
-	defender_goal = { casus_belli = civil_war }
-	call_ally = no
 }
-	}
 		}
 
 }
 
-#In the event Rebels are at peace
+#Good relation with rebels
 country_event = {
-	id = 1400073
-title = "Peace"
-desc = "All countries will now be returned to normal"
-	picture = "un_trust_territory"
-
-trigger = {
-exists = yes
-OR = { tag = R01 tag = R02 tag = R03 tag = R04 tag = R05 tag = R06 tag = R07 tag = R08 tag = R09 tag = R10 }
-war = no
-}
+	id = 1400076
+	title = "$COUNTRY$ Supports the $FROMCOUNTRY$'s Rebels"
+	desc = "$COUNTRY$ has chosen to support the rebel groups in $FROMCOUNTRY$, may they be victorious in their quest for freedom."
+	picture = "crisis_internationalisation"
+	
+is_triggered_only = yes
 
 option = {
-name = "Set them free"
+name = "The $COUNTRY_ADJ$ people wishes them all the best"
 
+FROM = { 
 any_country = { 
-limit = { exists = no any_core = { owned_by = THIS } } 
-country_event = 1400074
+
+limit = { 
+war_with = FROM
+exists = yes
+OR = { tag = R01 tag = R02 tag = R03 tag = R04 tag = R05 tag = R06 tag = R07 tag = R08 tag = R09 tag = R10 }
 }
 
-any_country = { 
-limit = { exists = yes any_core = { owned_by = THIS } } 
-country_event = { id = 1400075 days = 2 }
+country_event = 1400079
+
+relation = { who = THIS value = 200 }
+
+} 
 }
 
 		}
+
 }
 
-#Independence for non existent countries
+#Remove non existent wars
 country_event = {
-	id = 1400074
-	title = "Independence of $COUNTRY$"
-	desc = "$FROMCOUNTRY$ is supporting rebel groups in our country, allowing them to be much more organised and a much greater threat to our nation."
+	id = 1400077
+	title = "$COUNTRY_ADJ$ Civil War"
+	desc = "A full blown civil war has erupted in $COUNTRY$."
+	picture = "crisis_internationalisation"
+	
+is_triggered_only = yes
+
+option = {
+name = "We shall not be defeated!"
+any_country = { limit = { exists = no war_with = THIS } country_event = 1412204 }
+		}
+
+}
+
+#Return of our lands for existent countries
+country_event = {
+	id = 1400075
+	title = "Return of $COUNTRY_ADJ$ Lands"
+	desc = "As a neighbouring country has fallen to rebels, the new government has decided to allow us to regain our cored lands."
 	picture = "crisis_internationalisation"
 	
 is_triggered_only = yes
 
 option = {
 name = "Rejoice"
+prestige = 50
+FROM = { any_owned = { limit = { is_core = THIS } secede_province = THIS } }
+		}
 
-FROM = { release = THIS }
+}
+
+#Return of our lands for existent countries
+country_event = {
+	id = 1400079
+	title = "Government set up for rebels"
+	desc = "As a neighbouring country has fallen to rebels, the new government has decided to allow us to regain our cored lands."
+	picture = "crisis_internationalisation"
+	
+is_triggered_only = yes
+
+option = {
+name = "Rejoice"
 
 FROM = { sphere_owner = { diplomatic_influence = { who = THIS value = 200 } } }
 
@@ -136,9 +163,8 @@ limit = { owner = { FROM = { government = socialist_democracy } } }
 owner = { government = socialist_democracy country_event = 800054 ruling_party_ideology = communist_social }
 }
 
-FROM = { any_owned = { limit = { is_core = THIS } secede_province = THIS }
-
-
 		}
 
 }
+
+
