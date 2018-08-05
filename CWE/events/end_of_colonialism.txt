@@ -12,7 +12,7 @@ province_event = { # Demand Autonomy
 		is_primary_culture = no
 		is_accepted_culture = no
 		controlled_by = owner
-		
+		is_colonial = yes
 		NOT = { has_province_modifier = grant_independence }
 		NOT = { has_province_modifier = promised_autonomy }
 		NOT = { has_province_modifier = denied_independence }
@@ -132,7 +132,9 @@ province_event = { # Demand Autonomy
 			consciousness = 0.5
 		}
 		add_province_modifier = { name = promised_autonomy duration = 1080 }
-		ai_chance = { factor = 0.5 modifier = { NOT = { minorities_reform = minorities_equal_rights } factor = 0  } }
+
+		ai_chance = { factor = 0 }
+
 	}
 	option = {
 		name = "EVT_15500_A"		#Deny Autonomy
@@ -141,7 +143,8 @@ province_event = { # Demand Autonomy
 			consciousness = 1
 		}
 		add_province_modifier = { name = denied_independence duration = 1080 }
-		ai_chance = { factor = 0.5 modifier = { minorities_reform = minorities_equal_rights factor = 0 } }
+
+		ai_chance = { factor = 1 }
 	}
 }
 province_event = { # Separatists demands freedom
@@ -190,6 +193,7 @@ province_event = { # Separatists demands freedom
 any_country = { 
 		limit = { 
 			NOT = { tag = THIS } 
+			exists = no
 			any_core = { has_province_modifier = grant_independence } 
 		} 
 		country_event = 1540333 
@@ -197,7 +201,8 @@ any_country = {
 
 		#set_global_flag = grant_independence
 
-		ai_chance = { factor = 0.1 }
+		ai_chance = { factor = 1 }
+
 	}
 	option = {
 		name = "EVT_15501_B" #Reject
@@ -207,13 +212,15 @@ add_province_modifier = { name = grant_independence duration = 1080 }
 
 any_country = { 
 		limit = { 
-			NOT = { tag = THIS } 
+			NOT = { tag = THIS }
+			exists = no 
 			any_core = { has_province_modifier = grant_independence } 
 		} 
 		country_event = 1540334 
 	}
 
-		ai_chance = { factor = 0.9 modifier = { owner = { minorities_reform = minorities_equal_rights citizenship_policy = full_citizenship } factor = 0 } }
+		ai_chance = { factor = 0 }
+
 	}
 }
 country_event = { # $FROMCOUNTRY$ offers the return of provinces
@@ -292,7 +299,7 @@ province_event = { # Colonial unrest in $PROVINCENAME$
     name = "EVT_15400_A"
 	any_pop = { limit = { is_accepted_culture = no is_primary_culture = no } consciousness = 1 militancy = 0.5 }
 	add_province_modifier = { name = colonial_unrest duration = 1750 }
-	ai_chance = { factor = 0.1 modifier = { factor = 100 owner = { NOT = { government = democracy government = hms_government } } } }
+	ai_chance = { factor = 0.6 }
   }
 
   option = {
@@ -300,7 +307,7 @@ province_event = { # Colonial unrest in $PROVINCENAME$
 	any_pop = { limit = { is_accepted_culture = no is_primary_culture = no } consciousness = 0.5 }
 	add_province_modifier = { name = colonial_promise duration = -1 }
 	add_province_modifier = { name = colonial_dry_spell duration = 3500 }
-	ai_chance = { factor = 1 }
+	ai_chance = { factor = 0.4 }
   }
 }
 province_event = { # Colonials in $PROVINCENAME$ accuses us of breaking promises
@@ -313,7 +320,7 @@ province_event = { # Colonials in $PROVINCENAME$ accuses us of breaking promises
 	NOT = { has_province_modifier = colonial_dry_spell }
   }
 
-  mean_time_to_happen = { months = 1  }
+  mean_time_to_happen = { months = 24  }
 
   option = {
     name = EVT_colonial_promise_broken_A
@@ -445,8 +452,7 @@ country_event = { # Self-rule of $FROMCOUNTRY$
 
   option = {
     name = EVT_liberate
-	release = FROM
-	create_vassal = FROM
+	release_vassal = FROM
 	diplomatic_influence = { who = FROM value = 200 }
 	FROM = { 
 	government = colonial_government country_event = 800054 
@@ -566,7 +572,7 @@ country_event = { # Full independence of $FROMCOUNTRY$
   option = {
     name = EVT_fullindependence_A
 	release = FROM 
-	prestige = -2
+	prestige = -20
 
 	random_owned = { 
 limit = { 
