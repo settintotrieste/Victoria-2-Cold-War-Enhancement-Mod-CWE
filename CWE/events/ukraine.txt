@@ -12,25 +12,33 @@ country_event = {
 
   trigger = {
     tag = UKR
-	election = yes
+	exists = RUS
+	government = democracy
     year = 1993
   }
 
   mean_time_to_happen = { months = 12 }
 
   option = {
-    name = "EVT_1014199_A"
-	government = nationalist_dictatorship  country_event = 800054 # cpcn cahnges culture to russian
+    name = "Leonid Kravchuk clings on"
+	ruling_party_ideology = socialist
+	government = presidential_dictatorship  
+country_event = 800050 # cpcn cahnges culture to russian
 	any_pop = { militancy = 3 consciousness = 1 }
-	ai_chance = { factor = 0.1 modifier = { factor = 2 NOT = { RUS = { has_country_modifier = in_bankrupcy } } in_sphere = RUS } }
 	ai_chance = { factor = 0.1 }
   }
 
   option = {
-    name = "EVT_1014199_B"
+    name = "Leonid Kuchma is President"
 	any_pop = { militancy = 1.0  consciousness = 2 }
 	add_accepted_culture = russian
-	RUS = { casus_belli = { target = UKR type = install_authoritarian_regime  months = 24 } }
+	political_reform = registered_voting
+	political_reform = ruling_party_opinion
+	political_reform = censored_publishing
+	political_reform = quality_of_service
+	political_reform = parties_only_nominated
+	political_reform = quality_of_service
+	ruling_party_ideology = conservative
 	ai_chance = { factor = 0.9 }
   }
   
@@ -49,7 +57,12 @@ country_event = {
 		war = no
 		year = 2004
 		exists = UKR
-		UKR = { in_sphere = RUS }
+		exists = RUS
+		tag = UKR
+		government = democracy
+		
+		#UKR = { in_sphere = RUS }
+
 	}
 
 	mean_time_to_happen = {
@@ -57,18 +70,26 @@ country_event = {
 	}
 
 	option = {
-		name = EVT_1014200_A
+		name = "Yushchenko will lead Ukraine"
 		# EVT_1014200_A;Freedom!
 		USA = { country_event = 1014201 }
 		GER = { country_event = 1014201 }
-		ai_chance = { factor = 100 }
+		government = democracy
+		country_event = 800054
+		ruling_party_ideology = liberal
+		relation = { who = RUS value = -200 }
+		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
-		name = EVT_1014200_B
+		name = "Select Yanukovych instead"
 		# EVT_1014200_B;Stay in power
 		any_pop = { militancy = 3 consciousness = 2 }
-		ai_chance = { factor = 0 }
+		prestige = -50
+		government = presidential_dictatorship  
+		country_event = 800050
+		ruling_party_ideology = conservative
+		ai_chance = { factor = 0.1 }
 	}
 }
 
@@ -82,13 +103,13 @@ country_event = {
 	option = {
 		name = EVT_1014201_A
 		# EVT_1014201_A;Spread democracy
-		diplomatic_influence = { who = FROM value = 100 }
+		diplomatic_influence = { who = FROM value = 25 }
 		ai_chance = { factor = 100 }
 	}
 	option = {
 		name = EVT_1014201_B
 		# EVT_1014201_B;Don't get involved
-		diplomatic_influence = { who = FROM value = -50 }
+		diplomatic_influence = { who = FROM value = -25 }
 		ai_chance = { factor = 0 }
 	}
 }	
@@ -104,9 +125,14 @@ country_event = {
 	
 	trigger = {
 		war = no
+		is_vassal = no
 		tag = UKR
-		OR = { year = 2010 UKR = { has_country_modifier = in_bankrupcy } } # year or bankrupt by 32506/32507
+		government = democracy
+OR = { year = 2014 UKR = { has_country_modifier = in_bankrupcy } }
+		exists = RUS
 		UKR = { in_sphere = RUS }
+		GER = { government = democracy }
+		USA = { government = democracy }
 	}
 
 	mean_time_to_happen = {
@@ -114,18 +140,29 @@ country_event = {
 	}
 
 	option = {
-		name = EVT_1014202_A
+name = "Depose Yanukovych and join the EU (Russia annxes Crimea)"
 		# EVT_1014202_A;Turn to Europe
 		GER = { country_event = 1014203 }
-		random_country = { limit = { tag = RUS war = no UKR = { owns = 964 } } country_event = 1014204 }
-		ai_chance = { factor = 100 }
+		set_global_flag = euromaidan_UKR
+RUS = { diplomatic_influence = { who = UKR value = -200 } }
+USA = { diplomatic_influence = { who = UKR value = 100 } relation = { who = UKR value = 100 } }
+relation = { who = RUS value = -200 }
+relation = { who = RUS value = -200 }
+ruling_party_ideology = liberal
+		ai_chance = { factor = 0.8 }
 	}
 
 	option = {
 		name = EVT_1014202_B
 		# EVT_1014202_B;Stay in power
 		any_pop = { militancy = 3 consciousness = 1 }
-		ai_chance = { factor = 0 }
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+		government = presidential_dictatorship  
+		country_event = 800050
+		ruling_party_ideology = conservative
+		relation = { who = RUS value = 200 }
+	RUS = { diplomatic_influence = { who = UKR value = 200 } }
+		ai_chance = { factor = 0.2 }
 	}
 }
 
@@ -163,27 +200,25 @@ country_event = {
 		war = no
 		tag = RUS
 		exists = UKR
-		government = populist_dictatorship
+		UKR = { is_vassal = no }
+		UKR = { is_greater_power = no }
+		government = presidential_dictatorship
 		NOT = { relation = { who = UKR value = -50 } }
 		UKR = { NOT = { in_sphere = RUS } owns = 964 }
-		NOT = { has_country_flag = euromaidan_UKR }
+		has_global_flag = euromaidan_UKR
 	}
 
 	mean_time_to_happen = {
 		months = 1
 	}
-
-	immediate = { diplomatic_influence = { who = UKR value = -100 } set_country_flag = euromaidan_UKR }
 	
 	option = {
 		name = EVT_1014204_A
 		# EVT_1014204_A;Demand return of Criema
-		war = {
-			target = UKR
-			attacker_goal = { casus_belli = acquire_core_state state_province_id = 964 }
-			attacker_goal = { casus_belli = liberate_country country = NRO }
-			defender_goal = { casus_belli = status_quo }
-		}
+
+UKR = { release = CRI remove_accepted_culture = russian }
+inherit = CRI
+
 		ai_chance = { factor = 100 }
 	}
 	option = {
@@ -199,7 +234,7 @@ country_event = {
 				factor = 2
 			}
 		}
-		prestige = -20
+		prestige = -1000
 		ai_chance = { factor = 0 }
 	}
 }
@@ -216,8 +251,13 @@ country_event = {
 	trigger = {
 		war = no
 		tag = RUS
-		exists = NRO
-		has_country_flag = euromaidan_UKR
+		NOT = { exists = NRO }
+		has_global_flag = euromaidan_UKR
+		exists = UKR
+		UKR = { is_vassal = no }
+		UKR = { is_greater_power = no }
+		government = presidential_dictatorship
+	UKR = { NOT = { in_sphere = RUS } NOT = { owns = 964 } }
 		owns = 964
 	}
 
@@ -227,8 +267,21 @@ country_event = {
 
 	option = {
 		name = EVT_1014205_B
-		# EVT_1014205_B;Support our Russian Brothers and Sisters
-		NRO = { diplomatic_influence = { who = RUS value = 200 } }
+	# EVT_1014205_B;Support our Russian Brothers and Sisters
+
+UKR = { release = NRO }	
+
+RUS = { diplomatic_influence = { who = NRO value = 200 } }
+
+USA = { relation = { who = UKR value = 100 } diplomatic_influence = { who = UKR value = 100 } }
+
+		ai_chance = { factor = 100 }
+	}
+
+	option = {
+		name = "Crimea is enough"
+		prestige = -100
+		ai_chance = { factor = 0 }
 	}
 }
 
