@@ -1012,13 +1012,43 @@ NOT = { ruling_party_ideology = communist_social }
     OR = { has_country_modifier = in_bankrupcy AND = { year = 1985 average_militancy  = 9 } AND = { year = 1985 NOT = { rank = 2 } } }
   }
 
-  mean_time_to_happen = { months = 2 }
+  mean_time_to_happen = { months = 12 }
 
   option = {
     name = EVT_8014237_A
 	define_general = { name = "Mikhail Gorbachev" personality = energetic background = no_background }
-	ruling_party_ideology = communist_social
-	country_event = 8014243
+
+set_country_flag = begin_reforms_of_ussr
+
+clr_country_flag = democratisation_intention
+clr_country_flag = perestroika_intention
+clr_country_flag = glasnost_intention
+
+#Perestroika
+
+ruling_party_ideology = communist_social
+
+
+#Glastnost
+
+political_reform = free_meetings
+
+political_reform = unregulated_publishing
+
+political_reform = gender_equal 
+
+
+#Democratisation
+
+political_reform = open_opinion
+
+political_reform = parties_only_nominated
+
+
+remove_country_modifier = revolution_chaos
+
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+
 	ai_chance = { factor = 0.9 }
   }
 
@@ -1039,7 +1069,10 @@ country_event = { # August Coup
 
   trigger = {
     tag = RUS
+	government = proletarian_dictatorship
     has_global_flag = autumn_of_nations
+	ruling_party_ideology = communist_social
+	war = no
 	NOT = { has_global_flag = august_coup }
 	OR = { exists = LAT exists = EST exists = LIT }
   }
@@ -1065,14 +1098,21 @@ country_event = { # perestroika
     tag = RUS
     war = no
 	has_country_flag = perestroika
+	ruling_party_ideology = communist_social
 	government = proletarian_dictatorship
   }
 
-  mean_time_to_happen = { months = 2 }
+  mean_time_to_happen = { months = 6 }
 
   option = {
     name = EVT_8014240_A
 	any_pop = { militancy = 1 consciousness = 2 }
+
+any_owned = { 
+limit = { NOT = { is_core = RUS } } 
+add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+}
+
 	country_event = { id = 8014245 days = 100 }
 	ai_chance = { factor = 1 }
   }
@@ -1083,6 +1123,7 @@ country_event = { # perestroika
 	ruling_party_ideology = communist
 	country_event = 800052
 	prestige_factor = -0.25
+	remove_country_modifier = uss_timer
 	ai_chance = { factor = 0 }
   }
 
@@ -1097,6 +1138,7 @@ country_event = { # perestroika
   trigger = {
     tag = RUS
 	has_country_flag = perestroika
+	ruling_party_ideology = communist_social
 	government = proletarian_dictatorship
   }
 
@@ -1288,8 +1330,6 @@ country_event = {
   desc = EVT_8014247_DESC
   picture = "nwo2_wind_of_change"
   is_triggered_only = yes 
-  
-  mean_time_to_happen = { months = 1  }
 
   option = {
     name = EVT_8014247_A
@@ -1313,6 +1353,17 @@ country_event = { # August Coup
 	any_pop = { militancy = 2.0  consciousness = 2 }
 	set_global_flag = august_coup
 
+	any_pop = {
+	ideology = {
+	factor = -0.75
+	value = communist
+	}
+	ideology = {
+	factor = -0.25
+	value = communist_social
+	}
+		}
+
 	#country_event = { id = 8014249 days = 120 }
 
 	ai_chance = { factor = 0.9 }
@@ -1320,8 +1371,27 @@ country_event = { # August Coup
 
   option = {
     name = EVT_8014248_B
-	any_pop = { militancy = -1.0  consciousness = 2 }
-	country_event = { id = 1410094 days = 180 }
+	any_pop = { militancy = 6 consciousness = 7 }
+
+	prestige_factor = -0.25
+
+	any_pop = {
+	ideology = {
+	factor = 0.25
+	value = communist
+	}
+	ideology = {
+	factor = -0.5
+	value = communist_social
+	}
+		}
+
+	ruling_party_ideology = communist
+	country_event = 800052
+	remove_country_modifier = uss_timer
+
+	#country_event = { id = 1410094 days = 180 }
+
 	ai_chance = { factor = 0.1 }
   }
 }
@@ -1370,7 +1440,7 @@ country_event = { # Fall of USSR
 
   option = {
     name = EVT_8014271_A
-	any_pop = { militancy = -2.5  consciousness = -2 }
+	any_pop = { militancy = -2.5 consciousness = -2 }
 	government = democracy country_event = 800054
 	random_country = { limit = { NOT = { exists = EST } tag = THIS } country_event = 8014246 } 
 	release = UKR
@@ -1391,13 +1461,25 @@ country_event = { # Fall of USSR
 	random_country = { limit = { tag = KOR exists = yes } inherit = NKO } 
 	MOL = { release = TRD }
 	create_alliance = TRD
-	prestige_factor = -0.80
+	prestige_factor = -0.25
 	set_country_flag = eussr
 	diplomatic_influence = { who = TRD value = 100 }
-  }
+
+release = ICB
+
+GER = { inherit = ICB }
+
+ruling_party_ideology = socialist
+
+badboy = -1000
+
+any_country = { 
+limit = { vassal_of = RUS } 
+country_event = 1512136 
 }
 
-
+  }
+}
 
 country_event = {
   id = 8014270
