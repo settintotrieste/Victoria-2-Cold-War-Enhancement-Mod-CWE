@@ -6761,7 +6761,7 @@ set_country_flag = narita_airport_continue
 any_pop = {
 militancy = 2
 ideology = {
-	factor = 0.1
+	factor = 0.05
 	value = communist
 }
 }
@@ -6806,7 +6806,7 @@ prestige = 50
 add_country_modifier = { name = economic_boom duration = 1825 }
 any_pop = {
 ideology = {
-	factor = 0.1
+	factor = 0.05
 	value = communist
 }
 }
@@ -8620,6 +8620,169 @@ any_owned = {
 limit = { NOT = { OR = { has_province_modifier = chemical_high has_province_modifier = chemical_medium has_province_modifier = chemical_low } } }
 clr_province_flag = disease1
 }
+		}
+
+}
+
+#Independence of Sudan
+country_event = {
+	id = 1512211
+title = "Independence of Sudan"
+	desc = EVTDESC1512211
+	picture = "sud_indy"
+
+fire_only_once = yes
+
+trigger = {
+
+war = no
+
+tag = ENG
+
+is_vassal = no
+
+government = hms_government
+
+is_our_vassal = SUD
+
+SUD = { government = colonial_government }
+
+year = 1960
+
+NOT = { year = 1990 }
+
+}
+
+mean_time_to_happen = { 
+months = 10
+	}
+
+option = {
+name = "Withdraw from Sudan"
+release_vassal = SUD
+SUD = { government = democracy country_event = 800054 ruling_party_ideology = big_tent }
+ai_chance = { factor = 0.8 }
+		}
+
+option = {
+name = "Refuse independence!"
+prestige = -50
+badboy = 5
+SUD = { ruling_party_ideology = nationalist add_country_modifier = { name = revolution_chaos duration = 3650 } }
+ai_chance = { factor = 0.2 }
+		}
+
+}
+
+#Civil War Mechanism Indy route
+country_event = {
+	id = 1512212
+title = "$FROMCOUNTRY$ Falls to Rebels"
+	desc = EVTDESC1512212
+	picture = "generic_indy"
+
+is_triggered_only = yes
+
+option = {
+name = "Withdraw from $FROMCOUNTRY$"
+prestige = -50
+relation = { who = FROM value = 50 }
+FROM = { set_country_flag = former_colonial_nation }
+ai_chance = { 
+factor = 1 
+modifier = { factor = 0 NOT = { war_policy = pacifism } }
+modifier = { factor = 0 NOT = { badboy = 0.7 } }
+}
+		}
+
+option = {
+name = "Restore order to $COUNTRY_ADJ$!"
+badboy = 5
+
+war = {
+	target = FROM
+	attacker_goal = { casus_belli = make_puppet }
+	defender_goal = { casus_belli = become_independent }
+	call_ally = no
+}
+
+ai_chance = { 
+factor = 1 
+modifier = { factor = 0 war_policy = pacifism }
+modifier = { factor = 0 badboy = 0.7 } 
+}
+		}
+
+}
+
+#Hong Kong 1967 Leftist Riots
+country_event = {
+	id = 1512213
+title = "Hong Kong $YEAR$ Leftist Riots"
+	desc = EVTDESC1512213
+	picture = "hkg_riots"
+
+fire_only_once = yes
+
+trigger = {
+
+war = no
+
+tag = ENG
+
+is_vassal = no
+
+government = hms_government
+
+owns = 1496
+
+CHI = { exists = yes government = proletarian_dictatorship }
+
+year = 1967
+
+NOT = { year = 1990 }
+
+}
+
+mean_time_to_happen = { 
+months = 5
+	}
+
+option = {
+name = "Crush the uprising!"
+badboy = 1
+1496 = { add_province_modifier = { name = instigating_rebels duration = 1825 } }
+ai_chance = { factor = 1 }
+		}
+
+option = {
+name = "Let the Leftist win!"
+prestige = -50
+1496 = { secede_province = CHI }
+relation = { who = CHI value = 100 }
+ai_chance = { factor = 0 }
+		}
+
+}
+
+#End War with Rebels
+country_event = {
+	id = 1512214
+title = "War Clean-up"
+	desc = "We are at war with the Rebel country tag thus this event will clear it."
+	picture = "clear_non_existent"
+
+trigger = {
+
+war = yes
+
+war_with = REB
+
+}
+
+option = {
+name = "Problem solved!"
+REB = { end_war = THIS }
 		}
 
 }
