@@ -1,8 +1,8 @@
 # South Vietnam 
 country_event = {
 	id = 1228001
-	title = EVT_1228001_NAME
-	desc = EVT_1228001_DESC
+	title = "Stalemate in Indochina"
+	desc = EVTDESC1228001
 	picture = "french_vietnam"
 
 	fire_only_once = yes
@@ -11,53 +11,68 @@ country_event = {
 		tag = FRA
 		NOT = { exists = SVI }
 		exists = DAI
+		year = 1949
 		NOT = { year = 1990 }
-		war = no
-		1380 = { controlled_by = FRA } # Saigon
+		war_with = DAI
+		1380 = { NOT = { controlled_by = FRA } } # Saigon
 		1369 = { NOT = { controlled_by = FRA } } # Hanoi
 	}
 
 	mean_time_to_happen = {
-		months = 2
+		months = 1
 	}
 
 	option = {
-		name = EVT_1228001_A # South Vietnam Independence
-		ai_chance = { factor = 0 }
-		prestige = -20 
-		release = SVI
-		release_vassal = CAM diplomatic_influence = { who = CAM value = -100 }
-relation = { who = CAM value = -200 }
-		release_vassal = LUA diplomatic_influence = { who = LUA value = -100 }
-relation = { who = LUA value = -200 }
+	name = "Create a Vietnamese state within the French Union"
+		prestige = -50
+		badboy = 5 
+any_owned = { limit = { is_core = SVI } secede_province = SVI }
+		create_vassal = SVI
+diplomatic_influence = { who = SVI value = 200 }
+	SVI = { government = democracy1 country_event = 800054 }
+		DAI = { government = proletarian_dictatorship1 }
+		end_war = DAI
+		ai_chance = { factor = 0.7 }
 	}
 	
 	option = {
-		name = EVT_1228001_B # Leave Vietnam to it's faith
-		ai_chance = { factor = 100 }
-		USA = { country_event = 1228002 }
-		release_vassal = CAM 
-	CAM = { government = hms_government country_event = 800054 }
-		diplomatic_influence = { who = CAM value = -200 }
-		release_vassal = LUA 
-	LUA = { government = hms_government country_event = 800054 }
-		diplomatic_influence = { who = LUA value = -200 }
+		name = "Accept's Vietnam's independence!"
+DAI = { government = proletarian_dictatorship1 }
+		end_war = DAI
+		prestige = -25
+		release = SVI
+any_owned = { limit = { is_core = SVI } secede_province = SVI }
+diplomatic_influence = { who = SVI value = 200 }
+	create_alliance = SVI
+	SVI = { government = democracy country_event = 800054 }
+	SVI = {
+	war = {
+	target = DAI
+	attacker_goal = { casus_belli = civil_war }
+	defender_goal = { casus_belli = civil_war }
+	call_ally = yes
+	} 
+	}
+		ai_chance = { factor = 0.2 }
 	}
 
 	option = {
-		name = EVT_1228001_C
-		ai_chance = { factor = 0 }
-		any_pop = {
-			limit = {
-				culture = vietnamese
-				is_primary_culture = no
-				is_accepted_culture = no
-			}
-			militancy = 4
-			consciousness = 2
-	   }
-	   release_vassal = SVI
+		name = "Withdraw from Vietnam completely"
+		end_war = DAI
+DAI = { government = proletarian_dictatorship1 }
+		badboy = -5
+		release = SVI
+any_owned = { limit = { is_core = SVI } secede_province = SVI }
+	SVI = { government = democracy country_event = 800054 }
+	SVI = {
+	war = {
+	target = DAI
+	attacker_goal = { casus_belli = civil_war }
+	defender_goal = { casus_belli = civil_war }
+	} 
 	}
+		ai_chance = { factor = 0.1 }
+		}
 
 }
 
@@ -253,7 +268,7 @@ country_event = {
   trigger = {
     tag = DAI
     year = 1949 NOT = { year = 1955 }
-    war_with = DAI
+    war_with = FRA
   }
 
   mean_time_to_happen = { months = 6  }
@@ -261,7 +276,7 @@ country_event = {
   option = {
     name = EVT_8228020_A
 	ai_chance = { factor = 100 }
-	add_country_modifier = { name = lord_admiral duration = 350 }
+add_country_modifier = { name = lord_admiral duration = 350 }
   }
 
   option = {
@@ -316,7 +331,7 @@ country_event = {
 
   option = {
     name = EVT_8228022_A
-	money = -500 
+	money = -50000
 	any_pop = { militancy = 0.2 consciousness = 0.5 }
 	ai_chance = { factor = 100 }
   }
@@ -345,7 +360,7 @@ country_event = {
 
   option = {
     name = EVT_8228030_A
-	war_exhaustion = -1
+	war_exhaustion = -10
   }
 }
 country_event = {
@@ -485,11 +500,13 @@ country_event = {
 
   trigger = {
     tag = DAI
-    year = 1955 NOT = { year = 1963 }
+    year = 1956 
+	NOT = { year = 1963 }
     exists = SVI
+	has_global_flag = 1956_vietnam_unification_election
   }
 
-  mean_time_to_happen = { months = 2 }
+  mean_time_to_happen = { months = 7 }
 
   option = {
     name = EVT_8228050_A
@@ -558,14 +575,14 @@ country_event = {
 	any_pop = { militancy = 0.5 consciousness = 0.8 }
 	set_global_flag = vietnamese_elections_rigged_by_SVI 
 	DAI = { country_event = 8228062 }
-	ai_chance = { factor = 100 }
+	ai_chance = { factor = 0.5 }
   }
 
   option = {
 	name = EVT_8228053_B
 	any_pop = { militancy = -0.5 consciousness = -0.1 }
 	SVI = { country_event = 8228064 }
-	ai_chance = { factor = 0 }
+	ai_chance = { factor = 0.5 }
   }
 }
 country_event = {
@@ -638,11 +655,13 @@ country_event = {
     name = EVT_8228064_A
 	war = DAI 
 	any_pop = { militancy = 0.8 consciousness = 1 }
+	ai_chance = { factor = 0.7 }
   }
 
   option = {
     name = EVT_8228060_B
 	DAI = { country_event = 8228061 }
+	ai_chance = { factor = 0.3 }
   }
 }
 country_event = {
