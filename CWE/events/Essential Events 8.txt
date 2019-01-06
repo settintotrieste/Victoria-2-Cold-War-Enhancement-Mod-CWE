@@ -5576,7 +5576,7 @@ name = "Crush the insurgency!"
 release = MIN
 war = {
 	target = MIN
-	attacker_goal = { casus_belli = make_puppet }
+	attacker_goal = { casus_belli = civil_war }
 	defender_goal = { casus_belli = become_independent }
 	call_ally = no
 }
@@ -9796,6 +9796,224 @@ relation = { who = FRA value = 50 }
 relation = { who = ITA value = 50 }
 badboy = -5
 clr_global_flag = cominform_flag
+		}
+
+}
+
+#France adjusts CFA interest rate
+country_event = {
+	id = 1512237
+title = "Change in CFA Interest Rates"
+	desc = EVTDESC1512237
+	picture = "CFA_change"
+
+trigger = {
+has_country_flag = join_the_cfa
+NOT = { tag = FRA }
+
+AND = { 
+FRA = { has_country_modifier = cbihigh } 
+NOT = { has_country_modifier = cbihigh } 
+}
+
+AND = { 
+FRA = { has_country_modifier = cbimedium } 
+NOT = { has_country_modifier = cbimedium } 
+}
+
+AND = { 
+FRA = { has_country_modifier = cbilow } 
+NOT = { has_country_modifier = cbilow } 
+}
+
+}
+
+option = {
+name = "France has decided!"
+remove_country_modifier = cbihigh 
+remove_country_modifier = cbimedium 
+remove_country_modifier = cbilow
+
+random_owned = {
+limit = { owner = { FRA = { has_country_modifier = cbihigh } } }
+owner = { add_country_modifier = { name = cbihigh duration = -1 } }
+}
+
+random_owned = {
+limit = { owner = { FRA = { has_country_modifier = cbimedium } } }
+owner = { add_country_modifier = { name = cbimedium duration = -1 } }
+}
+
+random_owned = {
+limit = { owner = { FRA = { has_country_modifier = cbilow } } }
+owner = { add_country_modifier = { name = cbilow duration = -1 } }
+}
+
+		}
+
+}
+
+#Ouster of Morsi - Egpyt
+country_event = {
+	id = 1512238
+title = "Islamist Constitution of Egypt"
+	desc = EVTDESC1512238
+	picture = "morsi_coup"
+
+fire_only_once = yes
+
+trigger = {
+tag = EGY
+government = democracy
+ruling_party_ideology = traditionalist
+election = no
+year = 2013
+}
+
+mean_time_to_happen = { 
+months = 7
+	}
+
+option = {
+name = "Purge the Muslim Brotherhood!"
+country_event = 800050
+government = presidential_dictatorship
+ruling_party_ideology = conservative
+any_pop = {
+ideology = {
+	factor = -0.25
+	value = traditionalist
+	} 
+}
+ai_chance = { factor = 0.8 }
+		}
+
+option = {
+name = "Leave it be"
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+ai_chance = { factor = 0.2 }
+		}
+
+}
+
+#Rose Revolution - Georgia
+country_event = {
+	id = 1512239
+title = "The Revolution of Roses"
+	desc = EVTDESC1512239
+	picture = "rose_revolution"
+
+fire_only_once = yes
+
+trigger = {
+tag = GEO
+government = democracy
+in_sphere = RUS
+election = no
+year = 2003
+}
+
+mean_time_to_happen = { 
+months = 11
+	}
+
+option = {
+name = "Pivot to the West!"
+prestige = 50
+RUS = { diplomatic_influence = { who = GEO value = -200 } }
+ruling_party_ideology = liberal
+any_pop = {
+ideology = {
+	factor = 0.5
+	value = liberal
+	} 
+}
+ai_chance = { factor = 0.8 }
+		}
+
+option = {
+name = "Declare martial law!"
+country_event = 800050
+government = presidential_dictatorship
+ruling_party_ideology = socialist
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+ai_chance = { factor = 0.2 }
+		}
+
+}
+
+#Former States of the USSR
+country_event = {
+	id = 1512240
+title = "Dissolution of the USSR"
+	desc = EVTDESC1512240
+	picture = "rose_revolution"
+
+is_triggered_only = yes
+
+option = {
+name = "Embrace democracy!"
+RUS = { release = THIS }
+prestige = 50
+RUS = { diplomatic_influence = { who = THIS value = 200 } }
+government = democracy
+country_event = 800054
+ruling_party_ideology = nationalist
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Remain Communist!"
+RUS = { release = THIS }
+country_event = 800050
+government = proletarian_dictatorship
+ruling_party_ideology = communist_social
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Transnistria War 1990
+country_event = {
+	id = 1512241
+title = "Transnistria War"
+	desc = EVTDESC1512241
+	picture = "transnistria_war"
+
+fire_only_once = yes
+
+trigger = {
+tag = MOL
+TRD = { exists = no }
+any_owned_province = { is_core = TRD }
+year = 1990
+}
+
+mean_time_to_happen = { 
+months = 3
+	}
+
+option = {
+name = "Restore order to the renegade province!"
+release = TRD
+RUS = { diplomatic_influence = { who = TRD value = 200 } }
+TRD = { create_alliance = UKR create_alliance = RUS }
+war = {
+	target = TRD
+	attacker_goal = { casus_belli = annex_core_country }
+	defender_goal = { casus_belli = status_quo }
+	call_ally = no
+}
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Recognise Transnistrian independence"
+prestige = -50
+release = TRD
+TRD = { government = democracy country_event = 800054 }
+ai_chance = { factor = 0.1 }
 		}
 
 }
