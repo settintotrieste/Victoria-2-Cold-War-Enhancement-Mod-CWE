@@ -437,7 +437,7 @@ country_event = {
 
 	trigger = {
 		
-NOT = { OR = { tag = SCS tag = UNT tag = TGZ tag = JRU tag = ICB } }
+NOT = { OR = { tag = IAR tag = TRE tag = DZG tag = SCS tag = UNT tag = TGZ tag = JRU tag = ICB } }
 		
 		is_vassal = no
 		
@@ -2931,7 +2931,7 @@ months = 3
 	option = {
 	name = "May peace come soon!"
 	prestige = 30
-any_country = { limit = { war_with = THIS } country_event = 1410099 }
+any_country = { limit = { exists = yes NOT = { tag = REB } war_with = THIS } country_event = 1410099 }
 add_country_modifier = { name = stop_un_spam duration = 1000 }
 			}
 	}
@@ -2947,20 +2947,29 @@ is_triggered_only = yes
 
 			
 	option = {
-	name = "Accept the UN led armistice!"
-		end_war = FROM
-any_country = { limit = { AND = { war_with = THIS alliance_with = FROM } } end_war = THIS add_country_modifier = { name = un_armistice duration = 1825 } set_country_flag = un_armistice }
-		prestige_factor = -0.05
+	name = "Withdraw to pre-war lines!"
+		FROM = { end_war = THIS }
+any_country = { limit = { AND = { exists = yes NOT = { tag = REB } war_with = THIS alliance_with = FROM } } end_war = THIS add_country_modifier = { name = un_armistice duration = 1825 } set_country_flag = un_armistice }
+		prestige_factor = -0.10
 add_country_modifier = { name = un_armistice duration = 1825 }
 set_country_flag = un_armistice
-ai_chance = { factor = 0.9 modifier = { factor = 0 war_policy = jingoism } }
+ai_chance = { factor = 0.5 modifier = { factor = 0 war_policy = jingoism } }
+			}
+
+option = {
+	name = "Propose an armistice to each warring party!"
+FROM = { country_event = 1512251 }		
+any_country = { limit = { AND = { exists = yes NOT = { tag = REB } is_vassal = no war_with = THIS alliance_with = FROM } } country_event = 1512251 }
+		prestige_factor = -0.05
+		badboy = 10
+ai_chance = { factor = 0.4 modifier = { factor = 0 war_policy = pacifism } }
 			}
 
 	option = {
 	name = "Reject the UN led armistice!"
 		prestige_factor = 0.05
 		badboy = 26
-add_country_modifier = { name = unsanctionslevel1 duration = 365 }
+add_country_modifier = { name = unsanctionslevel1 duration = 730 }
 ai_chance = { factor = 0.1 modifier = { factor = 0 war_policy = pacifism } }
 			}
 
@@ -3705,7 +3714,11 @@ country_event = {
 	picture = "un_special_state"
 	
 trigger = {
-OR = { war_with = ICB war_with = IAR war_with = JRU war_with = TRE }
+OR = { 
+AND = { war_with = UNT UNT = { is_vassal = no } } 
+AND = { war_with = SCS SCS = { is_vassal = no } }
+}
+
 NOT = { has_country_flag = war_with_un }
 }	
 

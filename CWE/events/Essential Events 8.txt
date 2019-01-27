@@ -10337,3 +10337,139 @@ primary_culture = malay
 		}
 
 }
+
+#UN Armistice
+country_event = {
+	id = 1512251
+title = "$FROMCOUNTRY$ Proposes an Armistice"
+	desc = EVTDESC1512251
+	picture = "un_armistice_land"
+
+is_triggered_only = yes
+
+option = {
+name = "Sign the UN backed armistice"
+prestige_factor = -0.05
+add_country_modifier = { name = un_armistice duration = 1825 } set_country_flag = un_armistice 
+FROM = { add_country_modifier = { name = un_armistice duration = 1825 } set_country_flag = un_armistice }
+
+#Transfer occupied lands to THIS
+
+FROM = { any_owned = { limit = { is_capital = no controlled_by = THIS } secede_province = THIS change_controller = FROM } }
+
+any_owned = { limit = { is_capital = no controlled_by = FROM } add_province_modifier = { name = occupied_province duration = -1 } change_controller = THIS }
+
+#Transfer occupied lands to FROM
+
+any_owned = { limit = { is_capital = no controlled_by = FROM } secede_province = FROM change_controller = THIS }
+
+FROM = { any_owned = { limit = { is_capital = no controlled_by = THIS } add_province_modifier = { name = occupied_province duration = -1 } change_controller = FROM } }
+
+FROM = { end_war = THIS }
+
+ai_chance = { factor = 0.7 }
+
+		}
+
+option = {
+name = "Reject the armistice!"
+prestige_factor = 0.05
+badboy = 10
+add_country_modifier = { name = unsanctionslevel1 duration = 730 }
+ai_chance = { factor = 0.3 modifier = { factor = 0 badboy = 0.6 } }
+		}
+
+
+}
+
+#UN Peace Treaty to remove occupied provinces modifier
+country_event = {
+	id = 1512252
+title = "Replace the UN Armistice with a Peace Treaty?"
+	desc = EVTDESC1512252
+	picture = "treaty"
+
+trigger = {
+war = no
+any_owned_province = { has_province_modifier = occupied_province }
+NOT = { has_country_modifier = un_armistice_stall }
+}
+
+mean_time_to_happen = { months = 60 }
+
+option = {
+name = "Propose the Peace Treaty"
+prestige = 50
+badboy = -5
+any_country = { limit = { exists = yes any_core = { owned_by = THIS has_province_modifier = occupied_province } } country_event = 1512253 }
+ai_chance = { 
+factor = 0.2 
+modifier = { factor = 0 war_policy = jingoism }
+modifier = { factor = 0.5 war_policy = pro_military } 
+}
+		}
+
+option = {
+name = "No compromise with our enemies"
+badboy = 5
+prestige = -50
+add_country_modifier = { name = un_armistice_stall duration = 1825 }
+ai_chance = { 
+factor = 0.8
+modifier = { factor = 0 war_policy = pacifism } 
+modifier = { factor = 0 badboy = 0.8 }
+}
+		}
+
+}
+
+#UN Peace Treaty - Receiver
+country_event = {
+	id = 1512253
+title = "Peace Treaty with $FROMCOUNTRY$?"
+	desc = EVTDESC1512252
+	picture = "treaty"
+
+is_triggered_only = yes
+
+option = {
+name = "Sign the Peace Treaty"
+prestige = 50
+badboy = -5
+
+FROM = { any_owned = { limit = { is_core = THIS has_province_modifier = occupied_province } secede_province = THIS } }
+
+any_owned = { limit = { is_core = FROM has_province_modifier = occupied_province } secede_province = FROM }
+
+relation = { who = FROM value = 100 }
+
+remove_country_modifier = un_armistice_stall
+remove_country_modifier = un_armistice 
+clr_country_flag = un_armistice 
+
+FROM = {
+remove_country_modifier = un_armistice_stall
+remove_country_modifier = un_armistice 
+clr_country_flag = un_armistice
+}
+
+ai_chance = { 
+factor = 0.2 
+modifier = { factor = 0 war_policy = jingoism }
+modifier = { factor = 0.5 war_policy = pro_military } 
+}
+		}
+
+option = {
+name = "No compromise with our enemies"
+badboy = 5
+prestige = -50
+add_country_modifier = { name = un_armistice_stall duration = 1825 }
+ai_chance = { 
+factor = 0.8
+modifier = { factor = 0 war_policy = pacifism } 
+modifier = { factor = 0 badboy = 0.8 }
+}
+		}
+
+}
