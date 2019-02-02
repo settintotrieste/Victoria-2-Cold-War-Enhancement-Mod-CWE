@@ -435,7 +435,7 @@ country_event = {
 	random = {
 	chance = 75
 	leave_alliance = RUS
-	RUS = { diplomatic_influence = { who = IRQ value = -100 } }
+RUS = { diplomatic_influence = { who = IRQ value = -200 } }
 	relation = { who = RUS value = -150 }
 	}
 	any_pop = { militancy = -1.5 }
@@ -505,7 +505,9 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-    tag = USA
+	tag = USA
+	is_greater_power = yes
+	government = democracy
 	year = 1991 NOT = { year = 1992 }
 	exists = KUW
   }
@@ -514,7 +516,7 @@ country_event = {
 
   option = {
     name = EVT_8007562_A
-	prestige = 20
+	prestige = 25
 	any_pop = { militancy = -1.5 }
 	IRQ = { country_event = 8007563 }
 	SAA = { country_event = 8007564 }
@@ -554,10 +556,12 @@ country_event = {
 
 	trigger = {
 		tag = USA
+		is_greater_power = yes
+		government = democracy
 		year = 2003
 		war = no
 		IRQ = { 
-			government  = democracy
+			NOT = { government = democracy }
 			part_of_sphere = no
 			is_vassal = no
 		}
@@ -569,7 +573,7 @@ country_event = {
 	
 	option = {
 		name = EVT_8007565_OPTA
-		ai_chance = { factor = 100 }
+		ai_chance = { factor = 0.9 }
 		IRQ = { badboy = 20 }
 		set_global_flag = iraq_war
 
@@ -581,15 +585,16 @@ JOR = { military_access = USA relation = { who = USA value = 100 } }
 
 		war = {
 			target = IRQ
-			attacker_goal = { casus_belli = install_democracy }
-			defender_goal = { casus_belli = status_quo }
+		attacker_goal = { casus_belli = make_puppet }
+		defender_goal = { casus_belli = status_quo }
+			call_ally = yes
 		}
 		badboy = 5
 	}
 	option = {
 		name = EVT_8007565_OPTB
-		prestige = -10
-		ai_chance = { factor = 0 }
+		prestige = -500
+		ai_chance = { factor = 0.1 }
 	}
 	
 }
@@ -603,27 +608,37 @@ country_event = {
 
 	trigger = {
 		tag = USA
-		war = no
+		is_greater_power = yes
+		government = democracy
+		NOT = { war_with = IRQ }
 		has_global_flag = iraq_war
 		IRQ = { 
 			government  = democracy
-			is_vassal = no
+			vassal_of = USA
 		}
 	}
 
 	mean_time_to_happen = {
-		months = 1
+		months = 24
 	}
 	
 	option = {
 		name = EVT_8008013_A
-		ai_chance = { factor = 100 }
+		ai_chance = { factor = 0.9 }
 		any_pop = { consciousness = 3 }
-		prestige = 10
-		IRQ = { 
-			release_vassal = KUR
-		}
+		release_vassal = IRQ
+		IRQ = { release_vassal = KUR }
 	}
+
+	option = {
+		name = "Continue the occupation"
+		ai_chance = { factor = 0.1 }
+		IRQ = { government = mandate_government }
+		any_pop = { consciousness = 3 }
+		prestige = -50
+		badboy = 5
+	}
+
 }
 
 country_event = {
@@ -635,8 +650,9 @@ country_event = {
 
 	trigger = {
 		tag = IRQ
-		government  = nationalist_dictatorship
+		government = nationalist_dictatorship
 		war = no
+		has_recently_lost_war = no
 		has_global_flag = iraq_war
 	}
 
@@ -666,7 +682,7 @@ country_event = {
 
 	trigger = {
 		tag = IRQ
-		government  = democracy
+		government = democracy
 		war = no
 		has_global_flag = iraq_war
 	}
@@ -692,7 +708,7 @@ country_event = {
 
 	trigger = {
 		tag = IRQ
-		government  = democracy
+		government = democracy
 		year = 2006
 		war = no
 		has_global_flag = iraq_war
@@ -719,13 +735,15 @@ country_event = {
 
 	trigger = {
 		tag = USA
+		government = democracy
+		is_greater_power = yes
 		year = 2011
 		war = no
 		has_global_flag = iraq_war
 	}
 
 	mean_time_to_happen = {
-		months = 12
+		months = 6
 	}
 	
 	option = {
