@@ -8,7 +8,7 @@ country_event = {
 	trigger = {
 		NOT = { exists = SUD }
 		NOT = { year = 1990 }
-		tag = EGY
+		OR = { tag = EGY tag = UAR }
 		1827 = { owner = { capital_scope = { continent = europe } } } # Khartoum
 		NOT = { OR = { government = democracy government = hms_government government = absolute_monarchy } }
 	}
@@ -20,21 +20,22 @@ country_event = {
 	option = {
 		name = "EVT_1004902_A"
 		random_country = { limit = { owns = 1827 } country_event = 1004903 }
-		prestige = 5
+		prestige = 25
 		ai_chance = {
 			factor = 0.8
 			modifier = {
 				factor = 0
-				any_neighbor_country = { owns = 1827 war_with = THIS }
+		any_neighbor_country = { owns = 1827 war_with = THIS }
 			}
 		}
 	}
 
 	option = {
 		name = "EVT_1004902_B"
-		prestige = -5
+		badboy = 5
 		set_country_flag = claim_the_sudan
-		any_pop = { limit = { culture = sunni_arab } consciousness = 2 }
+		SUD = { any_owned = { add_core = EGY } }
+any_pop = { limit = { culture = sunni_arab } consciousness = 2 }
 		ai_chance = { factor = 0.2 }
 	}
 	
@@ -45,29 +46,8 @@ country_event = {
 	title = EVT_1004903_NAME
 	desc = EVT_1004903_DESC
 	picture = "sudan_independence"
-	fire_only_once = yes
-
-	trigger = { 
-		NOT = { exists = SUD }
-		owns = 1827 # Khartorum
-		exists = EGY
-		EGY = { government = presidential_dictatorship }
-		NOT = { year = 1990 }
-	}
-
-	mean_time_to_happen = {
-		months = 24
-		modifier = {
-			factor = 0.1
-			any_owned_province = {
-				is_core = SUD
-				OR = {
-					has_province_modifier = nationalist_agitation
-					controlled_by_rebels = yes
-				}
-			}
-		}
-	}
+	
+	is_triggered_only = yes # ENG
 
 	option = {
 		name = "Prepare Sudan for independence" 
@@ -75,12 +55,9 @@ country_event = {
 		SUD = {
 			government = colonial_government
 			ruling_party_ideology = conservative
-
-			#country_event = 800054
-
+			country_event = 800054
 		}
-		prestige = 5
-		any_country = { limit = { has_country_flag = claim_the_sudan } country_event = 1004904 }
+		prestige = 10
 		diplomatic_influence = { who = SUD value = 200 }
 		ai_chance = { factor = 0.8 }
 	}
@@ -89,9 +66,9 @@ country_event = {
 		name = EVT_1004903_B
 		ai_chance = { factor = 0.2 }
 		badboy = 4.0
-		SUD = { any_core = { limit = { is_primary_culture = SUD } add_province_modifier = { name = nationalist_agitation duration = 1095 } } }
-		relation = { who = EGY value = -200 }
-		any_pop = { limit = { culture = sunni_arab } militancy = 6  consciousness = 5.0 }
+		SUD = { any_core = { limit = { is_primary_culture = SUD } add_province_modifier = { name = nationalist_agitation duration = 3650 } } }
+		relation = { who = FROM value = -200 }
+any_pop = { limit = { culture = sunni_arab } militancy = 6  consciousness = 5.0 }
 	}
 
 }
@@ -105,7 +82,7 @@ country_event = {
 
 	option = {
 		name = EVT_1004904_A 
-		casus_belli = { target = SUD type = make_puppet months = 3650 }
+casus_belli = { target = SUD type = make_puppet months = 3650 }
 		ai_chance = {
 			factor = 0.01
 		}
@@ -128,7 +105,7 @@ country_event = {
 #Full Independence for the Sudan
 country_event = {
 	id = 1004905
-	title = "Full Independence for the Sudan"
+	title = "Independence for the Sudan"
 	desc = EVT_1004905_DESC
 	picture = "sudanese_independence_choice"
 	fire_only_once = yes
@@ -157,10 +134,12 @@ country_event = {
 		OR = {
 			EGY = {
 				exists = yes
+		NOT = { has_country_flag = claim_the_sudan }
 				NOT = { OR = { government = hms_government government = absolute_monarchy government = democracy } }
 			}
 			UAR = {
 				exists = yes
+		NOT = { has_country_flag = claim_the_sudan }
 				NOT = { OR = { government = hms_government government = absolute_monarchy government = democracy } }
 			}
 		}
@@ -191,7 +170,7 @@ country_event = {
 
 }
 
-#Full Independence for the Sudan
+#Full Independence for the Sudan without Egyptian Claims
 country_event = {
 	id = 1004906
 	title = "Future of the $COUNTRY$"
@@ -207,20 +186,10 @@ country_event = {
 			prestige = 10
 			create_vassal = THIS
 		}
+		SUD = { government = sar_government }
 		ai_chance = {
-			factor = 0.2
+			factor = 0.3
 					}
-	}
-
-	option = {
-		name = "Integrate into Egypt"
-		random_country = {
-			#TODO: allow Egypt to decline
-			limit = { capital = 1745 }
-			prestige = 25
-			inherit = SUD
-		}
-		ai_chance = { factor = 0.1 }
 	}
 
 	option = {
@@ -234,6 +203,50 @@ country_event = {
 			}
 		}
 		ai_chance = { factor = 0.7 }
+	}
+
+}
+
+#Sudan Independence with Egyptian Claims
+country_event = {
+	id = 1004907
+	title = "Future of the $COUNTRY$"
+	desc = EVT_1004905_DESC
+	picture = "sudanese_independence_choice"
+
+	fire_only_once = yes
+	
+	trigger = {
+		tag = SUD
+		is_vassal = no
+		war = no
+OR = { EGY = { is_vassal = no war = no has_country_flag = claim_the_sudan } UAR = { is_vassal = no war = no has_country_flag = claim_the_sudan } }
+	}
+
+	option = {
+		name = "Integrate into Egypt"
+		random_country = {
+			#TODO: allow Egypt to decline
+			limit = { capital = 1745 }
+			prestige = 25
+			inherit = SUD
+		}
+		ai_chance = { factor = 0.6 }
+	}
+
+	option = {
+		name = "Remain independent"
+		prestige = 50
+		random_country = {
+			limit = { capital = 1745 }
+			war = {
+	target = SUD
+	attacker_goal = { casus_belli = annex_core_country }
+	defender_goal = { casus_belli = become_independent }
+	call_ally = no
+				}
+		}
+		ai_chance = { factor = 0.4 }
 	}
 
 }
