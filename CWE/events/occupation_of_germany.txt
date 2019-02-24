@@ -219,6 +219,13 @@ diplomatic_influence = { who = ICB value = 200 }
 
 SGF = { capital = 595 }
 
+586 = { add_core = SGF }
+587 = { add_core = SGF }
+588 = { add_core = SGF }
+591 = { add_core = SGF }
+594 = { add_core = SGF }
+593 = { add_core = SGF }
+
 	  ai_chance = { factor = 0.1 }
 	}	
 }
@@ -274,6 +281,15 @@ any_owned = { limit = { is_core = GER } add_core = NGF secede_province = NGF }
 NGF = { civilized = yes government = democracy country_event = 800054 }
 diplomatic_influence = { who = NGF value = 200 }
 
+570 = { add_core = NGF }
+573 = { add_core = NGF }
+574 = { add_core = NGF }
+571 = { add_core = NGF }
+575 = { add_core = NGF }
+576 = { add_core = NGF }
+577 = { add_core = NGF }
+572 = { add_core = NGF }
+
 	  ai_chance = { factor = 0.1 }
 	}	
 	option = {
@@ -292,6 +308,8 @@ name = "Release a North German state with a restored Hanover"
 536 = { secede_province = HAN } 
 537 = { secede_province = HAN } 
 
+create_vassal = HAN
+
 HAN = { civilized = yes government = hms_government country_event = 800054 }
 
 diplomatic_influence = { who = HAN value = 200 }
@@ -299,6 +317,15 @@ diplomatic_influence = { who = HAN value = 200 }
 any_owned = { limit = { is_core = GER } add_core = NGF secede_province = NGF }
 NGF = { civilized = yes government = democracy country_event = 800054 }
 diplomatic_influence = { who = NGF value = 200 }
+
+570 = { add_core = NGF }
+573 = { add_core = NGF }
+574 = { add_core = NGF }
+571 = { add_core = NGF }
+575 = { add_core = NGF }
+576 = { add_core = NGF }
+577 = { add_core = NGF }
+572 = { add_core = NGF }
 
 	  ai_chance = { factor = 0.1 }
 	}
@@ -339,6 +366,10 @@ immediate = { set_country_flag = policy_on_germany }
 	  relation = { who = USA value = 50 } 
 	  relation = { who = ENG value = 50 } 
 	 any_pop = { limit = { culture = german } consciousness = -3 militancy = -3 }
+
+#Release all cores to North Germany
+random_owned = { limit = { owner = { exists = NGF } } owner = { any_owned = { limit = { is_core = GER } add_core = NGF secede_province = NGF } } }
+
 	  ai_chance = { factor = 0.1 }
 	}
 	option = {
@@ -350,6 +381,13 @@ immediate = { set_country_flag = policy_on_germany }
 	  relation = { who = USA value = 25 } 
 	  relation = { who = ENG value = 25 }  
 	  any_pop = { limit = { culture = german } consciousness = 0.5 militancy = 0.5 }
+
+#Release all cores to South Germany
+random_owned = { limit = { owner = { exists = SGF } } owner = { any_owned = { limit = { is_core = SGF } secede_province = SGF } } }
+
+#Release all cores to North Germany
+random_owned = { limit = { owner = { exists = NGF } } owner = { any_owned = { limit = { is_core = GER } add_core = NGF secede_province = NGF } } }
+
 	  ai_chance = { factor = 0.7 }
 	}
 	option = {
@@ -373,7 +411,7 @@ any_pop = { limit = { culture = german } ideology = { factor = 0.15 value = comm
 577 = { add_core = RHL }
 572 = { add_core = RHL }
 
-any_owned = { limit = { is_core = RHL } secede_province = RHL }
+any_owned = { limit = { is_core = RHL NOT = { is_core = SAL } } secede_province = RHL }
 
 create_vassal = RHL
 
@@ -389,7 +427,7 @@ FRA = { any_owned = { limit = { is_core = GER } secede_province = USA } }
 }
 
 random_country = { limit = { tag = SGF exists = yes } 
-FRA = { any_owned = { limit = { is_core = GER } secede_province = SGF } }
+FRA = { any_owned = { limit = { is_core = GER } add_core = SGF secede_province = SGF } }
 }
 
 RHL = { civilized = yes government = mandate_government country_event = 800054 }
@@ -436,6 +474,30 @@ immediate = { set_country_flag = policy_on_germany }
 	  relation = { who = FRA value = -25 } 	 
 
 any_pop = { limit = { culture = german } consciousness = -3 militancy = -3 }
+
+#NGF inherits Berlin
+random_country = { limit = { tag = NGF exists = yes } inherit = ICB }
+
+#GER inherits Berlin
+random_country = { limit = { tag = GER exists = yes } inherit = ICB }
+
+USA = { 
+
+random_owned = { 
+limit = { owner = {
+owns = 549 NGF = { exists = yes }
+} } 
+owner = { 549 = { secede_province = NGF } }
+	}
+
+random_owned = { 
+limit = { owner = {
+owns = 549 GER = { exists = yes }
+} } 
+owner = { 549 = { secede_province = GER } }
+	}
+
+}
 
 #Release all cores to Germany
 random_owned = { limit = { owner = { exists = GER } } owner = { any_owned = { limit = { is_core = GER } secede_province = GER } 549 = { secede_province = GER } } }
@@ -853,13 +915,75 @@ country_event = {
 	NOT = { owns = 551 } # East Berlin
   }
 
-  mean_time_to_happen = { months = 1  }
+  mean_time_to_happen = { months = 1 }
 
   option = {
     name = EVT_8204100_A
 	574 = { change_province_name = "Bonn" }
 	capital = 574
   }
+}
+country_event = {
+  id = 82041001
+  title = "Recognition of the Oder–Neisse Line?"
+  desc = EVT_82041001_DESC
+  picture = "oder_line"
+  fire_only_once = yes
+
+  trigger = {
+tag = GER
+has_global_flag = blocsenabled
+NOT = { any_core = { owned_by = ENG } }
+NOT = { any_core = { owned_by = USA } }
+NOT = { any_core = { owned_by = FRA } }
+DDR = { exists = yes }
+  }
+
+  mean_time_to_happen = { months = 1 }
+
+  option = {
+    name = "Refuse to recognise the Oder–Neisse Line!"
+
+badboy = 5
+
+relation = { who = RUS value = -100 }
+relation = { who = POL value = -100 }
+
+set_country_flag = oder_line_claim
+
+#Oder–Neisse Line claims
+
+685 = { add_core = GER }
+684 = { add_core = GER }
+683 = { add_core = GER }
+682 = { add_core = GER }
+681 = { add_core = GER }
+546 = { add_core = GER }
+679 = { add_core = GER }
+692 = { add_core = GER }
+680 = { add_core = GER }
+693 = { add_core = GER }
+696 = { add_core = GER }
+695 = { add_core = GER }
+698 = { add_core = GER }
+697 = { add_core = GER }
+691 = { add_core = GER }
+690 = { add_core = GER }
+694 = { add_core = GER }
+699 = { add_core = GER }
+700 = { add_core = GER }
+701 = { add_core = GER }
+
+	ai_chance = { factor = 0.9 }
+  }
+
+  option = {
+    name = "Recognise the diminution of Germany"
+	prestige = -50
+	relation = { who = RUS value = 100 }
+	ai_chance = { factor = 0.1 }
+  }
+
 }
 country_event = {
   id = 8204101
@@ -874,7 +998,7 @@ country_event = {
     
   }
 
-  mean_time_to_happen = { months = 1  }
+  mean_time_to_happen = { months = 1 }
 
   option = {
     name = EVT_8204101_A

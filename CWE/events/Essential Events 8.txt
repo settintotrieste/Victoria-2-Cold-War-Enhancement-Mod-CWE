@@ -10395,7 +10395,7 @@ trigger = {
 war = no
 is_vassal = no
 
-any_neighbor_country = { any_core = { owned_by = THIS } }
+any_neighbor_country = { any_core = { owned_by = THIS has_province_modifier = occupied_province } }
 
 NOT = { has_country_modifier = delay_occupied_territories }
 
@@ -10944,4 +10944,216 @@ prestige = -50
 ai_chance = { factor = 0.4 }
 		}
 
+}
+
+#Merger of South and North Germany
+country_event = {
+	id = 1512268
+title = "West Germany"
+	desc = EVTDESC1512268
+	picture = "founding_treaty"
+
+fire_only_once = yes
+
+trigger = {
+tag = USA
+year = 1950
+NGF = { exists = yes }
+any_owned_province = { is_core = GER }
+has_country_flag = policy_on_germany
+}
+
+mean_time_to_happen = { 
+months = 5
+	}
+
+option = {
+name = "Unite Germany"
+relation = { who = NGF value = 100 }
+any_owned = { limit = { is_core = GER } secede_province = NGF }
+NGF = { change_tag = GER }
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Form a rival South German state instead"
+prestige = -50
+
+564 = { secede_province = NGF } 
+565 = { secede_province = NGF } 
+566 = { secede_province = NGF } 
+567 = { secede_province = NGF } 
+568 = { secede_province = NGF } 
+2560 = { secede_province = NGF } 
+
+release_vassal = ICB
+
+ICB = { government = sar_government country_event = 800054 }
+
+539 = { secede_province = NGF }
+
+any_owned = { limit = { is_core = GER } add_core = SGF secede_province = SGF }
+SGF = { civilized = yes government = democracy country_event = 800054 }
+diplomatic_influence = { who = SGF value = 200 }
+
+diplomatic_influence = { who = ICB value = 200 }
+
+SGF = { capital = 595 }
+
+586 = { add_core = SGF }
+587 = { add_core = SGF }
+588 = { add_core = SGF }
+591 = { add_core = SGF }
+594 = { add_core = SGF }
+593 = { add_core = SGF }
+
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Return of the Hohenzollern monarchy in Germany
+country_event = {
+	id = 1512269
+title = "Return of the Hohenzollerns in Germany?"
+	desc = EVTDESC1512269
+	picture = "kaiser_returns"
+
+fire_only_once = yes
+
+trigger = {
+tag = ENG
+year = 1946
+NOT = { year = 1990 }
+government = hms_government
+has_country_flag = policy_on_germany
+NGF = { exists = yes }
+is_sphere_leader_of = NGF
+is_vassal = no
+}
+
+mean_time_to_happen = { 
+months = 5
+	}
+
+option = {
+name = "We will keep Germany a republic"
+prestige = 25
+ai_chance = { factor = 0.6 }
+		}
+
+option = {
+name = "A German monarchy with British ties can be a stabiliser"
+NGF = { government = hms_government add_country_modifier = { name = revolution_chaos duration = 1825 } }
+badboy = 5
+relation = { who = FRA value = -50 }
+relation = { who = USA value = -100 }
+relation = { who = RUS value = -100 }
+relation = { who = POL value = -50 }
+relation = { who = BEL value = -50 }
+relation = { who = NET value = -50 }
+ai_chance = { factor = 0.4 }
+		}
+}
+
+#Dutch annexation of German lands
+country_event = {
+	id = 1512270
+title = "Bakker-Schut Plan"
+	desc = EVTDESC1512270
+	picture = "kaiser_returns"
+
+fire_only_once = yes
+
+trigger = {
+tag = NET
+year = 1947
+NOT = { year = 1990 }
+NGF = { exists = no }
+GER = { exists = no }
+is_vassal = no
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Request for German lands as reparations"
+prestige = 25
+badboy = 5
+ENG = { country_event = 1512271 }
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Keep Germany's territorial borders"
+ai_chance = { factor = 0.1 }
+		}
+}
+
+#Dutch annexation of German lands - NET
+country_event = {
+	id = 1512270
+title = "Bakker-Schut Plan"
+	desc = EVTDESC1512270
+	picture = "dutch_annexation_ger"
+
+fire_only_once = yes
+
+trigger = {
+tag = NET
+year = 1947
+NOT = { year = 1990 }
+NGF = { exists = no }
+GER = { exists = no }
+is_vassal = no
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "German lands as reparations! (25% chance of success)"
+badboy = 5
+ENG = { country_event = 1512271 }
+relation = { who = USA value = -100 }
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Keep Germany's territorial borders"
+prestige = 25
+ai_chance = { factor = 0.1 }
+		}
+}
+
+#Dutch annexation of German lands - ENG
+country_event = {
+	id = 1512271
+title = "Bakker-Schut Plan"
+	desc = EVTDESC1512270
+	picture = "dutch_annexation_ger"
+
+is_triggered_only = yes
+
+option = {
+name = "Accept the Dutch request"
+relation = { who = NET value = 200 }
+575 = { secede_province = NET }
+576 = { secede_province = NET }
+577 = { secede_province = NET }
+581 = { secede_province = NET }
+542 = { secede_province = NET }
+543 = { secede_province = NET }
+ai_chance = { factor = 0.25 }
+		}
+
+option = {
+name = "Reject their attempts at land grab"
+relation = { who = NET value = -50 }
+relation = { who = USA value = 50 }
+ai_chance = { factor = 0.75 }
+		}
 }
