@@ -6,23 +6,19 @@ country_event = { # Soviet-$COUNTRY$ Friendship
 	picture = "soviet_economy"
 
 	trigger = {
-		NOT = { tag = RUS }
+NOT = { tag = RUS } #Not USSR
+NOT = { has_global_flag = tito_stalin_split tag = YUG } #Not Yugoslavia after the split
 		OR = {
 			government = proletarian_dictatorship
 			government = proletarian_dictatorship1
 		}
 		NOT = { has_country_flag = soviet_friendship }
-		RUS = { is_greater_power = yes government = proletarian_dictatorship } 
-		NOT = { has_country_modifier = comecon }
-		NOT = { has_country_modifier = bretton_system }
-		# TODO somehow china soviet rivality
-		#AND = {
-		#	NOT = { relation = { who = CHI value = 100 } }
-		#	CHI = { is_greater_power = yes government = proletarian_dictatorship }
-		#}
-		is_greater_power = no
+		has_global_flag = blocsenabled
+		NOT = { in_sphere = RUS }
 		war = no
-		year = 1948 # allow game start nations to become members of commecon
+		is_vassal = no
+		NOT = { has_global_flag = sino_soviet_split }
+		NOT = { wars_of_national_liberation = 1 }
 	}
 
 	mean_time_to_happen = {
@@ -32,24 +28,22 @@ country_event = { # Soviet-$COUNTRY$ Friendship
 	option = {
 		name = "EVTOPTA19800"
 		ai_chance = { factor = 100 }
-		RUS = { country_event =  19801 }
+		RUS = { country_event = 19801 }
 		set_country_flag = soviet_friendship
 		any_country = {
-			limit = { NOT = { government = proletarian_dictatorship } }
-			relation = { who = THIS value = -100 } 
-			diplomatic_influence = { who = THIS value = -50 } 
+limit = { NOT = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
+		relation = { who = THIS value = -100 } 
+		diplomatic_influence = { who = THIS value = -100 } 
 		}
 	}
 	
 	option = {
-		name = "EVTOPTB19800"
+		name = "Reject the proposal"
 		ai_chance = { factor = 0 }
-		set_country_flag = soviet_friendship
-		any_country = {
-			limit = { NOT = { government = proletarian_dictatorship } } 
-			relation = { who = THIS value = -50 } 
-			diplomatic_influence = { who = THIS value = -50 } 
-		}
+prestige = 50
+set_country_flag = soviet_friendship
+relation = { who = RUS value = -100 }
+RUS = { diplomatic_influence = { who = THIS value = -100 } }
 		any_pop = {
 			limit = { strata = rich }
 			ideology = {
@@ -62,23 +56,26 @@ country_event = { # Soviet-$COUNTRY$ Friendship
 
 country_event = {
 	id = 19801
-	title = "EVTNAME19801"
+	title = "$FROMCOUNTRY_ADJ$-Soviet Treaty of Friendship"
 	desc = "EVTDESC19801"
 	picture = "soviet_economy"
 
 	is_triggered_only = yes
 
 	option = {
-		name = "EVTOPTA19800"
+		name = "Accept the $FROMCOUNTRY_ADJ$ offer"
+		prestige = 25
+		relation = { who = FROM value = 200 }
+		create_alliance = FROM
+		diplomatic_influence = { who = FROM value = 200 }
 		ai_chance = { factor = 100 }
-		relation = { who = FROM value = 50 }
-		diplomatic_influence = { who = FROM value = 50 }
 	}
 	
 	option = {
-		name = "EVTOPTB19801"
+		name = "We don't need their support"
 		ai_chance = { factor = 0 }
-		relation = { who = FROM value = -10 }
+		relation = { who = FROM value = -50 }
+		diplomatic_influence = { who = FROM value = -50 }
 	}
 
 }
@@ -414,13 +411,25 @@ country_event = {
 country_event = {
 	id = 19807
 	title = EVT_19807_NAME #EVT_19807_NAME;End of the Cold War
-	desc = EVT_19807_DESC #EVT_19807_DESC;With the fall of the USSR, the Cold War has ended!
-	picture = "endofcoldwar"
+	desc = EVT_19807_DESC #EVT_19807_DESC;With the fall of the USA, the Cold War has ended!
+	picture = "endofcoldwarussr"
 
 	trigger = {
+
+#USSR or USS
 RUS = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy rank = 3 } }
 
-USA = { OR = { NOT = { rank = 3 } NOT = { government = democracy government = democracy1 } } }
+USA = { 
+OR = { 
+
+#Not a strong power
+NOT = { rank = 3 } 
+
+#Left-wing authoritarian dictatorship
+AND = { OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social } NOT = { government = democracy government = democracy1 government = hms_government government = hms_government1 } }
+
+	} 
+}
 		
 		NOT = { has_country_flag = cold_warussr1 }
 		has_global_flag = blocsenabled
@@ -447,10 +456,14 @@ country_event = {
 	id = 19808
 	title = EVT_19808_NAME # EVT_19808_NAME;End of the Cold War
 	desc = EVT_19808_DESC # EVT_19808_DESC;With the fall of the USA, the Cold War has ended!
-	picture = "endofcoldwar"
+	picture = "endofcoldwarusa"
 
 	trigger = {
-		USA = { government = democracy }
+
+#Democratic USA
+USA = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } }
+
+#Non-communist or weak Russia
 RUS = { OR = { NOT = { rank = 3 } NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } } } }
 		
 		NOT = { has_country_flag = cold_warusa1 }
