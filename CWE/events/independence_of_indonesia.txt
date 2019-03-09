@@ -14,7 +14,7 @@ country_event = { # Indonesia prepares for independence war
 
   option = {
     name = EVT_8206001_A
-	add_country_modifier = { name = military_reform duration = 1000 }
+add_country_modifier = { name = military_reform duration = 1000 }
   }
 }
 country_event = {
@@ -37,112 +37,147 @@ country_event = {
 }
 country_event = {
   id = 8206003
-  title = EVT_8206003_NAME
+ title = EVT_8206003_NAME #Indonesian National Revolution - start
   desc = EVT_8206003_DESC
   picture = "nwo2_indonesian_national_revolution"
   fire_only_once = yes
 
   trigger = {
     tag = NET
-    year = 1945 NOT = { year = 1990 }
+    year = 1946 NOT = { year = 1990 }
 	exists = IDO
 	owns = 1413 # Jakarta
 	IDO = { owns = 1416 } # Yogykarta
-    war = no
-	NOT = { has_global_flag = USA_pressure_the_dutch_on_indonesia }
+    	war = no
+	has_country_flag = disabled_for_now
+NOT = { has_global_flag = USA_pressure_the_dutch_on_indonesia }
   }
 
-  mean_time_to_happen = { months = 3  }
+  mean_time_to_happen = { months = 1 }
 
   option = {
     name = EVT_8206003_A
 	any_pop = { militancy = 0.2 consciousness = 0.5 }
-	prestige = -100
+	prestige = -50
+	badboy = 5
 	IDO = { country_event = 8299001 }
-	ai_chance = { factor = 100 }
+	ai_chance = { factor = 0.9 }
   }
 
   option = {
     name = EVT_8206003_B
-	any_owned = { limit = { is_core = IDO NOT = { is_core = WPA } } secede_province = IDO }
-	country_event = 8206031
-	ai_chance = { factor = 0 }
+any_owned = { limit = { is_core = IDO NOT = { is_core = WPA } } secede_province = IDO }
+	country_event = 8206030
+	ai_chance = { factor = 0.1 }
   }
 }
-country_event = { # Ceasefire of 1945
+country_event = { # Linggadjati Agreement, NET
   id = 8206005
-  title = EVT_8206005_NAME
-  desc = EVT_8206005_DESC
-  picture = "nwo2_indonesian_national_revolution"
+  title = "Linggadjati Agreement"
+  desc = EVTDESC8206005
+  picture = "linggadjati_agreement"
   fire_only_once = yes
 
   trigger = {
     tag = NET
-    year = 1945 NOT = { year = 1990 }
+    year = 1946 
+	NOT = { year = 1990 }
     war_with = IDO
   }
 
-  mean_time_to_happen = { months = 4 }
+  mean_time_to_happen = { months = 11 }
 
   option = {
-    name = EVT_8206005_A
-	badboy = -5 
-	relation = { who = USA value = 20 } 
-	IDO = { country_event =  8206006 }
-	ai_chance = { factor = 0.1 }
-  }
-
-  option = {
-    name = EVT_8206005_B
-	IDO = { country_event = { id = 8206007 days = 182 } }
+    name = "Propose the ceasefire (80% chance of success)"
+	prestige = -20
+	relation = { who = USA value = 25 }
+	relation = { who = ENG value = 25 } 
+	IDO = { country_event = 8206006 }
 	ai_chance = { factor = 0.9 }
   }
+
+  option = {
+    name = "Continue the war!"
+	badboy = 5
+	relation = { who = USA value = -50 }
+	relation = { who = ENG value = -50 } 
+	ai_chance = { factor = 0.1 }
+  }
 }
-country_event = {
+country_event = { # Linggadjati Agreement, IDO
   id = 8206006
-  title = EVT_8206006_NAME
-  desc = EVT_8206006_DESC
-  picture = "nwo2_indonesian_national_revolution"
+  title = "Linggadjati Agreement"
+  desc = EVTDESC8206005
+  picture = "linggadjati_agreement"
   is_triggered_only = yes # as IDO
 
   option = {
-    name = EVT_8206006_A
-	any_pop = { consciousness = 1 }
-	ai_chance = { factor = 1 }
+    name = "Accept the ceasefire"
+	prestige = 25
+	end_war = NET
+	country_event = 1512209
+	set_global_flag = linggadjati_agreement
+NET = { 
+any_owned = { 
+limit = { is_core = IDO NOT = { is_core = DYA is_core = EID is_core = WPA } } 
+secede_province = IDO
+} 
+}
+	ai_chance = { factor = 0.8 }
   }
 
   option = {
-    name = EVT_8206006_B
+    name = "Continue the War!"
+	prestige = 50
 	any_pop = { militancy = 1 }
-	NET = { country_event = 8206008 }
-	ai_chance = { factor = 0 }
+	ai_chance = { factor = 0.2 }
   }
 }
-country_event = {
+country_event = { # Denpasar Conference, NET
   id = 8206007
-  title = EVT_8206007_NAME
-  desc = EVT_8206007_DESC
-  picture = "nwo2_indonesian_national_revolution"
-  
-  is_triggered_only = yes # as IDO
+  title = "Denpasar Conference"
+  desc = EVTDESC8206007
+  picture = "denpasar_conference"
+  fire_only_once = yes
+
+  trigger = {
+    tag = NET
+    year = 1946 
+	has_global_flag = linggadjati_agreement
+	NOT = { year = 1990 }
+    NOT = { war_with = IDO }
+  }
+
+  mean_time_to_happen = { months = 1 }
 
   option = {
-    name = EVT_8206007_A
-	any_pop = { militancy = 1 }
-	NET = { country_event = { id = 8206008 days = 365 } }
+    name = "Form the State of East Indonesia"
+	relation = { who = IDO value = -50 }
+	release_vassal = EID
+	EID = { government = democracy country_event = 800054 }
+	diplomatic_influence = { who = EID value = 200 }
 	ai_chance = { factor = 0.9 }
   }
   option = {
-    name = EVT_8206007_B
-	any_pop = { consciousness = 1 }
+    name = "Let Indonesia have Western New Guinea"
+prestige = -100
+badboy = -5
+relation = { who = IDO value = 50 }
+	release_vassal = EID
+	EID = { government = democracy country_event = 800054 }
+	diplomatic_influence = { who = EID value = 200 }
+any_owned = { limit = { is_core WPA } secede_province = IDO }
+IDO = { release_vassal = WPA }
+WPA = { government = democracy country_event = 800054 }
+diplomatic_influence = { who = WPA value = 200 }
 	ai_chance = { factor = 0.1 }
   }
 }
-country_event = { # Indonesians agree to the Federated Indonesia proposal
+country_event = { # Federated Indonesia, NET
   id = 8206008
   title = EVT_8206008_NAME
   desc = EVT_8206008_DESC
-  picture = "nwo2_indonesian_national_revolution"
+  picture = "nwo2_federated_indonesia"
   fire_only_once = yes
 
   is_triggered_only = yes # as NET
@@ -157,11 +192,8 @@ country_event = { # Indonesians agree to the Federated Indonesia proposal
   option = {
     name = EVT_8206008_B
 end_war = IDO
-IDO = { government = democracy1 }
-
-	any_owned = { limit = { NOT = { is_core = WPA } is_core = IDO } secede_province = IDO }
-
-	IDO = { country_event = 8206032 }
+any_owned = { limit = { NOT = { is_core = WPA } is_core = IDO } secede_province = IDO }
+IDO = { country_event = 8206032 }
 	ai_chance = { factor = 0.9 }
   }
 }
@@ -175,7 +207,7 @@ country_event = {
 
   option = {
     name = EVT_8206009_A
-	any_pop = { limit = { culture = indonesian } militancy = -1 }
+any_pop = { limit = { culture = indonesian } militancy = -1 }
   }
 }
 country_event = {
@@ -198,80 +230,115 @@ country_event = {
 	any_pop = { consciousness = 2 }
   }
 }
+#Operation Product - NET
 country_event = { 
   id = 8206011
-  title = EVT_8206031_NAME
-  desc = EVT_8206031_DESC
-  picture = "nwo2_indonesian_national_revolution"
-  fire_only_once = yes
-
-  trigger = {
-    tag = IDO
-    year = 1946 NOT = { year = 1990 }
-    war_with = NET
-  }
-
-  mean_time_to_happen = { months = 10 }
-
-  option = {
-    name = EVT_8206031_A
-	all_core = { 
-		limit = { NOT = { owned_by = IDO } } 
-		any_pop = { limit = { culture = indonesian } militancy = 5 consciousness = 2 } 
-	}
-  }
-}
-country_event = { # Linggajati Agreement
-  id = 8206012
-  title = EVT_8206032_NAME
-  desc = EVT_8206032_DESC
-  picture = "nwo2_linggajati_agreement"
+  title = "Operation Product"
+  desc = EVTDESC8206011
+  picture = "operation_product"
   fire_only_once = yes
 
   trigger = {
     tag = NET
+	has_global_flag = linggadjati_agreement
     year = 1947 NOT = { year = 1990 }
+    NOT = { war_with = IDO }
+  }
+
+  mean_time_to_happen = { months = 7 }
+
+  option = {
+    name = "Launch the offensive"
+	badboy = 5
+		war = {
+		target = IDO
+defender_goal = { casus_belli = become_independent }
+attacker_goal = { casus_belli = colonial_war } 
+			}
+	ai_chance = { factor = 0.8 }
+  }
+  option = {
+    name = "Uphold the Linggadjati Agreement"
+	prestige = -50
+	country_event = 8206008 #Formation of the RUSI
+	ai_chance = { factor = 0.2 }
+  }
+}
+country_event = { # Renville Agreement, NET
+  id = 8206012
+  title = "Renville Agreement"
+  desc = EVTDESC8206012
+  picture = "renville_agreement"
+  fire_only_once = yes
+
+  trigger = {
+    tag = NET
+    year = 1948 
+	has_global_flag = linggadjati_agreement
+	NOT = { year = 1990 }
     war_with = IDO
   }
 
-  mean_time_to_happen = { months = 11 }
+  mean_time_to_happen = { months = 1 }
 
   option = {
-    name = EVT_8206032_A
-	relation = { who = IDO value = 20 } 
+   name = "Accept the Renville Agreement (80% chance of success)"
+	relation = { who = IDO value = 25 } 
 	IDO = { country_event = 8206013 }
-	badboy = -2
-	ai_chance = { factor = 100 }
+	badboy = -2.5
+	ai_chance = { factor = 0.8 }
   }
 
   option = {
-    name = EVT_8206032_B
-	any_pop = { limit = { culture = indonesian } militancy = 2.5 } 
-	badboy = 20 
-	ai_chance = { factor = 0 }
+    name = "We will end this rebellion once and for all"
+any_pop = { limit = { culture = indonesian } militancy = 5 } 
+	badboy = 5
+	prestige = -25
+	relation = { who = USA value = - 50 }
+	ai_chance = { factor = 0.2 }
   }
 }
-country_event = { # Linggajati Agreement
+country_event = { # Renville Agreement, IDO
   id = 8206013
-  title = EVT_8206013_NAME
-  desc = EVT_8206013_DESC
-  picture = "nwo2_linggajati_agreement"
+  title = "Renville Agreement"
+  desc = EVTDESC8206012
+  picture = "renville_agreement"
 
   is_triggered_only = yes # IDO
 	
   option = {
-    name = EVT_8206013_A
-	any_pop = { limit = { culture = indonesian } consciousness = 1 }
-	NET = { country_event = 8206014 }
-	ai_chance = { factor = 100 }
+    name = "Accept the armistice"
+
+set_global_flag = renville_agreement
+
+#Transfer occupied lands to NET
+
+IDO = { any_owned = { limit = { is_capital = no controlled_by = NET } secede_province = NET change_controller = IDO } }
+
+any_owned = { limit = { is_capital = no controlled_by = IDO } add_province_modifier = { name = occupied_province duration = -1 } change_controller = NET }
+
+#Transfer occupied lands to IDO
+
+any_owned = { limit = { is_capital = no controlled_by = IDO } secede_province = IDO change_controller = NET }
+
+IDO = { any_owned = { limit = { is_capital = no controlled_by = NET } add_province_modifier = { name = occupied_province duration = -1 } change_controller = IDO } }
+
+end_war = IDO
+
+	NET = { release_vassal = ESM }
+	ESM = { government = democracy country_event = 800054 }
+	NET = { diplomatic_influence = { who = ESM value = 200 } }
+
+	ai_chance = { factor = 0.8 }
   }
 
   option = {
-    name = EVT_8206013_B
-	any_pop = { limit = { culture = indonesian } militancy = 1.5 }
-	ai_chance = { factor = 0 }
+    name = "We will prevail!"
+any_pop = { limit = { culture = indonesian } militancy = 1.5 }
+	ai_chance = { factor = 0.2 }
   }
 }
+#Puppeting of Indonesia
 country_event = {
   id = 8206014
   title = EVT_8206034_NAME
@@ -297,57 +364,103 @@ country_event = {
 	ai_chance = { factor = 0 }
   }
 }
+#Operation Kraai - NET
 country_event = {
   id = 8206015
-  title = EVT_8206035_NAME
-  desc = EVT_8206035_DESC
-  picture = "nwo2_indonesian_police_actions"
+  title = "Operation Kraai"
+  desc = EVTDESC8206015
+  picture = "police_actions_ido_2"
+fire_only_once = yes
 
-  is_triggered_only = yes
+  trigger = {
+    tag = NET
+	has_global_flag = renville_agreement
+    year = 1948 NOT = { year = 1990 }
+    NOT = { war_with = IDO }
+  }
+
+  mean_time_to_happen = { months = 11 }
 
   option = {
-    name = EVT_8206035_A
-	any_pop = { limit = { culture = indonesian } militancy = -1.0 consciousness = -1 }
+    name = "Begin the new police actions"
+		badboy = 5
+		war = {
+		target = IDO
+defender_goal = { casus_belli = become_independent }
+attacker_goal = { casus_belli = colonial_war } 
+			}
+	ai_chance = { factor = 0.9 }
   }
+
+  option = {
+    name = "Surrender to the Republic"
+	badboy = -10
+	prestige = -100
+any_owned = { limit = { is_core = IDO } secede_province = IDO }
+IDO = { inherit = ESM inherit = EID inherit = WPA }
+IDO = { prestige = 50 }
+	ai_chance = { factor = 0.1 }
+  }
+
 }
+#Dutch–Indonesian Round Table Conference, NET
 country_event = {
   id = 8206016
-  title = EVT_8206036_NAME
-  desc = EVT_8206036_DESC
-  picture = "nwo2_indonesian_police_actions"
+  title = "Dutch–Indonesian Round Table Conference"
+  desc = EVTDESC8206016
+  picture = "NET_IDO_round_table"
   fire_only_once = yes
 
   trigger = {
     tag = NET
-    year = 1948 NOT = { year = 1990 }
+	has_global_flag = renville_agreement
+    year = 1949 NOT = { year = 1990 }
     war_with = IDO
   }
 
-  mean_time_to_happen = { months = 3  }
+  mean_time_to_happen = { months = 11 }
 
   option = {
-    name = EVT_8206036_A
-	country_event = 8206017 
-	ai_chance = { factor = 100 }
+    name = "Propose the agreement (90% chance of success)"
+	prestige = 25
+	badboy = -10
+	end_war = IDO
+	IDO = { country_event = 8206017 }
+	ai_chance = { factor = 0.8 }
   }
 
   option = {
-    name = EVT_8206036_B
-	badboy = -2
-	ai_chance = { factor = 0 }
+    name = "I'm sure we'll win this time"
+	badboy = 5
+	ai_chance = { factor = 0.2 }
   }
 }
+#Dutch–Indonesian Round Table Conference, IDO
 country_event = {
   id = 8206017
-  title = EVT_8206037_NAME
-  desc = EVT_8206037_DESC
-  picture = "nwo2_indonesian_police_actions"
+  title = "Dutch–Indonesian Round Table Conference"
+  desc = EVTDESC8206016
+  picture = "NET_IDO_round_table"
 
   is_triggered_only = yes
 
   option = {
-    name = EVT_8206037_A
-	any_pop = { limit = { culture = indonesian } militancy = -1.0 }
+    name = "Sign the final agreement"
+	prestige = 25
+	badboy = -5
+	set_global_flag = rusi_agreement
+	end_war = NET
+NET = { any_owned = { limit = { is_core = IDO NOT = { is_core = WPA } } secede_province = IDO } }
+	IDO = { inherit = EID inherit = ESM inherit = DYA }
+	country_event = 8206032
+add_country_modifier = { name = independence_timer duration = 365 }
+	ai_chance = { factor = 0.9 }
+  }
+
+  option = {
+    name = "I'm sure we'll win this time"
+	badboy = 5
+	ai_chance = { factor = 0.1 }
   }
 }
 country_event = { 
@@ -363,7 +476,7 @@ country_event = {
     war_with = IDO
   }
 
-  mean_time_to_happen = { months = 6  }
+  mean_time_to_happen = { months = 6 }
 
   option = {
     name = EVT_8206060_A
@@ -379,7 +492,7 @@ country_event = {
 
   trigger = {
     tag = NET
-    year = 1950 NOT = { year = 1990 }
+    year = 1952 NOT = { year = 1990 }
     war_with = IDO
   }
 
@@ -391,54 +504,24 @@ country_event = {
 		badboy = 4 
     }
 }
-country_event = {
-  id = 8206028
-  title = EVT_8206068_NAME
-  desc = EVT_8206068_DESC
-  picture = "nwo2_end_of_indonesian_national_revolution"
-  fire_only_once = yes
-
-  trigger = {
-    tag = NET
-    year = 1947 NOT = { year = 1990 }
-	war = no
-    exists = IDO
-	NOT = { is_our_vassal = IDO }
-  }
-
-  mean_time_to_happen = { months = 3  }
-
-  option = {
-    name = EVT_8206068_A
-	any_owned = { limit = { is_core = IDO NOT = { is_core = WPA } } secede_province = IDO }
-	country_event = 8206031 
-	any_pop = { consciousness = 2 }
-  }
-
-}
-country_event = { # End of the Indonesian National Revolution NET victory
+country_event = { # US intervention leading to RUSI
   id = 8206030
-  title = EVT_8206070_NAME
+  title = "Transfer of Sovereignty to Indonesia"
   desc = EVT_8206070_DESC
   picture = "nwo2_end_of_indonesian_national_revolution"
 
   is_triggered_only = yes # NET
 
   option = {
-    name = EVT_8206070_A
-	any_pop = { limit = { culture = indonesian } consciousness = 2 militancy = 3 }
-	ai_chance = { factor = 0 }
-  }
-  option = {
-    name = EVT_8206070_B
-	any_pop = { limit = { culture = indonesian } consciousness = -2 militancy = -3 }
-	any_owned = { limit = { is_core = WPA } remove_core = IDO }
-	any_owned = { limit = { is_core = IDO NOT = { OR = { is_core = WPA is_core = TIM } } } secede_province = IDO }
+    name = "Set Indonesia free!"
+badboy = -10
+any_pop = { limit = { culture = indonesian } consciousness = -2 militancy = -3 }
+any_owned = { limit = { is_core = IDO NOT = { OR = { is_core = WPA is_core = TIM } } } secede_province = IDO }
+IDO = { inherit = EID inherit = ESM inherit = DYA }
 	IDO = { country_event = 8206032 }
-	ai_chance = { factor = 100 }
   }
 }
-country_event = { # End of the Indonesian National Revolution IDO victory
+country_event = { #NET does not cave in to US pressure
   id = 8206031
   title = EVT_8206071_NAME
   desc = EVT_8206071_DESC
@@ -447,16 +530,15 @@ country_event = { # End of the Indonesian National Revolution IDO victory
 
   option = {
     name = EVT_8206071_A
-	any_owned = { limit = { is_core = IDO NOT = { is_core = WPA }  } secede_province = IDO }
-	release_vassal = IDO
+	relation = { who = USA value = 50 }
 	any_pop = { militancy = -2.0 }
   }
 }
-country_event = { # End of the Indonesian National Revolution federated_indonesia
+country_event = { # Formation of the RUSI
   id = 8206032
   title = EVT_8206072_NAME
   desc = EVT_8206072_DESC
-  picture = "nwo2_federated_indonesia"
+  picture = "rusi_independece"
   is_triggered_only = yes # IDO
 
   option = {
@@ -465,21 +547,26 @@ country_event = { # End of the Indonesian National Revolution federated_indonesi
 	release_vassal = EID # East Indonesia
 	release_vassal = DYA # Dyak
 	#release_vassal = WJA # West Java
-	#release_vassal = SUM # Sumatra
+	release_vassal = ESM # Sumatra
 
 EID = { ruling_party_ideology = traditionalist }
 DYA = { ruling_party_ideology = traditionalist }
+ESM = { ruling_party_ideology = traditionalist }
+
+government = democracy1
+country_event = 800054
 
 NET = { 
 diplomatic_influence = { who = IDO value = 200  }
 diplomatic_influence = { who = EID value = 200  }
 diplomatic_influence = { who = DYA value = 200  }
+diplomatic_influence = { who = ESM value = 200  }
 prestige = 200
 }
 
   }
 }
-country_event = { # End of the Indonesian National Revolution NET victory
+country_event = { # US intervention in the IDO national rev
   id = 8206033
   title = EVT_8206070_NAME
   desc = EVT_8206070_DESC
@@ -508,35 +595,36 @@ country_event = { # End of the Indonesian National Revolution NET victory
 	relation = { who = NET value = -50 }
 	NET = { country_event = 8206034 }
 	set_global_flag = USA_pressure_the_dutch_on_indonesia
-	ai_chance = { factor = 100 }
+	ai_chance = { factor = 0.8 }
   }
   option = {
     name = EVT_8206033_B
 	relation = { who = IDO value = -100 }
 	relation = { who = NET value = 50 }
-	ai_chance = { factor = 0 }
+	NET = { badboy = -10 }
+	ai_chance = { factor = 0.2 }
   }
 
 }
-country_event = { # End of the Indonesian National Revolution NET victory
+country_event = { # US intervention, NET
   id = 8206034
-  title = EVT_8206070_NAME
+  title = "US Intervention in the Indonesian Revolution"
   desc = EVT_8206070_DESC
   picture = "nwo2_end_of_indonesian_national_revolution"
 
   is_triggered_only = yes # NET
 
   option = {
-    name = EVT_8206034_A
-	any_pop = { limit = { culture = indonesian } consciousness = 2 militancy = 3 }
-	country_event = 8206030
-	ai_chance = { factor = 0 }
+    name = "Indonesia is Dutch!"
+any_pop = { limit = { culture = indonesian } consciousness = 2 militancy = 3 }
+	IDO = { country_event = 8206031 }
+	ai_chance = { factor = 0.7 }
   }
   option = {
-    name = EVT_8206034_B
-	any_pop = { limit = { culture = indonesian } consciousness = -2 militancy = -10 }
-	country_event = 8206031
-	ai_chance = { factor = 100 }
+    name = "Relinquish control over the Dutch East Indies"
+any_pop = { limit = { culture = indonesian } consciousness = -2 militancy = -10 }
+	country_event = 8206030
+	ai_chance = { factor = 0.3 }
   }
 }
 country_event = {
