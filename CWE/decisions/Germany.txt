@@ -5,18 +5,18 @@ political_decisions = {
 		picture = "denazification"
 		potential = {
 			OR = { 
-				AND = { tag = USA 564 = { owned_by = USA } }
-				AND = { tag = ENG 369 = { owned_by = ENG } }
-				AND = { tag = RUS 551 = { owned_by = RUS } }
+				AND = { tag = RUS DDR = { government = occupation_zone vassal_of = RUS } }
+				AND = { tag = ENG HAN = { government = occupation_zone vassal_of = ENG } }
+				AND = { tag = USA BAV = { government = occupation_zone vassal_of = USA } }
 			}
 			NOT = { has_country_flag = denazification }
 		}
 
 		allow = {
 			OR = { 
-				AND = { tag = USA 564 = { owned_by = USA } }
-				AND = { tag = ENG 369 = { owned_by = ENG } }
-				AND = { tag = RUS 551 = { owned_by = RUS } }
+				AND = { tag = RUS DDR = { government = occupation_zone vassal_of = RUS } }
+				AND = { tag = ENG HAN = { government = occupation_zone vassal_of = ENG } }
+				AND = { tag = USA BAV = { government = occupation_zone vassal_of = USA } }
 			}
 			NOT = { has_country_flag = denazification }
 			OR = {
@@ -33,21 +33,22 @@ political_decisions = {
 
 		effect = {
 			set_country_flag = denazification
-			any_owned = { 
+			country_event = 8204080			
+			random_country = { limit = { government = occupation_zone vassal_of = THIS } any_owned = { 
 				limit = { is_core = GER }
 add_province_modifier = { name = denazification duration = 700 }
-			}
-			country_event = 8204080
+			} }
+
 		}
 		ai_will_do = {
 			factor = 1
-		}		
-	}
+		}
+}		
 	
 	monnet_plan = {
 		picture = "monnet_plan"
 		potential = {
-			owns = 574
+			RHL = { government = occupation_zone vassal_of = THIS }
 			574 = { NOT = { is_core = THIS } }
 			NOT = { has_country_flag = monnet_plan }
 		}
@@ -58,10 +59,10 @@ add_province_modifier = { name = denazification duration = 700 }
 
 		effect = {
 			set_country_flag = monnet_plan
-			any_owned = { 
+			RHL = { any_owned = { 
 				limit = { is_core = GER NOT = { province_id = 573 } }
 				add_province_modifier = { name = colonial_exploitation duration = 700 }
-			}
+			} }
 		}
 		ai_will_do = {
 			factor = 1
@@ -71,14 +72,15 @@ add_province_modifier = { name = denazification duration = 700 }
 	saar_protectorate = {
 		picture = "saar_protectorate"
 		potential = {
-			owns = 573
+			RHL = { government = occupation_zone vassal_of = THIS }
+			RHL = { owns = 573 }
 			573 = { NOT = { is_core = THIS } }
 			NOT = { has_country_flag = saar_protectorate }
 			has_country_flag = saar_option
 		}
 
 		allow = {
-			tag = FRA 573 = { owned_by = FRA }
+			tag = FRA 573 = { owned_by = RHL } 
 			NOT = { has_country_flag = saar_protectorate }
 			has_country_flag = monnet_plan
 			marshall_plan = 1
@@ -88,7 +90,9 @@ add_province_modifier = { name = denazification duration = 700 }
 		effect = {
 			prestige = 10
 			set_country_flag = saar_protectorate
-			release_vassal = SAL
+			RHL = { 
+			release = SAL }
+			create_vassal = SAL
 			country_event = 8204036
 			SAL = { government = sar_government }
 			diplomatic_influence = { who = SAL value = 200 }
@@ -103,18 +107,16 @@ add_province_modifier = { name = denazification duration = 700 }
 		potential = {
 			GER = { exists = no }
 			NGF = { exists = no }
-OR = { has_country_flag = no_partition_of_west_germany has_country_flag = saar_option }
+OR = { has_country_flag = no_partition_of_west_germany has_country_flag = saar_option ai = yes}
 			OR = { 
 				AND = { 
 					has_country_flag = denazification
 					tag = ENG
 					year = 1950
-					369 = { owned_by = ENG }
 				}
 				AND = { 
 					has_country_flag = denazification
 					tag = USA 
-					564 = { owned_by = USA NOT = { has_province_modifier = denazification } } 
 				}
 			}
 			NOT = { has_country_flag = establish_west_germany }
@@ -126,11 +128,13 @@ OR = { has_country_flag = no_partition_of_west_germany has_country_flag = saar_o
 				AND = { 
 					tag = ENG
 					year = 1950
-					369 = { owned_by = ENG }
+					369 = { owned_by = HAN }
+					HAN = { government = occupation_zone vassal_of = THIS }
 				}
 				AND = { 
 					tag = USA 
-					564 = { owned_by = USA NOT = { has_province_modifier = denazification } } 
+					564 = { owned_by = BAV NOT = { has_province_modifier = denazification } }
+					BAV = { government = occupation_zone vassal_of = THIS }
 				}
 			}
 			OR = {
@@ -148,8 +152,11 @@ OR = { has_country_flag = no_partition_of_west_germany has_country_flag = saar_o
 
 		effect = {
 			set_country_flag = establish_west_germany
-any_owned = { limit = { is_core = GER NOT = { is_core = BAV } } secede_province = GER }
-any_owned = { limit = { is_core = BAV } secede_province = BAV }
+	BAV = { any_owned = { limit = { is_core = BAV } remove_core = GER } }
+	BAV = { release = GER }
+	BAV = { any_owned = { limit = { is_core = BAV } add_core = GER } }
+	release_vassal = BAV
+	BAV = { government = democracy }
 	FRA = { diplomatic_influence = { who = GER value = 200 } }
 	FRA = { diplomatic_influence = { who = BAV value = 200 } }
 		prestige = 25
@@ -164,9 +171,8 @@ any_owned = { limit = { is_core = BAV } secede_province = BAV }
 	establish_east_germany = {
 		picture = "establish_east_germany"
 		potential = {
-			DDR = { exists = no }
-	NOT = { has_country_flag = no_partition_of_west_germany }
-			owns = 551
+			DDR = { government = occupation_zone vassal_of = THIS }
+	OR = { NOT = { has_country_flag = no_partition_of_west_germany } ai = yes }
 			has_country_flag = denazification
 			tag = RUS
 			OR = { 
@@ -177,7 +183,7 @@ any_owned = { limit = { is_core = BAV } secede_province = BAV }
 		}
 
 		allow = {
-			DDR = { exists = no }
+			DDR = { government = occupation_zone vassal_of = THIS }
 			has_country_flag = denazification
 			tag = RUS
 			OR = { 
@@ -191,10 +197,10 @@ any_owned = { limit = { is_core = BAV } secede_province = BAV }
 		effect = {
 			set_country_flag = establish_east_germany
 			any_owned = { limit = { is_core = GER } add_core = DDR }
-any_owned = { limit = { is_core = DDR } add_core = GER }
-			release_vassal = DDR
+			any_owned = { limit = { is_core = DDR } add_core = GER }
+			DDR = { government = proletarian_dictatorship }
 			diplomatic_influence = { who = DDR value = 200 }
-			military_access = RUS
+			DDR = { military_access = RUS }
 			prestige = 50
 		}
 		ai_will_do = {
@@ -207,10 +213,10 @@ any_owned = { limit = { is_core = DDR } add_core = GER }
 		potential = {
 			GER = { exists = yes }
 			OR = { 
-	AND = { tag = USA any_owned_province = { is_core = GER } }
-	AND = { tag = ENG any_owned_province = { is_core = GER } }
-	AND = { tag = FRA any_owned_province = { is_core = GER } }
-	AND = { tag = RUS any_owned_province = { is_core = GER } }
+	AND = { tag = RUS DDR = { vassal_of = THIS government = occupation_zone } }
+	AND = { tag = ENG HAN = { vassal_of = THIS government = occupation_zone } }
+	AND = { tag = USA BAV = { vassal_of = THIS government = occupation_zone } }
+	AND = { tag = FRA RHL = { vassal_of = THIS government = occupation_zone } }
 			}
 	NOT = { has_country_flag = end_occupation_of_germany }
 OR = { has_country_flag = no_partition_of_west_germany has_country_flag = saar_option }
@@ -223,8 +229,8 @@ OR = { has_country_flag = no_partition_of_west_germany has_country_flag = saar_o
 
 		effect = {
 			set_country_flag = end_occupation_of_germany
-any_owned = { limit = { is_core = GER NOT = { is_core = BAV } } secede_province = GER }
-any_owned = { limit = { is_core = BAV } secede_province = BAV }
+random_country = { limit = { government = occupation_zone vassal_of = THIS } any_owned = { limit = { is_core = GER NOT = { is_core = BAV } } secede_province = GER } }
+random_country = { limit = { government = occupation_zone vassal_of = THIS } any_owned = { limit = { is_core = BAV } secede_province = BAV } }
 			diplomatic_influence = { who = GER value = 100 }
 			relation = { who = GER value = 200 }
 		}
