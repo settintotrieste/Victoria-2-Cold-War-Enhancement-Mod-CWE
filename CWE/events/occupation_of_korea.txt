@@ -10,11 +10,11 @@ country_event = { #Military Occupation of Korea
 
 	trigger = {
 		tag = USA
-		NOT = { exists = SKO }
-		NOT = { exists = NKO }
+		SKO = { government = occupation_zone vassal_of = USA }
+		NKO = { government = occupation_zone vassal_of = RUS }
 		NOT = { exists = KOR }
 		war = no
-		owns = 1633 # Daegu
+
 	}
 
 	mean_time_to_happen = {
@@ -45,7 +45,7 @@ country_event = {
 		random_owned = { # RUS only - if America recognized and we did not, trigger divided Korea
 			limit = {
 				exists = SKO
-				owner = { is_possible_vassal = NKO }
+				NKO = { vassal_of = THIS }
 			}
 			owner = { country_event = 1209002 }
 		}
@@ -55,8 +55,8 @@ country_event = {
 	option = {
 		name = EVT_1209001_B
 		prestige = -10
-		release = SKO
-		any_owned = { limit = { is_core = NKO } secede_province = SKO }
+		release_vassal = SKO
+		SKO = { government = democracy }
 		KMT = {
 			relation = { who = SKO value = 200 }
 			diplomatic_influence = { who = SKO value = 200 }
@@ -91,7 +91,7 @@ country_event = { # Establishing the Provisional People's Committee
 	trigger = {
 		tag = RUS
 		government = proletarian_dictatorship
-		is_possible_vassal = NKO
+		NKO = { government = occupation_zone vassal_of = THIS }
 	}
 
 	mean_time_to_happen = {
@@ -100,7 +100,7 @@ country_event = { # Establishing the Provisional People's Committee
 
 	option = {
 		name = EVT_1209004_A
-		any_pop = { limit = { culture = korean } consciousness = 0.2 ideology  = { factor = 0.2  value = communist } }
+		NKO = { any_pop = { limit = { culture = korean } consciousness = 0.2 ideology  = { factor = 0.2  value = communist } } }
 		set_global_flag = provisional_peoples_committee
 		ai_chance = { factor = 1 }
 	}
@@ -110,6 +110,7 @@ country_event = { # Establishing the Provisional People's Committee
 		prestige = -30
 		badboy = 20
 		clr_country_flag = korea_trusteeship
+		inherit = NKO
 		SKO = { change_tag = KOR }
 		NKO = { all_core = { remove_core = NKO add_core = KOR } }
 		random_country = { limit = { is_possible_vassal = SKO } country_event = 1209007 }
@@ -127,9 +128,11 @@ country_event = { # Korean Trusteeship Scandal
 
 	trigger = {
 		tag = USA
-		NOT = { exists = SKO }
-		NOT = { exists = NKO }
-		owns = 1633 # Daegu
+		SKO = { government = occupation_zone vassal_of = THIS }
+		OR = {
+		AND = { NKO = { government = occupation_zone vassal_of = RUS } }
+		RUS = { is_possible_vassal = NKO }
+		}
 		has_global_flag = provisional_peoples_committee
 	}
 
@@ -139,13 +142,13 @@ country_event = { # Korean Trusteeship Scandal
 
 	option = {
 		name = EVT_1209005_A
-		any_pop = { limit = { culture = korean } consciousness = 0.2 militancy = 0.2 }
+		SKO = { any_pop = { limit = { culture = korean } consciousness = 0.2 militancy = 0.2 } }
 		ai_chance = { factor = 0 }
 	}
 
 	option = {
 		name = EVT_1209005_B
-		any_pop = { limit = { culture = korean } consciousness = 0.2 ideology  = { factor = 0.2  value = conservative } }
+		SKO = { any_pop = { limit = { culture = korean } consciousness = 0.2 ideology  = { factor = 0.2  value = conservative } } }
 		RUS = { country_event = 1209006 }
 		ai_chance = { factor = 1 }
 	}
@@ -160,7 +163,7 @@ country_event = { # Trusteeship dispute
 
 	option = {
 		name = EVT_1209006_A
-		any_pop = { limit = { culture = korean } ideology  = { factor = 0.1  value = communist } }
+		NKO = { any_pop = { limit = { culture = korean } ideology  = { factor = 0.1  value = communist } } }
 		FROM = { country_event = 1209003 }
 		ai_chance = { factor = 0.9 }
 	}
@@ -184,7 +187,7 @@ country_event = { # The establishment of the Republic of Korea
 		NOT = { year = 1990 }
 		tag = USA
 		war = no
-		is_possible_vassal = SKO
+		SKO = { government = occupation_zone vassal_of = THIS }
 		NOT = { exists = KOR }
 	}
 
@@ -192,7 +195,8 @@ country_event = { # The establishment of the Republic of Korea
 
 	option = {
 		name = EVT_1209003_A
-		release = SKO
+		release_vassal = SKO
+		SKO = { government = democracy }
 		any_owned = { limit = { is_core = NKO } secede_province = SKO }
 		prestige = 5
 		diplomatic_influence = { who = SKO value = 200 }
@@ -234,13 +238,13 @@ country_event = {
 		NOT = { year = 1990 }
 		tag = RUS
 		war = no
-		is_possible_vassal = NKO
+		NKO = { government = occupation_zone vassal_of = THIS }
 		NOT = { exists = KOR }
 	}
 
 	option = {
 		name = EVT_1209002_A
-		release_vassal = NKO
+		NKO = { government = proletarian_dictatorship }
 		any_owned = { limit = { is_core = SKO } secede_province = NKO }
 		prestige = 5
 		diplomatic_influence = { who = NKO value = 100 }
@@ -248,7 +252,7 @@ country_event = {
 
 	option = {
 		name = EVT_1209002_B
-		release_vassal = NKO
+		NKO = { government = proletarian_dictatorship }
 		any_owned = { limit = { is_core = SKO } secede_province = NKO }
 		prestige = 5
 		clothes = -1000
@@ -271,11 +275,11 @@ country_event = { # The establishment of the ROK
 
 	trigger = {
 		year = 1950 NOT = { year = 1990 }
-		NOT = { exists = SKO }
-		NOT = { exists = NKO }
+		NKO = { government = occupation_zone vassal_of = RUS }
+		SKO = { government = occupation_zone vassal_of = THIS }
 		OR = {
-			AND = { owns = 1624 tag = USA } # Seoul
-			AND = { owns = 1619 tag = RUS } # Pyongyang
+			AND = { SKO = { vassal_of = THIS } tag = USA } # Seoul
+			AND = { NKO = { vassal_of = THIS } tag = RUS } # Pyongyang
 		}
 		USA = { has_country_flag = korea_trusteeship }
 		RUS = { has_country_flag = korea_trusteeship }
@@ -289,9 +293,10 @@ country_event = { # The establishment of the ROK
 		name = "A victory for the Korean peninsula"
 		SKO = { all_core = { add_core = KOR } }
 		NKO = { all_core = { add_core = KOR } }
-		USA = { release = KOR }
-		RUS = { release = NKO }
+		USA = { release_vassal = KOR }
+		RUS = { release_vassal = NKO }
 		KOR = {
+			government = democracy
 			inherit = NKO
 			capital = 1624
 			election = yes

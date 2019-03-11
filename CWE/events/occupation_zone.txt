@@ -1,0 +1,65 @@
+country_event = {
+	id = 10000001
+	title = "Occupation Zone"
+	desc = "As we are currently an occupation zone of a foreign power, we are required to give it military access to us."
+	picture = "nwo2_occupation_zones_in_germany"
+
+
+	trigger = {
+		is_vassal = yes
+		government = occupation_zone
+		OR = { 
+		NOT = { has_country_modifier = occupation_zone }
+		NOT = { overlord = { military_access = THIS } }
+		}
+	}
+
+	option = {
+		name = "OK"
+		overlord = { military_access = THIS }
+		add_country_modifier = { name = occupation_zone duration = -1 }
+	}
+}
+country_event = {
+	id = 10000002
+	title = "End of occupation"
+	desc = "We have broken free from our occupying powers, and it's time to eliminate the last vestiges of their occupation."
+	picture = "nwo2_occupation_zones_in_germany"
+
+
+	trigger = {
+		is_vassal = no
+		government = occupation_zone
+	}
+
+	option = {
+		name = "Freedom!"
+		remove_country_modifier = occupation_zone
+		random_owned = {
+			limit = { owner = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } }
+			owner = { government = proletarian_dictatorship country_event = 800052 }
+		}
+		random_owned = {
+			limit = { owner = { NOT = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } } }
+			owner = { government = democracy country_event = 800054 }
+		}
+
+	}
+}
+country_event = {
+	id = 10000003
+	title = "End of occupation"
+	desc = "We are no longer an occupation zone and are allowed to have diplomatic relations."
+	picture = "nwo2_occupation_zones_in_germany"
+
+
+	trigger = {
+		NOT = { government = occupation_zone }
+		has_country_modifier = occupation_zone
+	}
+
+	option = {
+		name = "OK"
+		remove_country_modifier = occupation_zone
+	}
+}
