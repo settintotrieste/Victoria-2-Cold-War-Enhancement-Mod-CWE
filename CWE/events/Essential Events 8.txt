@@ -4391,8 +4391,8 @@ fire_only_once = yes
 trigger = {
 tag = SPA
 government = populist_dictatorship
-average_militancy = 8
-NOT = { year = 1975 }
+OR = { average_militancy = 8 badboy = 0.9 }
+NOT = { year = 1990 }
 war = no
 }
 
@@ -4402,9 +4402,18 @@ months = 1
 
 option = {
 name = "Relax our grip over the media to relieve the unrest"
-prestige = -25
+prestige = -50
+badboy = -10
+political_reform = firewall_publishing
 any_pop = { militancy = -5 }
 all_core = { limit = { is_core = SPA } add_province_modifier = { name = support_the_government duration = 1825 } }
+	ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "No compromise with the opposition"
+any_pop = { militancy = 2 }
+ai_chance = { factor = 0.1 }
 		}
 
 }
@@ -10357,7 +10366,7 @@ is_triggered_only = yes
 option = {
 name = "Sign the UN backed armistice"
 
-country_event = 1512209
+country_event = 1512280
 
 prestige_factor = -0.05
 add_country_modifier = { name = un_armistice duration = 1825 } set_country_flag = un_armistice 
@@ -11752,6 +11761,8 @@ war = no
 option = {
 name = "Great!"
 
+any_owned = { remove_province_modifier = province_morgenthau_plan remove_province_modifier = province_monnet_plan }
+
 #If there is no Germany
 random_owned = { limit = { owner = { GER = { exists = no } } } owner = { any_owned = { limit = { is_core = BAV } secede_province = BAV } change_tag = GER government = democracy country_event = 800054 prestige = 50 } }
 
@@ -11762,18 +11773,19 @@ random_owned = { limit = { owner = { GER = { exists = yes } } } owner = { GER = 
 
 }
 
-#End of the Occupation Zones via independence
+#Apply Morgenthau/Monnet plan modifiers to Occupation Zone
 country_event = {
 	id = 1512287
-title = "Return of German Sovereignty"
-	desc = "As the occupation zone has become an independent nation, we will switch back into Germany"
-	picture = "founding_treaty"
+title = "Occupation Policy in Germany"
+	desc = "The occupying power decides what kind of economic policy the occupation zone adopts."
+	picture = "nwo2_allied_occupation_of_germany"
 
 fire_only_once = yes
 
 trigger = {
 OR = { tag = OG1 tag = OG2 tag = OG3 tag = OG4 }
 is_vassal = yes
+any_owned_province = { NOT = { OR = { has_province_modifier = province_morgenthau_plan has_province_modifier = province_monnet_plan } } }
 }
 
 option = {
@@ -11846,7 +11858,77 @@ name = "Maintain our claims over Germany"
 set_country_flag = final_settlement_ger
 prestige_factor = -0.10
 relation = { who = GER value = -200 }
-badboy = 25
+badboy = 20
 ai_chance = { factor = 0 }
 		}
+}
+
+#Soviet puppet liberalises
+country_event = {
+	id = 1512289
+title = "$FROMCOUNTRY_ADJ$ Spring"
+	desc = EVTDESC1512289
+	picture = "soviet_spring"
+
+is_triggered_only = yes
+
+
+option = {
+name = "Crush any attempts to liberalise!"
+release_vassal = FROM
+war = {
+	target = FROM
+	attacker_goal = { casus_belli = make_puppet }
+	defender_goal = { casus_belli = humiliate }
+	call_ally = no
+}
+ai_chance = { factor = 1 modifier = { factor = 0 OR = { government = socialist_democracy ruling_party_ideology = socialist ruling_party_ideology = communist_social } } }
+		}
+
+option = {
+name = "Permit $COUNTRY$ to depart from Marxist-Leninism"
+prestige = -100
+ai_chance = { factor = 1 modifier = { factor = 0 NOT = { OR = { government = socialist_democracy ruling_party_ideology = socialist ruling_party_ideology = communist_social } } } }
+		}
+}
+
+#Jeju uprising
+country_event = {
+  id = 1512290
+  title = "Jeju Uprising"
+  desc = EVTDESC1512290
+  picture = "jeju_uprising"
+  fire_only_once = yes
+
+  trigger = {
+    	OR = { tag = KOR tag = SKO }
+	exists = NKO
+	year = 1948
+    	NOT = { year = 1990 }
+	election = no
+OR = { government = democracy government = presidential_dictatorship }
+  }
+
+  mean_time_to_happen = { months = 4 }
+
+  option = {
+    name = "The gloves come off"
+	prestige = -50
+	badboy = 5
+	1637 = { any_pop = { reduce_pop = 0.95 } }
+	ai_chance = { factor = 0.9 }
+  }
+
+option = {
+    name = "Apply only light suppression"
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+any_pop = { 
+ideology = {
+	factor = 0.2
+	value = communist
+} 
+	}
+	ai_chance = { factor = 0.1 }
+  }
+
 }

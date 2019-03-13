@@ -571,11 +571,6 @@ country_event = {
     ai_chance = { factor = 100 }
   }
 
-  option = {
-    name = "EVT_8204011_C"
-	treasury = 500 
-    ai_chance = { factor = 0 }
-  }
 }
 
 #German Occupation Economic Policy 
@@ -1070,33 +1065,66 @@ country_event = {
 	capital = 551
   }
 }
-#German General Treaty - Independence of Germany
+#German General Treaty - Independence of Germany via GP
 country_event = {
   id = 8204102
-  title = "General Treaty"
+  title = "The General Treaty"
   desc = EVTDESC8204102
   picture = "german_general_treaty"
   fire_only_once = yes
 
   trigger = {
     	tag = GER
-overlord = { has_country_flag = no_partition_of_west_germany }
-FRA = { NOT = { has_country_flag = rhineland_option } }
-	government = democracy
-	OR = { is_vassal = yes is_greater_power = yes }
-	OR = { year = 1955 is_greater_power = yes }
-	NOT = { year = 1990 }
+	OR = { is_greater_power = yes is_vassal = no }
+	has_global_flag = blocsenabled
   }
 
   mean_time_to_happen = { months = 1 }
 
   option = {
     name = "We are recognised as sovereign nation once more"
-	prestige = 50
+	prestige = 100
 	set_country_flag = german_general_treaty
-	FRA = { diplomatic_influence = { who = GER value = 200 } }
-	overlord = { release_vassal = GER }
   }
+}
+#German General Treaty - Independence of Germany historic
+country_event = {
+  id = 82041022
+  title = "General Treaty with Germany?"
+  desc = EVTDESC8204102
+  picture = "german_general_treaty"
+  fire_only_once = yes
+
+  trigger = {
+    	is_our_vassal = GER
+	has_country_flag = no_partition_of_west_germany
+	government = democracy
+	year = 1955
+	AUS = { government = democracy }
+	has_global_flag = blocsenabled
+  }
+
+  mean_time_to_happen = { months = 5 }
+
+  option = {
+    name = "Grant Germany sovereignty!"
+	relation = { who = ENG value = 50 }
+	GER = { prestige = 50 }
+	GER = { set_country_flag = german_general_treaty }
+	FRA = { diplomatic_influence = { who = GER value = 200 } }
+	release_vassal = GER
+	ai_chance = { factor = 0.9 }
+  }
+
+  option = {
+    name = "Deny their self-determination"
+	relation = { who = FRA value = 50 }
+	relation = { who = ENG value = -50 }
+	prestige = -50
+	badboy = 5
+	ai_chance = { factor = 0.1 }
+  }
+
 }
 #German Economic Miracle
 country_event = {
@@ -1108,12 +1136,11 @@ country_event = {
 
   trigger = {
     	tag = GER
-	has_country_flag = german_general_treaty
+OR = { is_vassal = no has_country_flag = german_general_treaty }
 	has_country_modifier = germaneconomy
-	NOT = { year = 1963 }
   }
 
-  mean_time_to_happen = { months = 2 }
+  mean_time_to_happen = { months = 1 }
 
   option = {
     name = "Rejoice!"
