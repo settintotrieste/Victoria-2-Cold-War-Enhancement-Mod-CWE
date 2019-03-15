@@ -4391,8 +4391,8 @@ fire_only_once = yes
 trigger = {
 tag = SPA
 government = populist_dictatorship
-average_militancy = 8
-NOT = { year = 1975 }
+OR = { average_militancy = 8 badboy = 0.9 }
+NOT = { year = 1990 }
 war = no
 }
 
@@ -4402,9 +4402,18 @@ months = 1
 
 option = {
 name = "Relax our grip over the media to relieve the unrest"
-prestige = -25
+prestige = -50
+badboy = -10
+political_reform = firewall_publishing
 any_pop = { militancy = -5 }
 all_core = { limit = { is_core = SPA } add_province_modifier = { name = support_the_government duration = 1825 } }
+	ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "No compromise with the opposition"
+any_pop = { militancy = 2 }
+ai_chance = { factor = 0.1 }
 		}
 
 }
@@ -10356,6 +10365,9 @@ is_triggered_only = yes
 
 option = {
 name = "Sign the UN backed armistice"
+
+country_event = 1512280
+
 prestige_factor = -0.05
 add_country_modifier = { name = un_armistice duration = 1825 } set_country_flag = un_armistice 
 FROM = { add_country_modifier = { name = un_armistice duration = 1825 } set_country_flag = un_armistice }
@@ -11098,43 +11110,6 @@ ai_chance = { factor = 0.1 }
 		}
 }
 
-#Dutch annexation of German lands - NET
-country_event = {
-	id = 1512270
-title = "Bakker-Schut Plan"
-	desc = EVTDESC1512270
-	picture = "dutch_annexation_ger"
-
-fire_only_once = yes
-
-trigger = {
-tag = NET
-year = 1947
-NOT = { year = 1990 }
-NGF = { exists = no }
-GER = { exists = no }
-is_vassal = no
-}
-
-mean_time_to_happen = { 
-months = 1
-	}
-
-option = {
-name = "German lands as reparations! (25% chance of success)"
-badboy = 5
-ENG = { country_event = 1512271 }
-relation = { who = USA value = -100 }
-ai_chance = { factor = 0.9 }
-		}
-
-option = {
-name = "Keep Germany's territorial borders"
-prestige = 25
-ai_chance = { factor = 0.1 }
-		}
-}
-
 #Dutch annexation of German lands - ENG
 country_event = {
 	id = 1512271
@@ -11468,4 +11443,492 @@ remove_country_modifier = soviet_stagnation_2
 remove_country_modifier = soviet_stagnation_3 
 remove_country_modifier = soviet_stagnation_4 
 		}
+}
+
+#Stalemate in ongoing war
+country_event = {
+	id = 1512280
+title = "Stalemate in the War"
+	desc = EVTDESC1512280
+	picture = "draw_war_party_hit"
+
+is_triggered_only = yes
+
+option = {
+name = "We will prevail eventually!"
+clr_country_flag = country_at_war
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = conservative } }
+owner = { any_pop = { ideology = { factor = -0.05 value = conservative } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = big_tent } }
+owner = { any_pop = { ideology = { factor = -0.05 value = big_tent } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = socialist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = socialist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = traditionalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = traditionalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = populist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = populist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = nationalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = nationalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = progressive } }
+owner = { any_pop = { ideology = { factor = -0.05 value = progressive } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = liberal } }
+owner = { any_pop = { ideology = { factor = -0.05 value = liberal } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist_social } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist_social } } }
+}
+
+		}
+
+}
+
+#Fallen Government
+country_event = {
+	id = 1512281
+title = "$COUNTRY_ADJ$ Parliament Collapses"
+	desc = EVTDESC1512281
+	picture = "government_collapses"
+
+trigger = {
+OR = { government = democracy government = democracy1 government = socialist_democracy government = colonial_government government = mandate_government government = hms_government government = hms_government1 government = sar_government }
+war = no
+election = no
+NOT = { num_of_revolts = 1 }
+average_militancy = 5
+}
+
+mean_time_to_happen = { 
+months = 6
+modifier = { factor = 0.75 average_militancy = 6 }
+modifier = { factor = 0.75 average_militancy = 7 }
+modifier = { factor = 0.75 average_militancy = 8 }
+modifier = { factor = 0.75 average_militancy = 9 }
+modifier = { factor = 0.75 average_militancy = 10 }
+	}
+
+option = {
+name = "An election must now be held!"
+
+prestige = -25
+
+any_pop = { limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } } militancy = -8 }
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = conservative } }
+owner = { any_pop = { ideology = { factor = -0.10 value = conservative } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = big_tent } }
+owner = { any_pop = { ideology = { factor = -0.10 value = big_tent } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = socialist } }
+owner = { any_pop = { ideology = { factor = -0.10 value = socialist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = traditionalist } }
+owner = { any_pop = { ideology = { factor = -0.10 value = traditionalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = populist } }
+owner = { any_pop = { ideology = { factor = -0.10 value = populist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = nationalist } }
+owner = { any_pop = { ideology = { factor = -0.10 value = nationalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = progressive } }
+owner = { any_pop = { ideology = { factor = -0.10 value = progressive } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = liberal } }
+owner = { any_pop = { ideology = { factor = -0.10 value = liberal } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist } }
+owner = { any_pop = { ideology = { factor = -0.10 value = communist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist_social } }
+owner = { any_pop = { ideology = { factor = -0.10 value = communist_social } } }
+}
+
+election = yes
+
+		}
+
+}
+
+#Formation of Bizonia - USA proposes
+country_event = {
+	id = 1512282
+title = "Formation of Bizonia"
+	desc = EVTDESC1512282
+	picture = "bizonia"
+
+fire_only_once = yes
+
+trigger = {
+tag = USA
+GER = { exists = no }
+any_owned_province = { is_core = GER }
+ENG = { any_owned_province = { is_core = GER } }
+has_country_flag = no_partition_of_west_germany
+ENG = { has_country_flag = no_partition_of_west_germany }
+RUS = { has_country_flag = policy_on_germany }
+NOT = { year = 1990 }
+NOT = { has_country_flag = form_bizonia }
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Propose the Bizone to the British (80% chance of success)"
+prestige = 50
+any_owned = { limit = { is_core = GER } secede_province = OG4 }
+create_vassal = OG4
+OG4 = { civilized = yes government = mandate_government country_event = 800054 ruling_party_ideology = big_tent }
+diplomatic_influence = { who = OG4 value = 200 }
+OG4 = { primary_culture = german }
+ENG = { country_event = 1512283 }
+set_country_flag = form_bizonia
+ai_chance = { factor = 0.8 }
+		}
+
+option = {
+name = "We'll create our own occupation zone"
+set_country_flag = occupation_zone_potential
+ENG = { set_country_flag = occupation_zone_potential }
+ai_chance = { factor = 0.2 }
+		}
+}
+
+#Formation of Bizonia - ENG acceptance
+country_event = {
+	id = 1512283
+title = "Formation of Bizonia"
+	desc = EVTDESC1512282
+	picture = "bizonia"
+
+is_triggered_only = yes
+
+option = {
+name = "Merge the two zones into an autonomous unit"
+
+prestige = 100
+
+relation = { who = USA value = 50 }
+
+any_owned = { limit = { is_core = GER } secede_province = OG4 }
+
+diplomatic_influence = { who = OG4 value = 100 }
+
+ai_chance = { factor = 0.8 }
+		}
+
+option = {
+name = "We will focus on our own zone"
+set_country_flag = occupation_zone_potential
+USA = { set_country_flag = occupation_zone_potential }
+ai_chance = { factor = 0.2 }
+		}
+}
+
+#Formation of Trizonia - USA proposes
+country_event = {
+	id = 1512284
+title = "Formation of Trizonia"
+	desc = EVTDESC1512284
+	picture = "bizonia"
+
+fire_only_once = yes
+
+trigger = {
+tag = USA
+year = 1949
+GER = { exists = no }
+OG4 = { exists = yes }
+FRA = { any_owned_province = { is_core = GER } }
+FRA = { has_country_flag = policy_on_germany }
+has_country_flag = no_partition_of_west_germany
+FRA = { NOT = { has_country_flag = rhineland_option } }
+NOT = { year = 1990 }
+}
+
+mean_time_to_happen = { 
+months = 3
+	}
+
+option = {
+name = "Propose the Trizone to the French (80% chance of success)"
+FRA = { country_event = 1512285 }
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Exclude the French Zone"
+prestige = -50
+relation = { who = FRA value = 50 }
+FRA = { set_country_flag = occupation_zone_potential }
+ai_chance = { factor = 0.1 }
+		}
+}
+
+#Formation of Trizonia - FRA acceptance
+country_event = {
+	id = 1512285
+title = "Formation of Trizonia"
+	desc = EVTDESC1512284
+	picture = "bizonia"
+
+is_triggered_only = yes
+
+
+option = {
+name = "Merge the French zone into one autonomous unit"
+prestige = 50
+diplomatic_influence = { who = OG4 value = 100 }
+any_owned = { limit = { is_core = GER NOT = { is_core = SAL } } secede_province = OG4 }
+USA = { set_country_flag = trizone_formed }
+OG4 = { add_country_modifier = { name = independence_timer duration = 180 } }
+ai_chance = { factor = 0.8 }
+		}
+
+option = {
+name = "We'll focus on our own zone"
+set_country_flag = occupation_zone_potential
+ai_chance = { factor = 0.2 }
+		}
+}
+
+#End of the Occupation Zones via independence
+country_event = {
+	id = 1512286
+title = "Return of German Sovereignty"
+	desc = "As the occupation zone has become an independent nation, we will switch back into Germany"
+	picture = "founding_treaty"
+
+fire_only_once = yes
+
+trigger = {
+OR = { tag = OG1 tag = OG2 tag = OG3 tag = OG4 }
+is_vassal = no
+war = no
+}
+
+option = {
+name = "Great!"
+
+any_owned = { remove_province_modifier = province_morgenthau_plan remove_province_modifier = province_monnet_plan }
+
+#If there is no Germany
+random_owned = { limit = { owner = { GER = { exists = no } } } owner = { any_owned = { limit = { is_core = BAV } secede_province = BAV } change_tag = GER government = democracy country_event = 800054 prestige = 50 } }
+
+#If there is a Germany
+random_owned = { limit = { owner = { GER = { exists = yes } } } owner = { GER = { prestige = 50 } any_owned = { limit = { is_core = BAV } secede_province = BAV } any_owned = { limit = { is_core = GER } secede_province = GER } } }
+
+		}
+
+}
+
+#Apply Morgenthau/Monnet plan modifiers to Occupation Zone
+country_event = {
+	id = 1512287
+title = "Occupation Policy in Germany"
+	desc = "The occupying power decides what kind of economic policy the occupation zone adopts."
+	picture = "nwo2_allied_occupation_of_germany"
+
+fire_only_once = yes
+
+trigger = {
+OR = { tag = OG1 tag = OG2 tag = OG3 tag = OG4 }
+is_vassal = yes
+any_owned_province = { NOT = { OR = { has_province_modifier = province_morgenthau_plan has_province_modifier = province_monnet_plan } } }
+}
+
+option = {
+name = "We need to seek independence!"
+
+#If occupying power chose morgenthau plan
+random_owned = { limit = { owner = { overlord = { has_country_flag = decide_german_economy_morgenthau } } } owner = { any_owned = { add_province_modifier = { name = province_morgenthau_plan duration = -1 } } } }
+
+#If occupying power chose monnet plan
+random_owned = { limit = { owner = { overlord = { has_country_flag = decide_german_economy_monnet } } } owner = { any_owned = { add_province_modifier = { name = province_monnet_plan duration = -1 } } } }
+
+		}
+
+}
+
+#Treaty on the Final Settlement with Respect to Germany
+country_event = {
+	id = 1512288
+title = "Treaty on the Final Settlement with Respect to Germany"
+	desc = EVTDESC1512287
+	picture = "final_settlement_ger"
+
+trigger = {
+NOT = { has_global_flag = blocsenabled }
+NOT = { has_country_flag = final_settlement_ger }
+GER = { exists = yes }
+year = 1950
+OR = {
+is_our_vassal = OG1
+is_our_vassal = OG2
+is_our_vassal = OG3
+is_our_vassal = OG4
+is_our_vassal = DDR
+AND = { tag = USA is_vassal = no }
+AND = { tag = FRA is_vassal = no }
+AND = { tag = ENG is_vassal = no }
+AND = { tag = RUS is_vassal = no }
+AND = { tag = DDR is_vassal = no }
+	}
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Sign the treaty"
+set_country_flag = final_settlement_ger
+relation = { who = GER value = 100 }
+GER = { prestige = 100 }
+
+random_owned = { limit = { owner = { is_our_vassal = OG1 } } owner = { GER = { inherit = OG1 } } }
+
+random_owned = { limit = { owner = { is_our_vassal = OG2 } } owner = { GER = { inherit = OG2 } } }
+
+random_owned = { limit = { owner = { is_our_vassal = OG3 } } owner = { GER = { inherit = OG3 } } }
+
+random_owned = { limit = { owner = { is_our_vassal = OG4 } } owner = { GER = { inherit = OG4 } } }
+
+random_owned = { limit = { owner = { is_our_vassal = DDR } } owner = { GER = { inherit = DDR } } }
+
+random_owned = { limit = { owner = { tag = DDR } } 
+owner = { GER = { inherit = DDR } } }
+
+ai_chance = { factor = 1 }
+		}
+
+option = {
+name = "Maintain our claims over Germany"
+set_country_flag = final_settlement_ger
+prestige_factor = -0.10
+relation = { who = GER value = -200 }
+badboy = 20
+ai_chance = { factor = 0 }
+		}
+}
+
+#Soviet puppet liberalises
+country_event = {
+	id = 1512289
+title = "$FROMCOUNTRY_ADJ$ Spring"
+	desc = EVTDESC1512289
+	picture = "soviet_spring"
+
+is_triggered_only = yes
+
+
+option = {
+name = "Crush any attempts to liberalise!"
+release_vassal = FROM
+war = {
+	target = FROM
+	attacker_goal = { casus_belli = make_puppet }
+	defender_goal = { casus_belli = humiliate }
+	call_ally = no
+}
+ai_chance = { factor = 1 modifier = { factor = 0 OR = { government = socialist_democracy ruling_party_ideology = socialist ruling_party_ideology = communist_social } } }
+		}
+
+option = {
+name = "Permit $COUNTRY$ to depart from Marxist-Leninism"
+prestige = -100
+ai_chance = { factor = 1 modifier = { factor = 0 NOT = { OR = { government = socialist_democracy ruling_party_ideology = socialist ruling_party_ideology = communist_social } } } }
+		}
+}
+
+#Jeju uprising
+country_event = {
+  id = 1512290
+  title = "Jeju Uprising"
+  desc = EVTDESC1512290
+  picture = "jeju_uprising"
+  fire_only_once = yes
+
+  trigger = {
+    	OR = { tag = KOR tag = SKO }
+	exists = NKO
+	year = 1948
+    	NOT = { year = 1990 }
+	election = no
+OR = { government = democracy government = presidential_dictatorship }
+  }
+
+  mean_time_to_happen = { months = 4 }
+
+  option = {
+    name = "The gloves come off"
+	prestige = -50
+	badboy = 5
+	1637 = { any_pop = { reduce_pop = 0.95 } }
+	ai_chance = { factor = 0.9 }
+  }
+
+option = {
+    name = "Apply only light suppression"
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+any_pop = { 
+ideology = {
+	factor = 0.2
+	value = communist
+} 
+	}
+	ai_chance = { factor = 0.1 }
+  }
+
 }
