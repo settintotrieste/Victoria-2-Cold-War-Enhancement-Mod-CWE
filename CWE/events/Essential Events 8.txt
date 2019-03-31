@@ -11618,7 +11618,7 @@ any_owned_province = { is_core = GER }
 ENG = { any_owned_province = { is_core = GER } }
 has_country_flag = no_partition_of_west_germany
 ENG = { has_country_flag = no_partition_of_west_germany }
-RUS = { has_country_flag = policy_on_germany }
+OR = { exists = OG1 RUS = { has_country_flag = policy_on_germany } }
 NOT = { year = 1990 }
 NOT = { has_country_flag = form_bizonia }
 }
@@ -12196,6 +12196,85 @@ mean_time_to_happen = { months = 1 }
 	relation = { who = RUS value = -100 }
 	RUS = { country_event = 120002 }
 	ai_chance = { factor = 0.05 }
+  }
+
+}
+
+#Druze and Alawite State unites with Syria after independence
+country_event = {
+  id = 1512298
+  title = "Union with Syria?"
+  desc = EVTDESC1400027
+  picture = "syrindy"
+
+  trigger = {
+    	OR = { tag = DRZ tag = ALW }
+	war = no
+	SYR = { is_vassal = no }
+	OR = { is_vassal = no vassal_of = SYR }
+	NOT = { has_country_flag = decide_DRZ_and_ALW }
+  }
+
+mean_time_to_happen = { months = 1 }
+
+  option = {
+    name = "Unite with Syria!"
+	set_country_flag = decide_DRZ_and_ALW
+	SYR = { prestige = 50 }
+	SYR = { inherit = THIS }
+	ai_chance = { factor = 0.9 }
+  }
+
+  option = {
+    name = "Remain independent"
+	prestige = 50
+	relation = { who = SYR value = -100 }
+	set_country_flag = decide_DRZ_and_ALW
+	ai_chance = { factor = 0.1 }
+  }
+
+}
+
+#1969 Sino-Soviet Border Conflict
+country_event = {
+  id = 1512299
+  title = "$YEAR$ Sino-Soviet Border Conflict"
+  desc = EVTDESC1512299
+  picture = "RUS_CHI_border_war"
+	
+fire_only_once = yes
+
+  trigger = {
+	tag = RUS
+	has_global_flag = blocsenabled
+	year = 1969
+	NOT = { year = 1990 }
+NOT = { relation = { who = CHI value = 0 } }
+RUS = { war = no ruling_party_ideology = communist 
+is_greater_power = yes }
+CHI = { war = no ruling_party_ideology = communist 
+is_greater_power = yes }
+	has_global_flag = sino_soviet_split
+  }
+
+mean_time_to_happen = { months = 3 }
+
+  option = {
+    name = "Contest the Chinese Borders!"
+	war = {
+	target = CHI
+	attacker_goal = { casus_belli = territorial_dispute }
+	defender_goal = { casus_belli = territorial_dispute }
+	call_ally = no
+	}
+	ai_chance = { factor = 0.8 }
+  }
+
+  option = {
+    name = "Leave China alone"
+	prestige_factor = -0.1
+	relation = { who = CHI value = 100 }
+	ai_chance = { factor = 0.2 }
   }
 
 }
