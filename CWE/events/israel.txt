@@ -14,6 +14,7 @@ country_event = {
   }
 }
 
+#Initiate End of the Palestine Mandate
 country_event = {
   id = 8007622
   title = EVT_8007622_NAME
@@ -24,19 +25,79 @@ country_event = {
   trigger = {
 	tag = ENG
 	year = 1948 NOT = { year = 1990 }
-	
+	war = no
+	is_vassal = no
+	government = hms_government
 	owns = 919
+	has_country_flag = dissolve_the_palestine_mandate
   }
 
-  mean_time_to_happen = { months = 1  }
+  mean_time_to_happen = { months = 5 }
 
   option = {
-	name = EVT_8007622_A
-	country_event = 1007601
+	name = "Abandon the Palestinian Mandate quickly"
+	country_event = 1007602
+	ai_chance = { factor = 0.7 }
   }
+
+  option = {
+	name = "Enact the UN Trusteeship Plan"
+	prestige = -100
+	badboy = 5
+
+release_vassal = ISR
+release_vassal = PAL
+
+ISR = { government = hms_government1 country_event = 800054 }
+PAL = { government = hms_government1 country_event = 800054 }
+
+diplomatic_influence = { who = ISR value = 200 }
+diplomatic_influence = { who = PAL value = 200 }
+
+ISR = { any_owned = { limit = { OR = { is_core = ISR is_core = PAL } } add_province_modifier = { name = nationalist_agitation duration = 3650 } } }
+
+PAL = { any_owned = { limit = { OR = { is_core = ISR is_core = PAL } } add_province_modifier = { name = nationalist_agitation duration = 3650 } } }
+
+917 = { add_core = ISR }
+
+PAL = { release = JRU }
+
+JRU = { government = sar_government country_event = 800054 }
+
+diplomatic_influence = { who = JRU value = 200 }
+
+		any_country = {
+			limit = { primary_culture = sunni_arab }
+			relation = { who = THIS value = -150 }
+		}
+
+	ai_chance = { factor = 0.2 }
+  }
+
+  option = {
+	name = "We have our own solution - Keep Palestine"
+	prestige = -50
+	badboy = 5
+any_owned = { limit = { OR = { is_core = ISR is_core = PAL } } add_province_modifier = { name = nationalist_agitation duration = 3650 } }
+
+		any_pop = {
+			limit = {
+				culture = sunni_arab
+			}
+			consciousness = 1
+			militancy = 2
+		}
+		any_country = {
+			limit = { primary_culture = sunni_arab }
+			relation = { who = THIS value = -100 }
+		}
+
+	ai_chance = { factor = 0.1 }
+  }
+
 }
 
-# Jewish Resistance Movement
+# Jewish Resistance Movement - 1946
 country_event = {
 	id = 1007601
 
@@ -44,28 +105,40 @@ country_event = {
 	desc = EVT_1007601_DESC
 	picture = "palestine_civil_war_1948"
 
-	is_triggered_only = yes # ENG
+trigger = {
+	tag = ENG
+	year = 1946 NOT = { year = 1990 }
+	war = no
+	is_vassal = no
+	government = hms_government
+	owns = 919
+}
+
+  mean_time_to_happen = { months = 4 }
+
 	
 	option = {
 		name = EVT_1007601_A 
-		ai_chance = { factor = 100 }
-		relation = { who = USA value = 10 }
-		prestige = -2
-		country_event = 8007623
-		country_event = { id = 1007602 days = 335 } 
+		ai_chance = { factor = 0.7 }
+		relation = { who = USA value = 50 }
+		prestige = -50
+		badboy = 5
+
+		#country_event = 8007623
+
+		set_country_flag = dissolve_the_palestine_mandate
 	}
 	
 	option = {
 		name = EVT_1007601_B 
-		ai_chance = { factor = 0 }
+		ai_chance = { factor = 0.2 }
 		relation = { who = USA value = -50 }
-		add_country_modifier =  { name = stock_market_crash duration = 365 }
 		USA = { clr_country_flag = support_zionism }
 	}
 	
 	option = {
 		name = EVT_1007601_C 
-		ai_chance = { factor = 0 }
+		ai_chance = { factor = 0.1 }
 		any_pop = {
 			limit = {
 				culture = sunni_arab
@@ -75,7 +148,7 @@ country_event = {
 		}
 		any_pop = {
 			limit = {
-				OR = { culture = jewish culture =  haredim_jewish }
+		OR = { culture = jewish culture =  haredim_jewish }
 				location = { province_id = 919 }
 			}
 			reduce_pop = 1.1
@@ -84,13 +157,12 @@ country_event = {
 			limit = { primary_culture = sunni_arab }
 			relation = { who = THIS value = -50 }
 		}
-		badboy = -0.5
-		add_country_modifier =  { name = stock_market_crash duration = 365 }
+		badboy = -5
 		USA = { clr_country_flag = support_zionism }
 	}	
 }
 
-# United Nations Partition Plan for Palestine 
+# United Nations Partition Plan for Palestine
 country_event = {
 	id = 1007602
 
@@ -102,9 +174,8 @@ country_event = {
 	
 	option = {
 		name = EVT_1007602_A 
-		ai_chance = { factor = 100 }
-		prestige = -2
-		badboy = -2
+		ai_chance = { factor = 0.9 }
+		prestige = -50
 		release = ISR
 		ISR = { country_event = 8007624 }
 		USA = { country_event = 1007603 }
@@ -112,36 +183,23 @@ country_event = {
 		PAL = { country_event = 8007626 }
 		end_military_access = EGY
 	}
-	
-	option = {
-		name = EVT_1007602_B
-		ai_chance = { factor = 0 }
-		any_pop = {
-			limit = {
-				culture = sunni_arab
-			}
-			consciousness = 1
-			militancy = 2
-		}
-		any_country = {
-			limit = { primary_culture = sunni_arab }
-			relation = { who = THIS value = -10 }
-		}
-		badboy = 2
-		add_country_modifier =  { name = stock_market_crash duration = 365 }
-	}
-	
+		
 	option = {
 		name = EVT_1007602_C
-		ai_chance = { factor = 0 }
+		ai_chance = { factor = 0.1 }
+		badboy = 5
+		relation = { who = USA value = -100 }
 		any_country = {
 			limit = { primary_culture = sunni_arab }
-			relation = { who = THIS value = 20 }
+			relation = { who = THIS value = 100 }
 		}
-		badboy = -1
-		add_country_modifier =  { name = stock_market_crash duration = 365 }
 		release = PAL
-		PAL = { country_event = 8007626 }
+PAL = { 
+country_event = 8007626
+government = hms_government1
+country_event = 800054 
+any_owned = { limit = { is_core = ISR } add_province_modifier = { name = nationalist_agitation duration = 3650 } } 
+}
 	}	
 }
 
@@ -186,6 +244,7 @@ country_event = {
 
   trigger = {
 	tag = ISR
+	is_vassal = no
 	year = 1948 NOT = { year = 1964 }
   }
 
@@ -231,6 +290,7 @@ country_event = {
 
 	trigger = {
 		tag = ISR
+		is_vassal = no
 		NOT = {
 			has_country_modifier = israeli_military_genius
 		}
@@ -389,6 +449,7 @@ country_event = {
 
   trigger = {
 	tag = ISR
+	is_vassal = no
 	year = 1948 NOT = { year = 1963 }
 	war = yes
   }
@@ -397,7 +458,7 @@ country_event = {
 
   option = {
 	name = EVT_8007649_A
-	add_country_modifier = { name = military_man duration = 3605 }
+add_country_modifier = { name = military_man duration = 3605 }
   }
 }
 country_event = {
@@ -438,6 +499,7 @@ country_event = {
 	tag = JOR
 	year = 1948 NOT = { year = 1963 }
 	exists = ISR
+	ISR = { is_vassal = no }
   }
 
   mean_time_to_happen = { months = 1  }
@@ -466,6 +528,7 @@ country_event = {
 	tag = SYR
 	year = 1948 NOT = { year = 1963 }
 	exists = ISR
+	ISR = { is_vassal = no }
   }
 
   mean_time_to_happen = { months = 1  }
@@ -494,6 +557,7 @@ country_event = {
 	tag = LEB
 	year = 1948 NOT = { year = 1963 }
 	exists = ISR
+	ISR = { is_vassal = no }
   }
 
   mean_time_to_happen = { months = 1  }
@@ -522,6 +586,7 @@ country_event = {
 	tag = IRQ
 	year = 1948 NOT = { year = 1963 }
 	exists = ISR
+	ISR = { is_vassal = no }
   }
 
   mean_time_to_happen = { months = 1  }
@@ -550,6 +615,7 @@ country_event = {
 	tag = SAA
 	year = 1948 NOT = { year = 1963 }
 	EGY = { war_with = ISR }
+	ISR = { is_vassal = no }
   }
 
   mean_time_to_happen = { months = 1  }
@@ -579,6 +645,7 @@ country_event = {
 	war = no
 	PAL = { ai = yes has_recently_lost_war = yes }
 	exists = ISR
+	ISR = { is_vassal = no }
 	ISR = { NOT = { war_with = PAL } }
   }
 
@@ -601,6 +668,7 @@ country_event = {
 	OR = { tag = EGY tag = LEB tag = IRQ tag = JOR tag = SYR }
 	year = 1949 #NOT = { year = 1963 }
 	NOT = { exists = ISR }
+	PAL = { is_vassal = no }
 	NOT = { has_country_flag = zionist_defeat }
   }
   
@@ -640,7 +708,7 @@ country_event = {
 	tag = EGY
 	year = 1949 NOT = { year = 1963 }
 	exists = GAZ
-	GAZ = { ai = yes }
+	GAZ = { ai = yes is_vassal = no }
   }
   
   mean_time_to_happen = { months = 1  }
@@ -661,6 +729,7 @@ country_event = {
   trigger = {
 	tag = ISR
 	year = 1949 NOT = { year = 1963 }
+	ISR = { is_vassal = no }
 	war = no
   }
 
@@ -717,6 +786,7 @@ country_event = {
 	OR = { tag = EGY tag = UAR }
 	year = 1966 NOT = { year = 1970 }
 	exists = ISR
+	ISR = { is_vassal = no }
 	government = presidential_dictatorship
 	war = no
   }
@@ -930,6 +1000,8 @@ country_event = {
 	exists = ISR
 	exists = SYR
 	war = no
+	is_vassal = no
+	ISR = { is_vassal = no }
   }
 
   mean_time_to_happen = { months = 1  }
@@ -1018,6 +1090,7 @@ country_event = {
 	year = 1970 NOT = { year = 1990 }
 	has_country_flag = yom_kippur_war
 	war = no
+	is_vassal = no
 	has_recently_lost_war = no
   }
 
@@ -1124,6 +1197,7 @@ country_event = {
 	owns = 1756
 	exists = EGY
 	exists = SYR
+	is_vassal = no
   }
 
   mean_time_to_happen = { months = 48 }
@@ -1315,6 +1389,7 @@ country_event = {
 	year = 1978 NOT = { year = 1990 }
 	owns = 918
 	war = no
+	is_vassal = no
 	917 = { is_core = PAL }
   }
   
@@ -1372,6 +1447,7 @@ country_event = {
   trigger = {
 	tag = ISR
 	year = 2000
+	is_vassal = no
 	NOT = { exists = PAL }
 	owns = 918
 	owns = 920
@@ -1509,6 +1585,7 @@ country_event = {
   trigger = {
 	tag = ISR
 	government = democracy
+	is_vassal = no
 	year = 1949 NOT = { year = 1990 }
 	war = no
 	owns = 919 # Tel Aviv
@@ -1544,6 +1621,7 @@ country_event = {
   trigger = {
 	tag = ISR
 	government = democracy
+	is_vassal = no
 	year = 1967 NOT = { year = 1990 }
 	exists = POL
 	POL = { government = proletarian_dictatorship }
@@ -1570,6 +1648,7 @@ country_event = {
   trigger = {
 	tag = ISR
 	government = democracy
+	is_vassal = no
 	year = 1949 
 	war = no
 	owns = 919 # Tel Aviv
@@ -1601,6 +1680,8 @@ country_event = {
 	trigger = {
 		tag = ISR
 		NOT = { exists = PAL }
+		is_vassal = no
+
 		OR = {
 			pop_majority_culture = sunni_arab
 			ruling_party_ideology = traditionalist # in case of reactionary (Arab) rebels
