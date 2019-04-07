@@ -1162,58 +1162,60 @@ country_event = {
 	inherit = KMT
   }
 }
+
+#Ping Pong Diplomacy - start
 country_event = {
   id = 8002850
   title = EVT_8002850_NAME
   desc = EVT_8002850_DESC
   picture = "nwo2_ping_pong_diplomacy"
-  fire_only_once = yes
 
-  trigger = {
-    tag = CHI
-	year = 1971 NOT = { year = 1980 }
-	government = proletarian_dictatorship
-    has_country_flag = not_participating_UNSC
-    exists = USA
-	exists = KMT
-    war = no
-    #relation = { who = USA value = -100 }
-  }
-
-  mean_time_to_happen = { months = 1  }
+is_triggered_only = yes # CHI
 
   option = {
-    name = EVT_8002850_A
-	USA = { country_event = 8002851 }
-	ai_chance = { factor = 100 }
+    name = "Begin the process of diplomatic normalisation"
+	set_global_flag = china_ping_pong_diplo
   }
 
-  option = {
-    name = EVT_8002850_B
-	ai_chance = { factor = 0 }
-  }
 }
+
+#Ping Pong Diplomacy - USA
 country_event = {
   id = 8002851
   title = EVT_8002851_NAME
   desc = EVT_8002851_DESC
   picture = "nwo2_nixon_visit_to_china"
-  is_triggered_only = yes
+  fire_only_once = yes
+
+  trigger = {
+    	tag = USA
+	has_global_flag = china_ping_pong_diplo
+    	war = no
+	government = democracy
+  }
+
+  mean_time_to_happen = { months = 12 }
 
   option = {
-    name = EVT_8002851_A
+    	name = EVT_8002851_A
 	CHI = { country_event = 8002852 } 
-	relation = { who = CHI value = 150 } 
-	ai_chance = { factor = 100 }
+	relation = { who = CHI value = 200 } 
+	relation = { who = RUS value = -100 }
+	ai_chance = { factor = 0.9 }
   }
 
   option = {
-    name = EVT_8002851_B
-	relation = { who = CHI value = -150 } 
+    	name = EVT_8002851_B
+	badboy = 5
+	relation = { who = CHI value = -200 } 
+	relation = { who = RUS value = 100 }
 	CHI = { country_event = 8002853 }
-	ai_chance = { factor = 0 }
+	ai_chance = { factor = 0.1 }
   }
+
 }
+
+#PRC is accepted into the UNSC
 country_event = {
   id = 8002852
   title = EVT_8002852_NAME
@@ -1223,24 +1225,28 @@ country_event = {
 
   option = {
     name = EVT_8002852_A
-	any_pop = { militancy = -1 consciousness = 1 }
+	any_pop = { militancy = -5 consciousness = 1 }
 	clr_country_flag = not_participating_UNSC
-	KMT = { set_country_flag = not_participating_UNSC }
-CHI = { add_country_modifier = { name = unsc_permanent_member duration = -1 } prestige = 2000 }
-	KMT = { remove_country_modifier = unsc_permanent_member }
+KMT = { set_country_flag = not_participating_UNSC set_country_flag = not_participating_UN }
+add_country_modifier = { name = unsc_permanent_member duration = -1 } 
+	prestige = 2000
+KMT = { remove_country_modifier = unsc_permanent_member country_event = 1512301 }
   }
 }
+
+#PRC is not accepted into the UNSC
 country_event = {
   id = 8002853
   title = EVT_8002853_NAME
   desc = EVT_8002853_DESC
-  picture = "nwo2_communist_china_in_unsc"
+  picture = "nwo2_communist_china_not_in_unsc"
   is_triggered_only = yes # CHI
 
 
   option = {
     name = EVT_8002853_A
-	any_pop = { militancy = 1.0 consciousness = 2 }relation = { who = USA value = -100 } 
+	any_pop = { militancy = 1.0 consciousness = 2 }
+	prestige_factor = -0.25
   }
 }
 country_event = {
@@ -3377,7 +3383,7 @@ country_event = {
   trigger = {
     tag = RUS
     year = 1949 NOT = { year = 1950 }
-    CHI = { has_country_flag = not_participating_UNSC}
+    CHI = { has_country_flag = not_participating_UNSC }
     exists = CHI
     has_global_flag = CHI_won_civil_war
   }

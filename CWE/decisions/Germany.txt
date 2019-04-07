@@ -293,25 +293,27 @@ random_owned = { limit = { owner = { is_our_vassal = DDR } } owner = { GER = { i
 		picture = "ruhr_area"
 		potential = {
 			tag = GER
+FRA = { OR = { has_country_flag = saar_option has_country_flag = rhineland_option } }
+			580 = { owned_by = GER } # Dortmund
 			578 = { owned_by = GER } # Dusseldorf
-			579 = { owned_by = FRA } # East of Rhine
+			577 = { owned_by = GER } # Cleves
 			NOT = { has_country_flag = accept_ruhr_area }
 		}
 
 		allow = {
-			tag = GER
-			578 = { owned_by = GER } # Dusseldorf
-			579 = { owned_by = FRA } # East of Rhine
-			NOT = { has_country_flag = accept_ruhr_area }
-			
-			year = 1949
+			government = democracy
+NOT = { OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist ruling_party_ideology = communist } }
 		}
 
 		effect = {
 			set_country_flag = accept_ruhr_area
-			prestige = -20
-			FRA = { diplomatic_influence = { who = GER value = 50 } }
+			prestige = -50
+			badboy = -5
+			money = 500000
+	FRA = { diplomatic_influence = { who = GER value = 50 } }
 			relation = { who = FRA value = 100 }
+			relation = { who = USA value = 100 }
+			relation = { who = ENG value = 100 }
 		}
 		ai_will_do = {
 			factor = 1
@@ -326,38 +328,25 @@ random_owned = { limit = { owner = { is_our_vassal = DDR } } owner = { GER = { i
 			580 = { owned_by = GER } # Dortmund
 			578 = { owned_by = GER } # Dusseldorf
 			577 = { owned_by = GER } # Cleves
-			579 = { owned_by = FRA } # East of Rhine
+OR = { has_country_flag = saar_option has_country_flag = rhineland_option }
 			NOT = { has_country_flag = ruhr_area }
 		}
 
 		allow = {
-			tag = FRA
 			580 = { owned_by = GER } # Dortmund
 			578 = { owned_by = GER } # Dusseldorf
 			577 = { owned_by = GER } # Cleves
-			579 = { owned_by = FRA } # East of Rhine
+			
 			GER = { has_country_flag = accept_ruhr_area }
-			OR = {
-				AND = {
-					year = 1949
-					ai = yes
-				}
-				AND = {
-					relation = { who = GER value = 100 }
-					ai = no
-				}
-			}
 		}
 
 		effect = {
 			any_owned = {
-				limit = { is_core = GER NOT = { is_core = FRA } }
+			limit = { is_core = GER NOT = { is_core = FRA } }
 				secede_province = GER
 			}
 			GER = {
 				country_event = 8204030 # form IAR
-				capital = 574 # Bonn
-				574 = { change_province_name = "Bonn" }
 			}
 			set_country_flag = ruhr_area
 			diplomatic_influence = { who = GER value = 200 }
@@ -380,11 +369,11 @@ random_owned = { limit = { owner = { is_our_vassal = DDR } } owner = { GER = { i
 		}
 
 		allow = {
-			tag = GER
-			any_core = { 
-				NOT = { has_province_modifier = blood_and_iron_mine } 
-				owned_by = IAR
-			}
+			
+IAR = { any_owned_province = { NOT = { has_province_modifier = blood_and_iron_mine } } }
+
+		NOT = { has_country_modifier = independence_timer }
+
 			OR = {
 				AND = {
 					year = 1951
@@ -556,7 +545,7 @@ OR = { DDR = { in_sphere = THIS } DDR = { vassal_of = THIS } } OR = { GER = { in
 		}
 		
 		allow = {
-		OR = { is_sphere_leader_of = BAV is_our_vassal = BAV }
+OR = { AND = { is_sphere_leader_of = BAV is_vassal = no } is_our_vassal = BAV }
 			is_vassal = no
 			war = no
 			neighbour = BAV
@@ -565,6 +554,28 @@ OR = { DDR = { in_sphere = THIS } DDR = { vassal_of = THIS } } OR = { GER = { in
 		effect = {
 			BAV = { country_event = 11106 }
 			set_country_flag = annex_bavaria
+		}
+	
+	}
+
+	annex_saarland = {
+		picture = "annex_saarland"
+		potential = {
+			SAL = { exists = yes }
+			OR = { tag = GER tag = NGF tag = SGF tag = DDR }
+			NOT = { has_country_flag = annex_saarland }
+		}
+		
+		allow = {
+OR = { AND = { is_sphere_leader_of = SAL is_vassal = no } is_our_vassal = SAL }
+			is_vassal = no
+			war = no
+			neighbour = SAL
+		}
+		
+		effect = {
+			SAL = { country_event = 11106 }
+			set_country_flag = annex_saarland
 		}
 	
 	}
