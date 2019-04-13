@@ -131,15 +131,20 @@ country_event = {
   id = 8218011
   title = EVT_8218011_NAME
   desc = EVT_8218011_DESC
-  picture = "nwo2_egypt"
+  picture = "nwo2_end_of_the_UAR"
 
 	fire_only_once = yes
 
   trigger = {
-    tag = UAR
-    year = 1961 NOT = { year = 1990 }
+    	tag = UAR
+    	year = 1961 NOT = { year = 1990 }
+	SYR = { exists = no }
+	any_owned_province = { is_core = SYR }
 	NOT = { has_global_flag = end_of_uar }
 	war = no
+	is_vassal = no
+OR = { government = presidential_dictatorship 
+government = nationalist_dictatorship government = populist_dictatorship }
   }
   
   mean_time_to_happen = { months = 12 }
@@ -170,32 +175,52 @@ secede_province = LEB
 	set_global_flag = end_of_uar
 	ai_chance = { factor = 0.7 }
   }
+
+  option = {
+    name = "Abandon our attempts to centralise the Union"
+	release_vassal = SYR
+SYR = { government = presidential_dictatorship country_event = 800050 ruling_party_ideology = socialist }
+sphere_owner = { diplomatic_influence = { who = SYR value = 200 } }
+	set_global_flag = end_of_uar
+	ai_chance = { factor = 0.2 }
+  }
+
   option = {
     name = EVT_8218011_B
 	prestige_factor = -0.25
 	badboy = 10
-	any_pop = { militancy = 0.5 consciousness = 1 }
+	any_pop = { militancy = 3 consciousness = 1 }
 	any_country = { 
-		limit = { OR = { tag = SYR tag = JOR tag = IRQ tag = LEB } exists = no }
-		country_event = { id = 8218013 days = 5 }
+		limit = { OR = { tag = SYR tag = JOR tag = IRQ tag = LEB } exists = no any_core = { owned_by = THIS } }
+		country_event = 8218013
 	}
 
 	#set_global_flag = end_of_uar
 
-	ai_chance = { factor = 0.3 }
+	ai_chance = { factor = 0.1 }
   }
 }
 country_event = {
   id = 8218012
   title = EVT_8218011_NAME
   desc = EVT_8218011_DESC
-  picture = "nwo2_egypt"
+  picture = "nwo2_end_of_the_UAR"
   fire_only_once = yes
 
   trigger = {
-    tag = UAR
-	exists = UAR
-    year = 1962 NOT = { year = 1990 }
+    	tag = UAR
+	any_owned_province = { is_core = EGY }
+	has_global_flag = end_of_uar
+OR = { 
+AND = { exists = SYR is_vassal = no } 
+AND = { exists = JOR is_vassal = no }
+AND = { exists = IRQ is_vassal = no }
+AND = { exists = LEB is_vassal = no } 
+}
+	EGY = { exists = no }
+    	year = 1962 NOT = { year = 1990 }
+	war = no
+	is_vassal = no
 	war = no
 	NOT = { owns = 908 owns = 926 owns = 902 owns = 913 } 
   }
@@ -220,8 +245,8 @@ country_event = { # AI only
   option = {
     name = EVT_8218011_A
 	FROM = { release = THIS }
-	any_owned = { add_core = UAR }
-	UAR = { war = { target = THIS attacker_goal = { casus_belli = civil_war } defender_goal = { casus_belli = status_quo } } }
+	any_core = { add_core = UAR }
+UAR = { war = { target = THIS attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } } }
   }
 }
 country_event = {
@@ -309,7 +334,6 @@ country_event = {
     year = 1959
     NOT = { year = 1961 }
 	NOT = { exists = PAL }
-    
     war = no
   }
 
