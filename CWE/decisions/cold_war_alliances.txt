@@ -360,42 +360,41 @@ add_country_modifier = { name = independent_bloc duration = -1 }
 has_global_flag = form_nato
 NOT = { has_global_flag = nato_abolish }
 is_vassal = no
-NOT =  { in_sphere = RUS }					
-NOT =  { has_country_modifier = csto_alliance }
-NOT =  { tag = RUS }			
+NOT = { tag = RUS }	
+NOT = { has_country_modifier = alliance_sato }			
+NOT = { has_country_modifier = csto_alliance }
+NOT = { has_country_modifier = rio_pact }		
 NOT = { has_country_modifier = alliance_nato }
 NOT = { has_country_modifier = leave_alliance_nato }
-NOT = { ruling_party_ideology = communist }
-NOT = { ruling_party_ideology = communist_social }
 
 				OR = {
-					tag = USA
-					tag = CAN
+	capital_scope = { OR = { is_core = USA is_core = CAN } }
 					tag = TUR
-					continent = europe
-				}
-
-				OR = {
-			USA = { has_country_modifier = alliance_nato }
-			tag = USA
+			capital_scope = { continent = europe }
 				}
 			
 			}
 
 			allow = {
-				OR = {
-					tag = USA
-					tag = CAN
-					tag = TUR
-					continent = europe
-				}
+
+NOT = { badboy = 0.6 }
+
+NOT = { ruling_party_ideology = communist }
+NOT = { ruling_party_ideology = communist_social }
+
+NOT = { in_sphere = RUS }
 
 NOT = { has_country_flag = neutrality }
-NOT =  { has_country_modifier = neutrality }
+NOT = { has_country_modifier = neutrality }
 
 war = no
 
-OR = { tag = USA sphere_owner = { has_country_modifier = alliance_nato } relation = { who = USA value = 50 } }
+OR = { 
+has_country_modifier = nato_leader
+sphere_owner = { has_country_modifier = alliance_nato } 
+any_greater_power = { has_country_modifier = nato_leader 
+relation = { who = THIS value = 100 } } 
+}
 
 OR = { government = socialist_democracy government = democracy government = democracy1 government = hms_government government = hms_government1 }
 
@@ -433,32 +432,35 @@ OR = { government = socialist_democracy government = democracy government = demo
 			picture = "alliance_nato"
 			potential = {
 OR = { has_country_modifier = alliance_nato has_country_flag = nato_flag_member }
-				NOT = { 
-					OR = { 
-					tag = USA
-					alliance_with = USA
-					in_sphere = USA
-	sphere_owner = { has_country_modifier = alliance_nato }
-					}
-				}
 			}
 
 			allow = {
-OR = { has_country_modifier = alliance_nato has_country_flag = nato_flag_member }
+
 				NOT = { 
 					OR = { 
-					tag = USA
-					alliance_with = USA
-					in_sphere = USA
-	sphere_owner = { has_country_modifier = alliance_nato }
+has_country_modifier = nato_leader
+
+any_greater_power = { has_country_modifier = nato_leader 
+alliance_with = THIS }
+
+any_greater_power = { has_country_modifier = nato_leader 
+is_sphere_leader_of = THIS }
+
+sphere_owner = { has_country_modifier = alliance_nato }
 					}
 				}
+
 				OR = { 
-					is_vassal = yes
+is_vassal = yes
+
 has_country_modifier = neutrality
+
 has_country_flag = neutrality
-					NOT = { OR = { government = socialist_democracy government = democracy government = democracy1 government = hms_government government = hms_government1 } }
-					NOT = { relation = { who = USA value = -100 } }
+
+NOT = { OR = { government = socialist_democracy government = democracy government = democracy1 government = hms_government government = hms_government1 } }
+
+any_greater_power = { has_country_modifier = nato_leader 
+relation = { who = THIS value = -100 } }
 				}
 			}
 
@@ -497,29 +499,31 @@ has_country_flag = neutrality
 			potential = {
 				year = 1947
 				is_vassal = no
-				NOT =  {
-					has_country_modifier = rio_pact
-					has_country_modifier = leave_rio_pact
-				}
+	USA = { government = democracy is_greater_power = yes }
+			NOT = { has_country_modifier = rio_pact }
+			NOT = { has_country_modifier = alliance_sato }
+OR = { tag = USA NOT = { has_country_modifier = alliance_nato } }
+			NOT = { has_country_modifier = leave_rio_pact }
 				NOT = { tag = CAN }
 				OR = {
 					tag = USA
-					continent = north_america
-					continent = south_america
+			capital_scope = { continent = north_america }
+			capital_scope = { continent = south_america }
 				}
 				OR = {
 				USA = { has_country_modifier = rio_pact }
 				tag = USA
 				}
-			NOT = { relation = { who = USA value = 0 } }
-					}
+			}
 
 			allow = {
+
+		NOT = { badboy = 0.6 }
 
 		war = no
 
 		NOT = { has_country_flag = neutrality }
-		NOT =  { has_country_modifier = neutrality }
+		NOT = { has_country_modifier = neutrality }
 		NOT = { ruling_party_ideology = communist }
 		NOT = { ruling_party_ideology = communist_social }
 				NOT =  {
@@ -527,11 +531,6 @@ has_country_flag = neutrality
 					has_country_modifier = leave_rio_pact
 				}
 				NOT = { tag = CAN }
-				OR = {
-					tag = USA
-					continent = north_america
-					continent = south_america
-				}
 
 OR = { tag = USA sphere_owner = { has_country_modifier = rio_pact } relation = { who = USA value = 50 } }
 
@@ -566,14 +565,6 @@ OR = { tag = USA sphere_owner = { has_country_modifier = rio_pact } relation = {
 			picture = "rio_pact"
 			potential = {
 				has_country_modifier = rio_pact
-				NOT = { 
-					OR = { 
-					tag = USA
-					alliance_with = USA
-					in_sphere = USA
-	sphere_owner = { has_country_modifier = rio_pact }
-					}
-				}
 			}
 
 			allow = {
@@ -622,6 +613,8 @@ has_global_flag = blocsenabled
 NOT = { has_global_flag = dissolve_warsaw_pact }
 NOT = { has_country_modifier = warsaw_pact }
 NOT = { has_country_modifier = leave_warsaw_pact }
+
+NOT = { has_country_modifier = alliance_sato }
 				
 OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
 
@@ -711,6 +704,8 @@ AND = { is_vassal = no NOT = { relation = { who = RUS value = 0 } } }
 				year = 1992
 		is_vassal = no
 		NOT = { has_global_flag = blocsenabled }
+		NOT = { has_country_modifier = alliance_sato }
+		NOT = { has_country_modifier = alliance_nato }
 		NOT =  { has_country_modifier = csto_alliance }
 		NOT =  { has_country_modifier = leave_csto_alliance }
 				OR = {
@@ -733,8 +728,11 @@ AND = { is_vassal = no NOT = { relation = { who = RUS value = 0 } } }
 			}
 
 			allow = {
+
+NOT = { badboy = 0.6 }
+
 NOT = { has_country_flag = neutrality }
-NOT =  { has_country_modifier = neutrality }
+NOT = { has_country_modifier = neutrality }
 war = no
 				OR = { tag = RUS tag = KAZ }
 				OR = { in_sphere = RUS tag = RUS }
@@ -824,6 +822,9 @@ OR = { tag = RUS RUS = { has_country_modifier = csto_alliance } }
 			picture = "anzus_alliance"
 			potential = {
 				year = 1951
+
+USA = { is_greater_power = yes government = democracy }
+
 		is_vassal = no
 		NOT = { has_country_modifier = anzus_alliance }
 		NOT = { has_country_modifier = leave_anzus_alliance }
@@ -835,12 +836,15 @@ USA = { has_country_modifier = anzus_alliance }
 
 				OR = {
 					tag = USA
-					continent = oceania
+			capital_scope = { continent = oceania }
 				}
 
 			}
 
 			allow = {
+
+NOT = { badboy = 0.6 }
+
 		war = no
 		NOT = { has_country_flag = neutrality }
 		NOT =  { has_country_modifier = neutrality }
@@ -848,11 +852,8 @@ USA = { has_country_modifier = anzus_alliance }
 		NOT = { government = proletarian_dictatorship1 }
 		NOT = { ruling_party_ideology = communist }
 		NOT = { ruling_party_ideology = communist_social }
-				OR = {
-					tag = USA
-					continent = oceania
-				}
-				OR = { tag = USA sphere_owner = { has_country_modifier = anzus_alliance } relation = { who = USA value = 50 } }
+
+OR = { tag = USA sphere_owner = { has_country_modifier = anzus_alliance } relation = { who = USA value = 50 } }
 				}
 
 			effect = {
@@ -884,13 +885,6 @@ USA = { has_country_modifier = anzus_alliance }
 			picture = "anzus_alliance"
 			potential = {
 				has_country_modifier = anzus_alliance
-				NOT = { 
-					OR = { 
-					tag = USA
-					alliance_with = USA
-					in_sphere = USA
-					}
-				}
 			}
 
 			allow = {
@@ -947,6 +941,8 @@ OR = { capital_scope = { continent = asia } neighbour = CHI }
 			allow = {
 
 war = no
+
+NOT = { badboy = 0.6 }
 
 CHI = { exists = yes }
 OR = { 
