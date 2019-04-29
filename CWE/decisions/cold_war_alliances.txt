@@ -8,40 +8,50 @@ join_communist_bloc = {
 		picture = "joincommunistbloc"
 		potential = {
 			NOT = { OR = { tag = RUS tag = USA } }
-			RUS = { government = proletarian_dictatorship }
-			USA = { government = democracy }
 			exists = USA
 			exists = RUS
 			NOT = { has_country_flag = joindemo }
 			NOT = { has_country_flag = joincomm }
-			NOT = { has_country_flag = joinnam }
+			
 			has_global_flag = blocsenabled 
 			}
 
 			allow = {
 
+election = no
+
+is_vassal = no
+
 NOT = { sphere_owner = { has_country_modifier = democratic_bloc_leader } }
 
+OR = { government = proletarian_dictatorship1 government = proletarian_dictatorship ruling_party_ideology = communist ruling_party_ideology = communist_social }
 
-			OR = { government = proletarian_dictatorship1 government = proletarian_dictatorship ruling_party_ideology = communist ruling_party_ideology = communist_social }
-			relation = { who = RUS value = 150 }
+relation = { who = RUS value = 150 }
+
 		}
 		effect = {
 			set_country_flag = joincomm
 			prestige = 10
 			relation = { who = RUS value = 50 }
 			relation = { who = USA value = -100 }
+
+			clr_country_flag = joinnam
 			remove_country_modifier = independent_bloc
+			any_country = {
+		limit = { exists = yes has_country_flag = joinnam }
+			relation = { who = THIS value = -50 }
+			diplomatic_influence = { who = THIS value = -25 }
+			}
 			
 add_country_modifier = { name = communist_bloc duration = -1 }
 			random_country = {
-				limit = { has_country_modifier = communist_bloc_leader }
-				relation = { who = THIS value = 50 }
-				diplomatic_influence = { who = THIS value = 25 }
+	limit = { has_country_modifier = communist_bloc_leader }
+			relation = { who = THIS value = 50 }
+			diplomatic_influence = { who = THIS value = 25 }
 			}
 			random_country = {
-				limit = { has_country_modifier = democratic_bloc_leader }
-				relation = { who = THIS value = -100 }
+	limit = { has_country_modifier = democratic_bloc_leader }
+			relation = { who = THIS value = -100 }
 			}
 			random_country = { limit = { has_country_modifier = communist_bloc_leader } country_event = 8225000 }
 			any_country = { limit = { has_country_flag = joincomm } country_event = 19809 }
@@ -71,16 +81,21 @@ join_democratic_bloc = {
 		picture = "joindemocraticbloc"
 		potential = {
 			NOT = { OR = { tag = RUS tag = USA } }
-			RUS = { government = proletarian_dictatorship }
-			USA = { government = democracy }
 			exists = USA
 			exists = RUS
 			NOT = { has_country_flag = joindemo }
 			NOT = { has_country_flag = joincomm }
-			NOT = { has_country_flag = joinnam }
+			
 			has_global_flag = blocsenabled
 			}
 		allow = {
+
+is_vassal = no
+
+election = no
+
+NOT = { sphere_owner = { has_country_modifier = communist_bloc_leader } }
+
 			OR = {   
 				ruling_party_ideology = liberal 
 				ruling_party_ideology = progressive
@@ -88,13 +103,22 @@ join_democratic_bloc = {
 				ruling_party_ideology = conservative
 				ruling_party_ideology = big_tent
 			}
-			relation = { who = USA value = 150 }
+
+		relation = { who = USA value = 150 }
+
 		}
 		effect = {
 			set_country_flag = joindemo
 			prestige = 10
 add_country_modifier = { name = democratic_bloc duration = -1 }
+
+			clr_country_flag = joinnam
 			remove_country_modifier = independent_bloc
+			any_country = {
+		limit = { exists = yes has_country_flag = joinnam }
+			relation = { who = THIS value = -50 }
+			diplomatic_influence = { who = THIS value = -25 }
+			}
 			
 			random_country = {
 				limit = { has_country_modifier = democratic_bloc_leader }
@@ -135,6 +159,7 @@ join_nam_bloc = {
 			NOT = { has_country_flag = joincomm }
 			has_global_flag = blocsenabled
 			has_global_flag = namformed
+			has_country_flag = is_disabled_for_now
 					}
 		allow = { 
 		election = no 
@@ -182,21 +207,25 @@ leave_communist_bloc = {
 		picture = "leavebloc"
 		potential = {
 			NOT = { OR = { tag = RUS tag = USA } }
-			RUS = { government = proletarian_dictatorship }
-			USA = { government = democracy }
 			exists = USA
 			exists = RUS
 			has_country_flag = joincomm
 			has_global_flag = blocsenabled
 			NOT = { has_country_modifier = independent_bloc }
 		}
+
+		alert = no
+
 		allow = {
-war = no
+
+is_vassal = no
 
 NOT = { ruling_party_ideology = communist }
 NOT = { ruling_party_ideology = communist_social }
 
 			OR = {
+				ai = no
+RUS = { NOT = { relation = { who = THIS value = 0 } } }
 				NOT = {
 					OR = {
 government = proletarian_dictatorship1 
@@ -208,7 +237,7 @@ ruling_party_ideology = communist_social
 
 				AND = {
 					part_of_sphere = yes
-					sphere_owner = { has_country_modifier = democratic_bloc_leader }
+sphere_owner = { has_country_modifier = democratic_bloc_leader }
 				}
 			}
 		}
@@ -221,7 +250,7 @@ remove_country_modifier = commmedium
 remove_country_modifier = commlow 
 
 remove_country_modifier = communist_bloc 			random_country = {
-				limit = { has_country_modifier = communist_bloc_leader }
+	limit = { has_country_modifier = communist_bloc_leader }
 				relation = { who = THIS value = -200 }
 				diplomatic_influence =  { who = THIS value = -200 }
 				country_event = 8225001
@@ -231,12 +260,20 @@ remove_country_modifier = communist_bloc 			random_country = {
 				relation = { who = THIS value = 100 }
 				diplomatic_influence = { who = THIS value = 10 }
 			}
-			any_country = { limit = { has_country_flag = joincomm } country_event = 19810 }
-			add_country_modifier = { name = independent_bloc duration = -1 }
+any_country = { limit = { has_country_flag = joincomm } country_event = 19810 }
+
+			set_country_flag = joinnam
+			remove_country_modifier = independent_bloc
+			any_country = {
+		limit = { exists = yes has_country_flag = joinnam }
+			relation = { who = THIS value = 50 }
+			diplomatic_influence = { who = THIS value = 25 }
+			}
+
 			remove_country_modifier = communist_bloc
 			RUS  = { country_event = 8225001 }
 		}
-		alert = no
+		
 		ai_will_do = {
 			factor = 1
 		}		
@@ -248,24 +285,28 @@ leave_democratic_bloc = {
 		picture = "leavebloc"
 		potential = {
 			NOT = { OR = { tag = RUS tag = USA } }
-			RUS = { government = proletarian_dictatorship }
-			USA = { government = democracy }
 			exists = USA
 			exists = RUS
 			has_country_flag = joindemo
 			has_global_flag = blocsenabled
 			NOT = { has_country_modifier = independent_bloc }
 		}
+		alert = no
 		allow = {
-war = no
+
+is_vassal = no
+			
 			OR = {
+				ai = no
+
+USA = { NOT = { relation = { who = THIS value = 0 } } }
 				government = proletarian_dictatorship
 				government = proletarian_dictatorship1
 				ruling_party_ideology = communist 
 				ruling_party_ideology = communist_social
 				AND = {
 					part_of_sphere = yes
-					sphere_owner = { has_country_modifier = communist_bloc_leader }
+sphere_owner = { has_country_modifier = communist_bloc_leader }
 				}
 			}
 		}
@@ -277,20 +318,28 @@ war = no
 	remove_country_modifier = demolow 
 			prestige = -10
 			random_country = {
-				limit = { has_country_modifier = communist_bloc_leader }
+	limit = { has_country_modifier = communist_bloc_leader }
 				relation = { who = THIS value = 100 }
-				diplomatic_influence =  { who = THIS value = 10 }
+		diplomatic_influence =  { who = THIS value = 10 }
 			}
 			random_country = {
-				limit = { has_country_modifier = democratic_bloc_leader }
+	limit = { has_country_modifier = democratic_bloc_leader }
 				relation = { who = THIS value = -200 }
-				diplomatic_influence = { who = THIS value = -200 }
+		diplomatic_influence = { who = THIS value = -200 }
 			}
 			any_country = { limit = { has_country_flag = joindemo } country_event = 19810 }
-			add_country_modifier = { name = independent_bloc duration = -1 }
+			
+			set_country_flag = joinnam
+			remove_country_modifier = independent_bloc
+			any_country = {
+		limit = { exists = yes has_country_flag = joinnam }
+			relation = { who = THIS value = 50 }
+			diplomatic_influence = { who = THIS value = 25 }
+			}
+
 			remove_country_modifier = democratic_bloc
 		}
-		alert = no
+	
 		ai_will_do = {
 			factor = 1
 		}		
@@ -305,7 +354,7 @@ leave_nam_bloc = {
 		has_global_flag = blocsenabled
 		}
 		allow = {
-		war = no
+		
 			OR = {
 				AND = {
 					relation = { who = USA value = 150 } 
