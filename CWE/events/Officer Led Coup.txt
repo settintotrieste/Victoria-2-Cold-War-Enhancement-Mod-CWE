@@ -1,0 +1,259 @@
+#Officer Led Coup - Initate
+country_event = {
+  id = 100100
+  title = "$COUNTRY_ADJ$ Coup d'etat?"
+  desc = EVTDESC152009872
+  picture = "alberto_fujimori_coup"
+
+  trigger = {
+is_disarmed = no
+total_amount_of_divisions = 1
+
+NOT = { military_spending = 0.8 }
+
+NOT = { has_country_modifier = military_strife }
+
+OR = { 
+has_country_modifier = coup_risk 
+AND = { has_country_modifier = power_vacuum 
+average_militancy = 7 }
+
+AND = {
+average_militancy = 6
+any_owned_province = {
+is_core = THIS
+any_pop = { 
+type = officers militancy = 8 
+		} 
+}
+	}
+
+}
+OR = { 
+has_country_modifier = coup_risk 
+has_country_modifier = massive_government_corruption 
+has_country_modifier = large_government_corruption
+AND = { has_country_modifier = medium_government_corruption has_recently_lost_war = yes }
+}
+	war = no
+
+  }
+
+mean_time_to_happen = { months = 3 }
+
+  option = {
+    name = EVT152009872OPTA
+add_country_modifier = { name = military_strife duration = 1825 }
+any_pop = { 
+limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } OR = { type = officers type = soldiers } }
+					ideology = {
+						value = nationalist
+						factor = 0.25
+					}
+					dominant_issue = {
+						value = jingoism
+						factor = 0.25
+					}
+					militancy = 6
+					consciousness = -5
+}
+  	}
+
+}
+
+#Officer Led Coup - Final
+country_event = {
+  id = 100101
+  title = "The $COUNTRY_ADJ$ Military Coup d'etat"
+  desc = EVTDESC152009873
+  picture = "military_coup"
+
+  trigger = {
+		war = no
+		is_disarmed = no
+
+		total_amount_of_divisions = 1
+		capital_scope = {
+			controlled_by = THIS
+			country_units_in_province = THIS
+		}
+
+NOT = { military_spending = 0.8 }
+
+OR = { 
+AND = { has_country_modifier = power_vacuum 
+average_militancy = 7 }
+
+AND = {
+average_militancy = 6
+any_owned_province = {
+is_core = THIS
+any_pop = { 
+type = officers militancy = 8 
+		} 
+}
+	}
+ 
+}
+
+OR = { has_country_modifier = military_strife AND = { has_country_modifier = army_defects has_country_modifier = coup_risk } }
+OR = { 
+has_country_modifier = coup_risk 
+has_country_modifier = massive_government_corruption 
+has_country_modifier = large_government_corruption
+AND = { has_country_modifier = medium_government_corruption has_recently_lost_war = yes }
+}
+	war = no
+
+  }
+
+mean_time_to_happen = { 
+months = 3 
+		modifier = {
+			factor = 2
+			NOT = { average_militancy = 2 }
+		}
+		modifier = {
+			factor = 2
+			NOT = { average_militancy = 1 }
+		}
+}
+
+  option = {
+    name = EVT152009873OPTA
+
+#If country is a vassal
+sphere_owner = { diplomatic_influence = { who = THIS value = -200 } }
+
+random_country = { 
+limit = { is_our_vassal = THIS } 
+release_vassal = THIS country_event = 1512212 
+}
+
+#If martial law was declared
+remove_country_modifier = martial_law
+
+#Remove coup markers
+remove_country_modifier = military_strife
+remove_country_modifier = coup_risk
+
+#Socialist Dictatorship
+random_owned = { 
+limit = { 
+owner = { pop_majority_ideology = socialist }
+	}
+owner = {
+government = presidential_dictatorship
+ruling_party_ideology = socialist
+country_event = 800050
+}
+	}
+
+#Conservative Dictatorship
+random_owned = { 
+limit = { 
+owner = { OR = { pop_majority_ideology = traditionalist pop_majority_ideology = conservative pop_majority_ideology = big_tent pop_majority_ideology = liberal pop_majority_ideology = progressive } }
+	}
+owner = {
+government = presidential_dictatorship
+ruling_party_ideology = conservative
+country_event = 800050
+}
+	}
+
+#Nationalist Dictatorship
+random_owned = { 
+limit = { 
+owner = { OR = { pop_majority_ideology = nationalist pop_majority_ideology = populist } }
+	}
+owner = {
+government = populist_dictatorship
+ruling_party_ideology = nationalist
+country_event = 800050
+}
+	}
+
+#Communist Dictatorship
+random_owned = { 
+limit = { 
+owner = { OR = { pop_majority_ideology = communist pop_majority_ideology = communist_social } }
+	}
+owner = {
+government = proletarian_dictatorship
+ruling_party_ideology = communist
+country_event = 800052
+}
+	}
+
+#Remove generic civil war markers, if applicable
+remove_country_modifier = army_defects
+clr_country_flag = government_extends_peace_hand
+remove_country_modifier = government_consensus
+remove_country_modifier = violent_crackdown
+remove_country_modifier = civil_war
+
+any_pop = { 
+limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } OR = { type = officers type = soldiers } }
+					ideology = {
+						value = nationalist
+						factor = 0.25
+					}
+					dominant_issue = {
+						value = jingoism
+						factor = 0.25
+					}
+			militancy = -8
+			consciousness = -4
+
+}
+
+ai_chance = { factor = 0.75 }
+  	}
+
+  option = {
+    name = EVT152009873OPTB
+
+remove_country_modifier = revolution_chaos
+
+add_country_modifier = { name = revolution_chaos duration = 1000 }
+
+random = {
+	chance = 40
+	country_event = 1412004
+}
+
+		any_pop = {
+			limit = {
+				OR = {
+					is_primary_culture = yes
+					is_accepted_culture = yes
+				}
+				NOT = {
+					type = officers
+					type = soldiers
+				}
+			}
+			scaled_militancy = {
+				ideology = nationalist
+				factor = 8
+			}
+		}
+
+any_pop = { 
+limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } OR = { type = officers type = soldiers } }
+					ideology = {
+						value = nationalist
+						factor = 0.25
+					}
+					dominant_issue = {
+						value = jingoism
+						factor = 0.25
+					}
+			militancy = 8
+			consciousness = -4
+
+}	
+	ai_chance = { factor = 0.25 }	
+  }
+
+}

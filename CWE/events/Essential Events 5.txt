@@ -326,14 +326,20 @@ owner = { government = hms_government }
 
 		country_event = 800054
 
-		any_pop = { militancy = -9 }
-		any_pop = { consciousness = -6 }
+		any_pop = { militancy = -10 }
+		any_pop = { consciousness = 10 }
 clr_country_flag = government_extends_peace_hand
 remove_country_modifier = violent_crackdown
 remove_country_modifier = martial_law
 		remove_country_modifier = army_defects
 		remove_country_modifier = civil_war
-add_country_modifier = { name = revolution_chaos duration = 730 }
+
+#Remove coup markers
+remove_country_modifier = military_strife
+remove_country_modifier = coup_risk
+
+remove_country_modifier = revolution_chaos
+
 		}
 
 }
@@ -366,8 +372,12 @@ add_country_modifier = { name = revolution_chaos duration = 1102 }
 country_event = {
 	id = 1412009
 	title = "Coup d'état in $COUNTRY$"
-	desc = "A rougue General has led a batallion into Government House and forced the incumbent regime to surrender and plant a new regime headed by the military. Their goals are peace, security and stability."
+	desc = EVTDESC152009873
 	picture = "military_coup"
+	news = yes
+	news_desc_long = "EVTDESC152009873_NEWS_LONG"
+	news_desc_medium = "EVTDESC152009873_NEWS_MEDIUM"
+	news_desc_short = "EVTDESC152009873_NEWS_SHORT"
 
 	trigger = {
 
@@ -375,20 +385,23 @@ NOT = { has_country_flag = specially_disabled }
 
 NOT = { tag = ISI }
 
-OR = {
+total_amount_of_divisions = 1
+
 	AND = {
+	capital_scope = {
+			controlled_by = THIS
+			country_units_in_province = THIS
+		}
 	average_militancy = 9
-	NOT = { government = colonial_government }
+	
 	NOT = { government = sar_government }
 	NOT = { has_country_modifier = government_consensus }
 	has_country_modifier = army_defects
-OR = { has_country_modifier = government_consensus has_country_modifier = violent_crackdown }
+	has_country_modifier = civil_war
 	num_of_revolts = 1
 	}
 
-any_owned_province = { is_capital = yes controlled_by_rebels = yes }
 
-}
 		}
 	
 mean_time_to_happen = { 
@@ -448,7 +461,7 @@ owner = { random_list = {
 random_owned = { 
 limit = { 
 owner = { 
-OR = { pop_majority_ideology = conservative pop_majority_ideology = big_tent }
+OR = { pop_majority_ideology = conservative pop_majority_ideology = big_tent pop_majority_ideology = liberal pop_majority_ideology = progressive }
 } 
 	} 
 owner = { random_list = {
@@ -470,11 +483,87 @@ owner = { random_list = {
 		} }
 }
 
-#Liberal Group
+		}
+
+}
+
+#Military Coup (Civil War Finish - Rebels Overthrow)
+country_event = {
+	id = 14120091
+	title = "Revolution in $COUNTRY$"
+	desc = EVTDESC14120091
+	picture = "popular_revolution"
+
+	trigger = {
+
+NOT = { has_country_flag = specially_disabled }
+
+NOT = { tag = ISI }
+
+OR = {
+	AND = {
+	capital_scope = {
+			controlled_by = THIS
+			NOT = { country_units_in_province = THIS }
+		}
+	average_militancy = 9
+	
+	NOT = { government = sar_government }
+	NOT = { has_country_modifier = government_consensus }
+	has_country_modifier = army_defects
+	has_country_modifier = civil_war
+	num_of_revolts = 1
+	}
+
+any_owned_province = { is_capital = yes controlled_by_rebels = yes }
+
+}
+		}
+	
+mean_time_to_happen = { 
+months = 40
+modifier = { militancy = 10 factor = 0.1 }
+modifier = { militancy = 9 factor = 0.2 } 
+modifier = { militancy = 8 factor = 0.3 } 
+modifier = { militancy = 7 factor = 0.4 } 
+modifier = { militancy = 6 factor = 0.5 }
+modifier = { militancy = 5 factor = 0.6 }
+modifier = { militancy = 4 factor = 0.7 }
+modifier = { militancy = 3 factor = 0.8 }
+}
+	option = {
+		name = "Long live the Revolution!"
+	prestige_factor = -0.20
+
+sphere_owner = { diplomatic_influence = { who = THIS value = -200 } }
+
+random_country = { 
+limit = { is_our_vassal = THIS } 
+release_vassal = THIS country_event = 1512212 
+}
+
+remove_country_modifier = martial_law
+
+add_country_modifier = { name = coup_risk duration = 730 }
+
+#Socialist Democracy and Communist Dictatorship
 random_owned = { 
 limit = { 
 owner = { 
-OR = { pop_majority_ideology = liberal pop_majority_ideology = progressive }
+OR = { pop_majority_ideology = communist pop_majority_ideology = communist_social }
+} 
+	} 
+owner = { random_list = {
+	40 = { country_event = 141514 }
+	60 = { country_event = 141512 } 
+		} }
+}
+
+#Democracy
+random_owned = { 
+limit = { 
+owner = { 
+OR = { pop_majority_ideology = liberal pop_majority_ideology = progressive pop_majority_ideology = socialist pop_majority_ideology = conservative pop_majority_ideology = big_tent pop_majority_ideology = traditionalist pop_majority_ideology = populist pop_majority_ideology = nationalist }
 } 
 	} 
 
@@ -482,7 +571,6 @@ owner = { country_event = 141513 }
 
 		
 }
-
 
 		}
 
@@ -492,14 +580,42 @@ owner = { country_event = 141513 }
 country_event = {
 	id = 141208
 	title = "Establishment of a Presidential Dictatorship"
-	desc = "The Military Junta that siezed control of the Government formed a Presidential Dictatorship to replace the previous Government. They claim that this will be temporary until peace is restored."
+	desc = "The rebels that siezed control of the Government have formed a Presidential Dictatorship to replace the previous Government. They claim that this will be temporary until peace is restored."
 	picture = "civil_war_pres"
 
 is_triggered_only = yes
 	
 	option = {
 		name = "All Hail to the Chief!"
-	government = presidential_dictatorship 
+	government = presidential_dictatorship
+	ruling_party_ideology = conservative
+	country_event = 800050
+	remove_country_modifier = army_defects
+	clr_country_flag = government_extends_peace_hand
+	remove_country_modifier = government_consensus
+	remove_country_modifier = violent_crackdown
+	remove_country_modifier = civil_war
+
+	any_pop = { militancy = -10 }
+	add_country_modifier = { name = revolution_chaos duration = 1102 }
+any_owned = { limit = { controlled_by_rebels = yes } change_controller = THIS }
+		}
+
+}
+
+#Sectarian Regime
+country_event = {
+	id = 141509
+	title = "Establishment of a Sectarian Regime"
+	desc = "The rebels that siezed control of the Government have formed a Sectarian Regime to replace the previous Government. They claim that this is in the interests of the Nation."
+	picture = "civil_war_nat"
+
+is_triggered_only = yes
+	
+	option = {
+		name = "A victory for Patriotism!"
+	government = nationalist_dictatorship 
+	ruling_party_ideology = socialist
 	country_event = 800050
 	remove_country_modifier = army_defects
 	clr_country_flag = government_extends_peace_hand
@@ -516,35 +632,9 @@ any_owned = { limit = { controlled_by_rebels = yes } change_controller = THIS }
 
 #Nationalist Dictatorship
 country_event = {
-	id = 141509
-	title = "Establishment of a Nationalist Dictatorship"
-	desc = "The Military Junta that siezed control of the Government formed a Nationalist Regime to replace the previous Government. They claim that this is in the interests of the Nation."
-	picture = "civil_war_nat"
-
-is_triggered_only = yes
-	
-	option = {
-		name = "A victory for Patriotism!"
-	government = nationalist_dictatorship 
-	country_event = 800050
-	remove_country_modifier = army_defects
-	clr_country_flag = government_extends_peace_hand
-	remove_country_modifier = government_consensus
-	remove_country_modifier = violent_crackdown
-	remove_country_modifier = civil_war
-
-	any_pop = { militancy = -10 }
-	add_country_modifier = { name = revolution_chaos duration = 1102 }
-any_owned = { limit = { controlled_by_rebels = yes } change_controller = THIS }
-		}
-
-}
-
-#Populist Dictatorship
-country_event = {
 	id = 141510
-	title = "Establishment of a Populist Dictatorship"
-	desc = "The Military Junta that siezed control of the Government formed a Populist Regime to replace the previous Government. They claim that this is in the interests of the people."
+	title = "Establishment of a Nationalist Dictatorship"
+	desc = "The rebels that siezed control of the Government have formed a Nationalist Regime to replace the previous Government. They claim that this is in the interests of the people."
 	picture = "civil_war_pop"
 
 is_triggered_only = yes
@@ -552,6 +642,7 @@ is_triggered_only = yes
 	option = {
 		name = "A victory for the People!"
 	government = populist_dictatorship 
+	ruling_party_ideology = nationalist
 	country_event = 800050
 	remove_country_modifier = army_defects
 	clr_country_flag = government_extends_peace_hand
@@ -570,7 +661,7 @@ any_owned = { limit = { controlled_by_rebels = yes } change_controller = THIS }
 country_event = {
 	id = 141511
 	title = "Establishment of a Theocracy"
-	desc = "The Military Junta that siezed control of the Government formed a Theocratic Regime to replace the previous Government. They claim that this is to bring our people back to God and restore peace."
+	desc = "The rebels that siezed control of the Government have formed a Theocratic Regime to replace the previous Government. They claim that this is to bring our people back to God and restore peace."
 	picture = "civil_war_theo"
 
 is_triggered_only = yes
@@ -578,6 +669,7 @@ is_triggered_only = yes
 	option = {
 		name = "Not to make us rest in peace right?"
 	government = theocracy 
+	ruling_party_ideology = traditionalist
 	country_event = 800051
 	remove_country_modifier = army_defects
 	clr_country_flag = government_extends_peace_hand
@@ -596,7 +688,7 @@ any_owned = { limit = { controlled_by_rebels = yes } change_controller = THIS }
 country_event = {
 	id = 141512
 	title = "Establishment of a Communist State"
-	desc = "The Military Junta that siezed control of the Government formed a Communist Regime to replace the previous Government. They claim that this will allow the workers of the world to unite."
+	desc = "The rebels that siezed control of the Government have formed a Communist Regime to replace the previous Government. They claim that this will allow the workers of the world to unite."
 	picture = "civil_war_comm"
 
 is_triggered_only = yes
@@ -623,7 +715,7 @@ any_owned = { limit = { controlled_by_rebels = yes } change_controller = THIS }
 country_event = {
 	id = 141513
 	title = "Establishment of a Democratic State"
-	desc = "The Military Junta that siezed control of the Government formed a democractic council to replace the previous Government. They claim that this will allow $COUNTRY$ to prosper."
+	desc = "The rebels that siezed control of the Government have formed a democractic council to replace the previous Government. They claim that this will allow $COUNTRY$ to prosper."
 	picture = "civil_war_democracy"
 
 is_triggered_only = yes
@@ -638,6 +730,37 @@ is_triggered_only = yes
 	remove_country_modifier = government_consensus
 	remove_country_modifier = violent_crackdown
 	remove_country_modifier = civil_war
+
+	election = yes
+
+	any_pop = { militancy = -10 }
+	add_country_modifier = { name = revolution_chaos duration = 1102 } 
+any_owned = { limit = { controlled_by_rebels = yes } change_controller = THIS }
+		}
+
+}
+
+#Socialist Democracy
+country_event = {
+	id = 141514
+	title = "Establishment of a Socialist State"
+	desc = "The rebels that siezed control of the Government have formed a socialist council to replace the previous Government. They claim that this will allow $COUNTRY$ to prosper under the ideology of equality."
+	picture = "civil_war_democracy"
+
+is_triggered_only = yes
+	
+	option = {
+		name = "Socialist Liberty!"
+	government = socialist_democracy
+	ruling_party_ideology = socialist
+	country_event = 800054
+	remove_country_modifier = army_defects
+	clr_country_flag = government_extends_peace_hand
+	remove_country_modifier = government_consensus
+	remove_country_modifier = violent_crackdown
+	remove_country_modifier = civil_war
+
+	election = yes
 
 	any_pop = { militancy = -10 }
 	add_country_modifier = { name = revolution_chaos duration = 1102 } 
