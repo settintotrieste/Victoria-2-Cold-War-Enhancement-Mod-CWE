@@ -465,13 +465,12 @@ country_event = {
 
 	trigger = {
 		war = no
-		crisis_exists = no
-		NOT = { has_country_modifier = cold_war_medium }
-		NOT = { has_country_modifier = cold_war_high }
-		NOT = { has_country_modifier = cold_war_hot }
-		
-		NOT = { has_country_modifier = world_high }
-		NOT = { has_country_modifier = world_medium }
+		crisis_exist = no
+OR = { 
+has_country_modifier = cold_war_low 
+has_country_modifier = world_low 
+}
+
 		OR = { 
 		NOT = { has_country_modifier = defcon5 }
 		has_country_modifier = defcon1
@@ -499,9 +498,13 @@ country_event = {
 
 	trigger = {
 		war = no
-		#involved_in_crisis = yes
-		#NOT = { crisis_temperature = 90 }
-OR = { has_country_modifier = cold_war_medium has_country_modifier = world_medium }
+
+OR = { 
+AND = { crisis_exist = no OR = { has_country_modifier = cold_war_medium has_country_modifier = world_medium } }
+
+AND = { crisis_exist = yes 
+NOT = { crisis_temperature = 35 } }
+}
 		NOT = { has_country_modifier = defcon4 }
 		}
 	
@@ -523,9 +526,12 @@ country_event = {
 
 	trigger = {
 		war = no
-		#involved_in_crisis = yes
-		#crisis_temperature = 90
-		OR = { has_country_modifier = cold_war_high has_country_modifier = world_high }
+OR = { 
+AND = { crisis_exist = no OR = { has_country_modifier = cold_war_high has_country_modifier = world_high } }
+
+AND = { crisis_exist = yes crisis_temperature = 35 
+NOT = { crisis_temperature = 75 } }
+}
 		NOT = { has_country_modifier = defcon3 }
 		}
 	
@@ -546,7 +552,13 @@ country_event = {
 	picture = "defcon"
 
 	trigger = {
-		OR = { war = yes has_country_modifier = cold_war_hot }
+		OR = { 
+		war = yes 
+AND = { crisis_exist = no 
+has_country_modifier = cold_war_hot }
+AND = { crisis_exist = yes
+crisis_temperature = 75 }
+		}
 		NOT = { national_provinces_occupied = 0.40 }
 		NOT = { has_country_modifier = defcon2 }
 		}
