@@ -7430,6 +7430,9 @@ RUS = { country_event = 1512183 }
 YUG = { country_event = 1512183 }
 GRE = { country_event = 1512183 }
 
+BEL = { country_event = 1512183 }
+NET = { country_event = 1512183 }
+
 ITA = { country_event = 1512184 }
 add_country_modifier = { name = war_rep_income duration = 3650 }
 		}
@@ -12954,6 +12957,165 @@ mean_time_to_happen = { months = 2 }
     name = "Crush the attempt"
 add_country_modifier = { name = revolution_chaos duration = 3650 }
 	ai_chance = { factor = 0.1 }	
+  }
+
+}
+
+#Surplus WW2 Equipment
+country_event = {
+  id = 1512316
+  title = "Surplus WW2 Armaments"
+  desc = EVTDESC1512316
+  picture = "ww2_surplus_arms"
+
+  trigger = {
+	OR = { 
+	#Big four
+	tag = USA tag = RUS tag = ENG tag = KMT 
+	
+	#Others
+	tag = FRA tag = ITA tag = RAJ tag = AST tag = CAN 
+	tag = NZL tag = NET tag = BEL tag = SAF tag = JAP
+	}
+
+
+	year = 1946
+	NOT = { year = 1990 }
+	NOT = { has_country_flag = ww2_surplus_arms_flag }
+  }
+
+  option = {
+	name = "It may be useful in the future"	
+	set_country_flag = ww2_surplus_arms_flag	
+	small_arms = 2000
+	weaponry = 2000
+	ships = 2000
+	aeroplanes = 2000
+	ai_chance = { factor = 1 }
+  }
+
+  option = {
+	name = "Sell it off!"	
+	set_country_flag = ww2_surplus_arms_flag	
+	money = 250000
+	ai_chance = { factor = 0 }
+  }
+
+}
+
+#Latin American debt crisis
+country_event = {
+  id = 1512317
+  title = "$YEAR$ Latin American Debt Crisis"
+  desc = EVTDESC1512317
+  picture = "latin_debt_crisis"
+
+  trigger = {
+OR = { tag = MEX capital_scope = { continent = south_america } }
+	is_greater_power = no
+	war = no
+	is_vassal = no
+	election = no
+	year = 1977
+	NOT = { year = 1990 }
+	ruling_party_ideology = socialist
+
+	NOT = { government = proletarian_dictatorship }
+	NOT = { government = proletarian_dictatorship1 }
+
+NOT = { has_country_flag = latin_debt_crisis }
+
+NOT = { has_country_modifier = economic_boom }
+
+NOT = { has_country_modifier = financial_crisis }
+
+	OR = { 
+has_country_modifier = massive_government_corruption 
+has_country_modifier = large_government_corruption 
+has_country_modifier = medium_government_corruption
+	}
+  }
+
+mean_time_to_happen = { 
+months = 60 
+modifier = { 
+factor = 0.1 
+any_neighbor_country = { has_country_modifier = financial_crisis } 
+	}
+}
+
+  option = {
+    name = "Unleash a bailout"
+	set_country_flag = latin_debt_crisis
+	add_tax_relative_income = -100
+	money = -2000000
+	ai_chance = { factor = 0.1 }	
+  }
+
+  option = {
+    name = "Look to the IMF"
+	prestige_factor = -0.025
+	set_country_flag = latin_debt_crisis
+	money = -500000
+	ruling_party_ideology = liberal
+
+	add_country_modifier = { name = imf_loan duration = 1825 }
+
+	any_pop = { 
+	ideology = {
+	factor = -0.25
+	value = socialist
+	} }
+
+	ai_chance = { factor = 0.8 }	
+  }
+
+  option = {
+	name = "Let the market self correct"
+	set_country_flag = latin_debt_crisis
+	prestige_factor = -0.05	
+add_country_modifier = { name = financial_crisis duration = 7300 }
+
+	any_pop = { 
+	ideology = {
+	factor = -0.5
+	value = socialist
+	} }
+
+	ai_chance = { factor = 0.1 }	
+  }
+
+}
+
+#East Indonesia joins Indonesia
+country_event = {
+  id = 1512318
+  title = "Integration of East Indonesia"
+  desc = EVTDESC1512318
+  picture = "rusi_independece"
+
+fire_only_once = yes
+
+  trigger = {
+	tag = IDO
+	exists = EID
+	EID = { is_vassal = no war = no }
+	war = no
+	is_vassal = no
+  }
+
+mean_time_to_happen = { months = 1 }
+
+  option = {
+	name = "Unite Indonesia!"	
+	EID = { country_event = 11101 }
+	ai_chance = { factor = 1 }	
+  }
+
+  option = {
+    name = "It's not necessary"
+	relation = { who = NET value = 100 }
+	ai_chance = { factor = 0 }	
   }
 
 }
