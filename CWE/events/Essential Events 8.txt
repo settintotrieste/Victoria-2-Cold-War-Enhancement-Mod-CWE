@@ -13298,6 +13298,7 @@ is_triggered_only = yes
   option = {
 	name = "We will drain the swamp!"	
 any_pop = { limit = { OR = { type = aristocrats type = officers type = bureaucrats } } militancy = 10 }
+		country_event = 100100
   }
 
 }
@@ -13437,5 +13438,115 @@ clr_country_flag = appoint_ruling_party
 random_owned = { limit = { owner = { NOT = { pop_majority_ideology = nationalist } } } owner = { country_event = 6016818 } }
 
   }
+
+}
+
+#United Nations Trusteeship proposal after dismemberment
+country_event = {
+  id = 1512327
+  title = "UN Trusteeship over $FROMCOUNTRY$?"
+  desc = EVTDESC1512327
+  picture = "united_nations_trust_territories"
+
+	is_triggered_only = yes
+
+  option = {
+	name = "Accept the mandate"
+	prestige = 100
+	money = -500000
+	create_vassal = FROM
+FROM = { government = mandate_government country_event = 800054 money = 500000 add_country_modifier = { name = tax_boost_modifier duration = 3650 } add_country_modifier = { name = economic_boom duration = 3650 } set_country_flag = great_war_mandate_un }
+	diplomatic_influence = { who = FROM value = 200 }
+	diplomatic_influence = { who = FROM value = 200 }
+	relation = { who = FROM value = 200 }
+	ai_chance = { 
+		factor = 1
+		modifier = { factor = 0 NOT = { money = 500000 } }
+	}	
+  }
+
+  option = {
+	name = "The $FROMCOUNTRY_ADJ$ people can rule themselves"
+	relation = { who = FROM value = 50 }
+	ai_chance = { 
+		factor = 1
+		modifier = { factor = 0 money = 500000 }
+	}	
+  }
+
+}
+
+#Trigger UN mandate independence
+country_event = { 
+  id = 1512328
+  title = "Independence of $COUNTRY$"
+  desc = EVT_fullindependence_DESC
+  picture = "un_mandate_end"
+
+  trigger = {
+
+government = mandate_government
+	
+has_country_flag = great_war_mandate_un
+
+	election = no
+
+	is_vassal = yes
+
+	war = no
+}
+
+  mean_time_to_happen = { 
+	months = 60
+		}
+
+  option = {
+    name = EVT_fullindependence_A
+	prestige = 50
+	clr_country_flag = great_war_mandate_un
+	overlord = { country_event = 15406 }
+	ai_chance = { factor = 1 }
+  }
+  option = {
+    name = "Remain as a protectorate"
+	prestige = -50
+	
+#Constitutional Monarchy
+FROM = {
+random_owned = { limit = { owner = { overlord = { OR = { government = hms_government government = hms_government1 government = absolute_monarchy } } } } owner = { government = hms_government1 } }
+
+#Democracy
+FROM = {
+random_owned = { limit = { owner = { overlord = { OR = { government = democracy government = democracy } } } } owner = { government = democracy } }
+
+#Socialist Democracy
+FROM = {
+random_owned = { limit = { owner = { overlord = { government = socialist_democracy } } } owner = { government = socialist_democracy ruling_party_ideology = socialist } }
+
+#Communist Dictatorships
+FROM = {
+random_owned = { limit = { owner = { overlord = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } } } owner = { government = proletarian_dictatorship ruling_party_ideology = communist country_event = 800052 } }
+
+#Theocracy
+FROM = {
+random_owned = { limit = { owner = { overlord = { government = theocracy } } } owner = { government = theocracy country_event = 800050 ruling_party_ideology = traditionalist } }
+
+#Presidential Dictatorship
+FROM = {
+random_owned = { limit = { owner = { overlord = { government = presidential_dictatorship } } } owner = { government = presidential_dictatorship country_event = 800050 } }
+
+#Nationalist Dictatorship
+FROM = {
+random_owned = { limit = { owner = { overlord = { government = populist_dictatorship } } } owner = { government = populist_dictatorship country_event = 800050 ruling_party_ideology = nationalist } }
+
+#Sectarian Dictatorship
+FROM = {
+random_owned = { limit = { owner = { overlord = { government = nationalist_dictatorship } } } owner = { government = nationalist_dictatorship country_event = 800050 } }
+
+}
+
+	clr_country_flag = great_war_mandate_un
+	ai_chance = { factor = 0 }
+	}
 
 }
