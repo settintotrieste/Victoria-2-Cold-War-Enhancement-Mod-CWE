@@ -8510,10 +8510,41 @@ option = {
 name = "May the best country win, which is us!"
 set_country_flag = country_at_war
 
+remove_country_modifier = martial_law
+
+#What meeting laws to revert back to
+
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_free_meetings } }
+owner = { political_reform = free_meetings clr_country_flag = return_to_free_meetings }
+			}
+
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_limited_meetings } }
+owner = { political_reform = limited_meetings clr_country_flag = return_to_limited_meetings }
+			}
+
+#What press laws to revert back to
+			
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_responsible_publishing  } }
+owner = { political_reform = responsible_publishing clr_country_flag = return_to_responsible_publishing }
+			}
+
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_unregulated_publishing} }
+owner = { political_reform = unregulated_publishing clr_country_flag = return_to_unregulated_publishing }
+			}
+
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_firewall_publishing } }
+owner = { political_reform = firewall_publishing clr_country_flag = return_to_firewall_publishing }
+			}
+
 any_pop = {
 dominant_issue = {
 	value = jingoism
-	factor = 0.05
+	factor = 0.01
 }
 }
 
@@ -13681,6 +13712,91 @@ owner = { any_pop = { ideology = { factor = -0.05 value = communist_social } } }
 any_pop = { limit = { OR = { pop_majority_ideology = socialist pop_majority_ideology = communist pop_majority_ideology = communist_social pop_majority_ideology = liberal pop_majority_ideology = progressive } } militancy = 6 }
 
 	ai_chance = { factor = 1 }	
+  }
+
+}
+
+#Chinese Reunification decision - KMT
+country_event = {
+  id = 1512331
+  title = "Reunification of China"
+  desc = EVTDESC1512331
+  picture = "chinese_reunification_decision"
+
+	is_triggered_only = yes
+
+  option = {
+	name = "Become one united China!"
+	clr_global_flag = one_china_policy
+	remove_country_modifier = one_china_policy
+FROM = { remove_country_modifier = one_china_policy } 
+FROM = { inherit = THIS }
+	ai_chance = { factor = 1 }	
+  }
+
+  option = {
+	name = "Maintain our independence!"
+	prestige = 100
+
+random_owned = { 
+
+limit = { 
+owner = { NOT = { any_owned_province = { NOT = { is_core = TAI } } } }
+} 
+
+owner = { change_tag = TAI primary_culture = taiwanese } }
+
+	relation = { who = FROM value = -100 }
+	ai_chance = { factor = 0 }		
+  }
+
+}
+
+#Absolute Monarchies
+country_event = {
+  id = 1512332
+  title = "The $COUNTRY_ADJ$ Aristocrats' Demands"
+  desc = EVTDESC1512332
+  picture = "royal_court"
+
+  trigger = {
+	war = no
+	OR = { 
+	average_militancy = 5
+
+any_owned_province = {
+is_core = THIS
+any_pop = { type = aristocrats militancy = 9 } 
+}
+
+	}
+	political_opinions = ruling_party_opinion
+	government = absolute_monarchy
+	NOT = { has_country_modifier = revolution_chaos }
+  }
+
+mean_time_to_happen = { months = 6 }
+
+  option = {
+	name = "Accept the demands of the aristocrats"
+	prestige_factor = -0.05
+	political_reform = regulated_opinion
+any_pop = { limit = { type = aristocrats } militancy = -6 }
+	ai_chance = { factor = 0.75 }	
+  }
+
+  option = {
+	name = "Tell them who's King!"
+add_country_modifier = { name = revolution_chaos duration = 365 }
+any_pop = { 
+dominant_issue = {
+	value = regulated_opinion
+	factor = 0.25
+}
+	}
+any_pop = { limit = { type = aristocrats } militancy = 6 }
+any_pop = { limit = { type = officers } militancy = 3 }
+	ai_chance = { factor = 0.25 }		
   }
 
 }

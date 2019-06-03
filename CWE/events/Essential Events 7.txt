@@ -2868,31 +2868,58 @@ add_province_modifier = { name = haze_in_effect duration = 120 }
 #Martial Law Future decide - non monarchy
 country_event = {
 	id = 1412225
-title = "Provisional Government Conference"
+title = "Illegal State of Emergency"
 	desc = EVTDESC1412225
 	picture = "martial_law_choice"
 
 trigger = {
 
-NOT = { government = hms_government }
-
-NOT = { government = hms_government1 }
-
 war = no
 
 election = no
+
+is_vassal = no
 
 has_country_modifier = martial_law	
 
 }
 
 mean_time_to_happen = { 
-months = 3
+months = 6
 	}
 
 option = {
 name = "Return to democracy"
 remove_country_modifier = martial_law
+
+#What meeting laws to revert back to
+
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_free_meetings } }
+owner = { political_reform = free_meetings clr_country_flag = return_to_free_meetings }
+			}
+
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_limited_meetings } }
+owner = { political_reform = limited_meetings clr_country_flag = return_to_limited_meetings }
+			}
+
+#What press laws to revert back to
+			
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_responsible_publishing  } }
+owner = { political_reform = responsible_publishing clr_country_flag = return_to_responsible_publishing }
+			}
+
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_unregulated_publishing} }
+owner = { political_reform = unregulated_publishing clr_country_flag = return_to_unregulated_publishing }
+			}
+
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_firewall_publishing } }
+owner = { political_reform = firewall_publishing clr_country_flag = return_to_firewall_publishing }
+			}
 
 election = yes
 
@@ -2957,12 +2984,21 @@ OR = { ruling_party_ideology = populist ruling_party_ideology = traditionalist r
 		}
 
 option = {
-name = "Extend the $MONARCHTITLE$'s term indefinitely"
-prestige_factor = -0.5
+name = "I'll make it legal (become a dictatorship)"
+prestige_factor = -0.05
 
-remove_country_modifier = martial_law
+#No return to old meeting reform
+clr_country_flag = return_to_free_meetings
+clr_country_flag = return_to_limited_meetings
 
-add_country_modifier = { name = revolution_chaos duration = 1825 }
+#No return to old press reform
+clr_country_flag = return_to_responsible_publishing
+clr_country_flag = return_to_unregulated_publishing
+clr_country_flag = return_to_firewall_publishing
+
+country_event = 800050
+
+add_country_modifier = { name = revolution_chaos duration = 3650 }
 
 random_owned = { 
 limit = { owner = { ruling_party_ideology = conservative } }
@@ -3014,50 +3050,13 @@ limit = { owner = { ruling_party_ideology = communist_social } }
 owner = { any_pop = { ideology = { factor = -0.15 value = communist_social } } }
 }
 
-random_owned = { limit = { owner = { pop_majority_ideology = nationalist } } owner = { government = populist_dictatorship } }
-
-random_owned = { limit = { owner = { pop_majority_ideology = traditionalist } } owner = { government = theocracy } }
-
-random_owned = { limit = { owner = { pop_majority_ideology = populist } } owner = { government = nationalist_dictatorship } }
-
-random_owned = { 
-
-limit = { 
-owner = { NOT = { OR = { pop_majority_ideology = nationalist pop_majority_ideology = traditionalist pop_majority_ideology = populist } } }
-} 
-
-owner = { government = presidential_dictatorship } }
-
-
-country_event = 800050
-
-
 ai_chance = { 
 factor = 1 
-
-modifier = { factor = 0 OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } }
 
 modifier = { 
 factor = 0 
-NOT = { OR = { ruling_party_ideology = populist ruling_party_ideology = traditionalist ruling_party_ideology = nationalist } }
+NOT = { OR = { ruling_party_ideology = populist ruling_party_ideology = traditionalist ruling_party_ideology = nationalist ruling_party_ideology = communist ruling_party_ideology = communist_social } }
 		} 
-}
-		}
-
-option = {
-name = "Embrace the proletarian revolution"
-prestige_factor = -0.5
-remove_country_modifier = martial_law
-government = proletarian_dictatorship
-country_event = 800050
-ruling_party_ideology = communist
-
-add_country_modifier = { name = revolution_chaos duration = 1825 }
-
-ai_chance = { 
-factor = 1 
-
-modifier = { factor = 0 NOT = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } }
 
 }
 		}
@@ -3079,7 +3078,9 @@ war = no
 
 election = no
 
-has_country_modifier = martial_law	
+has_country_modifier = martial_law
+
+has_country_flag = is_disabled_for_now	
 
 }
 
