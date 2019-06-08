@@ -11851,7 +11851,7 @@ title = "Treaty on the Final Settlement with Respect to Germany"
 trigger = {
 NOT = { has_global_flag = blocsenabled }
 NOT = { has_country_flag = final_settlement_ger }
-GER = { exists = yes }
+GER = { exists = yes is_vassal = no }
 year = 1950
 OR = {
 is_our_vassal = OG1
@@ -11859,6 +11859,8 @@ is_our_vassal = OG2
 is_our_vassal = OG3
 is_our_vassal = OG4
 is_our_vassal = DDR
+}
+OR = {
 AND = { tag = USA is_vassal = no }
 AND = { tag = FRA is_vassal = no }
 AND = { tag = ENG is_vassal = no }
@@ -14042,5 +14044,79 @@ owner = { any_pop = { ideology = { factor = 0.05 value = communist_social } } }
 
 	ai_chance = { factor = 0.1 }	
   }
+
+}
+
+#Superstate Tariffs - Change levels
+country_event = {
+	id = 1512337
+title = "Change in the Common Market's Tariffs"
+	desc = EVTDESC1512337
+	picture = "common_tarif_start"
+
+trigger = {
+any_owned_province = { has_province_modifier = single_market }
+has_country_flag = superstate_common_tariffs
+NOT = { has_country_modifier = cmttimer }
+}
+
+mean_time_to_happen = { 
+months = 36
+	}
+
+option = {
+name = "This is their decision"
+add_country_modifier = { name = cmttimer duration = 365 } 
+remove_country_modifier = cmthigh
+remove_country_modifier = cmtmedium
+remove_country_modifier = cmtlow
+random_list = {
+33 = { add_country_modifier = { name = cmthigh duration = -1 } }
+34 = { add_country_modifier = { name = cmtmedium duration = -1 } }
+33 = { add_country_modifier = { name = cmtlow duration = -1 } }
+}
+		}
+
+}
+
+#Superstate Tariffs - Start
+country_event = {
+	id = 1512338
+title = "Tariffs Controlled by Customs Union"
+	desc = EVTDESC1512338
+	picture = "common_tarif"
+
+trigger = {
+any_owned_province = { has_province_modifier = single_market }
+NOT = { has_country_flag = superstate_common_tariffs }
+}
+
+option = {
+name = "It is a price to pay for a common market"
+set_country_flag = superstate_common_tariffs
+country_event = 1512337
+		}
+
+}
+
+#Superstate Tariffs - End
+country_event = {
+	id = 1512339
+title = "Left the Customs Union"
+	desc = EVTDESC1512337
+	picture = "common_tarif"
+
+trigger = {
+NOT = { any_owned_province = { has_province_modifier = single_market } }
+has_country_flag = superstate_common_tariffs
+}
+
+option = {
+name = "Today is $COUNTRY$'s economic independence day!"
+clr_country_flag = superstate_common_tariffs
+remove_country_modifier = cmthigh
+remove_country_modifier = cmtmedium
+remove_country_modifier = cmtlow
+		}
 
 }
