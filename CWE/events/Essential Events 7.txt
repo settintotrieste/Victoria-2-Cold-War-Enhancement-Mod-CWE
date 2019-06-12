@@ -1596,7 +1596,7 @@ title = "Nuclear Accident"
 	picture = "nuclear_accident"
 
 trigger = { 
-has_country_flag = nuclear_power_ge
+OR = { has_country_flag = nuclear_power_ge any_owned_province = { has_building = nuclear_fuel_factory } }
 OR = { safety_regulations = some_regulations safety_regulations = balanced_regulations safety_regulations = restrictive_regulations }
 	}
 
@@ -3250,9 +3250,27 @@ title = "$YEAR$ $CAPITAL$ Rally"
 is_triggered_only = yes
 
 option = {
-name = "Long Live the $MONARCHTITLE$!"
+name = "Strengthen the $MONARCHTITLE$'s Power!"
 
-prestige = 50
+political_reform = none_voting
+political_reform = ruling_party_opinion
+political_reform = no_meetings
+political_reform = censored_publishing
+political_reform = parties_not_allowed
+
+any_pop = { 
+
+scaled_militancy = {
+	factor = 10
+	ideology = liberal
+}
+
+scaled_militancy = {
+	factor = 10
+	ideology = progressive
+}
+
+}
 
 			random_owned = { 
 			limit = { owner = { ruling_party_ideology = communist } } owner = { any_pop = { ideology = { value = communist factor = 0.25 } } }
@@ -3278,17 +3296,31 @@ prestige = 50
 				limit = { owner = { ruling_party_ideology = traditionalist } } owner = { any_pop = { ideology = { value = traditionalist factor = 0.25 } } }
 			}
 
-ai_chance = { factor = 0.50 }
-}
+		ai_chance = { factor = 1 }
+	}
 
 option = {
-name = "Rebuild $CAPITAL$ into a glorious city"
-prestige = 50
-money = -1000000
-add_country_modifier = { name = germania duration = 3650 }
-set_country_flag = germania
-ai_chance = { factor = 0.50 }
+name = "Begin the emancipation of the $COUNTRY_ADJ$ people!"
+
+prestige_factor = -0.25
+
+country_event = 800054
+
+add_country_modifier = { name = revolution_chaos duration = 1825 }
+
+remove_country_modifier = soviet_stability
+
+#If Sphered
+sphere_owner = { diplomatic_influence = { who = THIS value = -200 } }
+
+#If Vassal
+random_country = { 
+limit = { is_our_vassal = THIS } 
+release_vassal = THIS country_event = 1512212 
 }
+
+		ai_chance = { factor = 0 }
+	}
 		
 }
 
@@ -3307,7 +3339,7 @@ NOT = { has_country_modifier = germania }
 option = {
 name = "A city that will last a 1000 years"
 prestige = 1000
-random_owned = { limit = { is_capital = yes } add_province_modifier = { name = new_capital duration = -1 } }
+random_owned = { limit = { is_capital = yes } life_rating = 5 add_province_modifier = { name = new_capital duration = -1 } }
 clr_country_flag = germania
 		}
 }
