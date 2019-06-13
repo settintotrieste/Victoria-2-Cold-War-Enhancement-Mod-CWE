@@ -69,26 +69,44 @@ country_event = {
 	ai_chance = { factor = 100 }
   }
 }
+
+#Apostasia of 1965
 country_event = {
   id = 8006215
-  title = EVT_8006215_NAME
+  title = "Apostasia of 1965"
   desc = EVT_8006215_DESC
-  picture = "nwo2_greek_coup_1967"
+  picture = "nwo2_greek_apotasia"
   fire_only_once = yes
 
   trigger = {
-    tag = GRE
-	year = 1966 NOT = { year = 1967 }
-    government = hms_government
+    	tag = GRE
+	year = 1965 NOT = { year = 1967 }
+    	government = hms_government
+	is_vassal = no
+	war = no
+	election = no
+OR = { ruling_party_ideology = big_tent ruling_party_ideology = conservative }
   }
 
   mean_time_to_happen = { months = 2  }
 
   option = {
-    name = EVT_8006215_A
-	prestige = -10
+    name = "Support the Centre Union (EK)"
+	ruling_party_ideology = big_tent
+any_pop = { limit = { NOT = { pop_majority_ideology = big_tent } } militancy = 5 }
+	ai_chance = { factor = 0.8 }
   }
+
+  option = {
+    name = "Support the National Radical Union (ERE)"
+	ruling_party_ideology = conservative
+any_pop = { limit = { NOT = { pop_majority_ideology = conservative } } militancy = 5 }
+	ai_chance = { factor = 0.2 }
+  }
+
 }
+
+#1967 Coup - Absolute Monarchy
 country_event = {
   id = 8006216
   title = EVT_8006216_NAME
@@ -97,27 +115,72 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-    tag = GRE
-	year = 1967 NOT = { year = 1968 }
-    government = hms_government
+    	tag = GRE
+	year = 1967 NOT = { year = 1974 }
+   	government = hms_government
+	is_vassal = no
+	war = no
   }
 
-  mean_time_to_happen = { months = 1 }
+  mean_time_to_happen = { months = 4 }
 
   option = {
-    name = EVT_8006216_A
-	government = presidential_dictatorship 
+    name = "The coup succeeds"
+	prestige = -50
 	country_event = 800050
-	CYP = { country_event = 8004110 }
-	ai_chance = { factor = 0.9 }
+	government = absolute_monarchy
+	ruling_party_ideology = nationalist
+add_country_modifier = { name = regency_government duration = 3650 }
+	ai_chance = { factor = 0.8 }
   }
 
   option = {
-    name = EVT_8006216_B
-	any_pop = { militancy = 5 consciousness = 1 }
-	ai_chance = { factor = 0.1 }
+    name = "Launch a counter coup for the King"
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+any_pop = { limit = { pop_majority_ideology = nationalist } militancy = 10 }
+	ruling_party_ideology = conservative
+	ai_chance = { factor = 0.2 }
   }
+
 }
+
+#1970 End of the Monarchy - Nationalist Dictatorship
+country_event = {
+  id = 8006217
+  title = "Erosion of the Greek Monarchy"
+  desc = EVTDESC80062161
+  picture = "1970_greece_republic"
+  fire_only_once = yes
+
+  trigger = {
+    	tag = GRE
+	year = 1970 NOT = { year = 1980 }
+   	government = absolute_monarchy
+	ruling_party_ideology = nationalist
+	is_vassal = no
+	war = no
+  }
+
+  mean_time_to_happen = { months = 2 }
+
+  option = {
+    name = "Remove all traces of the King"
+	prestige = -50
+	government = populist_dictatorship
+	remove_country_modifier = regency_government
+	ai_chance = { factor = 0.8 }
+  }
+
+  option = {
+    name = "Keep the institution alive, barely"
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+any_pop = { limit = { pop_majority_ideology = nationalist } militancy = 10 }
+	ai_chance = { factor = 0.2 }
+  }
+
+}
+
+#Fall of the Greek Junta
 country_event = {
   id = 8006218
   title = EVT_8006218_NAME
@@ -126,26 +189,36 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-    tag = GRE
-	year = 1973 NOT = { year = 1974 }
-	government = presidential_dictatorship
+    	tag = GRE
+	year = 1974 NOT = { year = 1990 }
+OR = { government = populist_dictatorship government = absolute_monarchy }
+	is_vassal = no
+	war = no
+	CYP = { exists = yes }
   }
 
-  mean_time_to_happen = { months = 5  }
+  mean_time_to_happen = { months = 7 }
 
   option = {
     name = EVT_8006218_A
 	country_event = 8006225
+	CYP = { country_event = 8004110 }
 	ai_chance = { factor = 0.9 }
   }
 
   option = {
     name = EVT_8006218_B
-	any_pop = { militancy = 2.0 consciousness = 1 }
+prestige = -100
+badboy = 5
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+any_pop = { limit = { OR = { pop_majority_ideology = liberal pop_majority_ideology = progressive pop_majority_ideology = big_tent } } militancy = 6 }
+	any_pop = { consciousness = 4 }
 	ai_chance = { factor = 0.1 }
   }
 
 }
+
+#Monarchy referendum of 1974
 country_event = {
   id = 8006225
   title = EVT_8006225_NAME
@@ -156,17 +229,21 @@ country_event = {
   option = {
     name = EVT_8006225_A
 	government = democracy country_event = 800054
-	any_pop = { consciousness = 1 }
+	ruling_party_ideology = liberal
+	any_pop = { consciousness = 3 }
 	ai_chance = { factor = 0.8 }
   }
 
   option = {
     name = EVT_8006225_B
 	government = hms_government country_event = 800054
-	any_pop = { militancy = 1.0 }
+	ruling_party_ideology = conservative
+	remove_country_modifier = regency_government
+	any_pop = { militancy = 3.0 }
 	ai_chance = { factor = 0.2 }
   }
 }
+
 country_event = {
   id = 8006226
   title = EVT_8006226_NAME # Macedonian naming dispute
@@ -174,7 +251,7 @@ country_event = {
   picture = "macedonia"
 
   trigger = {
-    tag = GRE
+    	tag = GRE
 	exists = MAC
 	MAC = { government = populist_dictatorship }
   }
