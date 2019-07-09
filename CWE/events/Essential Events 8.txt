@@ -14280,3 +14280,448 @@ ai_chance = { factor = 0.1 }
 		}
 
 }
+
+#Trade War Ended
+country_event = {
+	id = 1512344
+title = "$FROMCOUNTRY$ Removes Trade Tariffs"
+	desc = EVTDESC1512344
+	picture = "end_trade_war"
+
+is_triggered_only = yes
+
+option = {
+name = "Rejoice!"
+
+relation = { who = FROM value = 50 }
+
+remove_country_modifier = trade_war_tariffs
+
+#If resisted demands of Trade Instigator
+random_owned = { limit = { owner = { NOT = { has_country_modifier = conceded_trade_war } } } owner = { prestige_factor = 0.1 } }
+
+		}
+
+}
+
+#Trade War Started
+country_event = {
+	id = 1512345
+title = "$FROMCOUNTRY$ Starts a Trade War"
+	desc = EVTDESC1512345
+	picture = "start_trade_war"
+
+is_triggered_only = yes
+
+option = {
+name = "Impose retaliatory tariffs on $FROMCOUNTRY_ADJ$ exports!"
+relation = { who = FROM value = -50 }
+add_country_modifier = { name = trade_war_tariffs duration = -1 }
+
+ai_chance = { factor = 0.9 modifier = { factor = 0 war_policy = pacifism } }
+		}
+
+option = {
+name = "Accede to $FROMCOUNTRY_ADJ$ demands"
+
+add_country_modifier = { name = conceded_trade_war duration = 3650 }
+
+relation = { who = FROM value = 200 }
+
+#If accepted demands of Trade Instigator
+random_owned = { limit = { owner = { has_country_modifier = conceded_trade_war } } owner = { prestige_factor = -0.2 } }
+
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Increase Trade War Levels
+country_event = {
+	id = 1512346
+title = "Change in Trade War Levels"
+	desc = EVTDESC1512346
+	picture = "trade_war_levels"
+
+trigger = {
+has_global_flag = trade_war
+NOT = { has_country_modifier = trade_war_4 }
+NOT = { has_country_modifier = conceded_trade_war }
+}
+
+mean_time_to_happen = { months = 12 }
+
+option = {
+name = "We need to look at this strongly!"
+
+#Add Trade War 4
+random_owned = { 
+limit = { owner = { has_country_modifier = trade_war_3 } }
+owner = {
+remove_country_modifier = trade_war_1
+remove_country_modifier = trade_war_2
+remove_country_modifier = trade_war_3
+remove_country_modifier = trade_war_4 
+add_country_modifier = { name = trade_war_4 duration = -1 } }
+}
+
+#Add Trade War 3
+random_owned = { 
+limit = { owner = { has_country_modifier = trade_war_2 } }
+owner = { 
+remove_country_modifier = trade_war_1
+remove_country_modifier = trade_war_2
+remove_country_modifier = trade_war_3
+remove_country_modifier = trade_war_4
+add_country_modifier = { name = trade_war_3 duration = -1 } }
+}
+
+#Add Trade War 2
+random_owned = { 
+limit = { owner = { has_country_modifier = trade_war_1 } }
+owner = { 
+remove_country_modifier = trade_war_1
+remove_country_modifier = trade_war_2
+remove_country_modifier = trade_war_3
+remove_country_modifier = trade_war_4
+add_country_modifier = { name = trade_war_2 duration = -1 } }
+}
+
+#Add Trade War 1
+random_owned = { 
+limit = { owner = { 
+NOT = { has_country_modifier = trade_war_1 }
+NOT = { has_country_modifier = trade_war_2 }
+NOT = { has_country_modifier = trade_war_3 }
+NOT = { has_country_modifier = trade_war_4 }
+} }
+owner = { 
+remove_country_modifier = trade_war_1
+remove_country_modifier = trade_war_2
+remove_country_modifier = trade_war_3
+remove_country_modifier = trade_war_4
+add_country_modifier = { name = trade_war_1 duration = -1 } }
+}
+
+		}
+
+}
+
+#Fully end Trade War
+country_event = {
+	id = 1512347
+title = "Effects of the Trade War Wanes"
+	desc = EVTDESC1512347
+	picture = "end_trade_war_levels"
+
+trigger = {
+OR = { NOT = { has_global_flag = trade_war } 
+has_country_modifier = conceded_trade_war }
+has_country_modifier = trade_war_1
+}
+
+mean_time_to_happen = { months = 6 }
+
+option = {
+name = "We have weathered the worst"
+remove_country_modifier = trade_war_1
+remove_country_modifier = trade_war_2
+remove_country_modifier = trade_war_3
+remove_country_modifier = trade_war_4 
+
+add_country_modifier = { name = economic_boom duration = 1825 }
+		}
+
+}
+
+#Decrease Trade War Levels
+country_event = {
+	id = 1512348
+title = "Decrease in Trade War Levels"
+	desc = EVTDESC1512346
+	picture = "trade_war_levels"
+
+trigger = {
+OR = { NOT = { has_global_flag = trade_war } has_country_modifier = conceded_trade_war }
+OR = { 
+has_country_modifier = trade_war_2
+has_country_modifier = trade_war_3
+has_country_modifier = trade_war_4 
+	}
+}
+
+mean_time_to_happen = { months = 6 }
+
+option = {
+name = "The economy is recovering!"
+
+#Remove Trade War 2
+random_owned = { 
+limit = { owner = { NOT = { has_global_flag = trade_war } has_country_modifier = trade_war_2 } }
+owner = {
+remove_country_modifier = trade_war_1
+remove_country_modifier = trade_war_2
+remove_country_modifier = trade_war_3
+remove_country_modifier = trade_war_4 
+add_country_modifier = { name = trade_war_1 duration = -1 } }
+}
+
+#Remove Trade War 3
+random_owned = { 
+limit = { owner = { NOT = { has_global_flag = trade_war }  has_country_modifier = trade_war_3 } }
+owner = {
+remove_country_modifier = trade_war_1
+remove_country_modifier = trade_war_2
+remove_country_modifier = trade_war_3
+remove_country_modifier = trade_war_4
+add_country_modifier = { name = trade_war_2 duration = -1 } }
+}
+
+#Remove Trade War 4
+random_owned = { 
+limit = { owner = { NOT = { has_global_flag = trade_war } has_country_modifier = trade_war_4 } }
+owner = { 
+remove_country_modifier = trade_war_1
+remove_country_modifier = trade_war_2
+remove_country_modifier = trade_war_3
+remove_country_modifier = trade_war_4
+add_country_modifier = { name = trade_war_3 duration = -1 } }
+}
+
+		}
+
+}
+
+#Anger against Conscription
+country_event = {
+	id = 1512349
+title = "Controversy over Conscription"
+	desc = EVTDESC1512349
+	picture = "conscription_controversy"
+
+trigger = {
+
+OR = { 
+lgbt_rights = lgbt_promoted
+lgbt_rights = lgbt_allowed
+lgbt_rights = lgbt_equal_rights
+	}
+
+war = no
+has_recently_lost_war = no
+
+OR = {
+pop_majority_ideology = liberal
+pop_majority_ideology = progressive
+has_country_modifier = massive_government_corruption
+has_country_modifier = large_government_corruption
+has_country_modifier = medium_government_corruption
+}
+
+}
+
+mean_time_to_happen = { 
+months = 48 
+modifier = { factor = 0.75 average_militancy = 2 }
+modifier = { factor = 0.75 average_militancy = 3 }
+modifier = { factor = 0.75 average_militancy = 4 }
+modifier = { factor = 0.75 average_militancy = 5 }
+modifier = { factor = 0.75 average_militancy = 6 }
+}
+
+option = {
+name = "Maintain our current conscription laws"
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = conservative } }
+owner = { any_pop = { ideology = { factor = -0.05 value = conservative } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = big_tent } }
+owner = { any_pop = { ideology = { factor = -0.05 value = big_tent } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = socialist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = socialist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = traditionalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = traditionalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = populist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = populist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = nationalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = nationalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = progressive } }
+owner = { any_pop = { ideology = { factor = -0.05 value = progressive } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = liberal } }
+owner = { any_pop = { ideology = { factor = -0.05 value = liberal } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist_social } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist_social } } }
+}
+
+ai_chance = { 
+factor = 0.9 
+modifier = { 
+factor = 0 
+OR = { ruling_majority_ideology = liberal ruling_majority_ideology = progressive } 
+	} 
+}
+
+		}
+
+option = {
+name = "Loosen our conscription laws"
+
+#two_year_draft to one_year_draft
+random_owned = { 
+limit = { owner = { lgbt_rights = lgbt_equal_rights } }
+owner = { political_reform = gender_neutrallity }
+}
+
+#three_year_draft to two_year_draft
+random_owned = { 
+limit = { owner = { lgbt_rights = lgbt_allowed } }
+owner = { political_reform = lgbt_equal_rights }
+}
+
+#mandatory_service to three_year_draft
+random_owned = { 
+limit = { owner = { lgbt_rights = lgbt_promoted } }
+owner = { political_reform = lgbt_allowed }
+}
+
+ai_chance = { factor = 0.1 }
+
+		}
+
+}
+
+#Anger against Conscription
+country_event = {
+	id = 1512350
+title = "Calls to Abolish Conscription"
+	desc = EVTDESC1512349
+	picture = "conscription_controversy"
+
+trigger = {
+
+lgbt_rights = gender_neutrallity
+
+war = no
+has_recently_lost_war = no
+
+OR = {
+pop_majority_ideology = liberal
+pop_majority_ideology = progressive
+has_country_modifier = massive_government_corruption
+has_country_modifier = large_government_corruption
+has_country_modifier = medium_government_corruption
+}
+
+}
+
+mean_time_to_happen = { 
+months = 48 
+modifier = { factor = 0.75 average_militancy = 2 }
+modifier = { factor = 0.75 average_militancy = 3 }
+modifier = { factor = 0.75 average_militancy = 4 }
+modifier = { factor = 0.75 average_militancy = 5 }
+modifier = { factor = 0.75 average_militancy = 6 }
+}
+
+option = {
+name = "Maintain our current conscription laws"
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = conservative } }
+owner = { any_pop = { ideology = { factor = -0.05 value = conservative } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = big_tent } }
+owner = { any_pop = { ideology = { factor = -0.05 value = big_tent } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = socialist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = socialist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = traditionalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = traditionalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = populist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = populist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = nationalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = nationalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = progressive } }
+owner = { any_pop = { ideology = { factor = -0.05 value = progressive } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = liberal } }
+owner = { any_pop = { ideology = { factor = -0.05 value = liberal } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist_social } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist_social } } }
+}
+
+ai_chance = { 
+factor = 0.9 
+modifier = { 
+factor = 0 
+OR = { ruling_majority_ideology = liberal ruling_majority_ideology = progressive } 
+	} 
+}
+
+		}
+
+option = {
+name = "End conscription in $COUNTRY$"
+
+political_reform = lgbt_outlawed
+
+ai_chance = { factor = 0.1 }
+
+		}
+
+}
