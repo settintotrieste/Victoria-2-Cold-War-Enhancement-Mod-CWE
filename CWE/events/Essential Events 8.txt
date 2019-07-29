@@ -1255,7 +1255,7 @@ ENG = {
 remove_accepted_culture = chinese_cantonese
 inherit = HKG
 release_vassal = HKG
-HKG = { government = colonial_government country_event = 800054 }
+HKG = { government = sar_government country_event = 800054 }
 }
 
 diplomatic_influence = { who = HKG value = 200 }
@@ -14788,6 +14788,270 @@ modifier = { factor = 0.5 war_policy = jingoism }
 option = {
 name = "Boycott the event"
 ai_chance = { factor = 0.5 }
+		}
+
+}
+
+#Puppets join the sphere of the overlord
+country_event = {
+	id = 1512352
+title = "Shift in Geopolitics"
+	desc = "Our overlord's sphere has changed and so we have to follow the change because we are their puppet."
+	picture = "un_tension_reduction_summit"
+
+trigger = {
+is_vassal = yes
+
+NOT = { AND = { tag = VAN vassal_of = ENG in_sphere = FRA } }
+
+NOT = { government = sar_government government = mandate_government }
+
+OR = {
+overlord = { 
+is_greater_power = no part_of_sphere = yes
+sphere_owner = { NOT = { is_sphere_leader_of = THIS } } 
+}
+
+overlord = { 
+is_greater_power = yes
+NOT = { is_sphere_leader_of = THIS } 
+}
+	}
+
+}
+
+mean_time_to_happen = { 
+months = 1
+}
+
+option = {
+name = "This is the new reality"
+
+any_greater_power = { limit = { is_our_vassal = THIS } diplomatic_influence = { who = THIS value = 200 } }
+
+overlord = { sphere_owner = { diplomatic_influence = { who = THIS value = 200 } } }
+		}
+
+}
+
+#War of Somaliland Independence
+country_event = {
+	id = 1512353
+title = "Somali Civil War"
+	desc = EVTDESC1512353
+	picture = "sml_independence"
+
+fire_only_once = yes
+
+trigger = {
+tag = SOM
+year = 1990
+war = no
+is_vassal = no
+SML = { exists = no }
+is_possible_vassal = SML
+OR = { government = proletarian_dictatorship government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship }
+}
+
+mean_time_to_happen = { 
+months = 6
+}
+
+option = {
+name = "Resist Somaliland Independence"
+badboy = 5
+release = SML
+war = {
+	target = SML
+	attacker_goal = { casus_belli = annex_core_country }
+	defender_goal = { casus_belli = become_independent }
+	call_ally = no
+}
+ai_chance = { factor = 0.8 }
+		}
+
+option = {
+name = "Recognise Somaliland"
+release = SML
+relation = { who = SML value = 100 }
+prestige = -50
+SML = { government = democracy country_event = 800054 }
+ai_chance = { factor = 0.2 }
+		}
+
+}
+
+#Denuclearisation Demanded - target
+country_event = {
+	id = 1512354
+title = "$FROMCOUNTRY$ Demands Denuclearisation"
+	desc = EVTDESC1512354
+	picture = "nuclear_disarmament_un"
+
+is_triggered_only = yes
+
+option = {
+name = "Push ahead in our nuclear development!"
+relation = { who = FROM value = -100 }
+
+any_country = { limit = { OR = { is_greater_power = yes has_country_modifier = unsc_permanent_member } } country_event = 1512355 }
+
+ai_chance = { factor = 0.9 modifier = { factor = 0 badboy = 1 } }
+		}
+
+option = {
+name = "Accept the $FROMCOUNTRY_ADJ$ demand"
+badboy = -25
+prestige_factor = -0.25
+remove_country_modifier = hydrogen_nation 
+remove_country_modifier = atomic_nation
+remove_country_modifier = develop_atomic_bomb 
+remove_country_modifier = develop_hydrogen_bomb  
+clr_country_flag = atomic_bomb_developed
+clr_country_flag = hydrogen_bomb_developed
+remove_country_modifier = icbm_bomb
+remove_country_modifier = sub_bomb
+remove_country_modifier = air_bomb
+
+remove_country_modifier = nuke_sanctions
+
+add_country_modifier = { name = non_proliferation_treaty duration = 7300 }
+
+clr_country_flag = demanded_denuclearisation
+
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Denuclearisation Demanded - GPs and UNSC members
+country_event = {
+	id = 1512355
+title = "Denuclearisation of $FROMCOUNTRY$?"
+	desc = EVTDESC1512355
+	picture = "nuclear_disarmament_un"
+
+is_triggered_only = yes
+
+option = {
+name = "Support the motion in the UN General Assembly!"
+relation = { who = FROM value = -100 }
+FROM = { badboy = 2 add_country_modifier = { name = nuke_sanctions duration = -1 } }
+ai_chance = { 
+factor = 1 
+modifier = { factor = 0 NOT = { relation = { who = FROM value = 100 } } } 
+}
+		}
+
+option = {
+name = "Abstain from the motion"
+prestige = -10
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Vote against the motion"
+relation = { who = FROM value = 100 }
+FROM = { badboy = -2 }
+ai_chance = { 
+factor = 1 
+modifier = { factor = 0 relation = { who = FROM value = -50 } } 
+}
+		}
+
+}
+
+#Denuclearisation Demanded - Summit
+country_event = {
+	id = 1512356
+title = "Summit on De-nuclearisation"
+	desc = EVTDESC1512356
+	picture = "nuclear_disarmament_summit"
+
+is_triggered_only = yes
+
+option = {
+name = "Slow down the $FROMCOUNTRY_ADJ$ nuclear program (5 years)!"
+
+any_country = { 
+limit = { is_vassal = no neighbour = FROM 
+NOT = { relation = { who = FROM value = 0 } } } 
+relation = { who = THIS value = -50 }
+} 
+
+FROM = { country_event = 1512357 }
+ai_chance = { factor = 0.5 }
+		}
+
+option = {
+name = "No sanctions relief until total de-nuclearisation"
+
+
+any_country = { 
+limit = { is_vassal = no relation = { who = FROM value = 100 } } 
+relation = { who = THIS value = -50 }
+} 
+
+FROM = { country_event = 1512358 }
+ai_chance = { factor = 0.5 }
+		}
+
+}
+
+#Denuclearisation Demanded - Summit success
+country_event = {
+	id = 1512357
+title = "$CAPITAL$ Summit Succeeds"
+	desc = EVTDESC1512357
+	picture = "nuclear_disarmament_summit"
+
+is_triggered_only = yes
+
+major = yes
+
+option = {
+name = "Great!"
+
+prestige = 50
+
+relation = { who = THIS value = 50 }
+
+badboy = -10
+
+add_country_modifier = { name = nuke_sanctions_relief duration = 1825 }
+
+clr_country_flag = nuclear_blackmail_flag
+
+random_owned = { limit = { owner = { has_country_modifier = develop_atomic_bomb } } owner = { remove_country_modifier = develop_atomic_bomb add_country_modifier = { name = develop_atomic_bomb duration = 3650 } } }
+
+random_owned = { limit = { owner = { has_country_modifier = develop_hydrogen_bomb } } owner = { remove_country_modifier = develop_hydrogen_bomb add_country_modifier = { name = develop_hydrogen_bomb duration = 3650 } } }
+
+		}
+
+}
+
+#Denuclearisation Demanded - Summit failure
+country_event = {
+	id = 1512358
+title = "$CAPITAL$ Summit Fails"
+	desc = EVTDESC1512358
+	picture = "nuclear_disarmament_summit"
+
+is_triggered_only = yes
+
+major = yes
+
+option = {
+name = "Disaster!"
+
+prestige = -25
+
+relation = { who = THIS value = -100 }
+
+badboy = 3
+
+clr_country_flag = nuclear_blackmail_flag
+
 		}
 
 }

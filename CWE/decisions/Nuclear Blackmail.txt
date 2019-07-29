@@ -1,42 +1,38 @@
 political_decisions = {
 
 	nuclear_blackmail = {
-		picture = "nuclear_blackmail"
+		picture = "nuclear_summit"
 		potential = {
 			is_vassal = no
-			NOT = { has_country_modifier = blackmail_failed }
-			has_country_modifier = develop_atomic_bomb
-			NOT = { has_country_modifier = atomic_nation }	
-			NOT = { has_country_modifier = hydrogen_nation }
-			NOT = { has_country_modifier = nuke_blackmail }
-		}
+			has_country_flag = demanded_denuclearisation
+			has_country_modifier = nuke_sanctions
+OR = { has_country_modifier = develop_atomic_bomb has_country_modifier = develop_hydrogen_bomb }
+	NOT = { has_country_flag = nuclear_blackmail_flag }
+	NOT = { has_country_modifier = nuclear_blackmail_timer }
+	NOT = { has_country_modifier = nuke_sanctions_relief }
+					}
 		allow = {
 			war = no
-			OR = {
-				ai = no 
-				AND = { 
-					ai = yes
-					has_country_modifier = in_bankrupcy
-					is_greater_power = no
-					is_secondary_power = no
-					NOT = {
-						OR = {
-							government = democracy
-							government = democracy1
-						government = hms_government
-						government = hms_government1
-						}
+			election = no
+OR = { has_country_modifier = in_bankrupcy has_recently_lost_war = yes is_disarmed = yes war_policy = pacifism }
+
+OR = { has_country_modifier = develop_atomic_bomb has_country_modifier = develop_hydrogen_bomb }
+
+NOT = { badboy = 1 }
+
+any_greater_power = { NOT = { alliance_with = THIS } relation = { who = THIS value = 50 } }
+			
 					}
-				}
-			}
-		}
 		effect = {
-			badboy = 5 
-			country_event = 1410111
-			any_country = { limit = { has_country_modifier = united_nations_ga_member } relation = { who = THIS value = -200 } }
+
+set_country_flag = nuclear_blackmail_flag
+
+add_country_modifier = { name = nuclear_blackmail_timer duration = 500 }
+random_country = { limit = { is_greater_power = yes NOT = { alliance_with = THIS } relation = { who = THIS value = 50 } } country_event = 1512356 }
 		}
 		ai_will_do = { 
 			factor = 100 
 		}
 	}
+
 }
