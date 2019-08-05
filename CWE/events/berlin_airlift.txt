@@ -6,6 +6,8 @@
 ### American withdrawal: East Germany annexes West Berlin
 ### Chance of WW3: 6%
 ###
+
+#Start the Berlin Airlift - RUS
 country_event = {
   id = 8500601
   title = EVT_8500601_NAME
@@ -14,21 +16,21 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-    tag = USA
-    year = 1949
+    	tag = RUS
+    	year = 1948
 	NOT = { year = 1990 } 
-    exists = DDR
-    
+    OR = { is_our_vassal = DDR is_our_vassal = OG1 owns = 551 }
+	has_global_flag = deutsche_mark
+    	OG4 = { owns = 549 }
   }
 
-  mean_time_to_happen = { months = 1  }
+  mean_time_to_happen = { months = 1 }
 
   option = {
-    name = EVT_8500601_A
-	relation = { who = RUS value = -50 } 
-	relation = { who = DDR value = -50 } 
-	money = -5000 
-	country_event = { id = 8500602 days = 30 }
+    name = "Close off West Berlin"
+	relation = { who = USA value = -50 }
+	money = -50000 
+	USA = { country_event = 8500602 }
 	ai_chance = { factor = 0.9 }
   }
 
@@ -36,12 +38,12 @@ country_event = {
     name = EVT_8500601_B
 	money = -2000 
 	clr_global_flag = divided_berlin 
-	RUS  = { country_event = 8225000 }
-	549 = { secede_province = RUS } 
+	RUS = { country_event = 8225001 }
 	ai_chance = { factor = 0.1 }
   }
 }
 
+#Start the Berlin Airlift - USA response
 country_event = {
   id = 8500602
   title = EVT_8500602_NAME
@@ -52,96 +54,99 @@ country_event = {
   option = {
     name = EVT_8500602_A
 	relation = { who = GER value = 50 } 
-	RUS = { country_event =  { id = 8500603 days = 30 } } 
+	RUS = { country_event = 8500603 } 
 	ai_chance = { factor = 0.9 }
   }
 
   option = {
     name = EVT_8500602_B
 	clr_global_flag = divided_berlin 
+	prestige_factor = -0.05
 	RUS  = { country_event = 8225000 } 
-	549 = { secede_province = RUS }
+	OG4 = { release = ICB }
+
+random_owned = { 
+	limit = { owner = { exists = OG1 } }
+	owner = { OG1 = { inherit = ICB } }
+}
+
+random_owned = { 
+	limit = { owner = { exists = DDR } }
+	owner = { DDR = { inherit = ICB } }
+}
+
+random_owned = { 
+	limit = { owner = { NOT = { OR = { exists = OG1 exists = DDR } } } }
+	owner = { RUS = { inherit = ICB } }
+}
+
 	ai_chance = { factor = 0.1 }
   }
+
 }
+
+#USA refuses to end the Airlift - RUS
 country_event = {
   id = 8500603
   title = EVT_8500603_NAME
   desc = EVT_8500603_DESC
   picture = "nwo2_berlin_airlift"
-  is_triggered_only = yes
-
-  immediate = { set_global_flag = event_fired_8500603 }
+  is_triggered_only = yes #RUS
   
   option = {
-    name = EVT_8500603_A
-	badboy = 2 
+    name = "Try to stop the airlifts!"
+	badboy = 5
 	relation = { who = USA value = -50 } 
-	money = -1000 
-	USA = { country_event = 8500605 }
-	ai_chance = { factor = 0.7 }
+	money = -100000 
+	USA = { country_event = 8500604 }
+	ai_chance = { factor = 0.8 }
   }
 
   option = {
-    name = EVT_8500603_B
-	badboy = 1 
-	relation = { who = USA value = -20 }
-	549 = { secede_province = RUS } 
+    name = "Shoot down the transports!"
+	country_event = 19831938
 	ai_chance = { factor = 0.1 }
   }
 
   option = {
-    name = EVT_8500603_C
-	relation = { who = USA value = 100 } 
-	country_event = 8500608
-	RUS  = { country_event = 8225001 }
-	549 = { secede_province = RUS }  
+    name = "Give in to the Americans"
+	country_event = 8500607
+	prestige_factor = -0.05
+	relation = { who = USA value = 50 }
+	clr_global_flag = divided_berlin 
 	ai_chance = { factor = 0.1 }
   }
 
-  option = {
-    name = EVT_8500603_D
-	money = -2000 
-	USA = { country_event = 8500605 }
-	country_event = 8500606
-	ai_chance = { factor = 0.1 }
-  }
 }
-country_event = { # Airlifts are hampered further
+
+#RUS tries to stop the Airlift - USA response
+country_event = {
   id = 8500604
   title = EVT_8500604_NAME
   desc = EVT_8500604_DESC
   picture = "nwo2_berlin_airlift"
-  fire_only_once = yes
 
-  trigger = {
-    tag = USA
-    year = 1949
-	NOT = { year = 1950 }
-    has_global_flag = event_fired_8500603
-    exists = DDR
-    
-  }
-
-  mean_time_to_happen = { months = 1  }
+  is_triggered_only = yes #USA
 
   option = {
-    name = EVT_8500604_A
+    name = "Press ahead with the airlifts"
+	RUS = { country_event = { id = 8500607 days = 20 } }
 	relation = { who = GER value = 50 } 
 	ai_chance = { factor = 0.9 }
   }
 
   option = {
-    name = EVT_8500604_B
-	country_event =  { id = 8500607 days = 30 } 
+    name = "Transfer Berlin to UN administration"
 	clr_global_flag = divided_berlin 
 	RUS  = { country_event = 8225000 }
-	release = ICB
-	ICB = { government = sar_government } 
+	OG4 = { release = ICB }
+	ICB = { government = sar_government }
+	diplomatic_influence = { who = ICB value = 200 } 
 	ai_chance = { factor = 0.1 }
   }
 }
 
+#Unused
 country_event = { # Putsch is organized
   id = 8500605
   title = EVT_8500605_NAME
@@ -161,11 +166,13 @@ country_event = { # Putsch is organized
 	RUS = { country_event = 8500607 }
 	clr_global_flag = divided_berlin 
 	RUS  = { country_event = 8225000 }
-	549 = { secede_province = RUS }
+	OG4 = { 549 = { secede_province = RUS } }
 	ai_chance = { factor = 0.1 }
   }
 }
-country_event = { # Berlin Airlift gets hot
+
+#Berlin Airlift gets hot (Unused)
+country_event = {
   id = 8500606
   title = EVT_8500606_NAME
   desc = EVT_8500606_DESC
@@ -184,42 +191,50 @@ country_event = { # Berlin Airlift gets hot
 	ai_chance = { factor = 0.9 }
   }
 }
-country_event = { # End of Berlin Airlift RUS
+
+#Notify RUS that the Berlin Airlift is over
+country_event = {
   id = 8500607
-  title = EVT_8500607_NAME
+  title = "End of the Berlin Airlift"
   desc = EVT_8500607_DESC
   picture = "nwo2_berlin_airlift"
   is_triggered_only = yes
 
   option = {
     name = EVT_8500607_A
+	prestige = -100
 	any_pop = { consciousness = 1 }
 	USA = { country_event = 8500608 }
-	GER = { country_event = 8500609 }
-	RUS  = { country_event = 8225001 } 
+	GER = { country_event = 8500609 } 
   }
 }
-country_event = { # End of Berlin Airlift USA
+
+#Notify USA that the Berlin Airlift is over
+country_event = {
   id = 8500608
-  title = EVT_8500608_NAME
+  title = "End of the Berlin Airlift"
   desc = EVT_8500608_DESC
   picture = "nwo2_berlin_airlift"
   is_triggered_only = yes
 
   option = {
     name = EVT_8500608_A
+	prestige = 100
 	any_pop = { militancy = -1.0 consciousness = -1 }
   }
 }
-country_event = { # End of Berlin Airlift GER
+
+#Notify GER that the Berlin Airlift is over
+country_event = {
   id = 8500609
-  title = EVT_8500608_NAME
+  title = "End of the Berlin Airlift"
   desc = EVT_8500609_DESC
   picture = "nwo2_end_of_berlin_airlift"
   is_triggered_only = yes
 
   option = {
     name = EVT_8500609_A
-	any_pop = { militancy = -3.0 consciousness = -2  }
+	any_pop = { militancy = -3.0 consciousness = -2 }
   }
+
 }
