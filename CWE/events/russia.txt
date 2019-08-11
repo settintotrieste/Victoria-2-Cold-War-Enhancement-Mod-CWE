@@ -227,6 +227,7 @@ country_event = {
 		government = democracy
 		has_country_flag = oligarchs
 		NOT = { has_country_flag = oligarchs_constrained }
+		has_country_flag = is_disabled_for_now
 	}
 
 	mean_time_to_happen = {
@@ -306,7 +307,7 @@ country_event = {
     year = 1941 NOT = { year = 1950 }
   }
 
-  mean_time_to_happen = { months = 2  }
+  mean_time_to_happen = { months = 2 }
 
   option = {
     name = EVT_8014200_A
@@ -917,6 +918,8 @@ country_event = {
 	ai_chance = { factor = 0 }
   }
 }
+
+#Nikita Khrushchev's successor
 country_event = {
   id = 8014233
   title = EVT_8014233_NAME
@@ -937,6 +940,8 @@ country_event = {
   option = {
 name = "Select Leonid Brezhnev as the next General Secretary"
 define_general = { name = "Leonid Brezhnev" personality = pompous background = politician }
+
+set_country_flag = leonid_brezhnev
 	ai_chance = { factor = 0.7 }
   }
 
@@ -956,27 +961,8 @@ add_country_modifier = { name = revolution_chaos duration = 3650 }
   }
 
 }
-country_event = {
-  id = 8014234
-  title = EVT_8014233_NAME
-  desc = EVT_8014233_DESC
-  picture = "nwo2_leonid_brezhnev"
-  fire_only_once = yes
 
-  trigger = {
-    tag = RUS
-    year = 1964 NOT = { year = 1979 }
-	government = proletarian_dictatorship
-	NOT = { has_country_flag = nikita_khrushchev }
-  }
-
-  mean_time_to_happen = { months = 2 }
-
-  option = {
-    name = EVT_8014233_A
-	define_general = { name = "Leonid Brezhnev" personality = energetic background = no_background }
-  }
-}
+#Brezhnev's successor
 country_event = {
   id = 8014235
   title = EVT_8014235_NAME
@@ -985,39 +971,76 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-    tag = RUS
+    	tag = RUS
 	government = proletarian_dictatorship
-    year = 1984 NOT = { year = 1985 }
+    	year = 1982 NOT = { year = 1985 }
+	has_country_flag = leonid_brezhnev
   }
 
-  mean_time_to_happen = { months = 1  }
+  mean_time_to_happen = { months = 10 }
 
   option = {
-    name = EVT_8014235_A
-    define_general = { name = "Yuri Andropov" personality = energetic background = no_background }
+    name = "Select Yuri Andropov"
+    define_general = { name = "Yuri Andropov" personality = energetic background = state_ideologue }
+
+set_country_flag = yuri_andropov
+	ai_chance = { factor = 0.7 }
   }
+
+  option = {
+    name = "Select Andrei Gromyko"
+    define_general = { name = "Andrei Gromyko" personality = diplomatic background = elder_statesmen }
+	ai_chance = { factor = 0.2 }
+  }
+
+  option = {
+    name = "Select Dmitry Ustinov"
+    define_general = { name = "Dmitry Ustinov" personality = fearsome background = artillerist }
+	ai_chance = { factor = 0.1 }
+  }
+
 }
+
+#Brezhnev's successor
 country_event = {
   id = 8014236
   title = EVT_8014236_NAME
   desc = EVT_8014236_DESC
-  picture = "nwo2_death"
+  picture = "yuri_andropov_death"
   fire_only_once = yes
 
   trigger = {
-    tag = RUS
+    	tag = RUS
 	government = proletarian_dictatorship
-     year = 1984 NOT = { year = 1985 }
+     	year = 1984 NOT = { year = 1985 }
+	has_country_flag = yuri_andropov
   }
 
-  mean_time_to_happen = { months = 5  }
+  mean_time_to_happen = { months = 2 }
 
   option = {
-    name = EVT_8014216_A
+    name = "Select Konstantin Chernenko"
+define_general = { name = "Konstantin Chernenko" personality = stalwart background = elderly }
+
+set_country_flag = konstantin_chernenko
+	ai_chance = { factor = 0.9 }
   }
+
+  option = {
+    name = "Select Mikhail Gorbachev"
+
+add_country_modifier = { name = revolution_chaos duration = 730 }
+
+country_event = 8014237
+
+set_country_flag = mikhail_gorbachev
+	ai_chance = { factor = 0.9 }
+  }
+
 }
 
-country_event = { # Mikhail Gorbachev
+#Mikhail Gorbachev
+country_event = {
   id = 8014237
   title = EVT_8014237_NAME
   desc = EVT_8014237_DESC
@@ -1026,16 +1049,27 @@ country_event = { # Mikhail Gorbachev
 
   trigger = { 
     tag = RUS
-NOT = { ruling_party_ideology = communist_social }
-	government = proletarian_dictatorship
-    OR = { has_country_modifier = in_bankrupcy AND = { year = 1985 average_militancy  = 9 } AND = { year = 1985 NOT = { rank = 2 } } }
-  }
 
-  mean_time_to_happen = { months = 12 }
+NOT = { has_country_flag = mikhail_gorbachev }
+
+NOT = { ruling_party_ideology = communist_social }
+government = proletarian_dictatorship
+
+OR = { 
+has_country_modifier = in_bankrupcy 
+AND = { year = 1985 average_militancy = 9 } 
+AND = { year = 1985 NOT = { rank = 2 } } 
+AND = { has_country_flag = konstantin_chernenko year = 1985 } 
+}
+
+	}
+
+  mean_time_to_happen = { months = 3 }
 
   option = {
     name = EVT_8014237_A
-	define_general = { name = "Mikhail Gorbachev" personality = energetic background = no_background }
+
+define_general = { name = "Mikhail Gorbachev" personality = energetic background = rising_star }
 
 set_country_flag = begin_reforms_of_ussr
 
@@ -1072,14 +1106,17 @@ add_country_modifier = { name = revolution_chaos duration = 3650 }
   }
 
   option = {
-    name = EVT_8014237_B
+    name = "Select a party hardliner instead"
 add_country_modifier = { name = dour_economist duration = 3605 }
-	any_pop = { militancy = 5 consciousness = 5 }
+any_pop = { militancy = 5 consciousness = 5 }
 add_country_modifier = { name = revolution_chaos duration = 3650 }
 	ai_chance = { factor = 0.1 }
   }
+
 }
-country_event = { # August Coup
+
+#August Coup
+country_event = {
   id = 8014239
   title = EVT_8014239_NAME
   desc = EVT_8014239_DESC
@@ -1526,9 +1563,9 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-    OR = { tag = RUS tag = RUS }
-    year = 1960  NOT = { year = 1990 }
-    exists = HND
+    	tag = RUS    	
+	year = 1960 NOT = { year = 1990 }
+    	exists = HND
 	government = proletarian_dictatorship
 	relation = { who = HND value = 0 }
   }
@@ -1540,6 +1577,8 @@ country_event = {
 	HND = { country_event = 8007275 }
   }
 }
+
+#Successor to Yeltsin
 country_event = {
   id = 8014274
   title = EVT_8014274_NAME
@@ -1548,20 +1587,20 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-    tag = RUS
+    	tag = RUS
 	government = democracy
-	has_country_modifier = in_bankrupcy
+OR = { has_country_modifier = in_bankrupcy has_global_flag = cold_warusa year = 1999 }
 	year = 1992
+	is_vassal = no
   }
 
-  mean_time_to_happen = { months = 84  }
+  mean_time_to_happen = { months = 11 }
 
   option = {
     name = EVT_8014274_A
-	government = presidential_dictatorship 
-	country_event = 800050
-	badboy = 3
-	any_pop	= {
+	set_country_flag = putin_path
+	ruling_party_ideology = conservative
+	any_pop = {
 		limit = { is_primary_culture = yes } 
 		militancy = -0.5
 		ideology = {
@@ -1569,20 +1608,23 @@ country_event = {
 			value = populist
 		}
 		ideology = {
-			factor = 0.1
+			factor = -0.1
 			value = communist
 		}
 	}
 	plurality = -20
-	ai_chance = { factor = 0.9 }
+	ai_chance = { factor = 0.8 }
   }
   option = {
     name = EVT_8014274_B
-	any_pop	= {
+
+add_country_modifier = { name = revolution_chaos duration = 1825 }
+
+	any_pop = {
 		limit = { is_primary_culture = yes } 
-		militancy = 0.5
+		militancy = 3
 		ideology = {
-			factor = 0.1
+			factor = -0.1
 			value = populist
 		}
 		ideology = {
@@ -1590,27 +1632,32 @@ country_event = {
 			value = communist
 		}
 	}
-	ai_chance = { factor = 0.1 }
+	ai_chance = { factor = 0.2 }
   }
+
 }
+
+#Khodorkovsky Case
 country_event = {
   id = 8000700
-  title = EVT_8000700_NAME # Khodorkovsky Case
+  title = EVT_8000700_NAME
   desc = EVT_8000700_DESC
   picture = "nwo2_khodorkovsky"
   fire_only_once = yes
 
   trigger = {
-    tag = RUS
-    year = 2003
+    	tag = RUS
+    	year = 2003
 	government = democracy
+	has_country_flag = putin_path
   }
 
-  mean_time_to_happen = { months = 1  }
+  mean_time_to_happen = { months = 3 }
 
   option = {
     name = EVT_8000700_A
-government = presidential_dictatorship country_event = 800050
+government = presidential_dictatorship 
+country_event = 800050
 ruling_party_ideology = conservative
 	badboy = 3
 	any_pop	= {
@@ -1666,6 +1713,8 @@ ruling_party_ideology = conservative
   
   option = {
   	name = EVT_8000700_B
+
+add_country_modifier = { name = revolution_chaos duration = 1825 }
   	
   	any_pop = {
 		ideology = {
@@ -1718,11 +1767,11 @@ ruling_party_ideology = conservative
   	ai_chance = { factor = 0.3 }
   	}
 }
+
+#Belovezha Accords, Crimean question
 country_event = {
-
     id = 32520           
-
-    title = EVT_32520_NAME # "Belovezha Accords. Crimean question"        
+    title = EVT_32520_NAME        
     desc = EVT_32520_DESC
     picture = "belovezha"
 

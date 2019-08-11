@@ -1,3 +1,4 @@
+#Post War Pacifism
 country_event = {
   id = 8930000
   title = "EVT_PEACETIME_NAME"
@@ -5,24 +6,24 @@ country_event = {
   picture = "nwo2_peacetime"
 
   trigger = {
-    NOT = { has_country_flag  = time_of_peace }
-    NOT = { has_global_flag = ww3 }
-    
-    war = no
+    	NOT = { has_country_flag  = time_of_peace }
+    	war = no
+	has_country_flag = is_disabled_for_now
   }
 
-  mean_time_to_happen = { months = 6  }
+  mean_time_to_happen = { months = 1 }
 
   option = {
     name = "EVT_PEACETIME_A"
 	any_pop = { 
-		dominant_issue = { value = pro_military factor = 0.1 }
-		dominant_issue = { value = pacifism factor = 0.1 }
+	dominant_issue = { value = pacifism factor = 0.1 }
 	}
 	set_country_flag = time_of_peace 
 	clr_country_flag = war_time 
   }
 }
+
+#Wartime Jingism
 country_event = {
   id = 8930001
   title = "EVT_WARTIME_NAME"
@@ -31,23 +32,21 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-    OR = {
-		has_global_flag = ww3
-		war = yes
-    }
+    	war = yes
 	NOT = { has_country_flag  = war_time }
-    has_country_flag  = time_of_peace
+    	has_country_flag  = time_of_peace
+	has_country_flag = is_disabled_for_now
   }
 
-  mean_time_to_happen = { months = 6  }
+  mean_time_to_happen = { months = 1 }
 
   option = {
     name = "EVT_WARTIME_A"
 	clr_country_flag = time_of_peace 
 	set_country_flag = war_time 
 	any_pop = { 
-		dominant_issue = { value = pro_military factor = 0.1 }
-		dominant_issue = { value = pacifism factor = 0.1 }
+	dominant_issue = { value = pro_military factor = 0.1 }
+	dominant_issue = { value = jingoism factor = 0.05 }
 	}
   }
 }
@@ -59,24 +58,30 @@ country_event = { # Operation Unthinkable
   fire_only_once = yes
 
   trigger = {
-	OR = { tag = ENG tag = USA }
-	great_wars_enabled = yes
-	NOT = { year = 1959 }
+	tag = ENG
+	USA = { government = democracy }
+	RUS = { government = proletarian_dictatorship }
+	NOT = { year = 1990 }
 	war = no
   }
 
-  mean_time_to_happen = { months = 1  }
+  mean_time_to_happen = { months = 6 }
 
   option = {
     name = "EVT_8930002_A" # No
-	ai_chance = { factor = 100 }
+	ai_chance = { factor = 0.9 }
   }
   option = {
     name = "EVT_8930002_B" # Yes War!
-	random_country = { limit = { NOT = { tag = THIS } tag = USA } relation = { who = ENG value = 200 }  create_alliance = ENG create_alliance = CAN }
-	random_country = { limit = { NOT = { tag = THIS } tag = ENG } relation = { who = USA value = 200 } create_alliance = USA create_alliance = CAN }
-	casus_belli = { target = RUS type = dismantle_cb months = 12 }
-	war = { target = RUS attacker_goal = { casus_belli = dismantle_cb }  }
-	ai_chance = { factor = 0 }
+		create_alliance = USA
+war = {
+	target = RUS
+	attacker_goal = { casus_belli = dismantle_cb }
+	defender_goal = { casus_belli = dismantle_cb }
+	call_ally = yes
+}
+
+	ai_chance = { factor = 0.1 }
   }
+
 }
