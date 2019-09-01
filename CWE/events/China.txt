@@ -492,6 +492,7 @@ add_country_modifier = { name = colonial_heritage duration = 3650 }
 	}
 }
 
+#Mao Zedong's Death
 country_event = {
   id = 8002809
   title = EVT_8002809_NAME
@@ -500,18 +501,55 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-    tag = CHI
+    	tag = CHI
 	government = proletarian_dictatorship
-	year = 1976 NOT = { year = 1977 }
+	year = 1976 NOT = { year = 1990 }
   }
 
-  mean_time_to_happen = { months = 2 }
+  mean_time_to_happen = { months = 9 }
 
   option = {
     name = EVT_8002809_A
-	prestige = 10
+	set_country_flag = mao_zedong_death
+add_country_modifier = { name = revolution_chaos duration = 1825 }
   }
+
 }
+
+#Gang of Four
+country_event = {
+  id = 80028099
+  title = "The Gang of Four"
+  desc = EVTDESC80028099
+  picture = "gang_of_four"
+  fire_only_once = yes
+
+  trigger = {
+    	tag = CHI
+	government = proletarian_dictatorship
+	NOT = { year = 1990 }
+	has_country_flag = mao_zedong_death
+  }
+
+  mean_time_to_happen = { months = 1 }
+
+  option = {
+    	name = "Execute them for their crimes!"
+	set_country_flag = gang_of_four_executed
+	remove_country_modifier = revolution_chaos
+	remove_country_modifier = cult_of_personality
+	ai_chance = { factor = 0.9 }
+  }
+
+  option = {
+    	name = "Let them be the next rulers of China"
+	relation = { who = RUS value = 100 }
+	ai_chance = { factor = 0.1 }
+  }
+
+}
+
+#Paramount Leader after Mao
 country_event = {
   id = 8002810
   title = EVT_8002810_NAME
@@ -520,37 +558,63 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-    tag = CHI
+    	tag = CHI
 	government = proletarian_dictatorship
-	year = 1978 NOT = { year = 1979 }
+	year = 1978 NOT = { year = 1990 }
+	has_country_flag = mao_zedong_death
+	has_country_flag = gang_of_four_executed
+	NOT = { ruling_party_ideology = communist_social }
   }
 
-  mean_time_to_happen = { months = 1 }
+  mean_time_to_happen = { months = 3 }
 
   option = {
     name = EVT_8002810_A
-	social_reform = unregulated_hours
-	social_reform = minimal_subsidies
-	social_reform = trinket_pensions
-	political_reform = parties_restrict_non_democratic
-	any_pop = { militancy = 0.5 }
-	ai_chance = { factor = 100 }
+	remove_country_modifier = revolution_chaos
+	set_country_flag = deng_xiaoping_selected
+any_pop = { limit = { type = slaves } pop_type = artisans }
+	ai_chance = { factor = 0.9 }
   }
 
   option = {
-    name = EVT_8002810_B
-add_country_modifier = { name = colonial_heritage duration = 7300 }
-	any_pop = { consciousness = 1 }
-	ai_chance = { factor = 0 }
+    name = "Hua Guofeng remains as party Chairman"
+	any_pop = { militancy = -5 }
+add_country_modifier = { name = soviet_stability duration = 3650 }
+	ai_chance = { factor = 0.1 }
   }
 
-  option = {
-    name = EVT_8002810_C
-	any_pop = { militancy = 5.0 }
-add_country_modifier = { name = colonial_heritage duration = 3650 }
-	ai_chance = { factor = 0 }
-  }
 }
+
+#Chinese Socialism with Market Characteristics
+country_event = {
+	id = 800281000
+	title = "Chinese Socialism with Market Characteristics"
+	desc = EVTDESC1400015
+	picture = "chinesemarketreforms"
+
+fire_only_once = yes
+
+  trigger = {
+    	tag = CHI
+	government = proletarian_dictatorship
+	year = 1979 NOT = { year = 1990 }
+	has_country_flag = deng_xiaoping_selected
+	NOT = { ruling_party_ideology = communist_social }
+  }
+
+  mean_time_to_happen = { months = 6 }
+	
+	option = {
+	name = "Begin the reforms!"
+		prestige = 1000
+relation = { who = RUS value = -100 }
+ruling_party_ideology = communist_social
+clr_country_flag = economic_malaise
+set_country_flag = industrious_nation
+add_country_modifier = { name = economic_boom duration = 3650 }
+			}
+	}
+
 country_event = {
   id = 8002813
   title = EVT_8002813_NAME
