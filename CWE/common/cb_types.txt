@@ -57,6 +57,8 @@ free_peoples
 liberate_country
 install_theocratic_regime
 install_authoritarian_regime
+install_absolute_monarchy
+install_socialist_democracy
 install_communist_gov_cb
 uninstall_communist_gov_cb
 acquire_state 
@@ -1683,8 +1685,11 @@ THIS = { NOT = { has_country_flag = un_armistice } }
 AND = { has_country_flag = truman_doctrine has_global_flag = blocsenabled }
 
 	AND = {
-	OR = { war_policy = jingoism war_policy = pro_military }		OR = { is_greater_power = yes is_secondary_power = yes }
-	OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
+OR = { war_policy = jingoism war_policy = pro_military } 
+
+OR = { is_greater_power = yes is_secondary_power = yes ai = no }
+
+OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
 		}
  
 	} 	}
@@ -1755,6 +1760,7 @@ THIS = { NOT = { has_country_flag = un_armistice } }
 			OR = {
 				is_greater_power = yes
 				is_secondary_power = yes
+				ai = no
 			}
 OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship }
 			
@@ -1782,8 +1788,145 @@ OR = { government = presidential_dictatorship government = populist_dictatorship
 	}
 }
 
+install_absolute_monarchy = {
+	sprite_index = 26
+	is_triggered_only = yes
+	months = 12
+	construction_speed = 1.5
+	crisis = no
+
+	badboy_factor = 1.5
+	prestige_factor = 5
+	peace_cost_factor = 50
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 48
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	can_use = {
+THIS = { NOT = { has_country_flag = renounced_war_rights } }
+THIS = { NOT = { has_country_flag = un_armistice } }
+		THIS = {
+	OR = { war_policy = jingoism war_policy = pro_military }
+			OR = {
+				is_greater_power = yes
+				is_secondary_power = yes
+				ai = no
+			}
+
+		government = absolute_monarchy
+			
+		}
+		OR = { is_vassal = no is_our_vassal = THIS }
+		civilized = yes
+		
+	}
+	
+	po_remove_prestige = yes
+
+	war_name = WAR_INSTALL_NEW_GOV_NAME
+	
+	on_add = {
+		move_issue_percentage = {
+			from = jingoism 
+			to = pro_military
+			value = 0.05
+		}
+	}
+	
+	on_po_accepted = {
+		THIS = { set_country_flag = friendly_authoritarian_regime }
+		country_event = 1610020
+	}
+}
+
+install_socialist_democracy = {
+	sprite_index = 12
+	is_triggered_only = yes
+	months = 12
+	crisis = no
+
+	badboy_factor = 1.5
+	prestige_factor = 1
+	peace_cost_factor = 1
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 48
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	can_use = {
+THIS = { NOT = { has_country_flag = renounced_war_rights } }
+THIS = { NOT = { has_country_flag = un_armistice } }
+
+THIS = { OR = { war_policy = pro_military war_policy = jingoism } }
+
+		THIS = {
+			# If actor is a GP or SP or player
+			OR = {
+				is_greater_power = yes
+				is_secondary_power = yes
+				ai = no
+			}
+
+			# If actor gov truly communist
+government = socialist_democracy
+			
+			# If actor ruling party is communist
+OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social ruling_party_ideology = socialist }
+		}
+
+		# If reciever ruling party is not a communist
+		NOT = {
+			ruling_party_ideology = communist
+			ruling_party_ideology = communist_social
+		}
+
+	# There are some amount of communist or socialist already in the country
+		OR = { communist = 0.1 socialist = 0.1 }
+
+	# If reciever current gov is not proletarian_dictatorship
+		NOT = {
+			government = socialist_democracy
+		}
+
+		OR = { is_vassal = no is_our_vassal = THIS }
+
+		# If reciever is not a great power
+		#is_greater_power = no
+	}
+
+	po_install_communist_gov_type = yes
+
+	war_name = WAR_INSTALL_NEW_GOV_NAME
+
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+
+	on_po_accepted = {
+		country_event = 1610021
+		THIS = { set_country_flag = friendly_socialist_democracy }
+	}
+}
+
 install_theocratic_regime = {
-	sprite_index = 29
+	sprite_index = 23
 	is_triggered_only = yes
 	months = 12
 	construction_speed = 1.5
@@ -1869,8 +2012,12 @@ THIS = { NOT = { has_country_flag = un_armistice } }
 THIS = { OR = { war_policy = pro_military war_policy = jingoism } }
 
 		THIS = {
-			# If actor is a great power
-			is_greater_power = yes
+			# If actor is a GP or SP or player
+			OR = {
+				is_greater_power = yes
+				is_secondary_power = yes
+				ai = no
+			}
 
 			# If actor gov truly communist
 OR = { government = proletarian_dictatorship1 government = proletarian_dictatorship }
@@ -1885,8 +2032,8 @@ OR = { ruling_party_ideology = communist ruling_party_ideology = communist_socia
 			ruling_party_ideology = communist_social
 		}
 
-	# There are some amount of communist already in the country
-		communist = 0.1
+	# There are some amount of communist or socialist already in the country
+		OR = { communist = 0.1 socialist = 0.1 }
 
 	# If reciever current gov is not proletarian_dictatorship
 		NOT = { OR = {
@@ -1913,13 +2060,14 @@ OR = { ruling_party_ideology = communist ruling_party_ideology = communist_socia
 	}
 
 	on_po_accepted = {
-		country_event = 800052
+		country_event = 1610022
+		THIS = { set_country_flag = friendly_communist_regime }
 	}
 }
 
 # Revert from Communist Government
 uninstall_communist_gov_cb = {
-	sprite_index = 26
+	sprite_index = 24
 	is_triggered_only = yes
 	months = 12
 	crisis = no
