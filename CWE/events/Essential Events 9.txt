@@ -1274,3 +1274,73 @@ add_country_modifier = { name = revolution_chaos duration = 3650 }
 		}
 
 }
+
+#Remove Nuke Modifiers automatically when disarmed or vassal
+country_event = {
+	id = 1610030
+title = "Disarmament of $COUNTRY_ADJ$ Nuclear Weapons"
+	desc = EVTDESC1610030
+	picture = "nuclear_disarmament"
+
+major = yes
+
+trigger = {
+OR = { 
+AND = { is_disarmed = yes has_recently_lost_war = yes }
+is_vassal = yes
+}
+OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation has_country_modifier = tactical_nukes has_country_flag = atomic_bomb_developed has_country_flag = hydrogen_bomb_developed }
+}
+
+option = {
+name = "Our country is no longer great"
+prestige_factor = -0.2
+remove_country_modifier = hydrogen_nation 
+remove_country_modifier = atomic_nation
+remove_country_modifier = develop_atomic_bomb 
+remove_country_modifier = develop_hydrogen_bomb  
+clr_country_flag = atomic_bomb_developed
+clr_country_flag = hydrogen_bomb_developed
+remove_country_modifier = icbm_bomb
+remove_country_modifier = sub_bomb
+remove_country_modifier = air_bomb
+remove_country_modifier = tactical_nukes
+
+add_country_modifier = { name = revolution_chaos duration = 1825 }
+		}
+
+}
+
+#Use Tactical Nukes
+country_event = {
+	id = 1610031
+title = "Struck by $FROMCOUNTRY_ADJ$ Tactical Nuclear Weapons"
+	desc = EVTDESC1610031
+	picture = "disarm_tactical_nukes"
+
+is_triggered_only = yes
+
+option = {
+name = "We must retaliate!"
+prestige_factor = -0.025
+
+FROM = { set_country_flag = has_nuke_clouds }
+
+set_country_flag = has_nuke_clouds
+
+war_exhaustion = 10
+
+any_pop = { limit = { type = soldiers } reduce_pop = 0.99 }
+
+any_owned = { 
+limit = { units_in_province = 1 } 
+set_province_flag = disease
+add_province_modifier = { name = tactical_nuked duration = 1825 }
+any_pop = { reduce_pop = 0.95 }
+infrastructure = -2
+naval_base = -2
+fort = -2
+}
+		}
+
+}
