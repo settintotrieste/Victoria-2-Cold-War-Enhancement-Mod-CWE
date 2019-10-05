@@ -40,6 +40,7 @@
 # Order that CBs are executed in a peace treaty
 peace_order = {
 become_independent
+destroy_wmd
 dismantle_forts
 dismantle_cb
 dismantle_cb_add
@@ -1555,6 +1556,78 @@ war_policy = jingoism war = yes has_country_flag = world_medium has_country_flag
 	}
 }
 
+# Destroy WMDs
+destroy_wmd = {
+	sprite_index = 14
+	is_triggered_only = yes
+	months = 12
+
+	badboy_factor = 1.5
+	prestige_factor = 1
+	peace_cost_factor = 10
+	penalty_factor = 1
+	
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 48
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	crisis = yes
+	
+	po_remove_prestige = yes
+
+	tws_battle_factor = 2.0
+	
+	war_name = WAR_DISARM_WMD_NAME
+
+	can_use = {
+THIS = { NOT = { has_country_flag = renounced_war_rights } }
+NOT = { is_our_vassal = THIS }
+THIS = { NOT = { has_country_flag = un_armistice } }
+
+OR = {
+has_country_modifier = atomic_nation
+has_country_modifier = hydrogen_nation
+has_country_modifier = chemical_nation
+has_country_modifier = bio_nation
+}
+
+THIS = { OR = { 
+
+government = theocracy
+government = absolute_monarchy
+government = populist_dictatorship
+government = nationalist_dictatorship
+government = presidential_dictatorship
+government = proletarian_dictatorship
+government = proletarian_dictatorship1
+
+war_policy = jingoism war = yes has_country_flag = world_medium has_country_flag = world_high has_country_flag = cold_war_high has_country_modifier = cold_war_hot 
+
+} }
+
+
+		is_vassal = no
+	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.10
+		}
+	}
+
+	on_po_accepted = {
+		country_event = 1610033
+		THIS = { country_event = 1610034 }
+	}
+
+}
+
 # territorial_dispute
 territorial_dispute = {
 	sprite_index = 22
@@ -1565,7 +1638,7 @@ territorial_dispute = {
 	
 	badboy_factor = 1.5
 	prestige_factor = 5
-	peace_cost_factor = 0.7
+	peace_cost_factor = 1
 	penalty_factor = 1
 	always = yes
 
