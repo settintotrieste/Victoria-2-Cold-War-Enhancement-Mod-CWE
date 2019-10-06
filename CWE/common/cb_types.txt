@@ -64,6 +64,7 @@ install_communist_gov_cb
 uninstall_communist_gov_cb
 acquire_naval_base
 acquire_state 
+acquire_colonial_state
 conquest 
 civil_war
 colonial_war
@@ -771,7 +772,7 @@ NOT = { war_policy = pacifism } war = yes has_country_flag = world_medium has_co
 	}
 }
 
-# Gain control of State
+# Gain control of Non-Overseas Colonial or Non-Colonial State
 acquire_state = {
 	sprite_index = 6
 	is_triggered_only = yes
@@ -815,8 +816,13 @@ war_policy = jingoism war = yes has_country_flag = world_medium has_country_flag
 		
 		any_owned_province = {
 			NOT = { is_core = THIS }
-			#is_colonial = no
+			is_capital = no
+			OR = { 
+			is_colonial = no 
+			AND = { is_colonial = yes is_overseas = no } 
+			}
 		}
+
 		OR = {
 			AND = {
 				civilized = yes
@@ -837,7 +843,10 @@ war_policy = jingoism war = yes has_country_flag = world_medium has_country_flag
 	allowed_states = {
 		any_owned_province = {
 			NOT = { is_core = THIS }
-			#is_colonial = no
+			OR = { 
+			is_colonial = no 
+			AND = { is_colonial = yes is_overseas = no } 
+			}
 		}
 		NOT = { any_owned_province = { is_capital = yes } }
 	}
@@ -846,6 +855,101 @@ war_policy = jingoism war = yes has_country_flag = world_medium has_country_flag
 		any_owned_province = {
 			any_neighbor_province = {
 				owner = { tag = THIS }
+			}
+		}
+	}		
+
+	po_demand_state = yes
+	
+	war_name = WAR_TAKE_NAME
+	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+}
+
+# Gain control of Overseas Colonial State
+acquire_colonial_state = {
+	sprite_index = 7
+	is_triggered_only = yes
+	months = 12
+	construction_speed = 0.5
+	
+	badboy_factor = 1.1
+	prestige_factor = 2
+	peace_cost_factor = 0.5
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 48
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	can_use = {
+
+NOT = { is_our_vassal = THIS }
+
+THIS = { NOT = { has_country_flag = renounced_war_rights } }
+THIS = { NOT = { has_country_flag = un_armistice } }
+	
+number_of_states = 2 # annex if you want their last state
+
+THIS = { OR = { 
+
+government = theocracy
+government = absolute_monarchy
+government = populist_dictatorship
+government = nationalist_dictatorship
+government = presidential_dictatorship
+government = proletarian_dictatorship
+government = proletarian_dictatorship1
+
+war_policy = jingoism war = yes has_country_flag = world_medium has_country_flag = world_high has_country_flag = cold_war_high has_country_modifier = cold_war_hot } }
+		
+		any_owned_province = {
+			NOT = { is_core = THIS }
+			is_capital = no
+			AND = { is_colonial = yes is_overseas = yes } 
+		}
+
+		OR = {
+			AND = {
+				civilized = yes
+				THIS = {
+					civilized = yes
+				}
+			}
+			AND = {
+				civilized = no
+				THIS = {
+					civilized = no
+				}
+			}
+		}
+		is_independant = yes
+	}
+	
+	allowed_states = {
+		any_owned_province = {
+			NOT = { is_core = THIS }
+			AND = { is_colonial = yes is_overseas = yes }
+		}
+		NOT = { any_owned_province = { is_capital = yes } }
+	}
+	
+	allowed_states_in_crisis = {
+		any_owned_province = {
+			OR = {
+				port = yes
+				any_neighbor_province = { owner = { tag = THIS } }
 			}
 		}
 	}		
@@ -1562,7 +1666,7 @@ destroy_wmd = {
 	is_triggered_only = yes
 	months = 12
 
-	badboy_factor = 1.5
+	badboy_factor = 0
 	prestige_factor = 1
 	peace_cost_factor = 10
 	penalty_factor = 1
