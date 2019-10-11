@@ -145,89 +145,78 @@ relation = { who = FROM value = 25 }
 
 }
 
-#Peaceful region
+#Region Check event
 country_event = {
 	id = 1412151
-title = "Peaceful Region"
-	desc = "Due to the relative stability of our region in the last few years, our area has boomed in regional trade and cultural vibrancy as investors and citizens alike feel a tide of peace sweeping through the region."
-	picture = "peace_region"
+title = "Review Peace/Unstable Region Status"
+	desc = EVTDESC1412151
+	picture = "region_system"
 
 trigger = { 
-
-NOT = { any_owned_province = { has_province_modifier = peace_region } }
-
-NOT = { any_owned_province = { OR = { 
-has_province_modifier = nuke_low
-has_province_modifier = nuke_medium
-has_province_modifier = nuke_high  
-} } }
-
-NOT = { 
-any_neighbor_country = { 
-OR = { 
-
-war_with = THIS
-
-AND = { war = yes national_provinces_occupied = 0.10 } 
-
-AND = { war = yes num_of_revolts = 1 }
-
-	} 
-				} 
-	} 
-		}
+NOT = { has_country_modifier = region_timer }
+			} 
 
 mean_time_to_happen = { 
 months = 60
+modifier = { factor = 0.1 war = yes }
+modifier = { factor = 0.2 num_of_revolts = 1 }
+modifier = { factor = 0 NOT = { any_owned_province = { OR = { has_province_modifier = peace_region has_province_modifier = unstable_region } } } }
 }
 
 option = {
-name = "Great News!"
-any_owned = { remove_province_modifier = unstable_region }
-any_owned = { add_province_modifier = { name = peace_region duration = -1 } }
-		}
+name = "Who cares?"
 
-}
+add_country_modifier = { name = region_timer duration = 60 }
 
-#Unstable region
-country_event = {
-	id = 1412152
-title = "Unstable Region"
-	desc = "Due to the presence of war and rebellions in our region, our area has declined in regional trade and cultural vibrancy as investors and citizens alike flee the tide of strife sweeping the region."
-	picture = "unstable_region"
+any_owned = { remove_province_modifier = peace_region remove_province_modifier = unstable_region }
 
-trigger = { 
+#Add Unstable Region
+any_owned = { 
+limit = { 
 
-NOT = { any_owned_province = { has_province_modifier = unstable_region } }
-
-any_neighbor_country = { 
 OR = { 
-
-war_with = THIS
-
-AND = { war = yes national_provinces_occupied = 0.10 } 
-
-AND = { war = yes num_of_revolts = 1 }
-
-any_owned_province = { OR = { 
-has_province_modifier = nuke_low
-has_province_modifier = nuke_medium
-has_province_modifier = nuke_high  
-} }
-
+has_province_modifier = nuke_low 
+has_province_modifier = nuke_medium 
+has_province_modifier = nuke_high
+has_province_modifier = tactical_nukes
+controlled_by_rebels = yes  
+NOT = { controlled_by = THIS }
+is_blockaded = yes
+average_militancy = 5
+any_neighbor_province = { owner = { war = yes } }
+any_neighbor_province = { controlled_by_rebels = yes }
 	} 
-				} 
-	
-		}
 
-mean_time_to_happen = { 
-months = 6
 }
 
-option = {
-name = "We must strive to stabilise the region!"
-any_owned = { remove_province_modifier = peace_region }
-any_owned = { add_province_modifier = { name = unstable_region duration = -1 } }
+add_province_modifier = { name = unstable_region duration = -1 }
+
+} 
+
+#Add Stable Region
+any_owned = { 
+limit = { 
+NOT = {
+OR = { 
+has_province_modifier = nuke_low 
+has_province_modifier = nuke_medium 
+has_province_modifier = nuke_high
+has_province_modifier = tactical_nukes
+controlled_by_rebels = yes  
+NOT = { controlled_by = THIS }
+is_blockaded = yes
+average_militancy = 5
+any_neighbor_province = { owner = { war = yes } }
+any_neighbor_province = { controlled_by_rebels = yes }
+	} 
+}
+
+}
+
+add_province_modifier = { name = peace_region duration = -1 }
+
+} 
+
 		}
 
 }
