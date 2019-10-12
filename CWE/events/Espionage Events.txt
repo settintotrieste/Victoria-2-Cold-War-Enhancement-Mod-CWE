@@ -1,107 +1,264 @@
-#Spy High
+#Steal Research, spy_high
 country_event = {
 	id = 68450
-	title = "Opportunity to steal research from another nation"
+	title = "Opportunity to Steal Research"
 	desc = "Our spies have gained the opportunity to steal research from another nation. Should we allow them to steal the research?"
 	picture = "spiessteal"
 
 	trigger = {
 		has_country_modifier = spy_high
-
 	}
 
 	mean_time_to_happen = {
 		months = 36 
 	}
 
-option = {
-		name = "Yes"
-		years_of_research = 0.1
-	random_country = { limit = { OR = { is_greater_power = yes is_secondary_power = yes } } relation = { who = THIS value = -50 } }
+	option = {
+		name = "Yes, do it"
+years_of_research = 0.1
+random_country = { limit = { OR = { is_greater_power = yes is_secondary_power = yes neighbour = THIS } } relation = { who = THIS value = -50 } }
 		}
-option = {
-		name = "No"
-prestige = 5
+	option = {
+		name = "No thanks"
 		}
 
 	}
-#Spy Medium
+
+#Arrest opposition leaders, spy_medium
 country_event = {
 	id = 68451
-	title = "Opportunity to arrest major opposition leaders"
+	title = "Opportunity to Arrest the Opposition"
 	desc = "Our spies have gained the opportunity to arrest major opposition leaders. Should we give them the go ahead?"
 	picture = "spiesarrest"
 
 	trigger = {
 		has_country_modifier = spy_medium
-
+		election = no
 	}
 
 	mean_time_to_happen = {
 		months = 60 
 	}
 
-option = {
-		name = "Yes"
-any_pop = { consciousness = -2 }
-any_pop = { militancy = 5 }	
-		}
-option = {
-		name = "No"
-prestige = 10
-any_pop = { consciousness = 5 }
-any_pop = { militancy = -2 }	
-	}
+	option = {
+		name = "Yes, do it"
+	
+any_pop = { militancy = 3 }
+any_pop = { consciousness = -5 }
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = conservative } }
+owner = { any_pop = { ideology = { factor = 0.05 value = conservative } } }
 }
-#Spy Medium GP
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = big_tent } }
+owner = { any_pop = { ideology = { factor = 0.05 value = big_tent } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = socialist } }
+owner = { any_pop = { ideology = { factor = 0.05 value = socialist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = traditionalist } }
+owner = { any_pop = { ideology = { factor = 0.05 value = traditionalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = populist } }
+owner = { any_pop = { ideology = { factor = 0.05 value = populist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = nationalist } }
+owner = { any_pop = { ideology = { factor = 0.05 value = nationalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = progressive } }
+owner = { any_pop = { ideology = { factor = 0.05 value = progressive } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = liberal } }
+owner = { any_pop = { ideology = { factor = 0.05 value = liberal } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist } }
+owner = { any_pop = { ideology = { factor = 0.05 value = communist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist_social } }
+owner = { any_pop = { ideology = { factor = 0.05 value = communist_social } } }
+}
+
+		}
+
+	option = {
+		name = "No thanks"	
+	}
+
+}
+
+#Gain Diplomatic Influence, Spy Medium GP
 country_event = {
 	id = 68452
-	title = "Opportunity to undermine sphere of another nation"
+	title = "Opportunity to Gain Diplomatic Influence"
 	desc = "Our spies have gained the opportunity to undermine sphere of another nation. Should we give them the go ahead?"
 	picture = "spiesinfluence"
 
 	trigger = {
 		has_country_modifier = spy_medium_gp
-
+		is_greater_power = yes
 	}
 
 	mean_time_to_happen = {
 		months = 24 
 	}
 
-option = {
-		name = "Yes"
-random_country = { limit = { is_vassal = no is_greater_power = no NOT = { in_sphere = THIS } } diplomatic_influence = { who = THIS value = 25 } }
+	option = {
+		name = "Yes, do it"
+random_country = { 
+limit = { is_vassal = no is_greater_power = no NOT = { in_sphere = THIS } NOT = { war_with = THIS } } 
+
+country_event = 684522
+}
 		}
-option = {
-		name = "No"
-any_country = { limit = { is_vassal = no in_sphere = THIS } diplomatic_influence = { who = THIS value = 25 }	}
+	option = {
+		name = "No thanks"
+random_country = { 
+limit = { is_vassal = no is_greater_power = no NOT = { in_sphere = THIS } NOT = { war_with = THIS } } 
+
+relation = { who = THIS value = 25 } 
+}
 	}
 }
-#Spy Low GP
+
+#Gain Diplomatic Influence, Spy Medium GP - receiver
+country_event = {
+	id = 684522
+	title = "$FROMCOUNTRY_ADJ$ Influence in $COUNTRY$"
+	desc = "$FROMCOUNTRY$ has used their intelligence network to gain diplomatic influence in $COUNTRY$."
+	picture = "spiesinfluence"
+
+is_triggered_only = yes
+
+	option = {
+		name = "Yes, do it"
+random_country = { limit = { is_vassal = no is_greater_power = no NOT = { in_sphere = THIS } NOT = { war_with = THIS } } diplomatic_influence = { who = THIS value = 25 } }
+		}
+	option = {
+		name = "No thanks"
+	}
+}
+
+#Exchange Intelligence with Ally, Spy Low GP
 country_event = {
 	id = 68453
-	title = "Espionage information exchange with allies?"
+	title = "Exchange Intelligence with Ally?"
 	desc = "We have some secrets that we can exchange with a foreign government in exchange for better relations. Should we proceed?"
 	picture = "spiesexchange"
 
 	trigger = {
 		has_country_modifier = spy_low_gp
-
+		is_greater_power = yes
+		any_greater_power = { alliance_with = THIS }
 	}
 
 	mean_time_to_happen = {
 		months = 64
 	}
 
-option = {
-		name = "Yes"
-years_of_research = 0.1
-random_country = { limit = { is_vassal = no OR = { is_greater_power = yes is_secondary_power = yes } } relation = { who = THIS value = 25 } }
+	option = {
+		name = "Secrets are meant to be shared"
+years_of_research = 0.2
+random_country = { 
+limit = { alliance_with = THIS is_greater_power = yes } 
+relation = { who = THIS value = 25 } years_of_research = 0.1
+}
 		}
-option = {
-		name = "No"
-prestige = 10
+
+	option = {
+		name = "No, thanks"
+		prestige = 10
 	}
+
 }
 
+#Assassinate foreign politician, spy_medium_gp
+country_event = {
+	id = 68454
+	title = "Assassinate Foreign Politician?"
+	desc = "An opportunity has arisen which allows us to assassinate a prominent politician in a state unfriendly with us."
+	picture = "spieskill"
+
+	trigger = {
+		has_country_modifier = spy_medium_gp 
+		is_greater_power = yes
+		war = no
+		is_disarmed = no
+any_neighbor_country = { is_vassal = no NOT = { alliance_with = THIS } NOT = { in_sphere = THIS } NOT = { relation = { who = THIS value = -50 } } }
+	}
+
+	mean_time_to_happen = {
+		months = 72
+	}
+
+	option = {
+		name = "Kill him (Risk of war)"
+badboy = 5
+random_country = { 
+limit = { neighbour = THIS is_vassal = no NOT = { alliance_with = THIS } NOT = { in_sphere = THIS } } 
+country_event = 68455
+} 
+	ai_chance = { 
+	factor = 0.25 
+	modifier = { factor = 0 badboy = 0.5 } 
+		}
+	}
+
+	option = {
+		name = "No, thanks"
+	ai_chance = { factor = 0.75 }
+	}
+
+}
+
+#Assassinate foreign politician, spy_medium_gp - receiver
+country_event = {
+	id = 68455
+	title = "Prominent Politician Assassinated"
+	desc = "EVTDESC96066"
+	picture = "assasin"
+
+is_triggered_only = yes
+
+	option = {
+		name = "Take revenge on $FROMCOUNTRY$!"
+
+war = {
+	target = FROM
+	attacker_goal = { casus_belli = humiliate }
+	defender_goal = { casus_belli = humiliate }
+	call_ally = yes
+}
+	
+	ai_chance = { 
+	factor = 0.5
+	modifier = { factor = 0 war_policy = pacifism }
+	modifier = { factor = 2 war_policy = jingoism } 
+		}
+	}
+
+	option = {
+		name = "Chicken out"
+	prestige_factor = -0.025
+
+	ai_chance = { factor = 0.5 }
+	}
+
+}
