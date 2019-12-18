@@ -2890,3 +2890,82 @@ prestige = -50
 	}
 
 }
+
+#Sea Piracy Start
+country_event = {
+	id = 1610059
+title = "$COUNTRY_ADJ$ Piracy"
+desc = EVTDESC1610059
+	picture = "piracy_start"
+
+trigger = {
+
+NOT = { has_country_modifier = sea_piracy }
+
+#Low crime fighting
+NOT = { crime_fighting = 0.5 }
+
+#Has coastal provinces
+any_owned_province = { port = yes }
+
+OR = { 
+
+#Somalian and Guinean Piracy
+any_owned_province = { continent = africa }
+
+#Straits of Malacca
+any_owned_province = { 
+OR = { is_core = MSY is_core = IDO is_core = SNG }
+	} 
+
+}
+
+	}
+
+mean_time_to_happen = { 
+months = 60
+	}
+
+option = {
+name = "We must end this scourge of the sea!"
+add_country_modifier = { name = sea_piracy duration = -1 }
+	}
+
+}
+
+#Sea Piracy End
+country_event = {
+	id = 1610060
+title = "End of $COUNTRY_ADJ$ Piracy"
+desc = EVTDESC1610059
+	picture = "piracy_end"
+
+trigger = {
+
+has_country_modifier = sea_piracy
+
+OR = { 
+
+#High crime fighting
+crime_fighting = 0.5
+
+#No coastal provinces
+NOT = { any_owned_province = { port = yes } } 
+
+		}
+
+	}
+
+mean_time_to_happen = { 
+months = 60
+modifier = { 
+factor = 0 NOT = { any_owned_province = { port = yes } } 
+		}
+	}
+
+option = {
+name = "Piracy is finally consigned to the history books!"
+remove_country_modifier = sea_piracy 
+	}
+
+}
