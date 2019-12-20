@@ -1,5 +1,80 @@
 political_decisions = {
 
+	host_un_hq = {
+		picture = "host_un_hq"
+		potential = {
+		has_country_modifier = united_nations
+		has_country_modifier = united_nations_ga_member
+		has_global_flag = host_un_hq
+		NOT = { has_country_flag = un_hq_host_country }
+		is_greater_power = yes
+		}
+		allow = {
+			war = no
+			is_vassal = no
+			NOT = { badboy = 0.2 }
+			money = 4000000
+
+NOT = {
+
+any_owned_province = { has_province_modifier = un_headquarters }
+
+#Cities in country must be unblemished
+any_owned_province = { 
+OR = { 
+
+#Occupied by enemy forces
+AND = { NOT = { controlled_by = THIS } controlled_by_rebels = no }
+
+#UN HQ was struck by nukes
+has_province_modifier = nuke_accident 
+has_province_modifier = nuke_high 
+has_province_modifier = nuke_medium 
+has_province_modifier = nuke_low 
+has_province_modifier = tactical_nuked
+
+#UN HQ was struck by chemical bombs
+has_province_modifier = chemical_high
+has_province_modifier = chemical_medium
+has_province_modifier = chemical_low 
+	}
+}
+
+
+}
+
+		}
+		effect = {
+			clr_global_flag = host_un_hq
+			set_country_flag = un_hq_host_country
+			prestige = 500
+			money = -2000000
+random_owned = { limit = { is_capital = yes } add_province_modifier = { name = un_headquarters duration = -1 } }
+		}
+		ai_will_do = { 
+			factor = 1 
+		}
+	}
+
+	rebuild_un_hq = {
+		picture = "rebuild_un_hq"
+		potential = {
+			has_country_flag = un_hq_host_country 
+NOT = { any_owned_province = { has_province_modifier = un_headquarters } }
+			}
+		allow = {
+			war = no
+			money = 2000000
+		}
+		effect = {
+			money = -1500000
+random_owned = { limit = { is_capital = yes } add_province_modifier = { name = un_headquarters duration = -1 } }
+		}
+		ai_will_do = { 
+			factor = 1 
+		}
+	}
+
 	jointheunga = {
 		picture = "united_nations_general_assembly"
 		potential = {
@@ -64,7 +139,6 @@ AND = { tag = KMT NOT = { CHI = { has_country_modifier = unsc_permanent_member }
 			country_event = 1512261
 	clr_country_flag = not_participating_UNSC
 			add_country_modifier = { name = unsc_permanent_member duration = -1 }
-			232 = { add_province_modifier = { name = un_headquarters duration = -1 } } #NYC
 		}
 		ai_will_do = { 
 			factor = 1 
