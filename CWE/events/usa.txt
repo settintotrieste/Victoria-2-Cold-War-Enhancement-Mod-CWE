@@ -52,7 +52,7 @@ country_event = {
 	id = 1015802
 	title = EVT_1015802_NAME
 	desc = EVT_1015802_DESC
-	picture = "911"
+	picture = "intervention_in_afghanistan"
 	fire_only_once = yes
 	
 	trigger = {
@@ -66,14 +66,16 @@ AFG = { is_vassal = no OR = { government = theocracy government = nationalist_di
 PAK = { 
 is_vassal = no
 NOT = { OR = { 
+ruling_party_ideology = traditionalist
 government = theocracy 
 government = nationalist_dictatorship 
+government = populist_dictatorship 
 government = proletarian_dictatorship
 } } }
 
 	}
 	
-	immediate = { AFG = { badboy = 30 } }
+	#immediate = { AFG = { badboy = 30 } }
 	
 	mean_time_to_happen = {
 		months = 11
@@ -82,49 +84,41 @@ government = proletarian_dictatorship
 
 	option = {
 		name = EVT_1015802_A 
-any_country = { limit = { NOT = { ruling_party_ideology = traditionalist } } relation = { who = AFG value = -200 } } 
+any_country = { limit = { alliance_with = USA } relation = { who = AFG value = -200 } } 
 		any_country = { 
 			limit = { tag = PAK ai = yes } 
 			create_alliance = USA 
 			relation = { who = USA value = 200 }
-			casus_belli = {
-				target = AFG
-				type = install_democracy
-				months = 60
-			}
-			war = {
-				target = AFG
-		attacker_goal = { casus_belli = install_democracy }
-		defender_goal = { casus_belli = status_quo }
-				call_ally = yes
-			}
 		}
-		casus_belli = {
-			target = AFG
-			type = install_democracy
-			months = 60
-		}
-		casus_belli = {
-			target = AFG
-			type = add_to_sphere
-			months = 60
-		}
-		prestige = 20
-		badboy = 0.5
-		ai_chance = { factor = 100 }
-	}
-	
-	option = {
-		name = EVT_1015802_B 
-		any_country = { limit = { NOT = { ruling_party_ideology = traditionalist } } relation = { who = AFG value = -200 } } 
-		random_country = { limit = { tag = PAK  ai = yes } create_alliance = USA }
-		any_country = { relation = { who = AFG value = -200 } }
 		casus_belli = {
 			target = AFG
 			type = install_democracy
 			months = 60
 		}
 		prestige = 40
+		badboy = 5
+
+	AFG = { 
+		war = {
+			target = PAK
+attacker_goal = { casus_belli = humiliate }
+defender_goal = { casus_belli = install_democracy }
+			}
+	}
+
+		ai_chance = { factor = 100 }
+	}
+	
+	option = {
+		name = EVT_1015802_B 
+		any_country = { limit = { alliance_with = USA } relation = { who = AFG value = -200 } } 
+		random_country = { limit = { tag = PAK ai = yes } create_alliance = USA }
+		casus_belli = {
+			target = AFG
+			type = install_democracy
+			months = 60
+		}
+		prestige = 10
 		ai_chance = { factor = 0 }
 	}
 

@@ -414,6 +414,8 @@ ai_chance = { factor = 0.9 }
 ai_chance = { factor = 0.1 }
   }
 }
+
+#UN Coalition against Iraq in the Gulf War 1991 - Start
 country_event = {
   id = 8007551
   title = EVT_8007551_NAME
@@ -422,23 +424,33 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-    tag = IRQ
+    	tag = IRQ
 	year = 1991 NOT = { year = 1999 }
-	NOT = { government = democracy }
-    any_owned_province = { province_id = 935 }  
+	is_vassal = no
+
+OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship }
+
+#US is a democratic GP
+USA = { government = democracy is_greater_power = yes }
+
+#Owns Kuwait
+any_owned_province = { province_id = 935 }  
   }
 
   mean_time_to_happen = { months = 1 }
 
   option = {
     name = EVT_8007551_A
+
+#Russia has a 75% of following history and abandoning Iraq
 	random = {
 	chance = 75
 	leave_alliance = RUS
 RUS = { diplomatic_influence = { who = IRQ value = -200 } }
 	relation = { who = RUS value = -150 }
 	}
-	any_pop = { militancy = -1.5 }
+
+	any_pop = { militancy = -4 }
 	relation = { who = USA value = -150 } 
 	relation = { who = ENG value = -100 } 
 	relation = { who = FRA value = -100 } 
@@ -446,9 +458,14 @@ RUS = { diplomatic_influence = { who = IRQ value = -200 } }
 	relation = { who = SAA value = -150 } 
 	relation = { who = EGY value = -50 }
 	set_global_flag = 1990_gulf_war_kuw_annexed
+
+	#Get USA involved
 	USA = { country_event = 8007560 }
   }
+
 }
+
+#UN Coalition against Iraq in the Gulf War 1991 - US choice
 country_event = {
   id = 8007560
   title = EVT_8007560_NAME
@@ -457,24 +474,34 @@ country_event = {
   is_triggered_only = yes
   
   option = {
-    name = EVT_8007560_A
-	casus_belli = { target = KUW type = liberate_country months = 12 }
-	war = { target = IRQ attacker_goal = { casus_belli = liberate_country country = KUW } defender_goal = { casus_belli = humiliate } }
+name = "Try to form a coalition with Saudi Arabia (90% chance)"
+	casus_belli = { target = IRQ type = liberate_country months = 12 }
+	
 	SAA = { country_event = 8007561 } 
 	IRQ = { release = KUR }
 
 any_country = { limit = { NOT = { alliance_with = IRQ } OR = { tag = NET tag = USA tag = TUR tag = AST tag = FRA tag = ENG } } create_alliance = KUR }
 
+IRQ = {
+war = { 
+target = KUR 
+attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } 
+}
+	}
 
 	ai_chance = { factor = 100 }
   }
 
   option = {
     name = EVT_8007560_B
-	random_state = { any_pop = { dominant_issue = { value = jingoism factor = 0.6 } } }
+prestige_factor = -0.1
+random_state = { any_pop = { dominant_issue = { value = jingoism factor = 0.6 } } }
 	ai_chance = { factor = 0 }
   }
+
 }
+
+#UN Coalition against Iraq in the Gulf War 1991 - SAA choice
 country_event = {
   id = 8007561
   title = EVT_8007561_NAME
@@ -483,19 +510,30 @@ country_event = {
   is_triggered_only = yes
 
   option = {
-    name = EVT_8007561_A
+    name = "Form the coalition against Iraq"
 	create_alliance = USA 
-	relation = { who = USA value = 150 }
-	casus_belli = { target = KUW type = liberate_country months = 12 }
-	war = { target = IRQ attacker_goal = { casus_belli = liberate_country country = KUW } defender_goal = { casus_belli = humiliate } }
-	ai_chance = { factor = 100 }
+	relation = { who = USA value = 200 }
+casus_belli = { target = IRQ type = liberate_country months = 12 }
+
+IRQ = { 
+war = { 
+target = SAA
+defender_goal = { casus_belli = liberate_country country = KUW } 
+attacker_goal = { casus_belli = humiliate } 
+}
+	}
+
+	ai_chance = { factor = 1 }
   }
 
   option = {
     name = EVT_8007561_B
-	relation = { who = USA value = -100 } 
+	prestige_factor = -0.1
+	relation = { who = USA value = -100 }
+	relation = { who = IRQ value = 50 } 
 	ai_chance = { factor = 0 }
   }
+
 }
 country_event = {
   id = 8007562
