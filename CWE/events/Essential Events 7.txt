@@ -1314,7 +1314,7 @@ remove_country_modifier = un_diplo_sanc
 
 }
 
-#Soviet States Recognition
+#Add Soviet cores
 country_event = {
 	id = 1412179
 title = "Republics of the Soviet Union"
@@ -1324,16 +1324,10 @@ title = "Republics of the Soviet Union"
 fire_only_once = yes
 
 trigger = { 
-NOT = { year = 1990 }
-tag = RUS 
+tag = RUS
+has_global_flag = blocsenabled
 government = proletarian_dictatorship
-has_country_flag = disabled_for_now
-has_country_modifier = united_nations_ga_member
 	}
-
-mean_time_to_happen = { 
-months = 1
-}
 
 option = {
 name = "Great!"
@@ -1356,6 +1350,77 @@ add_core = RUS
 }
 
 		}
+}
+
+#Soviet States Recognition
+country_event = {
+	id = 14121799
+title = "Renounce Soviet Borders?"
+	desc = EVTDESC14121799
+	picture = "relinquish_ussr_cores"
+
+fire_only_once = yes
+
+trigger = { 
+tag = RUS 
+NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } }
+is_vassal = no
+	}
+
+option = {
+name = "Renounce claims over the former Soviet territories"
+
+badboy = -10
+
+#Ex-Soviet Republics will like Russia
+any_country = { 
+limit = { any_core = { is_core = RUS } }
+relation = { who = THIS value = 50 }
+}
+
+#Remove cores
+all_core = { 
+limit = { OR = { 
+	AND = { is_core = UKR NOT = { is_core = CRI } }
+	is_core = BYE 
+	is_core = GEO 
+	is_core = AZB 
+	is_core = ARM 
+	is_core = TKR
+	is_core = MOL
+	is_core = UZB 
+	is_core = KYR 
+	is_core = TAJ 
+	is_core = KAZ 
+	is_core = LIT
+	is_core = LAT
+	is_core = EST
+} } 
+remove_core = RUS
+}
+
+ai_chance = { factor = 0.9 }
+
+		}
+
+option = {
+name = "Never!"
+badboy = 10
+
+#Baltic States
+LAT = { all_core = { add_core = RUS } }
+LIT = { all_core = { add_core = RUS } }
+EST = { all_core = { add_core = RUS } }
+
+#Ex-Soviet Republics will hate Russia
+any_country = { 
+limit = { any_core = { is_core = RUS } }
+relation = { who = THIS value = -200 }
+}
+
+ai_chance = { factor = 0.1 }
+		}
+
 }
 
 #Bankruptcy
