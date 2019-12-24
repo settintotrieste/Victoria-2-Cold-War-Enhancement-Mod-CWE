@@ -1,0 +1,128 @@
+#Vassal Stolen CB - Remove flags by event (To transfer)
+country_event = {
+	id = 6016822
+	title = "New $COUNTRY_ADJ$ Overlords"
+	desc = "EVTDESC6016822"
+	picture = "transfer_vassalage"
+
+	trigger = {
+		is_vassal = no
+		has_country_flag = transfer_to_new_overlord
+		war = no
+	}
+
+	option = {
+		name = "We are now subjects of a different empire"
+			random_owned = {
+				limit = { owner = { is_vassal = no } }
+				owner = {
+					clr_country_flag = transfer_to_new_overlord
+					any_country = {
+						limit = {
+							exists = yes
+							has_country_flag = new_overlord
+							truce_with = THIS
+							OR = {
+								is_sphere_leader_of = THIS
+								THIS = { part_of_sphere = no }
+							}
+						}
+						clr_country_flag = new_overlord
+						country_event = 6016824
+					}
+				}
+			}
+	}
+
+}
+
+#Vassal Stolen CB - Remove flags by event (Non-transfer)
+country_event = {
+	id = 6016823
+	title = "Threat of Vassalage Transfer Subsided"
+	desc = "EVTDESC6016823"
+	picture = "transfer_vassalage"
+
+	trigger = {
+		is_vassal = yes
+		has_country_flag = transfer_to_new_overlord
+		war = no
+	}
+
+	option = {
+		name = "We are relieved"
+		random_owned = {
+			limit = { owner = { is_vassal = yes } }
+			owner = { clr_country_flag = transfer_to_new_overlord }
+			}
+	}
+}
+
+#Vassal Stolen CB - Guarantee there's vassal transfer without any funny behaviour.
+country_event = {
+	id = 6016824
+	title = "EVTNAME6016824"
+	desc = "EVTDESC6016824"
+	picture = "transfer_vassalage"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "EVT6016824OPTA"
+		create_vassal = FROM
+		FROM = {
+			any_pop = {
+				limit = {
+					is_primary_culture = no
+					NOT = {
+						is_accepted_culture = yes
+						is_primary_culture = THIS
+					}
+				}
+				militancy = 1
+				consciousness = 3
+			}
+any_owned = { limit = { is_core = FROM NOT = { is_core = THIS } } secede_province = FROM }
+		}
+
+#Match Government
+
+#Communist Dictatorship
+random_owned = { 
+limit = { owner = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } } 
+owner = { FROM = { government = proletarian_dictatorship country_event = 800052 } }
+}
+
+#Socialist Democracy
+random_owned = { 
+limit = { owner = { government = socialist_democracy } } 
+owner = { FROM = { government = socialist_democracy country_event = 800054 } }
+}
+
+#Authoritarian Dictatorship
+random_owned = { 
+limit = { owner = { OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship } } } 
+owner = { FROM = { government = presidential_dictatorship country_event = 800050 } }
+}
+
+#Republic
+random_owned = { 
+limit = { owner = { OR = { government = democracy government = democracy1 } } } 
+owner = { FROM = { government = democracy country_event = 800054 } }
+}
+
+#HM's Government
+random_owned = { 
+limit = { owner = { OR = { government = hms_government government = hms_government1 } } } 
+owner = { FROM = { government = hms_government1 country_event = 800054 } }
+}
+
+#Absolute Monarchy
+random_owned = { 
+limit = { owner = { government = absolute_monarchy } } 
+owner = { FROM = { government = absolute_monarchy country_event = 800050 } }
+}
+
+	}
+
+}
