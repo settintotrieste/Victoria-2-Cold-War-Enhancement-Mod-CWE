@@ -73,6 +73,7 @@ colonial_war
 cut_down_to_size 
 release_puppet
 make_puppet
+steal_puppet
 humiliate
 territorial_dispute
 war_reparations
@@ -1564,6 +1565,112 @@ NOT = { war_policy = pacifism } war = yes has_country_flag = world_medium has_co
 			to = pro_military
 			value = 0.25
 		}
+	}
+}
+
+#Steal Puppet CB
+steal_puppet = {
+	sprite_index = 33
+	is_triggered_only = yes
+	months = 12
+	
+	badboy_factor = 6
+	prestige_factor = 1
+	peace_cost_factor = 15
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 48
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	can_use = {
+
+THIS = { NOT = { has_country_modifier = no_more_war } }
+THIS = { NOT = { has_country_flag = renounced_war_rights } }
+THIS = { NOT = { has_country_flag = un_armistice } }
+
+THIS = { OR = { 
+
+government = theocracy
+government = absolute_monarchy
+government = populist_dictatorship
+government = nationalist_dictatorship
+government = presidential_dictatorship
+government = proletarian_dictatorship
+government = proletarian_dictatorship1
+
+NOT = { war_policy = pacifism } war = yes has_country_flag = world_medium has_country_flag = world_high has_country_flag = cold_war_high has_country_modifier = cold_war_hot } }
+
+		NOT = { is_our_vassal = THIS }
+		num_of_vassals_no_substates = 1
+
+		OR = {
+	NOT = { has_country_flag = dismantle_declared }
+	THIS = { NOT = { has_country_flag = in_great_war } }
+	THIS = { ai = no }
+		}
+
+	}
+	
+	# THIS - us
+	# FROM - country scope is possible match?
+	# war target country of goal is scope
+	allowed_countries = {
+		is_our_vassal = FROM
+		FROM = {
+			is_substate = no
+			OR = {
+				num_of_ports = 1
+				neighbour = THIS
+				war_with = THIS
+				any_neighbor_country = {
+					OR = {
+						vassal_of = THIS
+						substate_of = THIS
+					}
+				}
+			}
+		}
+	}
+	
+	po_release_puppet = yes
+	po_add_to_sphere = yes
+
+	war_name = WAR_TAKE_PUPPET_NAME
+	
+	on_add = {
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+		any_country = {
+			limit = {
+				exists = yes
+				vassal_of = FROM
+				is_substate = no
+				OR = {
+					num_of_ports = 1
+					neighbour = THIS
+					any_neighbor_country = {
+						OR = {
+							vassal_of = THIS
+							substate_of = THIS
+						}
+					}
+				}
+			}
+			set_country_flag = transfer_to_new_overlord
+		}
+	}
+	
+	on_po_accepted = {
+		THIS = { set_country_flag = new_overlord }
 	}
 }
 
