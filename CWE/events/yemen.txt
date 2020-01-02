@@ -1,176 +1,333 @@
+#Yemen 1962 revolution
 country_event = {
   id = 8018201
-  title = EVT_GOVTCHANGE_NAME
-  desc = EVT_GOVTCHANGE_DESC
-  picture = "nwo2_govt_change"
+  title = "Coup d'état of 1962"
+  desc = EVTDESC8018201
+  picture = "yemen_1962_coup"
   fire_only_once = yes
 
   trigger = {
-    tag = YEM
-    year = 1961 NOT = { year = 1990 }
+    	tag = YEM
+    	year = 1962 NOT = { year = 1990 }
+	is_vassal = no
+	war = no
+OR = { government = absolute_monarchy government = hms_government }
   }
 
-  mean_time_to_happen = { months = 6 }
+  mean_time_to_happen = { months = 10 }
 
-  option = {
-    name = "OK"
-	define_general = { name = "Ahmad al Hamid" personality = "energetic" background = "no_background" }
-	government = presidential_dictatorship country_event = 800050
+  	option = {
+    		name = "End the monarchy!"
+define_general = { name = "Abdullah Sallal" personality = "energetic" background = "no_background" }
+government = populist_dictatorship 
+country_event = 800050
+ruling_party_ideology = socialist
+
+set_global_flag = 1962_yemen_revolution
+
+#UK's reaction
+random_country = {
+limit = { tag = ENG is_sphere_leader_of = YEM }
+diplomatic_influence = { who = YEM value = -200 }
+relation = { `who = YEM value = -200 }
+leave_alliance = YEM
+}
+
+#Jordan and Saudi Arabia's response
+any_country = {
+limit = { OR = { tag = JOR tag = SAA } OR = { government = absolute_monarchy government = hms_government } }
+relation = { who = YEM value = -200 }
+}
+
+#Egypt's response
+random_country = { 
+limit = { exists = yes is_vassal = no ruling_party_ideology = socialist OR = { tag = EGY tag = UAR } }
+country_event = 80182011
+}
+
+#USSR's response
+random_country = { 
+limit = { tag = RUS is_greater_power = yes government = proletarian_dictatorship }
+country_event = 80182012
+}
+
 	ai_chance = { factor = 0.9 }
   } 
 
-option = {
-	  name = "No thanks"
+	option = {
+	  	name = "Keep the monarchy"
 add_country_modifier = { name = revolution_chaos duration = 3650 }
 	  ai_chance = { factor = 0.1 }
     }
 
 }
+
+#Yemen 1962 revolution - Egypt's response
 country_event = {
-  id = 8018202
-  title = EVT_GOVTCHANGE_NAME
-  desc = EVT_GOVTCHANGE_DESC
-  picture = "nwo2_govt_change"
-  fire_only_once = yes
+  id = 80182011
+  title = "Yemeni Coup d'état of 1962"
+  desc = EVTDESC80182011
+  picture = "yemen_1962_coup"
+ 
+is_triggered_only = yes
 
-  trigger = {
-    tag = YEM
-    year = 1962 NOT = { year = 1990 }
-  }
-
-  mean_time_to_happen = { months = 6 }
-
-  option = {
-    name = OK
-	define_general = { name = "Muhammad al-Badr" personality = "energetic" background = "no_background" }
-	government = presidential_dictatorship 
-	country_event = 800050
-	ai_chance = { factor = 0.9 }
-  }
-
-option = {
-	  name = "No thanks"
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-	  ai_chance = { factor = 0.1 }
-    }
-
-}
-country_event = {
-  id = 8018203
-  title = EVT_8018203_NAME
-  desc = EVT_8018203_DESC
-  picture = "nwo2_abdullah_al_sallal"
-  fire_only_once = yes
-
-  trigger = {
-    tag = YEM
-    year = 1966 NOT = { year = 1990 }
-  }
-
-  mean_time_to_happen = { months = 6 }
-
-  option = {
-    name = EVT_8018203_A
-	define_general = { name = "Abdullah al-Sallal" personality = "energetic" background = "no_background" }
-	random_state = { any_pop = { dominant_issue = { value = parties_allowed factor = 0.2 } } }
-	random_state = { any_pop = { dominant_issue = { value = planned_economy factor = 0.15 } } }
-	government = nationalist_dictatorship country_event = 800050
-	ruling_party_ideology = socialist
-	ai_chance = { factor = 0.9 }
-  }
+  	option = {
+    		name = Support the Yemeni Arab Republic!"
+		create_alliance = YEM
+		relation = { who = YEM value = 200 }
+		ai_chance = { factor = 0.9 }
+  	} 
 
 	option = {
-	  name = "No thanks"
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-	  ai_chance = { factor = 0.1 }
-    }
+	  	name = "Abandon them to the Saudis"
+		prestige_factor = -0.05
+
+#Pan Arab countries won't like this
+any_country = { 
+limit = { exists = yes is_vassal = no primary_culture = arab }
+relation = { who = THIS value = -100 }
+}
+
+	 	ai_chance = { factor = 0.1 }
+    	}
 
 }
+
+#Yemen 1962 revolution - USSR's response
 country_event = {
-  id = 8018204
-  title = EVT_GOVTCHANGE_NAME
-  desc = EVT_GOVTCHANGE_DESC
-  picture = "nwo2_govt_change"
+  id = 80182012
+  title = "Yemeni Arab Republic"
+  desc = EVTDESC80182011
+  picture = "yemen_1962_coup"
+ 
+is_triggered_only = yes
+
+  	option = {
+    		name = Support the Yemeni Arab Republic!"
+		relation = { who = YEM value = 50 }
+		diplomatic_influence = { who = YEM value = 200 }
+		ai_chance = { factor = 0.9 }
+  	}
+
+	option = {
+	  	name = "Abandon them to the Saudis"
+		prestige_factor = -0.05
+
+#Pan Arab countries won't like this
+any_country = { 
+limit = { is_vassal = no primary_culture = arab }
+relation = { who = THIS value = -100 }
+}
+
+	 	ai_chance = { factor = 0.1 }
+    	}
+
+}
+
+#Yemen 1962 revolution - Saudi counter revolution?
+country_event = {
+  id = 8018202
+  title = "Yemen Arab Republic"
+  desc = EVTDESC8018202
+  picture = "yemen_1962_coup"
   fire_only_once = yes
 
   trigger = {
-    tag = YEM
-    year = 1973 NOT = { year = 1990 }
+    	tag = SAA
+OR = { government = absolute_monarchy government = hms_government }
+    	NOT = { year = 1990 }
+	has_global_flag = 1962_yemen_revolution
+	is_vassal = no
+YEM = { is_vassal = no war = no ruling_party_ideology = socialist }
   }
 
-  mean_time_to_happen = { months = 4 }
+  mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = OK
-	define_general = { name = "Abdul Rahman al-Iryani" personality = "energetic" background = "no_background" }
+ 	option = {
+    		name = "Restore the Yemeni King!"
+		badboy = 5
 
-  }
+#Jordanian support
+random_country = { 
+limit = { tag = JOR government = hms_government ai = yes }
+create_alliance = SAA
+relation = { who = SAA value = 200 }
 }
+
+#UK limited support
+random_country = { 
+limit = { tag = ENG government = hms_government ai = yes }
+leave_alliance = SAA 
+relation = { who = SAA value = 200 }
+}
+
+#Israeli support
+random_country = { 
+limit = { tag = ISR ai = yes } 
+relation = { who = SAA value = 200 } 
+}
+
+		war = {
+		target = YEM
+attacker_goal = { casus_belli = install_absolute_monarchy }
+defender_goal = { casus_belli = humiliate }
+		call_ally = yes
+		}
+
+		ai_chance = { factor = 0.9 }
+  	}
+
+	option = {
+	  	name = "No thanks"
+		prestige_factor = -0.05
+		relation = { who = YEM value = 100 }
+	  	ai_chance = { factor = 0.1 }
+    	}
+
+}
+
+#Victory of the Yemeni Arab Republic
 country_event = {
-  id = 8018205
-  title = EVT_GOVTCHANGE_NAME
-  desc = EVT_GOVTCHANGE_DESC
-  picture = "nwo2_govt_change"
+  id = 8018203
+  title = "Victory in the North Yemen Civil War"
+  desc = EVTDESC8018203
+  picture = "YAR_win"
   fire_only_once = yes
 
   trigger = {
-    tag = YEM
-    year = 1976 NOT = { year = 1990 }
+    	tag = YEM
+	has_global_flag = 1962_yemen_revolution
+    	year = 1967 NOT = { year = 1990 }
+	war = no
+	ruling_party_ideology = socialist
+NOT = { OR = { government = absolute_monarchy government = hms_government } }
   }
 
   mean_time_to_happen = { months = 6 }
 
   option = {
-    name = OK
-	define_general = { name = "Ibrahim al-Hamdi" personality = "energetic" background = "no_background" }
+    name = "Celebrate!"
+	prestige = 100
   }
+
 }
+
+#Yemenite War of 1972
+country_event = {
+  id = 8018204
+  title = "Yemenite War of 1972"
+  desc = EVTDESC8018204
+  picture = "YEM_SYE_war_1972"
+  fire_only_once = yes
+
+  trigger = {
+    	tag = YEM
+    	year = 1973 NOT = { year = 1990 }
+	is_vassal = no
+	exists = SYE
+	SYE = { is_vassal = no }
+  }
+
+  mean_time_to_happen = { months = 9 }
+
+  option = {
+    	name = "War!"
+
+	war = {
+		target = SYE
+attacker_goal = { casus_belli = territorial_dispute }
+defender_goal = { casus_belli = territorial_dispute }
+		call_ally = no
+	}
+
+	ai_chance = { factor = 0.9 }
+  }
+
+  option = {
+    	name = "Keep the peace!"
+	prestige_factor = -0.1
+	ai_chance = { factor = 0.1 }
+  }
+
+}
+
+#Yemenite War of 1979
+country_event = {
+  id = 8018205
+  title = "Yemenite War of 1979"
+  desc = EVTDESC8018205
+  picture = "YEM_SYE_war_1979"
+  fire_only_once = yes
+
+  trigger = {
+    	tag = YEM
+    	year = 1979 NOT = { year = 1990 }
+	is_vassal = no
+	exists = SYE
+	SYE = { is_vassal = no }
+  }
+
+  mean_time_to_happen = { months = 2 }
+
+  option = {
+    	name = "War!"
+
+	war = {
+		target = SYE
+attacker_goal = { casus_belli = territorial_dispute }
+defender_goal = { casus_belli = territorial_dispute }
+		call_ally = no
+	}
+
+	ai_chance = { factor = 0.9 }
+  }
+
+  option = {
+    	name = "Keep the peace!"
+	prestige_factor = -0.1
+	ai_chance = { factor = 0.1 }
+  }
+
+}
+
+#Unification of Yemen, 1990
 country_event = {
   id = 8018206
-  title = EVT_GOVTCHANGE_NAME
-  desc = EVT_GOVTCHANGE_DESC
-  picture = "nwo2_govt_change"
+  title = "Unification of Yemen"
+  desc = EVTDESC1400017
+  picture = "uniteyemen"
   fire_only_once = yes
 
   trigger = {
-    tag = YEM
-    year = 1977 NOT = { year = 1990 }
+    	tag = YEM
+    	year = 1990
+	exists = SYE
+	war = no
+	is_vassal = no
+	SYE = { is_vassal = no war = no }
+	has_global_flag = south_yemen_civil_war_1986
   }
 
-  mean_time_to_happen = { months = 1 }
+  mean_time_to_happen = { months = 5 }
 
-  option = {
-    name = OK
-	define_general = { name = "Ahmad al-Ghashm" personality = "energetic" background = "no_background" }
+  	option = {
+    		name = "Embrace Yemeni unity!"
+		country_event = 800054
+		inherit = SYE
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.9 }
+	}
 
-  }
+  	option = {
+    		name = "Delay the unification"
+		relation = { who = SYE relation = -50 }
+		ai_chance = { factor = 0.1 }
+	}
+
 }
+
+#The Federation of South Arabia
 country_event = {
-  id = 8018207
-  title = EVT_GOVTCHANGE_NAME
-  desc = EVT_GOVTCHANGE_DESC
-  picture = "nwo2_govt_change"
-  fire_only_once = yes
-
-  trigger = {
-    tag = YEM
-    year = 1978 NOT = { year = 1990 }
-    NOT = {
-		government = democracy
-		government = hms_government
-		government = proletarian_dictatorship
-    }
-  }
-
-  mean_time_to_happen = { months = 1 }
-
-  option = {
-    name = OK
-	random_state = { any_pop = { dominant_issue = { value = parties_allowed factor = 0.03 } } }random_state = { any_pop = { dominant_issue = { value = planned_economy factor = 0.05 } } }
-  }
-}
-
-country_event = { # The Federation of South Arabia
   id = 8018210
   title = EVT_8018210_NAME
   desc = EVT_8018210_DESC
@@ -178,8 +335,10 @@ country_event = { # The Federation of South Arabia
   fire_only_once = yes
 
   trigger = {
-    tag = ENG
-    year = 1962 NOT = { year = 1990 }
+    	tag = ENG
+	government = hms_government
+	is_vassal = no
+    	year = 1962 NOT = { year = 1990 }
 	owns = 1412 # Aden
   }
 
@@ -217,7 +376,8 @@ country_event = { # The Federation of South Arabia
   
 }
 
-country_event = { # Independence of South Yemen
+#Independence of South Yemen
+country_event = {
   id = 8018211
   title = EVT_8018211_NAME
   desc = EVT_8018211_DESC
@@ -239,7 +399,8 @@ country_event = { # Independence of South Yemen
 
   option = {
     name = EVT_8018211_A
-	government = proletarian_dictatorship country_event = 800052
+	government = proletarian_dictatorship 
+	country_event = 800052
 	overlord = { 
 		release_vassal = SYE
 		country_event = 8018212
@@ -257,7 +418,8 @@ add_country_modifier = { name = revolution_chaos duration = 3650 }
   
 }
 
-country_event = { # Independence of South Yemen
+#Independence of South Yemen - Overlord's response
+country_event = {
   id = 8018212
   title = EVT_8018211_NAME
   desc = EVT_8018211_DESC
@@ -287,7 +449,8 @@ country_event = { # Independence of South Yemen
 
 }
 
-country_event = { # South Yemen Civil War
+#South Yemen Civil War, 1986
+country_event = {
   id = 8018213
   title = EVT_8018213_NAME
   desc = EVT_8018213_DESC
@@ -295,8 +458,8 @@ country_event = { # South Yemen Civil War
   fire_only_once = yes
 
   trigger = {
-    tag = SYE
-    year = 1986 NOT = { year = 1990 }
+    	tag = SYE
+    	year = 1986 NOT = { year = 1990 }
 	government = proletarian_dictatorship
 	is_vassal = no
   }
@@ -309,7 +472,8 @@ country_event = { # South Yemen Civil War
 	country_event = 800050
 	relation = { who = YEM value = 100 }
 	relation = { who = RUS value = -100 }
-any_pop = { limit = { culture = arab } militancy = 2 consciousness = 1 }
+any_pop = { militancy = 2 consciousness = 1 }
+	set_global_flag = south_yemen_civil_war_1986
 	ai_chance = { factor = 0.9 }
   }
 
@@ -318,7 +482,7 @@ any_pop = { limit = { culture = arab } militancy = 2 consciousness = 1 }
 	prestige = -10
 	relation = { who = YEM value = -100 }
 	relation = { who = RUS value = 100 }
-	any_pop = { limit = { culture = arab } militancy = 2 consciousness = 1 }
+	any_pop = { militancy = 10 consciousness = 1 }
 	ai_chance = { factor = 0.1 }
   }
   
