@@ -1,4 +1,5 @@
-country_event = { # Form the West Indies Federation
+#Form the West Indies Federation
+country_event = {
 	id = 1002700
 	title = EVT_1002700_NAME
 	desc = EVT_1002700_DESC
@@ -8,7 +9,7 @@ country_event = { # Form the West Indies Federation
 	trigger = {
 		tag = ENG
 		owns = 2237 # Trinidad
-		OR = { exists = TAN exists = GHA year = 1960 }
+		OR = { exists = TAN exists = GHA year = 1958 }
 		NOT = { year = 1990 }
 		war = no
 	}
@@ -19,7 +20,7 @@ country_event = { # Form the West Indies Federation
 		name = EVT_1002700_A # Form the Federation
 		ai_chance = { factor = 0.9 }
 		prestige = 25
-		any_owned = { limit = { OR = { is_core = AAB is_core = BAR is_core = CYI is_core = DMC is_core = JAM is_core = GRD is_core = STL is_core = SVG is_core = SKN is_core = TAT is_core = TCI } } add_core = XCC }
+		any_owned = { limit = { OR = { is_core = AAB is_core = BAR is_core = CYI is_core = DMC is_core = JAM is_core = GRD is_core = STL is_core = SVG is_core = SKN is_core = TAT is_core = TCI province_id = 2225 } } add_core = XCC }
 		release_vassal = XCC
 		diplomatic_influence = { who = XCC value = 200 }
 	}
@@ -33,7 +34,8 @@ country_event = { # Form the West Indies Federation
 
 }
  
-country_event = { # Dissolve the West Indies Federation
+#Dissolve the West Indies Federation - XCC
+country_event = {
 	id = 1002701
 	title = EVT_1002701_NAME
 	desc = EVT_1002701_DESC
@@ -46,16 +48,31 @@ country_event = { # Dissolve the West Indies Federation
 		war = no
 OR = { AND = { is_vassal = no exists = ENG } AND = { year = 1962 vassal_of = ENG } }
 		NOT = { year = 1990 }
+ENG = { is_greater_power = yes government = hms_government }
 		}
 
 	mean_time_to_happen = { months = 6 }
 	
 	option = {
 		name = EVT_1002701_A # Dissolve the Federation
-		ai_chance = { factor = 0.80 }
-		prestige = 25
-		
-		any_owned = { remove_core = XCC }
+
+#If vassal of ENG
+random_owned = { 
+limit = { owner = { vassal_of = ENG } } 
+owner = { ENG = { country_event = 1002702 } }
+}
+
+#If independent
+random_owned = { 
+limit = { owner = { is_vassal = no } } 
+owner = {
+
+any_owned = { remove_core = XCC }
+
+change_tag = TAT
+
+#British Overseas Territories
+any_owned = { limit = { OR = { is_core = CYI is_core = TCI province_id = 2225 } } add_core = ENG secede_province = ENG }
 
 release = AAB
 release = BAR
@@ -66,33 +83,134 @@ release = SVG
 release = SKN
 release = DMC
 
-		any_owned = { limit = { OR = { is_core = CYI is_core = TCI } } add_core = ENG secede_province = ENG }
+sphere_owner = {
+diplomatic_influence = { who = AAB value = 200 }
+diplomatic_influence = { who = BAR value = 200 }
+diplomatic_influence = { who = JAM value = 200 }
+diplomatic_influence = { who = GRD value = 200 }
+diplomatic_influence = { who = STL value = 200 }
+diplomatic_influence = { who = SVG value = 200 }
+diplomatic_influence = { who = SKN value = 200 }
+diplomatic_influence = { who = DMC value = 200 }
+diplomatic_influence = { who = TAT value = 200 }
+}
 
-change_tag = TAT
-
-ENG = { diplomatic_influence = { who = TAT value = 400 } }
-ENG = { create_vassal = DMC diplomatic_influence = { who = DMC value = 400 } country_event = 1512094 }
-ENG = { create_vassal = AAB diplomatic_influence = { who = AAB value = 400 } country_event = 1512094 }
-ENG = { create_vassal = BAR diplomatic_influence = { who = BAR value = 400 } country_event = 1512094 }
-ENG = { diplomatic_influence = { who = JAM value = 400 } country_event = 1512094 }
-ENG = { create_vassal = GRD diplomatic_influence = { who = GRD value = 400 } country_event = 1512094 }
-ENG = { create_vassal = STL diplomatic_influence = { who = STL value = 400 } country_event = 1512094 }
-ENG = { create_vassal = SVG diplomatic_influence = { who = SVG value = 400 } country_event = 1512094 }
-ENG = { create_vassal = SKN diplomatic_influence = { who = SKN value = 400 } country_event = 1512094 }
-
-TAT = { government = hms_government1 }
+#Constitutional Monarchy
+AAB = { government = hms_government1 }
 BAR = { government = hms_government1 }
-SVG = { government = hms_government1 }
+JAM = { government = hms_government1 }
+GRD = { government = hms_government1 }
 STL = { government = hms_government1 }
+SVG = { government = hms_government1 }
+SKN = { government = hms_government }
+DMC = { government = hms_government1 }
+TAT = { government = hms_government1 }
 
+	}
+}
+
+		ai_chance = { factor = 0.80 }
 	}
 
 	option = {
 		name = EVT_1002701_B # Keep the Federation
-		ai_chance = { factor = 0.20 }
-		any_pop = { limit = { culture = black_anglo } militancy = 5  consciousness = 2 }
+
 		prestige = -50
+		badboy = 5
+any_owned = { limit = { is_core = XCC } add_province_modifier = { name = nationalist_agitation duration = 7300 } }
+
+any_pop = { limit = { culture = black_anglo } militancy = 5  consciousness = 2 }
 		XCC = { set_country_flag = full_independance }
+		ai_chance = { factor = 0.20 }
+	}
+
+}
+
+#Dissolve the West Indies Federation - ENG vassal
+country_event = {
+	id = 1002702
+	title = EVT_1002701_NAME
+	desc = EVT_1002701_DESC
+	picture = "west_indies_federation_end"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Break up the federation"
+		ai_chance = { factor = 0.9 }
+
+XCC = { 
+
+any_owned = { remove_core = XCC }
+
+#British Overseas Territories
+any_owned = { limit = { OR = { is_core = CYI is_core = TCI province_id = 2225 } } add_core = ENG secede_province = ENG }
+
+}
+		
+inherit = XCC
+
+release_vassal = AAB
+release_vassal = BAR
+release = JAM
+release_vassal = GRD
+release_vassal = STL
+release_vassal = SVG
+release_vassal = SKN
+release_vassal = DMC
+release = TAT
+
+diplomatic_influence = { who = AAB value = 200 }
+diplomatic_influence = { who = BAR value = 200 }
+diplomatic_influence = { who = JAM value = 200 }
+diplomatic_influence = { who = GRD value = 200 }
+diplomatic_influence = { who = STL value = 200 }
+diplomatic_influence = { who = SVG value = 200 }
+diplomatic_influence = { who = SKN value = 200 }
+diplomatic_influence = { who = DMC value = 200 }
+diplomatic_influence = { who = TAT value = 200 }
+
+#Constitutional Monarchy
+AAB = { government = hms_government1 }
+BAR = { government = hms_government1 }
+JAM = { government = hms_government }
+GRD = { government = hms_government1 }
+STL = { government = hms_government1 }
+SVG = { government = hms_government1 }
+SKN = { government = hms_government }
+DMC = { government = hms_government1 }
+TAT = { government = hms_government1 }
+
+	}
+
+	option = {
+	name = "Salvage what is left"
+		ai_chance = { factor = 0.1 }
+
+		prestige = -50
+		badboy = 5
+
+#Jamaica and Trinidad becomes independent
+XCC = {
+
+any_owned = { 
+limit = { OR = { is_core = JAM is_core = TAT } }
+remove_core = XCC
+}
+
+release = JAM
+release = TAT
+
+JAM = { government = hms_government }
+TAT = { government = hms_government1 }
+
+ENG = {
+diplomatic_influence = { who = JAM value = 200 }
+diplomatic_influence = { who = TAT value = 200 }
+	}
+}
+
+all_core = { limit = { is_core = XCC } add_province_modifier = { name = nationalist_agitation duration = 7300 } }
 	}
 
 }
