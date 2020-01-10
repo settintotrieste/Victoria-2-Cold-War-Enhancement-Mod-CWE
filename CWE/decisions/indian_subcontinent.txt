@@ -6,18 +6,19 @@ political_decisions = {
 	xio_ambition = {
 		picture = "xio_ambition"
 		potential = {
-NOT = { has_country_flag = hide_superstate }
+			NOT = { has_country_flag = hide_superstate }
 			OR = { tag = RAJ tag = HND tag = PAK tag = NEP tag = BHU tag = BNG tag = AFG tag = MLD tag = SRL }
 			NOT = { has_country_flag = xio_ambition } 
 		}
+
 		allow = {
-			has_country_flag = trade_block_ambition 
 			NOT = { has_country_modifier = in_bankrupcy } 
 			OR = { part_of_sphere = no sphere_owner = { has_country_flag = xio_ambition NOT = { has_country_flag = deny_superstate } } }
 			OR = { government = socialist_democracy government = democracy1 government = democracy government = hms_government government = hms_government1 }
 			bank_for_international_settlements = 1
 			war = no
 		}
+
 		effect = {
 			set_country_flag = xio_ambition
 			set_country_flag = in_trade_block
@@ -33,29 +34,30 @@ NOT = { has_country_flag = hide_superstate }
 			}
 			tech_school = XIO_tech_school			
 		}
+		
 		ai_will_do = { factor = 1 }
+
 	}
 
 	end_xio_ambition = {
 		picture = "xio_parlament"
 		alert = no
 		potential = {
-NOT = { has_country_flag = hide_superstate }
+			NOT = { has_country_flag = hide_superstate }
 			has_country_flag = xio_ambition
 		}
+
 		allow = {
 			OR = { 
-				
-AND = { part_of_sphere = yes sphere_owner = { 
-NOT = { has_country_flag = xio_ambition } has_country_flag = deny_superstate } }
-
-
-				NOT = { OR = { government = socialist_democracy government = democracy1 government = democracy government = hms_government government = hms_government1 } }
+				AND = { part_of_sphere = yes sphere_owner = { NOT = { has_country_flag = xio_ambition } has_country_flag = deny_superstate } }
+				NOT = { government = socialist_democracy government = democracy1 government = democracy government = hms_government government = hms_government1 }
 				has_country_modifier = in_bankrupcy
-				exists = XAL exists = XGC
+				exists = XAL
+				exists = XGC
 			}
 			war = no
 		}
+
 		effect = {
 			clr_country_flag = xio_ambition
 			clr_country_flag = in_trade_block
@@ -77,35 +79,42 @@ NOT = { has_country_flag = xio_ambition } has_country_flag = deny_superstate } }
 				remove_province_modifier = defence_union
 			}
 		}
+
 		ai_will_do = { factor = 1 }
+
 	}
 	
 	xio_single_market= {
 		picture = "single_market"
 		potential = {
-NOT = { has_country_flag = hide_superstate }
+			NOT = { has_country_flag = hide_superstate }
 			NOT = { capital_scope = { has_province_modifier = single_market } }
 			OR = { tag = RAJ tag = HND tag = PAK tag = NEP tag = BHU tag = BNG tag = AFG tag = MLD tag = SRL }
 		}
+
 		allow = {
 			has_country_flag = xio_ambition
 			OR = { government = socialist_democracy government = democracy1 government = democracy government = hms_government government = hms_government1 }
 			capitalism = 1
 			war = no
 		}
+
 		effect = {
 			capital_scope = {  add_province_modifier = { name = single_market duration = -1 } }
 		}
+
 		ai_will_do = { factor = 1 }
+
 	}
 
 	xio_currency_union = {
 		picture = "currency_union"
 		potential = {
-NOT = { has_country_flag = hide_superstate }
+			NOT = { has_country_flag = hide_superstate }
 			NOT = { capital_scope = { has_province_modifier = currency_union_province } }
 			OR = { tag = HND tag = PAK tag = NEP tag = BHU tag = BNG tag = AFG tag = MLD tag = SRL }
 		}
+
 		allow = {
 			has_country_flag = xio_ambition
 			capital_scope = { has_province_modifier = single_market }
@@ -114,16 +123,19 @@ NOT = { has_country_flag = hide_superstate }
 			election = no
 			war = no
 		}
+
 		effect = {
 			capital_scope = {  add_province_modifier = { name = currency_union_province duration = -1 } }
 		}
+
 		ai_will_do = { factor = 1 } 
+
 	}
 
 	xio_political_union = {
 		picture = "xio_ambition"
 		potential = {
-NOT = { has_country_flag = hide_superstate }
+			NOT = { has_country_flag = hide_superstate }
 			NOT = { capital_scope = { is_core = XIO } }
 			OR = { tag = RAJ tag = HND tag = PAK tag = NEP tag = BHU tag = BNG tag = AFG tag = MLD tag = SRL }
 		}
@@ -139,7 +151,7 @@ NOT = { has_country_flag = hide_superstate }
 		effect = {
 			all_core = { add_core = XIO }
 		}
-		ai_will_do = { factor = 1 } # modifier = { factor = 1 consciousness = 2 } }
+		ai_will_do = { factor = 1 } 
 	}
 	xio_defence_union = {
 		picture = "defence_union"
@@ -200,10 +212,23 @@ NOT = { has_country_flag = hide_superstate }
 	xio_enlarge_union = {
 		picture = "xio_ambition"
 		potential = {
-NOT = { has_country_flag = hide_superstate }
+			NOT = { has_country_flag = hide_superstate }
 			tag = XIO
-			any_neighbor_country = { has_country_flag = xio_ambition in_sphere = THIS NOT = { has_country_modifier = rejected_union } }
+            XIO = { 
+				any_core = { 
+					owner = { 
+						NOT = { tag = THIS}
+						OR = { 
+							in_sphere = THIS 
+							vassal_of = THIS
+						} 
+						has_country_flag = xio_ambition
+						NOT = { has_country_modifier = rejected_union }
+					}
+				}
+			}
 		}
+
 		allow = {
 			OR = { government = socialist_democracy government = democracy1 government = democracy government = hms_government government = hms_government1 }
 			election = no
@@ -211,11 +236,19 @@ NOT = { has_country_flag = hide_superstate }
 			political_polarization = 1
             war = no
 		}
+
 		effect = {
-			any_neighbor_country = { limit = { has_country_flag = xio_ambition OR = { vassal_of = THIS in_sphere = THIS } } country_event = 11106 }
+			random_country = {
+				limit = {
+					has_country_flag = xio_ambition
+					OR = { vassal_of = THIS in_sphere = THIS }
+				}
+			country_event = 11106
+			}
 		}
-		ai_will_do = {
-			factor = 1
-		}
-	}		
+
+		ai_will_do = { factor = 1 }
+
+	}
+
 }
