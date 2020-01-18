@@ -1824,7 +1824,7 @@ ai_chance = { factor = 1 modifier = { factor = 0 has_recently_lost_war = yes } }
 FROM = { release_vassal = THIS }
 any_pop = { 
 ideology = {
-	factor = 0.2
+	factor = 0.1
 	value = nationalist
 } 
 	}
@@ -1924,7 +1924,7 @@ ai_chance = { factor = 0.2 }
 country_event = {
 	id = 1412069
 	title = "Independence Vote Required"
-	desc = "$FROMCOUNTRY$ has offered to let $COUNTRY$ achieve independence if the majority of people in $COUNTRY$ demands it. Therefore they have granted us the authority to hold an independence vote to let the people's will determine  our future."
+	desc = "$FROMCOUNTRY$ has offered to let $COUNTRY$ achieve independence if the majority of people in $COUNTRY$ demand it. Therefore they have granted us the authority to hold an independence vote to let the people's will determine  our future."
 	picture = "independence_permission"
 
 is_triggered_only = yes
@@ -1936,34 +1936,43 @@ add_country_modifier = { name = revolution_chaos duration = 365 }
 add_country_modifier = { name = independence_vote_permission duration = 730 }
 any_pop = { 
 ideology = {
-	factor = 0.1
+	factor = 0.01
 	value = nationalist
 } 
 	}
 					}
 		}
 
-#Puppet Requests Independence
+#Puppet Requests Independence - The Vote
 country_event = {
 	id = 1412070
-	title = "Independence Vote of $YEAR$"
-	desc = "Our independence vote to determine if the people want independence is underway. We will win if nationalist or populist are the majority ideologies in every province in $COUNTRY$. We will know the result in approximately half a month."
+	title = "$YEAR$ $COUNTRY_ADJ$ Independence Referendum"
+	desc = "Our independence vote to determine if the people want independence is underway. We will win if conservatives, liberals, progressives or centrists are not the majority ideology in $COUNTRY$. We will know the result in approximately half a month."
 	picture = "independence_vote"
 
-is_triggered_only = yes
+trigger = {
+is_vassal = yes
+has_country_flag = hold_independence_referendum
+}
+	
+mean_time_to_happen = { 
+months = 6
+}
 
 	option = {
 		name = "We hope for the best"
+any_pop = { militancy = -5 }
+clr_country_flag = hold_independence_referendum
 remove_country_modifier = independence_vote_permission
 any_owned = { add_province_modifier = { name = voted_independence duration = 100 } }
 					}
 		}
 
-#Puppet Requests Independence
+#Puppet Requests Independence - vote fails
 country_event = {
 	id = 1412071
-	title = "Independence Vote Fails"
-	desc = "Our independence vote to determine if the people want independence fails. $OVERLORD$ will now have the mandate to reject independence for our nation."
+	title = "$COUNTRY_ADJ$ Independence Referendum Fails"
+	desc = "Our independence vote to determine if the people want independence failed. Our overlord will now have the mandate to reject independence for our nation."
 	picture = "independence_fails"
 
 trigger = {
@@ -1981,10 +1990,6 @@ prestige = -25
 any_owned = { remove_province_modifier = voted_independence }
 any_pop = { 
 ideology = {
-	factor = -0.4
-	value = nationalist
-} 
-ideology = {
 	factor = 0.4
 	value = conservative
 } 
@@ -1992,10 +1997,10 @@ ideology = {
 					}
 		}
 
-#Puppet Requests Independence
+#Puppet Requests Independence - vote passes
 country_event = {
 	id = 1412072
-	title = "Independence Vote passes"
+	title = "$COUNTRY_ADJ$ Independence Referendum Passes"
 	desc = "Our independence vote to determine if the people want independence passes. Our overlord will now have the mandate to grant independence for our nation."
 	picture = "independence_passes"
 
@@ -2025,9 +2030,9 @@ ideology = {
 #Puppet Requests Independence
 country_event = {
 	id = 1412073
-	title = "$COUNTRY_ADJ$ Self-Determination Conference"
+	title = "$COUNTRY_ADJ$ Independence Day"
 	desc = "Our Overlord has accepted our request for self determination. We now need to decide what our post-independence relations with $FROMCOUNTRY$ will be."
-	picture = "independence_conference"
+	picture = "independence_day_vote"
 
 is_triggered_only = yes
 
