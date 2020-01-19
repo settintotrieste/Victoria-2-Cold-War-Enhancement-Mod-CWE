@@ -277,7 +277,7 @@ royalist_rebels = {
 	allow_all_ideologies = no
 	
 	resilient = yes					# Disbands on retreat
-	reinforcing = no				# Does not receive reinforcements
+	reinforcing = yes			# Does not receive reinforcements
 	general = yes					# Does use generals
 	smart = yes					# Does not assault forts, tactically withdraw from battle, etc.
 	unit_transfer = no				# Units do not remain after enforcing demands.
@@ -422,6 +422,199 @@ country = { primary_culture = arab ruling_party_ideology = socialist }
 		prestige_factor = -0.2		
 		war_exhaustion = 50
 		country_event = 800054
+	}
+
+}
+
+###################################
+# Militant Environmentalists
+###################################
+militant_environmentalists = {
+	icon = 10
+	
+	area = nation 			# Stays within the nation
+	
+	break_alliance_on_win = no
+	
+	# <this is the governement in the country> = <this is what the rebels want>
+	government = {
+
+	hms_government1 = hms_government1
+	proletarian_dictatorship1 = proletarian_dictatorship1
+	colonial_government = colonial_government
+	democracy1 = democracy1
+	sar_government = sar_government
+	socialist_democracy = socialist_democracy
+	mandate_government = mandate_government
+	theocracy = theocracy
+	proletarian_dictatorship = proletarian_dictatorship 
+	presidential_dictatorship = presidential_dictatorship 
+	nationalist_dictatorship = nationalist_dictatorship 
+	populist_dictatorship = populist_dictatorship 
+	absolute_monarchy = absolute_monarchy
+	hms_government = hms_government 
+	democracy = democracy
+
+	}
+	
+	
+	defection = none			# Will defect to the "best" alternative.
+	independence = none				# Does not strive for independence
+	defect_delay = 18
+	
+	ideology = progressive
+	
+	allow_all_cultures = yes
+	allow_all_religions = yes
+	allow_all_ideologies = no
+	
+	resilient = yes					# Disbands on retreat
+	reinforcing = no				# Does not receive reinforcements
+	general = yes					# Does use generals
+	smart = yes					# Does not assault forts, tactically withdraw from battle, etc.
+	unit_transfer = no				# Units do not remain after enforcing demands.
+	
+	occupation_mult = 1.0			# The amount of strength this rebel gains from taking provinces
+
+	# triggers a general rising, modifier will be multiplied with the countrys army strength and compared to the factions strenght
+	will_rise = 
+	{
+		factor = 0.5
+		
+		modifier = {
+			war = yes
+			factor = 0
+		}
+		
+		modifier = {
+			war_exhaustion = 4
+			factor = 0.95
+		}
+		
+		modifier = {
+			war_exhaustion = 6
+			factor = 0.95
+		}
+		
+		modifier = {
+			war_exhaustion = 8
+			factor = 0.95
+		}
+	}
+	
+	# The rebel type with the highest modifier for this pop gets picked
+	spawn_chance = {
+		factor = 1.02
+
+		#No militant environmentalists until after 1 degree
+		modifier = { 
+			factor = 0 
+			NOT = { has_country_flag = one_degree } 
+		}
+
+modifier = { factor = 1.25 has_country_flag = two_degree }
+modifier = { factor = 1.50 has_country_flag = three_degree }
+modifier = { factor = 2.00 has_country_flag = 45_degree }
+
+		modifier = {
+			factor = 0
+			country = { pollution = good_envir }
+		}
+		modifier = {
+			factor = 0.1
+			NOT = { pop_majority_ideology = progressive }
+		}
+		modifier = {
+			factor = 1.0115
+			literacy = 0.3
+		}
+		modifier = {
+			factor = 1.0115
+			literacy = 0.35
+		}
+		modifier = {
+			factor = 1.0115
+			literacy = 0.4
+		}
+		modifier = {
+			factor = 1.0115
+			literacy = 0.45
+		}
+		modifier = {
+			factor = 1.0115
+			literacy = 0.50
+		}
+		modifier = {
+			factor = 1.0115
+			literacy = 0.55
+		}
+		modifier = {
+			factor = 1.0115
+			literacy = 0.60
+		}
+		modifier = {
+			factor = 0.1
+			is_primary_culture = no
+			is_accepted_culture = no
+		}
+		modifier = {
+			factor = 0.5
+			is_accepted_culture = yes
+		}
+	}
+ 
+ 	#This is checked for EACH province in the Area of Operations
+	movement_evaluation = {
+		factor = 1
+		modifier = {
+			factor = 0.1
+			units_in_province = 1
+		}
+		modifier = {
+			factor = 0.001
+			controlled_by = REB
+		}
+		modifier = {
+			factor = 1.5
+			average_militancy = 4
+		}
+		modifier = {
+			factor = 1.5
+			average_militancy = 6
+		}
+		modifier = {
+			factor = 1.5
+			average_militancy = 8
+		}
+		modifier = {
+			factor = 2.0
+			is_capital = yes
+		}
+	}
+	
+ 	# Province Scope
+ 	siege_won_trigger = {
+		NOT = { has_province_modifier = war_torn }
+ 	}
+	
+	siege_won_effect = {
+		add_province_modifier = {
+			name = war_torn
+			duration = 5
+		}
+		owner = { war_exhaustion = 1 }
+	}
+
+	# Country scope
+	demands_enforced_trigger = {
+		capital_scope = {
+			controlled_by = REB
+			province_control_days = 30
+		}
+	}
+	
+	demands_enforced_effect = {
+		social_reform = good_envir
 	}
 
 }
