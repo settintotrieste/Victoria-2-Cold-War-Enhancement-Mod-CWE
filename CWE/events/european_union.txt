@@ -1,3 +1,4 @@
+#Schuman declaration
 country_event = {
   id = 8232001
   title = EVT_8232000_NAME
@@ -7,20 +8,24 @@ country_event = {
 
   option = {
     name = EVT_8232001_B
+	prestige = 25
+	badboy = -5
 	relation = { who = FROM value = 50 } 
-	FROM = { diplomatic_influence = { who = THIS value = 50 } }
+FROM = { diplomatic_influence = { who = THIS value = 50 } }
 	set_country_flag = schuman_declaration
 	ai_chance = { factor = 100 }
   }
 
   option = {
     name = EVT_8232001_C
-	any_pop = { militancy = 0.5 consciousness = 1 }
+FROM = { diplomatic_influence = { who = THIS value = -50 } }
 	relation = { who = FROM value = -50 } 
 	ai_chance = { factor = 0 }
   }
+
 }
 
+#European Coal and Steel Community
 country_event = {
   id = 8232041
   title = EVT_8232041_NAME
@@ -30,47 +35,117 @@ country_event = {
 
   option = {
     name = EVT_8232041_A
+	prestige = 25
+	badboy = -5
 	relation = { who = FROM value = 50 }
-	FROM = { diplomatic_influence = { who = THIS value = 100 } } 
+FROM = { diplomatic_influence = { who = THIS value = 100 } } 
 	set_country_flag = trade_block_ambition
 	ai_chance = { factor = 100 }
   }
 
   option = {
     name = EVT_8232041_B
-	any_pop = { militancy = 0.5 consciousness = 1 }
+FROM = { diplomatic_influence = { who = THIS value = -50 } }
 	relation = { who = FROM value = -50 } 
 	ai_chance = { factor = 0 }
   }
+
 }
+
+#European Economic Community - Treaty of Rome
 country_event = {
   id = 8232050
-  title = EVT_8232050_NAME
-  desc = EVT_8232050_DESC
+  title = "The Treaty of Rome"
+  desc = EVTDESC8232050
   picture = "nwo2_european_economic_community"
-  fire_only_once = yes
   
-  major = yes
-
   trigger = {
-	is_greater_power = yes
 	has_global_flag = european_coal_and_steel_community
 	has_country_flag = xeu_ambition
-    	has_country_flag = disabled_for_now
+
+	tech_school = XEU_tech_school
+
+	NOT = { capitalism = 1 }
+
+	NOT = { has_country_flag = treaty_of_rome_event }
+
+	year = 1957
+
+#GP UK cannot join if France is a GP in the EEC
+NOT = { 
+AND = { 
+tag = ENG
+is_greater_power = yes
+FRA = { is_greater_power = yes has_country_flag = xeu_ambition }
+	} 
+}
+
   }
 
-  mean_time_to_happen = { months = 1  }
+  mean_time_to_happen = { months = 3 }
 
   option = {
-    name = EVT_8232050_A
-	any_neighbor_country = { 
-		limit = { has_country_flag = trade_block_ambition }
-		relation = { who = THIS value = 200 } 
-	}
+    name = "We are one step closer to a united Europe"
+	prestige = 100
+	badboy = -5
+	set_global_flag = eec_single_market
+	set_country_flag = treaty_of_rome_event
+any_owned = { add_province_modifier = { name = single_market duration = -1 } }
   }
+
+}
+
+#UK joins the EEC
+country_event = {
+  id = 8232051
+  title = "Accession of the UK into the EEC"
+  desc = EVTDESC8232051
+  picture = "uk_joins_the_eec"
+  fire_only_once = yes
   
+  trigger = {
+	has_global_flag = eec_single_market
+	has_country_flag = schuman_declaration
+	has_country_flag = trade_block_ambition
+	NOT = { has_country_flag = xeu_ambition }
+
+	NOT = { tech_school = XEU_tech_school }
+
+	has_country_flag = blocked_from_superstate_historical
+
+	tag = ENG
+OR = { government = hms_government government = democracy }
+	war = no
+	is_greater_power = yes
+	NOT = { badboy = 0.75 }
+
+	year = 1973
+	NOT = { year = 1990 }
+
+	NOT = { capitalism = 1 }
+
+  }
+
+  mean_time_to_happen = { months = 1 }
+
   option = {
-    name = EVT_8232050_B
-  }  
+	name = "About bloody time!"
+	prestige = 100
+	badboy = -5
+	clr_country_flag = blocked_from_superstate_historical
+	set_country_flag = uk_joins_eec
+	set_country_flag = trade_block_ambition
+	set_country_flag = in_trade_block
+	set_country_flag = xeu_ambition
+	tech_school = XEU_tech_school
+any_owned = { add_province_modifier = { name = single_market duration = -1 } }
+	ai_chance = { factor = 1 }
+  }
+
+  option = {
+    name = "Embrace global Britain"
+	clr_country_flag = trade_block_ambition
+	ai_chance = { factor = 0 }
+  }
 
 }

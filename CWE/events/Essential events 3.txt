@@ -301,63 +301,129 @@ set_country_flag = ibrd_chairmanship
 set_global_flag = ibrdusafirst
 		}
 }
-#End of the India Office
+#UK Choice to go with Empire or the EEC
 country_event = {
 	id = 1300026
-	title = "End of the India Office"
-	desc = "With the independence of India, the India Office is no longer necessary and its remnants will be merged with whatever that is left of the Colonial Office." 
+	title = "Future of British Foreign Policy"
+	desc = EVTDESC1300026
 	picture = "indiaoffice"
+
+fire_only_once = yes
 	
-trigger = { 
-tag = ENG
-NOT = { year = 1990 }
-exists = HND
-NOT = { exists = RAJ }
-NOT = { is_our_vassal = RAJ }
-NOT = { has_country_flag = indiaoffice }
-}
-	option = {
-	name = "There is no need for it anymore"
-prestige = -5
-set_country_flag = indiaoffice
+	trigger = { 
+		tag = ENG
+		NOT = { year = 1990 }
+		exists = HND
+		NOT = { exists = RAJ }
+		NOT = { is_our_vassal = RAJ }
+		has_country_modifier = commonwealthmembereng
 	}
+
+	option = {
+		name = "Pivot towards Europe"
+any_country = {
+limit = { is_vassal = no capital_scope = { continent = europe } }
+relation = { who = THIS value = 50 }
+}
+		set_country_flag = british_europe_choice
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Keep ties with the Commonwealth"
+any_country = {
+limit = { is_vassal = no in_sphere = THIS }
+relation = { who = THIS value = 50 }
+}
+		set_country_flag = british_empire_choice
+		ai_chance = { factor = 0.1 }
+	}
+
 }
 #Decolonisation remove techschool
 country_event = {
 	id = 1300027
-	title = "Should we renounce our imperialism?"
+	title = "Decline of the $COUNTRY_ADJ$ Empire"
 	desc = EVT_15403_DESC
 	picture = "colonialism_self_rule"
 
 	trigger = {
-		year = 1954
-		OR = { 
-AND = { tag = POR tech_school = POR_tech_school }
-AND = { tag = ENG tech_school = ENG_tech_school }
-AND = { tag = FRA tech_school = FRA_tech_school }
-AND = { tag = SPA tech_school = SPA_tech_school }
-		}
-		NOT = { year = 1990 }
-		NOT = { has_country_flag = decoloniasation2 }
 
+		NOT = { year = 1990 }
+
+		OR = { 
+AND = { 
+tag = POR
+war = no
+OR = { is_vassal = yes is_greater_power = no }
+NOT = { is_our_vassal = ANG } NOT = { owns = 1999 }
+NOT = { is_our_vassal = MOZ } NOT = { owns = 2049 }
+}
+
+AND = { 
+tag = ENG
+war = no
+OR = { is_vassal = yes is_greater_power = no }
+NOT = { is_our_vassal = RAJ } NOT = { owns = 1236 }
+NOT = { is_our_vassal = HND } NOT = { owns = 1236 }
+NOT = { is_our_vassal = NGE } NOT = { owns = 1941 }
+NOT = { is_our_vassal = SUD } NOT = { owns = 1827 }
+NOT = { is_our_vassal = TAN } NOT = { owns = 2036 }
+NOT = { is_our_vassal = FMS } NOT = { owns = 1387 }
+NOT = { is_our_vassal = MSY } NOT = { owns = 1387 }
+}
+
+AND = { 
+tag = FRA
+war = no
+OR = { is_vassal = yes is_greater_power = no }
+NOT = { is_our_vassal = ALG } NOT = { owns = 1700 }
+NOT = { is_our_vassal = CAR } NOT = { owns = 1965 }
+NOT = { is_our_vassal = IVC } NOT = { owns = 1892 }
+NOT = { is_our_vassal = MAD } NOT = { owns = 2115 }
+NOT = { is_our_vassal = MLI } NOT = { owns = 1794 }
+}
+
+AND = { 
+tag = SPA
+war = no
+OR = { is_vassal = yes is_greater_power = no }
+NOT = { is_our_vassal = WSA } NOT = { owns = 1773 }
+NOT = { is_our_vassal = EQG } NOT = { owns = 1955 }
+}
+
+AND = { 
+tag = FBU
+war = no
+OR = { is_vassal = yes is_greater_power = no }
+NOT = { is_our_vassal = RAJ } NOT = { owns = 1236 }
+NOT = { is_our_vassal = HND } NOT = { owns = 1236 }
+NOT = { is_our_vassal = NGE } NOT = { owns = 1941 }
+NOT = { is_our_vassal = SUD } NOT = { owns = 1827 }
+NOT = { is_our_vassal = TAN } NOT = { owns = 2036 }
+NOT = { is_our_vassal = FMS } NOT = { owns = 1387 }
+NOT = { is_our_vassal = MSY } NOT = { owns = 1387 }
+NOT = { is_our_vassal = ALG } NOT = { owns = 1700 }
+NOT = { is_our_vassal = CAR } NOT = { owns = 1965 }
+NOT = { is_our_vassal = IVC } NOT = { owns = 1892 }
+NOT = { is_our_vassal = MAD } NOT = { owns = 2115 }
+NOT = { is_our_vassal = MLI } NOT = { owns = 1794 }
+}
+
+		}
+
+		NOT = { has_country_flag = decoloniasation2 }
 	}
 
-	mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 6 }
 
 	option = {
-		name = "Yes we should"
-		tech_school = industrial_tech_school
-		prestige = -50
+		name = "Au revoir $COUNTRY_ADJ$ imperialism!"
+		prestige_factor = -0.05 
 		badboy = -5
 		set_country_flag = decoloniasation2
-		ai_chance = { factor = 100 }
 		}
-	option = {
-		name = "Of course not, what a silly idea!"
-		prestige = 10
-		set_country_flag = decoloniasation2
-		ai_chance = { factor = 0 }
-		}
+
 }
 
 #Rename as Vietnam
@@ -644,23 +710,27 @@ remove_country_modifier = defcon4
 remove_country_modifier = defcon5
 		}
 	}
+
 #End of the Capital of the Empire
 country_event = {
 	id = 1400012
-	title = "End of $CAPITAL$ as an imperial capital"
+	title = "End of $CAPITAL$ as an Imperial Capital"
 	desc = "With the loss of our empire, our capital can no longer be classified as an imperial capital."
 	picture = "imperialcapital"
 
 	trigger = {
 		has_country_flag = decoloniasation2
 		NOT = { has_country_flag = impcapital }
+	capital_scope = { has_province_modifier = new_capital }
 		}
 	
 	option = {
-		name = "We need to find a new role for our capital!"
+	name = "We need to find a new role for our capital!"
 		prestige = -10
+	any_owned = { remove_province_modifier = new_capital }
 		set_country_flag = impcapital
 		}
+
 	}
 
 #Kick out of OPEC
