@@ -2106,23 +2106,29 @@ ai_chance = { factor = 0.2 }
 #Start of Factionalism
 country_event = {
 	id = 1412074
-	title = "Our $MONARCHTITLE$ has died"
+	title = "Death of the $MONARCHTITLE$"
 	desc = EVTDESC1412074
 	picture = "great_leader_killed"
 
 trigger = {
 
-year = 1960
+has_country_flag = president_for_life
 
-NOT = { AND = { tag = SPA government = populist_dictatorship NOT = { year = 1990 } } }
+#Historical
+NOT = { AND = { tag = SPA government = populist_dictatorship NOT = { year = 1985 } } }
 
-NOT = { AND = { tag = POR government = populist_dictatorship NOT = { year = 1990 } } }
+NOT = { AND = { tag = POR government = populist_dictatorship NOT = { year = 1975 } } }
 
-NOT = { AND = { tag = RHO government = populist_dictatorship NOT = { year = 1990 } } }
+NOT = { AND = { tag = RUS government = proletarian_dictatorship NOT = { year = 1990 } } }
 
-OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship AND = { government = proletarian_dictatorship ruling_party_ideology = communist NOT = { has_global_flag = blocsenabled } } }
+NOT = { AND = { tag = CHI government = proletarian_dictatorship NOT = { year = 1975 } } }
 
-war = no
+NOT = { AND = { tag = NKO government = proletarian_dictatorship NOT = { year = 1990 } } }
+
+NOT = { AND = { tag = DAI government = proletarian_dictatorship NOT = { year = 1980 } } }
+
+#Dictatorships only
+OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship government = proletarian_dictatorship government = proletarian_dictatorship1 government = theocracy }
 
 NOT = { has_country_modifier = power_vacuum }
 
@@ -2133,13 +2139,7 @@ NOT = { has_country_modifier = government_consensus }
 }
 
 mean_time_to_happen = { 
-months = 240 
-modifier = { factor = 2 NOT = { year = 1986 } }
-modifier = { factor = 0.9 average_militancy = 2 }
-modifier = { factor = 0.8 average_militancy = 3 } 
-modifier = { factor = 0.7 average_militancy = 4 }
-modifier = { factor = 0.6 average_militancy = 5 }
-modifier = { factor = 0.5 average_militancy = 6 }  
+months = 360
 }
 
 	option = {
@@ -2177,10 +2177,11 @@ clr_country_flag = centre_set_up
 clr_country_flag = left_set_up
 clr_country_flag = far_left_set_up
 
-add_country_modifier = { name = power_vacuum duration = 365 }
-rich_strata = {
-	consciousness = 2
-	militancy = 8
+add_country_modifier = { name = power_vacuum duration = 730 }
+
+any_pop = {
+consciousness = 2
+militancy = 1
 }
 					}
 		}
@@ -2194,7 +2195,7 @@ title = "$YEAR$ Congress to select new $MONARCHTITLE$"
 
 trigger = {
 
-OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship government = absolute_monarchy AND = { government = proletarian_dictatorship ruling_party_ideology = communist NOT = { has_global_flag = blocsenabled } } }
+OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship government = proletarian_dictatorship government = proletarian_dictatorship1 government = theocracy }
 
 has_country_modifier = power_vacuum
 
@@ -2209,106 +2210,74 @@ NOT = { has_country_modifier = government_consensus }
 mean_time_to_happen = { month = 1 }
 
 	option = {
-	name = "Select a party hardliner to be $MONARCHTITLE$"
-ai_chance = { factor = 0.5 }
+	name = "Let the leadership contest begin!"
 add_country_modifier = { name = factionalism duration = 730 }
-
-country_event = 111222
-
-random_list = {
-	25 = { country_event = 1412076 }
-	75 = { country_event = 1412077 }
-}
-
-rich_strata = {
-	consciousness = -2
-	militancy = -8
-}
-middle_strata = {
-	consciousness = 4
-	militancy = 6
-}
-poor_strata = {
-	consciousness = 2
-	militancy = 2
-}
-					}
-
-	option = {
-	name = "Select a military stooge to be $MONARCHTITLE$"
-add_country_modifier = { name = factionalism duration = 730 }
-ai_chance = { factor = 0.4 }
-
-country_event = 111222
-
-random_list = {
-	10 = { country_event = 1412076 }
-	90 = { country_event = 1412077 }
-}
-
-country_event = 1412078 #Militarisation
-rich_strata = {
-	consciousness = -1
-	militancy = -6
-}
-middle_strata = {
-	consciousness = 2
-	militancy = 4
-}
-poor_strata = {
-	consciousness = 1
-	militancy = 1
-}
-					}
-	option = {
-	name = "Select a reformer to be $MONARCHTITLE$"
-add_country_modifier = { name = factionalism duration = 730 }
-ai_chance = { factor = 0.1 }
-
-country_event = 111222
-
-random_list = {
-	75 = { country_event = 1412076 }
-	25 = { country_event = 1412077 }
-}
-
-country_event = { id = 1412079 days = 60 } #Winds of Change
-rich_strata = {
-	consciousness = 4
-	militancy = 6
-}
-middle_strata = {
-	consciousness = 2
-	militancy = -4
-}
-poor_strata = {
-	consciousness = 1
-	militancy = -2
-}
-					}
+		country_event = 111222
+	}
 
 		}
 
-#Civil War - Factionalism
+#Choice for the new dictator
 country_event = {
 	id = 1412076
-	title = "Civil War stirrings"
+	title = "Speech by the New $MONARCHTITLE$"
 	desc = EVTDESC1412076
-	picture = "civil_war_coming"
+	picture = "new_dictator_speech"
 
-is_triggered_only = yes
+	trigger = {
+
+OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship government = proletarian_dictatorship government = proletarian_dictatorship1 government = theocracy }
+
+has_country_modifier = factionalism
+has_country_modifier = power_vacuum
+
+NOT = { has_country_flag = leadership_election }
+
+	}
+
+mean_time_to_happen = { month = 1 }
+
 	option = {
-	name = "Prepare our loyalists to repel all traitors!"
-prestige = -25
-rich_strata = {
-	militancy = 9
+	name = "I will preserve the status quo!"
+
+	remove_country_modifier = power_vacuum
+
+#Elites will be happy
+any_pop = { 
+limit = { OR = { type = officers type = aristocrats type = bureaucrats } }
+militancy = -10
 }
-middle_strata = {
-	militancy = 10
+
+	ai_chance = { factor = 0.6 }
+				}
+
+	option = {
+	name = "I will crush the counter-revolutionaries!"
+	badboy = 2
+	prestige_factor = -0.025
+	country_event = 1412077
+	remove_country_modifier = power_vacuum
+	ai_chance = { factor = 0.4 }
+				}
+
+	option = {
+	name = "I will start immediate political reforms!"
+	prestige_factor = -0.1
+	country_event = 800054
+	remove_country_modifier = power_vacuum
+
+#Coup risk
+add_country_modifier = { name = coup_risk duration = 1825 }
+
+#Elites get angry
+any_pop = { 
+limit = { OR = { type = officers type = aristocrats type = bureaucrats } }
+militancy = 10 
 }
-poor_strata = {
-	militancy = 8
-}					}
+
+	ai_chance = { factor = 0 }
+				}
+
 		}
 
 #Purge - Factionalism
@@ -2318,15 +2287,74 @@ country_event = {
 	desc = EVTDESC1412077
 	picture = "party_purge_ongoing"
 
-is_triggered_only = yes
+	is_triggered_only = yes
 
 	option = {
 		name = "Liquidate any opposition!"
-prestige = -10
-any_pop = { militancy = 1 }
-any_pop = { consciousness = -6 }
-					}
-		}
+
+		remove_country_modifier = factionalism
+
+		any_pop = { militancy = 2 consciousness = -8 }
+
+#Reduce elite pop by 30%
+any_pop = { 
+limit = { OR = { type = officers type = aristocrats type = bureaucrats type = soldiers } }
+reduce_pop = 0.70
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = conservative } }
+owner = { any_pop = { limit = { OR = { type = officers type = aristocrats type = bureaucrats type = soldiers } } ideology = { factor = 0.25 value = conservative } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = big_tent } }
+owner = { any_pop = { limit = { OR = { type = officers type = aristocrats type = bureaucrats type = soldiers } } ideology = { factor = 0.25 value = big_tent } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = socialist } }
+owner = { any_pop = { limit = { OR = { type = officers type = aristocrats type = bureaucrats type = soldiers } } ideology = { factor = 0.25 value = socialist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = traditionalist } }
+owner = { any_pop = { limit = { OR = { type = officers type = aristocrats type = bureaucrats type = soldiers } } ideology = { factor = 0.25 value = traditionalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = populist } }
+owner = { any_pop = { limit = { OR = { type = officers type = aristocrats type = bureaucrats type = soldiers } } ideology = { factor = 0.25 value = populist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = nationalist } }
+owner = { any_pop = { limit = { OR = { type = officers type = aristocrats type = bureaucrats type = soldiers } } ideology = { factor = 0.25 value = nationalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = progressive } }
+owner = { any_pop = { limit = { OR = { type = officers type = aristocrats type = bureaucrats type = soldiers } } ideology = { factor = 0.25 value = progressive } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = liberal } }
+owner = { any_pop = { limit = { OR = { type = officers type = aristocrats type = bureaucrats type = soldiers } } ideology = { factor = 0.25 value = liberal } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist } }
+owner = { any_pop = { limit = { OR = { type = officers type = aristocrats type = bureaucrats type = soldiers } } ideology = { factor = 0.25 value = communist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist_social } }
+owner = { any_pop = { limit = { OR = { type = officers type = aristocrats type = bureaucrats type = soldiers } } ideology = { factor = 0.25 value = communist_social } } }
+}
+
+	}
+
+}
 
 #Militarisation - Factionalism
 country_event = {
