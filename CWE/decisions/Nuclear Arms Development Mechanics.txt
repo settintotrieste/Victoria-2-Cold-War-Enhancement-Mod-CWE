@@ -108,25 +108,59 @@ money = -2000000
 		}
 	}
 
+reset_bomb = {
+picture = "reset_bomb"
+alert = no
+potential = {
+
+OR = { has_country_modifier = atomic_nation
+has_country_modifier = hydrogen_nation }
+OR = { 
+has_country_flag = icbm_bomb
+has_country_flag = sub_bomb 
+has_country_flag = air_bomb 
+has_country_modifier = tactical_nukes 
+}
+		}
+
+allow = {
+war = no
+OR = { 
+ai = no 
+AND = { ai = yes is_greater_power = no is_secondary_power = no has_country_flag = icbm_bomb has_country_flag = sub_bomb }
+AND = { ai = yes is_greater_power = no has_country_flag = icbm_bomb }
+} 
+	}
+
+effect = {
+clr_country_flag = icbm_bomb
+clr_country_flag = sub_bomb
+clr_country_flag = air_bomb
+
+remove_country_modifier = tactical_nukes
+}
+
+}
+
 air_bomb = {
 picture = "air_bomb"
 potential = {
 strategic_bomber = 1
 OR = { has_country_modifier = atomic_nation
 has_country_modifier = hydrogen_nation }
-NOT = { has_country_modifier = air_bomb }
+NOT = { has_country_flag = air_bomb }
 		}
 
 allow = {
 strategic_bomber = 1
 OR = { has_country_modifier = atomic_nation
 has_country_modifier = hydrogen_nation }
-NOT = { has_country_modifier = air_bomb }
+NOT = { has_country_flag = air_bomb }
 
 	}
 
 		effect = {
-add_country_modifier = { name = air_bomb duration = -1 }
+set_country_flag = air_bomb
 		}
 	}
 
@@ -135,7 +169,7 @@ picture = "sub_bomb"
 potential = {
 OR = { has_country_modifier = atomic_nation
 has_country_modifier = hydrogen_nation }
-NOT = { has_country_modifier = sub_bomb }
+NOT = { has_country_flag = sub_bomb }
 num_of_ports = 1
 submarine_launched_ballistic_missile = 1
 has_country_modifier = hydrogen_nation
@@ -144,7 +178,7 @@ has_country_modifier = hydrogen_nation
 allow = {
 OR = { has_country_modifier = atomic_nation
 has_country_modifier = hydrogen_nation }
-NOT = { has_country_modifier = sub_bomb }
+NOT = { has_country_flag = sub_bomb }
 num_of_ports = 1
 
 OR = { is_secondary_power = yes is_greater_power = yes }
@@ -152,7 +186,7 @@ submarine_launched_ballistic_missile = 1
 	}
 
 effect = {
-add_country_modifier = { name = sub_bomb duration = -1 }	
+set_country_flag = sub_bomb	
 }
 	}
 
@@ -161,14 +195,14 @@ picture = "icbm_bomb"
 potential = {
 OR = { has_country_modifier = atomic_nation
 has_country_modifier = hydrogen_nation }
-NOT = { has_country_modifier = icbm_bomb }
+NOT = { has_country_flag = icbm_bomb }
 icbm = 1
 		}
 
 allow = {
 OR = { has_country_modifier = atomic_nation
 has_country_modifier = hydrogen_nation }
-NOT = { has_country_modifier = icbm_bomb }
+NOT = { has_country_flag = icbm_bomb }
 icbm = 1
 invention = second_generation_icbm
 has_country_modifier = hydrogen_nation
@@ -176,7 +210,8 @@ is_greater_power = yes
 	}
 
 effect = {
-add_country_modifier = { name = icbm_bomb duration = -1 }		}
+set_country_flag = icbm_bomb 
+		}
 }
 
 build_tactical_nuke = {
@@ -204,36 +239,6 @@ add_country_modifier = { name = tactical_nukes duration = -1 }
 			}
 	}
 
-reset_bomb = {
-picture = "reset_bomb"
-alert = no
-potential = {
-
-OR = { has_country_modifier = atomic_nation
-has_country_modifier = hydrogen_nation }
-OR = { has_country_modifier = icbm_bomb
-has_country_modifier = sub_bomb has_country_modifier = air_bomb }
-		}
-
-allow = {
-war = no
-OR = { 
-ai = no 
-AND = { ai = yes is_greater_power = no is_secondary_power = no has_country_modifier = icbm_bomb has_country_modifier = sub_bomb }
-AND = { ai = yes is_greater_power = no has_country_modifier = icbm_bomb }
-} 
-	}
-
-effect = {
-remove_country_modifier = icbm_bomb
-remove_country_modifier = sub_bomb
-remove_country_modifier = air_bomb
-
-remove_country_modifier = tactical_nukes
-}
-
-}
-
 disarm_bomb = {
 picture = "disarm_bomb"
 potential = {
@@ -258,9 +263,14 @@ remove_country_modifier = nuke_sanctions_relief
 
 remove_country_modifier = nuclear_blackmail_timer
 
-remove_country_modifier = icbm_bomb
-remove_country_modifier = sub_bomb
-remove_country_modifier = air_bomb
+clr_country_flag = icbm_bomb
+clr_country_flag = sub_bomb
+clr_country_flag = air_bomb
+
+remove_country_modifier = nuclear_cap_high
+remove_country_modifier = nuclear_cap_medium 
+remove_country_modifier = nuclear_cap_low
+
 sphere_owner = { relation = { who = THIS value = 100 } }
 remove_country_modifier = nuke_sanctions
 remove_country_modifier = hydrogen_nation 
