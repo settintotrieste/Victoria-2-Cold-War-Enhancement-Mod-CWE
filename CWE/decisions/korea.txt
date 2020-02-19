@@ -9,22 +9,38 @@ political_decisions = {
 				SKO = { vassal_of = THIS }
 				NKO = { vassal_of = THIS }
 			}
-			NOT = { exists = KOR }
+			KOR = { exists = no }
 			NOT = { has_country_flag = allow_form_korea }
 			1624 = { OR = { owned_by = SKO owned_by = NKO } }
 			1619 = { OR = { owned_by = SKO owned_by = NKO } }
 		}
 		allow = {
+			war = no
 			NKO = { war = no OR = { exists = no in_sphere = THIS vassal_of = THIS } }
 			SKO = { war = no OR = { exists = no in_sphere = THIS vassal_of = THIS } }
 		}
 		effect = {
 			set_country_flag = allow_form_korea
-			prestige = 20
+			prestige = 50
+
+#Instant unification if NKO and SKO is our puppet
+random_owned = {
+limit = { owner = { AND = { is_our_vassal = SKO is_our_vassal = NKO } } }
+		owner = { 
+			SKO = { change_tag = KOR }
+			SKO = { all_core = { add_core = KOR } }
+			NKO = { all_core = { add_core = KOR } }
+			inherit = SKO
+			inherit = NKO
+		diplomatic_influence = { who = SKO value = 200 }
+		}
+}
+
 		}
 		ai_will_do = {
 			factor = 1
 		}
+
 	}
 	
 	form_korea = {
@@ -34,66 +50,59 @@ political_decisions = {
 				tag = SKO
 				tag = NKO
 			}
+			KOR = { exists = no }
 		}
 		allow = {
 			war = no
-
+			is_vassal = no
 
 				OR = {
 
-						AND = {
-							SKO = {government = socialist_democracy}
-							NKO = {government = socialist_democracy}
-						}
+any_greater_power = {
+	OR = { 
+AND = { is_sphere_leader_of = SKO is_sphere_leader_of = NKO }
+AND = { is_our_vassal = SKO is_our_vassal = NKO }
+	has_country_flag = allow_form_korea
+	}
+}
 
-						AND = {
-							SKO = {government = proletarian_dictatorship}
-							NKO = {government = proletarian_dictatorship}
-						}
-						AND = {
-							SKO = {government = presidential_dictatorship}
-							NKO = {government = presidential_dictatorship}
-						}
-						AND = {
-							SKO = {government = populist_dictatorship}
-							NKO = {government = populist_dictatorship}
-						}
-						AND = {
-							SKO = {government = absolute_monarchy}
-							NKO = {government = absolute_monarchy}
-						}
-						AND = {
-							SKO = {government = hms_government}
-							NKO = {government = hms_government}
-						}
-						AND = {
-							SKO = {government = democracy}
-							NKO = {government = democracy}
-						}
-					}
+AND = {
+SKO = { government = socialist_democracy }
+NKO = { government = socialist_democracy }
+	}
 
-			OR = { 
-				AND = { 
-					exists = SKO
-					exists = NKO
-					NOT = { has_global_flag = korea_reformed }
-					SKO = { NOT = { war_with = NKO } }
-					OR = { # both can't be ai - find with multi player
-						AND = {
-							tag = SKO
-							NKO = {ai = yes is_vassal = no part_of_sphere = no }
-							is_vassal = no
-						}
-						AND = {
-							ai = no
-							tag = NKO
-							SKO = {ai = yes is_vassal = no part_of_sphere = no}
-							is_vassal = no
-						}
-					}
+AND = {
+SKO = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
+NKO = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
+	}
+
+AND = {
+SKO = { OR = { government = democracy government = democracy1 } }
+NKO = { OR = { government = democracy government = democracy1 } }
+	}
+
+AND = {
+SKO = { OR = { government = hms_government government = hms_government1 } }
+NKO = { OR = { government = hms_government government = hms_government1 } }
+	}
+
+AND = {
+SKO = { government = absolute_monarchy }
+NKO = { government = absolute_monarchy }
+	}
+
+AND = {
+SKO = { government = theocracy }
+NKO = { government = theocracy }
+	}
+
+AND = {
+SKO = { OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship } }
+NKO = { OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship } }
+	}
+
 				}
-		sphere_owner = { has_country_flag = allow_form_korea }
-			}
+
 		}
 		effect = {
 			prestige = 20
@@ -110,7 +119,12 @@ political_decisions = {
 		}
 		ai_will_do = {
 			factor = 1
+modifier = { 
+	factor = 0 
+	OR = { NKO = { ai = no } SKO = { ai = no } } 
+}
 		}
+
 	}
 	
 	claim_greater_korea = {
