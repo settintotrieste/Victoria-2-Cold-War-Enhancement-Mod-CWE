@@ -4,36 +4,45 @@ political_decisions = {
 		picture = "non_proliferation_treaty"
 		potential = {
 			year = 1968
-			NOT = { has_country_modifier = atomic_nation }
-			NOT = { has_country_modifier = hydrogen_nation }
-			NOT = { has_country_modifier = develop_atomic_bomb }
-			NOT = { has_country_modifier = develop_hydrogen_bomb }
-			NOT = { has_country_modifier = non_proliferation_treaty }
-			OR = {
-				badboy = 0.6 NOT = { badboy = 1 }
-				is_vassal = yes
+NOT = { has_country_modifier = atomic_nation }
+NOT = { has_country_modifier = hydrogen_nation }
+NOT = { has_country_modifier = develop_atomic_bomb }
+NOT = { has_country_modifier = develop_hydrogen_bomb }
 
-				NOT = { any_neighbor_country = { OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation } badboy = 15 NOT = { relation = { who = THIS value = -190 } } } }
-
-				is_secondary_power = no
-
-				AND = { has_country_modifier = alliance_nato OR = { USA = { has_country_modifier = atomic_nation } USA = { has_country_modifier = hydrogen_nation } } }
-				AND = { has_country_modifier = rio_pact OR = { USA = { has_country_modifier = atomic_nation } USA = { has_country_modifier = hydrogen_nation } } }
-				AND = { has_country_modifier = warsaw_pact OR = { RUS = { has_country_modifier = atomic_nation } RUS = { has_country_modifier = hydrogen_nation } } }
-				AND = { has_country_modifier = csto_alliance OR = { RUS = { has_country_modifier = atomic_nation } RUS = { has_country_modifier = hydrogen_nation } } }
-				AND = { has_country_modifier = anzus_alliance OR = { USA = { has_country_modifier = atomic_nation } USA = { has_country_modifier = hydrogen_nation } } }
-				AND = { has_country_modifier = sco_pact OR = { CHI = { has_country_modifier = atomic_nation } CHI = { has_country_modifier = hydrogen_nation } } }
-			}
+NOT = { has_country_modifier = non_proliferation_treaty }
 		}
 
 		allow = {
-			cold_war = 1
+
+			war = no
+			is_vassal = no
+			election = no
+			war_policy = pacifism
+
+#AI will not take NPT if neighbouring states are hostile
+OR = { 
+
+ai = no
+
+is_disarmed = yes
+
+NOT = { 
+any_neighbor_country = { 
+OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation } 
+badboy = 0.5 
+NOT = { relation = { who = THIS value = -150 } } 
+	}
+}
+
+}
+
+
 		}
 
 		effect = {
 			add_country_modifier = {
 				name = non_proliferation_treaty
-				duration = 3650
+				duration = -1
 			}
 		}
 		ai_will_do = {
@@ -44,6 +53,7 @@ political_decisions = {
 				OR = {
 					tag = FRA
 					tag = ENG
+					tag = USA
 					tag = HND
 					tag = PAK
 					tag = NKO
@@ -53,4 +63,48 @@ political_decisions = {
 			}
 		}
 	}
+
+	remove_non_proliferation_treaty = {
+		picture = "remove_non_proliferation_treaty"
+		potential = {
+	has_country_modifier = non_proliferation_treaty
+		}
+
+		alert = no
+
+		allow = {
+
+			war = no
+			is_vassal = no
+			election = no
+			NOT = { war_policy = pacifism }
+
+			OR = { ai = no war_policy = jingoism }
+
+			NOT = { is_disarmed = yes }
+
+#AI will end NPT if neighbouring nuclear states are hostile
+OR = { 
+
+ai = no
+
+any_neighbor_country = { 
+OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation } 
+badboy = 0.5 
+NOT = { relation = { who = THIS value = -150 } } 
+	}
+
+}
+
+
+		}
+
+		effect = {
+		remove_country_modifier = non_proliferation_treaty
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+
 }
