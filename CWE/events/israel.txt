@@ -195,6 +195,11 @@ country_event = {
 			limit = { is_culture_group = arabic }
 			relation = { who = THIS value = 100 }
 		}
+
+		ISR = { all_core = { add_core = PAL } }
+
+		PAL = { all_core = { add_core = ISR } }
+
 		release = PAL
 PAL = { 
 country_event = 8007626
@@ -646,6 +651,8 @@ country_event = {
 	ai_chance = { factor = 0 }
   }
 }
+
+#Palestine lost the 1948 war, PAL annexed by Jordan
 country_event = {
   id = 8007655
   title = EVT_8007655_NAME
@@ -663,13 +670,25 @@ country_event = {
 	ISR = { NOT = { war_with = PAL } }
   }
 
-  mean_time_to_happen = { months = 1  }
+  option = {
+	name = "Annex the Palestinian lands"
+	PAL = { release = GAZ }
+	PAL = { 
+	918 = { secede_province = JOR } 
+	917 = { secede_province = JOR } 
+	}
+	ISR = { inherit = PAL }
+	ISR = { any_owned = { add_core = ISR } }
+	ai_chance = { factor = 0.9 }
+  }
 
   option = {
-	name = EVT_8007655_A
+	name = "Let Palestine remain independent"
+	relation = { who = PAL value = 200 }
 	PAL = { release = GAZ }
-	inherit = PAL
+	ai_chance = { factor = 0.1 }
   }
+
 }
 country_event = {
   id = 8007660
@@ -734,6 +753,8 @@ country_event = {
   }
 
 }
+
+#Israel won the 1948 war
 country_event = {
   id = 8007662
   title = EVT_8007662_NAME
@@ -743,17 +764,24 @@ country_event = {
 
   trigger = {
 	tag = ISR
-	year = 1949 NOT = { year = 1963 }
+	year = 1948 NOT = { year = 1963 }
 	ISR = { is_vassal = no }
 	war = no
+	has_recently_lost_war = no
+	PAL = { exists = yes }
+	truce_with = PAL
   }
-
-  mean_time_to_happen = { months = 1  }
 
   option = {
 	name = EVT_8007662_A
-	prestige = 50
-	USA = { diplomatic_influence = { who = THIS value = 100 } }
+	prestige = 100
+	PAL = { 
+	3349 = { secede_province = ISR }
+	3348 = { secede_province = ISR }
+	3347 = { secede_province = ISR }
+	3346 = { secede_province = ISR } 
+	}
+USA = { diplomatic_influence = { who = THIS value = 100 } }
   }
 }
 country_event = {

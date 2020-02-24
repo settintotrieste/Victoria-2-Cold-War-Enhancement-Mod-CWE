@@ -2396,6 +2396,8 @@ title = "Backbencher's Plot"
 
 trigger = {
 
+NOT = { has_country_modifier = leader_cooldown }
+
 NOT = { has_country_flag = leader_refuses_to_leave }
 
 average_militancy = 2
@@ -2489,6 +2491,17 @@ add_country_modifier = { name = leadership_chaos duration = 100 }
 
 set_country_flag = leader_refuses_to_leave
 
+#Chance of starting military unrest
+random_owned = {
+limit = { owner = { has_country_flag = military_loyalty_low } }
+owner = {
+random = {
+	chance = 35
+	country_event = 100100
+}
+	}
+}
+
 random_owned = { 
 limit = { owner = { ruling_party_ideology = conservative } }
 owner = { any_pop = { ideology = { factor = -0.03 value = conservative } } }
@@ -2552,6 +2565,8 @@ title = "Conspiracy to oust the $MONARCHTITLE$"
 	picture = "politburo_plot"
 
 trigger = {
+
+NOT = { has_country_modifier = leader_cooldown }
 
 NOT = { has_country_flag = leader_refuses_to_leave }
 
@@ -2683,9 +2698,9 @@ prestige_factor = -0.01
 any_pop = { limit = { OR = { type = bureaucrats type = officers } } militancy = 4 }
 
 #Coup risk
-random = {
-	chance = 35
-	country_event = 100100
+random_list = {
+	75 = { country_event = 100100 }
+	25 = { country_event = 100101 }
 }
 
 add_country_modifier = { name = leadership_chaos duration = 200 }
@@ -4558,6 +4573,195 @@ set_country_flag = trump
 any_country = { 
 	set_country_flag = trump
 		}
+	}
+
+}
+
+#Partial Test Ban Treaty, 1963
+country_event = {
+	id = 1610088
+title = "Partial Test Ban Treaty"
+	desc = EVTDESC1610088
+	picture = "partial_test_ban_treaty"
+
+trigger = {
+year = 1963
+NOT = { has_global_flag = comprehensive_test_ban_treaty }
+NOT = { has_country_flag = partial_test_ban_treaty_fired }
+is_vassal = no
+election = no
+war = no
+}
+
+mean_time_to_happen = { 
+months = 10
+}
+
+option = {
+name = "Sign the treaty! (Slower nuclear development)"
+badboy = -5
+set_global_flag = partial_test_ban_treaty
+
+set_country_flag = signed_partial_test_ban_treaty
+
+set_country_flag = partial_test_ban_treaty_fired
+
+ai_chance = { 
+factor = 0.75
+modifier = { factor = 0 war_policy = jingoism }
+	}
+		}
+
+option = {
+name = "Never! (More infamy for nuclear development)"
+set_global_flag = partial_test_ban_treaty
+
+set_country_flag = partial_test_ban_treaty_fired
+
+ai_chance = { factor = 0.25 modifier = { factor = 0 war_policy = pacifism } }
+		}
+
+}
+
+#Comprehensive Nuclear Test Ban Treaty, 1996
+country_event = {
+	id = 1610089
+title = "Comprehensive Nuclear Test Ban Treaty"
+	desc = EVTDESC1610089
+	picture = "comprehensive_test_ban_treaty"
+
+trigger = {
+year = 1996
+NOT = { has_global_flag = blocsenabled }
+has_global_flag = partial_test_ban_treaty
+NOT = { has_country_flag = comprehensive_test_ban_treaty_fired }
+is_vassal = no
+election = no
+war = no
+}
+
+mean_time_to_happen = { 
+months = 9
+}
+
+option = {
+name = "Sign the treaty! (Slower nuclear development)"
+badboy = -5
+set_global_flag = comprehensive_test_ban_treaty
+set_country_flag = signed_comprehensive_test_ban_treaty
+set_country_flag = signed_partial_test_ban_treaty
+
+set_country_flag = comprehensive_test_ban_treaty_fired
+
+ai_chance = { 
+factor = 0.75
+modifier = { factor = 0 war_policy = jingoism }
+	}
+		}
+
+option = {
+name = "Never! (More infamy for nuclear development)"
+set_global_flag = comprehensive_test_ban_treaty
+
+set_country_flag = comprehensive_test_ban_treaty_fired
+
+ai_chance = { factor = 0.25 modifier = { factor = 0 war_policy = pacifism } }
+		}
+
+}
+
+#Sacking of $CAPITAL$
+country_event = {
+	id = 1610090
+title = "Sacking of $CAPITAL$"
+	desc = EVTDESC1610090
+	picture = "superstate_formation_event"
+
+is_triggered_only = yes
+
+major = yes
+
+option = {
+name = "This is a dark day in $COUNTRY_ADJ$ history"
+prestige_factor = -0.1
+war_exhaustion = 25
+
+#Pops become more nationalist
+any_pop = { 
+limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+ideology = {
+	factor = 0.25
+	value = nationalist
+	}
+}
+
+#All pops become less rebellious
+any_pop = { militancy = -5 }
+
+		}
+
+}
+
+#Hardliners demand reform rollback
+country_event = {
+	id = 1610091
+	title = "Party Hardliners Condemn the $MONARCHTITLE$"
+	desc = EVTDESC1610091
+	picture = "angry_hardliners"
+
+trigger = {
+ai = no
+war = no
+
+NOT = { num_of_revolts = 1 }
+
+NOT = { has_country_modifier = political_strife }
+
+OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship }
+
+OR = { 
+NOT = { vote_franschise = none_voting } 
+NOT = { political_opinions = ruling_party_opinion } 
+NOT = { public_meetings = no_meetings } 
+NOT = { publishing_rights = censored_publishing }
+NOT = { political_parties = parties_not_allowed }
+}
+
+#Angry officers or bureaucrats
+any_owned_province = {
+is_core = THIS
+any_pop = { OR = { type = officers type = bureaucrats } militancy = 8 }
+}
+
+}
+
+mean_time_to_happen = { 
+months = 12
+modifier = { factor = 3 has_country_modifier = nepohigh }
+modifier = { factor = 0.5 has_country_modifier = nepolow }
+}
+
+option = {
+name = "Tolerate their insolence"
+
+add_country_modifier = { name = political_strife duration = 730 }
+
+any_pop = { consciousness = 2 militancy = 1 }
+
+ai_chance = { factor = 1 }
+	}
+
+option = {
+name = "Purge them"
+
+any_pop = { 
+limit = { OR = { type = officers type = bureaucrats } militancy = 8 }
+pop_type = clerks
+	}
+
+any_pop = { militancy = -3 consciousness = -5 }
+
+ai_chance = { factor = 0 }
 	}
 
 }
