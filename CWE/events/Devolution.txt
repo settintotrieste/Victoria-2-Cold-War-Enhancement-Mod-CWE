@@ -1,20 +1,42 @@
-#Initiate Devolution Chain
+#Initiate Devolution Chain - Establish a devolved govt
 province_event = {
-	id = 10010
-title = "$PROVINCECULTURE$ Demands Devolution in $PROVINCENAME$!"
+	id = 10009
+title = "$PROVINCECULTURE$ Local Government in $PROVINCENAME$!"
 	desc = EVT_15500_DESC
 	picture = "wpa_free_choice"
 
 trigger = {
-is_primary_culture = no
-is_accepted_culture = no
+
+#Province population must be angry
+average_militancy = 3
+
 controlled_by = owner
-is_colonial = no
-owner = { is_vassal = no neoliberalism = 1 NOT = { has_country_modifier = centrallow } }
-NOT = { has_province_modifier = allow_devolution }
+
+#Not has devolved government - first step to a SAR
+NOT = { has_province_modifier = devolved_local_government }
+
+#Not has nationalist agitation modifier
 NOT = { has_province_modifier = nationalist_agitation }
-NOT = { is_core = THIS }
+
+#primary culture does not seek devolution
+is_primary_culture = no
+
+#Colonial states use the end of colonialism system
+is_colonial = no
+
+#THIS is not a vassal and is past 1980
+owner = { is_vassal = no neoliberalism = 1 }
+
+#Location is a region capital but not national capital
+owner = { is_state_capital = yes is_capital = no }
+
+#Not agreed to allow devolution
+NOT = { has_province_modifier = allow_devolution }
+
+#Only nationalist and populists seek devolution
 OR = { pop_majority_ideology = nationalist pop_majority_ideology = populist }
+
+#Only democracies allow
 owner = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } }
 
 NOT = { any_neighbor_province = { has_province_modifier = allow_devolution } }
@@ -24,7 +46,7 @@ NOT = { any_neighbor_province = { has_province_modifier = nationalist_agitation 
 }
 
 mean_time_to_happen = { 
-months = 60
+months = 365
 
 modifier = {
 factor = 2
@@ -54,28 +76,27 @@ owner = { minorities_reform = minorities_affirmative_action }
 	}
 
 option = {
-name = "Grant devolution"
-add_province_modifier = { name = allow_devolution duration = 3650 }
+name = "Establish a devolved government"
+
+state_scope = { 
+add_province_modifier = { name = devolved_local_government duration = -1 }
+}
 
 any_pop = { militancy = -4 consciousness = 2 }
 
-owner = { prestige = 10 }
-
-
-
+#THIS has releasable SAR governments
 owner = { 
 
 any_country = { 
 		limit = { 
 			NOT = { tag = THIS } 
 			exists = no
-			any_core = { has_province_modifier = allow_devolution owned_by = THIS } 
+			any_core = { owned_by = THIS } 
 		} 
-		country_event = 10011 
+		THIS = { set_country_flag = has_releasable_sar }
 	}
 
 }
-
 
 ai_chance = { 
 factor = 1 
@@ -102,19 +123,169 @@ nationalvalue = nv_order
 
 }
 
-
-
-
 		}
 
 option = {
 name = "$PROVINCENAME$ is $COUNTRY_ADJ$!"
 
+any_pop = {
+militancy = 2
+consciousness = 3
+}
+
+state_scope = { 
+add_province_modifier = { name = nationalist_agitation duration = 1825 }
+}
+
+ai_chance = { 
+factor = 1 
+
+modifier = { 
+factor = 0.1 
+OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive }
+}
+
+}
+
+		}
+
+}
+
+#Initiate Referendum for a fully devolved government
+province_event = {
+	id = 10010
+title = "Further Devolution in $PROVINCENAME$?"
+	desc = EVT_15500_DESC
+	picture = "wpa_free_choice"
+
+trigger = {
+
+#THIS is not at war
+owner = { war = no }
+
+#THIS has releasable SAR governments
+owner = { has_country_flag = has_releasable_sar }
+
+#Province population must be angry
+average_militancy = 3
+
+controlled_by = owner
+
+#Has devolved government - first step to a SAR
+has_province_modifier = devolved_local_government
+
+#primary culture does not seek devolution
+is_primary_culture = no
+
+#Colonial states use the end of colonialism system
+is_colonial = no
+
+#THIS is not a vassal and is past 1980
+owner = { is_vassal = no neoliberalism = 1 }
+
+#Location is a region capital but not national capital
+owner = { is_state_capital = yes is_capital = no }
+
+#Not agreed to allow devolution
+NOT = { has_province_modifier = allow_devolution }
+NOT = { has_province_modifier = devolution_vote_held }
+
+#Only nationalist and populists seek devolution
+OR = { pop_majority_ideology = nationalist pop_majority_ideology = populist }
+
+#Only democracies allowed
+owner = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } }
+
+NOT = { any_neighbor_province = { has_province_modifier = nationalist_agitation } }
+
+}
+
+mean_time_to_happen = { 
+months = 365
+
+modifier = {
+factor = 2
+owner = { has_country_modifier = centrallow }
+}
+
+modifier = {
+factor = 4
+owner = { citizenship_policy = full_citizenship }
+}
+
+modifier = {
+factor = 2
+owner = { citizenship_policy = limited_citizenship }
+}
+
+modifier = {
+factor = 2
+owner = { minorities_reform = minorities_equal_rights }
+}
+
+modifier = {
+factor = 4
+owner = { minorities_reform = minorities_affirmative_action }
+}
+
+	}
+
+option = {
+name = "Hold a referendum on devolution"
+
+add_province_modifier = { name = allow_devolution duration = 3650 }
+
+any_pop = { militancy = -4 consciousness = 2 }
+
+#Mark the country which will be released
+owner = { 
+
+any_country = { 
+		limit = { 
+			NOT = { tag = THIS } 
+			exists = no
+			any_core = { has_province_modifier = allow_devolution owned_by = THIS } 
+		} 
+		country_event = 10011
+	}
+
+}
+
+ai_chance = { 
+factor = 1 
+
+modifier = { 
+factor = 0.1 
+NOT = { OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive } }
+} 
+
+modifier = { 
+factor = 2
+nationalvalue = nv_liberty
+} 
+
+modifier = { 
+factor = 1.5
+nationalvalue = nv_equality
+} 
+
+modifier = { 
+factor = 0.25
+nationalvalue = nv_order
+} 
+
+}
+
+		}
+
+option = {
+name = "The time is not right"
+
 owner = { prestige = -10 }
 
 any_pop = {
-militancy = 3
-consciousness = 4
+militancy = 2
+consciousness = 2
 }
 
 add_province_modifier = { name = nationalist_agitation duration = 1825 }
@@ -133,7 +304,8 @@ OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive }
 
 }
 
-country_event = { # Devolution of $FROMCOUNTRY$
+#Devolution of $FROMCOUNTRY$ - Referendum
+country_event = {
   id = 10011 # ai only event
   title = "Devolution of $COUNTRY$"
   desc = EVT_15403_DESC
@@ -142,31 +314,121 @@ country_event = { # Devolution of $FROMCOUNTRY$
 
   option = {
     name = EVT_15402_A
-	FROM = { country_event = 10012 }
+
+#Referendum event - Parent country
+FROM = { country_event = 10012 }
+
   }
+
 }  
 
-country_event = { # Devolution of $FROMCOUNTRY$ - end
-  id = 10012 # ai only event
-  title = "Devolution of $FROMCOUNTRY$"
+#Referendum on Devolution of $FROMCOUNTRY$ - end
+country_event = {
+  id = 10012
+  title = "Referendum on Devolution in $FROMCOUNTRY$"
   desc = EVT10012
-  picture = "devolution_end"
+  picture = "devolution_referendum"
   is_triggered_only = yes
 
   option = {
-    name = EVT_15402_A
-	prestige = -25
-	release_vassal = FROM
+    name = "The people will decide"
 
-FROM = { government = sar_government country_event = 800054 ruling_party_ideology = big_tent }
+#Referendum succeeds if status quo parties are not majority
+random_owned = {
+limit = {
+owner = { 
+NOT = { any_owned_province = { is_core = FROM OR = { pop_majority_ideology = conservative pop_majority_ideology = big_tent pop_majority_ideology = traditionalist } } } 
+	} 
+}
 
-FROM = { set_country_flag = former_devolved_nation }
-
+owner = { 
+release_vassal = FROM
+FROM = { 
+government = sar_government 
+country_event = 800054 
+ruling_party_ideology = big_tent 
+set_country_flag = former_devolved_nation
 diplomatic_influence = { who = FROM value = 200 }
+}
+THIS = { clr_country_flag = has_releasable_sar }
+FROM = { THIS = { country_event = 10013 } }
+	}
 
-FROM = { country_event = { id = 1512094 days = 10 } }
+}
 
-  }
+#Referendum fails if status quo parties are majority
+random_owned = {
+limit = {
+owner = { 
+any_owned_province = { is_core = FROM OR = { pop_majority_ideology = conservative pop_majority_ideology = big_tent pop_majority_ideology = traditionalist } }
+	} 
+}
 
-}  
+owner = { 
+country_event = 10014
 
+any_owned = { 
+	limit = { is_core = FROM }
+	remove_province_modifier = allow_devolution 
+	add_province_modifier = { name = devolution_vote_held duration = 3650 } 
+}
+
+	}
+
+}
+
+#Check if THIS has releasable SAR governments
+owner = { 
+
+any_country = { 
+		limit = { 
+			NOT = { tag = THIS } 
+			exists = no
+			any_core = { owned_by = THIS } 
+		} 
+		THIS = { set_country_flag = has_releasable_sar }
+	}
+
+}
+
+	}
+
+}
+
+#Referendum Succeeds
+country_event = {
+	id = 10013
+title = "Referendum on Devolution Passes"
+	desc = EVTDESC10013
+	picture = "devolution_end"
+
+is_triggered_only = yes
+
+option = {
+name = "The people have spoken"
+prestige = 50
+		}
+
+}
+
+#Referendum Fails
+country_event = {
+	id = 10014
+title = "Referendum on Devolution Fails"
+	desc = EVTDESC10013
+	picture = "devolution_continues"
+
+is_triggered_only = yes
+
+option = {
+name = "Our country grows stronger!"
+any_pop = { 
+limit = { is_primary_culture = no }
+ideology = {
+	factor = -0.05
+	value = nationalist
+	}
+}
+		}
+
+}

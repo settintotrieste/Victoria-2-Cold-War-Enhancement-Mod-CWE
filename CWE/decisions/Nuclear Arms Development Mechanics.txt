@@ -313,6 +313,78 @@ add_country_modifier = { name = tactical_nukes duration = -1 }
 			}
 	}
 
+propose_nuke_stockpile_reduction = {
+	picture = "propose_nuke_stockpile_reduction"
+	potential = {
+OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation }
+NOT = { has_country_flag = nuke_stockpile_reduction }
+OR = { has_country_modifier = nuclear_cap_high has_country_modifier = nuclear_cap_medium }
+	}
+
+	alert = no
+	
+	allow = {
+			is_vassal = no
+			war = no
+			election = no
+			OR = { war_policy = pacifism ai = no }
+			OR = { ai = no badboy = 0.9 }
+	NOT = { has_country_modifier = law_changed_by_force }
+	}
+
+	effect = {
+any_greater_power = { relation = { who = THIS value = 100 } }
+		badboy = -10
+		set_country_flag = nuke_stockpile_reduction
+add_country_modifier = { name = law_changed_by_force duration = 365 }
+	}
+		ai_will_do = { 
+			factor = 1 
+			}
+	}
+
+reverse_nuke_stockpile_reduction = {
+	picture = "reverse_nuke_stockpile_reduction"
+	potential = {
+		OR = { 
+			has_country_modifier = atomic_nation
+			has_country_modifier = hydrogen_nation 
+		}
+	has_country_flag = nuke_stockpile_reduction
+	}
+
+	alert = no
+
+	allow = {
+			is_vassal = no
+			war = no
+			election = no
+			OR = { 
+			war_policy = jingoism 
+				AND = { 
+					war_policy = pro_military
+					OR = { 
+				has_country_modifier = cold_war_hot
+				has_country_modifier = cold_war_high
+				has_country_modifier = world_high
+					} 
+				} 
+			}
+			OR = { ai = no NOT = { badboy = 0.5 } }
+	NOT = { has_country_modifier = law_changed_by_force }
+	}
+
+	effect = {
+		badboy = 10
+any_greater_power = { relation = { who = THIS value = -100 } }
+		clr_country_flag = nuke_stockpile_reduction
+add_country_modifier = { name = law_changed_by_force duration = 365 }
+	}
+		ai_will_do = { 
+			factor = 1 
+			}
+	}
+
 disarm_bomb = {
 picture = "disarm_bomb"
 potential = {
