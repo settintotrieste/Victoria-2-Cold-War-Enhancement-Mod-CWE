@@ -1,50 +1,92 @@
 political_decisions = {
 
-sar_to_democracy = {
-	picture = "form_sar"
+	sar_to_democracy = {
+		picture = "form_sar"
 		potential = {
-		is_vassal = yes
-		government = sar_government
-		has_country_flag = former_devolved_nation
+			is_vassal = yes
+			government = sar_government
+			has_country_flag = former_devolved_nation
 
-overlord = { is_vassal = no }
+			overlord = { is_vassal = no NOT = { has_country_flag = integrate_sar_overlord } }
 
-overlord = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } }
+			overlord = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } }
 
 		}
 		allow = {
 			war = no
 			election = no
-NOT = { has_country_modifier = recently_attempted_independence }
-NOT = { has_country_modifier = independence_timer }
-OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist }
-			}
+			NOT = { has_country_modifier = recently_attempted_independence }
+			NOT = { has_country_modifier = independence_timer }
+			OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist }
+		}
 		effect = {
-		prestige = 25
+			prestige = 25
 
-add_country_modifier = { name = independence_timer duration = 1825 }
+			add_country_modifier = { name = independence_timer duration = 1825 }
 
-random_owned = { 
-limit = { 
-owner = { overlord = { OR = { government = hms_government government = hms_government1 } } }
-	} 
-
-owner = { government = hms_government1 country_event = 800054 }
+			random_owned = { 
+				limit = { 
+				owner = { overlord = { OR = { government = hms_government government = hms_government1 } } }
 				}
 
-random_owned = { 
-limit = { 
-owner = { overlord = { OR = { government = democracy government = democracy1 } } }
-	} 
+				owner = { government = hms_government1 country_event = 800054 }
+			}
 
-owner = { government = democracy country_event = 800054 }
-				}
+			random_owned = { 
+				limit = { 
+				owner = { overlord = { OR = { government = democracy government = democracy1 } } }
+				} 
 
-clr_country_flag = former_devolved_nation
-set_country_flag = former_colonial_nation
+				owner = { government = democracy country_event = 800054 }
+			}
+
+			clr_country_flag = former_devolved_nation
+			set_country_flag = former_colonial_nation
 		}
 		ai_will_do = { 
 			factor = 1 
-			}
+		}
 	}
+	
+	begin_sar_integration = {
+		picture = "integrate_sar"
+		potential = {
+			is_vassal = no
+			any_neighbor_country = { government = sar_government vassal_of = THIS }
+			NOT = { has_country_flag = integrate_sar_overlord }
+		}
+		allow = {
+			war = no
+			election = no
+			OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist ruling_party_ideology = communist ruling_party_ideology = communist_social }
+			OR = { prestige = 1000 is_greater_power = yes }
+		}
+		effect = {
+			set_country_flag = integrate_sar_overlord
+		}
+		ai_will_do = { 
+			factor = 1 
+		}
+	}
+	
+	end_sar_integration = {
+		picture = "end_sar_integration"
+		potential = {
+			is_vassal = no
+			any_neighbor_country = { government = sar_government vassal_of = THIS }
+			has_country_flag = integrate_sar_overlord
+		}
+		allow = {
+			war = no
+			election = no
+			OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive ruling_party_ideology = big_tent }
+		}
+		effect = {
+			clr_country_flag = integrate_sar_overlord
+		}
+		ai_will_do = { 
+			factor = 1 
+		}
+	}
+	
 }
