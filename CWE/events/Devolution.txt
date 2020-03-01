@@ -432,3 +432,614 @@ ideology = {
 		}
 
 }
+
+#SAR Integration - Step 1
+country_event = {
+	id = 100015
+	title = "Harmonisation of $COUNTRY_ADJ$ Education"
+	desc = EVTDESC100015
+	picture = "sar_education"
+
+	fire_only_once = yes
+
+	trigger = {
+		is_vassal = yes
+		government = sar_government
+		overlord = { is_vassal = no has_country_flag = integrate_sar_overlord OR = { any_core = { owned_by = THIS } neighbour = THIS } }
+		NOT = { has_country_flag = integrate_sar_education }
+		NOT = { has_country_modifier = delay_sar_integration }
+	}
+
+	mean_time_to_happen = { 
+		months = 60
+	}
+
+	option = {
+		name = "Accept it"
+		set_country_flag = integrate_sar_education
+		
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			militancy = 3
+			ideology = { factor = 0.05 value = nationalist }
+		}
+		
+		random_list = {
+			60 = { country_event = 100025 } #Mass protests
+			30 = { country_event = 100026 } #University Siege
+			10 = { country_event = 100027 } #Demand Chief Executive resign
+		}
+		
+		ai_chance = { 
+			factor = 0.75
+			modifier = { factor = 0 OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist ruling_party_ideology = traditionalist } }
+		}
+	}
+
+	option = {
+		name = "Voice our opposition!"
+		overlord = { country_event = 100016 }
+		ai_chance = { factor = 0.25 }
+	}
+
+}
+
+#SAR Integration - Step 1 - Overlord
+country_event = {
+	id = 100016
+	title = "Harmonisation of $FROMCOUNTRY_ADJ$ Education"
+	desc = EVTDESC100016
+	picture = "sar_education"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Force the reform through"
+		
+		badboy = 3
+		
+		FROM = { country_event = 100017 set_country_flag = integrate_sar_education } # Anger
+		
+		ai_chance = { 
+			factor = 0.70
+			modifier = { factor = 0 badboy = 0.80 }
+		}
+	}
+
+	option = {
+		name = "Delay our integration efforts by 5 years"
+		
+		FROM = { country_event = 100018 } # Less anger
+		
+		ai_chance = { 
+			factor = 0.30
+			modifier = { factor = 0 OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist ruling_party_ideology = communist } }
+		}
+	}
+
+}
+
+#SAR Integration - Overlord forces through reform
+country_event = {
+	id = 100017
+	title = "$FROMCOUNTRY_ADJ$ Central Government Imposes Reform"
+	desc = EVTDESC100017
+	picture = "sar_anger"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "We have no choice"
+		
+		random_list = {
+			60 = { country_event = 100025 } #Mass protests
+			40 = { country_event = 100026 } #University Siege
+		}
+		
+	}
+
+}
+
+#SAR Integration - Overlord pauses integration effors
+country_event = {
+	id = 100018
+	title = "$FROMCOUNTRY_ADJ$ Central Government Pauses Integration"
+	desc = EVTDESC100018
+	picture = "sar_pause_integration"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "A boost to the nationalists!"
+		
+		add_country_modifier = { name = delay_sar_integration duration = 1825 }
+		
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			ideology = { factor = 0.025 value = nationalist }
+			militancy = -4
+		}
+		
+	}
+
+}
+
+#SAR Integration - Step 2
+country_event = {
+	id = 100019
+	title = "Harmonisation of the $COUNTRY_ADJ$ Legal System"
+	desc = EVTDESC100019
+	picture = "sar_legal_system"
+
+	fire_only_once = yes
+
+	trigger = {
+		is_vassal = yes
+		government = sar_government
+		overlord = { is_vassal = no has_country_flag = integrate_sar_overlord OR = { any_core = { owned_by = THIS } neighbour = THIS } }
+		has_country_flag = integrate_sar_education
+		NOT = { has_country_flag = integrate_sar_legal_system }
+		NOT = { has_country_modifier = delay_sar_integration }
+	}
+
+	mean_time_to_happen = { 
+		months = 60
+	}
+
+	option = {
+		name = "Accept it"
+		set_country_flag = integrate_sar_legal_system
+		
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			militancy = 3
+			ideology = { factor = 0.05 value = nationalist }
+		}
+		
+		random_list = {
+			60 = { country_event = 100025 } #Mass protests
+			30 = { country_event = 100026 } #University Siege
+			10 = { country_event = 100027 } #Demand Chief Executive resign
+		}
+		
+		ai_chance = { 
+			factor = 0.75
+			modifier = { factor = 0 OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist ruling_party_ideology = traditionalist } }
+		}
+	}
+
+	option = {
+		name = "Voice our opposition!"
+		overlord = { country_event = 100020 }
+		ai_chance = { factor = 0.25 }
+	}
+
+}
+
+#SAR Integration - Step 2 - Overlord
+country_event = {
+	id = 100020
+	title = "Harmonisation of the $FROMCOUNTRY_ADJ$ Legal System"
+	desc = EVTDESC100020
+	picture = "sar_legal_system"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Force the reform through"
+		
+		badboy = 3
+		
+		FROM = { country_event = 100017 set_country_flag = integrate_sar_legal_system } # Anger
+		
+		ai_chance = { 
+			factor = 0.70
+			modifier = { factor = 0 badboy = 0.80 }
+		}
+	}
+
+	option = {
+		name = "Delay our integration efforts by 5 years"
+		
+		FROM = { country_event = 100018 } # Less anger
+		
+		ai_chance = { 
+			factor = 0.30
+			modifier = { factor = 0 OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist ruling_party_ideology = communist } }
+		}
+	}
+
+}
+
+#SAR Integration - Step 3
+country_event = {
+	id = 100021
+	title = "Harmonisation of the $COUNTRY_ADJ$ Political System"
+	desc = EVTDESC100021
+	picture = "sar_political_system"
+
+	fire_only_once = yes
+
+	trigger = {
+		is_vassal = yes
+		government = sar_government
+		overlord = { is_vassal = no has_country_flag = integrate_sar_overlord OR = { any_core = { owned_by = THIS } neighbour = THIS } }
+		has_country_flag = integrate_sar_education
+		has_country_flag = integrate_sar_legal_system
+		NOT = { has_country_flag = integrate_sar_political_system }
+		NOT = { has_country_modifier = delay_sar_integration }
+	}
+
+	mean_time_to_happen = { 
+		months = 60
+	}
+
+	option = {
+		name = "Accept it (Integration in 5 years)"
+		set_country_flag = integrate_sar_political_system
+		
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			militancy = 3
+			ideology = { factor = 0.05 value = nationalist }
+		}
+		
+		random_list = {
+			60 = { country_event = 100025 } #Mass protests
+			30 = { country_event = 100026 } #University Siege
+			10 = { country_event = 100027 } #Demand Chief Executive resign
+		}
+		
+		ai_chance = { 
+			factor = 0.75
+			modifier = { factor = 0 OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist ruling_party_ideology = traditionalist } }
+		}
+	}
+
+	option = {
+		name = "Voice our opposition!"
+		overlord = { country_event = 100022 }
+		ai_chance = { factor = 0.25 }
+	}
+
+}
+
+#SAR Integration - Step 3 - Overlord
+country_event = {
+	id = 100022
+	title = "Harmonisation of the $FROMCOUNTRY_ADJ$ Political System"
+	desc = EVTDESC100022
+	picture = "sar_political_system"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Force the reform through"
+		
+		badboy = 3
+		
+		FROM = { country_event = 100017 set_country_flag = integrate_sar_political_system } # Anger
+		
+		ai_chance = { 
+			factor = 0.70
+			modifier = { factor = 0 badboy = 0.80 }
+		}
+	}
+
+	option = {
+		name = "Delay our integration efforts by 5 years"
+		
+		FROM = { country_event = 100018 } # Less anger
+		
+		ai_chance = { 
+			factor = 0.30
+			modifier = { factor = 0 OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist ruling_party_ideology = communist } }
+		}
+	}
+
+}
+
+#SAR Integration - Final Step
+country_event = {
+	id = 100023
+	title = "Integration of $COUNTRY$"
+	desc = EVTDESC100023
+	picture = "sar_integration_day"
+
+	fire_only_once = yes
+
+	trigger = {
+		is_vassal = yes
+		government = sar_government
+		overlord = { is_vassal = no has_country_flag = integrate_sar_overlord OR = { any_core = { owned_by = THIS } neighbour = THIS } }
+		has_country_flag = integrate_sar_education
+		has_country_flag = integrate_sar_legal_system
+		has_country_flag = integrate_sar_political_system
+		NOT = { has_country_modifier = delay_sar_integration }
+	}
+
+	mean_time_to_happen = { 
+		months = 60
+	}
+
+	option = {
+		name = "It is game over for the $COUNTRY_ADJ$ people"
+		
+		clr_country_flag = integrate_sar_education
+		clr_country_flag = integrate_sar_legal_system
+		clr_country_flag = integrate_sar_political_system
+		
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			ideology = { factor = 0.15 value = nationalist }
+		}
+		
+		overlord = { inherit = THIS }
+		
+		ai_chance = { 
+			factor = 0.9
+			modifier = { factor = 0 OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist ruling_party_ideology = traditionalist } }
+		}
+	}
+	
+	option = {
+		name = "Declare independence!"
+		
+			clr_country_flag = integrate_sar_education
+			clr_country_flag = integrate_sar_legal_system
+			clr_country_flag = integrate_sar_political_system
+		
+			overlord = { country_event = 100024 } # War with THIS
+		
+		ai_chance = { 
+			factor = 0.1
+			modifier = { factor = 0 war_policy = pacifism }
+		}
+	}
+
+}
+
+#SAR Integration - SAR refuses integration - overlord
+country_event = {
+	id = 100024
+	title = "$FROMCOUNTRY$ Refuses Integration!"
+	desc = EVTDESC100024
+	picture = "sar_anger"
+
+	is_triggered_only = yes
+	
+	major = yes
+
+	option = {
+		name = "Restore $COUNTRY_ADJ$ by force (20 infamy)"
+		
+			release_vassal = FROM
+		
+			#War of Independence
+			war = {
+				target = FROM
+				attacker_goal = { casus_belli = conquest }
+				defender_goal = { casus_belli = become_independent }
+				call_ally = no
+			}
+			
+		ai_chance = { 
+			factor = 0.25
+			modifier = { factor = 0 war_policy = pacifism }
+		}
+	}
+	
+	option = {
+		name = "Accept $FROMCOUNTRY_ADJ$ independence!"
+		
+		badboy = -5
+		
+		prestige_factor = -0.05
+		
+		release_vassal = FROM
+		
+		ai_chance = { 
+			factor = 0.75
+			modifier = { factor = 0 OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist ruling_party_ideology = communist } }
+		}
+	}
+
+}
+
+#SAR Integration - Mass Protests
+country_event = {
+	id = 100025
+	title = "Mass Protests against Integration"
+	desc = EVTDESC100025
+	picture = "sar_mass_protests"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Let the protests continue"
+		
+		
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			ideology = { factor = 0.05 value = nationalist }
+		}
+		
+		any_owned = {
+			limit = { is_core = THIS }
+			add_province_modifier = { name = nationalist_agitation duration = 365 }
+		}
+		
+		ai_chance = { 
+			factor = 0.30
+		}
+	}
+
+	option = {
+		name = "Crack down on the protestors"
+		
+		badboy = 5
+		
+		#Storming of Parliament
+		random = {
+			chance = 35
+			country_event = 100028
+		}
+		
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			militancy = 4
+			ideology = { factor = 0.025 value = nationalist }
+		}
+		
+		ai_chance = { 
+			factor = 0.70
+			modifier = { factor = 0 OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist ruling_party_ideology = traditionalist } }
+		}
+	}
+
+}
+
+#SAR Integration - University Siege
+country_event = {
+	id = 100026
+	title = "University of $CAPITAL$ Siege"
+	desc = EVTDESC100026
+	picture = "sar_university_siege"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Leave the students be"
+		
+		
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } strata = middle }
+			ideology = { factor = 0.10 value = nationalist }
+		}
+		
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } strata = poor }
+			ideology = { factor = 0.025 value = nationalist }
+		}
+		
+		any_owned = {
+			limit = { is_core = THIS is_state_capital = yes }
+			add_province_modifier = { name = nationalist_agitation duration = 365 }
+		}
+		
+		ai_chance = { 
+			factor = 0.30
+		}
+	}
+
+	option = {
+		name = "Crack down on the protestors"
+		
+		badboy = 5
+		
+		#Storming of Parliament
+		random = {
+			chance = 35
+			country_event = 100028
+		}
+		
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			militancy = 4
+			ideology = { factor = 0.05 value = nationalist }
+		}
+		
+		ai_chance = { 
+			factor = 0.70
+			modifier = { factor = 0 OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist ruling_party_ideology = traditionalist } }
+		}
+	}
+
+}
+
+#SAR Integration - People demand resignation of the Chief Executive
+country_event = {
+	id = 100027
+	title = "Calls for the $MONARCHTITLE$ to Resign"
+	desc = EVTDESC100027
+	picture = "sar_leader_resignation"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Agree to resign"
+		
+		add_country_modifier = { name = delay_sar_integration duration = 1095 }
+		
+		#Change of Leadership
+		country_event = 111222
+		
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } strata = middle }
+			ideology = { factor = 0.05 value = nationalist }
+		}
+		
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } strata = poor }
+			ideology = { factor = 0.025 value = nationalist }
+		}
+		
+		ai_chance = { 
+			factor = 0.30
+		}
+	}
+
+	option = {
+		name = "No way!"
+		
+		badboy = 2
+		
+			#Storming of Parliament
+			random = {
+				chance = 35
+				country_event = 100028
+			}
+		
+		
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			militancy = 2
+			ideology = { factor = 0.05 value = nationalist }
+		}
+		
+		any_owned = {
+			limit = { is_core = THIS }
+			add_province_modifier = { name = nationalist_agitation duration = 365 }
+		}
+		
+		ai_chance = { 
+			factor = 0.70
+			modifier = { factor = 0 OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist ruling_party_ideology = traditionalist } }
+		}
+	}
+
+}
+
+#SAR Integration - Storming of the Legislative Council Chamber
+country_event = {
+	id = 100028
+	title = "Storming of the $COUNTRY_ADJ$ Parliament Chamber"
+	desc = EVTDESC100028
+	picture = "sar_parliament_storming"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Outrageous!"
+		
+		prestige = -25
+		
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			militancy = 4
+			ideology = { factor = 0.05 value = nationalist }
+		}
+		
+	}
+
+}
