@@ -1250,7 +1250,7 @@ ai_chance = { factor = 0.2 }
 
 }
 
-#Return of Hong Kong choices
+#Return of Hong Kong choices - FROM is ENG or FBU
 country_event = {
 	id = 1512026
 title = "The Return of Hong Kong"
@@ -1264,21 +1264,21 @@ option = {
 name = "Propose the One Country, Two Systems plan"
 prestige_factor = 0.2
 1496 = { remove_core = XEU }
-1496 = { remove_core = ENG }
+1496 = { remove_core = ENG remove_core = FBU }
 1496 = { add_core = CHI }
-ENG = { country_event = 1002801 }
-ENG = { remove_accepted_culture = chinese_cantonese }
+FROM = { country_event = 1002801 }
+FROM = { remove_accepted_culture = chinese_cantonese }
 ai_chance = { factor = 0.7 }
-		}
+	}
 
 option = {
 name = "Agree to the British plan to retain administration rights"
 prestige_factor = -0.1
-relation = { who = ENG value = 50 }
+relation = { who = FROM value = 50 }
 1496 = { remove_core = XEU }
-1496 = { remove_core = ENG }
+1496 = { remove_core = ENG remove_core = FBU }
 1496 = { add_core = CHI }
-ENG = { 
+FROM = { 
 remove_accepted_culture = chinese_cantonese
 inherit = HKG
 release_vassal = HKG
@@ -1288,7 +1288,7 @@ HKG = { government = sar_government country_event = 800054 }
 diplomatic_influence = { who = HKG value = 200 }
 
 ai_chance = { factor = 0.2 }
-		}
+	}
 
 option = {
 name = "Grant the British an indefinite lease over the New Territories"
@@ -1296,7 +1296,7 @@ prestige_factor = -0.2
 1496 = { add_core = CHI }
 any_greater_power = { relation = { who = THIS value = 200 } }
 ai_chance = { factor = 0.1 }
-		}
+	}
 
 }
 
@@ -10175,6 +10175,7 @@ tag = SPA
 government = populist_dictatorship
 year = 1947
 NOT = { year = 1990 }
+NOT = { has_global_flag = 1950_start_date_flag }
 }
 
 mean_time_to_happen = { 
@@ -11663,7 +11664,7 @@ OR = { government = democracy government = democracy1 government = socialist_dem
 war = no
 election = no
 NOT = { num_of_revolts = 1 }
-average_militancy = 5
+OR = { average_militancy = 5 AND = { has_country_modifier = martial_law NOT = { average_militancy = 3 } } }
 NOT = { has_country_flag = leadership_election }
 
 #Is a minority government
@@ -11766,7 +11767,42 @@ owner = { any_pop = { ideology = { factor = -0.10 value = communist_social } } }
 
 election = yes
 
-		}
+#End state of emergency
+
+clr_country_flag = prolonged_state_of_emergency
+
+#What meeting laws to revert back to
+
+random_owned = { 
+	limit = { owner = { has_country_flag = return_to_free_meetings } }
+	owner = { political_reform = free_meetings clr_country_flag = return_to_free_meetings }
+	}
+
+random_owned = { 
+	limit = { owner = { has_country_flag = return_to_limited_meetings } }
+	owner = { political_reform = limited_meetings clr_country_flag = return_to_limited_meetings }
+	}
+
+#What press laws to revert back to
+			
+random_owned = { 
+	limit = { owner = { has_country_flag = return_to_responsible_publishing  } }
+	owner = { political_reform = responsible_publishing clr_country_flag = return_to_responsible_publishing }
+	}
+
+random_owned = { 
+	limit = { owner = { has_country_flag = return_to_unregulated_publishing} }
+	owner = { political_reform = unregulated_publishing clr_country_flag = return_to_unregulated_publishing }
+	}
+
+random_owned = { 
+	limit = { owner = { has_country_flag = return_to_firewall_publishing } }
+	owner = { political_reform = firewall_publishing clr_country_flag = return_to_firewall_publishing }
+	}
+
+remove_country_modifier = martial_law
+
+	}
 
 }
 
