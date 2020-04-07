@@ -1,0 +1,149 @@
+#Non capital bombardment event
+province_event = {
+	id = 124100
+	title = "Bombing of $PROVINCENAME$"
+	desc = EVTDESC124100
+	picture = "wpa_free_choice"
+
+	trigger = {
+
+		is_capital = no
+
+		is_state_capital = yes
+		
+		total_pops = 125000
+		
+		NOT = { has_province_modifier = aerial_bombed }
+		
+		controlled_by = THIS
+		
+		owner = {
+			war_countries = { has_country_flag = strategic_bombardment } 
+			war = yes
+		}
+		
+		state_scope = {
+			any_owned_province = { OR = { port = no NOT = { controlled_by = THIS } } }
+		}
+
+	}
+
+	mean_time_to_happen = { 
+		months = 3
+
+		modifier = {
+			factor = 6
+			owner = { has_country_modifier = cdhigh }
+		}
+		
+		modifier = {
+			factor = 4
+			owner = { has_country_modifier = cdmedium }
+		}
+		
+		modifier = {
+			factor = 2
+			owner = { has_country_modifier = cdlow }
+		}
+
+	}
+
+	option = {
+		name = "This is bad"
+
+		owner = { war_exhaustion = 1 }
+
+		any_pop = { 
+			militancy = 1 
+			consciousness = 1 
+			dominant_issue = {
+				value = pacifism
+				factor = 0.05
+			}
+		}
+		
+		#Reduce pops in state capital by 1%
+		any_pop = { reduce_pop = 0.99 }
+
+		random_list = {
+			50 = { add_province_modifier = { name = aerial_bombed duration = 183 } }
+			25 = { add_province_modifier = { name = aerial_bombed duration = 365 } }
+			25 = { add_province_modifier = { name = aerial_bombed duration = 730 } }
+		}
+		
+		random_list = {
+			40 = { infrastructure = -1 }
+			30 = { fort = -1 }
+			30 = { naval_base = -1 }
+		}
+		
+	}
+
+}
+
+#Bombing of the capital
+country_event = {
+	id = 124101
+	title = "The Bombing of $CAPITAL$"
+	desc = EVTDESC124101
+	picture = "strategic_bombardment"
+
+	trigger = {
+		capital_scope = { NOT = { has_province_modifier = aerial_bombed } controlled_by = THIS }
+		war_countries = { has_country_flag = strategic_bombardment } 
+		war = yes
+	}
+
+	mean_time_to_happen = { 
+		months = 3
+		
+		modifier = {
+			factor = 3
+			has_country_modifier = cdhigh
+		}
+		
+		modifier = {
+			factor = 2
+			has_country_modifier = cdmedium
+		}
+		
+		modifier = {
+			factor = 1
+			has_country_modifier = cdlow
+		}
+	}
+
+	option = {
+		name = "This is a war crime!"
+		war_exhaustion = 10
+		prestige_factor = -0.025
+		
+		any_pop = { 
+			militancy = 1 
+			consciousness = 1 
+			dominant_issue = {
+				value = pacifism
+				factor = 0.05
+			}
+		}
+		
+		#Reduce pops in capital by 2%
+		random_owned = {
+			limit = { is_capital = yes }
+			any_pop = { reduce_pop = 0.92 }
+			random_list = {
+				50 = { add_province_modifier = { name = aerial_bombed duration = 365 } }
+				25 = { add_province_modifier = { name = aerial_bombed duration = 730 } }
+				25 = { add_province_modifier = { name = aerial_bombed duration = 1095 } }
+			}
+		
+			random_list = {
+				40 = { infrastructure = -1 }
+				30 = { fort = -1 }
+				30 = { naval_base = -1 }
+			}
+		}
+		
+	}
+
+}
