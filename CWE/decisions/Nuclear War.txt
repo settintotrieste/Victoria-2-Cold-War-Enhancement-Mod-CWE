@@ -1,116 +1,125 @@
 political_decisions = {
 
 nuclear_ultimatum = {
+	picture = "nuclear_ultimatum"
+		potential = {
 
-picture = "nuclear_ultimatum"
-potential = {
+			war = yes
+			OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation }
 
-war = yes
-OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation }
-
-OR = {
-has_country_modifier = nuclear_cap_high
-has_country_modifier = nuclear_cap_medium 
-has_country_modifier = nuclear_cap_low
-}
-
-		}
-
-allow = {
-OR = { 
-
-has_country_modifier = defcon1 
-
-AND = { NOT = { war_policy = pacifism } ai = no }
-
-AND = { national_provinces_occupied = 0.40 war_policy = jingoism any_owned_province = { has_province_modifier = tactical_nuked } }
-
-}
-
-NOT = { has_country_modifier = nukes_used_recently }
-	}
-
-effect = {
-
-#Choose what kind of ultimatum
-country_event = 1331427
-
-add_country_modifier = { name = nukes_used_recently duration = 365 }
-
-badboy = 20
-
-#Increase Pacifism
-any_pop = {
-dominant_issue = {
-	value = pacifism
-	factor = 0.25
-	}
-}
+			OR = {
+				has_country_modifier = nuclear_cap_high
+				has_country_modifier = nuclear_cap_medium 
+				has_country_modifier = nuclear_cap_low
+			}
 
 		}
+
+		allow = {
+
+			NOT = { has_country_modifier = nuclear_system_down }
+
+			OR = { 
+
+				has_country_modifier = defcon1 
+
+				AND = { NOT = { war_policy = pacifism } ai = no }
+
+				AND = { national_provinces_occupied = 0.40 war_policy = jingoism any_owned_province = { has_province_modifier = tactical_nuked } }
+
+			}
+
+			NOT = { has_country_modifier = nukes_used_recently }
+		}
+
+		effect = {
+
+			#Choose what kind of ultimatum
+			country_event = 1331427
+
+			add_country_modifier = { name = nukes_used_recently duration = 365 }
+
+			badboy = 20
+
+			#Increase Pacifism
+			any_pop = {
+				dominant_issue = {
+					value = pacifism
+					factor = 0.25
+				}
+			}
+
+		}
+	
+		ai_will_do = { factor = 0.25 }
 
 	}
 
 fire_tactical_nuke = {
 	picture = "fire_tactical_nuke"
-	potential = {
-OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation }
-has_country_modifier = tactical_nukes
-war = yes
-				}
-
-	allow = {
-
-OR = { 
-
-has_country_modifier = defcon1 
-
-AND = { NOT = { war_policy = pacifism } ai = no }
-
-any_owned_province = { has_province_modifier = tactical_nuked } 
-
-}
-
-NOT = { has_country_modifier = nukes_used_recently }
-					}
-
-	effect = {
-add_country_modifier = { name = nukes_used_recently duration = 92 }
-badboy = 5
-any_country = { limit = { war_with = THIS } country_event = 1610031 }
+		potential = {
+			OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation }
+			has_country_modifier = tactical_nukes
+			war = yes
 		}
-		ai_will_do = { 
-			factor = 1 
+
+		allow = {
+	
+			NOT = { has_country_modifier = nuclear_system_down }
+
+			OR = { 
+
+				has_country_modifier = defcon1 
+
+				AND = { NOT = { war_policy = pacifism } ai = no }
+
+				any_owned_province = { has_province_modifier = tactical_nuked } 
+
 			}
+
+			NOT = { has_country_modifier = nukes_used_recently }
+		}
+
+		effect = {
+			add_country_modifier = { name = nukes_used_recently duration = 92 }
+			badboy = 5
+			any_country = { limit = { war_with = THIS } country_event = 1610031 }
+		}
+		
+		ai_will_do = { 
+			factor = 0.75
+		}
+
 	}
 
 nuclear_second_strike = {
 	picture = "nuclear_second_strike"
-	potential = {
-		war = yes
-		has_country_modifier = recently_attacked_nuke
-		OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation } 
-		has_country_modifier = nuclear_cap_high
-	}
+		potential = {
+			war = yes
+			has_country_modifier = recently_attacked_nuke
+			OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation } 
+			has_country_modifier = nuclear_cap_high
+		}
 
-	allow = {
-		war = yes
-		has_country_modifier = recently_attacked_nuke
-		OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation } 
-	}
+		allow = {
+			war = yes
+			has_country_modifier = recently_attacked_nuke
+			OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation }
+			NOT = { has_country_modifier = nuclear_system_down }
+		}
 
-	effect = {
+		effect = {
 	
-		remove_country_modifier = recently_attacked_nuke
+			remove_country_modifier = recently_attacked_nuke
 		
-		#Inform of retaliatory strike
-		any_country = { 
-			limit = { war_with = THIS has_country_modifier = nukes_used_recently } 
-			country_event = 1331434
+			#Inform of retaliatory strike
+			any_country = { 
+				limit = { war_with = THIS has_country_modifier = nukes_used_recently } 
+				country_event = 1331434
+			}
+
 		}
 
 	}
-
-}
 
 }
