@@ -1,3 +1,4 @@
+#Death of Harold Holt
 country_event = {
   id = 8001014
   title = EVT_8001014_NAME
@@ -7,36 +8,20 @@ country_event = {
 
   trigger = {
     tag = AST
-    year = 1970 NOT = { year = 1971 }
+    year = 1967 NOT = { year = 1971 }
+	OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
   }
 
-  mean_time_to_happen = { months = 2 }
+  mean_time_to_happen = { months = 12 }
 
   option = {
     name = EVT_8001014_A
-	prestige = 10
+	prestige = -10
   }
+  
 }
-country_event = {
-  id = 8001029
-  title = "EVT_8001029_NAME"
-  desc = "EVT_8001029_DESC"
-  picture = "nwo2_dam"
-  fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1963  NOT = { year = 1967 }
-  }
-
-  mean_time_to_happen = { months = 4  }
-
-  option = {
-    name = "EVT_8001029_A"
-	any_pop = { consciousness = 1 }
-	prestige = 10
-  }
-}
+#Summer Olympic Games 1956
 country_event = {
   id = 8001030
   title = "EVT_8001030_NAME"
@@ -44,41 +29,63 @@ country_event = {
   picture = "nwo2_melbourne_1956"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1956  NOT = { year = 1957 }
-	war = no
-  }
+	trigger = {
+		tag = AST
+		year = 1956 NOT = { year = 1958 }
+		war = no
+	
+		has_country_flag = next_olympics_host_nation
+		NOT = { has_country_modifier = next_olympics_host_nation }
+	}
 
-  mean_time_to_happen = { months = 1  }
+	option = {
+		name = "EVT_8001030_A"
+		any_pop = { consciousness = 1  }
+		prestige = 50
+	}
 
-  option = {
-    name = "EVT_8001030_A"
-	any_pop = { consciousness = 1  }
-	prestige = 50
-  }
 }
+
+#Populate or Perish
 country_event = {
   id = 8001031
   title = "EVT_8001031_NAME"
   desc = "EVT_8001031_DESC"
-  picture = "nwo2_population"
+  picture = "populate_or_perish"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1963 NOT = { year = 1964 }
-    
-    war = no
-  }
+	trigger = {
+		tag = AST
+		year = 1945 NOT = { year = 1990 }
+		NOT = { has_global_flag = 1950_start_date_flag }
+	}
 
-  mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 6 }
 
-  option = {
-    name = "EVT_8001031_A"
-	add_country_modifier = { name = four_children duration = 365 }
-  }
+	option = {
+		name = "Encourage more population growth"
+		add_country_modifier = { name = four_children duration = 1825 }
+		
+		random_owned = { 
+			limit = { 
+				owner = { OR = { child_care = limited_child_care child_care = no_child_care } } 
+			}
+			owner = { political_reform = supported_child_care }
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Pursue a more favourable immigration policy instead!"
+		add_country_modifier = { name = four_children duration = 725 }
+		political_reform = promoted_immigration
+		ai_chance = { factor = 0.1 }
+	}
+	
 }
+
+#Civil rights for all Australians - triggered by accepting aborigine
 country_event = {
   id = 8001032
   title = "EVT_8001032_NAME"
@@ -86,166 +93,190 @@ country_event = {
   picture = "nwo2_australian_aborigines"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1970  NOT = { year = 1972 }
-    war = no
-  }
+	trigger = {
+		tag = AST
+		NOT = { year = 1990 }
+		accepted_culture = aborigine
+		OR = { government = hms_government government = hms_government1 government = socialist_democracy government = democracy government = democracy1 }
+	}
 
-  mean_time_to_happen = { months = 6 }
+	mean_time_to_happen = { months = 6 }
 
-  option = {
-    name = "EVT_8001032_A"
-	random_state = { any_pop = { dominant_issue = { value = free_opinion factor = 0.4 } } }
-  }
+	option = {
+		name = "EVT_8001032_A"
+		prestige = 50
+		political_reform = minorities_affirmative_action
+	}
+	
 }
+
+#Australia Enters Nuclear Arms Race
 country_event = {
   id = 8001050
   title = EVT_8001050_NAME
   desc = EVT_8001050_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_nuclear_tests"
   fire_only_once = yes
 
   trigger = {
-    tag = AST
-    year = 1946  NOT = { year = 1950 }
-  }
+		tag = AST
+		year = 1946 NOT = { year = 1990 }
+		OR = { government = hms_government government = hms_government1 }
+		in_sphere = ENG
+		is_vassal = no
+		ENG = {
+			is_greater_power = yes
+			OR = { government = hms_government government = hms_government1 }
+			OR = { has_country_modifier = develop_atomic_bomb has_country_modifier = develop_hydrogen_bomb }
+		}
+	}
 
-  mean_time_to_happen = { months = 7 }
+	mean_time_to_happen = { months = 2 }
   
-  option = {
-    name = EVT_8001050_A
-	any_pop = { consciousness = 1 }
-	prestige = 10
-  }
+	option = {
+		name = EVT_8001050_A
+		any_pop = { consciousness = 5 }
+		prestige = 50
+		money = 100000
+		years_of_research = 1
+	}
+	
 }
+
+#Australia Lifts Price Controls
 country_event = {
   id = 8001051
   title = EVT_8001051_NAME
   desc = EVT_8001051_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_price_controls"
   fire_only_once = yes
 
   trigger = {
     tag = AST
-    year = 1946  NOT = { year = 1950 }
+    year = 1946 NOT = { year = 1950 }
     war = no
   }
 
-  mean_time_to_happen = { months = 3 }
+  mean_time_to_happen = { months = 2 }
   
   option = {
     name = EVT_8001051_A
-	any_pop = { consciousness = 1 }
-	ai_chance = { factor = 1 }
+	any_pop = { consciousness = 3 }
+	any_pop = {
+		dominant_issue = {
+			value = pacifism
+			factor = 0.1
+		}
+	}
   }
 
-  option = {
-    name = EVT_8001051_B
-	any_pop = { militancy = 1.0 }
-	ai_chance = { factor = 0 }
-  }
 }
+
+#Assistance to British Migrants
 country_event = {
   id = 8001052
   title = EVT_8001052_NAME
   desc = EVT_8001052_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_british_migrants"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1946  NOT = { year = 1950 }
-    war = no
-  }
+	trigger = {
+		tag = AST
+		year = 1946 NOT = { year = 1950 }
+		war = no
+		OR = { government = hms_government government = hms_government1 }
+	}
 
-  mean_time_to_happen = { months = 9 }
+	mean_time_to_happen = { months = 4 }
   
-  option = {
-    name = EVT_8001052_A
-	prestige = 10
-	any_pop = { consciousness = 1 }
-	relation = { who = NZL value = 50 } 
-	relation = { who = ENG value = 50 } 
-  }
+	option = {
+		name = EVT_8001052_A
+		prestige = 25
+		any_pop = { consciousness = 1 }
+		relation = { who = NZL value = 50 } 
+		relation = { who = ENG value = 50 } 
+	}
+
 }
+
+#First Postwar Flights
 country_event = {
   id = 8001053
   title = EVT_8001053_NAME
   desc = EVT_8001053_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_qantas"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1946  NOT = { year = 1950 }
-    
-  }
+	trigger = {
+		tag = AST
+		year = 1946 NOT = { year = 1950 }
+		OR = { government = hms_government government = hms_government1 }
+		war = no
+	}
 
-  mean_time_to_happen = { months = 10 }
+	mean_time_to_happen = { months = 5 }
   
-  option = {
-    name = EVT_8001053_A
-	any_pop = { consciousness = 1 }
-  }
+	option = {
+		name = EVT_8001053_A
+		any_pop = { consciousness = 1 }
+		relation = { who = ENG value = 25 }
+	}
+	
 }
+
+#University Of Canberra
 country_event = {
   id = 8001054
   title = EVT_8001054_NAME
   desc = EVT_8001054_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_canberra_university"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1946  NOT = { year = 1950 }
-  }
+	trigger = {
+		tag = AST
+		year = 1946 NOT = { year = 1950 }
+	}
 
-  mean_time_to_happen = { months = 7 }
+	mean_time_to_happen = { months = 6 }
   
-  option = {
-    name = EVT_8001054_A
-	prestige = 10
-  }
-}
-country_event = {
-  id = 8001055
-  title = EVT_8001055_NAME
-  desc = EVT_8001055_DESC
-  picture = "nwo2_australia"
-  fire_only_once = yes
+	option = {
+		name = EVT_8001054_A
+		prestige = 10
+		years_of_research = 0.25
+	}
 
-  trigger = {
-    tag = AST
-    year = 1946  NOT = { year = 1990 }
-  }
-  
-  mean_time_to_happen = { months = 4 }
-
-  option = {
-    name = EVT_8001055_A
-	prestige = 20
-  }
 }
+
+#Metal worker strikes
 country_event = {
   id = 8001056
   title = EVT_8001056_NAME
   desc = EVT_8001056_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_1946_strike"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1946  NOT = { year = 1990 }
-  }
+	trigger = {
+		tag = AST
+		year = 1946 NOT = { year = 1955 }
+		OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
+		NOT = { has_global_flag = 1950_start_date_flag }
+		war = no
+	}
 
-  mean_time_to_happen = { months = 4 }
+	mean_time_to_happen = { months = 10 }
   
-  option = {
-    name = EVT_8001056_A
-	add_country_modifier = { name = stock_market_crash duration = 36 }
-  }
+	option = {
+		name = EVT_8001056_A
+		prestige = -25
+		any_owned = { 
+			add_province_modifier = { name = province_strike duration = 365 }
+		}
+		set_country_flag = australia_1946_strike
+	}
+  
 }
+
+#National Security Act Rescinded
 country_event = {
   id = 8001057
   title = EVT_8001057_NAME
@@ -253,233 +284,272 @@ country_event = {
   picture = "nwo2_australia"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1946  NOT = { year = 1950 }
-  }
+	trigger = {
+		tag = AST
+		year = 1946 NOT = { year = 1950 }
+		security_reform = preemptive_security_actions
+		war = no
+	}
   
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 12 }
 
-  option = {
-    name = EVT_8001057_A
-	any_pop = { consciousness = 1 }
-  }
+	option = {
+		name = EVT_8001057_A
+		any_pop = { consciousness = 2 }
+		social_reform = police
+	}
 
-  option = {
-    name = EVT_8001057_B
-	any_pop = { consciousness = 1 }
-	random_state = { any_pop = { dominant_issue = { value = planned_economy factor = 0.6 } } }
-	random_state = { any_pop = { dominant_issue = { value = parties_allowed factor = 0.6 } } }
-  }
+	option = {
+		name = EVT_8001057_B
+		any_pop = { militancy = 5 }
+	}
+	
 }
+
+#End of the metal worker strikes
 country_event = {
   id = 8001058
   title = EVT_8001058_NAME
   desc = EVT_8001058_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_1946_strike"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1947  NOT = { year = 1950 }
-  }
+	trigger = {
+		tag = AST
+		year = 1947 NOT = { year = 1950 }
+		has_country_flag = australia_1946_strike
+	}
 
-  mean_time_to_happen = { months = 2  }
+	mean_time_to_happen = { months = 5 }
 
-  option = {
-    name = EVT_8001058_A
-	any_pop = { militancy = -1.0 }
-	ai_chance = { factor = 1 }
-  }
+	option = {
+		name = EVT_8001058_A
+		any_pop = { militancy = -2.0 }
+		social_reform = eight_work_hours
+		any_owned = { 
+			remove_province_modifier = province_strike
+		}
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8001058_B
-	any_pop = { consciousness = 2 }
-	random_state = { any_pop = { dominant_issue = { value = laissez_faire factor = 0.55 } } }
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = EVT_8001058_B
+		any_pop = { consciousness = 2 }
+		ai_chance = { factor = 0.1 }
+	}
 
-  option = {
-    name = EVT_8001058_C
-	any_pop = { militancy = 1.0 consciousness = 1 }
-	random_state = { any_pop = { dominant_issue = { value = laissez_faire factor = 0.6 } } }
-	random_state = { any_pop = { dominant_issue = { value = planned_economy factor = 0.55 } } }
-	random_state = { any_pop = { dominant_issue = { value = parties_allowed factor = 0.55 } } }
-	ai_chance = { factor = 0 }
-  }
 }
+
+#Australian Stock Exchange
 country_event = {
   id = 8001059
   title = EVT_8001059_NAME
   desc = EVT_8001059_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_stock_ex"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1947 NOT = { year = 1950 }
-  }
+	trigger = {
+		tag = AST
+		year = 1947 NOT = { year = 1950 }
+		OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
+	}
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8001059_A
-any_pop = { consciousness = -0.5 }random_state = { any_pop = { dominant_issue = { value = laissez_faire factor = 0.35 } } }
-	ai_chance = { factor = 1 }
-  }
+	option = {
+		name = EVT_8001059_A
+		money = 100000
+		2468 = { add_province_modifier = { name = local_stock_exchange duration = -1 } }
+	}
 
-  option = {
-    name = EVT_8001059_B
-any_pop = { consciousness = 1  }random_state = { any_pop = { dominant_issue = { value = laissez_faire factor = 0.55 } } }random_state = { any_pop = { dominant_issue = { value = parties_allowed factor = 0.55 } } }
-	ai_chance = { factor = 0 }
-  }
 }
+
+#The South Pacific Commission
 country_event = {
   id = 8001060
   title = EVT_8001060_NAME
   desc = EVT_8001060_DESC
-  picture = "nwo2_australia"
-  fire_only_once = yes
+  picture = "nwo2_south_pacific_commission"
 
-  trigger = {
-    tag = AST
-    year = 1947 NOT = { year = 1950 }
-    NOT = {
-    }
-    
-    war = no
-  }
-  mean_time_to_happen = { months = 5  }
+	trigger = {
+		OR = { tag = AST tag = NZL }
+		year = 1947 NOT = { year = 1950 }
+		war = no
+		is_vassal = no
+		NOT = { has_country_flag = trade_block_ambition }
+		NOT = { has_country_flag = EVT_8001060_fired }
+		OR = { government = hms_government government = hms_government1 }
+		money = 100000
+	}
+	
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8001060_A
-any_pop = { consciousness = -0.1 }relation = { who = RAJ value = 10 } relation = { who = HND value = 10 } relation = { who = JAP value = 10 } relation = { who = NZL value = 10 } relation = { who = FRA value = 10 } relation = { who = ENG value = 10 } relation = { who = USA value = 10 } relation = { who = AST value = 10 } relation = { who = RUS value = -20 } 
-  }
+	option = {
+		name = EVT_8001060_A
+		prestige = 25
+		money = -50000
+		set_country_flag = trade_block_ambition
+		set_country_flag = EVT_8001060_fired
+		random_country = {
+			limit = { tag = NZL }
+			relation = { who = THIS value = 100 }
+		}
+		random_country = {
+			limit = { tag = AST }
+			relation = { who = THIS value = 100 }
+		}
+	}
+	
+	option = {
+		name = "Perhaps next time"
+		ai_chance = { factor = 0.1 }
+	}
+  
 }
+
+#Australia's New Army
 country_event = {
   id = 8001061
   title = EVT_8001061_NAME
   desc = EVT_8001061_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_regular_army"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1947 NOT = { year = 1950 }
-  }
+	trigger = {
+		tag = AST
+		year = 1947 NOT = { year = 1950 }
+	}
 
-  mean_time_to_happen = { months = 8  }
+	mean_time_to_happen = { months = 11 }
 
-  option = {
-    name = EVT_8001061_A
-	any_pop = { consciousness = -0.2 }
-  }
+	option = {
+		name = EVT_8001061_A
+		prestige = 10
+	}
+
 }
+
+#Australian Antarctic Expedition
 country_event = {
   id = 8001062
   title = EVT_8001062_NAME
   desc = EVT_8001062_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australian_antarctic"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1947 NOT = { year = 1950 }
-  }
-  mean_time_to_happen = { months = 2 }
+	trigger = {
+		tag = AST
+		year = 1947 NOT = { year = 1950 }
+		war = no
+		OR = { government = hms_government government = hms_government1 }
+		ENG = { OR = { government = hms_government government = hms_government1 } }
+	}
+	
+	mean_time_to_happen = { months = 2 }
 
-  option = {
-    name = EVT_8001062_A
-	any_pop = { consciousness = -0.2 }
-	relation = { who = ENG value = 20 } relation = { who = NZL value = 20 } 
-  }
+	option = {
+		name = EVT_8001062_A
+		prestige = 10
+		relation = { who = ENG value = 20 } 
+		relation = { who = NZL value = 20 } 
+	}
+
 }
+
+#QLD strikes - start
 country_event = {
   id = 8001063
   title = EVT_8001063_NAME
   desc = EVT_8001063_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_1946_strike"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1948 NOT = { year = 1950 }
-  }
+	trigger = {
+		tag = AST
+		year = 1948 NOT = { year = 1950 }
+		war = no
+		OR = { government = hms_government government = hms_government1 }
+	}
 
-   mean_time_to_happen = { months = 2  }
+	mean_time_to_happen = { months = 2 }
 
-  option = {
-    name = EVT_8001063_A
-	any_pop = { consciousness = 0.2 }
-  }
+	option = {
+		name = EVT_8001063_A
+		any_pop = { consciousness = 2 militancy = 1 }
+		any_owned = { 
+			add_province_modifier = { name = province_strike duration = 60 }
+		}
+	}
+  
 }
+
+#QLD strikes - end
 country_event = {
   id = 8001064
   title = EVT_8001064_NAME
   desc = EVT_8001064_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_1946_strike"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1948 NOT = { year = 1950 }
-  }
+	trigger = {
+		tag = AST
+		year = 1948 NOT = { year = 1950 }
+		OR = { government = hms_government government = hms_government1 }
+	}
 
-  mean_time_to_happen = { months = 3  }
+	mean_time_to_happen = { months = 4 }
 
-  option = {
-    name = EVT_8001064_A
-	any_pop = { militancy = -2.0 }
-  }
+	option = {
+		name = EVT_8001064_A
+		any_pop = { militancy = -2.0 }
+	}
+  
 }
-country_event = {
-  id = 8001065
-  title = EVT_8001065_NAME
-  desc = EVT_8001065_DESC
-  picture = "nwo2_australia"
-  fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1948 NOT = { year = 1950 }
-  }
-
-  mean_time_to_happen = { months = 6 }
-
-  option = {
-    name = EVT_8001065_A
-	any_pop = { consciousness = -0.2 }
-  }
-}
+#Australian Citizenship
 country_event = {
   id = 8001066
   title = EVT_8001066_NAME
   desc = EVT_8001066_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australian_citizenship"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1949 NOT = { year = 1950 }
-  }
+	trigger = {
+		tag = AST
+		year = 1949 NOT = { year = 1950 }
+		NOT = { immigration_policy = promoted_immigration }
+		OR = { government = hms_government government = hms_government1 }
+		war = no
+	}
 
-  mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8001066_A
-	any_pop = { consciousness = -0.4 }
-  }
+	option = {
+		name = EVT_8001066_A
+		political_reform = naturalization
+		any_pop = { consciousness = 2 }
+		ai_chance = { factor = 0.1 }
+	}
+	
+	option = {
+		name = "Perhaps next time"
+		ai_chance = { factor = 0.1 }
+	}
+
 }
+
+#Lawrence Louis Sharkey
 country_event = {
   id = 8001067
   title = EVT_8001067_NAME
   desc = EVT_8001067_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australian_court"
   fire_only_once = yes
 
   trigger = {
     tag = AST
     year = 1949 NOT = { year = 1950 }
+	OR = { government = hms_government government = hms_government1 }
   }
 
   mean_time_to_happen = { months = 1  }
@@ -488,7 +558,7 @@ country_event = {
     name = EVT_8001067_A
 	any_pop = { consciousness = 0.2 }
 	relation = { who = RUS value = -15 } 
-	ai_chance = { factor = 1 }
+	ai_chance = { factor = 0.7 }
   }
 
   option = {
@@ -496,7 +566,7 @@ country_event = {
 	any_pop = { consciousness = 0.7 }
 	relation = { who = RUS value = -30 } 
 	random_state = { any_pop = { dominant_issue = { value = planned_economy factor = 0.55 } } }
-	ai_chance = { factor = 0 }
+	ai_chance = { factor = 0.2 }
   }
 
   option = {
@@ -506,449 +576,508 @@ country_event = {
 	relation = { who = ENG value = -15 } 
 	relation = { who = USA value = -15 } 
 	relation = { who = RUS value = 25 } 
-	ai_chance = { factor = 0 }
+	ai_chance = { factor = 0.1 }
   }
+  
 }
+
+#Some strike thing
 country_event = {
   id = 8001068
   title = EVT_8001068_NAME
   desc = EVT_8001068_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_1946_strike"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1949 NOT = { year = 1990 }
-  }
+	trigger = {
+		tag = AST
+		year = 1949 NOT = { year = 1990 }
+		OR = { government = hms_government government = hms_government1 }
+		war = no
+	}
 
-  mean_time_to_happen = { months = 4  }
+	mean_time_to_happen = { months = 6 }
 
-  option = {
-    name = EVT_8001068_A
-	any_pop = { consciousness = 0.24 }
-  }
+	option = {
+		name = EVT_8001068_A
+		any_pop = { consciousness = 2 militancy = 1 }
+		any_owned = { 
+			add_province_modifier = { name = province_strike duration = 60 }
+		}
+	}
 }
+
+#Some strike thing - 1
 country_event = {
   id = 8001069
   title = EVT_8001069_NAME
   desc = EVT_8001069_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australian_court"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1949 NOT = { year = 1950 }
-  }
+	trigger = {
+		tag = AST
+		year = 1949 NOT = { year = 1950 }
+		OR = { government = hms_government government = hms_government1 }
+		war = no
+	}
 
-  mean_time_to_happen = { months = 3 }
+	mean_time_to_happen = { months = 7 }
 
-  option = {
-    name = EVT_8001069_A
-	any_pop = { consciousness = -0.1 }
-	prestige = 10
-  }
+	option = {
+		name = EVT_8001069_A
+		any_pop = { consciousness = 2 militancy = 2 }
+		any_owned = { remove_province_modifier = province_strike }
+	}
 
-  option = {
-    name = EVT_8001069_B
-	any_pop = { consciousness = 0.7 }
-  }
+	option = {
+		name = EVT_8001069_B
+		any_pop = { consciousness = 3 }
+		set_country_flag = EVT_8001069_opt_b
+	}
+
 }
+
+#Some strike thing - 2
 country_event = {
   id = 8001070
   title = EVT_8001070_NAME
   desc = EVT_8001070_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_1946_strike"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1949 NOT = { year = 1990 }
-  }
+	trigger = {
+		tag = AST
+		year = 1949 NOT = { year = 1990 }
+		has_country_flag = EVT_8001069_opt_b
+	}
 
-  mean_time_to_happen = { months = 10 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8001070_A
-	any_pop = { consciousness = -1.2 }
-	prestige = 5
-  }
+	option = {
+		name = EVT_8001070_A
+		any_pop = { consciousness = 2 militancy = 2 }
+	}
+
 }
+
+#ASIO Established
 country_event = {
   id = 8001071
   title = EVT_8001071_NAME
   desc = EVT_8001071_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_ASIO"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1949 NOT = { year = 1950 }
-  }
+	trigger = {
+		tag = AST
+		year = 1949 NOT = { year = 1950 }
+		is_vassal = no
+		money = 110000
+		NOT = { has_country_modifier = spy_agency }
+	}
 
-  mean_time_to_happen = { months = 6 }
+	mean_time_to_happen = { months = 7 }
 
-  option = {
-    name = EVT_8001071_A
-	any_pop = { consciousness = -0.1 }
-  }
+	option = {
+		name = EVT_8001071_A
+		prestige = 25
+		money = -100000
+		add_country_modifier = { name = spy_agency duration = -1 }
+		ai_chance = { factor = 0.9 }
+	}
+	option = {
+		name = "Save money instead"
+		ai_chance = { factor = 0.1 }
+	}
 }
-country_event = {
-  id = 8001072
-  title = EVT_8001072_NAME
-  desc = EVT_8001072_DESC
-  picture = "nwo2_australia"
-  fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1950 NOT = { year = 1950 }
-  }
-
-  mean_time_to_happen = { months = 3 }
-
-  option = {
-    name = EVT_8001072_A
-	any_pop = { consciousness = 0.25 }
-  }
-}
+#Communist Party Dissolution Act
 country_event = {
   id = 8001073
   title = EVT_8001073_NAME
   desc = EVT_8001073_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australian_communist"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1950 NOT = { year = 1955 }
-  }
+	trigger = {
+		tag = AST
+		year = 1950 NOT = { year = 1955 }
+		OR = { government = hms_government government = hms_government1 }
+		NOT = { ruling_party_ideology = communist }
+		is_vassal = no
+	}
 
-  mean_time_to_happen = { months = 6 }
+	mean_time_to_happen = { months = 4 }
 
-  option = {
-    name = EVT_8001073_A
-	relation = { who = RUS value = -10 } 
-	relation = { who = CHI value = -10 } 
-  }
+	option = {
+		name = EVT_8001073_A
+		
+		set_country_flag = AST_ban_communist
+ 
+		any_country = {
+			limit = { has_country_modifier = democratic_bloc }
+			relation = { who = THIS value = 50 }
+		}
+		
+		any_country = {
+			limit = { has_country_modifier = communist_bloc }
+			relation = { who = THIS value = -50 }
+		}
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Respect democracy"
+		
+		any_country = {
+			limit = { has_country_modifier = democratic_bloc }
+			relation = { who = THIS value = -50 }
+		}
+		
+		any_country = {
+			limit = { has_country_modifier = communist_bloc }
+			relation = { who = THIS value = 50 }
+		}
+		
+		any_pop = { 
+			ideology = {
+				factor = 0.05
+				value = communist
+			}
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
 }
+
+#Aid to South Korea
 country_event = {
   id = 8001074
   title = EVT_8001074_NAME
   desc = EVT_8001074_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_korean_war"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1950 NOT = { year = 1955 }
-    NKO = { war_with = KOR }
-  }
+	trigger = {
+		tag = AST
+		year = 1950 NOT = { year = 1955 }
+		SKO = { war_with = NKO }
+		SKO = { government = democracy }
+		NKO = { government = proletarian_dictatorship }
+		OR = { government = hms_government government = hms_government1 }
+		is_vassal = no
+		money = 110000
+	}
 
-  mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 2 }
 
-  option = {
-    name = EVT_8001074_A
-	badboy = 5 
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = EVT_8001074_A
+		prestige = 10
+		relation = { who = SKO value = 50 }
+		relation = { who = NKO value = -50 }
+		SKO = { money = 100000 }
+		money = -100000
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8001074_B
-	money = 100 
-	ai_chance = { factor = 1 }
-  }
+	option = {
+		name = EVT_8001074_B
+		ai_chance = { factor = 0.1 }
+	}
+
 }
-country_event = {
-  id = 8001075
-  title = EVT_8001075_NAME
-  desc = EVT_8001075_DESC
-  picture = "nwo2_australia"
-  fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1950 NOT = { year = 1955 }
-  }
-
-  mean_time_to_happen = { months = 6  }
-
-  option = {
-    name = EVT_8001075_A
-	any_pop = { consciousness = -1.0 }
-  }
-}
-country_event = {
-  id = 8001076
-  title = EVT_8001076_NAME
-  desc = EVT_8001076_DESC
-  picture = "nwo2_australia"
-  fire_only_once = yes
-
-  trigger = {
-    tag = AST
-    year = 1950  NOT = { year = 1955 }
-  }
-
-  mean_time_to_happen = { months = 9 }
-
-  option = {
-    name = EVT_8001076_A
-	any_pop = { consciousness = 0.5 }
-  }
-}
-country_event = {
-  id = 8001077
-  title = EVT_8001077_NAME
-  desc = EVT_8001077_DESC
-  picture = "nwo2_australia"
-  fire_only_once = yes
-
-  trigger = {
-    tag = AST
-    year = 1950  NOT = { year = 1955 }
-  }
-
-  mean_time_to_happen = { months = 6 }
-
-  option = {
-    name = EVT_8001077_A
-	any_pop = { consciousness = -0.5 }
-  }
-}
+#Anti-commuunist ban is illegal
 country_event = {
   id = 8001078
   title = EVT_8001078_NAME
   desc = EVT_8001078_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australian_court"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1951  NOT = { year = 1955 }
-  }
+	trigger = {
+		tag = AST
+		year = 1951 NOT = { year = 1955 }
+		OR = { government = hms_government government = hms_government1 }
+		has_country_flag = AST_ban_communist
+	}
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 3 }
 
-  option = {
-    name = EVT_8001078_A
-	any_pop = { consciousness = 0.3 }
-	ai_chance = { factor = 1 }
-  }
+	option = {
+		name = EVT_8001078_A
+		any_pop = { consciousness = 3 }
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8001078_B
-	any_pop = { consciousness = 1.0 }
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = "I am the Senate"
+		prestige = -100
+		political_reform = regulated_opinion
+		political_reform = parties_only_nominated
+		ai_chance = { factor = 0.1 }
+	}
 
-  option = {
-    name = EVT_8001078_C
-	any_pop = { consciousness = 2.0 }
-	ai_chance = { factor = 0 }
-  }
 }
+
+#National Service
 country_event = {
   id = 8001079
   title = EVT_8001079_NAME
   desc = EVT_8001079_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_national_service"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1951  NOT = { year = 1955 }
-  }
+	trigger = {
+		tag = AST
+		year = 1951 NOT = { year = 1955 }
+		has_global_flag = korea_war
+		lgbt_rights = lgbt_outlawed
+		war = no
+		is_vassal = no
+	}
 
-  mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 11 }
 
-  option = {
-    name = EVT_8001079_A
-	any_pop = { consciousness = 0.2 }
-  }
+	option = {
+		name = EVT_8001079_A
+		political_reform = lgbt_equal_rights
+		any_pop = { militancy = 1 }
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "There is no need for conscription"
+		ai_chance = { factor = 0.1 }
+	}
+
 }
+
+#ANZUS
 country_event = {
   id = 8001080
   title = EVT_8001080_NAME
   desc = EVT_8001080_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_ANZUS"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1951  NOT = { year = 1955 }
-  }
+	trigger = {
+		tag = AST
+		year = 1951
+		is_vassal = no
+		war = no
+		OR = { government = hms_government government = hms_government1 }
+		NZL = { OR = { government = hms_government government = hms_government1 } is_vassal = no war = no }
+		has_global_flag = blocsenabled
+		money = 110000
+	}
 
-  mean_time_to_happen = { months = 9  }
+	mean_time_to_happen = { months = 9  }
 
-  option = {
-    name = EVT_8001080_A
-	any_pop = { consciousness = -0.6 }
-	relation = { who = USA value = 25 } relation = { who = NZL value = 25 } relation = { who = AST value = 25 } 
-  }
+	option = {
+		name = EVT_8001080_A
+		prestige = 50
+		money = -100000
+		set_global_flag = ANZUS_formed_flag
+		relation = { who = USA value = 50 } 
+		relation = { who = NZL value = 50 } 
+		relation = { who = AST value = 50 } 
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "We will go it alone" 
+		ai_chance = { factor = 0.1 }
+	}
+  
 }
+
+#Anti-Communist Referendum Defeated
 country_event = {
   id = 8001081
   title = EVT_8001081_NAME
   desc = EVT_8001081_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_communist_referendum"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1951 NOT = { year = 1955 }
-  }
+	trigger = {
+		tag = AST
+		year = 1951 NOT = { year = 1955 }
+		OR = { government = hms_government government = hms_government1 }
+		is_vassal = no
+		war = no
+		has_global_flag = blocsenabled
+	}
 
-  mean_time_to_happen = { months = 5 }
+	mean_time_to_happen = { months = 9 }
 
-  option = {
-    name = EVT_8001081_A
-	any_pop = { consciousness = 0.5 }
-  }
+	option = {
+		name = EVT_8001081_A
+		any_pop = { consciousness = 2 }
+		any_pop = { 
+			ideology = {
+				factor = 0.025
+				value = communist
+			}
+		}
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8001081_B
-	any_pop = { consciousness = 2.0 }
-  }
+	option = {
+		name = EVT_8001081_B
+		political_reform = regulated_opinion
+		political_reform = parties_only_nominated
+		any_pop = { consciousness = 2.0 }
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
 }
+
+#Uranium Agreement
 country_event = {
   id = 8001082
   title = EVT_8001082_NAME
   desc = EVT_8001082_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_uranium"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1952  NOT = { year = 1955 }
-  }
+	trigger = {
+		tag = AST
+		year = 1952 NOT = { year = 1955 }
+		has_global_flag = blocsenabled
+		has_country_modifier = democratic_bloc
+		is_vassal = no
+		war = no
+	}
 
-  mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 4 }
 
-  option = {
-    name = EVT_8001082_A
-	relation = { who = AST value = 10 } relation = { who = FRA value = 10 } relation = { who = THI value = 10 } relation = { who = NZL value = 10 } relation = { who = USA value = 10 } relation = { who = ENG value = 10 } relation = { who = SRL value = 10 } relation = { who = PHI value = 10 } 
-  }
+	option = {
+		name = EVT_8001082_A
+		prestige = 10
+		random_country = {
+			limit = { tag = USA }
+			relation = { who = THIS	value = 50 }
+		}
+		random_country = {
+			limit = { tag = ENG has_country_modifier = democratic_bloc }
+			relation = { who = THIS	value = 50 }
+		}
+		set_country_flag = uranium_AST_flag
+	}
+
 }
+
+#Atomic Energy Commission Founded
 country_event = {
   id = 8001083
   title = EVT_8001083_NAME
   desc = EVT_8001083_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_AEC"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1953  NOT = { year = 1955 }
-  }
+	trigger = {
+		tag = AST
+		year = 1953 NOT = { year = 1955 }
+		is_vassal = no
+		war = no
+		has_country_flag = uranium_AST_flag
+	}
   
-  mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 4 }
 
-  option = {
-    name = EVT_8001083_A
-	prestige = 10
-  }
+	option = {
+		name = EVT_8001083_A
+		prestige = 10
+		badboy = -5
+	}
 }
+
+#Royal Visit by Queen Elizabeth II
 country_event = {
   id = 8001084
   title = EVT_8001084_NAME
   desc = EVT_8001084_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_QE2_royal_visit"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1954 NOT = { year = 1955 }
-  }
+	trigger = {
+		tag = AST
+		year = 1954 NOT = { year = 1955 }
+		OR = { government = hms_government government = hms_government1 }
+		ENG = { OR = { government = hms_government government = hms_government1 } }
+	}
 
-  mean_time_to_happen = { months = 3 }
+	mean_time_to_happen = { months = 2 }
 
-  option = {
-    name = EVT_8001084_A
-	any_pop = { consciousness = -0.7 }relation = { who = ENG value = 100 } 
-  }
+	option = {
+		name = EVT_8001084_A
+		prestige = 10
+		relation = { who = ENG value = 50 } 
+	}
+
 }
+
+#Permanent Antarctic Post
 country_event = {
   id = 8001085
   title = EVT_8001085_NAME
   desc = EVT_8001085_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australian_antarctic"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1954 NOT = { year = 1955 }
-  }
+	trigger = {
+		tag = AST
+		year = 1954 NOT = { year = 1955 }
+		has_country_modifier = antarticclaims
+	}
 
-  mean_time_to_happen = { months = 3 }
+	mean_time_to_happen = { months = 3 }
 
-  option = {
-    name = EVT_8001085_A
-	prestige  = 10
-  }
+	option = {
+		name = EVT_8001085_A
+		prestige  = 10
+	}
+
 }
-country_event = {
-  id = 8001086
-  title = EVT_8001086_NAME
-  desc = EVT_8001086_DESC
-  picture = "nwo2_australia"
-  fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1954 NOT = { year = 1955 }
-  }
-
-  mean_time_to_happen = { months = 3  }
-
-  option = {
-    name = EVT_8001086_A
-	relation = { who = USA value = 10 } relation = { who = ENG value = 10 } 
-	ai_chance = { factor  = 100 }
-  }
-
-  option = {
-    name = EVT_8001086_B
-	ai_chance = { factor  = 0 }
-	relation = { who = USA value = -20 } relation = { who = ENG value = -20 } relation = { who = RUS value = 10 } any_pop = { militancy = 1.5 }random_state = { any_pop = { dominant_issue = { value = planned_economy factor = 0.4 } } }
-  }
-
-  option = {
-    name = EVT_8001086_C
-	relation = { who = USA value = -10 } relation = { who = ENG value = -10 } any_pop = { consciousness = 1.8 }random_state = { any_pop = { dominant_issue = { value = parties_allowed factor = 0.6 } } }random_state = { any_pop = { dominant_issue = { value = planned_economy factor = 0.6 } } }
-  }
-}
+#Letters of Hope
 country_event = {
   id = 8001087
   title = EVT_8001087_NAME
   desc = EVT_8001087_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_letters_of_hope"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1955 NOT = { year = 1960 }
-  }
+	trigger = {
+		tag = AST
+		year = 1955 NOT = { year = 1960 }
+		OR = { government = hms_government government = hms_government1 }
+	}
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 1  }
 
-  option = {
-    name = EVT_8001087_A
-	any_pop = { consciousness = 2 }
-	ai_chance = { factor  = 100 }
-  }
+	option = {
+		name = EVT_8001087_A
+		any_pop = { 
+			ideology = {
+				factor = -0.025
+				value = communist
+			}
+		}
+	}
 
-  option = {
-    name = EVT_8001087_B
-	any_pop = { militancy = 1.0 }
-	ai_chance = { factor  = 0 }
-  }
-
-  option = {
-    name = EVT_8001087_C
-	any_pop = { militancy = 0.7 }
-	ai_chance = { factor  = 0 }
-  }
 }
+
+#Cooperative Surveilance
 country_event = {
   id = 8001088
   title = EVT_8001088_NAME
@@ -956,179 +1085,217 @@ country_event = {
   picture = "nwo2_australia"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1955 NOT = { year = 1960 }
-  }
+	trigger = {
+		tag = AST
+		year = 1955 NOT = { year = 1960 }
+		is_vassal = no
+		war = no
+		OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
+		has_global_flag = blocsenabled
+	}
 
-  mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8001088_A
-	relation = { who = USA value = 10 } 
-	prestige = 5
-  }
+	option = {
+		name = EVT_8001088_A
+		relation = { who = USA value = 25 }
+	}
 }
+
+#Another round of strikes
 country_event = {
   id = 8001089
   title = EVT_8001089_NAME
   desc = EVT_8001089_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_1946_strike"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1956 NOT = { year = 1960 }
-  }
+	trigger = {
+		tag = AST
+		year = 1956 NOT = { year = 1960 }
+		OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
+		war = no
+	}
 
-  mean_time_to_happen = { months = 5 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8001089_A
-	any_pop = { consciousness = 0.15 }
-  }
+	option = {
+		name = EVT_8001089_A
+		any_pop = { consciousness = 1.5 }
+	}
 }
+
 country_event = {
   id = 8001090
   title = EVT_8001090_NAME
   desc = EVT_8001090_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_1946_strike"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1956 NOT = { year = 1960 }
-  }
+	trigger = {
+		tag = AST
+		year = 1956 NOT = { year = 1960 }
+		OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
+		war = no
+	}
 
-  mean_time_to_happen = { months = 9 }
+	mean_time_to_happen = { months = 9 }
 
-  option = {
-    name = EVT_8001090_A
-	any_pop = { consciousness = 0.2 }
-  }
+	option = {
+		name = EVT_8001090_A
+		any_pop = { consciousness = 2 }
+	}
 }
+
 country_event = {
   id = 8001091
   title = EVT_8001091_NAME
   desc = EVT_8001091_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_1946_strike"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1957 NOT = { year = 1960 }
-  }
+	trigger = {
+		tag = AST
+		year = 1957 NOT = { year = 1960 }
+		OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
+		war = no
+	}
 
-  mean_time_to_happen = { months = 5 }
+	mean_time_to_happen = { months = 5 }
 
-  option = {
-    name = EVT_8001091_A
-	any_pop = { consciousness = -1.5 }
-  }
+	option = {
+		name = EVT_8001091_A
+		any_pop = { consciousness = -1.5 }
+	}
 }
+
 country_event = {
   id = 8001092
   title = EVT_8001092_NAME
   desc = EVT_8001092_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_1946_strike"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1957 NOT = { year = 1960 }
-  }
+	trigger = {
+		tag = AST
+		year = 1957 NOT = { year = 1960 }
+		OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
+		war = no
+	}
 
-  mean_time_to_happen = { months = 5 }
+	mean_time_to_happen = { months = 5 }
 
-  option = {
-    name = EVT_8001092_A
-	any_pop = { militancy = -1.2 }
-  }
+	option = {
+		name = EVT_8001092_A
+		any_pop = { militancy = -1.5 }
+	}
 }
+
+#Eildon Dam Opens
 country_event = {
   id = 8001093
   title = EVT_8001093_NAME
   desc = EVT_8001093_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_eildon"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1956 NOT = { year = 1960 }
-  }
+	trigger = {
+		tag = AST
+		year = 1956 NOT = { year = 1960 }
+	}
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 10 }
 
-  option = {
-    name = EVT_8001093_A
-	any_pop = { consciousness = -0.5 }
-  }
+	option = {
+		name = EVT_8001093_A
+		prestige = 25
+		add_country_modifier = { name = economic_boom duration = 725 }
+	}
 }
+
+#3000 Flee Hungary
 country_event = {
   id = 8001094
   title = EVT_8001094_NAME
   desc = EVT_8001094_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_hungarian_refugees"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1956 NOT = { year = 1960 }
-  }
+	trigger = {
+		tag = AST
+		year = 1956 NOT = { year = 1960 }
+		OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
+		war = no
+		has_global_flag = hungarian_revolution_1956
+		has_global_flag = blocsenabled
+	}
 
-  mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 11 }
 
-  option = {
-    name = EVT_8001094_A
-	any_pop = { consciousness = -0.2 }
-	relation = { who = RUS value = -10 } 
-	relation = { who = HUN value = -25 } 
-	ai_chance = { factor  = 100 }
-  }
+	option = {
+		name = EVT_8001094_A
+		any_pop = { consciousness = -2 }
+		relation = { who = RUS value = -10 } 
+		relation = { who = HUN value = -25 } 
+		ai_chance = { factor  = 0.9 }
+	}
 
-  option = {
-    name = EVT_8001094_B
-	any_pop = { consciousness = 0.5 }
-	relation = { who = RUS value = 5 } 
-	relation = { who = HUN value = 5 } 
-	ai_chance = { factor  = 0 }
-  }
+	option = {
+		name = EVT_8001094_B
+		any_pop = { consciousness = 1 }
+		relation = { who = RUS value = 10 } 
+		relation = { who = HUN value = 10 } 
+		ai_chance = { factor  = 0.1 }
+	}
+	
 }
+
+#Ansett Takes Off
 country_event = {
   id = 8001095
   title = EVT_8001095_NAME
   desc = EVT_8001095_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_ansett"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1957 NOT = { year = 1960 }
-  }
+	trigger = {
+		tag = AST
+		year = 1957 NOT = { year = 1960 }
+		OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
+		war = no
+	}
 
-  mean_time_to_happen = { months = 5 }
+	mean_time_to_happen = { months = 8 }
 
-  option = {
-    name = EVT_8001095_A
-	any_pop = { consciousness = -0.2 }
-  }
+	option = {
+		name = EVT_8001095_A
+		prestige = 5
+		money = 25000
+	}
+
 }
+
+#Round the World
 country_event = {
   id = 8001096
   title = EVT_8001096_NAME
   desc = EVT_8001096_DESC
-  picture = "nwo2_australia"
+  picture = "nwo2_australia_round_the_world"
   fire_only_once = yes
 
-  trigger = {
-    tag = AST
-    year = 1958 NOT = { year = 1960 }
-  }
+	trigger = {
+		tag = AST
+		year = 1958 NOT = { year = 1960 }
+		OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
+		war = no
+		ENG = { war = no }
+	}
 
-  mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8001096_A
-	any_pop = { consciousness = -0.5 }
-  }
+	option = {
+		name = EVT_8001096_A
+		prestige = 5
+	}
+
 }
