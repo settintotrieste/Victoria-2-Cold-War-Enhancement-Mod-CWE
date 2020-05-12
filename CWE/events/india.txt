@@ -454,39 +454,45 @@ country_event = {
   }
 }
 
-#Invasion of Goa
+#Invasion of Goa - HND start
 country_event = {
   id = 8007250
-  title = EVT_8007250_NAME
+  title = "The Invasion of Goa"
   desc = EVT_8007250_DESC
   picture = "nwo2_invasion_of_goa"
   fire_only_once = yes
 
-  trigger = {
-    	tag = HND
-    	year = 1963
-	is_vassal = no
+	trigger = {
+		tag = HND
+		year = 1963
+		NOT = { year = 1990 }
+		is_vassal = no
+		war = no
     	NOT = { HND = { alliance_with = POR } }
-    	NOT = { owns = 1303 }
-	POR = { owns = 1303 }
-  }
+		POR = { is_vassal = no }
+		POR = { owns = 1303 }
+	}
   
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 12 }
 
-  option = {
-    name = EVT_8007250_A
-	money = -10000
-	badboy = 5 
-	POR = { country_event = 8007251 } 
-	ai_chance = { factor = 1 }
-  }
+	option = {
+		name = "Begin the invasion! (Risk of war with Portugal)"
+		badboy = 5
+		POR = { country_event = 8007251 }
+		relation = { who = POR value = -200 }
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8007250_B
-    relation = { who = POR value = 100 } 
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = "Back off"
+		prestige_factor = -0.10
+		relation = { who = POR value = 100 } 
+		ai_chance = { factor = 0.1 }
+	}
+
 }
+
+#Invasion of Goa - POR response
 country_event = {
   id = 8007251
   title = EVT_8007251_NAME
@@ -494,28 +500,31 @@ country_event = {
   picture = "nwo2_invasion_of_goa"
   is_triggered_only = yes # POR
 
-  option = {
-    name = EVT_8007251_A
-	any_pop = { militancy = 0.5  consciousness = 1 }
-	1303 = {
-		secede_province = HND
-		remove_province_modifier = colonial_exploitation
+	option = {
+		name = "This is war!"
+		HND = { country_event = 8007253 }
+		ai_chance = { factor = 0.1 }
 	}
-	HND = { country_event = 8007252 }
-	1292 = { remove_province_modifier = daman }
-	1296 = { remove_province_modifier = diu }
-	remove_country_modifier = portugese_indian_colonies
-	set_global_flag = por_hnd_colonies
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8007251_B
-	any_pop = {consciousness = 2 }
-	HND = { country_event = 8007253 }
-	ai_chance = { factor = 0 }
-  }
+	
+	option = {
+		name = "Give in to the Indians"
+		prestige_factor = -0.1
+		any_pop = { militancy = 3 consciousness = 1 }
+		1303 = {
+			secede_province = HND
+			remove_province_modifier = colonial_exploitation
+		}
+		HND = { country_event = 8007252 }
+		1292 = { remove_province_modifier = daman }
+		1296 = { remove_province_modifier = diu }
+		remove_country_modifier = portugese_indian_colonies
+		set_global_flag = por_hnd_colonies
+		ai_chance = { factor = 0.9 }
+	}
+	
 }
+
+#Invasion of Goa - Portugal backs down
 country_event = {
   id = 8007252
   title = EVT_8007252_NAME
@@ -523,12 +532,15 @@ country_event = {
   picture = "nwo2_invasion_of_goa"
   is_triggered_only = yes # HND
 
-  option = {
-    name = EVT_8007252_A
-	any_pop = { consciousness = 2 }
-	prestige = 10
-  }
+	option = {
+		name = EVT_8007252_A
+		any_pop = { consciousness = 2 }
+		prestige = 100
+	}
+
 }
+
+#Invasion of Goa - Portugal goes to war
 country_event = {
   id = 8007253
   title = EVT_8007253_NAME
@@ -536,10 +548,25 @@ country_event = {
   picture = "nwo2_invasion_of_goa"
   is_triggered_only = yes # HND
 
-  option = {
-    name = EVT_8007253_A
-	any_pop = { consciousness = 2 }
-  }
+	option = {
+		name = "Let slip the dogs of war!"
+		war = {
+			target = POR
+			attacker_goal = { casus_belli = acquire_core_state state_province_id = 1303 }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = no
+		}
+		ai_chance = { factor = 0.75 }
+	}
+	
+	option = {
+		name = "Back down"
+		prestige_factor = -0.25
+		any_pop = { militancy = 3 consciousness = 3 }
+		relation = { who = POR value = 50 }
+		ai_chance = { factor = 0.25 }
+	}
+	
 }
 
 #Second Kashmir War
