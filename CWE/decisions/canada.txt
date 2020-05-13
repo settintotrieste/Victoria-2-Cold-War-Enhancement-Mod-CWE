@@ -5,32 +5,95 @@ political_decisions = {
 		potential = {
 			tag = CAN
 			exists = XCC
-			XCC = { ai = yes }
+			NOT = { has_country_flag = CAN_claims_canada_caribbean }
 		}
 		allow = {
-			is_greater_power = yes
-			XCC = { is_vassal = no in_sphere = THIS }
+			OR = { is_greater_power = yes is_secondary_power = yes }
+			is_vassal = no
+			war = no
+			XCC = { war = no }
+			OR = { 
+				XCC = { is_vassal = no in_sphere = THIS }
+				XCC = { vassal_of = THIS }
+			}
 		}
 		effect = {
-			inherit = XCC
-		}		
+			set_country_flag = CAN_claims_canada_caribbean
+			prestige = 100
+			XCC = { country_event = 11101 }
+		}
 	}
 	
 	canada_turks_caicos = {
 		picture = "canada_turks_caicos"
-		# canada_turks_caicos_title;Integrate Turks and Caicos Islands 
-		# canada_turks_caicos_desc;The Turks and Caicos Islands are a British overseas territory in the Caribbean. There is some support for a union with Canada. In May 2014 Premier of Turks and Caicos Rufus Ewing visited the Canadian Parliament looking to improve its relationship with Canada, and was open to a possible "marriage" in the future. In the Turks and Caicos Islands, support for a "special relationship" with Canada was at 90%
 		potential = {
 			tag = CAN
-			TCI = { is_vassal = no } 
-			exists = TCI
+			NOT = { has_country_flag = CAN_claims_turks_caicos }
 		}
 		allow = {
-			is_greater_power = yes
-			TCI = { in_sphere = THIS }
+			OR = { is_greater_power = yes is_secondary_power = yes }
+			is_vassal = no
+			election = no
+			OR = {
+				ruling_party_ideology = populist
+				ruling_party_ideology = nationalist
+				TCI = { 
+					exists = yes
+					war = no
+					OR = { in_sphere = THIS part_of_sphere = no }
+					OR = { is_vassal = no vassal_of = THIS }
+				}
+			}
+			seventies_subcultures = 1
 		}
 		effect = {
-			inherit = TCI 
+		
+			TCI = { all_core = { add_core = CAN } }
+			set_country_flag = CAN_claims_turks_caicos
+			
+			#Immediate annexation if TCI has relations higher than 150
+			random_country = {
+				limit = { 
+					tag = TCI
+					
+					OR = { 
+						government = democracy 
+						government = democracy1 
+						government = hms_government 
+						government = hms_government1 
+						government = socialist_democracy 
+					}
+					
+					is_vassal = no
+					war = no
+					
+					OR = { 
+						in_sphere = THIS
+						AND = { part_of_sphere = no relation = { who = THIS value = 150 } } 
+					}
+					
+					CAN = { 		
+						OR = { 
+							government = democracy 
+							government = democracy1 
+							government = hms_government 
+							government = hms_government1 
+							government = socialist_democracy 
+						}
+					}
+					
+				}
+				country_event = 11101
+			}
+			
+			#Immediate annexation if puppet
+			random_owned = {
+				limit = { 
+					owner = { TCI = { vassal_of = THIS } } 
+				}
+				owner = { inherit = TCI }
+			}
+			
 		}
 		ai_will_do = { factor = 1 }
 	}

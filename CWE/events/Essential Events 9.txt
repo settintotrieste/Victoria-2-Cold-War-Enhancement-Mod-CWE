@@ -5116,3 +5116,483 @@ country_event = {
 	}
 
 }
+
+#Ensure UH majority during state of emergency
+country_event = {
+	id = 1610099
+	title = "Attempt to Curtail Emergency Powers"
+	desc = EVTDESC1610099
+	picture = "i_am_the_senate"
+
+	trigger = {
+		has_country_modifier = martial_law
+		
+		election = no
+		
+		OR = { 
+			government = democracy 
+			government = democracy1 
+			government = hms_government 
+			government = hms_government1 
+			government = socialist_democracy 
+			government = colonial_government 
+			government = mandate_government 
+			government = sar_government 
+		}
+		
+		OR = { 
+		
+			AND = { 
+				ruling_party_ideology = traditionalist
+				NOT = { upper_house = { ideology = traditionalist value = 0.50 } }
+			}
+			
+			AND = { 
+				ruling_party_ideology = conservative
+				NOT = { upper_house = { ideology = conservative value = 0.50 } }
+			}
+			
+			AND = { 
+				ruling_party_ideology = big_tent
+				NOT = { upper_house = { ideology = big_tent value = 0.50 } }
+			}
+			
+			AND = { 
+				ruling_party_ideology = populist
+				NOT = { upper_house = { ideology = populist value = 0.50 } }
+			}
+			
+			AND = { 
+				ruling_party_ideology = nationalist
+				NOT = { upper_house = { ideology = nationalist value = 0.50 } }
+			}
+			
+			AND = { 
+				ruling_party_ideology = socialist
+				NOT = { upper_house = { ideology = socialist value = 0.50 } }
+			}
+			
+			AND = { 
+				ruling_party_ideology = communist
+				NOT = { upper_house = { ideology = communist value = 0.50 } }
+			}
+			
+			AND = { 
+				ruling_party_ideology = communist_social
+				NOT = { upper_house = { ideology = communist_social value = 0.50 } }
+			}
+			
+			AND = { 
+				ruling_party_ideology = liberal
+				NOT = { upper_house = { ideology = liberal value = 0.50 } }
+			}
+			
+			AND = { 
+				ruling_party_ideology = progressive
+				NOT = { upper_house = { ideology = progressive value = 0.50 } }
+			}
+			
+		}
+		
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+		modifier = { factor = 100 has_country_flag = i_love_democracy }
+	}
+
+	option = {
+		name = "I am the senate!"
+		
+		clr_country_flag = i_love_democracy
+
+		#Add UH support
+		remove_country_modifier = law_changed_by_force
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = conservative } }
+			owner = { upper_house = { ideology = conservative value = 0.50 } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = big_tent } }
+			owner = { upper_house = { ideology = big_tent value = 0.50 } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = socialist } }
+			owner = { upper_house = { ideology = socialist value = 0.50 } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = traditionalist } }
+			owner = { upper_house = { ideology = traditionalist value = 0.50 } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = populist } }
+			owner = { upper_house = { ideology = populist value = 0.50 } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = nationalist } }
+			owner = { upper_house = { ideology = nationalist value = 0.50 } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = progressive } }
+			owner = { upper_house = { ideology = progressive value = 0.50 } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = liberal } }
+			owner = { upper_house = { ideology = liberal value = 0.50 } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = communist } }
+			owner = { upper_house = { ideology = communist value = 0.50 } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = communist_social } }
+			owner = { upper_house = { ideology = communist_social value = 0.50 } }
+		}
+
+		#Add liberal consciousness
+		random_owned = {
+			limit = { 
+				owner = { 
+					OR = { election = yes NOT = { average_militancy = 3 } } 
+				} 
+			}
+			owner = {
+				any_pop = {
+					scaled_consciousness = {
+						factor = 5
+						ideology = big_tent
+					}
+					scaled_consciousness = {
+						factor = 10
+						ideology = progressive
+					}
+					scaled_consciousness = {
+						factor = 10
+						ideology = liberal
+					}
+				}
+			}
+		}
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "I love democracy!"
+		any_pop = { militancy = -2 }
+		set_country_flag = i_love_democracy
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Monarch unilaterally calls off the martial law
+country_event = {
+	id = 1610100
+	title = "The Monarch Attempts to End the State of Emergency"
+	desc = "EVTDESC1610100"
+	picture = "royal_intervention_martial_law"
+
+	trigger = {
+		has_country_modifier = martial_law
+		
+		#Monarch is not corrupt
+		NOT = { 
+			OR = {
+				has_country_modifier = massive_government_corruption
+				has_country_modifier = large_government_corruption
+			}
+		}
+		
+		OR = { 
+			government = hms_government
+			government = hms_government1 
+		}
+		
+		is_vassal = no
+		
+		#Illegal state of emergency
+		NOT = { average_militancy = 3 }
+		
+		#Handled by illegal state of emergency event
+		election = no
+		
+		OR = {
+		
+			AND = { 
+				ruling_party_ideology = traditionalist
+				NOT = { pop_majority_ideology = traditionalist }
+			}
+			
+			AND = { 
+				ruling_party_ideology = conservative
+				NOT = { pop_majority_ideology = conservative }
+			}
+			
+			AND = { 
+				ruling_party_ideology = big_tent
+				NOT = { pop_majority_ideology = big_tent }
+			}
+			
+			AND = { 
+				ruling_party_ideology = populist
+				NOT = { pop_majority_ideology = populist }
+			}
+			
+			AND = { 
+				ruling_party_ideology = nationalist
+				NOT = { pop_majority_ideology = nationalist }
+			}
+			
+			AND = { 
+				ruling_party_ideology = socialist
+				NOT = { pop_majority_ideology = socialist }
+			}
+			
+			AND = { 
+				ruling_party_ideology = communist
+				NOT = { pop_majority_ideology = communist }
+			}
+			
+			AND = { 
+				ruling_party_ideology = communist_social
+				NOT = { pop_majority_ideology = communist_social }
+			}
+			
+			AND = { 
+				ruling_party_ideology = liberal
+				NOT = { pop_majority_ideology = liberal }
+			}
+			
+			AND = { 
+				ruling_party_ideology = progressive
+				NOT = { pop_majority_ideology = progressive }
+			}
+			
+		}
+		
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+		modifier = { factor = 6 has_country_modifier = medium_government_corruption }
+	}
+
+	option = {
+		name = "Respect the monarch's decision"
+
+#Remove state of emergency stuff
+
+clr_country_flag = prolonged_state_of_emergency
+
+clr_country_flag = i_love_democracy
+
+add_country_modifier = { name = martial_law_timer duration = 365 }
+
+random_owned = { 
+limit = { owner = { NOT = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 government = socialist_democracy } } } }
+owner = { country_event = 800054 }
+}
+
+remove_country_modifier = martial_law
+
+#What meeting laws to revert back to
+
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_free_meetings } }
+owner = { political_reform = free_meetings clr_country_flag = return_to_free_meetings }
+}
+
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_limited_meetings } }
+owner = { political_reform = limited_meetings clr_country_flag = return_to_limited_meetings }
+}
+
+#What press laws to revert back to
+			
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_responsible_publishing  } }
+owner = { political_reform = responsible_publishing clr_country_flag = return_to_responsible_publishing }
+}
+
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_unregulated_publishing} }
+owner = { political_reform = unregulated_publishing clr_country_flag = return_to_unregulated_publishing }
+}
+
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_firewall_publishing } }
+owner = { political_reform = firewall_publishing clr_country_flag = return_to_firewall_publishing }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = conservative } }
+owner = { any_pop = { ideology = { factor = -0.05 value = conservative } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = big_tent } }
+owner = { any_pop = { ideology = { factor = -0.05 value = big_tent } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = socialist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = socialist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = traditionalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = traditionalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = populist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = populist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = nationalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = nationalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = progressive } }
+owner = { any_pop = { ideology = { factor = -0.05 value = progressive } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = liberal } }
+owner = { any_pop = { ideology = { factor = -0.05 value = liberal } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist_social } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist_social } } }
+}
+
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Remove the $COUNTRY_ADJ$ Monarchy! (Become a republican dictatorship)"
+		
+		#Communist Dictatorship
+		random_owned = {
+			limit = { owner = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } }
+			owner = { government = proletarian_dictatorship country_event = 800052 }
+		}
+		
+		#Theocracy
+		random_owned = {
+			limit = { owner = { ruling_party_ideology = traditionalist } }
+			owner = { government = theocracy country_event = 800050 }
+		}
+		
+		#Nationalist Dictatorship
+		random_owned = {
+			limit = { owner = { OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist } } }
+			owner = { government = populist_dictatorship country_event = 800050 }
+		}
+		
+		#Presidential Dictatorship
+		random_owned = {
+			limit = { owner = { OR = { ruling_party_ideology = conservative ruling_party_ideology = big_tent ruling_party_ideology = socialist } } }
+			owner = { government = presidential_dictatorship country_event = 800050 }
+		}
+		
+		#Counter Coup risk
+		add_country_modifier = { name = military_strife duration = 1825 }
+		add_country_modifier = { name = coup_risk duration = 1825 }
+		
+		#Conservatives and traditionalists are furious
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = conservative
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
+			}
+		}
+		
+prestige_factor = -0.05
+
+#Remove martial law stuff
+
+clr_country_flag = prolonged_state_of_emergency
+remove_country_modifier = martial_law
+
+#No return to old meeting reform
+clr_country_flag = return_to_free_meetings
+clr_country_flag = return_to_limited_meetings
+
+#No return to old press reform
+clr_country_flag = return_to_responsible_publishing
+clr_country_flag = return_to_unregulated_publishing
+clr_country_flag = return_to_firewall_publishing
+
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+
+### Conservatives are always angry ###
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = big_tent } }
+owner = { any_pop = { limit = { NOT = { pop_majority_ideology = big_tent } } militancy = 10 } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = socialist } }
+owner = { any_pop = { limit = { NOT = { pop_majority_ideology = socialist } } militancy = 10 } }
+}
+
+### Traditionalists are always angry ###
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = populist } }
+owner = { any_pop = { limit = { NOT = { pop_majority_ideology = populist } } militancy = 10 } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = nationalist } }
+owner = { any_pop = { limit = { NOT = { pop_majority_ideology = nationalist } } militancy = 10 } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = progressive } }
+owner = { any_pop = { limit = { NOT = { pop_majority_ideology = progressive } } militancy = 10 } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = liberal } }
+owner = { any_pop = { limit = { NOT = { pop_majority_ideology = liberal } } militancy = 10 } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist } }
+owner = { any_pop = { limit = { NOT = { pop_majority_ideology = communist } } militancy = 10 } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist_social } }
+owner = { any_pop = { limit = { NOT = { pop_majority_ideology = communist_social } } militancy = 10 } }
+}
+
+		ai_chance = { factor = 0.1 }
+	}
+
+}

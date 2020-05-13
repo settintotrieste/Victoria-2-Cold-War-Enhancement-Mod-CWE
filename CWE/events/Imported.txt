@@ -126,3 +126,111 @@ owner = { FROM = { government = absolute_monarchy country_event = 800050 } }
 	}
 
 }
+
+#Mark down enclaves, Start
+country_event = {
+    id = 6016825
+    title = "$COUNTRY_ADJ$ Enclaves"
+    desc = "EVTDESC6016825"
+    picture = "enclaves_markdown"
+
+    trigger = {
+		any_owned_province = {
+			port = no
+			is_capital = no
+			NOT = { has_province_modifier = landlocked_province }
+			NOT = { any_neighbor_province = { owned_by = THIS } }
+		}
+	}
+
+    option = {
+        name = "They are vulnerable to sudden annexations"
+		any_owned = {
+			limit = {
+				port = no
+				is_capital = no
+				NOT = { has_province_modifier = landlocked_province }
+				NOT = { any_neighbor_province = { owned_by = THIS } }
+			}
+			add_province_modifier = { name = landlocked_province duration = -1 }
+		}
+    }
+}
+
+#Mark down enclaves, End
+country_event = {
+    id = 6016826
+    title = "End of $COUNTRY_ADJ$ Enclaves"
+    desc = "EVTDESC6016826"
+    picture = "enclaves_markdown_end"
+
+    trigger = {
+		any_owned_province = { 
+			OR = { port = yes is_capital = yes any_neighbor_province = { owned_by = THIS } }
+			has_province_modifier = landlocked_province 
+		}
+	}
+
+    option = {
+        name = "The threat of sudden annexation is removed"
+		any_owned = {
+			limit = { 
+				OR = { port = yes is_capital = yes any_neighbor_province = { owned_by = THIS } }
+			}
+			remove_province_modifier = landlocked_province
+		}
+    }
+}
+
+#Mark down enclaves, Annexation
+country_event = {
+    id = 6016827
+    title = "Invasion of $COUNTRY_ADJ$ Enclaves"
+    desc = "EVTDESC6016827"
+    picture = "enclaves_markdown_invasion"
+
+	is_triggered_only = yes
+
+    option = {
+        name = "Back down and accept the $FROMCOUNTRY_ADJ$ annexation"
+		
+		FROM = { clr_country_flag = take_landlocked_provinces_fired }
+		
+		any_owned = {
+			limit = { 
+				has_province_modifier = landlocked_province
+				is_core = FROM
+			}
+			remove_province_modifier = landlocked_province
+			secede_province = FROM
+		}
+		ai_chance = { 
+			factor = 0.7
+			modifier = { factor = 0 war_policy = jingoism } 
+		}
+    }
+	
+	option = {
+        name = "Defend the enclaves!"
+		set_country_flag = bypass_normal_CB_requirements
+		
+		FROM = { clr_country_flag = take_landlocked_provinces_fired }
+		
+		FROM = {
+			war = {
+				target = THIS
+				attacker_goal = { casus_belli = annex_all_cores }
+				defender_goal = { casus_belli = status_quo }
+			}
+		}
+
+		ai_chance = { 
+			factor = 0.3
+			modifier = { factor = 0 war_policy = pacifism }
+			modifier = { factor = 0 is_disarmed = yes }
+			modifier = { factor = 0.25 revolt_percentage = 0.25 }
+		}
+
+    }
+	
+}
