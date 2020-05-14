@@ -1358,6 +1358,13 @@ title = "$MONARCHTITLE$ Impeached!"
 
 trigger = {
 OR = { government = democracy government = democracy1 government = socialist_democracy }
+
+#Only presidential or semi-presidential republics
+OR = {
+	has_country_flag = presidential_system_republic
+	has_country_flag = semi_presidential_system_republic
+}
+
 election = no
 war = no
 OR = { has_country_modifier = ruling_party_scandal has_country_modifier = party_scandal_evidence AND = { has_country_modifier = martial_law NOT = { average_militancy = 3 } } }
@@ -2460,7 +2467,7 @@ clr_country_flag = assert_hegemony_target
 
 }
 
-#Backbencher's plot - constitutional monarchies
+#Backbencher's plot - constitutional monarchies or parliamentary republics
 country_event = {
 	id = 1610048
 title = "Backbencher's Plot"
@@ -2500,7 +2507,7 @@ AND = { ruling_party_ideology = liberal NOT = { pop_majority_ideology = liberal 
 
 }
 
-OR = { government = hms_government government = hms_government1 }
+OR = { government = hms_government government = hms_government1 has_country_flag = parliamentary_system_republic }
 
 war = no
 
@@ -5593,6 +5600,160 @@ owner = { any_pop = { limit = { NOT = { pop_majority_ideology = communist_social
 }
 
 		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Infamy Cap for AI RUS during the cold war
+country_event = {
+	id = 1610101
+	title = "Infamy Cap for Soviet AI"
+	desc = "This event reduces AI infamy if it exceeds 35"
+	picture = "treaty"
+
+	trigger = {
+		tag = RUS
+		has_global_flag = blocsenabled
+		ai = yes
+		war = no
+		OR = {
+			AND = { has_country_modifier = cold_war_low badboy = 0.50 }
+			AND = { has_country_modifier = cold_war_medium badboy = 0.75 }
+		}
+	}
+
+	option = {
+		name = "Reduce badboy"
+		badboy = -5
+	}
+
+}
+
+#Constitutional Conference
+country_event = {
+	id = 1610102
+	title = "New Republican Constitution of $YEAR$"
+	desc = "EVTDESC1610102"
+	picture = "constitutional_conference_republic"
+
+	trigger = {
+		OR = { government = democracy government = democracy1 government = socialist_democracy }
+		NOT = {
+			OR = {
+				has_country_flag = presidential_system_republic
+				has_country_flag = semi_presidential_system_republic
+				has_country_flag = parliamentary_system_republic
+			}
+		}
+	}
+	
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "Use a presidential system"
+		set_country_flag = presidential_system_republic
+		add_country_modifier = { name = changecentral duration = 1825 }
+		ai_chance = { 
+			factor = 0.4 
+			modifier = { 
+				factor = 0
+				OR = {
+					AND = { 
+						part_of_sphere = yes 
+						sphere_owner = { 
+							OR = { government = democracy government = democracy1 government = socialist_democracy }
+							NOT = { has_country_flag = presidential_system_republic }
+						}
+					}
+					
+					AND = { 
+						is_vassal = yes 
+						overlord = { 
+							OR = { government = democracy government = democracy1 government = socialist_democracy }
+							NOT = { has_country_flag = presidential_system_republic }
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = "Use a semi-presidential system"
+		set_country_flag = semi_presidential_system_republic
+		add_country_modifier = { name = changecentral duration = 1825 }
+		ai_chance = { 
+			factor = 0.3
+			modifier = { 
+				factor = 0
+				OR = {
+					AND = { 
+						part_of_sphere = yes 
+						sphere_owner = { 
+							OR = { government = democracy government = democracy1 government = socialist_democracy }
+							NOT = { has_country_flag = semi_presidential_system_republic }
+						}
+					}
+					
+					AND = { 
+						is_vassal = yes 
+						overlord = { 
+							OR = { government = democracy government = democracy1 government = socialist_democracy }
+							NOT = { has_country_flag = semi_presidential_system_republic }
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = "Use a parliamentary system"
+		set_country_flag = parliamentary_system_republic
+		add_country_modifier = { name = changecentral duration = 1825 }
+		ai_chance = { 
+			factor = 0.3
+			
+			#ex Westminister colony
+			modifier = {
+				factor = 10
+				part_of_sphere = yes
+				sphere_owner = {
+					OR = { government = hms_government government = hms_government1 }
+				}
+			}
+			modifier = {
+				factor = 10
+				is_vassal = yes
+				overlord = { 
+					OR = { government = hms_government government = hms_government1 }
+				}
+			}
+			
+			#Others
+			modifier = { 
+				factor = 0
+				OR = {
+					AND = { 
+						part_of_sphere = yes 
+						sphere_owner = { 
+							OR = { government = democracy government = democracy1 government = socialist_democracy }
+							NOT = { has_country_flag = parliamentary_system_republic }
+						}
+					}
+					
+					AND = { 
+						is_vassal = yes 
+						overlord = { 
+							OR = { government = democracy government = democracy1 government = socialist_democracy }
+							NOT = { has_country_flag = parliamentary_system_republic }
+						}
+					}
+				}
+			}
+		}
 	}
 
 }
