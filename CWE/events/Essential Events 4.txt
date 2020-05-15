@@ -212,166 +212,8 @@ modifier = { factor = 0 NOT = { relation = { who = FROM value = -150 } } }
 		}
 
 	}
-
-#World Epidemic Start
-country_event = {
-	id = 1412014
-	title = "Reports of a new deadly virus in $COUNTRY$"
-	desc = EVTDESC1412014
-	picture = "new_virus"
-
-	trigger = {
-NOT = { any_owned_province = { has_province_modifier = virus_outbreak } }
-year = 1955
-num_of_cities = 20
-	NOT = { has_global_flag = epidemic_start }
-	}
-	mean_time_to_happen = { 
-months = 3650
-
-modifier = { health_care = trinket_health_care factor = 1.5 }
-
-modifier = { health_care = low_health_care factor = 2 }
-
-modifier = { health_care = acceptable_health_care factor = 4 }
-
-modifier = { health_care = good_health_care factor = 8 }
-
-modifier = { any_owned_province = { has_province_modifier = one_degree } factor = 0.8 }
-
-modifier = { any_owned_province = { has_province_modifier = two_degree } factor = 0.7 }
-
-modifier = { any_owned_province = { has_province_modifier = three_degree } factor = 0.5 }
-
-modifier = { any_owned_province = { has_province_modifier = four_point_five_degree } factor = 0.2 }
-
-modifier = { NOT = { any_core = { life_needs = 0.90 } } factor = 0.9 }
-modifier = { any_core = { luxury_needs = 0.10 is_colonial = no } factor = 2 }
-modifier = { any_core = { luxury_needs = 0.20 is_colonial = no } factor = 4 }
-modifier = { any_core = { luxury_needs = 0.30 is_colonial = no } factor = 6 }
-modifier = { any_core = { luxury_needs = 0.40 is_colonial = no } factor = 8 }
-modifier = { any_core = { luxury_needs = 0.50 is_colonial = no } factor = 10 }
-modifier = { any_greater_power = { globalization = 1 } factor = 0.5 }
-modifier = { NOT = { life_needs = 0.50 } factor = 0.5 } 
-}
-	option = {
-		name = "We will have to watch this closely"
-random_owned = { add_province_modifier = { name = virus_outbreak duration = 1095 } }
-		set_global_flag = epidemic_start
-		set_country_flag = patient_zero
-		}
-	}
-
-#World Epidemic Spreads in Country
-country_event = {
-	id = 1412015
-	title = "Virus Outbreak Spreads to more Cities"
-	desc = EVTDESC1412015
-	picture = "new_virus_spreads"
-
-	trigger = {
-any_owned_province = { has_province_modifier = virus_outbreak }
-
-any_owned_province = { NOT = { has_province_modifier = virus_outbreak } }
-
-	has_global_flag = epidemic_start
-	}
-
-mean_time_to_happen = { 
-months = 6
-modifier = { NOT = { any_core = { life_needs = 0.50 } } factor = 0.5 } 
-}
-
-	option = {
-name = "Qurantine the affected regions to prevent spreading"
-set_country_flag = epidemic_level2
-
-any_owned = { limit = { is_state_capital = yes NOT = { has_province_modifier = virus_outbreak } } add_province_modifier = { name = virus_outbreak duration = 1095 } }
-
-		}
-	}
-
-#World Epidemic Full Blown in Original Country
-country_event = {
-	id = 1412016
-	title = "Full Blown Epidemic in $COUNTRY$"
-	desc = EVTDESC1412016
-	picture = "new_virus_spreads1"
-
-	trigger = {
-any_owned_province = { has_province_modifier = virus_outbreak }
-	has_country_flag = epidemic_level2
-	has_global_flag = epidemic_start
-	}
-
-mean_time_to_happen = { 
-months = 5
-modifier = { NOT = { any_core = { life_needs = 0.50 } } factor = 0.6 } 
-}
-
-	option = {
-name = "Step up efforts to stop the spread of the Virus!"
-set_country_flag = who_notice
-clr_country_flag = epidemic_level2
-add_country_modifier = { name = local_epidemic duration = 365 }
-any_owned = { add_province_modifier = { name = virus_outbreak duration = 1095 } }
-		}
-	}
-
-#World Epidemic Spread to neighbouring Countries ( Nearest )
-country_event = {
-	id = 1412017
-	title = "Epidemic in Neighbouring Nation spreads to us"
-	desc = EVTDESC1412017
-	picture = "new_virus_spreads2"
-
-	trigger = {
-NOT = { any_owned_province = { has_province_modifier = virus_outbreak } }
-any_neighbor_country = { NOT = { immigration_policy = nobody_gets_out } has_country_modifier = local_epidemic any_owned_province = { has_province_modifier = virus_outbreak } }
-	has_global_flag = epidemic_start
-	}
-
-mean_time_to_happen = { 
-months = 5
-modifier = { NOT = { any_core = { life_needs = 0.50 } } factor = 0.6 } 
-}
-
-	option = {
-name = "Quarantine the affected areas!"
-add_country_modifier = { name = foreign_epidemic duration = 365 }
-any_owned = { limit = { NOT = { has_province_modifier = virus_outbreak } OR = { is_state_capital = yes total_pops = 500000 is_capital = yes } } add_province_modifier = { name = virus_outbreak duration = 446 } }
-		}
-	}
-
-#World Epidemic Spread to neighbouring Countries ( Further )
-country_event = {
-	id = 1412018
-	title = "Epidemic in Neighbouring Nations spreads to us"
-	desc = EVTDESC1412018
-	picture = "new_virus_spreads3"
-
-	trigger = {
-NOT = { any_owned_province = { has_province_modifier = virus_outbreak } }
-any_neighbor_country = { NOT = { immigration_policy = nobody_gets_out } has_country_modifier = foreign_epidemic any_owned_province = { has_province_modifier = virus_outbreak } }
-	has_global_flag = epidemic_start
-	}
-
-mean_time_to_happen = { 
-months = 5
-modifier = { NOT = { any_core = { life_needs = 0.70 } } factor = 0.8 }
-modifier = { NOT = { any_core = { life_needs = 0.60 } } factor = 0.8 }
-modifier = { NOT = { any_core = { life_needs = 0.50 } } factor = 0.8 }
-modifier = { NOT = { any_core = { life_needs = 0.40 } } factor = 0.9 }
-modifier = { NOT = { any_core = { life_needs = 0.30 } } factor = 0.9 }
-modifier = { NOT = { any_core = { life_needs = 0.20 } } factor = 0.9 }  
-}
-
-	option = {
-name = "Quarantine the affected areas!"
-add_country_modifier = { name = foreign_epidemic duration = 365 }
-any_owned = { limit = { NOT = { has_province_modifier = virus_outbreak } OR = { is_state_capital = yes total_pops = 500000 is_capital = yes } } add_province_modifier = { name = virus_outbreak duration = 446 } }
-		}
-	}
+	
+#1412014 to 1412018 is found in virus epidemic.txt
 
 #Fall of the Berlin Wall
 country_event = {
@@ -1689,17 +1531,23 @@ country_event = {
 	desc = "Our nation has been struck by biological weapons, our population has been severely damaged by the weapons."
 	picture = "biological_weapons_attack"
 
-is_triggered_only = yes
+	major = yes
+
+	is_triggered_only = yes
+	
 	option = {
 		name = "A disaster!"
-		prestige = -50
-add_country_modifier = { name = biological_attack duration = -1 }
-random = {
-	chance = 25
-	country_event = 1412063
-}					
-			}
-		}
+		prestige_factor = -0.05
+		add_country_modifier = { name = biological_attack duration = -1 }
+		random = {
+			chance = 25
+			FROM = { prestige_factor = -0.05 }
+			badboy = 5
+			country_event = 1412063
+		}					
+	}
+	
+}
 
 #Biological weapons Epidemic
 country_event = {
@@ -1707,26 +1555,47 @@ country_event = {
 	title = "Biological Weapons Especially Infectious"
 	desc = "The biological weapon that was unleashed on our nation was especially infectious has has caused an epidemic in our nation. This will allow the weapons to spread to other nations."
 	picture = "biological_weapons_attack"
-major = yes
-is_triggered_only = yes
+	
+	major = yes
+	is_triggered_only = yes
 
 	option = {
 		name = "This can spread!"
-poor_strata = {
-	consciousness = 1
-	militancy = 1
-}
-middle_strata = {
-	consciousness = 3
-	militancy = 2
-}
-rich_strata = {
-	consciousness = 4
-	militancy = 3
-}
-set_country_flag = spreading_bio_weapon				
-	}
+		poor_strata = {
+			consciousness = 1
+			militancy = 1
 		}
+		middle_strata = {
+			consciousness = 3
+			militancy = 2
+		}
+		rich_strata = {
+			consciousness = 4
+			militancy = 3
+		}
+		
+		set_global_flag = epidemic_start
+
+		set_country_flag = virus_originator_country
+		
+		set_country_flag = enable_virus_controls
+		
+		set_global_flag = deadly_epidemic
+		
+		set_global_flag = biological_weapon_induced_epidemic
+		
+		any_owned = {
+			limit = { 
+				OR = { 
+					is_capital = yes 
+					is_state_capital = yes 
+				} 
+			}
+			add_province_modifier = { name = virus_outbreak_deadly duration = 730 }
+		}
+	}
+
+}
 
 #Biological Weapons spread
 country_event = {
@@ -1758,30 +1627,11 @@ modifier = { factor = 1.25 health_care = low_health_care }
 		name = "We need to find a vaccine for it!"
 prestige = -25
 set_country_flag = spreading_bio_weapon
-add_country_modifier = { name = biological_attack duration = -1 }
+add_country_modifier = { name = biological_attack duration = 3650 }
 					}
 		}
-
-#Biological weapons Vaccine developed
-country_event = {
-	id = 1412065
-	title = "Biological Weapons Vaccine Developed"
-	desc = "Our Scientists, after much toil and expense have managed to create a vaccine to eradicate the impact of the biological agents that ended up spreading in our nation."
-	picture = "biological_weapons_cure"
-
-trigger = {
-has_country_flag = vaccine_development
-NOT = { has_country_modifier = vaccine_development }
-}
-
-	option = {
-		name = "That's a relief!"
-clr_country_flag = vaccine_development
-remove_country_modifier = biological_attack
-clr_country_flag = spreading_bio_weapon
-any_country = { clr_country_flag = spreading_bio_weapon }
-					}
-		}
+		
+#1412065 located in virus epidemic.txt
 
 #Puppet Requests Independence
 country_event = {

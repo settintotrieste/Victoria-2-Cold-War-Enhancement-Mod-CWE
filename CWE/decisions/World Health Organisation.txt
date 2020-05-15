@@ -1,31 +1,205 @@
 political_decisions = {
 
-declare_outbreak = {
+	declare_outbreak = {
 		picture = "who_declare"
+		
 		potential = {
-OR = { has_country_modifier = local_epidemic has_country_modifier = foreign_epidemic }
-NOT = { has_country_modifier = who_aid }		
-						}
-			alert = yes
-		allow = {
-OR = { ai = no 
-AND = { ai = yes government = absolute_monarchy }
-AND = { ai = yes government = democracy }
-AND = { ai = yes government = democracy1 }
-AND = { ai = yes government = hms_government }
-AND = { ai = yes government = hms_government1 }
-AND = { ai = yes government = colonial_government } 
-AND = { ai = yes government = sar_government }
-}
+		
+			has_global_flag = epidemic_start
+			
+			any_owned_province = {
+				OR = {
+					has_province_modifier = virus_outbreak 
+					has_province_modifier = virus_outbreak_deadly 
 				}
-	effect = {
-prestige = -50
-add_country_modifier = { name = who_aid duration = 500 }
-country_event = 1410104
-	}
+			}
+			
+			NOT = { has_country_modifier = who_aid }	
+			
+		}
+	
+		alert = yes
+	
+		allow = {
+			OR = {
+				ai = no
+				publishing_rights = firewall_publishing
+				publishing_rights = censored_publishing
+				has_country_flag = full_blown_epidemic
+			}
+		}
+		
+		effect = {
+			prestige_factor = -0.025
+			set_country_flag = who_alerted_to_new_virus
+			add_country_modifier = { name = who_aid duration = 1825 }
+			country_event = 1410104
+		}
+		
 		ai_will_do = { 
 			factor = 100 
+		}
+
+	}
+	
+	develop_vaccine = {
+		picture = "develop_vaccine"
+		alert = yes
+		potential = {
+			OR = { has_country_flag = enable_virus_controls has_country_modifier = biological_attack }
+			OR = { has_global_flag = epidemic_start has_country_modifier = biological_attack }
+			NOT = { has_country_flag = vaccine_development }
+			NOT = { has_country_modifier = vaccine_development }
+			NOT = { has_country_modifier = vaccine_created }
+		}
+
+		allow = {
+			money = 1000000
+		}
+
+		effect = {
+			money = -500000
+			random_list = {
+				1 = { add_country_modifier = { name = vaccine_development duration = 300 } }
+				1 = { add_country_modifier = { name = vaccine_development duration = 400 } }
+				1 = { add_country_modifier = { name = vaccine_development duration = 500 } }
 			}
+			set_country_flag = vaccine_development
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	
+	changevirus = {
+		picture = "changevirus"
+		potential = {
+			has_global_flag = epidemic_start
+			
+			OR = {
+				has_country_flag = enable_virus_controls
+				has_province_modifier = virus_outbreak
+				has_province_modifier = virus_outbreak_deadly
+			}
+			
+			OR = { 
+				has_country_modifier = virushigh
+				has_country_modifier = virusmedium
+				has_country_flag = virusno
+			}
+		}
+		
+		alert = no
+
+		allow = {
+			ai = no
+		}
+		
+		effect = {
+						
+			remove_country_modifier = virushigh
+			remove_country_modifier = virusmedium
+
+			clr_country_flag = virusno
+		}
+		
+		ai_will_do = { 
+			factor = 0
+		}
+		
+	}
+
+	virushigh = {
+		picture = "virushigh"
+		potential = {
+		
+			has_global_flag = epidemic_start
+			
+			OR = {
+				has_country_flag = enable_virus_controls
+				has_province_modifier = virus_outbreak
+				has_province_modifier = virus_outbreak_deadly
+			}
+		
+			NOT = {
+				OR = { 
+					has_country_modifier = virushigh
+					has_country_modifier = virusmedium
+					has_country_flag = virusno
+				}
+			}
+		}
+		allow = {
+
+		}
+		effect = {
+			add_country_modifier = { name = virushigh duration = -1 }
+		}
+		ai_will_do = { 
+			factor = 0.6
+		}
+	}
+	
+	virusmedium = {
+		picture = "virusmedium"
+		potential = {
+		
+			has_global_flag = epidemic_start
+			
+			OR = {
+				has_country_flag = enable_virus_controls
+				has_province_modifier = virus_outbreak
+				has_province_modifier = virus_outbreak_deadly
+			}
+		
+			NOT = {
+				OR = { 
+					has_country_modifier = virushigh
+					has_country_modifier = virusmedium
+					has_country_flag = virusno
+				}
+			}
+		}
+		allow = {
+
+		}
+		effect = {
+			add_country_modifier = { name = virusmedium duration = -1 }
+		}
+		ai_will_do = { 
+			factor = 0.3
+		}
+	}
+	
+	virusno = {
+		picture = "virusno"
+		potential = {
+		
+			has_global_flag = epidemic_start
+			
+			OR = {
+				has_country_flag = enable_virus_controls
+				has_province_modifier = virus_outbreak
+				has_province_modifier = virus_outbreak_deadly
+			}
+		
+			NOT = {
+				OR = { 
+					has_country_modifier = virushigh
+					has_country_modifier = virusmedium
+					has_country_flag = virusno
+				}
+			}
+		}
+		allow = {
+		
+		}
+		effect = {
+			set_country_flag = virusno
+		}
+		ai_will_do = {
+			factor = 0.1
+		}
 	}
 
 }
