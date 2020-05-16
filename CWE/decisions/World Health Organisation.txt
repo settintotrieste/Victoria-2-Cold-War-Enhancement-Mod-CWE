@@ -51,6 +51,15 @@ political_decisions = {
 			NOT = { has_country_flag = vaccine_development }
 			NOT = { has_country_modifier = vaccine_development }
 			NOT = { has_country_modifier = vaccine_created }
+			
+			#Non GPs buy vaccine once a GP creates a vaccine
+			NOT = {
+				AND = {
+					is_greater_power = no
+					any_greater_power = { has_country_modifier = vaccine_created }
+				}
+			}
+
 		}
 
 		allow = {
@@ -69,6 +78,53 @@ political_decisions = {
 		ai_will_do = {
 			factor = 1
 		}
+	}
+	
+	buy_vaccine = {
+		picture = "buy_vaccine"
+		alert = yes
+		potential = {
+			OR = { has_country_flag = enable_virus_controls has_country_modifier = biological_attack }
+			OR = { has_global_flag = epidemic_start has_country_modifier = biological_attack }
+			NOT = { has_country_flag = vaccine_development }
+			NOT = { has_country_modifier = vaccine_development }
+			NOT = { has_country_modifier = vaccine_created }
+			
+			#Greater powers make their own vaccine
+			is_greater_power = no
+			
+			OR = { 
+				any_greater_power = { has_country_modifier = vaccine_created }
+				any_neighbor_country = { has_country_modifier = vaccine_created }
+			}
+			
+		}
+
+		allow = {
+			money = 15000
+			OR = {
+				any_greater_power = { has_country_modifier = vaccine_created relation = { who = THIS value = 0 } }
+				any_neighbor_country = { has_country_modifier = vaccine_created relation = { who = THIS value = 0 } }
+			}
+		}
+
+		effect = {
+			money = -10000
+			random_country = {
+				limit = { 
+					has_country_modifier = vaccine_created
+					relation = { who = THIS value = 0 } 
+				}
+				money = 10000
+			}
+			add_country_modifier = { name = vaccine_created duration = 1825 }
+			remove_country_modifier = biological_attack
+		}
+		
+		ai_will_do = {
+			factor = 1
+		}
+		
 	}
 	
 	changevirus = {

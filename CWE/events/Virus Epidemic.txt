@@ -18,6 +18,7 @@ country_event = {
 		year = 1955
 		number_of_states = 2
 		NOT = { has_global_flag = epidemic_start }
+		NOT = { has_country_modifier = vaccine_created }
 	}
 	
 	mean_time_to_happen = { 
@@ -206,6 +207,11 @@ province_event = {
 	option = {
 		name = "Lockdown $STATENAME$!"
 		
+		owner = {
+			money = -5000 
+			prestige_factor = -0.003
+		}
+		
 		#Add war exhaustion if at war
 		owner = {
 			random_owned = {
@@ -215,8 +221,6 @@ province_event = {
 				owner = { war_exhaustion = 2 }
 			}
 		}
-
-		money = -1000
 
 		#Mild Virus
 		state_scope = {
@@ -668,11 +672,14 @@ country_event = {
 #People angry with poor virus controls
 country_event = {
 	id = 1412018
-	title = "Virus Epidemic Reponse Criticised"
+	title = "Virus Epidemic Response Criticised"
 	desc = EVTDESC1412018
 	picture = "new_virus_spreads3"
 
 	trigger = {
+	
+		#Has virus controls
+		has_country_flag = enable_virus_controls
 	
 		#Has virus in country
 		any_owned_province = {
@@ -686,8 +693,8 @@ country_event = {
 			#Do not have strong virus controls
 			NOT = {
 				OR = {
-					has_province_modifier = virus_outbreak 
-					has_province_modifier = virus_outbreak_deadly 
+					has_country_modifier = virusmedium
+					has_country_modifier = virushigh
 				}
 			}
 			
@@ -849,8 +856,7 @@ country_event = {
 	id = 1410105
 	title = "Viral Epidemic Contained in $COUNTRY$"
 	desc = EVTDESC1410105
-	picture = "oic_chairman"
-	major = yes
+	picture = "viral_epidemic_contained"
 	
 	trigger = { 
 		
@@ -892,13 +898,15 @@ country_event = {
 	trigger = {
 
 		OR = { 
-			has_country_flag = virus_originator_country 
+			has_country_flag = virus_originator_country
 			AND = { is_greater_power = yes has_country_modifier = vaccine_created }
 		}
 		
 		has_global_flag = epidemic_start
 		
 		NOT = { has_country_modifier = virus_timer }
+		
+		NOT = { has_country_flag = full_blown_epidemic }
 
 	}
 	
@@ -906,15 +914,19 @@ country_event = {
 		months = 36
 		modifier = { 
 			factor = 0.75 
-			has_country_modifier = vaccine_created 
+			has_country_modifier = vaccine_created
 		}
 		modifier = { 
 			factor = 0.50 
-			any_greater_power = { has_country_modifier = vaccine_created } 
+			any_greater_power = { has_country_modifier = vaccine_created }
 		}
 		modifier = { 
 			factor = 0.25 
-			NOT = { any_greater_power = { has_country_modifier = vaccine_created } } 
+			NOT = { 
+				any_greater_power = { 
+					NOT = { has_country_modifier = vaccine_created } 
+				}
+			}
 		}
 		modifier = { 
 			factor = 10
@@ -977,7 +989,7 @@ country_event = {
 
 	option = {
 		name = "That's a relief!"
-		prestige_factor = 0.01
+		prestige_factor = 0.05
 		clr_country_flag = vaccine_development
 		remove_country_modifier = biological_attack
 		add_country_modifier = { name = vaccine_created duration = 1825 }

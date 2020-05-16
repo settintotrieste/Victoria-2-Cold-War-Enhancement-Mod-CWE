@@ -1126,52 +1126,67 @@ ai_chance = { factor = 0.25 }
 #SARS Outbreak 2003
 country_event = {
 	id = 1610026
-title = "SARS Virus Epidemic"
+	title = "SARS Virus Epidemic"
 	desc = EVTDESC1610026
 	picture = "sars_outbreak_2003"
 
-trigger = {
-year = 2002
-NOT = { year = 2020 }
-any_owned_province = { OR = { is_core = CAN is_core = CHI is_core = HKG is_core = MCA is_core = KMT is_core = SNG is_core = DAI is_core = USA is_core = PHI is_core = MGL is_core = KUW is_core = IRE is_core = ROM is_core = RUS is_core = SPA is_core = SWI is_core = SKO } }
-NOT = { any_owned_province = { has_province_modifier = virus_outbreak } }
-NOT = { has_country_modifier = local_epidemic }
-NOT = { has_country_flag = sars_outbreak_2003 }
-}
+	trigger = {
+		tag = CHI
+		year = 2002
+		NOT = { year = 2020 }
+		any_owned_province = { OR = { is_core = CAN is_core = CHI is_core = HKG is_core = MCA is_core = KMT is_core = SNG is_core = DAI is_core = USA is_core = PHI is_core = MGL is_core = KUW is_core = IRE is_core = ROM is_core = RUS is_core = SPA is_core = SWI is_core = SKO } }
+		NOT = { any_owned_province = { has_province_modifier = virus_outbreak } }
+		NOT = { has_country_modifier = local_epidemic }
+		NOT = { has_country_flag = sars_outbreak_2003 }
+	}
 
-mean_time_to_happen = { 
-months = 11
-}
+	mean_time_to_happen = { 
+		months = 11
+	}
 
-option = {
-name = "A disaster!"
-set_country_flag = sars_outbreak_2003
-
-add_country_modifier = { name = local_epidemic duration = 1825 }
-
-any_owned = { 
-limit = { OR = { is_core = CAN is_core = CHI is_core = HKG is_core = MCA is_core = KMT is_core = SNG is_core = DAI is_core = USA is_core = PHI is_core = MGL is_core = KUW is_core = IRE is_core = ROM is_core = RUS is_core = SPA is_core = SWI is_core = SKO } } 
-
-add_province_modifier = { name = virus_outbreak duration = 1825 }
-}
-ai_chance = { factor = 0.8 }
+	option = {
+		name = "Try to cover it up!"
+		set_country_flag = sars_outbreak_2003
+		
+		set_global_flag = epidemic_start
+		
+		CHI = { set_country_flag = virus_originator_country }
+		
+		set_country_flag = enable_virus_controls
+		
+		add_country_modifier = { name = virus_timer duration = 180 }
+		
+		any_country = {
+			limit = { exists = yes }
+			add_country_modifier = { name = virus_timer duration = 180 }
 		}
 
-option = {
-name = "Do everything we can to stop the outbreak!"
-set_country_flag = sars_outbreak_2003
+		ai_chance = { factor = 0.8 }
+	}
 
-money = -300000
+	option = {
+		name = "Do everything we can to stop the outbreak!"
+		set_country_flag = sars_outbreak_2003
 
-add_country_modifier = { name = local_epidemic duration = 730 }
+		money = -300000
 
-any_owned = { 
-limit = { OR = { is_core = CAN is_core = CHI is_core = HKG is_core = MCA is_core = KMT is_core = SNG is_core = DAI is_core = USA is_core = PHI is_core = MGL is_core = KUW is_core = IRE is_core = ROM is_core = RUS is_core = SPA is_core = SWI is_core = SKO } } 
-
-add_province_modifier = { name = virus_outbreak duration = 730 }
-}
-ai_chance = { factor = 0.2 }
+		set_global_flag = epidemic_start
+		
+		CHI = { set_country_flag = virus_originator_country }
+		
+		set_country_flag = enable_virus_controls
+		
+		set_country_flag = who_alerted_to_new_virus
+		
+		add_country_modifier = { name = virus_timer duration = 180 }
+		
+		any_country = {
+			limit = { exists = yes }
+			add_country_modifier = { name = virus_timer duration = 180 }
 		}
+
+		ai_chance = { factor = 0.2 }
+	}
 
 }
 
@@ -5818,6 +5833,85 @@ country_event = {
 	option = {
 		name = "The $FROMCOUNTRY_ADJ$-$COUNTRY_ADJ$ Alliance is useless"
 		war_exhaustion = 1
+	}
+
+}
+
+#COVID19, 2020
+country_event = {
+	id = 1610105
+	title = "The Wuhan Virus"
+	desc = EVTDESC1610105
+	picture = "wuhan_virus_2019"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = CHI
+		year = 2019
+		NOT = { year = 2025 }
+		owns = 1522
+		NOT = { any_owned_province = { has_province_modifier = virus_outbreak } }
+		any_owned_province = { 
+			OR = {
+				has_province_modifier = dev_1 
+				has_province_modifier = dev_2
+				has_province_modifier = dev_3
+			}
+		}
+		has_country_flag = sars_outbreak_2003
+	}
+
+	mean_time_to_happen = { 
+		months = 12
+	}
+
+	option = {
+		name = "Try to cover it up!"
+		
+		set_global_flag = epidemic_start
+		
+		set_country_flag = virus_originator_country
+		
+		set_country_flag = enable_virus_controls
+		
+		add_country_modifier = { name = virus_timer duration = 180 }
+		
+		any_country = {
+			limit = { exists = yes }
+			add_country_modifier = { name = virus_timer duration = 180 }
+		}
+
+		ai_chance = { factor = 0.7 }
+	}
+
+	option = {
+		name = "Do everything we can to stop the outbreak!"
+
+		money = -500000
+
+		set_global_flag = epidemic_start
+		
+		set_country_flag = virus_originator_country
+		
+		set_country_flag = enable_virus_controls
+		
+		#Allow virus controls
+		any_country = {
+			limit = { exists = yes }
+			country_event = 14120142
+		}
+		
+		set_country_flag = who_alerted_to_new_virus
+		
+		add_country_modifier = { name = virus_timer duration = 180 }
+		
+		any_country = {
+			limit = { exists = yes }
+			add_country_modifier = { name = virus_timer duration = 180 }
+		}
+
+		ai_chance = { factor = 0.3 }
 	}
 
 }
