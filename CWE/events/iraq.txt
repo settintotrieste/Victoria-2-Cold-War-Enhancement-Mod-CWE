@@ -297,7 +297,7 @@ country_event = {
     war = no
 	is_vassal = no
     PER = { is_vassal = no owns = 1132 }
-OR = { government = presidential_dictatorship government = nationalist_dictatorship government = populist_dictatorship } 
+	OR = { government = presidential_dictatorship government = nationalist_dictatorship government = populist_dictatorship } 
 	PER = { government = theocracy }
 	NOT = { has_global_flag = iran_iraq_war_flag }
   }
@@ -334,7 +334,7 @@ country_event = {
 
 	IRQ = { 
 war = { target = PER attacker_goal = { casus_belli = acquire_core_state state_province_id = 1132 } defender_goal = { casus_belli = install_theocratic_regime } } 
-		}
+	}
 
 	set_global_flag = iran_iraq_war_flag
 
@@ -701,7 +701,7 @@ country_event = {
 	id = 8007565
 	title = EVT_8007565_NAME
 	desc = EVT_8007565_DESC
-	picture = "saddam_hussein"
+	picture = "2003_iraq_war"
 	fire_only_once = yes
 
 	trigger = {
@@ -714,7 +714,7 @@ country_event = {
 		has_global_flag = war_on_terror
 
 		IRQ = { 
-OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship government = theocracy }
+			OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship government = theocracy }
 			part_of_sphere = no
 			is_vassal = no
 		}
@@ -727,23 +727,11 @@ OR = { government = presidential_dictatorship government = populist_dictatorship
 	option = {
 		name = EVT_8007565_OPTA
 		
-		IRQ = { badboy = 10 }
-		set_global_flag = iraq_war
-
-any_country = { 
-limit = { OR = { tag = SAA tag = KUW tag = SYR tag = ISR tag = JOR tag = ENG } alliance_with = USA }
-military_access = USA
-}
-
-		war = {
-		target = IRQ
-		attacker_goal = { casus_belli = make_puppet }
-		defender_goal = { casus_belli = status_quo }
-		call_ally = yes
-		}
-
 		badboy = 5
-
+		
+		#Option for Iraq to surrender
+		IRQ = { country_event = 80075652 }
+		
 		ai_chance = { factor = 0.9 }
 	}
 
@@ -751,6 +739,126 @@ military_access = USA
 		name = EVT_8007565_OPTB
 		prestige_factor = -0.05
 		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+#2003 Iraq War - kurdistan breaks free?
+country_event = {
+	id = 80075651
+	title = EVT_8007565_NAME
+	desc = EVT_8007565_DESC
+	picture = "2003_iraq_war"
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "Join the coalition forces!"
+		
+		IRQ = { release_vassal = THIS }
+		
+		war = {
+			target = IRQ
+			attacker_goal = { casus_belli = become_independent }
+			defender_goal = {  }
+			call_ally = no
+		}
+		
+		set_global_flag = KUR_joins_2003_coalition
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Remain loyal (Annexation by Iraq)"
+		IRQ = { inherit = KUR }
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+#2003 Iraq War - Iraq option to avoid war
+country_event = {
+	id = 80075652
+	title = EVT_8007565_NAME
+	desc = EVT_8007565_DESC
+	picture = "2003_iraq_war"
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "Fight the US coalition!"
+		
+		set_global_flag = iraq_war
+		
+		#Kurdistan breaks free?
+		random_country = {
+			limit = { tag = KUR vassal_of = IRQ }
+			country_event = 80075651
+		}
+
+		any_country = { 
+			limit = { 
+				OR = { tag = SAA tag = KUW tag = SYR tag = ISR tag = JOR tag = ENG } 
+				alliance_with = USA 
+			}
+			military_access = USA
+		}
+
+		USA = {
+
+			war = {
+				target = IRQ
+				attacker_goal = { casus_belli = make_puppet }
+				defender_goal = { casus_belli = status_quo }
+				call_ally = yes
+			}
+		
+		}
+
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "Surrender to the United States"
+		prestige_factor = -0.8
+		
+		random_owned = {
+			limit = { owner = { is_our_vassal = KUR } }
+			owner = { release_vassal = KUR }
+		}
+		
+		USA = { create_vassal = IRQ }
+		
+		government = mandate_government
+		country_event = 800054
+		ruling_party_ideology = big_tent
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		any_pop = { militancy = 10 }
+		
+		ai_chance = { factor = 0 }
+	}
+	
+}
+
+#2003 Iraq War - restablish the Kurdistan Regional Government
+country_event = {
+	id = 80075653
+	title = "Kurdistan Regional Government"
+	desc = EVTDESC1512002
+	picture = "kurdisatn_sar"
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "They may get independence one day"
+		badboy = -5
+		create_vassal = KUR
+		KUR = { government = sar_government country_event = 800054 }
+		any_owned = { limit = { is_core = KUR } secede_province = KUR }
+		USA = { diplomatic_influence = { who = KUR value = 200 } }
 	}
 	
 }
@@ -776,36 +884,48 @@ country_event = {
 	}
 
 	mean_time_to_happen = {
-		months = 1
+		months = 0.1
 	}
 
 	option = {
 		name = "EVT_8008013_A"
-		IRQ = { government = mandate_government }
-IRQ = { add_country_modifier = { name = revolution_chaos duration = 1825 } }
-diplomatic_influence = { who = IRQ value = 200 }
+		IRQ = { government = mandate_government ruling_party_ideology = big_tent }
+		IRQ = { add_country_modifier = { name = revolution_chaos duration = 1825 } }
+		diplomatic_influence = { who = IRQ value = 200 }
 		any_pop = { consciousness = 3 }
 		badboy = 5
+		
+		#Create Kurdistan Regional Government if KUR joined coalition
+		random_owned = {
+			limit = { 
+				owner = { 
+					has_global_flag = KUR_joins_2003_coalition 
+					KUR = { exists = yes is_vassal = no }
+				} 
+			}
+			owner = {
+				IRQ = { end_war = KUR }
+				IRQ = { country_event = 80075653 }
+			}
+		}
 
-#Kurdistan Regional Government
-IRQ = { 
-random_owned = { 
-limit = { owner = { KUR = { vassal_of = IRQ } } }
-owner = { KUR = { government = sar_government } }
-	} 
-}
+		#Kurdistan Regional Government
+		IRQ = { 
+			random_owned = { 
+				limit = { owner = { KUR = { vassal_of = IRQ } } }
+				owner = { KUR = { government = sar_government } }
+			} 
+		}
 
-#Kurdistan Regional Government - if KUR was annexed
-IRQ = { 
-random_owned = { 
-limit = { 
-owner = { KUR = { exists = no } any_owned_province = { is_core = KUR } } 
-	}
-owner = { release_vassal = KUR KUR = { government = sar_government } }
-	} 
-}
-
-diplomatic_influence = { who = KUR value = 200 }
+		#Kurdistan Regional Government - if KUR was annexed
+		IRQ = {
+			random_owned = { 
+				limit = { 
+					owner = { KUR = { exists = no } any_owned_province = { is_core = KUR } } 
+				}
+				owner = { release_vassal = KUR KUR = { government = sar_government } }
+			} 
+		}
 
 		ai_chance = { factor = 0.9 }
 	}
@@ -816,7 +936,8 @@ diplomatic_influence = { who = KUR value = 200 }
 		IRQ = { release_vassal = KUR }
 		IRQ = { government = democracy }
 		relation = { who = IRQ value = 200 }
-IRQ = { add_country_modifier = { name = revolution_chaos duration = 3650 } }
+		IRQ = { add_country_modifier = { name = revolution_chaos duration = 3650 } }
+		IRQ = { end_war = KUR }
 		ai_chance = { factor = 0.1 }
 	}
 
