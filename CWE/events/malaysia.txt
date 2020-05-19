@@ -24,33 +24,87 @@ country_event = { # form the Malayan Union
   option = {
     name = "No"
 	prestige = -10
-add_country_modifier = { name = revolution_chaos duration = 3650 }
 	ai_chance = { factor = 0.1 }
   }
+  
 }
 country_event = { # form the Malayan Union
   id = 8009701
   title = EVT_8009701_NAME
   desc = EVT_8009701_DESC
-  picture = "nwo2_federation_of_malaysia"
+  picture = "malayan_union_formation"
   is_triggered_only = yes
 
-  option = {
-    name = EVT_8009701_A
-	1388 = { secede_province = FMS }
-	1386 = { secede_province = FMS }
-	FMS = { inherit = JOH inherit = TER inherit = KED }
-FMS = { government = hms_government add_accepted_culture = chinese add_accepted_culture = indian }
-	prestige = 10
-	badboy = -2
-	ai_chance = { factor = 1 }
-  }
-  option = {
-    name = EVT_8009702_A
-	relation = { who = FMS value = -200 }
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = EVT_8009701_A
+		1388 = { secede_province = FMS }
+		1386 = { secede_province = FMS }
+		FMS = { 
+			any_country = {
+				limit = { 
+					vassal_of = FMS 
+					OR = { tag = JOH tag = TER tag = KED } 
+				}
+				country_event = 80097011
+			}
+		}
+		FMS = { government = hms_government add_accepted_culture = chinese add_accepted_culture = indian }
+		FMS = { add_country_modifier = { name = revolution_chaos duration = 3650 } }
+		prestige = 50
+		badboy = -2
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Form the Malayan Federation instead"
+		relation = { who = FMS value = 100 }
+		FMS = { 
+			any_country = {
+				limit = { 
+					vassal_of = FMS 
+					OR = { tag = JOH tag = TER tag = KED } 
+				}
+				country_event = 80097011
+			}
+		}
+		FMS = { 
+			government = hms_government1
+			any_pop = { 
+				limit = { 
+					NOT = { culture = malay } 
+				}
+				ideology = {
+					factor = 0.30
+					value = communist
+				}
+			}
+		}
+		ai_chance = { factor = 0 }
+	}
+
 }
+
+#Join the Malayan Union? - substates
+country_event = {
+  id = 80097011
+  title = EVT_8009701_NAME
+  desc = EVT_8009701_DESC
+  picture = "malayan_union_formation"
+  is_triggered_only = yes
+
+	option = {
+		name = "Join the Malayan Union (GAME OVER)"
+		FMS = { inherit = THIS }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Remain a substate"
+		ai_chance = { factor = 0 }
+	}
+
+}
+
 country_event = { # Singapore independence
   id = 8009702
   title = "Self-Rule for Singapore"
