@@ -565,9 +565,7 @@ country_event = {
 				is_core = THIS
 			}
 
-			remove_core = THIS
-
-add_province_modifier = { name = colonial_unrest duration = 3650 }
+			add_province_modifier = { name = colonial_unrest duration = 3650 }
 
 		}
 
@@ -653,33 +651,43 @@ add_province_modifier = { name = colonial_unrest duration = 3650 }
 			limit = {
 				any_core = { owned_by = THIS }
 				exists = no
-NOT = { 
-OR = { 
-tag = XGC
-tag = XEF
-tag = XEU
-tag = XCC
-tag = XAU
-tag = XEW
-tag = XEC
-tag = XSA
-tag = XSU
-tag = XMS
-tag = XAC
-tag = XAL
-tag = XMU
-tag = XAN
-tag = XCI
-tag = XNA
-tag = XPI
-tag = XEA
-tag = XTC
-tag = XUM
-tag = UAR
-	} 
-}
+				
+				NOT = { 
+					OR = {
+						tag = XGC
+						tag = XEF
+						tag = XEU
+						tag = XCC
+						tag = XAU
+						tag = XEW
+						tag = XEC
+						tag = XSA
+						tag = XSU
+						tag = XMS
+						tag = XAC
+						tag = XAL
+						tag = XMU
+						tag = XAN
+						tag = XCI
+						tag = XNA
+						tag = XPI
+						tag = XEA
+						tag = XTC
+						tag = XUM
+						tag = XIO
+						tag = UAR
+						tag = FBU
+						tag = YUG
+						tag = IBU
+						tag = KLM
+						tag = PBC
+						tag = GCL
+						tag = XME
+					}
+				}
 
-				is_cultural_union = no
+				#is_cultural_union = no
+				
 				NOT = {
 					AND = {
 						is_primary_culture = THIS
@@ -701,6 +709,7 @@ tag = UAR
 			}
 			country_event = 96012
 		}
+		
 		any_country = {
 			limit = {
 				any_core = { owned_by = THIS }
@@ -791,6 +800,17 @@ tag = UAR
 				country_event = 96017
 			}
 		}
+		
+		#Remove old victor's list
+		any_country = {
+			clr_country_flag = great_war_dismantlement_winner
+		}
+		
+		#Identify new victors for mandates
+		any_country = {
+			limit = { truce_with = THIS is_disarmed = no war = no is_vassal = no }
+			set_country_flag = great_war_dismantlement_winner
+		}
 
 		#add fascism and punitive effects
 		random_owned = {
@@ -832,6 +852,7 @@ tag = UAR
 				}
 			}
 		}
+		
 		add_country_modifier = {
 			name = punitive_effects
 			duration = 1825
@@ -918,6 +939,51 @@ country_event = {
 
 	option = {
 		name = "EVTOPTA96031" #Great
+		
+		#Superstates get dismantled
+		FROM = {
+			random_owned = {
+				limit = {
+					owner = {
+						OR = {
+							tag = XGC
+							tag = XEF
+							tag = XEU
+							tag = XCC
+							tag = XAU
+							tag = XEW
+							tag = XEC
+							tag = XSA
+							tag = XSU
+							tag = XMS
+							tag = XAC
+							tag = XAL
+							tag = XMU
+							tag = XAN
+							tag = XCI
+							tag = XNA
+							tag = XPI
+							tag = XEA
+							tag = XTC
+							tag = XUM
+							tag = XIO
+							tag = UAR
+							tag = FBU
+							tag = YUG
+							tag = IBU
+							tag = KLM
+							tag = PBC
+							tag = GCL
+							tag = XME
+						}
+					}
+				}
+				owner = { 
+					release = THIS
+				}
+			}
+		}
+		
 		FROM = {
 			any_state = {
 				limit = {
@@ -930,6 +996,7 @@ country_event = {
 				}
 			}
 		}
+		
 		random_owned = {
 			limit = {
 				owner = { num_of_cities = 20 }
@@ -1018,9 +1085,21 @@ country_event = {
 		}
 		set_country_flag = newly_released_nation
 
-		#Possible UN Trusteeship, if possible
+		#Possible UN Trusteeship for victors, if possible
 
-random_country = { limit = { war = no is_greater_power = yes exists = yes NOT = { badboy = 0.75 } is_disarmed = no has_recently_lost_war = no NOT = { have_core_in = THIS } has_country_modifier = united_nations_ga_member } country_event = 1512327 }
+		random_country = { 
+			limit = { 
+				war = no
+				is_greater_power = yes
+				exists = yes
+				OR = { has_country_flag = great_war_dismantlement_winner truce_with = FROM }
+				is_disarmed = no
+				NOT = { have_core_in = THIS }
+				is_vassal = no
+				has_country_modifier = united_nations_ga_member 
+			} 
+			country_event = 1512327
+		}
 
 	}
 }
