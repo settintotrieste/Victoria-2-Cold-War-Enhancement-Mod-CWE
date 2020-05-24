@@ -1374,6 +1374,8 @@ country_event = {
 	define_general = { name = "Deng Xiaoping" personality = energetic background = no_background }
   }
 }
+
+#Return Soviet occupied manchuria in 1946
 country_event = {
   id = 8200000
   title = "EVT_8200000_NAME"
@@ -1381,77 +1383,121 @@ country_event = {
   picture = "nwo2_manchurian_offensive"
   fire_only_once = yes
 
-  trigger = {
-    tag = RUS
-year = 1946
-NOT = { year = 1963 }
-	war = no
-    NOT = { RUS = { war_with = CHI } }
+	trigger = {
+		tag = RUS
+		year = 1946
+		NOT = { has_global_flag = 1950_start_date_flag }
+		war = no
+		
+		RUS = { NOT = { war_with = CHI } }
 
-    #NOT = { exists = MCK }
+		NOT = { exists = MCK }
 
-    NOT = { exists = IMN }
+		NOT = { exists = IMN }
 
-    exists = CHI
+		exists = CHI
 
-	CHI = { war_with = KMT }
-  }
-
-  mean_time_to_happen = { months = 4 }
-
-  option = {
-    name = "EVT_8200000_A"
-	country_event = 8200001
-	any_owned = { limit = { is_core = CHI NOT = { province_id = 1481 } } secede_province = MCK }
-	KMT = { inherit = MCK }
-	prestige = 10
-	KMT = { country_event = 8200005 } 
-	relation = { who = CHI value = -100 } 
-	ai_chance = {
-		factor = 0.1
+		CHI = { 
+			war_with = KMT
+			government = proletarian_dictatorship 
+		}
+		
+		any_owned_province = { is_core = CHI NOT = { is_core = RUS } }
+		
+		has_global_flag = blocsenabled
 	}
-  }
 
-  option = {
-    name = "EVT_8200000_B"
-	country_event = 8200001
-any_owned = { limit = { is_core = CHI } secede_province = MCK }
-	CHI = { inherit = MCK }
-	prestige = 10
-	CHI = { country_event = 8200005 } 
-	relation = { who = KMT value = -100 }
-CHI = { add_country_modifier = { name = support_government duration = 1825 } } 
-	ai_chance = {
-		factor = 0.8
+	mean_time_to_happen = { months = 4 }
+
+	option = {
+		name = "Return the lands to the KMT (keep Port Arthur)"
+		
+		CHI = { country_event = 8200001 }
+		
+		any_owned = { 
+			limit = { 
+				is_core = CHI 
+				NOT = { is_core = RUS } 
+				NOT = { province_id = 1481 } 
+			} 
+			secede_province = MCK 
 		}
-  }
+		KMT = { inherit = MCK }
+		prestige = 10
+		KMT = { country_event = 8200005 }
+		relation = { who = CHI value = -100 }
+		
+		relation = { who = USA value = 100 }
+		
+		badboy = -5
+		
+		ai_chance = {
+			factor = 0.1
+		}
+	}
+
+	option = {
+		name = "Return the lands to the PRC (keep Port Arthur)"
+	
+		KMT = { country_event = 8200001 }
+	
+		any_owned = { 
+			limit = {
+				is_core = CHI 
+				NOT = { is_core = RUS } 
+				NOT = { province_id = 1481 } 
+			}
+			secede_province = MCK 
+		}
+	
+		CHI = { inherit = MCK }
+		prestige = 10
+		CHI = { country_event = 8200005 } 
+		relation = { who = KMT value = -100 }
+		CHI = { add_country_modifier = { name = support_government duration = 1825 } } 
+		
+		relation = { who = USA value = -50 }
+		
+		ai_chance = {
+			factor = 0.8
+		}
+
+	}
   
-  option = {
-    name = "EVT_8200000_C"
-	country_event = 8200001
-	1481 = { remove_core = MCK }
-	release_vassal = MCK
-	diplomatic_influence = { who = MCK value = 200 }
-	relation = { who = CHI value = -80 } 
-	relation = { who = KMT value = -80 } 
-	badboy = 7.5
-	prestige = -40
-	ai_chance = {
-		factor = 0.1
+	option = {
+		name = "EVT_8200000_C"
+		country_event = 8200001
+	
+		release_vassal = MCK
+		diplomatic_influence = { who = MCK value = 200 }
+		
+		MCK = { government = proletarian_dictatorship ruling_party_ideology = communist }
+		
+		1481 = { secede_province = RUS }
+		
+		relation = { who = CHI value = -80 } 
+		relation = { who = KMT value = -80 } 
+		badboy = 7.5
+		prestige = -40
+		ai_chance = {
+			factor = 0.1
 		}
-  }
+	}
 
-  option = {
-    name = "EVT_8200000_D"
-	country_event = 8200001
-	relation = { who = CHI value = -100 } 
-	relation = { who = KMT value = -100 } 
-	badboy = 10 
-	prestige = -50
-	any_pop = { limit = { culture = chinese } militancy = 5 consciousness = 2 }
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = "EVT_8200000_D"
+		country_event = 8200001
+		relation = { who = CHI value = -100 } 
+		relation = { who = KMT value = -100 } 
+		badboy = 10
+		prestige_factor = -0.025
+		any_pop = { limit = { is_culture_group = east_asian } militancy = 10 consciousness = 10 }
+		ai_chance = { factor = 0 }
+	}
+  
 }
+
+#Inform of return of
 country_event = {
   id = 8200001
   title = "EVT_8200001_NAME"
@@ -1460,18 +1506,19 @@ country_event = {
   fire_only_once = yes
   is_triggered_only = yes
 
-  immediate = {
-	CHI_1552 = { add_core = MCK }
-	RUS_2589 = { add_core = MCK }
-	CHI_1479 = { add_core = MCK }
-	RUS_1072 = { add_core = MCK }
-	1533 = { add_core = IMN }
-	1002 = { add_core = IMN }
-  }
+	immediate = {
+		CHI_1552 = { add_core = MCK }
+		RUS_2589 = { add_core = MCK }
+		CHI_1479 = { add_core = MCK }
+		RUS_1072 = { add_core = MCK }
+		1533 = { add_core = IMN }
+		1002 = { add_core = IMN }
+	}
   
-  option = {
-	name = "OK"
-  }
+	option = {
+		name = "OK"
+		prestige = 100
+	}
 }
 country_event = {
   id = 8200005
