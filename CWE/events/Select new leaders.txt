@@ -6,26 +6,65 @@ country_event = {
 	picture = "election_win"
 
 	trigger = {
-	election = no
-NOT = { has_country_modifier = headless_chicken }
-NOT = { has_country_modifier = leader_cooldown }
-NOT = { has_country_modifier = power_vacuum }
-NOT = { has_country_flag = leadership_election }
+		election = no
+		NOT = { has_country_modifier = headless_chicken }
+		NOT = { has_country_modifier = leader_cooldown }
+		NOT = { has_country_modifier = power_vacuum }
+		NOT = { has_country_flag = leadership_election }
 
-#Don't have president for life flag
-NOT = {
-OR = {
-government = presidential_dictatorship
-government = nationalist_dictatorship
-government = populist_dictatorship
-government = proletarian_dictatorship
-government = proletarian_dictatorship1
-government = theocracy
-	}
-has_country_flag = president_for_life
-}
+		#Don't have president for life flag and ruling party remains the same
+		NOT = {
+			OR = { 
 
-NOT = { government = absolute_monarchy }
+				AND = { 
+					has_country_flag = right_set_up
+					has_country_flag = president_for_life
+					OR = { ruling_party_ideology = conservative ruling_party_ideology = big_tent }
+				} 
+
+				AND = { 
+					has_country_flag = far_right_set_up 
+					has_country_flag = president_for_life
+					OR = { ruling_party_ideology = traditionalist ruling_party_ideology = nationalist }
+				} 
+
+				AND = { 
+					has_country_flag = centre_set_up 
+					has_country_flag = president_for_life
+					OR = { ruling_party_ideology = populist ruling_party_ideology = liberal ruling_party_ideology = progressive }
+				} 
+
+				AND = { 
+					has_country_flag = left_set_up
+					has_country_flag = president_for_life
+					ruling_party_ideology = socialist
+				}
+
+				AND = { 
+					has_country_flag = far_left_set_up 
+					has_country_flag = president_for_life
+					OR = { ruling_party_ideology = communist_social ruling_party_ideology = communist }
+				}
+
+			}
+		}
+		
+		#Dictatorships are automatically president for life unless they have Head of State reforms taken
+		OR = {
+			government = democracy
+			government = democracy1
+			government = hms_government
+			government = hms_government1
+			government = colonial_government
+			government = mandate_government
+			government = sar_government
+			government = socialist_democracy
+			
+			has_country_flag = semi_democratic_dictatorship
+		}
+
+		#Kings use a different system
+		NOT = { government = absolute_monarchy }
 	}
 	
 	mean_time_to_happen = {
@@ -128,6 +167,7 @@ OR = { government = proletarian_dictatorship government = proletarian_dictatorsh
 
 #Clear President for Life flag
 clr_country_flag = president_for_life
+clr_country_flag = semi_democratic_dictatorship
 
 #If leader refused to leave via 'backbencher's plot' event
 clr_country_flag = leader_refuses_to_leave
