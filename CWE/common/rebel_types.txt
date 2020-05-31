@@ -20,7 +20,7 @@ pan_nationalist_rebels = {
 	
 	# <this is the governement in the country> = <this is what the rebels want>
 	government = {
-	proletarian_dictatorship1 = proletarian_dictatorship1
+		proletarian_dictatorship1 = proletarian_dictatorship1
 		colonial_government = colonial_government
 		democracy1 = democracy1
 		sar_government = sar_government
@@ -28,7 +28,7 @@ pan_nationalist_rebels = {
 		mandate_government = mandate_government
 		theocracy = theocracy
 		proletarian_dictatorship = proletarian_dictatorship
-	presidential_dictatorship = presidential_dictatorship
+		presidential_dictatorship = presidential_dictatorship
 		nationalist_dictatorship = nationalist_dictatorship
 		populist_dictatorship = populist_dictatorship
 		absolute_monarchy = absolute_monarchy
@@ -65,7 +65,7 @@ pan_nationalist_rebels = {
 
 		modifier = {
 			factor = 1.2
-	has_country_flag = superpower_rebel_instigation_flag
+			has_country_flag = superpower_rebel_instigation_flag
 		}
 
 		modifier = {
@@ -115,17 +115,20 @@ pan_nationalist_rebels = {
 				country = { is_greater_power = yes }
 			}
 		}
+		
+		#No Pan nationalists unless union tag exists
 		modifier = {
-			factor = 1.05
-			cultural_union = { exists = yes }
-		}		
+			factor = 0
+			cultural_union = { exists = no }
+		}
+		
 		modifier = {
 			factor = 0
 			war = yes
 		}
 
 		modifier = {
-			factor = 0
+			factor = 1.2
 			country = { is_vassal = yes }
 		}
 		
@@ -139,27 +142,34 @@ pan_nationalist_rebels = {
 		modifier = {
 			factor = 1.3
 			OR = {
-country = { has_country_modifier = world_high }
-country = { has_country_modifier = cold_war_high }
+				country = { has_country_modifier = world_high }
+				country = { has_country_modifier = cold_war_high }
 			}
 		}
 
 		modifier = {
 			factor = 1.15
 			OR = {
-country = { has_country_modifier = world_medium }
-country = { has_country_modifier = cold_war_medium }
+				country = { has_country_modifier = world_medium }
+				country = { has_country_modifier = cold_war_medium }
 			}
 		}
 		
 		modifier = {
-			factor = 1.2
-			pop_majority_ideology = liberal
+			factor = 1.1
+			culture_has_union_tag = yes
+			pop_majority_ideology = nationalist
+			country = { is_vassal = yes }
 		}
-		
+
 		modifier = {
 			factor = 1.1
 			pop_majority_ideology = big_tent
+		}
+
+		modifier = {
+			factor = 1.2
+			pop_majority_ideology = liberal
 		}
 
 		modifier = {
@@ -232,15 +242,18 @@ country = { has_country_modifier = cold_war_medium }
 	}
 	
 	demands_enforced_effect = {
-
+		
+		country_event = 800054
+		
+		#Cultural Union annexes nation
 		random_country = {
 			limit = {
 				is_culture_group = THIS
-				is_greater_power = yes
 				is_cultural_union = yes
 			}
-			country_event = 11100
+			country_event = 11103
 		}
+		
 	}
 }
 
@@ -1302,9 +1315,9 @@ populist_rebels = {
 	proletarian_dictatorship1 = populist_dictatorship
 
 		colonial_government = populist_dictatorship
-hms_government1 = populist_dictatorship
+		hms_government1 = populist_dictatorship
 		democracy1 = populist_dictatorship
-mandate_government = populist_dictatorship
+		mandate_government = populist_dictatorship
 		sar_government = populist_dictatorship
 		socialist_democracy = populist_dictatorship
 		populist_dictatorship = populist_dictatorship
@@ -1348,7 +1361,7 @@ mandate_government = populist_dictatorship
 
 		modifier = {
 			factor = 1.2
-	has_country_flag = superpower_rebel_instigation_flag
+			has_country_flag = superpower_rebel_instigation_flag
 		}
 
 		modifier = {
@@ -1363,9 +1376,7 @@ mandate_government = populist_dictatorship
 		
 		modifier = {
 			factor = 0.5
-			country = {
-				has_unclaimed_cores = yes
-			}
+			has_unclaimed_cores = no
 		}
 		
 		modifier = {
@@ -1384,11 +1395,11 @@ mandate_government = populist_dictatorship
 		factor = 1.02
 		
 		modifier = {
-			factor = 0
+			factor = 0.1
 			OR = {
-				 social_movement = yes
-				 political_movement = yes
-				}
+				social_movement = yes
+				political_movement = yes
+			}
 			NOT = {		
 				OR = {
 					pop_majority_ideology = populist
@@ -1410,10 +1421,14 @@ mandate_government = populist_dictatorship
 			factor = 1.5
 			pop_majority_ideology = populist
 		}
+		modifier = {
+			factor = 3
+			pop_majority_ideology = nationalist
+		}
 
 		modifier = {
 			factor = 0
-			country = { OR = { ruling_party_ideology = populist government = populist_dictatorship } }
+			country = { OR = { ruling_party_ideology = populist ruling_party_ideology = nationalist government = populist_dictatorship } }
 		}
 
 		modifier = {
@@ -1423,8 +1438,9 @@ mandate_government = populist_dictatorship
 		}
 		modifier = {
 			factor = 1.15
-			NOT = { political_reform_want = 0.05 
-					social_reform_want = 0.05 
+			NOT = { 
+				political_reform_want = 0.05 
+				social_reform_want = 0.05 
 			}
 		}
 		modifier = {
@@ -1442,9 +1458,17 @@ mandate_government = populist_dictatorship
 			}
 		}
 		modifier = {
-			factor = 1.015
-			location = {
-				minorities = yes
+			factor = 1.25
+			country = {
+				any_neighbor_country = {
+					NOT = { 
+						relation = { who = THIS value = 0 } 
+					}
+					OR = { 
+						ruling_party_ideology = populist 
+						ruling_party_ideology = nationalist 
+					}
+				}
 			}
 		}
 	}
@@ -1531,7 +1555,7 @@ sectarian_rebels = {
 		populist_dictatorship = nationalist_dictatorship
 		nationalist_dictatorship = nationalist_dictatorship
 		proletarian_dictatorship = nationalist_dictatorship
-	presidential_dictatorship = nationalist_dictatorship
+		presidential_dictatorship = nationalist_dictatorship
 		theocracy = nationalist_dictatorship
 		absolute_monarchy = nationalist_dictatorship
 		hms_government = nationalist_dictatorship
@@ -1569,7 +1593,7 @@ sectarian_rebels = {
 
 		modifier = {
 			factor = 1.2
-	has_country_flag = superpower_rebel_instigation_flag
+			has_country_flag = superpower_rebel_instigation_flag
 		}
 
 		modifier = {
@@ -1584,9 +1608,7 @@ sectarian_rebels = {
 		
 		modifier = {
 			factor = 0.5
-			country = {
-				has_unclaimed_cores = yes
-			}
+			has_unclaimed_cores = no
 		}
 		
 		modifier = {
@@ -1606,41 +1628,66 @@ sectarian_rebels = {
 		
 		modifier = {
 			factor = 0
-			OR = {
-				 social_movement = yes
-				 political_movement = yes
-				}
-			NOT = {		
+			political_movement = yes
+			NOT = {
 				OR = {
-				pop_majority_ideology = populist
-				pop_majority_ideology = traditionalist
-				pop_majority_ideology = nationalist
+					pop_majority_ideology = populist
+					pop_majority_ideology = traditionalist
+					pop_majority_ideology = nationalist
 				}
-			}	
+			}
 		}
+		
 		modifier = {
-			factor = 1.5
-			pop_majority_ideology = nationalist
+			factor = 0
+			OR = { 
+				pop_majority_ideology = progressive
+				pop_majority_ideology = liberal
+			}
+		}
+		
+		#Big boost if country is majority nationalist
+		modifier = {
+			factor = 2
+			is_primary_culture = yes
+			location = {
+				minorities = yes
+			}
+			country = { 
+				pop_majority_ideology = nationalist
+			}
 		}
 
 		modifier = {
 			factor = 0
-country = { OR = { ruling_party_ideology = nationalist government = nationalist_dictatorship } }
+			country = { OR = { ruling_party_ideology = nationalist government = nationalist_dictatorship } }
 		}
-
+		
+		#Sectarianists are content with minority oppression
 		modifier = {
 			factor = 0
-	country = { minorities_reform = minorities_oppression }
+			country = { minorities_reform = minorities_oppression }
 		}
-
+		modifier = {
+			factor = 1.25
+			is_primary_culture = yes
+			OR = { pop_majority_ideology = nationalist pop_majority_ideology = populist }
+			country = { minorities_reform = minorities_equal_rights }
+		}
+		modifier = {
+			factor = 1.50
+			is_primary_culture = yes
+			OR = { pop_majority_ideology = nationalist pop_majority_ideology = populist }
+			country = { minorities_reform = minorities_affirmative_action }
+		}
 		modifier = {
 			factor = 0
 			is_primary_culture = no
 			is_accepted_culture = no
 		}
 		modifier = {
-			factor = 1.15
-NOT = { political_reform_want = 0.05 social_reform_want = 0.05 }
+			factor = 0.5
+			political_reform_want = 0.30
 		}
 		modifier = {
 			factor = 0.25
@@ -1648,10 +1695,15 @@ NOT = { political_reform_want = 0.05 social_reform_want = 0.05 }
 		}
 		modifier = {
 			factor = 1.015
-			country = { NOT = { plurality = 25 } }
+			country = {
+				NOT = { plurality = 25 } 
+			}
 		}
+		#Presence of minorities anger nationalists and populists
 		modifier = {
-			factor = 1.025
+			factor = 1.5
+			is_primary_culture = yes
+			OR = { pop_majority_ideology = nationalist pop_majority_ideology = populist }
 			location = {
 				minorities = yes
 			}
