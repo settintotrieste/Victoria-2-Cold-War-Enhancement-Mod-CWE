@@ -610,6 +610,12 @@ militant_suffrage_rebels = {
 			factor = 0
 			location = { is_colonial = yes }
 		}
+		
+		#Equal rights rebels do not apply to overseas provinces
+		modifier = {
+			factor = 0
+			location = { OR = { is_overseas = yes NOT = { is_core = THIS } } }
+		}
 
 	}
  
@@ -2237,7 +2243,7 @@ OR = { government = proletarian_dictatorship government = socialist_democracy }
 }
 
 ###################################
-# Separatist Rebels
+# Separatist Rebels - Non communist
 ###################################
 separatist_rebels = {
 	icon = 5
@@ -2247,7 +2253,7 @@ separatist_rebels = {
 	
 	# <this is the governement in the country> = <this is what the rebels want>
 	government = {
-proletarian_dictatorship1 = proletarian_dictatorship1
+		proletarian_dictatorship1 = proletarian_dictatorship1
 		socialist_democracy = socialist_democracy
 		colonial_government = colonial_government
 
@@ -2344,25 +2350,25 @@ proletarian_dictatorship1 = proletarian_dictatorship1
 				
 		modifier = {
 			factor = 1.5
-		location = { is_colonial = yes }
-country = { has_global_flag = un_committe_on_decolonisation }
+			location = { is_colonial = yes }
+			country = { has_global_flag = un_committe_on_decolonisation }
 		}
 
 		modifier = {
 			factor = 1.5
-		location = { is_colonial = yes }
-		country = { has_country_flag = decolonise_yes }
+			location = { is_colonial = yes }
+			country = { has_country_flag = decolonise_yes }
 		}
 
 		modifier = {
 			factor = 1.25
-		location = { is_colonial = yes }
-		country = { has_country_flag = decoloniasation2 }
+			location = { is_colonial = yes }
+			country = { has_country_flag = decoloniasation2 }
 		}
 
 		modifier = {
 			factor = 2
-country = { OR = { has_recently_lost_war = yes is_disarmed = yes num_of_revolts = 1 } }
+			country = { OR = { has_recently_lost_war = yes is_disarmed = yes num_of_revolts = 1 } }
 		}
 
 		modifier = {
@@ -2394,18 +2400,13 @@ country = { OR = { has_recently_lost_war = yes is_disarmed = yes num_of_revolts 
 			factor = 0
 			is_cultural_union = THIS
 		}
+		
+		#Non communists only
 		modifier = {
-			factor = 1.6
-			pop_majority_ideology = communist_social
+			factor = 0
+			OR = { pop_majority_ideology = socialist pop_majority_ideology = communist pop_majority_ideology = communist_social }
 		}
-		modifier = {
-			factor = 1.8
-			pop_majority_ideology = communist
-		}
-		modifier = {
-			factor = 1.4
-			pop_majority_ideology = socialist
-		}
+
 		modifier = {
 			factor = 0.5
 			pop_majority_ideology = progressive
@@ -2429,6 +2430,14 @@ country = { OR = { has_recently_lost_war = yes is_disarmed = yes num_of_revolts 
 		modifier = {
 			factor = 2
 			pop_majority_ideology = nationalist
+		}
+		modifier = {
+			factor = 3
+			pop_majority_ideology = communist
+		}
+		modifier = {
+			factor = 2.5
+			pop_majority_ideology = communist_social
 		}
 		
 		modifier = {
@@ -2524,11 +2533,299 @@ country = { OR = { has_recently_lost_war = yes is_disarmed = yes num_of_revolts 
 		REB = { country_event = 14120091 }
 		relation = {
 			who = REB
-			value = -150
+			value = -200
 		}
 		modify_relation = {
 			tag = REB
-			relation = -150
+			relation = -200
+		}
+	}
+}
+
+###################################
+# Separatist Rebels - communist
+###################################
+communist_separatist_rebels = {
+	icon = 5
+	
+	area = nation_culture 				# Stays within provinces of their culture
+	break_alliance_on_win = no
+	
+	# <this is the governement in the country> = <this is what the rebels want>
+	government = {
+		proletarian_dictatorship1 = proletarian_dictatorship1
+		socialist_democracy = socialist_democracy
+		colonial_government = colonial_government
+
+		democracy1 = democracy1
+		mandate_government = democracy
+		sar_government = democracy
+		hms_government1 = hms_government1
+		proletarian_dictatorship = proletarian_dictatorship
+		presidential_dictatorship = presidential_dictatorship
+		theocracy = theocracy
+		nationalist_dictatorship = nationalist_dictatorship
+		populist_dictatorship = populist_dictatorship
+		absolute_monarchy = absolute_monarchy
+		hms_government = hms_government
+		democracy = democracy
+	}
+	
+	
+	defection = culture		# If the country seeks independence, defection specifies what type of provinces it wants.
+	independence = culture 		# Seeks independence for spawn province culture. Will not spawn at all if there is no suitable tag.
+	defect_delay = 12		# Can spontaneously declare independence after X months (earliest)
+	
+	allow_all_cultures = no
+	allow_all_religions = yes
+	allow_all_ideologies = yes
+	
+	resilient = yes					# Does not disband on retreat
+	reinforcing = yes				# Does not receive reinforcements
+	general = yes					# Does use generals
+	smart = yes					# Does not assault forts, tactically withdraw from battle, etc.
+	unit_transfer = yes				# Units do remain after enforcing demands.
+	
+	occupation_mult = 5.0			# The amount of strength this rebel gains from taking provinces	
+
+	# triggers a general rising, modifier will be multiplied with the country's army strength and compared to the faction's strength
+	will_rise = 
+	{
+		factor = 0.75
+		
+		modifier = {
+			war = yes
+			factor = 0.8
+		}
+
+		modifier = {
+			factor = 1.2
+			has_country_flag = superpower_rebel_instigation_flag
+		}
+		
+		modifier = {
+			factor = 5
+			overlord = { has_country_flag = block_puppet_independence }
+		}
+
+		modifier = {
+			has_country_flag = spy_medium_flag
+			factor = 0.5
+		}
+		
+		modifier = {
+		    factor = 1.25
+		    location = { average_militancy = 5 }
+		}
+		
+		modifier = {
+		    factor = 1.25
+			location = { average_militancy = 7.5 }
+		}
+		
+		modifier = {
+		    factor = 1.5
+			location = { average_militancy = 10 }
+		}
+		
+		modifier = {
+			war_exhaustion = 4
+			factor = 0.95
+		}
+		
+		modifier = {
+			war_exhaustion = 6
+			factor = 0.95
+		}
+		
+		modifier = {
+			war_exhaustion = 8
+			factor = 0.95
+		}
+		
+		modifier = {
+			factor = 3
+			NOT = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } }
+		}
+		
+	}
+	
+	# The rebel type with the highest modifier for this pop gets picked
+	spawn_chance = {
+		factor = 3
+				
+		modifier = {
+			factor = 1.5
+			location = { is_colonial = yes }
+			country = { has_global_flag = un_committe_on_decolonisation }
+		}
+
+		modifier = {
+			factor = 1.5
+			location = { is_colonial = yes }
+			country = { has_country_flag = decolonise_yes }
+		}
+
+		modifier = {
+			factor = 1.25
+			location = { is_colonial = yes }
+			country = { has_country_flag = decoloniasation2 }
+		}
+
+		modifier = {
+			factor = 2
+			country = { OR = { has_recently_lost_war = yes is_disarmed = yes num_of_revolts = 1 } }
+		}
+
+		modifier = {
+			factor = 0.25
+			is_primary_culture = yes
+		}
+		modifier = {
+			factor = 0
+			NOT = {
+				location = {
+					any_core = {
+						is_cultural_union = no
+						is_primary_culture = THIS
+						exists = no
+			 		}
+			 	}
+		 	}
+		}
+		modifier = {
+			factor = 3
+			location = {
+				any_core = {
+					is_primary_culture = THIS
+					exists = no
+			 	}
+			}
+		}
+		
+		modifier = {
+			factor = 0
+			NOT = {
+				OR = {
+					pop_majority_ideology = socialist
+					pop_majority_ideology = communist
+					pop_majority_ideology = communist_social
+				}
+			}
+		}
+		
+		modifier = {
+			factor = 4
+			pop_majority_ideology = communist
+		}
+		modifier = {
+			factor = 3
+			pop_majority_ideology = communist_social
+		}
+		
+		modifier = {
+			factor = 0
+			is_cultural_union = THIS
+		}
+		
+		modifier = {
+			factor = 1.1
+			NOT = { is_culture_group = THIS }
+		}
+		
+		modifier = {
+			factor = 0.25
+			is_accepted_culture = yes
+			location = { is_colonial = no }
+		}
+		modifier = {
+			factor = 0
+			is_primary_culture = yes
+			location = { is_colonial = no }
+		}
+		modifier = {
+			factor = 0.8
+			is_accepted_culture = yes
+		}
+		modifier = {
+			factor = 2
+			location = {
+				is_colonial = yes
+			}
+		}
+	
+	}
+ 
+ 	#This is checked for EACH province in the Area of Operations
+	movement_evaluation = {
+		factor = 1
+		modifier = {
+			factor = 0.1
+			units_in_province = 1
+		}
+		modifier = {
+			factor = 0.001
+			controlled_by = REB
+		}
+		modifier = {
+			factor = 1.5
+			average_militancy = 4
+		}
+		modifier = {
+			factor = 1.5
+			average_militancy = 6
+		}
+		modifier = {
+			factor = 1.5
+			average_militancy = 8
+		}
+		modifier = {
+			factor = 2.0
+			is_capital = yes
+		}
+		modifier = {
+			factor = 0.4
+			country = {
+				has_country_modifier = springtime_of_nations
+			}
+		}
+	}
+	
+ 	# Province Scope
+ 	siege_won_trigger = {
+		NOT = { has_province_modifier = war_torn }
+ 	}
+	
+	siege_won_effect = {
+		add_province_modifier = {
+			name = war_torn
+			duration = 365
+		}
+		owner = { war_exhaustion = 2.5 }
+	}
+	
+	# Country scope
+	demands_enforced_trigger = {
+		independence = {
+			all_core = {
+				OR = {
+					controlled_by_rebels = yes
+					NOT = { owned_by = THIS }
+				}
+				province_control_days = 30
+			}
+		}
+	}
+	demands_enforced_effect = {
+		release_vassal = REB
+		REB = { government = proletarian_dictatorship country_event = 800052 }
+		relation = {
+			who = REB
+			value = -200
+		}
+		modify_relation = {
+			tag = REB
+			relation = -200
 		}
 	}
 }
