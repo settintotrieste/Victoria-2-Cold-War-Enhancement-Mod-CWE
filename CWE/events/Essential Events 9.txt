@@ -6123,3 +6123,121 @@ country_event = {
 	}
 
 }
+
+#NAFTA, 1994 - US start
+country_event = {
+	id = 1610109
+	title = "The North American Free Trade Agreement"
+	desc = EVTDESC1610109
+	picture = "NAFTA_1994"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 1994
+		NOT = { year = 2000 }
+		is_greater_power = yes
+		war = no
+		election = no
+		trade_policy = free_trade
+		
+		NOT = { tech_school = XNA_tech_school }
+		
+		OR = {
+			MEX = { exists = yes is_vassal = no trade_policy = free_trade war = no }
+			CAN = { exists = yes is_vassal = no trade_policy = free_trade war = no }
+		}
+		
+		NOT = { has_country_modifier = in_bankrupcy }
+		
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "Create a new liberal order in North America! (Success if one country accepts)"
+		
+		prestige_factor = 0.03
+		
+		add_country_modifier = { name = economic_boom duration = 3650 }
+		
+		#Send request to NAFTA participants
+		any_country = {
+			limit = { 
+				OR = { tag = MEX tag = CAN } 
+				exists = yes 
+				is_vassal = no 
+				trade_policy = free_trade
+				war = no
+			}
+			country_event = 1610110
+		}
+		
+		any_pop = {
+			scaled_militancy = {
+				factor = 5
+				issue = protectionism
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Pfff... It's doomed to fail"
+
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#NAFTA, 1994 - MEX and CAN response
+country_event = {
+	id = 1610110
+	title = "The North American Free Trade Agreement"
+	desc = EVTDESC1610109
+	picture = "NAFTA_1994"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "We shall open our markets!"
+		
+		prestige_factor = 0.03
+		
+		add_country_modifier = { name = economic_boom duration = 3650 }
+		
+		#NAFTA formed
+		FROM = {
+			set_country_flag = trade_block_ambition
+			set_country_flag = xna_ambition
+			set_country_flag = in_trade_block
+			tech_school = XNA_tech_school
+			diplomatic_influence = { who = THIS value = 200 }
+		}
+		
+		set_country_flag = trade_block_ambition
+		set_country_flag = xna_ambition
+		set_country_flag = in_trade_block
+		tech_school = XNA_tech_school
+		
+		any_pop = {
+			scaled_militancy = {
+				factor = 5
+				issue = protectionism
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Pfff... It's doomed to fail"
+		relation = { who = FROM value = -50 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
