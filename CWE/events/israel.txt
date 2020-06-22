@@ -1763,6 +1763,143 @@ country_event = {
 #Gaza events
 ###########################################################################
 
+#Hamas government in the PA
+country_event = {
+	id = 80076980
+	title = "$YEAR$ Palestinian Legislative Election"
+	desc = EVTDESC80076980
+	picture = "GAZ_2007_election_PAL"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = PAL
+		year = 2006
+		ISR = { exists = yes war = no is_vassal = no }
+		vassal_of = ISR
+		owns = 920
+		government = sar_government
+		election = no
+	}
+
+	mean_time_to_happen = {
+		months = 3
+	}
+
+	option = {
+		name = "Hamas is the new ruling party!"
+		ISR = { country_event = 80076981 }
+		
+		#EGY response
+		random_country = {
+			limit = {
+				tag = EGY 
+				neighbour = PAL 
+				is_vassal = no 
+				NOT = { ruling_party_ideology = traditionalist } 
+			}
+			country_event = 80076981
+		}
+		
+		ruling_party_ideology = traditionalist
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Block Hamas"
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
+			}
+			scaled_militancy = {
+				factor = 5
+				ideology = conservative
+			}
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Formation of the Gaza Strip - ISR and EGY
+country_event = {
+	id = 80076981
+	title = "Blockade of the Gaza Strip"
+	desc = EVTDESC80076981
+	picture = "GAZ_2007_form"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Blockade the Gaza Strip!"
+		badboy = 4
+		
+		any_pop = {
+			limit = {
+				NOT = { 
+					OR = { culture = jewish culture = haredim_jewish } 
+				}
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
+			}
+		}
+		
+		#EGY
+		random_owned = {
+			limit = { owner = { tag = EGY } }
+			owner = {
+				relation = { who = ISR value = 100 }
+			}
+		}
+		
+		#ISR
+		random_owned = {
+			limit = { owner = { tag = ISR } }
+			owner = {
+				PAL = { 
+					ruling_party_ideology = socialist 
+					release = GAZ
+					any_pop = {
+						limit = {
+							NOT = { 
+								OR = { culture = jewish culture = haredim_jewish } 
+							}
+						}
+						scaled_militancy = {
+							factor = 10
+							ideology = traditionalist
+						}
+					}
+					country_event = 800050
+				}
+				GAZ = { government = presidential_dictatorship ruling_party_ideology = traditionalist country_event = 800050 }
+				relation = { who = GAZ value = -200 }
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Let it be and risk eventual Palestinian independence"
+		prestige_factor = -0.025
+		
+		#ISR
+		random_owned = {
+			limit = { owner = { tag = ISR } }
+			owner = {
+				PAL = { government = democracy }
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
 ###########################################################################
 #Population growth
 ###########################################################################
