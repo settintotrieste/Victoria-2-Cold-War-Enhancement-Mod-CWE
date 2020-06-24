@@ -1,4 +1,4 @@
-name = "Cold War Enhancement Mod 1.11" # 2020
+name = "Cold War Enhancement Mod 1.115" # 2020
 path = "mod/CWE" # location of your mod files. If changed change map/default.map as well
 user_dir = "CWE" # optional.   
 replace_path = "common"
