@@ -1819,23 +1819,50 @@ country_event = {
 	desc = "Our independence vote to determine if the people want independence is underway. We will win if conservatives, liberals, progressives or centrists are not the majority ideology in $COUNTRY$. We will know the result in approximately half a month."
 	picture = "independence_vote"
 
-trigger = {
-is_vassal = yes
-has_country_flag = hold_independence_referendum
-}
+	trigger = {
+		is_vassal = yes
+		has_country_flag = hold_independence_referendum
+	}
 	
-mean_time_to_happen = { 
-months = 6
-}
+	mean_time_to_happen = { 
+		months = 6
+	}
 
 	option = {
 		name = "We hope for the best"
-any_pop = { militancy = -5 }
-clr_country_flag = hold_independence_referendum
-remove_country_modifier = independence_vote_permission
-any_owned = { add_province_modifier = { name = voted_independence duration = 100 } }
-					}
+		any_pop = { militancy = -5 }
+		clr_country_flag = hold_independence_referendum
+		remove_country_modifier = independence_vote_permission
+		
+		#If there was a stray flag
+		clr_country_flag = independence_vote_passes_flag
+		
+		#Vote Fails
+		random_owned = {
+			limit = { 
+				owner = {
+					NOT = { OR = { pop_majority_ideology = nationalist pop_majority_ideology = populist pop_majority_ideology = socialist pop_majority_ideology = traditionalist pop_majority_ideology = communist pop_majority_ideology = communist_social } }
+				} 
+			}
+			owner = { country_event = 1412071 } #Vote fails
+			
 		}
+		
+		#Vote passes
+		random_owned = {
+			limit = { 
+				owner = {
+					OR = { pop_majority_ideology = nationalist pop_majority_ideology = populist pop_majority_ideology = socialist pop_majority_ideology = traditionalist pop_majority_ideology = communist pop_majority_ideology = communist_social }
+				} 
+			}
+			owner = { country_event = 1412072 } #Vote fails
+			
+		}
+		
+		
+	}
+	
+}
 
 #Puppet Requests Independence - vote fails
 country_event = {
@@ -1844,27 +1871,21 @@ country_event = {
 	desc = "Our independence vote to determine if the people want independence failed. Our overlord will now have the mandate to reject independence for our nation."
 	picture = "independence_fails"
 
-trigger = {
-is_vassal = yes
-any_owned_province = { has_province_modifier = voted_independence }
-NOT = { OR = { pop_majority_ideology = nationalist pop_majority_ideology = populist pop_majority_ideology = socialist pop_majority_ideology = traditionalist pop_majority_ideology = communist pop_majority_ideology = communist_social } }
-has_country_modifier = recently_attempted_independence_vote
-}
-
-mean_time_to_happen = { months = 0.5 }
+	is_triggered_only = yes
 
 	option = {
 		name = "The people have spoken!"
-prestige = -25
-any_owned = { remove_province_modifier = voted_independence }
-any_pop = { 
-ideology = {
-	factor = 0.4
-	value = conservative
-} 
-	}
-					}
+		prestige = -25
+		any_owned = { remove_province_modifier = voted_independence }
+		any_pop = { 
+			ideology = {
+				factor = 0.4
+				value = conservative
+			} 
 		}
+	}
+	
+}
 
 #Puppet Requests Independence - vote passes
 country_event = {
@@ -1873,28 +1894,22 @@ country_event = {
 	desc = "Our independence vote to determine if the people want independence passes. Our overlord will now have the mandate to grant independence for our nation."
 	picture = "independence_passes"
 
-trigger = {
-is_vassal = yes
-any_owned_province = { has_province_modifier = voted_independence }
-OR = { pop_majority_ideology = nationalist pop_majority_ideology = populist pop_majority_ideology = socialist pop_majority_ideology = traditionalist pop_majority_ideology = communist pop_majority_ideology = communist_social }
-has_country_modifier = recently_attempted_independence_vote
-}
-
-mean_time_to_happen = { months = 0.5 }
+	is_triggered_only = yes
 
 	option = {
 		name = "The people have spoken!"
-prestige = 10
-any_owned = { remove_province_modifier = voted_independence }
-country_event = { id = 1412073 days = 60 }
-any_pop = { 
-ideology = {
-	factor = 0.4
-	value = big_tent
-} 
-	}
-					}
+		prestige = 50
+		any_owned = { remove_province_modifier = voted_independence }
+		set_country_flag = independence_vote_passes_flag
+		any_pop = { 
+			ideology = {
+				factor = 0.4
+				value = big_tent
+			} 
 		}
+	}
+	
+}
 
 #Puppet Requests Independence
 country_event = {
@@ -1903,7 +1918,16 @@ country_event = {
 	desc = "Our Overlord has accepted our request for self determination. We now need to decide what our post-independence relations with $FROMCOUNTRY$ will be."
 	picture = "independence_day_vote"
 
-is_triggered_only = yes
+	trigger = {
+		is_vassal = yes
+		has_country_flag = independence_vote_passes_flag
+	}
+	
+	mean_time_to_happen = { 
+		months = 1
+	}
+	
+	immediate = { clr_country_flag = independence_vote_passes_flag }
 
 	option = {
 	name = "Very close relations with our former Overlord"
