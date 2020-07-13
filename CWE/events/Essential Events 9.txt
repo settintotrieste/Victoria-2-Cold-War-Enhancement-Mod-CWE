@@ -6866,3 +6866,127 @@ country_event = {
 	}
 
 }
+
+#Return of Macau Historical 1999 - POR
+country_event = {
+	id = 1610119
+	title = "The Handover of Macau"
+	desc = EVTDESC1002813
+	picture = "chinese_macau"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = POR
+		year = 1999
+		NOT = { year = 2010 }
+		1498 = {
+			owned_by = THIS
+		}
+		is_vassal = no
+		NOT = { war_with = CHI }
+		CHI = {
+			is_vassal = no
+			war = no
+			government = proletarian_dictatorship
+		}
+		has_global_flag = MCA_SAR_option
+	}
+
+	mean_time_to_happen = {
+		months = 11
+	}
+
+	option = {
+		name = "We are no longer a colonial power" 
+		prestige_factor = -0.05
+		1498 = { remove_core = XEU }
+		1498 = { remove_core = POR }
+		1498 = { add_core = CHI }
+		1498 = { secede_province = CHI }
+		relation = { who = CHI value = 100 }
+		
+		#Send the Handover event to CHI
+		CHI = { country_event = 1610120 }
+		
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Never!"
+		badboy = 10
+		relation = { who = CHI value = -200 }
+		leave_alliance = CHI
+		CHI = { country_event = 1002804 }
+		ai_chance = { factor = 0 }
+	}
+
+}
+
+#Return of Macau Historical 1999 - CHI
+country_event = {
+	id = 1610120
+	title = "The Handover of Macau"
+	desc = EVTDESC1002813
+	picture = "chinese_macau"
+
+	is_triggered_only = yes # POR
+
+	option = {
+		name = "We are now One Country with Two Systems!"
+		
+		prestige_factor = 0.2
+		
+		release_vassal = MCA
+
+		MCA = { government = sar_government country_event = 800054 }
+		
+		set_country_flag = the_return_of_macao
+
+		diplomatic_influence = { who = MCA value = 200 }
+		
+	}
+
+}
+
+#Return of Macau ahistorical - POR
+country_event = {
+	id = 1610121
+	title = "The Immediate Handover of Macau?"
+	desc = EVTDESC1610121
+	picture = "POR_MCA_1987"
+
+	is_triggered_only = yes # POR
+
+	option = {
+		name = "Give it back to China"
+		
+		prestige_factor = -0.05
+		
+		1498 = { secede_province = CHI }
+		
+		CHI = { set_country_flag = the_return_of_macao }
+		
+		relation = { who = CHI value = 200 }
+		
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "It is way too early!"
+		
+		badboy = 5
+		
+		CHI = {
+			war = {
+				target = POR
+				attacker_goal = { casus_belli = acquire_core_state state_province_id = 1498 }
+				defender_goal = { casus_belli = status_quo }
+				call_ally = no
+			}
+		}
+		
+		ai_chance = { factor = 0 }
+	}
+
+}
