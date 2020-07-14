@@ -2412,23 +2412,52 @@ country_event = {
 
 	trigger = { 
 		tag = ZIM
-		government = democracy1
+		OR = { government = democracy1 government = hms_government1 }
 		war = no
 		election = no
-		is_vassal = no
-		year = 1978
+		OR = { 
+			is_vassal = no
+			
+			#Landcaster House Agreement
+			AND = {
+				has_country_flag = RHO_ENG_revert_flag
+				vassal_of = ENG
+			} 
+		}
+		
+		OR = { 
+			AND = { year = 1980 has_country_flag = RHO_ENG_revert_flag }
+			
+			#5 years slower if no British help
+			AND = { year = 1985 NOT = { has_country_flag = RHO_ENG_revert_flag } }
+		}
+		
+		NOT = { primary_culture = shona }
+		
+		NOT = { minorities_reform = minorities_oppression }
 	}
 
-	mean_time_to_happen = { 
-		months = 12
+	mean_time_to_happen = {
+		months = 4
 	}
 
 	option = {
 		name = "End white rule once and for all!"
+		
+		#If Landcaster House Agreement was accepted, option for ENG to grant independence
+		overlord = { country_event = 8012217 }
+		
 		government = democracy
 		prestige = 50
 		primary_culture = shona
-		any_pop = { militancy = -5 }
+		add_accepted_culture = british
+		ruling_party_ideology = socialist
+		
+		any_pop = {
+			limit = { is_primary_culture = shona }
+			militancy = -10
+			ideology = { factor = 0.30 value = socialist }
+		}
 
 		random_country = {
 			limit = { OR = { primary_culture = british accepted_culture = british } } 

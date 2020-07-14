@@ -11,8 +11,8 @@ country_event = {
 		year = 1953
 		NOT = { year = 1990 }
 		AND = { is_our_vassal = RHO exists = RHO }
-		is_possible_vassal = MLW
-		is_possible_vassal = ZAM
+		OR = { is_possible_vassal = MLW is_our_vassal = MLW }
+		OR = { is_possible_vassal = ZAM is_our_vassal = ZAM }
 		war = no
 		is_vassal = no
 	}
@@ -354,10 +354,10 @@ country_event = {
 		war = no
 	}
 
-	mean_time_to_happen = { months = 3 }
+	mean_time_to_happen = { months = 4 }
 
 	option = {
-		name = EVT_8012214_A
+		name = "Allow the africans to vote"
 		
 		#release MLW and ZAM if CAF
 		random_owned = {
@@ -388,9 +388,14 @@ country_event = {
 		change_tag = ZIM
 		government = democracy1
 		country_event = 800054
+		
+		ruling_party_ideology = big_tent
+		
+		political_reform = minorities_equal_rights
 
 		primary_culture = british
 		add_accepted_culture = black_anglo
+		add_accepted_culture = shona
 
 		overlord = {
 			release_vassal = THIS
@@ -405,8 +410,6 @@ country_event = {
 			limit = { culture = british }
 			consciousness = 4
 		}
-		
-		election = yes
 
 		ai_chance = { factor = 0.8 }
 	}
@@ -425,4 +428,295 @@ country_event = {
 			factor = 0.2
 		}
 	}
+}
+
+#Reversion to British Rule - UK decision
+country_event = {
+	id = 8012215
+	title = "Lancaster House Agreement"
+	desc = EVTDESC8012215
+	picture = "RHO_ENG_revert"
+	fire_only_once = yes
+
+	trigger = {
+	
+		tag = ENG
+		government = hms_government
+		is_vassal = no
+		war = no
+	
+		year = 1979
+		NOT = { year = 1990 }
+	
+		#Zimbabwe-Rhodesia
+		ZIM = {
+			primary_culture = british
+			government = democracy1
+			is_vassal = no
+			war = no
+			election = no
+		}
+		
+	}
+
+	mean_time_to_happen = { months = 12 }
+
+	option = {
+		name = "Re-enter Rhodesia to dismantle minority rule"
+		
+		badboy = -5
+		
+		ZIM = { country_event = 8012216 }
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "We won't get involved!"
+		prestige_factor = -0.01
+		ZIM = { add_country_modifier = { name = unhappy_natives duration = 3650 } }
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+#Reversion to British Rule - ZIM
+country_event = {
+	id = 8012216
+	title = "Lancaster House Agreement"
+	desc = EVTDESC8012215
+	picture = "RHO_ENG_revert"
+	fire_only_once = yes
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Let the British grant us democracy!"
+		
+		prestige = -50
+		
+		set_country_flag = RHO_ENG_revert_flag
+		
+		ENG = { 
+			create_vassal = THIS
+			relation = { who = THIS value = 200 }
+			diplomatic_influence = { who = THIS value = 200 }
+		}
+		
+		election = yes
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "We can handle it ourselves"
+		add_country_modifier = { name = unhappy_natives duration = 3650 }
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+#Independence of Zimbabwe - British overlord
+country_event = {
+	id = 8012217
+	title = "Independence of Zimbabwe"
+	desc = EVTDESC1412207
+	picture = "zimbabwe_name"
+	fire_only_once = yes
+
+	is_triggered_only = yes
+
+	option = {
+		name = "They are now free to determine their future!"
+		prestige = 100
+		release_vassal = FROM
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "Delay independence"
+		badboy = 5
+		ZIM = { government = mandate_government }
+		FROM = {
+			any_pop = {
+				militancy = 10
+				ideology = { factor = 0.25 value = nationalist } 
+			}
+		}
+		ai_chance = { factor = 0 }
+	}
+	
+}
+
+#Rhodesian Bush War, 1964
+country_event = {
+  id = 8012218
+  title = "The Rhodesian Bush War"
+  desc = EVTDESC8012218
+  picture = "RHO_bush_war"
+  fire_only_once = yes
+
+	trigger = {
+		tag = RHO
+		year = 1964
+		NOT = { year = 1990 }
+		is_vassal = no
+		war = no
+		MOZ = { exists = yes is_vassal = no ruling_party_ideology = communist }
+		ZAM = { exists = yes is_vassal = no }
+		minorities_reform = minorities_oppression
+	}
+
+	mean_time_to_happen = { months = 7 }
+
+	option = {
+		name = "We must fight against the insurgents!"
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		add_country_modifier = { name = unhappy_natives duration = 3650 }
+		
+		#Rise in socialist support
+		any_pop = {
+			limit = { culture = shona }
+			ideology = { factor = 0.15 value = socialist }
+		}
+		
+		#Trigger anger amongst shona
+		any_pop = {
+			limit = { culture = shona }
+			scaled_militancy = {
+				factor = 10
+				ideology = socialist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist_social
+			}
+		}
+		
+		#Rebel uprisings
+		any_owned = { 
+			limit = { is_capital = no }
+			random = {
+				chance = 50
+				add_province_modifier = { name = generic_uprising duration = 1825 }
+				change_controller = REB
+			}
+		}
+		
+		#Call for communist support
+		any_country = {
+			limit = { 
+				OR = {
+					tag = RUS
+					tag = ZAM
+					tag = MOZ
+				}
+				OR = {
+					ruling_party_ideology = socialist
+					ruling_party_ideology = communist
+				}
+				is_vassal = no
+			}
+			country_event = 8012219
+		}
+		
+		#Call for democratic support
+		any_country = {
+			limit = { 
+				OR = {
+					tag = SAF
+					tag = USA
+				}
+				OR = {
+					ruling_party_ideology = liberal
+					ruling_party_ideology = big_tent
+					ruling_party_ideology = conservative
+					ruling_party_ideology = nationalist
+					ruling_party_ideology = populist
+				}
+				is_vassal = no
+			}
+			country_event = 8012220
+		}
+		
+	}
+	
+}
+
+#Communist support for the RHO war
+country_event = {
+  id = 8012219
+  title = "The Rhodesian Bush War"
+  desc = EVTDESC8012218
+  picture = "RHO_bush_war"
+  is_triggered_only = yes
+  
+	option = {
+		name = "Support ZANU!"
+		war_exhaustion = 15
+		money = -500000
+		badboy = 3
+		relation = { who = RHO value = -200 }
+		
+		RHO = {
+			#Rise in socialist support
+			any_pop = {
+				limit = { culture = shona }
+				ideology = { factor = 0.05 value = socialist }
+			}
+		}
+		
+		ai_chance = { factor = 0.8 }
+	}
+	option = {
+		name = "We will not be involved in such wars"
+		prestige_factor = -0.01
+		ai_chance = { factor = 0.2 }
+	}
+
+}
+
+#US and SAF support for the ANG war
+country_event = {
+  id = 8012220
+  title = "The Rhodesian Bush War"
+  desc = EVTDESC8012218
+  picture = "RHO_bush_war"
+  is_triggered_only = yes
+  
+	option = {
+		name = "Support Rhodesia!"
+		prestige_factor = 0.01
+		war_exhaustion = 15
+		money = -500000
+		
+		badboy = 3
+		relation = { who = RHO value = 200 }
+		
+		#Rise in conservative support
+		RHO = {
+			any_pop = {
+				limit = { culture = british }
+				ideology = { factor = 0.05 value = conservative }
+			}
+		}
+		
+		#USSR is unhappy
+		random_country = {
+			limit = { tag = RUS government = proletarian_dictatorship }
+			relation = { who = THIS value = -50 }
+		}
+		
+		ai_chance = { factor = 0.8 }
+	}
+	option = {
+		name = "We will not be involved in such wars"
+		prestige_factor = -0.01
+		ai_chance = { factor = 0.2 }
+	}
+
 }

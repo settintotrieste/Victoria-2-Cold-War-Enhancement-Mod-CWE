@@ -210,6 +210,277 @@ country_event = {
 	
 }
 
+#Mahlabatini Declaration of Faith, 1974
+country_event = {
+  id = 80126121
+  title = "Mahlabatini Declaration of Faith"
+  desc = EVTDESC80126121
+  picture = "mahlabatini_declaration"
+  fire_only_once = yes
+
+	trigger = {
+		tag = SAF
+		year = 1974 NOT = { year = 1990 }
+		OR = { 
+			primary_culture = british 
+			primary_culture = afrikaaner 
+		}
+		OR = {
+			citizenship_policy = residency
+			citizenship_policy = limited_citizenship
+		}
+		minorities_reform = minorities_oppression
+		has_country_flag = bantustans_formed_flag
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "Express mild dissastisfaction (historical approach)"
+		
+		prestige_factor = -0.05
+		
+		badboy = -5
+		
+		set_country_flag = mahlabatini_declaration_flag
+		
+		#Afrikaaners become unhappy
+		any_pop = {
+			limit = { culture = afrikaaner }
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = populist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "We shall never give in to the natives!"
+		
+		badboy = 5
+		
+		#Non accepted get furious!
+		any_pop = {
+			limit = { is_primary_culture = no is_accepted_culture = no } 
+			militancy = 5
+			ideology = { factor = 0.10 value = populist }
+		}
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		add_country_modifier = { name = unhappy_natives duration = 3650 }
+
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+#South African Border War, 1966 - start SAF
+country_event = {
+  id = 80126122
+  title = "South African Border War"
+  desc = EVTDESC80126122
+  picture = "SAF_border_war"
+  fire_only_once = yes
+
+	trigger = {
+		tag = SAF
+		year = 1966 NOT = { year = 1990 }
+		OR = { 
+			primary_culture = british 
+			primary_culture = afrikaaner 
+		}
+		OR = {
+			citizenship_policy = residency
+			citizenship_policy = limited_citizenship
+		}
+		minorities_reform = minorities_oppression
+		is_vassal = no
+		
+		#Communist Angola
+		ANG = { 
+			exists = yes 
+			is_vassal = no
+			ruling_party_ideology = communist
+			neighbour = SAF
+		}
+		
+		#SAF owns NAM
+		is_possible_vassal = NAM
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "Crush the insurgency!"
+		
+		badboy = 5
+		
+		#SWAPO support
+		any_pop = { 
+			limit = { 
+				is_primary_culture = no 
+				is_accepted_culture = no
+				location = { is_core = NAM } 
+			}
+			ideology = { factor = 0.30 value = socialist }
+		}
+		
+		#Release truncated Namibia and capital to avoid capital shifting
+		2078 = { secede_province = NAM }
+		2082 = { secede_province = NAM }
+		
+		any_owned = {
+			limit = {
+				is_core = NAM
+				any_neighbor_province = { is_core = ANG }
+			}
+			secede_province = NAM
+		}
+		
+		ANG = { 
+			relation = { who = NAM value = 200 }
+			create_alliance = NAM #Involve Angola
+			war = {
+				target = SAF
+				attacker_goal = { casus_belli = humiliate }
+				defender_goal = { casus_belli = humiliate }
+				call_ally = no
+			}
+		}
+		
+		NAM = {
+			government = proletarian_dictatorship
+			ruling_party_ideology = communist
+			country_event = 800052
+		}
+		
+		war = {
+			target = NAM
+			attacker_goal = { casus_belli = colonial_war }
+			defender_goal = { casus_belli = annex_all_cores }
+			call_ally = no
+		}
+		
+		#Call for communist support
+		any_country = {
+			limit = { 
+				OR = {
+					tag = CUB
+					tag = RUS
+					tag = ZAM
+				}
+				OR = {
+					ruling_party_ideology = socialist
+					ruling_party_ideology = communist
+				}
+				is_vassal = no
+			}
+			country_event = 80126123
+		}
+		
+		ai_chance = { factor = 0.95 }
+	}
+	
+	option = {
+		name = "Let Namibia be free"
+		prestige_factor = -0.2
+		#SWAPO support
+		any_pop = { 
+			limit = { 
+				is_primary_culture = no 
+				is_accepted_culture = no
+				location = { is_core = NAM }
+			}
+			ideology = { factor = 0.30 value = socialist }
+		}
+		
+		release = NAM
+		
+		NAM = {
+			government = proletarian_dictatorship
+			ruling_party_ideology = communist
+			country_event = 800052
+		}
+		
+		#Afrikaaners become unhappy
+		any_pop = {
+			limit = { culture = afrikaaner }
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = populist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
+			}
+		}
+
+		ai_chance = { factor = 0.05 }
+	}
+	
+}
+
+#Communist support for the SAF bush war
+country_event = {
+  id = 80126123
+  title = "South African Border War"
+  desc = EVTDESC80126122
+  picture = "SAF_border_war"
+  is_triggered_only = yes
+  
+	option = {
+		name = "Support SWAPO!"
+		war_exhaustion = 10
+		money = -100000
+		NAM = { money = 100000 }
+		badboy = 3
+		relation = { who = SAF value = -200 }
+		relation = { who = NAM value = 200 }
+		
+		#Add influence for USSR
+		random_owned = {
+			limit = { owner = { is_greater_power = yes } }
+			owner = { diplomatic_influence = { who = NAM value = 200 } }
+		}
+		
+		#Send soldiers to NAM
+		NAM = {
+			any_pop = { 
+				limit = { 
+					OR = {
+						is_primary_culture = yes
+						is_accepted_culture = yes
+					}
+					type = soldiers
+				}
+				reduce_pop = 1.10
+			}
+		}
+		
+		ai_chance = { factor = 0.8 }
+	}
+	option = {
+		name = "We will not be involved in such wars"
+		prestige_factor = -0.01
+		ai_chance = { factor = 0.2 }
+	}
+
+}
+
 #Botha's Reforms, 1982
 country_event = {
   id = 8012613
@@ -232,7 +503,7 @@ country_event = {
 		minorities_reform = minorities_oppression
 		is_vassal = no
 		war = no
-		has_country_flag = bantustans_formed_flag
+		has_country_flag = mahlabatini_declaration_flag
 	}
 
 	mean_time_to_happen = { months = 6 }
@@ -510,7 +781,7 @@ country_event = {
 		random_country = { 
 			limit = { owns = 300 } 
 			relation = { who = THIS value = -100 } 
-			diplomatic_influence = { who = THIS value = -100 }
+			diplomatic_influence = { who = THIS value = -200 }
 		}
 		
 		government = democracy
@@ -674,6 +945,12 @@ country_event = {
 		
 		release = NAM
 		relation = { who = NAM value = 100 }
+		
+		NAM = { 
+			government = democracy 
+			ruling_party_ideology = socialist 
+			country_event = 800054
+		}
 		
 		#Wavis Bay
 		2083 = { add_core = NAM }
