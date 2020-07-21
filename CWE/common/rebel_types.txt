@@ -10,7 +10,252 @@
 ##############################################
 
 ###################################
-# Pan Nationalist Rebels
+# Pan Nationalist Rebels - Before Union tag is formed
+###################################
+pan_nationalist_rebels_1 = {
+	icon = 7
+	
+	area = culture_group
+	break_alliance_on_win = no
+	
+	# <this is the governement in the country> = <this is what the rebels want>
+	government = {
+		proletarian_dictatorship1 = proletarian_dictatorship1
+		colonial_government = colonial_government
+		democracy1 = democracy1
+		sar_government = sar_government
+		socialist_democracy = socialist_democracy
+		mandate_government = mandate_government
+		theocracy = theocracy
+		proletarian_dictatorship = proletarian_dictatorship
+		presidential_dictatorship = presidential_dictatorship
+		nationalist_dictatorship = nationalist_dictatorship
+		populist_dictatorship = populist_dictatorship
+		absolute_monarchy = absolute_monarchy
+		hms_government = hms_government
+		hms_government1 = hms_government1
+		democracy = democracy
+	}
+
+	defection = pan_nationalist		# If the country seeks independence, defection specifies what type of provinces it wants.
+	independence = none
+	defect_delay = 12			# Can spontaneously declare independence after 12 months (earliest)
+
+	allow_all_cultures = yes
+	allow_all_culture_groups = no
+	allow_all_religions = yes
+	allow_all_ideologies = yes
+	
+	resilient = yes					# Disbands on retreat
+	reinforcing = yes				# Does not receive reinforcements
+	general = yes					# Does not use generals
+	smart = yes					# Does not assault forts, tactically withdraw from battle, etc.
+	unit_transfer = no				# Units remain after enforcing demands.
+	
+	occupation_mult = 3.0			# The amount of strength this rebel gains from taking provinces
+
+	# triggers a general rising, modifier will be multiplied with the countrys army strength and compared to the factions strenght
+	will_rise = {
+		factor = 0.5
+			
+		modifier = {
+			war = yes
+			factor = 0.8
+		}
+
+		modifier = {
+			factor = 1.2
+			has_country_flag = superpower_rebel_instigation_flag
+		}
+
+		modifier = {
+			has_country_flag = spy_medium_flag
+			factor = 0.5
+		}
+		
+		modifier = {
+			war_exhaustion = 40
+			factor = 0.95
+		}
+		
+		modifier = {
+			war_exhaustion = 60
+			factor = 0.95
+		}
+		
+		modifier = {
+			war_exhaustion = 80
+			factor = 0.95
+		}
+		modifier = {
+			factor = 0.5
+			has_country_modifier = springtime_of_nations
+		}
+		modifier = {
+			factor = 0.5
+			has_country_modifier = global_liberal_agitation
+		}
+	}
+	
+	# The rebel type with the highest modifier for this pop gets picked
+	spawn_chance = {
+		factor = 1.1
+		
+		modifier = {
+			factor = 0
+			type = slaves
+		}
+
+		modifier = {
+			factor = 0
+			OR = { 
+				culture_has_union_tag = no
+				is_cultural_union = THIS
+				NOT = { is_culture_group = THIS }
+				country = { is_greater_power = yes }
+			}
+		}
+		
+		#Use different pan nationalists if union tag exists
+		modifier = {
+			factor = 0
+			cultural_union = { exists = yes }
+		}
+
+		#No pan nationalists if vassal
+		modifier = {
+			factor = 0
+			country = { is_vassal = yes }
+		}
+		
+		#Such rebels are primary culture only
+		modifier = {
+			factor = 0
+			is_primary_culture = no
+		}
+		
+		modifier = {
+			factor = 1.3
+			OR = {
+				country = { has_country_modifier = world_high }
+				country = { has_country_modifier = cold_war_high }
+			}
+		}
+
+		modifier = {
+			factor = 1.15
+			OR = {
+				country = { has_country_modifier = world_medium }
+				country = { has_country_modifier = cold_war_medium }
+			}
+		}
+		
+		modifier = {
+			factor = 1.1
+			culture_has_union_tag = yes
+			pop_majority_ideology = nationalist
+			country = { is_vassal = yes }
+		}
+
+		modifier = {
+			factor = 1.1
+			pop_majority_ideology = big_tent
+		}
+
+		modifier = {
+			factor = 1.2
+			pop_majority_ideology = liberal
+		}
+
+		modifier = {
+			factor = 1.5
+			pop_majority_ideology = progressive
+		}
+
+		modifier = {
+			factor = 1.015
+			political_reform_want = 0.05
+		}
+		modifier = {
+			factor = 1.015
+			political_reform_want = 0.1
+		}
+		modifier = {
+			factor = 1.015
+			political_reform_want = 0.15
+		}
+	}
+ 
+ 	#This is checked for EACH province in the Area of Operations
+	movement_evaluation = {
+		factor = 1
+		modifier = {
+			factor = 0.1
+			units_in_province = 1
+		}
+		modifier = {
+			factor = 0.001
+			controlled_by = REB
+		}
+		modifier = {
+			factor = 1.5
+			average_militancy = 4
+		}
+		modifier = {
+			factor = 1.5
+			average_militancy = 6
+		}
+		modifier = {
+			factor = 1.5
+			average_militancy = 8
+		}
+		modifier = {
+			factor = 2.0
+			is_capital = yes
+		}
+	}
+	
+ 	# Province Scope
+ 	siege_won_trigger = {
+		NOT = { has_province_modifier = war_torn }
+ 	}
+	
+	siege_won_effect = {
+		add_province_modifier = {
+			name = war_torn
+			duration = 365
+		}
+		owner = { war_exhaustion = 2.5 }
+	}	
+
+	# Country scope
+	demands_enforced_trigger = {
+		capital_scope = {
+			controlled_by = REB
+			province_control_days = 30
+		}
+	}
+	
+	demands_enforced_effect = {
+		
+		#Form union tag
+		cultural_union = {
+			all_core = {
+				OR = {
+					owned_by = THIS
+					owner = {
+						in_sphere = THIS
+					}
+				}
+			}
+		}
+		change_tag = culture
+		add_accepted_culture = union
+	}
+}
+
+###################################
+# Pan Nationalist Rebels - After Union tag is formed
 ###################################
 pan_nationalist_rebels = {
 	icon = 7

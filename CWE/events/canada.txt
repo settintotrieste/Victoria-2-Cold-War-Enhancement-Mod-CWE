@@ -1,6 +1,6 @@
+#Newfoundland Union with Canada - ENG
 country_event = {
 	id = 1002621
-
 	title = EVT_1002621_NAME
 	desc = EVT_1002621_DESC
 	picture = "newfoundland"
@@ -9,52 +9,83 @@ country_event = {
 	
 	trigger = {
 		tag = ENG
-		74 = { controlled_by = ENG }
-		NOT = { 74 = { has_province_modifier = nationalist_agitation } }
-		OR = {
-			AND = {
-				war = no
-				CAN = { war = no }
-			}
-			war_with = CAN
+		year = 1949
+		NOT = { has_global_flag = 1950_start_date_flag }
+		
+		government = hms_government
+		is_vassal = no
+		war = no
+		
+		CAN = { 
+			war = no 
+			is_vassal = no 
+			government = hms_government 
 		}
+		
+		#ENG owns NFL
+		is_possible_vassal = NFL
+
 	}
 
 	mean_time_to_happen = {
-		months = 12
+		months = 3
+	}
+
+	option = {
+		name = EVT_1002621_B # Integrate with Canada
+		
+		NFL = { all_core = { add_core = CAN } }
+		
+		any_owned = { 
+			limit = { is_core = NFL } 
+			secede_province = CAN 
+		}
+		
+		relation = { who = CAN value = 100 }
+		
+		
+		CAN = { country_event = 8002622 }
+		ai_chance = {
+			factor = 0.7
+		}
 	}
 
 	option = {
 		name = EVT_1002621_A # Newfoundland Responsible government
-		prestige = 5
+		prestige = 25
 		release_vassal = NFL
-		NFL = { any_owned = { remove_core = CAN } }
-		ENG = { diplomatic_influence = { who = NFL value = 200 } }
+		NFL = { 
+			government = colonial_government
+			country_event = 800054
+			ruling_party_ideology = conservative
+			
+			all_core = { remove_core = CAN } 
+		}
+		diplomatic_influence = { who = NFL value = 200 }
+		
+		relation = { who = CAN value = -50 }
+		
 		ai_chance = {
 			factor = 0.2
 		}
 	}
-	
-	option = {
-		name = EVT_1002621_B # Integrate with Canada
-		any_owned = { limit = { is_core = NFL } secede_province = CAN }
-		CAN = { country_event = 8002622 }
-		ai_chance = {
-			factor = 0.7
-				}
-	}
 
 	option = {
 		name = EVT_1002621_C # stay integrated part of the empire
-		prestige = -5
-		any_owned = { limit = { is_core = NFL } remove_core = CAN }
+		prestige = -25
+		NFL = { all_core = { remove_core = CAN } }
+		relation = { who = CAN value = -100 }
+		
 		74 = { add_province_modifier = { name = nationalist_agitation duration = 3650 } }
+		
 		ai_chance = {
 			factor = 0.1
-				}
+		}
 	}
 
 }
+
+#Newfoundland Union with Canada - CAN
 country_event = {
   id = 8002622
   title = EVT_8002622_NAME
@@ -62,11 +93,13 @@ country_event = {
   picture = "nwo2_newfoundland"
   is_triggered_only = yes
 
-  option = {
-    name = EVT_8002622_A
-	prestige = 10
-  }
+	option = {
+		name = EVT_8002622_A
+		prestige = 10
+	}
 }
+
+#Canadian Oil Fields
 country_event = {
   id = 8002623
   title = EVT_8002623_NAME
@@ -74,21 +107,25 @@ country_event = {
   picture = "nwo2_canadian_oil_fields"
   fire_only_once = yes
 
-  trigger = {
-    tag = CAN
-    year = 1947 NOT = { year = 1963 }
-    owns = 22
-	owns = 26
-  }
+	trigger = {
+		year = 1947 
+		NOT = { year = 1963 }
+		owns = 22
+		owns = 26
+	}
 
-  mean_time_to_happen = { months = 11 }
+	mean_time_to_happen = { months = 11 }
 
-  option = {
-    name = EVT_8002623_A
-	22 = { trade_goods = petroleum }
-	26 = { trade_goods = petroleum }
-  }
+	option = {
+		name = EVT_8002623_A
+		money = 100000
+		22 = { trade_goods = petroleum }
+		26 = { trade_goods = petroleum }
+	}
+	
 }
+
+#Red Scare
 country_event = {
   id = 8002624
   title = EVT_8002624_NAME
@@ -96,19 +133,22 @@ country_event = {
   picture = "nwo2_canadian_red_scare"
   fire_only_once = yes
 
-  trigger = {
-    tag = CAN
-    year = 1945 NOT = { year = 1963 }
-        
-  }
+	trigger = {
+		tag = CAN
+		year = 1945 NOT = { year = 1963 }
+		NOT = { ruling_party_ideology = communist }
+		NOT = { ruling_party_ideology = communist_social }
+	}
 
-  mean_time_to_happen = { months = 5  }
+	mean_time_to_happen = { months = 5  }
 
-  option = {
-    name = EVT_8002624_A
-	any_pop = {  consciousness = 1 }
-  }
+	option = {
+		name = EVT_8002624_A
+		any_pop = { consciousness = 3 }
+	}
 }
+
+#Avro Arrow
 country_event = {
   id = 8002625
   title = EVT_8002625_NAME
@@ -116,62 +156,56 @@ country_event = {
   picture = "nwo2_avro_arrow"
   fire_only_once = yes
 
-  trigger = {
-    tag = CAN
-	year = 1958 NOT = { year = 1963 }
-    money = 40000
-  }
+	trigger = {
+		tag = CAN
+		year = 1958 NOT = { year = 1965 }
+		second_generation_jet_fighters = 1
+		is_vassal = no
+	}
 
-  mean_time_to_happen = { months = 10 }
+	mean_time_to_happen = { months = 10 }
 
-  option = {
-    name = EVT_8002625_A
-	prestige = -10
-	any_pop = {  consciousness = 2 }
-  }
+	option = {
+		name = "A victory for Canada!"
+		prestige = 25
+		money = 100000
+	}
 
-  option = {
-    name = EVT_8002625_B
-	prestige = 15
-	money = -40000 
-  }
-
-  option = {
-    name = EVT_8002625_C
-	prestige = -5
-	money = 40000
-	any_pop = {  consciousness = 1 }
-  }
 }
+
+#Canada Maple Leaf Flag
 country_event = {
   id = 8002626
-  title = EVT_8002626_NAME
+  title = "The Great Canadian Flag Debate"
   desc = EVT_8002626_DESC
   picture = "nwo2_maple_leaf_flag"
   fire_only_once = yes
 
-  trigger = {
-    tag = CAN
-    year = 1965 NOT = { year = 1966 }
-	government = hms_government
-  }
+	trigger = {
+		tag = CAN
+		year = 1965 NOT = { year = 1990 }
+		government = hms_government
+		is_vassal = no
+		war = no
+	}
   
-  mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8002626_A
-	ai_chance = { factor = 0.9 }
-	government = hms_government1
-	set_global_flag = event_fired_8002626
-  }
+	option = {
+		name = "Embrace the Maple Leaf flag!"
+		ai_chance = { factor = 0.9 }
+		government = hms_government1
+	}
 
-  option = {
-    name = EVT_8002626_B
-	relation = { who = ENG value = 50 }
-	diplomatic_influence = { who = ENG value = 50 }
-	ai_chance = { factor = 0.1 } 
-  }
+	option = {
+		name = EVT_8002626_B
+		relation = { who = ENG value = 50 }
+		diplomatic_influence = { who = ENG value = 50 }
+		ai_chance = { factor = 0.1 } 
+	}
 }
+
+#Québécois Quiet Revolution, 1960
 country_event = {
   id = 8002627
   title = EVT_8002627_NAME
@@ -179,137 +213,206 @@ country_event = {
   picture = "nwo2_montreal"
   fire_only_once = yes
 
-  trigger = {
-    tag = CAN
-    year = 1960 NOT = { year = 1967 }
-    war = no
-    any_owned_province = { province_id = 2534 }  
-  }
+	trigger = {
+		tag = CAN
+		year = 1960
+		NOT = { year = 1990 }
+		OR = { 
+			government = democracy 
+			government = democracy1 
+			government = hms_government 
+			government = hms_government1 
+		}
+		
+		#Owns Quebec
+		is_possible_vassal = QUE
+	}
 
-  mean_time_to_happen = { months = 5 }
+	mean_time_to_happen = { months = 5 }
 
-  option = {
-    name = EVT_8002627_A
-	any_pop = {  consciousness = 1 }
-  }
+	option = {
+		name = "Accept greater Quebec autonomy"
+		
+		any_pop = {
+			limit = { culture = french_canadian }
+			ideology = { factor = 0.05 value = nationalist }
+		}
+		
+		#Add devolved government marker
+		any_owned = { 
+			limit = { is_core = QUE }
+			add_province_modifier = { name = devolved_local_government duration = -1 }
+			any_pop = { militancy = -5 consciousness = 5 }
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Stop them!"
+		
+		any_pop = {
+			limit = { culture = french_canadian }
+			ideology = { factor = 0.25 value = nationalist }
+		}
+		
+		any_owned = { 
+			limit = { is_core = QUE }
+			add_province_modifier = { name = nationalist_agitation duration = 3650 }
+			any_pop = { militancy = 5 }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
 }
+
+#Quebec October Crisis, 1970
 country_event = {
   id = 8002628
-  title = EVT_8002628_NAME
+  title = "Quebec October Crisis"
   desc = EVT_8002628_DESC
   picture = "nwo2_quebec_october_crisis"
   fire_only_once = yes
 
-  trigger = {
-    tag = CAN
-    year = 1970 NOT = { year = 1975 }
-    NOT = { exists = QUE }
-    war = no
-  }
+	trigger = {
+		tag = CAN
+		year = 1970 
+		NOT = { year = 1990 }
+		war = no
+		
+		#Owns Quebec
+		is_possible_vassal = QUE
+	}
 
-  mean_time_to_happen = { months = 12  }
+	mean_time_to_happen = { months = 10 }
+	
+	immediate = { 
+		58 = { change_controller = REB } #Montreal
+	}
 
-  option = {
-    name = EVT_8002628_A
-	any_pop = {  consciousness = 2 }
-	country_event =  { id = 8002629 days = 3000 }  # 1979
-	ai_chance = { factor = 1 }
-  }
+	option = {
+		name = "Find a political solution!"
+		prestige_factor = -0.025
+		any_pop = { consciousness = 5 }
+		set_country_flag = quebec_october_crisis_flag
+		
+		any_pop = {
+			limit = { culture = french_canadian }
+			ideology = { factor = 0.05 value = nationalist }
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8002628_B
-	any_pop = { militancy = 2.0 }
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = "Crush the rebels!"
+		badboy = 5
+		
+		any_pop = {
+			limit = { culture = french_canadian }
+			ideology = { factor = 0.25 value = nationalist }
+		}
+		
+		#General Uprising
+		any_owned = {
+			limit = { is_core = QUE }
+			add_province_modifier = { name = generic_uprising duration = 1825 }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
 }
-country_event = {
-  id = 8002629
-  title = EVT_8002629_NAME
-  desc = EVT_8002629_DESC
-  picture = "nwo2_quebec_independence"
-  fire_only_once = yes
 
-  trigger = {
-    tag = CAN
-    year = 1979 NOT = { year = 1990 }
-    NOT = { exists = QUE }
-    war = no
-  }
-  
-  mean_time_to_happen = { months = 1 }
-  
-
-  option = {
-    name = EVT_8002629_A
-	any_pop = { consciousness = 1 }
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8002629_B
-	any_pop = { militancy = 1.5 }
-	ai_chance = { factor = 0 }
-  }
-}
+#Quebec Independence Referendum of 1980
 country_event = {
   id = 8002630
-  title = EVT_8002630_NAME
+  title = "$YEAR$ Quebec Independence Referendum"
   desc = EVT_8002630_DESC
-  picture = "nwo2_quebec_independence"
+  picture = "nwo2_quebec_independence_1980"
   fire_only_once = yes
   
-  trigger = {
-    tag = CAN
-    year = 1980 NOT = { year = 1990 }
-    NOT = { exists = QUE }
-    war = no
-  }
+	trigger = {
+		tag = CAN
+		year = 1980 
+		NOT = { year = 1990 }
+		war = no
+		is_vassal = no
+		
+		OR = { 
+			government = democracy 
+			government = democracy1 
+			government = hms_government 
+			government = hms_government1 
+		}
+		
+		#Owns Quebec
+		is_possible_vassal = QUE
+	}
   
-  mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 5 }
   
-  option = {
-    name = EVT_8002630_A
-	any_pop = { militancy = -1.0  consciousness = 5 }
-	ai_chance = { factor = 1 }
-  }
+	option = {
+		name = "Let the people decide!"
+		
+		#80% chance of staying with Canada
+		random_list = {
+			80 = { 
+				prestige = 50
+				any_pop = {
+					limit = { culture = french_canadian }
+					ideology = { factor = -0.05 value = nationalist }
+				}
+			}
+			20 = { QUE = { country_event = 1540333 } } #Independence of Quebec
+		}
 
-  option = {
-    name = EVT_8002630_B
-	release_vassal = QUE 
-	create_alliance = QUE 
-	ai_chance = { factor = 0 }
-  }
+	}
+
 }
+
+#1995 Quebec Independence Referendum
 country_event = {
   id = 8002631
-  title = EVT_8002631_NAME
+  title = "$YEAR$ Quebec Independence Referendum"
   desc = EVT_8002631_DESC
-  picture = "nwo2_quebec_independence"
+  picture = "nwo2_quebec_independence_1995"
   fire_only_once = yes
   
-  trigger = {
-    tag = CAN
-    year = 1995 
-    NOT = { exists = QUE }
-    war = no
-  }
+	trigger = {
+		tag = CAN
+		year = 1995
+		NOT = { year = 2005 }
+		war = no
+		is_vassal = no
+		
+		OR = { 
+			government = democracy
+			government = democracy1
+			government = hms_government
+			government = hms_government1
+		}
+		
+		#Owns Quebec
+		is_possible_vassal = QUE
+	}
   
-  mean_time_to_happen = { months = 10 }
+	mean_time_to_happen = { months = 10 }
   
-  option = {
-    name = EVT_8002631_A
-	any_pop = { militancy = -1.0  consciousness = 3 }
-	ai_chance = { factor = 0.80 }
-  }
-
-  option = {
-    name = EVT_8002631_B
-	release = QUE 
-	create_alliance = QUE
-        QUE = {
-	   76 = { secede_province = CAN } 
-        2625 = { secede_province = CAN } 
+	option = {
+		name = "Let the people decide!"
+		
+		#70% chance of staying with Canada
+		random_list = {
+			70 = { 
+				prestige = 50
+				any_pop = {
+					limit = { culture = french_canadian }
+					ideology = { factor = -0.05 value = nationalist }
+				}
 			}
-	ai_chance = { factor = 0.20 }
-  }
+			30 = { QUE = { country_event = 1540333 } } #Independence of Quebec
+		}
+
+	}
+
 }
