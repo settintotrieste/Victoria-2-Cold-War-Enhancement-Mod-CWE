@@ -1267,6 +1267,73 @@ country_event = { # Lesotho Independence
 #
 # Swaziland 
 #
+
+#Union of NGW with SWA
+country_event = {
+  id = 8012689
+  title = "Union of KaNgwane with Swaziland?"
+  desc = EVTDESC8012689
+  picture = "swaziland_independance"
+  fire_only_once = yes
+
+	trigger = {
+		tag = SAF
+		year = 1982
+		NOT = { year = 1990 }
+		OR = { owns = 2619 is_our_vassal = NGW }
+		is_vassal = no
+		war = no
+		SWA = { exists = yes is_vassal = no war = no }
+	}
+
+	mean_time_to_happen = { months = 3 }
+	
+    option = {
+		name = "Maybe not"
+		#Democratic GPs are happy
+		any_greater_power = { 
+			limit = { OR = { government = democracy government = hms_government } }
+			relation = { who = THIS value = 50 }
+		}
+		ai_chance = { factor = 0.9 }
+    }
+  
+    option = {
+		name = "This is great for the natives there!"
+		
+		#Natives are not happy!
+		any_pop = {
+			limit = { is_primary_culture = no is_accepted_culture = no }
+			militancy = 7
+		}
+		
+		relation = { who = SWA value = 100 }
+		
+		#If NGW exists
+		random_owned = {
+			limit = { owner = { NGW = { exists = yes } } }
+			owner = {
+				NGW = { any_owned = { add_core = SWA remove_core = SAF } }
+				SWA = { inherit = NGW }
+			}
+		}
+		
+		#If NGW does not exist
+		random_owned = {
+			limit = { owner = { owns = 2619 } }
+			owner = { 
+				2619 = { 
+					add_core = SWA 
+					remove_core = SAF 
+					secede_province = SWA 
+				} 
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+    }
+}
+
 country_event = { # Swaziland Independence
   id = 8012690
   title = EVT_8012690_NAME

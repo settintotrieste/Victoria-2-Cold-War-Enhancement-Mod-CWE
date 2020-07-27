@@ -1,66 +1,66 @@
 #Officer Led Coup - Initate
 country_event = {
   id = 100100
-  title = "$COUNTRY_ADJ$ Coup d'etat?"
+  title = "Stirrings of a $COUNTRY_ADJ$ Coup d'etat"
   desc = EVTDESC152009872
   picture = "alberto_fujimori_coup"
 
-  trigger = {
+	trigger = {
 
-OR = { ai = no NOT = { has_global_flag = blocsenabled } }
+		OR = { ai = no NOT = { has_global_flag = blocsenabled } }
 
-NOT = { government = sar_government }
+		NOT = { government = sar_government }
 
-is_disarmed = no
-total_amount_of_divisions = 1
+		is_disarmed = no
+		total_amount_of_divisions = 1
 
-NOT = { military_spending = 0.8 }
+		NOT = { military_spending = 0.8 }
 
-NOT = { has_country_modifier = military_strife }
+		NOT = { has_country_modifier = military_strife }
 
-OR = { 
-has_country_modifier = coup_risk 
-AND = { has_country_modifier = power_vacuum 
-average_militancy = 7 }
+		OR = { 
+			has_country_modifier = coup_risk 
+			AND = { has_country_modifier = power_vacuum average_militancy = 7 }
 
-AND = {
-average_militancy = 6
-any_owned_province = {
-is_core = THIS
-any_pop = { 
-type = officers militancy = 8 
-		} 
-}
+			AND = {
+				average_militancy = 6
+				any_owned_province = {
+					is_core = THIS
+					any_pop = { 
+						type = officers 
+						militancy = 8 
+					} 
+				}
+			}
+
+		}
+		OR = { 
+			has_country_modifier = coup_risk
+			has_country_modifier = military_loyalty_low
+			AND = { has_country_modifier = military_loyalty_medium has_recently_lost_war = yes }
+		}
+		war = no
 	}
 
-}
-OR = { 
-has_country_modifier = coup_risk
-has_country_modifier = military_loyalty_low
-AND = { has_country_modifier = military_loyalty_medium has_recently_lost_war = yes }
-}
-	war = no
+	mean_time_to_happen = { months = 3 }
 
-  }
-
-mean_time_to_happen = { months = 3 }
-
-  option = {
-    name = EVT152009872OPTA
-add_country_modifier = { name = military_strife duration = 1825 }
-any_pop = { 
-limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } OR = { type = officers type = soldiers } }
-					ideology = {
-						value = nationalist
-						factor = 0.25
-					}
-					dominant_issue = {
-						value = jingoism
-						factor = 0.25
-					}
-					militancy = 6
-					consciousness = -5
-}
+	option = {
+		name = EVT152009872OPTA
+		add_country_modifier = { name = military_strife duration = 1825 }
+		add_country_modifier = { name = coup_risk duration = 1825 }
+		any_pop = { 
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } OR = { type = officers type = soldiers } }
+			ideology = {
+				value = nationalist
+				factor = 0.25
+			}
+			dominant_issue = {
+				value = jingoism
+				factor = 0.25
+			}
+			militancy = 6
+			consciousness = -5
+		}
   	}
 
 }
@@ -72,11 +72,11 @@ country_event = {
   desc = EVTDESC152009873
   picture = "military_coup"
 
-  trigger = {
+	trigger = {
 		war = no
 		is_disarmed = no
 
-NOT = { government = sar_government }
+		NOT = { government = sar_government }
 
 		total_amount_of_divisions = 1
 		capital_scope = {
@@ -84,36 +84,35 @@ NOT = { government = sar_government }
 			country_units_in_province = THIS
 		}
 
-NOT = { military_spending = 0.8 }
+		NOT = { military_spending = 0.8 }
 
-OR = { 
-AND = { has_country_modifier = power_vacuum 
-average_militancy = 7 }
+		OR = { 
+			AND = { has_country_modifier = power_vacuum average_militancy = 7 }
 
-AND = {
-average_militancy = 6
-any_owned_province = {
-is_core = THIS
-any_pop = { 
-type = officers militancy = 8 
-		} 
-}
-	}
+			AND = {
+				average_militancy = 6
+				any_owned_province = {
+					is_core = THIS
+					any_pop = { 
+						type = officers militancy = 8 
+					} 
+				}
+			}
  
-}
+		}
 
-OR = { has_country_modifier = military_strife AND = { has_country_modifier = army_defects has_country_modifier = coup_risk } }
-OR = { 
-has_country_modifier = coup_risk 
-has_country_modifier = military_loyalty_low
-AND = { has_country_modifier = military_loyalty_medium has_recently_lost_war = yes }
-}
-	war = no
+		OR = { has_country_modifier = military_strife AND = { has_country_modifier = army_defects has_country_modifier = coup_risk } }
+		OR = { 
+			has_country_modifier = coup_risk 
+			has_country_modifier = military_loyalty_low
+			AND = { has_country_modifier = military_loyalty_medium has_recently_lost_war = yes }
+		}
+		war = no
 
-  }
+	}
 
-mean_time_to_happen = { 
-months = 3 
+	mean_time_to_happen = { 
+		months = 3 
 		modifier = {
 			factor = 2
 			NOT = { average_militancy = 2 }
@@ -122,115 +121,116 @@ months = 3
 			factor = 2
 			NOT = { average_militancy = 1 }
 		}
-}
-
-  option = {
-    name = EVT152009873OPTA
-
-#If country is a vassal
-sphere_owner = { diplomatic_influence = { who = THIS value = -200 } }
-
-random_country = { 
-limit = { is_our_vassal = THIS } 
-release_vassal = THIS country_event = 1512212 
-}
-
-#If martial law was declared
-remove_country_modifier = martial_law
-
-#Remove coup markers
-remove_country_modifier = military_strife
-remove_country_modifier = coup_risk
-
-#Socialist Dictatorship
-random_owned = { 
-limit = { 
-owner = { pop_majority_ideology = socialist }
-	}
-owner = {
-government = presidential_dictatorship
-ruling_party_ideology = socialist
-country_event = 800050
-}
 	}
 
-#Conservative Dictatorship
-random_owned = { 
-limit = { 
-owner = { OR = { pop_majority_ideology = traditionalist pop_majority_ideology = conservative pop_majority_ideology = big_tent pop_majority_ideology = liberal pop_majority_ideology = progressive } }
-	}
-owner = {
-government = presidential_dictatorship
-ruling_party_ideology = conservative
-country_event = 800050
-}
-	}
+	option = {
+		name = EVT152009873OPTA
 
-#Nationalist Dictatorship
-random_owned = { 
-limit = { 
-owner = { OR = { pop_majority_ideology = nationalist pop_majority_ideology = populist } }
-	}
-owner = {
-government = populist_dictatorship
-ruling_party_ideology = nationalist
-country_event = 800050
-}
-	}
+		#If country is a vassal
+		sphere_owner = { diplomatic_influence = { who = THIS value = -200 } }
 
-#Communist Dictatorship
-random_owned = { 
-limit = { 
-owner = { OR = { pop_majority_ideology = communist pop_majority_ideology = communist_social } }
-	}
-owner = {
-government = proletarian_dictatorship
-ruling_party_ideology = communist
-country_event = 800052
-}
-	}
+		random_country = { 
+			limit = { is_our_vassal = THIS } 
+			release_vassal = THIS country_event = 1512212 
+		}
 
-#Remove generic civil war markers, if applicable
-remove_country_modifier = army_defects
-clr_country_flag = government_extends_peace_hand
-remove_country_modifier = government_consensus
-remove_country_modifier = violent_crackdown
-remove_country_modifier = civil_war
+		#If martial law was declared
+		remove_country_modifier = martial_law
 
-any_pop = { 
-limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } OR = { type = officers type = soldiers } }
-					ideology = {
-						value = nationalist
-						factor = 0.25
-					}
-					dominant_issue = {
-						value = jingoism
-						factor = 0.25
-					}
+		#Remove coup markers
+		remove_country_modifier = military_strife
+		remove_country_modifier = coup_risk
+
+		#Socialist Dictatorship
+		random_owned = { 
+			limit = { 
+				owner = { pop_majority_ideology = socialist }
+			}
+			owner = {
+				government = presidential_dictatorship
+				ruling_party_ideology = socialist
+				country_event = 800050
+			}
+		}
+
+		#Conservative Dictatorship
+		random_owned = { 
+			limit = { 
+				owner = { OR = { pop_majority_ideology = traditionalist pop_majority_ideology = conservative pop_majority_ideology = big_tent pop_majority_ideology = liberal pop_majority_ideology = progressive } }
+			}
+			owner = {
+				government = presidential_dictatorship
+				ruling_party_ideology = conservative
+				country_event = 800050
+			}
+		}
+
+		#Nationalist Dictatorship
+		random_owned = { 
+			limit = { 
+				owner = { OR = { pop_majority_ideology = nationalist pop_majority_ideology = populist } }
+			}
+			owner = {
+				government = populist_dictatorship
+				ruling_party_ideology = nationalist
+				country_event = 800050
+			}
+		}
+
+		#Communist Dictatorship
+		random_owned = { 
+			limit = { 
+				owner = { OR = { pop_majority_ideology = communist pop_majority_ideology = communist_social } }
+			}
+			owner = {
+				government = proletarian_dictatorship
+				ruling_party_ideology = communist
+				country_event = 800052
+			}
+		}
+
+		#Remove generic civil war markers, if applicable
+		remove_country_modifier = army_defects
+		clr_country_flag = government_extends_peace_hand
+		remove_country_modifier = government_consensus
+		remove_country_modifier = violent_crackdown
+		remove_country_modifier = civil_war
+
+		any_pop = { 
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } OR = { type = officers type = soldiers } }
+			ideology = {
+				value = nationalist
+				factor = 0.25
+			}
+			dominant_issue = {
+				value = jingoism
+				factor = 0.25
+			}
 			militancy = -8
 			consciousness = -4
 
-}
+		}
 
-ai_chance = { factor = 0.75 }
+		ai_chance = { factor = 0.75 }
   	}
 
-  option = {
-    name = EVT152009873OPTB
+	option = {
+		name = EVT152009873OPTB
 
-remove_country_modifier = revolution_chaos
+		remove_country_modifier = revolution_chaos
 
-add_country_modifier = { name = revolution_chaos duration = 1825 }
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
 
-#Possible Military Rebellion if more than 2 states
-random_owned = { limit = { owner = { is_vassal = no number_of_states = 2 any_owned_province = { is_capital = no is_core = THIS average_militancy = 7 } } }
-owner = {
-random = {
-	chance = 90
-	country_event = 100102
-}
-	}
-}
+		#Possible Military Rebellion if more than 2 states
+		random_owned = { 
+			limit = { owner = { is_vassal = no number_of_states = 2 any_owned_province = { is_capital = no is_core = THIS average_militancy = 7 } } }
+			owner = {
+				random = {
+					chance = 90
+					country_event = 100102
+				}
+			}
+		}
 
 		any_pop = {
 			limit = {
@@ -249,22 +249,21 @@ random = {
 			}
 		}
 
-any_pop = { 
-limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } OR = { type = officers type = soldiers } }
-					ideology = {
-						value = nationalist
-						factor = 0.25
-					}
-					dominant_issue = {
-						value = jingoism
-						factor = 0.25
-					}
+		any_pop = { 
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } OR = { type = officers type = soldiers } }
+			ideology = {
+				value = nationalist
+				factor = 0.25
+			}
+			dominant_issue = {
+				value = jingoism
+				factor = 0.25
+			}
 			militancy = 8
 			consciousness = -4
-
-}	
-	ai_chance = { factor = 0.25 }	
-  }
+		}	
+		ai_chance = { factor = 0.25 }	
+	}
 
 }
 
@@ -275,18 +274,17 @@ country_event = {
   desc = EVTDESC100102
   picture = "1989_phi_coup"
 
-is_triggered_only = yes
+	is_triggered_only = yes
 
-  option = {
-    name = "We must kill the traitors!"
+	option = {
+		name = "We must kill the traitors!"
 
-prestige_factor = -0.05
+		prestige_factor = -0.05
 
-any_country = { limit = { exists = no OR = { tag = R01 tag = R02 tag = R03 tag = R04 tag = R05 tag = R06 tag = R07 tag = R08 tag = R09 tag = R10 } } country_event = 100103 }
+		any_country = { limit = { exists = no OR = { tag = R01 tag = R02 tag = R03 tag = R04 tag = R05 tag = R06 tag = R07 tag = R08 tag = R09 tag = R10 } } country_event = 100103 }
 
-	country_event = { id = 1400077 days = 2 }
-	
-  }
+		country_event = { id = 1400077 days = 2 }
+	}
 
 }
 
@@ -297,30 +295,30 @@ country_event = {
   desc = "A rogue general has declared himself independent of the $FROMCOUNTRY_ADJ$ government and has committed to toppling it."
   picture = "civil_war"
 
-is_triggered_only = yes
+	is_triggered_only = yes
 
-  option = {
-    name = "We will win!"
+	option = {
+		name = "We will win!"
 
-primary_culture = FROM
+		primary_culture = FROM
 
-country_event = 100104
+		country_event = 100104
 
-FROM = {
-any_owned = { limit = { is_capital = no is_core = FROM average_militancy = 7 } secede_province = THIS }
-}			
+		FROM = {
+			any_owned = { limit = { is_capital = no is_core = FROM average_militancy = 7 } secede_province = THIS }
+		}			
 
-add_country_modifier = { name = rebel_nation duration = -1 }
+		add_country_modifier = { name = rebel_nation duration = -1 }
 
-FROM = {
-	war = {
-	target = THIS
-	attacker_goal = { casus_belli = civil_war }
-	defender_goal = { casus_belli = civil_war }
-	}
-}
-
+		FROM = {
+			war = {
+				target = THIS
+				attacker_goal = { casus_belli = civil_war }
+				defender_goal = { casus_belli = civil_war }
+			}
 		}
+
+	}
 
 }
 
@@ -331,59 +329,59 @@ country_event = {
   desc = EVTDESC100102
   picture = "1989_phi_coup"
 
-is_triggered_only = yes
+	is_triggered_only = yes
 
-  option = {
-    name = "We must kill the traitors!"
+	option = {
+		name = "We must kill the traitors!"
 
-#Socialist Dictatorship
-random_owned = { 
-limit = { 
-owner = { pop_majority_ideology = socialist }
-	}
-owner = {
-government = presidential_dictatorship
-ruling_party_ideology = socialist
-country_event = 800050
-}
-	}
+		#Socialist Dictatorship
+		random_owned = { 
+			limit = { 
+				owner = { pop_majority_ideology = socialist }
+			}
+			owner = {
+				government = presidential_dictatorship
+				ruling_party_ideology = socialist
+				country_event = 800050
+			}
+		}
 
-#Conservative Dictatorship
-random_owned = { 
-limit = { 
-owner = { OR = { pop_majority_ideology = traditionalist pop_majority_ideology = conservative pop_majority_ideology = big_tent pop_majority_ideology = liberal pop_majority_ideology = progressive } }
-	}
-owner = {
-government = presidential_dictatorship
-ruling_party_ideology = conservative
-country_event = 800050
-}
-	}
+		#Conservative Dictatorship
+		random_owned = { 
+			limit = { 
+				owner = { OR = { pop_majority_ideology = traditionalist pop_majority_ideology = conservative pop_majority_ideology = big_tent pop_majority_ideology = liberal pop_majority_ideology = progressive } }
+			}
+			owner = {
+				government = presidential_dictatorship
+				ruling_party_ideology = conservative
+				country_event = 800050
+			}
+		}
 
-#Nationalist Dictatorship
-random_owned = { 
-limit = { 
-owner = { OR = { pop_majority_ideology = nationalist pop_majority_ideology = populist } }
-	}
-owner = {
-government = populist_dictatorship
-ruling_party_ideology = nationalist
-country_event = 800050
-}
-	}
+		#Nationalist Dictatorship
+		random_owned = { 
+			limit = { 
+				owner = { OR = { pop_majority_ideology = nationalist pop_majority_ideology = populist } }
+			}
+			owner = {
+				government = populist_dictatorship
+				ruling_party_ideology = nationalist
+				country_event = 800050
+			}
+		}
 
-#Communist Dictatorship
-random_owned = { 
-limit = { 
-owner = { OR = { pop_majority_ideology = communist pop_majority_ideology = communist_social } }
-	}
-owner = {
-government = proletarian_dictatorship
-ruling_party_ideology = communist
-country_event = 800052
-}
-	}
+		#Communist Dictatorship
+		random_owned = { 
+			limit = { 
+				owner = { OR = { pop_majority_ideology = communist pop_majority_ideology = communist_social } }
+			}
+			owner = {
+				government = proletarian_dictatorship
+				ruling_party_ideology = communist
+				country_event = 800052
+			}
+		}
 	
-  }
+	}
 
 }
