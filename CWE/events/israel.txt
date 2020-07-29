@@ -65,6 +65,12 @@ country_event = {
 		PAL = { release = JRU }
 
 		JRU = { government = sar_government country_event = 800054 }
+		
+		PAL = { any_pop = { limit = { culture = jewish } move_pop = 919 } } 
+		PAL = { any_pop = { limit = { culture = haredim_jewish } move_pop = 919 } } 
+		ISR = { any_pop = { limit = { culture = palestinian } move_pop = 917 } } 
+		ISR = { any_pop = { limit = { culture = arab_levantine } move_pop = 917 } } 
+		ISR = { any_pop = { limit = { culture = arab } move_pop = 917 } } 
 
 		diplomatic_influence = { who = JRU value = 200 }
 
@@ -292,8 +298,6 @@ country_event = {
 			any_owned = { limit = { is_core = PAL } add_province_modifier = { name = nationalist_agitation duration = 3650 } }
 			any_owned = { limit = { is_core = ISR } add_province_modifier = { name = nationalist_agitation duration = 3650 } } 
 		}
-		
-		set_global_flag = independent_israel
 		
 	}
 	
@@ -1844,6 +1848,7 @@ country_event = {
 #  }
 #}
 
+
 ###########################################################################
 #Gaza events
 ###########################################################################
@@ -2000,7 +2005,6 @@ country_event = {
   trigger = {
 	tag = ISR
 	government = democracy
-	is_vassal = no
 	year = 1949 NOT = { year = 1990 }
 	war = no
 	owns = 919 # Tel Aviv
@@ -2061,9 +2065,8 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-	tag = ISR
-	government = democracy
-	is_vassal = no
+	OR = { limit = { tag = ISR tag = ISP } 
+	NOT = { government = presidental_dictatorship }
 	year = 1949 
 	war = no
 	owns = 919 # Tel Aviv
@@ -2077,6 +2080,165 @@ country_event = {
 	RUS = { any_pop = { limit = { culture = jewish NOT = { strata = rich } } move_pop = 919 } } # Tel Aviv
 	UKR = { any_pop = { limit = { culture = jewish NOT = { strata = rich } } move_pop = 919 } }
 	BYE = { any_pop = { limit = { culture = jewish NOT = { strata = rich } } move_pop = 919 } }
+	any_pop = { ideology = { factor = 0.15 value = conservative } }
+  }
+}
+
+ #Fictional American Aliyah
+country_event = {
+  id = 8007702
+  title = EVT_8007702_NAME
+  desc = EVT_8007702_DESC
+  picture = "america_broken"
+  fire_only_once = yes
+
+  trigger = {
+	OR = { limit = { tag = ISR tag = ISP }
+	year = 1946 
+	war = no
+	owns = 919 # Tel Aviv
+	NOT = { USA = { government = democracy } }
+  }
+
+  mean_time_to_happen = { months = 1 }
+
+  option = {
+	name = EVT_8007702_A
+	USA = { any_pop = { limit = { culture = jewish } move_pop = 919 } } # Tel Aviv
+	USA = { any_pop = { limit = { culture = haredim_jewish } move_pop = 919 } }
+        any_pop = { limit = { culture = jewish } reduce_pop = 1.16 }
+  }
+}
+
+ #Labor Zionism used as a way to model Israel's politics
+    country_event = {
+	id = 22615
+	title = EVT_22615_NAME 
+        desc = EVT_22615_DESC
+   	picture = "independence_of_israel"
+	fire_only_once = yes
+
+
+  	trigger = {
+		tag = ISR
+		government = democracy
+		year = 1946 NOT = { year = 1990 }
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+   	option = {
+        	name = EVT_22615_OPTA
+		any_pop = { ideology = { factor = 0.35 value = socialist } }
+		any_pop = { ideology = { factor = 0.16 value = communist_social } }
+		any_pop = { ideology = { factor = 0.02 value = communist } }
+		any_pop = { ideology = { factor = 0.04 value = liberal } }
+		any_pop = { ideology = { factor = 0.05 value = big_tent } }
+		any_pop = { ideology = { factor = 0.12 value = traditionalist } }
+		any_pop = { ideology = { factor = -0.07 value = conservative } }
+	}
+    }
+
+      #Dissolution of the Commonwealth
+    country_event = {
+	id = 22616
+	title = EVT_22616_NAME 
+        desc = EVT_22616_DESC
+	fire_only_once = yes
+
+
+  	trigger = {
+		tag = ISP
+		year = 1946
+		OR = { limit = { ruling_party_ideology = nationalist ruling_party_ideology = traditionalist NOT = { exists = ISR exists = PAL } }
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+   	option = {
+        	name = EVT_22616_OPTA
+		ai_chance = { factor = 0.5 }
+		change_tag = ISR
+		ISR = { country_event = 8007624 country_event = 800054 }
+		USA = { country_event = 1007603 }
+
+		921 = { remove_core = PAL }
+		919 = { remove_core = PAL }
+		916 = { remove_core = PAL }
+		3349 = { add_core = ISR }
+		3348 = { add_core = ISR }
+		3347 = { add_core = ISR }
+		3346 = { add_core = ISR }
+		3349 = { remove_core = PAL }
+		3348 = { remove_core = PAL }
+		3347 = { remove_core = PAL }
+		3346 = { remove_core = PAL }
+		917 = { remove_core = PAL }
+
+		release = PAL
+		PAL = { country_event = 8007626 }		
+		
+		set_global_flag = independent_israel
+		
+	}
+
+   	option = {
+        	name = EVT_22616_OPTB
+		ai_chance = { factor = 0.5 }
+		change_tag = PAL
+		PAL = { country_event = 8007626 }
+
+		921 = { remove_core = PAL }
+		919 = { remove_core = PAL }
+		916 = { remove_core = PAL }
+		3349 = { add_core = ISR }
+		3348 = { add_core = ISR }
+		3347 = { add_core = ISR }
+		3346 = { add_core = ISR }
+		3349 = { remove_core = PAL }
+		3348 = { remove_core = PAL }
+		3347 = { remove_core = PAL }
+		3346 = { remove_core = PAL }
+		917 = { remove_core = ISR }
+
+		release = ISR
+		ISR = { country_event = 8007624 country_event = 800054 }
+		USA = { country_event = 1007603 }
+		
+		set_global_flag = independent_israel
+
+	}
+    }
+
+country_event = {
+  id = 8001949
+  title = EVT_8001949_NAME
+  desc = EVT_8001949_DESC
+  picture = "nwo2_law_of_return"
+  fire_only_once = yes
+
+  trigger = {
+	tag = ISP
+	government = democracy
+	year = 1949
+	war = no
+  }
+
+  mean_time_to_happen = { months = 1 }
+
+  option = {
+	name = EVT_8001949_A
+	POL = { any_pop = { limit = { culture = jewish NOT = { strata = rich } } move_pop = 919 } }
+	ROM = { any_pop = { limit = { culture = jewish } move_pop = 919 } }
+	MOR = { any_pop = { limit = { culture = jewish } move_pop = 919 } }
+	IRQ = { any_pop = { limit = { culture = jewish } move_pop = 916 } }
+	YEM = { any_pop = { limit = { culture = jewish } move_pop = 921 } }
+	TUN = { any_pop = { limit = { culture = jewish } move_pop = 916 } }
+	LIB = { any_pop = { limit = { culture = jewish } move_pop = 916 } }
+	EGY = { any_pop = { limit = { culture = jewish } move_pop = 916 } }
+	913 = { any_pop = { limit = { is_culture_group = palestinian } move_pop = 916 } }
+	902 = { any_pop = { limit = { is_culture_group = palestinian } move_pop = 919 } }
+	908 = { any_pop = { limit = { is_culture_group = palestinian OR = { strata = rich strata = middle } } move_pop = 916 } } # Amman
   }
 }
 
@@ -2160,7 +2322,7 @@ country_event = {
 			}
 			militancy = 10
 		}
-		ai_chance = { factor = 0.25 }
+		ai_chance = { factor = 0.3 }
 	}
 
 	option = {
@@ -2198,10 +2360,31 @@ country_event = {
 			modifier = {
 				factor = 0.25
 				919 = { is_core = PAL }
-			}
 		}
+		ai_chance = { factor = 0.3 }
 	}
 
-	#TODO: option 4, beg Soviets for Aliyah in exchange for becoming communist. Unfortunately, impossible to disable the choice if the Aliyah already happened, so Israel could become communist after fall of USSR
+	option = {
+		name = EVT_8007700_D #One state of two nations
+		change_tag = ISP
+		ai_chance = { factor = 0.15 }
+		any_country = {
+			limit = { is_culture_group = arabic }
+			relation = { who = THIS value = 50 }
+		}
+
+		PAL = { all_core = { add_core = ISP } }
+		ISR = { all_core = { add_core = ISP } }
+		
+		ISP = { 
+			country_event = 8007624
+			government = democracy
+			country_event = 800054 
+			any_owned = { limit = { is_core = PAL } add_province_modifier = { name = nationalist_agitation duration = 3650 } }
+			any_owned = { limit = { is_core = ISR } add_province_modifier = { name = nationalist_agitation duration = 3650 } } 
+		 }
+	}
+
+	#TODO: option 5, beg Soviets for Aliyah in exchange for becoming communist. Unfortunately, impossible to disable the choice if the Aliyah already happened, so Israel could become communist after fall of USSR
 
 }
