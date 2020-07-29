@@ -205,33 +205,33 @@ country_event = {
   picture = "singapore_malaysia_merger"
   fire_only_once = yes
 
-  trigger = {
+	trigger = {
     	tag = ENG
     	year = 1963 
-	NOT = { year = 1966 }
+		NOT = { year = 1966 }
     	exists = FMS
-	MSY = { exists = no }
-	SNG = { exists = yes }
-	FMS = { government = hms_government1 }
-	is_our_vassal = SNG
-  }
+		MSY = { exists = no }
+		SNG = { exists = yes }
+		FMS = { government = hms_government1 }
+		is_our_vassal = SNG
+	}
 
-  mean_time_to_happen = { months = 4 }
+	mean_time_to_happen = { months = 4 }
 
-  option = {
-    name = "Approve the Merger"
-	relation = { who = FMS value = 100 }
-	FMS = { country_event = 8009721 }
-	ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = "Approve the Merger"
+		relation = { who = FMS value = 100 }
+		FMS = { country_event = 8009721 }
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = "Hold onto Singapore"
-	badboy = 2
-	SNG = { any_pop = { militancy = 3 consciousness = 2 } }
-	relation = { who = FMS value = -100 }
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Hold onto Singapore"
+		badboy = 2
+		SNG = { any_pop = { militancy = 3 consciousness = 2 } }
+		relation = { who = FMS value = -100 }
+		ai_chance = { factor = 0.1 }
+	}
 }
 country_event = {
   id = 8009721
@@ -240,13 +240,13 @@ country_event = {
   picture = "singapore_malaysia_merger"
   is_triggered_only = yes
 
-  option = {
-    name = EVT_8009721_A
-	change_tag = MSY
-	inherit = SNG
-	prestige = 50
-	any_pop = { militancy = -5 consciousness = -3 }
-  }
+	option = {
+		name = EVT_8009721_A
+		change_tag = MSY
+		inherit = SNG
+		prestige = 50
+		any_pop = { militancy = -5 consciousness = -3 }
+	}
 }
 country_event = {
   id = 8009722
@@ -255,52 +255,63 @@ country_event = {
   picture = "formation_of_malaysia"
   fire_only_once = yes
 
-  trigger = {
-    tag = ENG
-    year = 1963 NOT = { year = 1965 }
-    exists = MSY
-    NOT = { exists = SNG }
-    MSY = { is_vassal = no }
-	KLM = { exists = no }
-  }
-
-  mean_time_to_happen = { months = 1 }
-
-  option = {
-    name = "Approve the Federation of Malaysia"
-	relation = { who = MSY value = 100 } 
-	any_pop = { militancy = 0.5  consciousness = 2 }
-
-	#MSY = { country_event =  8009723 }
-
-	any_owned = { limit = { OR = { province_id = 1394 province_id = 1395 province_id = 1396 province_id = 1397 } } secede_province = MSY } 
-
-	#release_vassal = MSY
-
-	diplomatic_influence = { who = MSY value = 200 } 
-
-	BRU = { country_event = 1512113 }
-
-	MSY = { 
-	any_country = { 
-	limit = { tag = SWK exists = yes } 
-	country_event = 1281423
-		}  
-	any_country = { 
-	limit = { tag = SAB exists = yes } 
-	country_event = 1281424
-		}  
+	trigger = {
+		tag = ENG
+		year = 1963 NOT = { year = 1990 }
+		exists = MSY
+		MSY = { is_vassal = no }
+		KLM = { exists = no }
+		OR = { 
+			is_our_vassal = BRU 
+			is_our_vassal = SWK
+			is_our_vassal = SAB
+			is_sphere_leader_of = BRU
+			is_sphere_leader_of = SWK
+			is_sphere_leader_of = SAB
+			is_possible_vassal = BRU
+			is_possible_vassal = SWK
+			is_possible_vassal = SAB
+		}
 	}
 
-	ai_chance = { factor = 0.9 }
-  }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = "Hold onto our colonies in Borneo"
-	relation = { who = MSY value = -200 } 
-	any_pop = { limit = { culture = malay } militancy = 6 consciousness = 5 }
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Approve the Federation of Malaysia"
+		relation = { who = MSY value = 100 }
+		diplomatic_influence = { who = MSY value = 200 }
+		
+		any_pop = { militancy = -5 consciousness = 2 }
+
+		any_owned = { 
+			limit = { OR = { province_id = 1394 province_id = 1395 province_id = 1396 province_id = 1397 } } 
+			secede_province = MSY 
+		}
+
+		MSY = { 
+			random_country = { 
+				limit = { tag = BRU exists = yes }
+				country_event = 1512113
+			}
+			random_country = { 
+				limit = { tag = SWK exists = yes } 
+				country_event = 1281423
+			}
+			random_country = { 
+				limit = { tag = SAB exists = yes } 
+				country_event = 1281424
+			}
+		}
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Hold onto our colonies in Borneo"
+		relation = { who = MSY value = -200 } 
+		any_pop = { limit = { culture = malay } militancy = 6 consciousness = 5 }
+		ai_chance = { factor = 0.1 }
+	}
 }
 country_event = {
   id = 8009723
@@ -390,55 +401,58 @@ country_event = {
 	ai_chance = { factor = 0.6 }
   }
 }
-country_event = { # Independence of Singapore
+
+#Independence of Singapore
+country_event = {
   id = 8009727
   title = EVT_8009727_NAME
   desc = EVT_8009727_DESC
   picture = "singapore_independence"
   fire_only_once = yes
 
-  trigger = {
-	tag = MSY
-    owns = 1384
-    year = 1965 NOT = { year = 1990 }
-  }
+	trigger = {
+		tag = MSY
+		owns = 1384 #Singapore
+		year = 1965 
+		NOT = { year = 1990 }
+		is_vassal = no
+		war = no
+	}
 
-  mean_time_to_happen = { months = 8  }
+	mean_time_to_happen = { months = 8  }
 
-  option = {
-    name = EVT_8009727_A
-	any_pop = { consciousness = 2 }
-	release = SNG
-	SNG = { government = democracy }
-	badboy = -1
-	ENG = { diplomatic_influence = { who = SNG value = 200 } }
-	ai_chance = { factor = 0.7 }
-  }
+	option = {
+		name = EVT_8009727_A
+		any_pop = { consciousness = 2 }
+		release = SNG
+		SNG = { government = democracy }
+		badboy = -1
+		ENG = { diplomatic_influence = { who = SNG value = 200 } }
+		ai_chance = { factor = 0.7 }
+	}
 
-  option = {
-    name = "Grant Singapore special status in Malaysia"
-	prestige = -25
-	release_vassal = SNG
-SNG = { government = sar_government country_event = 800054 }
-ENG = { diplomatic_influence = { who = SNG value = 200 } }
-	1384 = { any_pop = { militancy = 5 } }
-	any_pop = { limit = { culture = chinese } militancy = 3 consciousness = 2 }
+	option = {
+		name = "Grant Singapore special status in Malaysia"
+		prestige = -25
+		release_vassal = SNG
+		SNG = { government = sar_government country_event = 800054 }
+		ENG = { diplomatic_influence = { who = SNG value = 200 } }
+		1384 = { any_pop = { militancy = 5 } }
+		any_pop = { limit = { culture = chinese } militancy = 5 consciousness = 2 }
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		badboy = 1
+		ai_chance = { factor = 0.2 }
+	}
 
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-
-	badboy = 1
-	ai_chance = { factor = 0.2 }
-  }
-
-  option = {
-    name = EVT_8009724_B
-	prestige = -50
-	1384 = { any_pop = { militancy = 10 } }
-1384 = { add_province_modifier = { name = nationalist_agitation duration = 7300 } }
-	any_pop = { limit = { culture = chinese } militancy = 8 }
-	badboy = 5
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = EVT_8009724_B
+		prestige = -50
+		1384 = { any_pop = { militancy = 10 } }
+		1384 = { add_province_modifier = { name = nationalist_agitation duration = 7300 } }
+		any_pop = { limit = { culture = chinese } militancy = 8 }
+		badboy = 5
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
