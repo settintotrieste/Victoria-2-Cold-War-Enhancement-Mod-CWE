@@ -329,7 +329,8 @@ country_event = {
 
 # Fall of the Fourth Republic -> france.txt
 
-country_event = { # The week of barricades
+# The week of barricades
+country_event = {
   id = 8000325
   title = EVT_8000325_NAME
   desc = EVT_8000325_DESC
@@ -343,12 +344,13 @@ country_event = { # The week of barricades
 		year = 1960 NOT = { year = 1975 }
 		government = democracy
 		war = no
+		is_vassal = no
 	}
 
 	mean_time_to_happen = { months = 2 }
 
 	option = {
-		name = EVT_8000325_A
+		name = "We have to crush the insurgency!"
 		
 		any_pop = { 
 			limit = { OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 } } 
@@ -357,11 +359,24 @@ country_event = { # The week of barricades
 		}
 		
 		release = ALG
-		ALG = { any_owned = { limit = { NOT = { OR = { province_id = 1704 province_id = 1705 province_id = 1700 province_id = 1709 province_id = 1708 province_id = 1707 } } } change_controller = REB } }
-		ALG = { government = nationalist_dictatorship ruling_party_ideology = populist country_event = 800050 }
+		
+		ALG = { 
+			change_tag = FAG
+		}
+		FAG = {
+			primary_culture = french
+			remove_accepted_culture = arab
+			add_accepted_culture = jewish
+			
+			government = nationalist_dictatorship 
+			ruling_party_ideology = populist 
+			country_event = 800050
+		}
+		
+		FAG = { any_owned = { limit = { NOT = { OR = { province_id = 1704 province_id = 1705 province_id = 1700 province_id = 1709 province_id = 1708 province_id = 1707 } } } change_controller = REB } }
 		
 		war = {
-			target = ALG 
+			target = FAG
 			attacker_goal = { casus_belli = colonial_war } 
 			defender_goal = { casus_belli = status_quo } 
 		}
@@ -370,79 +385,86 @@ country_event = { # The week of barricades
 	}
 
 	option = {
-		name = EVT_8000325_B
+		name = "Abandon Algeria immediately"
 		prestige_factor = -0.05
+		badboy = 5
+		
 		release = ALG
 		ALG = { 
-			government = nationalist_dictatorship 
-			ruling_party_ideology = populist 
-			country_event = 800050 
+			government = democracy 
+			country_event = 800054
+			all_core = { add_core = FAG add_province_modifier = { name = generic_uprising duration = 1825 } }
+			
+			any_pop = { 
+				limit = { culture = french } 
+				militancy = 10 
+			}
+
 		}
 		
-		#Coup in France chance
-		random = {
-			chance = 50
-			set_country_flag = ALG_FLN_FRA_coup_flag
-		}
+		FAG = { civilized = yes }
 		
 		ai_chance = { factor = 0.1 }
 	}
 
 }
 
-country_event = { # Algiers putsch of 1961
+# Algiers putsch of 1961
+country_event = {
   id = 8000326
   title = EVT_8000326_NAME
-  desc = EVT_8000326_DESC
+  desc = EVTDESC8000326
   picture = "algiers_putsch_of_1961"
   fire_only_once = yes
 
 	trigger = {
 		tag = FRA
-		year = 1961 
+		year = 1961
 		NOT = { year = 1990 }
-		ALG = { 
-			exists = yes 
-			war = no 
-			is_vassal = no 
-			government = nationalist_dictatorship 
-			ruling_party_ideology = populist 
-		}
-		war = no
+		ALG = { exists = yes }
+		war_with = ALG
 		is_vassal = no
-		has_country_flag = ALG_FLN_FRA_coup_flag
 	}
 
 	mean_time_to_happen = { months = 1 }
 
 	option = {
-		name = EVT_8000326_A
+		name = "The putsch is crushed!"
+		prestige = 50
+		ALG = {
+			any_owned = { 
+				limit = { is_state_capital = yes } 
+				change_controller = ALG 
+			}
+		}
+		set_country_flag = ALG_indy_permission
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "The generals win"
 		government = populist_dictatorship
 		country_event = 800050
 		ruling_party_ideology = nationalist
 		
-		create_alliance = ALG
-		create_vassal = ALG
-		relation = { who = ALG value = 200 }
-		diplomatic_influence = { who = ALG value = 200 }
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
 		
-		ALG = { 
-			all_core = { 
-				limit = { is_core = ALG }
-				add_core = FRA
+		badboy = 5
+		
+		ALG = {
+			any_owned = { 
+				limit = { is_state_capital = yes } 
+				change_controller = FRA
 			}
-		}
-		
-		all_core = { 
-			limit = { is_core = ALG }
-			secede_province = ALG
 		}
 		
 		any_pop = { 
 			limit = { location = { is_core = FRA } } 
 			ideology = { factor = 0.3 value = communist } 
-			consciousness = 2 
+			consciousness = 5
 		}
+		
+		ai_chance = { factor = 0.1 }
 	}
 
 }
@@ -463,6 +485,7 @@ country_event = {
 		is_possible_vassal = ALG
 		war = no
 		is_vassal = no
+		has_country_flag = ALG_indy_permission
 	}
 
 	mean_time_to_happen = { 

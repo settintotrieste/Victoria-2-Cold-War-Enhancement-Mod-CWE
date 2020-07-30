@@ -76,61 +76,79 @@ country_event = { # Fall of the Fourth Republic
   
 }
 
-country_event = { # End of the French Empire
+#The Fifth Republic
+country_event = {
   id = 8005731
-  title = EVT_8005731_NAME
-  desc = EVT_8005731_DESC
-  picture = "end_of_the_french_empire"
+  title = "The Fifth Republic"
+  desc = EVTDESC8005731
+  picture = "FRA_5th_republic"
   fire_only_once = yes
   
-  trigger = {
-	tag = FRA
-	has_country_flag = disabled_for_now_1
-	has_country_flag = endoffra
-	average_militancy = 8
-  }
-
-  option = {
-    name = EVT_8005731_A
-	release_vassal = CAR
-	release_vassal = MAU
-	release_vassal = CMR
-	release_vassal = CHA
-	release_vassal = GAB
-	release_vassal = IVC
-	release_vassal = MAD
-	release_vassal = BUF
-	release_vassal = NIG
-	release_vassal = TOG
-	release_vassal = MLI
-	release_vassal = ROC
-	release_vassal = BEN
-
-CAR = { add_country_modifier = { name = post_colonial_chaos duration = 3650 } }
-MAU = { add_country_modifier = { name = post_colonial_chaos duration = 3650 } }
-CMR = { add_country_modifier = { name = post_colonial_chaos duration = 3650 } }
-CHA = { add_country_modifier = { name = post_colonial_chaos duration = 3650 } }
-GAB = { add_country_modifier = { name = post_colonial_chaos duration = 3650 } }
-IVC = { add_country_modifier = { name = post_colonial_chaos duration = 3650 } }
-MAD = { add_country_modifier = { name = post_colonial_chaos duration = 3650 } }
-BUF = { add_country_modifier = { name = post_colonial_chaos duration = 3650 } }
-NIG = { add_country_modifier = { name = post_colonial_chaos duration = 3650 } }
-TOG = { add_country_modifier = { name = post_colonial_chaos duration = 3650 } }
-MLI = { add_country_modifier = { name = post_colonial_chaos duration = 3650 } }
-ROC = { add_country_modifier = { name = post_colonial_chaos duration = 3650 } }
-BEN = { add_country_modifier = { name = post_colonial_chaos duration = 3650 } }
-
-ai_chance = { factor = 1 }
-
-  }
-
-option = {
-    name = "Refuse to form the Community"
-prestige_factor = -0.2
-any_pop = { militancy = 2 }
-ai_chance = { factor = 0 }
+	trigger = {
+		tag = FRA
+		year = 1958
+		NOT = { year = 1990 }
+		
+		is_greater_power = yes
+		government = democracy
+		
+		ALG = { 
+			exists = yes 
+			is_vassal = no 
+		}
 	}
-  
+	
+	mean_time_to_happen = { months = 10 }
+
+	option = {
+		name = "Strengthen the Presidency!"
+		
+		clr_country_flag = presidential_system_republic
+		clr_country_flag = parliamentary_system_republic
+		
+		set_country_flag = semi_presidential_system_republic
+		
+		election = yes
+		
+		any_pop = { 
+			limit = { is_primary_culture = yes } 
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
+			}
+			scaled_militancy = {
+				factor = 5
+				ideology = conservative
+			}
+		}
+
+		ai_chance = { factor = 0.9 }
+
+	}
+
+	option = {
+		name = "Stick with the parliamentary system"
+		
+		clr_country_flag = presidential_system_republic
+		set_country_flag = parliamentary_system_republic
+		
+		clr_country_flag = semi_presidential_system_republic
+		
+		
+		any_pop = {
+			limit = { is_primary_culture = yes } 
+			scaled_militancy = {
+				factor = 10
+				ideology = liberal
+			}
+			scaled_militancy = {
+				factor = 5
+				ideology = progressive
+			}
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
 }
 
 country_event = { # Restore Unified France under the Fourth Republic
@@ -141,7 +159,7 @@ country_event = { # Restore Unified France under the Fourth Republic
   fire_only_once = yes
 
   trigger = {
-    	tag = UFR
+    tag = UFR
 	war = no
 	FRA = { exists = no }
 	owns = 425
