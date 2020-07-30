@@ -389,20 +389,43 @@ country_event = {
 		prestige_factor = -0.05
 		badboy = 5
 		
+		#Release French Algeria
+		ALG = { all_core = { add_core = FAG } }
+		
+		FAG = { civilized = yes }
+		
+		any_owned = {
+			limit = { OR = { province_id = 1707 province_id = 1708 province_id = 1709 province_id = 1705 province_id = 1706 province_id = 1703 province_id = 1704 province_id = 1701 province_id = 1702 province_id = 1710 } }
+			secede_province = FAG
+		}
+		
+		FAG = {
+			capital = 1702 #Setif
+			government = nationalist_dictatorship
+			country_event = 800050
+			ruling_party_ideology = nationalist
+		}
+		
+		#Release Algeria
 		release = ALG
 		ALG = { 
 			government = democracy 
 			country_event = 800054
-			all_core = { add_core = FAG add_province_modifier = { name = generic_uprising duration = 1825 } }
-			
+			ruling_party_ideology = nationalist
 			any_pop = { 
 				limit = { culture = french } 
 				militancy = 10 
 			}
-
 		}
 		
-		FAG = { civilized = yes }
+		FAG = {	
+			#Algerian Civil War
+			war = {
+				target = ALG
+				attacker_goal = { casus_belli = civil_war } 
+				defender_goal = { casus_belli = civil_war } 
+			}
+		}
 		
 		ai_chance = { factor = 0.1 }
 	}
@@ -421,23 +444,32 @@ country_event = {
 		tag = FRA
 		year = 1961
 		NOT = { year = 1990 }
-		ALG = { exists = yes }
-		war_with = ALG
+		OR = { ALG = { exists = yes } FAG = { exists = yes } }
+		OR = { war_with = ALG war_with = FAG }
 		is_vassal = no
 	}
 
-	mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 4 }
 
 	option = {
 		name = "The putsch is crushed!"
 		prestige = 50
-		ALG = {
+		
+		random_country = {
+			limit = { tag = ALG }
 			any_owned = { 
 				limit = { is_state_capital = yes } 
 				change_controller = ALG 
 			}
 		}
-		set_country_flag = ALG_indy_permission
+		random_country = {
+			limit = { tag = FAG }
+			any_owned = { 
+				limit = { is_state_capital = yes } 
+				change_controller = FAG
+			}
+		}
+		
 		ai_chance = { factor = 0.9 }
 	}
 
@@ -447,11 +479,22 @@ country_event = {
 		country_event = 800050
 		ruling_party_ideology = nationalist
 		
+		set_country_flag = block_ALG_indy_permission
+		
 		add_country_modifier = { name = revolution_chaos duration = 1825 }
 		
 		badboy = 5
 		
-		ALG = {
+		random_country = {
+			limit = { tag = ALG }
+			any_owned = { 
+				limit = { is_state_capital = yes } 
+				change_controller = FRA
+			}
+		}
+		
+		random_country = {
+			limit = { tag = FAG }
 			any_owned = { 
 				limit = { is_state_capital = yes } 
 				change_controller = FRA
@@ -485,7 +528,7 @@ country_event = {
 		is_possible_vassal = ALG
 		war = no
 		is_vassal = no
-		has_country_flag = ALG_indy_permission
+		NOT = { has_country_flag = block_ALG_indy_permission }
 	}
 
 	mean_time_to_happen = { 
