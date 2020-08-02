@@ -195,6 +195,186 @@ country_event = {
 
 }
 
+#Rankovic Coup
+country_event = {
+  id = 8022728
+  title = "The Fall of Aleksandar Rankovic"
+  desc = EVTDESC8022728
+  picture = "rankovic_coup"
+  fire_only_once = yes
+
+	trigger = {
+		tag = YUG
+		year = 1966
+		NOT = { year = 1990 }
+		is_vassal = no
+		government = proletarian_dictatorship
+		has_global_flag = blocsenabled
+		
+		NOT = { has_country_modifier = centrallow }
+	}
+
+	mean_time_to_happen = { months = 5 }
+
+	option = {
+		name = "Remove him!"
+		
+		set_country_flag = rankovic_removed
+		
+		any_owned = {
+			limit = { OR = { is_core = KOS is_core = SLO is_core = CRO } }
+			any_pop = { militancy = -5 }
+		}
+		
+		#Set decentralisation modifier
+		remove_country_modifier = centralhigh
+		add_country_modifier = { name = centralmedium duration = -1 }
+		remove_country_modifier = centrallow
+		add_country_modifier = { name = changecentral duration = 3650 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Embrace his idea of Serbian centralisation"
+		
+		#Become Serbia
+		change_tag = SER
+		government = proletarian_dictatorship1
+		primary_culture = serb
+		
+		any_owned = {
+			limit = { OR = { is_core = KOS is_core = SLO is_core = CRO } }
+			add_province_modifier = { name = nationalist_agitation duration = 3650 }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Croatian Spring
+country_event = {
+  id = 8022729
+  title = "The Croatian Spring of $YEAR$"
+  desc = EVTDESC8022729
+  picture = "CRO_spring"
+  fire_only_once = yes
+
+	trigger = {
+		tag = YUG
+		year = 1971
+		NOT = { year = 1990 }
+		is_vassal = no
+		government = proletarian_dictatorship
+		has_global_flag = blocsenabled
+		has_country_flag = rankovic_removed
+		
+		is_possible_vassal = CRO
+	}
+
+	mean_time_to_happen = { months = 9 }
+
+	option = {
+		name = "Crush the revolution by force!"
+		badboy = 5
+		any_owned = {
+			limit = { is_core = CRO }
+			add_province_modifier = { name = nationalist_agitation duration = 1825 }
+			any_pop = { 
+				limit = { culture = croat } 
+				ideology = { factor = 0.15 value = nationalist } 
+			}
+		}
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Cave in to their demands"
+		prestige_factor = -0.025
+		badboy = -5
+		
+		#Release Yugoslavian SSRs
+		random_owned = {
+			limit = { 
+				owner = { is_possible_vassal = SLO } 
+			}
+			owner = {
+				release_vassal = SLO
+				SLO = { government = proletarian_dictatorship ruling_party_ideology = communist country_event = 800052 }
+				diplomatic_influence = { who = SLO value = 200 }
+				sphere_owner = { diplomatic_influence = { who = SLO value = 200 } }
+			}
+		}
+		random_owned = {
+			limit = { 
+				owner = { is_possible_vassal = CRO } 
+			}
+			owner = {
+				release_vassal = CRO
+				CRO = { government = proletarian_dictatorship ruling_party_ideology = communist country_event = 800052 }
+				diplomatic_influence = { who = CRO value = 200 }
+				sphere_owner = { diplomatic_influence = { who = CRO value = 200 } }
+			}
+		}
+		random_owned = {
+			limit = { 
+				owner = { is_possible_vassal = BOS } 
+			}
+			owner = {
+				release_vassal = BOS
+				BOS = { government = proletarian_dictatorship ruling_party_ideology = communist country_event = 800052 }
+				diplomatic_influence = { who = BOS value = 200 }
+				sphere_owner = { diplomatic_influence = { who = BOS value = 200 } }
+			}
+		}
+		random_owned = {
+			limit = { 
+				owner = { is_possible_vassal = MON } 
+			}
+			owner = {
+				release_vassal = MON
+				MON = { government = proletarian_dictatorship ruling_party_ideology = communist country_event = 800052 }
+				diplomatic_influence = { who = MON value = 200 }
+				sphere_owner = { diplomatic_influence = { who = MON value = 200 } }
+			}
+		}
+		random_owned = {
+			limit = { 
+				owner = { is_possible_vassal = MAC } 
+			}
+			owner = {
+				release_vassal = MAC
+				MAC = { government = proletarian_dictatorship ruling_party_ideology = communist country_event = 800052 }
+				diplomatic_influence = { who = MAC value = 200 }
+				sphere_owner = { diplomatic_influence = { who = MAC value = 200 } }
+			}
+		}
+		#If Bulgaria was incorporated
+		random_owned = {
+			limit = { owner = { is_possible_vassal = BUL } }
+			owner = { 
+				release_vassal = BUL 
+				BUL = { government = proletarian_dictatorship ruling_party_ideology = communist country_event = 800052 }
+				diplomatic_influence = { who = BUL value = 200 }
+				sphere_owner = { diplomatic_influence = { who = BUL value = 200 } }
+			}
+		}
+		#If Albania was incorporated
+		random_owned = {
+			limit = { owner = { is_possible_vassal = ALB } }
+			owner = { 
+				release_vassal = ALB 
+				ALB = { government = proletarian_dictatorship ruling_party_ideology = communist country_event = 800052 }
+				diplomatic_influence = { who = ALB value = 200 }
+				sphere_owner = { diplomatic_influence = { who = ALB value = 200 } }
+			}
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
 #The Constitution of 1974
 country_event = {
   id = 8022740
@@ -217,6 +397,9 @@ country_event = {
 		is_possible_vassal = BOS
 		is_possible_vassal = MON
 		is_possible_vassal = MAC
+		
+		#Rankovic removed
+		has_country_flag = rankovic_removed
 	}
 
 	mean_time_to_happen = { months = 4 }
@@ -231,6 +414,11 @@ country_event = {
 		set_country_flag = YUG_federal_structure
 		
 		#Set decentralisation modifier
+		remove_country_modifier = centralhigh
+		remove_country_modifier = centralmedium
+		add_country_modifier = { name = changecentral duration = 3650 }
+		add_country_modifier = { name = centrallow duration = -1 }
+		
 		any_owned = {
 			add_province_modifier = { name = devolved_local_government duration = -1 }
 		}
@@ -240,6 +428,8 @@ country_event = {
 			limit = { owner = { is_possible_vassal = BUL } }
 			owner = { 
 				release_vassal = BUL 
+				BUL = { government = proletarian_dictatorship ruling_party_ideology = communist country_event = 800052 }
+				diplomatic_influence = { who = BUL value = 200 }
 				sphere_owner = { diplomatic_influence = { who = BUL value = 200 } }
 			}
 		}
@@ -249,6 +439,8 @@ country_event = {
 			limit = { owner = { is_possible_vassal = ALB } }
 			owner = { 
 				release_vassal = ALB 
+				ALB = { government = proletarian_dictatorship ruling_party_ideology = communist country_event = 800052 }
+				diplomatic_influence = { who = ALB value = 200 }
 				sphere_owner = { diplomatic_influence = { who = ALB value = 200 } }
 			}
 		}
@@ -668,7 +860,7 @@ country_event = {
 	mean_time_to_happen = { months = 4 }
   
 	option = {
-		name = "Fight to keep Bosnia under Serbian rule!"
+		name = "Provide support to Republika Srpska!"
 		
 		set_global_flag = bosnian_wars_flag
 	
@@ -703,7 +895,37 @@ country_event = {
 
 		}
 		
-		ai_chance = { factor = 0.9 }
+		ai_chance = { factor = 0.7 }
+	}
+	
+	option = {
+		name = "Fight to keep Bosnia under Serbian rule!"
+	
+		badboy = 10
+		
+		#Release Bosnia
+		release = BOS
+		BOS = { 
+			government = democracy1
+			ruling_party_ideology = nationalist
+			country_event = 800054
+		}
+	
+		#Start Bosnian War with YUG
+		war = { 
+			target = BOS
+			attacker_goal = { casus_belli = annex_core_country } 
+			defender_goal = { casus_belli = humiliate } 
+		}
+		
+		BOS = {
+			any_owned = {
+				limit = { is_core = RSR }
+				change_controller = YUG
+			}
+		}
+		
+		ai_chance = { factor = 0.2 }
 	}
 
 	option = {
@@ -871,6 +1093,9 @@ country_event = {
 
 	option = {
 		name = "Continue the fight!"
+		
+		set_global_flag = CRO_claims_HZB
+		
 		badboy = 5
 		relation = { who = BOS value = -200 }
 		ai_chance = { factor = 0.1 }
@@ -1385,6 +1610,9 @@ country_event = {
 		MON = { 
 			government = sar_government 
 			country_event = 800054 
+			
+			#Add Montenegrin culture
+			all_core = { assimilate = yes }
 		}
 		sphere_owner = { diplomatic_influence = { who = MON value = 200 } }
 		
@@ -1394,6 +1622,11 @@ country_event = {
 
 	option = {
 		name = "Stick to the status quo"
+		
+		MON = {
+			#Add Montenegrin culture
+			all_core = { assimilate = yes }
+		}
 		
 		any_owned = {
 			limit = { is_core = MON }
