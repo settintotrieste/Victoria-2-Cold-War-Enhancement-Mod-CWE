@@ -4592,82 +4592,97 @@ ai_chance = { factor = 0.1 }
 #Self-government Brunei
 country_event = {
 	id = 1512107
-title = "Brunei as a Self-governing State?"
+	title = "Brunei as a Self-governing State?"
 	desc = EVTDESC1512107
 	picture = "bru_indy"
 
-fire_only_once = yes
+	fire_only_once = yes
 
-trigger = {
-tag = ENG
-BRU = { exists = no }
-owns = 1393
-year = 1959
-NOT = { year = 1990 }
-}
-
-mean_time_to_happen = { 
-months = 5
+	trigger = {
+		tag = ENG
+		year = 1959
+		NOT = { year = 1990 }
+		BRU = { exists = no }
+		owns = 1393
+		is_vassal = no
 	}
 
-option = {
-name = "Yes"
-release_vassal = BRU
-diplomatic_influence = { who = BRU value = 200 }
-BRU = { government = absolute_monarchy country_event = 800050 ruling_party_ideology = traditionalist }
-ai_chance = { factor = 0.9 }
-		}
+	mean_time_to_happen = { 
+		months = 5
+	}
 
-option = {
-name = "No"
-badboy = 2
-prestige = -50
-1393 = { add_province_modifier = { name = nationalist_agitation duration = 3650 } }
-ai_chance = { factor = 0.1 }
-		}
+	option = {
+		name = "Yes"
+		release_vassal = BRU
+		diplomatic_influence = { who = BRU value = 200 }
+		BRU = { government = absolute_monarchy country_event = 800050 ruling_party_ideology = traditionalist }
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "No"
+		badboy = 2
+		prestige = -50
+		1393 = { add_province_modifier = { name = nationalist_agitation duration = 3650 } }
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
 #Self-government North Borneo Federation
 country_event = {
 	id = 1512108
-title = "North Borneo Federation"
+	title = "North Borneo Federation"
 	desc = EVTDESC1512108
 	picture = "KLM_indy"
 
-fire_only_once = yes
+	fire_only_once = yes
 
-trigger = {
-tag = ENG
-MSY = { exists = yes }
-KLM = { exists = no }
-any_owned_province = { is_core = KLM }
-year = 1962
-NOT = { year = 1990 }
-}
+	trigger = {
+		tag = ENG
+		year = 1962
+		NOT = { year = 1990 }
+		
+		#Malaya merged with Singapore
+		MSY = { exists = yes }
 
-mean_time_to_happen = { 
-months = 5
+		is_possible_vassal = KLM
+		is_vassal = no
 	}
 
-option = {
-name = "Abandon the idea"
-prestige = 25
-relation = { who = MSY value = 50 }
-ai_chance = { factor = 0.8 }
-		}
+	mean_time_to_happen = { 
+		months = 5
+	}
 
-option = {
-name = "Implement the federation"
-release_vassal = KLM
-diplomatic_influence = { who = KLM value = 200 }
-KLM = { government = colonial_government country_event = 800054 }
-KLM = { inherit = BRU }
-KLM = { inherit = SAB }
-KLM = { inherit = SWK }
-relation = { who = MSY value = -100 }
-ai_chance = { factor = 0.2 }
+	option = {
+		name = "Abandon the idea"
+		prestige = 25
+		relation = { who = MSY value = 50 }
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "Implement the federation"
+		release_vassal = KLM
+		diplomatic_influence = { who = KLM value = 200 }
+		KLM = { government = colonial_government country_event = 800054 }
+		KLM = {
+			random_country = { 
+				limit = { tag = BRU exists = yes OR = { is_vassal = no vassal_of = THIS } }
+				country_event = 11101
+			}
+			random_country = { 
+				limit = { tag = SWK exists = yes OR = { is_vassal = no vassal_of = THIS } } 
+				country_event = 11101
+			}
+			random_country = { 
+				limit = { tag = SAB exists = yes OR = { is_vassal = no vassal_of = THIS } } 
+				country_event = 11101
+			}
 		}
+		relation = { who = MSY value = -100 }
+		ai_chance = { factor = 0.2 }
+	}
 
 }
 
@@ -4826,23 +4841,24 @@ add_country_modifier = { name = revolution_chaos duration = 3650 }
 #Choice for Brunei to join Malaysia
 country_event = {
 	id = 1512113
-title = "Brunei in Malaysia?"
+	title = "Brunei in Malaysia?"
 	desc = EVTDESC1512113
 	picture = "bru_msy_fed"
 
-is_triggered_only = yes
+	is_triggered_only = yes
 
-option = {
-name = "Refuse, Brunei shall not be subject to Malaysia"
-	prestige = 25
-	ai_chance = { factor = 0.9 }
-		}
+	option = {
+		name = "Refuse, Brunei shall not be subject to Malaysia"
+		prestige = 25
+		ai_chance = { factor = 0.9 }
+	}
 
-option = {
-    name = "Join the federation"
-	MSY = { inherit = BRU }
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Join the federation"
+		all_core = { add_core = MSY }
+		MSY = { inherit = BRU }
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
@@ -7302,113 +7318,115 @@ ai_chance = { factor = 0.1 }
 #1947 Paris Peace Treaties - initiate
 country_event = {
 	id = 1512182
-title = "Paris Peace Treaties, 1947"
+	title = "Paris Peace Treaties, 1947"
 	desc = EVTDESC1512182
 	picture = "1947_paris_peace_treaties"
 
-fire_only_once = yes
+	fire_only_once = yes
 
-trigger = {
-year = 1947
-NOT = { year = 1990 }
-tag = USA
-war = no
-has_global_flag = blocsenabled
-}
-
-mean_time_to_happen = { 
-months = 2
+	trigger = {
+		year = 1947
+		NOT = { year = 1990 }
+		NOT = { has_global_flag = 1950_start_date_flag }
+		tag = USA
+		war = no
+		has_global_flag = blocsenabled
 	}
 
-option = {
-name = "May we have lasting peace in Europe"
+	mean_time_to_happen = { 
+		months = 2
+	}
 
-#Recepients
-ENG = { country_event = 1512183 }
-FRA = { country_event = 1512183 }
-RUS = { country_event = 1512183 }
-YUG = { country_event = 1512183 }
-GRE = { country_event = 1512183 }
+	option = {
+		name = "May we have lasting peace in Europe"
 
-BEL = { country_event = 1512183 }
-NET = { country_event = 1512183 }
+		#Recepients
+		ENG = { country_event = 1512183 }
+		FRA = { country_event = 1512183 }
+		RUS = { country_event = 1512183 }
+		YUG = { country_event = 1512183 }
+		GRE = { country_event = 1512183 }
 
-#Debtors
-ITA = { country_event = 1512184 }
+		BEL = { country_event = 1512183 }
+		NET = { country_event = 1512183 }
 
-add_country_modifier = { name = war_rep_income duration = 3650 }
-		}
+		#Debtors
+		ITA = { country_event = 1512184 }
+
+		add_country_modifier = { name = war_rep_income duration = 3650 }
+	}
 
 }
 
 #1947 Paris Peace Treaties - benefactors
 country_event = {
 	id = 1512183
-title = "Paris Peace Treaties, 1947"
+	title = "Paris Peace Treaties, 1947"
 	desc = EVTDESC1512182
 	picture = "1947_paris_peace_treaties"
 
-is_triggered_only = yes
+	is_triggered_only = yes
 
-option = {
-name = "May we have lasting peace in Europe"
-add_country_modifier = { name = war_rep_income duration = 3650 }
-		}
+	option = {
+		name = "May we have lasting peace in Europe"
+		add_country_modifier = { name = war_rep_income duration = 3650 }
+	}
 
 }
 
 #1947 Paris Peace Treaties - reparations
 country_event = {
 	id = 1512184
-title = "Paris Peace Treaties, 1947"
+	title = "Paris Peace Treaties, 1947"
 	desc = EVTDESC1512182
 	picture = "1947_paris_peace_treaties"
 
-is_triggered_only = yes
+	is_triggered_only = yes
 
-option = {
-name = "May we have lasting peace in Europe"
-add_country_modifier = { name = ger_war_rep duration = 3650 }
-		}
+	option = {
+		name = "May we have lasting peace in Europe"
+		add_country_modifier = { name = ger_war_rep duration = 3650 }
+	}
 
 }
 
 #Anglo-Thai Peace Treaty
 country_event = {
 	id = 1512185
-title = "Anglo-Thai Peace Treaty"
+	title = "Anglo-Thai Peace Treaty"
 	desc = EVTDESC1512185
 	picture = "1946_anglo_thai_treaty"
 
-fire_only_once = yes
+	fire_only_once = yes
 
-trigger = {
-year = 1946
-NOT = { year = 1990 }
-tag = THI
-}
+	trigger = {
+		tag = THI
+		year = 1946
+		NOT = { year = 1990 }
+		NOT = { has_global_flag = 1950_start_date_flag }
+	}
 
-option = {
-name = "Renounce our claims over the Shan and Malay states"
-relation = { who = ENG value = 50 }
-money = -10000
-FMS = { money = 10000 }
-1391 = { remove_core = THI }
-1389 = { remove_core = THI }
-1340 = { remove_core = THI }
-ai_chance = { factor = 0.9 }
-		}
+	option = {
+		name = "Renounce our claims over the Shan and Malay states"
+		relation = { who = ENG value = 50 }
+		money = -10000
+		FMS = { money = 10000 }
+		1391 = { remove_core = THI }
+		1389 = { remove_core = THI }
+		1340 = { remove_core = THI }
+		ai_chance = { factor = 0.9 }
+	}
 
-option = {
-name = "Refuse to cooperate with the treaty terms"
-badboy = 20
-prestige = -50
-relation = { who = ENG value = -50 }
-relation = { who = USA value = -50 }
-money = -5000
-FMS = { money = 5000 }
-ai_chance = { factor = 0.1 }
-		}
+	option = {
+		name = "Refuse to cooperate with the treaty terms"
+		badboy = 20
+		prestige = -50
+		relation = { who = ENG value = -50 }
+		relation = { who = USA value = -50 }
+		money = -5000
+		FMS = { money = 5000 }
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
