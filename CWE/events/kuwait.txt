@@ -1,84 +1,120 @@
-country_event = { # Kuwait Independence
+# Kuwait Independence - ENG
+country_event = {
   id = 8007601
   title = EVT_8007601_NAME
   desc = EVT_8007601_DESC
   picture = "kuwait_independence"
   fire_only_once = yes
 
-  trigger = {
-    tag = ENG
-	year = 1961 NOT = { year = 1990 }
-	is_our_vassal = KUW
-  }
+	trigger = {
+		tag = ENG
+		year = 1961 NOT = { year = 1990 }
+		is_vassal = no
+		war = no
+		is_our_vassal = KUW
+	}
 
-  mean_time_to_happen = { months = 4  }
+	mean_time_to_happen = { months = 4 }
   
-  option = {
-    name = EVT_8007601_A
-	prestige = 10
-	release_vassal = KUW
-	create_alliance = KUW
-BHR = { government = absolute_monarchy country_event = 800050 }
-	ai_chance = { factor = 0.7 }
-  }
+	option = {
+		name = EVT_8007601_A
+		prestige = 10
+		release_vassal = KUW
+		create_alliance = KUW
+		KUW = { government = absolute_monarchy country_event = 800050 }
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8007601_B
-	prestige = -10
-	KUW = { ruling_party_ideology = traditionalist any_pop = { limit = { culture = arab } militancy = 8  consciousness = 4 } }
-	USA = { diplomatic_influence = { who = KUW value = 100 } } 
-	KUW = { country_event = 8007603 }
-	ai_chance = { factor = 0.3 }
-  }
+	option = {
+		name = EVT_8007601_B
+		prestige = -10
+		KUW = { 
+			ruling_party_ideology = conservative
+			any_pop = {
+				limit = { culture = arab } 
+				militancy = 8 
+				consciousness = 4 
+			}
+		}
+		KUW = { country_event = 8007603 }
+		ai_chance = { factor = 0.1 }
+	}
 
 }
  
-country_event = { # Operation Vantage
+#Operation Vantage
+country_event = {
   id = 8007602
   title = EVT_8007602_NAME
   desc = EVT_8007602_DESC
   picture = "operation_vantage"
   fire_only_once = yes
 
-  trigger = {
-    tag = ENG
-	NOT = { year = 1990 }
-	KUW = { war_with = IRQ OR = { part_of_sphere = no in_sphere = ENG } }
-  }
+	trigger = {
+		tag = ENG
+		year = 1961
+		NOT = { year = 1990 }
+		is_greater_power = yes
+		government = hms_government
+		KUW = { in_sphere = ENG is_vassal = no }
+		IRQ = { 
+			government = presidential_dictatorship 
+			ruling_party_ideology = socialist
+			exists = yes 
+			is_vassal = no 
+		}
+	}
 
+	immediate = { 935 = { add_core = IRQ } }
   
-  option = {
-    name = EVT_8007602_A
-	diplomatic_influence = { who = KUW value = 200 } # this will trigger ai status quo intervention
-	any_pop = { militancy = -1.0  consciousness = 1 }
-  }
+	option = {
+		name = "Support Kuwait!"
+		
+		create_alliance = KUW
+		
+		relation = { who = KUW value = 200 }
+		diplomatic_influence = { who = KUW value = 100 }
+		
+		relation = { who = IRQ value = -150 }
+		diplomatic_influence = { who = IRQ value = -100 }
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8007602_B
-	any_pop = { militancy = -1.0  consciousness = 1 }
-  }
+	option = {
+		name = "Do not get involved!"
+		prestige_factor = -0.02
+		relation = { who = KUW value = -100 }
+		diplomatic_influence = { who = KUW value = -100 }
+	}
 }
 
-country_event = { # Kuwait Independence
+# Kuwait Independence - Kuwait choice
+country_event = {
   id = 8007603
   title = EVT_8007601_NAME
   desc = EVT_8007601_DESC
   picture = "kuwait_independence"
   is_triggered_only = yes
 
-  option = {
-    name = EVT_8007603_A
-	war = { target = ENG attacker_goal = { casus_belli = become_independent } defender_goal = { casus_belli  = make_puppet } }
-	ENG = { prestige = -10 }
-	USA = { diplomatic_influence = { who = KUW value = 100 } } 
-	ai_chance = { factor = 1 }
-  }
+	option = {
+		name = EVT_8007603_A
+		war = { 
+			target = ENG 
+			attacker_goal = { casus_belli = become_independent } 
+			defender_goal = { casus_belli  = make_puppet } 
+		}
+		ai_chance = { factor = 1 }
+	}
 
-  option = {
-    name = EVT_8007603_B
-	prestige = -10
-	any_pop = { limit = { culture = arab } militancy = 5  consciousness = 4 }
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = EVT_8007603_B
+		prestige = -25
+		any_pop = { 
+			limit = { culture = arab } 
+			militancy = 5 
+			consciousness = 4 
+		}
+		ai_chance = { factor = 0 }
+	}
 
 }

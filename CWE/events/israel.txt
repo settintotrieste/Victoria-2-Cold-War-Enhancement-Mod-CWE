@@ -65,6 +65,12 @@ country_event = {
 		PAL = { release = JRU }
 
 		JRU = { government = sar_government country_event = 800054 }
+		
+		PAL = { any_pop = { limit = { culture = jewish } move_pop = 919 } } 
+		PAL = { any_pop = { limit = { culture = haredim_jewish } move_pop = 919 } } 
+		ISR = { any_pop = { limit = { culture = palestinian } move_pop = 917 } } 
+		ISR = { any_pop = { limit = { culture = arab_levantine } move_pop = 917 } } 
+		ISR = { any_pop = { limit = { culture = arab } move_pop = 917 } } 
 
 		diplomatic_influence = { who = JRU value = 200 }
 
@@ -292,8 +298,6 @@ country_event = {
 			any_owned = { limit = { is_core = PAL } add_province_modifier = { name = nationalist_agitation duration = 3650 } }
 			any_owned = { limit = { is_core = ISR } add_province_modifier = { name = nationalist_agitation duration = 3650 } } 
 		}
-		
-		set_global_flag = independent_israel
 		
 	}
 	
@@ -924,44 +928,47 @@ country_event = {
   picture = "nwo2_six_day_war"
   fire_only_once = yes
 
-  trigger = {
-	tag = EGY
-	year = 1967 NOT = { year = 1973 }
-	exists = ISR
-	exists = JOR
-	exists = SYR
-	ISR = { 
-	is_vassal = no
-	NOT = { owns = 917 }
-	NOT = { owns = 918 }
-	NOT = { owns = 920 } 
+	trigger = {
+		tag = EGY
+		year = 1967 NOT = { year = 1973 }
+		exists = ISR
+		exists = JOR
+		exists = SYR
+		ISR = { 
+			is_vassal = no
+			NOT = { owns = 917 }
+			NOT = { owns = 918 }
+			NOT = { owns = 920 } 
+		}
+		OR = { 
+			government = presidential_dictatorship 
+			government = populist_dictatorship 
+		}
+		war = no
+		is_vassal = no
+		JOR = { is_vassal = no }
+		SYR = { is_vassal = no }
 	}
-OR = { government = presidential_dictatorship government = populist_dictatorship }
-	war = no
-	is_vassal = no
-	JOR = { is_vassal = no }
-	SYR = { is_vassal = no }
-  }
 
-  mean_time_to_happen = { months = 6 }
+	mean_time_to_happen = { months = 6 }
 
-  option = {
-	name = EVT_8007671_A
-	any_pop = { militancy = -2  consciousness = -1 }
-	badboy = 1
-	prestige = 10
+	option = {
+		name = EVT_8007671_A
+		any_pop = { militancy = -2 consciousness = -1 }
+		badboy = 1
+		prestige = 50
 	
-	ISR = { country_event = 8007672 }
+		ISR = { country_event = 8007672 }
 
-	ai_chance = { factor = 0.9 }
-  }
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-	name = EVT_8007671_B
-	any_pop = { militancy = 3 consciousness = 2 }
-	prestige_factor = -0.1
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = EVT_8007671_B
+		any_pop = { militancy = 3 consciousness = 2 }
+		prestige_factor = -0.1
+		ai_chance = { factor = 0.1 }
+	}
 }
 
 #Israeli pre-emptive strike?
@@ -972,70 +979,74 @@ country_event = {
   picture = "nwo2_six_day_war"
   is_triggered_only = yes # ISR
 
-  immediate = {
-	917 = { add_core = ISR } #Jerusalem
-	920 = { add_core = ISR } #Gaza
-	918 = { add_core = ISR } #West Bank
-  }
-
-  option = {
-	name = EVT_8007672_A
-
-casus_belli = { target = EGY type = acquire_state months = 12 }
-casus_belli = { target = EGY type = acquire_state months = 12 }
-casus_belli = { target = SYR type = acquire_state months = 12 }
-
-	war = {
-		target = EGY
-		attacker_goal = { casus_belli = acquire_core_state	state_province_id = 920 }
-		attacker_goal = { casus_belli = acquire_state		state_province_id = 1755 } #Suez Canal Zone
-		attacker_goal = { casus_belli = acquire_state		state_province_id = 1756 } #Sinai
-		defender_goal = { casus_belli = liberate_country country = PAL }
+	immediate = {
+		917 = { add_core = ISR } #Jerusalem
+		920 = { add_core = ISR } #Gaza
+		918 = { add_core = ISR } #West Bank
 	}
 
-	war = {
-		target = SYR
-		attacker_goal = { casus_belli = acquire_state		state_province_id = 2687 } #Golan Heights
-		defender_goal = { casus_belli = liberate_country country = PAL }
-	}
+	option = {
+		name = EVT_8007672_A
 
-	war = {
-		target = JOR
-		attacker_goal = { casus_belli = acquire_core_state	state_province_id = 917 }
-		defender_goal = { casus_belli = liberate_country country = PAL }
-	}
+		casus_belli = { target = EGY type = acquire_state months = 12 }
+		casus_belli = { target = EGY type = acquire_state months = 12 }
+		casus_belli = { target = SYR type = acquire_state months = 12 }
 
-	EGY = { add_country_modifier = { name = limited_military_intervention  duration = 700 } }
-	JOR = { add_country_modifier = { name = limited_military_intervention  duration = 700 } }
-	SYR = { add_country_modifier = { name = limited_military_intervention  duration = 700 } }
+		war = {
+			target = EGY
+			attacker_goal = { casus_belli = acquire_core_state state_province_id = 920 } #Gaza
+			attacker_goal = { casus_belli = acquire_state state_province_id = 1755 } #Suez Canal Zone
+			attacker_goal = { casus_belli = acquire_state state_province_id = 1756 } #Sinai
+			defender_goal = { casus_belli = liberate_country country = PAL }
+		}
 
-	any_pop = { consciousness = 2 }
+		war = {
+			target = SYR
+			attacker_goal = { casus_belli = acquire_state state_province_id = 2687 } #Golan Heights
+			defender_goal = { casus_belli = liberate_country country = PAL }
+		}
+
+		war = {
+			target = JOR
+			attacker_goal = { casus_belli = acquire_core_state state_province_id = 917 } # Jerusalem
+			attacker_goal = { casus_belli = acquire_core_state state_province_id = 918 } # West Bank
+			defender_goal = { casus_belli = liberate_country country = PAL }
+		}
+
+		EGY = { add_country_modifier = { name = limited_military_intervention  duration = 700 } }
+		JOR = { add_country_modifier = { name = limited_military_intervention  duration = 700 } }
+		SYR = { add_country_modifier = { name = limited_military_intervention  duration = 700 } }
+
+		any_pop = { consciousness = 2 }
 	
-	ai_chance = {
-		factor = 0.75
-		modifier = { # highly reduced without GP support
-			factor = 0.2
-			OR = {
-				AND = {
-					part_of_sphere = yes
-					NOT = { sphere_owner = { has_country_flag = support_zionism } }
+		ai_chance = {
+			factor = 0.75
+			modifier = { # highly reduced without GP support
+				factor = 0.2
+				OR = {
+					AND = {
+						part_of_sphere = yes
+						NOT = { sphere_owner = { has_country_flag = support_zionism } }
+					}
+					NOT = { any_greater_power = { alliance_with = THIS } }
 				}
-				NOT = { any_greater_power = { alliance_with = THIS } }
+			}
+			modifier = {
+				factor = 0
+				NOT = { owns = 921 } # Negev
 			}
 		}
-		modifier = {
-			factor = 0
-			NOT = { owns = 921 } # Negev
-		}
 	}
-  }
 
-  option = {
-	name = EVT_8007672_B
-	any_pop = { militancy = 0.5 }
-	random_country = { limit = { owns = 920 } country_event = 8007673 }
-	ai_chance = { factor = 0.25 }
-  }
+	option = {
+		name = EVT_8007672_B
+		any_pop = { militancy = 0.5 }
+		random_country = { 
+			limit = { owns = 920 } #Owner of Gaza which is Egypt
+			country_event = 8007673 
+		}
+		ai_chance = { factor = 0.25 }
+	}
 }
 
 #Egyptian attack
@@ -1046,36 +1057,32 @@ country_event = {
   picture = "nwo2_six_day_war"
   is_triggered_only = yes # EGY
 
-  option = {
-	name = EVT_8007673_A
+	option = {
+		name = EVT_8007673_A
 
-ISR = {
-casus_belli = { target = EGY type = acquire_state months = 12 }
-casus_belli = { target = EGY type = acquire_state months = 12 }
-}
+		war = {
+			target = ISR
+			defender_goal = { casus_belli = acquire_core_state state_province_id = 920 } #Gaza
+			defender_goal = { casus_belli = acquire_state state_province_id = 1755 } #Suez region
+			defender_goal = { casus_belli = acquire_state state_province_id = 1756 } #Suez Canal
+			attacker_goal = { casus_belli = liberate_country country = PAL }
+		}
+		
+		add_country_modifier = { name = limited_military_intervention  duration = 700 }
+		any_pop = { militancy = -1.0 consciousness = -1 }
+		badboy = 5 
 
-	war = {
-		target = ISR
-		defender_goal = { casus_belli = acquire_core_state	state_province_id = 920 }
-		defender_goal = { casus_belli = acquire_state		state_province_id = 1755 }
-		defender_goal = { casus_belli = acquire_state		state_province_id = 1756 }
-		attacker_goal = { casus_belli = liberate_country country = PAL }
+		SYR = { country_event = 8007674 }
+		JOR = { country_event = 8007675 }
+		ai_chance = { factor = 0.9 }
 	}
-	add_country_modifier = { name = limited_military_intervention  duration = 700 }
-	any_pop = { militancy = -1.0 consciousness = -1 }
-	badboy = 5 
 
-	SYR = { country_event = 8007674 }
-	JOR = { country_event = 8007675 }
-	ai_chance = { factor = 0.9 }
-  }
-
-  option = {
-	name = EVT_8007673_B
-	any_pop = { militancy = 2 consciousness = 1 }
-	prestige_factor = -0.2
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = EVT_8007673_B
+		any_pop = { militancy = 2 consciousness = 1 }
+		prestige_factor = -0.2
+		ai_chance = { factor = 0.1 }
+	}
 }
 
 #Jordan Attack
@@ -1086,28 +1093,29 @@ country_event = {
   picture = "nwo2_six_day_war"
   is_triggered_only = yes # SYR
 
-  option = {
-	name = EVT_8007674_A
+	option = {
+		name = EVT_8007674_A
 	
-	war = {
-		target = ISR
-		defender_goal = { casus_belli = acquire_core_state		state_province_id = 917 }
-		attacker_goal = { casus_belli = liberate_country country = PAL }
+		war = {
+			target = ISR
+			defender_goal = { casus_belli = acquire_core_state state_province_id = 917 } #Jerusalem
+			defender_goal = { casus_belli = acquire_core_state state_province_id = 918 } # West Bank
+			attacker_goal = { casus_belli = liberate_country country = PAL }
+		}
+
+		add_country_modifier = { name = limited_military_intervention duration = 700 }
+		create_alliance = EGY 
+		any_pop = { militancy = -1.0 consciousness = -1 }
+		badboy = 5 
+		ai_chance = { factor = 0.8 }
 	}
 
-	add_country_modifier = { name = limited_military_intervention duration = 700 }
-	create_alliance = EGY 
-	any_pop = { militancy = -1.0 consciousness = -1 }
-	badboy = 5 
-	ai_chance = { factor = 0.8 }
-  }
-
-  option = {
-	name = EVT_8007674_B
-	any_pop = { militancy = 0.5 consciousness = 1 }
-	prestige_factor = -0.1
-	ai_chance = { factor = 0.2 }
-  }
+	option = {
+		name = EVT_8007674_B
+		any_pop = { militancy = 5 consciousness = 1 }
+		prestige_factor = -0.1
+		ai_chance = { factor = 0.2 }
+	}
 }
 
 #Syrian attack
@@ -1118,26 +1126,29 @@ country_event = {
   picture = "nwo2_six_day_war"
   is_triggered_only = yes # JOR
 
-  option = {
-	name = EVT_8007674_A
+	option = {
+		name = EVT_8007674_A
+		
+		create_alliance = EGY 
 
-	war = {
-		target = ISR
-		defender_goal = { casus_belli = acquire_core_state	state_province_id = 2687 }
-		attacker_goal = { casus_belli = liberate_country country = PAL }
+		war = {
+			target = ISR
+			defender_goal = { casus_belli = acquire_core_state state_province_id = 2687 } #Golan Heights
+			attacker_goal = { casus_belli = liberate_country country = PAL }
+		}
+		
+		any_pop = { militancy = -1.0 }
+		badboy = 5 
+		ai_chance = { factor = 0.8 }
 	}
-	create_alliance = EGY 
-	any_pop = { militancy = -1.0 }
-	badboy = 5 
-	ai_chance = { factor = 0.8 }
-  }
 
-  option = {
-	name = EVT_8007674_B
-	any_pop = { consciousness = 2 }
-	prestige_factor = -0.1
-	ai_chance = { factor = 0.2 }
-  }
+	option = {
+		name = EVT_8007674_B
+		any_pop = { consciousness = 2 }
+		prestige_factor = -0.1
+		ai_chance = { factor = 0.2 }
+	}
+
 }
 
 ###########################################################################
@@ -1154,45 +1165,51 @@ country_event = {
   picture = "nwo2_yom_kippur_war"
   fire_only_once = yes
 
-  trigger = {
-	tag = EGY
-	year = 1973 NOT = { year = 1990 }
-	exists = ISR
-	exists = SYR
-	war = no
-	is_vassal = no
-	ISR = { is_vassal = no }
-	ISR = { owns = 1756 owns = 1757 owns = 2687 }
-  }
+	trigger = {
+		tag = EGY
+		year = 1973 NOT = { year = 1990 }
+		exists = ISR
+		exists = SYR
+		war = no
+		is_vassal = no
+		ISR = { is_vassal = no }
+		ISR = { owns = 1756 owns = 1757 owns = 2687 }
+	}
 
-  mean_time_to_happen = { months = 9 }
+	mean_time_to_happen = { months = 9 }
 
-  option = {
-	name = EVT_8007683_A
+	option = {
+		name = EVT_8007683_A
 
-war = { 
+		war = {
+			target = ISR
+			attacker_goal = { casus_belli = acquire_core_state state_province_id = 1756 } #Suez Canal
+			attacker_goal = { casus_belli = acquire_core_state state_province_id = 1755 } #Suez Region
+			defender_goal = { casus_belli = humiliate }
+		}
 
-target = ISR 
+		add_country_modifier = { name = limited_military_intervention duration = 700 }
+		ISR = { country_event = 8007684 } 
+		
+		#Involve Syria
+		random_country = { 
+			limit = {
+				tag = SYR
+				is_vassal = no
+				exists = yes
+				NOT = { owns = 2687 } #Golan Heights
+			}
+			country_event = 8007685 
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
 
-attacker_goal = { casus_belli = acquire_core_state state_province_id = 1756 } 
-
-attacker_goal = { casus_belli = acquire_core_state state_province_id = 1755 }
-
-defender_goal = { casus_belli = humiliate } 
-
-}
-
-	add_country_modifier = { name = limited_military_intervention  duration = 700 }
-	ISR = { country_event = 8007684 } 
-	random_country = { limit = { tag = SYR exists = yes NOT = { owns = 2687 } } country_event = 8007685 } # Golan Heights
-	ai_chance = { factor = 0.9 }
-  }
-
-  option = {
-	name = EVT_8007683_B
-	prestige_factor = -0.25
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = EVT_8007683_B
+		prestige_factor = -0.25
+		ai_chance = { factor = 0.1 }
+	}
 }
 
 # Israeli Heads-Up
@@ -1203,11 +1220,11 @@ country_event = {
   picture = "nwo2_yom_kippur_war"
   is_triggered_only = yes # ISR
 
-  option = {
-	name = EVT_8007684_A
-	any_pop = {  consciousness = 2 }
-	set_country_flag = yom_kippur_war 
-  }
+	option = {
+		name = EVT_8007684_A
+		any_pop = { consciousness = 2 }
+		set_country_flag = yom_kippur_war 
+	}
 }
 
 # Syrian choice whether to declare war for Golan
@@ -1218,24 +1235,32 @@ country_event = {
   picture = "nwo2_yom_kippur_war"
   is_triggered_only = yes # SYR
 
-  option = {
-	name = EVT_8007685_A
+	option = {
+		name = EVT_8007685_A
+		
+		create_alliance = EGY
+		relation = { who = EGY value = 200 }
 
-war = { target = ISR attacker_goal = { casus_belli = acquire_core_state state_province_id = 2687 } defender_goal = { casus_belli = status_quo } } 
+		#Claim Golan Heights
+		war = { 
+			target = ISR 
+			attacker_goal = { casus_belli = acquire_core_state state_province_id = 2687 } 
+			defender_goal = { casus_belli = status_quo } 
+		} 
 
-	add_country_modifier = { name = limited_military_intervention duration = 700 }
-	create_alliance = EGY 
-	relation = { who = EGY value = 200 }
-	any_pop = { consciousness = -1 }
-	badboy = 5
-	ai_chance = { factor = 0.9 }
-  }
+		add_country_modifier = { name = limited_military_intervention duration = 700 }
+		
+		any_pop = { consciousness = -5 }
+		badboy = 5
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-	name = EVT_8007685_B
-	ai_chance = { factor = 0.1 }
-	relation = { who = EGY value = -100 } 
-  }
+	option = {
+		name = EVT_8007685_B
+		prestige_factor = -0.1
+		relation = { who = EGY value = -100 }
+		ai_chance = { factor = 0.1 }
+	}
 }
 
 # Update on historical war progress: stalemate in Gaza
@@ -1246,10 +1271,10 @@ country_event = {
   picture = "nwo2_yom_kippur_war"
   is_triggered_only = yes # ISR
 
-  option = {
-	name = EVT_8007686_A
-	any_pop = {  consciousness = 2 }
-  }
+	option = {
+		name = EVT_8007686_A
+		any_pop = {  consciousness = 2 }
+	}
 
 }
 
@@ -1261,25 +1286,25 @@ country_event = {
   picture = "nwo2_yom_kippur_war"
   fire_only_once = yes
 
-  trigger = {
-	tag = ISR
-	NOT = { year = 1990 }
-	has_country_flag = yom_kippur_war
-	war = no
-	is_vassal = no
-	has_recently_lost_war = no
-	owns = 1756 owns = 1757 owns = 2687
-  }
+	trigger = {
+		tag = ISR
+		NOT = { year = 1990 }
+		has_country_flag = yom_kippur_war
+		war = no
+		is_vassal = no
+		has_recently_lost_war = no
+		owns = 1756 owns = 1757 owns = 2687
+	}
 
-  mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-	name = EVT_8007687_A
-	any_pop = { militancy = -1.5 }
-	random_country = { limit = { tag = EGY exists = yes } country_event = 8007689 }
-	random_country = { limit = { tag = SYR exists = yes }  country_event = 8007689 }
-	prestige = 100
-  }
+	option = {
+		name = EVT_8007687_A
+		prestige = 200
+		any_pop = { militancy = -5 }
+		random_country = { limit = { tag = EGY exists = yes } country_event = 8007689 }
+		random_country = { limit = { tag = SYR exists = yes } country_event = 8007689 }
+	}
 
 }
 
@@ -1291,11 +1316,11 @@ country_event = {
   picture = "nwo2_yom_kippur_war"
   is_triggered_only = yes # EGY / SYR
 
-  option = {
-	name = EVT_8007689_A
-	prestige = -100
-	any_pop = { militancy = 2.5 consciousness = 2 }
-  }
+	option = {
+		name = EVT_8007689_A
+		prestige = -100
+		any_pop = { militancy = 2.5 consciousness = 2 }
+	}
 
 }
 
@@ -1307,34 +1332,34 @@ country_event = {
   picture = "nwo2_yom_kippur_war"
   #fire_only_once = yes # this can fire twice, once each for Egypt and Syria, or twice for UAR
 
-  trigger = {
-	OR = { tag = EGY tag = SYR tag = UAR }
-	OR = {
-		AND = {
-			owns = 1745 #Cairo
-			owns = 1756 #Al Arish, Sinai - war goal
-			NOT = { owns = 920 } #Event already fired
+	trigger = {
+		OR = { tag = EGY tag = SYR tag = UAR }
+		OR = {
+			AND = {
+				owns = 1745 #Cairo
+				owns = 1756 #Al Arish, Sinai - war goal
+				NOT = { owns = 920 } #Event already fired
+			}
+			AND = {
+				owns = 902 #Damascus
+				OR = { ISR = { is_disarmed = yes } owns = 1756 } #War goal
+				NOT = { owns = 2687 } #Event already fired
+			}
 		}
-		AND = {
-			owns = 902 #Damascus
-	OR = { ISR = { is_disarmed = yes } owns = 1756 } #War goal
-			NOT = { owns = 2687 } #Event already fired
-		}
+		year = 1970 NOT = { year = 1990 }
+		ISR = { has_country_flag = yom_kippur_war }
+		has_recently_lost_war = no
+		exists = ISR
 	}
-	year = 1970 NOT = { year = 1990 }
-	ISR = { has_country_flag = yom_kippur_war }
-	has_recently_lost_war = no
-	exists = ISR
-  }
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 1  }
 
-  option = {
-	name = EVT_8007690_A
-	prestige = 100
-	any_pop = { militancy = -2.5  consciousness = -1 }
-	ISR = { country_event = 8007691 }
-  }
+	option = {
+		name = EVT_8007690_A
+		prestige = 100
+		any_pop = { militancy = -2.5  consciousness = -1 }
+		ISR = { country_event = 8007691 }
+	}
 }
 
 # Israeli defeat
@@ -1345,17 +1370,17 @@ country_event = {
   picture = "nwo2_yom_kippur_war"
   is_triggered_only = yes # ISR
 
-  option = {
-	name = EVT_8007691_A
-	any_pop = { militancy = 2.5  consciousness = 2 }
-	random_owned = {
-		limit = {
-			any_neighbor_province = { owned_by = FROM }
-			OR = { province_id = 920 province_id = 2687 }
+	option = {
+		name = EVT_8007691_A
+		any_pop = { militancy = 5 consciousness = 2 }
+		random_owned = {
+			limit = {
+				any_neighbor_province = { owned_by = FROM }
+				OR = { province_id = 920 province_id = 2687 }
+			}
+			secede_province = FROM
 		}
-		secede_province = FROM
 	}
-  }
 }
 
 ###########################################################################
@@ -1823,6 +1848,7 @@ country_event = {
 #  }
 #}
 
+
 ###########################################################################
 #Gaza events
 ###########################################################################
@@ -1970,65 +1996,65 @@ country_event = {
 
 #After Arab-Israeli War
 country_event = {
-  id = 8007670
-  title = EVT_8007670_NAME
-  desc = EVT_8007670_DESC
-  picture = "nwo2_law_of_return"
-  fire_only_once = yes
+	id = 8007670
+	title = EVT_8007670_NAME
+	desc = EVT_8007670_DESC
+	picture = "nwo2_law_of_return"
+	fire_only_once = yes
 
-  trigger = {
-	tag = ISR
-	government = democracy
-	is_vassal = no
-	year = 1949 NOT = { year = 1990 }
-	war = no
-	owns = 919 # Tel Aviv
-	owns = 921 # Southern District
-	owns = 916 # Haifa
-  }
+	trigger = {
+		tag = ISR
+		government = democracy
+		year = 1949 NOT = { year = 1990 }
+		war = no
+		owns = 919 # Tel Aviv
+		owns = 921 # Southern District
+		owns = 916 # Haifa
+	}
 
-  mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-	name = EVT_8007670_A
-	any_pop = { limit = { culture = haredim_jewish } reduce_pop = 1.4 }
-	POL = { any_pop = { limit = { culture = jewish NOT = { strata = rich } } move_pop = 919 } }
-	ROM = { any_pop = { limit = { culture = jewish } move_pop = 919 } }
-	MOR = { any_pop = { limit = { culture = jewish } move_pop = 919 } }
-	IRQ = { any_pop = { limit = { culture = jewish } move_pop = 916 } }
-	YEM = { any_pop = { limit = { culture = jewish } move_pop = 921 } }
-	TUN = { any_pop = { limit = { culture = jewish } move_pop = 916 } }
-	LIB = { any_pop = { limit = { culture = jewish } move_pop = 916 } }
-	EGY = { any_pop = { limit = { culture = jewish } move_pop = 916 } }
-  }
+	option = {
+		name = EVT_8007670_A
+		any_pop = { limit = { culture = haredim_jewish } reduce_pop = 1.4 }
+		POL = { any_pop = { limit = { culture = jewish NOT = { strata = rich } } move_pop = 919 } }
+		ROM = { any_pop = { limit = { culture = jewish } move_pop = 919 } }
+		MOR = { any_pop = { limit = { culture = jewish } move_pop = 919 } }
+		IRQ = { any_pop = { limit = { culture = jewish } move_pop = 916 } }
+		YEM = { any_pop = { limit = { culture = jewish } move_pop = 921 } }
+		TUN = { any_pop = { limit = { culture = jewish } move_pop = 916 } }
+		TRI = { any_pop = { limit = { culture = jewish } move_pop = 916 } }
+		EGY = { any_pop = { limit = { culture = jewish } move_pop = 916 } }
+	}
 }
+
 # TODO add solider pops and miliary spending and money to israel through USA decition and ISR event
 
 #After Six-Day War
 country_event = {
-  id = 8007682
-  title = EVT_8007682_NAME
-  desc = EVT_8007682_DESC
-  picture = "nwo2_jewish_immigrants"
-  fire_only_once = yes
+	id = 8007682
+	title = EVT_8007682_NAME
+	desc = EVT_8007682_DESC
+	picture = "nwo2_jewish_immigrants"
+	fire_only_once = yes
 
-  trigger = {
-	tag = ISR
-	government = democracy
-	is_vassal = no
-	year = 1967 NOT = { year = 1990 }
-	exists = POL
-	POL = { government = proletarian_dictatorship }
-	war = no
-	owns = 917
-  }
+	trigger = {
+		tag = ISR
+		government = democracy
+		is_vassal = no
+		year = 1967 NOT = { year = 1990 }
+		exists = POL
+		POL = { government = proletarian_dictatorship }
+		war = no
+		owns = 917
+	}
 
-  mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-	name = EVT_8007682_A
-	POL = { any_pop = { limit = { culture = jewish } move_pop = 917 } }
-  }
+	option = {
+		name = EVT_8007682_A
+		POL = { any_pop = { limit = { culture = jewish } move_pop = 917 } }
+	}
 }
 
 #After fall of USSR
@@ -2039,24 +2065,183 @@ country_event = {
   picture = "post_soviet_aliyah"
   fire_only_once = yes
 
-  trigger = {
-	tag = ISR
-	government = democracy
-	is_vassal = no
-	year = 1949 
-	war = no
-	owns = 919 # Tel Aviv
-	NOT = { RUS = { government = proletarian_dictatorship } }
-  }
+	trigger = {
+		OR = { tag = ISR tag = ISP }
+		NOT = { government = presidental_dictatorship }
+		year = 1949
+		NOT = { year = 1990 }
+		war = no
+		owns = 919 # Tel Aviv
+		NOT = { RUS = { government = proletarian_dictatorship } }
+	}
 
-  mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-	name = EVT_8007670_A
-	RUS = { any_pop = { limit = { culture = jewish NOT = { strata = rich } } move_pop = 919 } } # Tel Aviv
-	UKR = { any_pop = { limit = { culture = jewish NOT = { strata = rich } } move_pop = 919 } }
-	BYE = { any_pop = { limit = { culture = jewish NOT = { strata = rich } } move_pop = 919 } }
-  }
+	option = {
+		name = EVT_8007670_A
+		RUS = { any_pop = { limit = { culture = jewish NOT = { strata = rich } } move_pop = 919 } } # Tel Aviv
+		UKR = { any_pop = { limit = { culture = jewish NOT = { strata = rich } } move_pop = 919 } }
+		BYE = { any_pop = { limit = { culture = jewish NOT = { strata = rich } } move_pop = 919 } }
+		any_pop = { ideology = { factor = 0.15 value = conservative } }
+	}
+}
+
+#Fictional American Aliyah
+country_event = {
+	id = 8007702
+	title = EVT_8007702_NAME
+	desc = EVT_8007702_DESC
+	picture = "america_broken"
+	fire_only_once = yes
+
+	trigger = {
+		OR = { tag = ISR tag = ISP }
+		year = 1946
+		NOT = { year = 1990 }
+		war = no
+		owns = 919 # Tel Aviv
+		NOT = { USA = { government = democracy } }
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = EVT_8007702_A
+		USA = { any_pop = { limit = { culture = jewish } move_pop = 919 } } # Tel Aviv
+		USA = { any_pop = { limit = { culture = haredim_jewish } move_pop = 919 } }
+        any_pop = { limit = { culture = jewish } reduce_pop = 1.16 }
+	}
+}
+
+#Labor Zionism used as a way to model Israel's politics
+country_event = {
+	id = 22615
+	title = EVT_22615_NAME 
+	desc = EVT_22615_DESC
+   	picture = "independence_of_israel"
+	fire_only_once = yes
+
+  	trigger = {
+		tag = ISR
+		government = democracy
+		year = 1946 NOT = { year = 1990 }
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+   	option = {
+        name = EVT_22615_OPTA
+		any_pop = { limit = { OR = { culture = jewish culture = haredim_jewish } } ideology = { factor = 0.35 value = socialist } }
+		any_pop = { limit = { OR = { culture = jewish culture = haredim_jewish } } ideology = { factor = 0.16 value = communist_social } }
+		any_pop = { limit = { OR = { culture = jewish culture = haredim_jewish } } ideology = { factor = 0.02 value = communist } }
+		any_pop = { limit = { OR = { culture = jewish culture = haredim_jewish } } ideology = { factor = 0.04 value = liberal } }
+		any_pop = { limit = { OR = { culture = jewish culture = haredim_jewish } } ideology = { factor = 0.05 value = big_tent } }
+		any_pop = { limit = { OR = { culture = jewish culture = haredim_jewish } } ideology = { factor = 0.12 value = traditionalist } }
+		any_pop = { limit = { OR = { culture = jewish culture = haredim_jewish } } ideology = { factor = -0.07 value = conservative } }
+	}
+}
+
+#Dissolution of the Commonwealth
+country_event = {
+	id = 22616
+	title = EVT_22616_NAME 
+	desc = EVT_22616_DESC
+	fire_only_once = yes
+
+  	trigger = {
+		tag = ISP
+		year = 1946
+		NOT = { year = 1990 }
+		OR = { ruling_party_ideology = nationalist ruling_party_ideology = traditionalist } 
+		NOT = { exists = ISR exists = PAL }
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+   	option = {
+        name = EVT_22616_OPTA
+		ai_chance = { factor = 0.5 }
+		change_tag = ISR
+		ISR = { country_event = 8007624 country_event = 800054 }
+		USA = { country_event = 1007603 }
+
+		921 = { remove_core = PAL }
+		919 = { remove_core = PAL }
+		916 = { remove_core = PAL }
+		3349 = { add_core = ISR }
+		3348 = { add_core = ISR }
+		3347 = { add_core = ISR }
+		3346 = { add_core = ISR }
+		3349 = { remove_core = PAL }
+		3348 = { remove_core = PAL }
+		3347 = { remove_core = PAL }
+		3346 = { remove_core = PAL }
+		917 = { remove_core = PAL }
+
+		release = PAL
+		PAL = { country_event = 8007626 }		
+		
+		set_global_flag = independent_israel
+	}
+
+   	option = {
+        name = EVT_22616_OPTB
+		ai_chance = { factor = 0.5 }
+		change_tag = PAL
+		PAL = { country_event = 8007626 }
+
+		921 = { remove_core = PAL }
+		919 = { remove_core = PAL }
+		916 = { remove_core = PAL }
+		3349 = { add_core = ISR }
+		3348 = { add_core = ISR }
+		3347 = { add_core = ISR }
+		3346 = { add_core = ISR }
+		3349 = { remove_core = PAL }
+		3348 = { remove_core = PAL }
+		3347 = { remove_core = PAL }
+		3346 = { remove_core = PAL }
+		917 = { remove_core = ISR }
+
+		release = ISR
+		ISR = { country_event = 8007624 country_event = 800054 }
+		USA = { country_event = 1007603 }
+		
+		set_global_flag = independent_israel
+	}
+}
+
+country_event = {
+  id = 8001949
+  title = EVT_8001949_NAME
+  desc = EVT_8001949_DESC
+  picture = "nwo2_law_of_return"
+  fire_only_once = yes
+
+	trigger = {
+		tag = ISP
+		government = democracy
+		year = 1949
+		NOT = { year = 1990 }
+		war = no
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = EVT_8001949_A
+		POL = { any_pop = { limit = { culture = jewish NOT = { strata = rich } } move_pop = 919 } }
+		ROM = { any_pop = { limit = { culture = jewish } move_pop = 919 } }
+		MOR = { any_pop = { limit = { culture = jewish } move_pop = 919 } }
+		IRQ = { any_pop = { limit = { culture = jewish } move_pop = 916 } }
+		YEM = { any_pop = { limit = { culture = jewish } move_pop = 921 } }
+		TUN = { any_pop = { limit = { culture = jewish } move_pop = 916 } }
+		TRI = { any_pop = { limit = { culture = jewish } move_pop = 916 } }
+		EGY = { any_pop = { limit = { culture = jewish } move_pop = 916 } }
+		913 = { any_pop = { limit = { culture = palestinian } move_pop = 916 } }
+		902 = { any_pop = { limit = { culture = palestinian } move_pop = 919 } }
+		908 = { any_pop = { limit = { culture = palestinian OR = { strata = rich strata = middle } } move_pop = 916 } } # Amman
+	}
 }
 
 ###########################################################################
@@ -2139,7 +2324,7 @@ country_event = {
 			}
 			militancy = 10
 		}
-		ai_chance = { factor = 0.25 }
+		ai_chance = { factor = 0.3 }
 	}
 
 	option = {
@@ -2177,10 +2362,31 @@ country_event = {
 			modifier = {
 				factor = 0.25
 				919 = { is_core = PAL }
-			}
 		}
+		ai_chance = { factor = 0.3 }
 	}
 
-	#TODO: option 4, beg Soviets for Aliyah in exchange for becoming communist. Unfortunately, impossible to disable the choice if the Aliyah already happened, so Israel could become communist after fall of USSR
+	option = {
+		name = EVT_8007700_D #One state of two nations
+		change_tag = ISP
+		ai_chance = { factor = 0.15 }
+		any_country = {
+			limit = { is_culture_group = arabic }
+			relation = { who = THIS value = 50 }
+		}
+
+		PAL = { all_core = { add_core = ISP } }
+		ISR = { all_core = { add_core = ISP } }
+		
+		ISP = { 
+			country_event = 8007624
+			government = democracy
+			country_event = 800054 
+			any_owned = { limit = { is_core = PAL } add_province_modifier = { name = nationalist_agitation duration = 3650 } }
+			any_owned = { limit = { is_core = ISR } add_province_modifier = { name = nationalist_agitation duration = 3650 } } 
+		 }
+	}
+
+	#TODO: option 5, beg Soviets for Aliyah in exchange for becoming communist. Unfortunately, impossible to disable the choice if the Aliyah already happened, so Israel could become communist after fall of USSR
 
 }

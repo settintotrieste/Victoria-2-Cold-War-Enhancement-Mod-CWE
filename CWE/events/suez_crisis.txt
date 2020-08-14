@@ -7,359 +7,454 @@
 ### Chance of WW3: 0,5%
 ###
 
+#Nationalisation of the Aswan Dam
 country_event = {
   id = 8500301
-  title = EVT_8500301_NAME
-  desc = EVT_8500301_DESC
-  picture = "nwo2_aswan_dam"
+  title = "Construction of the Aswan Dam?"
+  desc = EVTDESC8500301
+  picture = "nwo2_aswan_dam_construction"
   fire_only_once = yes
 
   trigger = {
-    	tag = EGY
-    	year = 1956 
-	NOT = { year = 1963 }
-	has_country_flag = claim_the_suez
-	government = presidential_dictatorship
-	NOT = { owns = 1755 }
-	ENG = { owns = 1755 }
-	ISR = { exists = yes }
-	is_vassal = no
-  }
+		tag = EGY
+		year = 1956
+		NOT = { year = 1965 }
+		has_country_flag = claim_the_suez
+		
+		government = presidential_dictatorship
+		ruling_party_ideology = socialist
+		is_vassal = no
+		war = no
+		
+		ENG = { is_vassal = no owns = 1755 }
+		
+		#EGY owns Aswan
+		owns = 1766
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
+	}
 
-  mean_time_to_happen = { months = 10 }
+	mean_time_to_happen = { months = 10 }
 
-  option = {
-    name = EVT_8500301_A
-	relation = { who = USA value = -100 } 
-	relation = { who = ENG value = -100 } 
-	relation = { who = RUS value = 100 }
-	ENG = { country_event = 8500302 }
-1766 = { add_province_modifier = { name = embankment_dam duration = -1 } }
-	ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = "Seek US financing for the project"
+		USA = { country_event = 8500302 }
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8500301_B
-	relation = { who = USA value = 100 } 
-	relation = { who = ENG value = 100 } 
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Do it by decision later (1965 onwards)"
+		prestige_factor = -0.01
+		any_pop = {
+			scaled_militancy = {
+				factor = 5
+				ideology = socialist
+			}
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
 }
+
+#EGY requests financing for the Aswan Dam - USA
 country_event = {
   id = 8500302
-  title = EVT_8500302_NAME
-  desc = EVT_8500302_DESC
-  picture = "nwo2_nasser_speaking"
+  title = "Construction of the Aswan Dam"
+  desc = EVTDESC8500302
+  picture = "nwo2_aswan_dam_construction"
   fire_only_once = yes
-  is_triggered_only = yes # ENG
+  is_triggered_only = yes
 
-  option = {
-    name = EVT_8500302_A
-	money = -500000 
-	relation = { who = USA value = -50 } 
-	1755 = { secede_province = EGY }
-casus_belli = { target = EGY type = acquire_state months = 12 }
-    war = { target = EGY attacker_goal = { casus_belli = acquire_state state_province_id = 1755 } defender_goal = { casus_belli = status_quo } }
-	badboy = 5 
-	random_country = { limit = { tag = ISR exists = ISR } country_event = 8500304 }
-	ai_chance = { factor = 0.7 }
-  }
+	option = {
+		name = "Refuse to aid socialist Egypt"
+		EGY = { country_event = 8500304 }
+		relation = { who = EGY value = -100 }
+		diplomatic_influence = { who = EGY value = -100 }
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Set aside our ideological differences"
+		prestige_factor = -0.05
+		money = -500000
+		relation = { who = EGY value = 100 }
+		diplomatic_influence = { who = EGY value = 100 }
+		EGY = { country_event = 8500303 }
+		ai_chance = { factor = 0.1 }
+	}
 
-  option = {
-    name = EVT_8500302_B
-	money = -1000000 
-	relation = { who = USA value = -100 } 
-	relation = { who = RUS value = -200 } 
-	relation = { who = EGY value = -200 } 
-	1755 = { secede_province = EGY }
-casus_belli = { target = EGY type = acquire_state months = 12 }
-    war = { target = EGY attacker_goal = { casus_belli = acquire_state state_province_id = 1755 } defender_goal = { casus_belli = status_quo } }
-	badboy = 3 
-	random_country = { limit = { tag = ISR exists = ISR } country_event = 8500303 }
-	ai_chance = { factor = 0.2 }
-  }
-
-  option = {
-    name = EVT_8500302_C
-	relation = { who = EGY value = 200 } 
-	1755 = { secede_province = EGY }
-	any_pop = { militancy = 2 consciousness = 1.0 }
-	badboy = -2
-	prestige_factor = -0.1
-	ai_chance = { factor = 0.1 }
-  }
 }
+
+#USA provides funds for the Aswan Dam - EGY
 country_event = {
   id = 8500303
-  title = EVT_8500303_NAME
-  desc = EVT_8500303_DESC
-  picture = "nwo2_operation_kadesh"
+  title = "US Funds the Aswan Dam"
+  desc = "$FROMCOUNTRY$ accepts our request to provide funding for the Aswan Dam."
+  picture = "nwo2_aswan_dam_construction"
+  fire_only_once = yes
   is_triggered_only = yes
 
-  option = {
-    name = EVT_8500303_A
-	set_country_flag = operation_kadesh
-	# infamy illegal operation
-	war = { target = EGY attacker_goal = { casus_belli = acquire_state state_province_id = 1756 } defender_goal = { casus_belli  = status_quo } } 
-	badboy = 5 
-	any_pop = { militancy = -3 consciousness = -2 }
-	ai_chance = { factor = 1 }
-  }
+	option = {
+		name = "Excellent!"
+		prestige = 250
+		set_global_flag = aswan_dam
+		1766 = { add_province_modifier = { name = embankment_dam duration = -1 } }
+		any_pop = {
+			scaled_militancy = {
+				factor = -5
+				ideology = socialist
+			}
+		}
+	}
 
-  option = {
-    name = EVT_8500303_B
-	any_pop = { militancy = 1.0 consciousness = 1.0 }
-	ai_chance = { factor = 0 }
-  }
 }
+
+#Nationalisation of the Suez Canal - EGY
 country_event = {
   id = 8500304
-  title = EVT_8500304_NAME
-  desc = EVT_8500304_DESC
-  picture = "nwo2_operation_kadesh"
+  title = "US Withdraws Aswan Dam Funding"
+  desc = EVTDESC8500304
+  picture = "suez_crisis_start"
+  fire_only_once = yes
   is_triggered_only = yes
-  
-  option = {
-    name = EVT_8500304_A
-	set_country_flag = operation_kadesh
-casus_belli = { target = EGY type = acquire_state months = 12 }
-	war = { target = EGY attacker_goal = { casus_belli = acquire_state state_province_id = 1756 } attacker_goal = { casus_belli = acquire_state state_province_id = 920 } defender_goal = { casus_belli = status_quo } } 
-	badboy = 5 
-	any_pop = { militancy = -5 consciousness = 1.0 }
-	ai_chance = { factor = 1 }
-  }
 
-  option = {
-    name = EVT_8500304_B
-	any_pop = { militancy = 1.0  consciousness = 1.0 }
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = "Nationalise the Suez Canal to pay for the Aswan Dam!"
+		
+		#Send notification to the owners of the Suez canal
+		ENG = { country_event = 8500305 } # Province owner
+		
+		#Involve France
+		random_country = {
+			limit = { tag = FRA is_vassal = no }
+			country_event = 8500306
+		}
+		
+		#Involve Israel
+		random_country = {
+			limit = { tag = ISR is_vassal = no }
+			country_event = 8500307
+		}
+		
+		badboy = 5
+		
+		#Get the dam free
+		set_global_flag = aswan_dam
+		1766 = { add_province_modifier = { name = embankment_dam duration = -1 } }
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "I don't want to stir the hornet's nest"
+		prestige_factor = -0.2
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = socialist
+			}
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
 }
+
+#Nationalisation of the Suez Canal - ENG response
 country_event = {
   id = 8500305
-  title = EVT_8500305_NAME
-  desc = EVT_8500305_DESC
-  picture = "nwo2_nasser_in_crowd"
+  title = "The Suez Crisis of 1956"
+  desc = EVTDESC8500305
+  picture = "suez_crisis_start"
   fire_only_once = yes
+  is_triggered_only = yes
 
-  trigger = {
-    tag = EGY
-    year = 1954 NOT = { year = 1963 }
-    EGY = { war_with = ISR }
-  }
+	option = {
+		name = "The Suez Canal is ours!"
+		1755 = { 
+			remove_core = ENG
+			add_core = EGY
+			secede_province = EGY 
+		}
+		badboy = 5
+		
+		diplomatic_influence = { who = EGY value = -100 }
+		
+		#For US and USSR involvement
+		set_global_flag = suez_crisis_triggered
+		relation = { who = USA value = -50 }
+		relation = { who = RUS value = -50 }
+		
+		#Start the war
+		casus_belli = { target = EGY type = acquire_state months = 12 }
+		war = { 
+			target = EGY 
+			attacker_goal = { casus_belli = acquire_state state_province_id = 1755 } 
+			defender_goal = { casus_belli = status_quo } 
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "I don't want to stir the hornet's nest"
+		prestige_factor = -0.2
+		money = -250000
+		relation = { who = EGY value = 100 }
+		ai_chance = { factor = 0.1 }
+	}
 
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8500305_A
-	any_pop = { militancy = -5 consciousness = -1 }
-  }
 }
+
+#Nationalisation of the Suez Canal - FRA response
 country_event = {
-  id = 8500311
-  title = EVT_8500311_NAME
-  desc = EVT_8500311_DESC
-  picture = "nwo2_suez_war_intervention"
+  id = 8500306
+  title = "The Suez Crisis of 1956"
+  desc = EVTDESC8500306
+  picture = "suez_crisis_start"
   fire_only_once = yes
-
-  trigger = {
-    	tag = USA
-	government = democracy
-    	year = 1954 NOT = { year = 1960 }
-    	ENG = { war_with = EGY }
-  }
-
-  mean_time_to_happen = { months = 1 }
-
-  option = {
-    name = EVT_8500311_A
-	relation = { who = ENG value = -50 } 
-	relation = { who = EGY value = 50 } 
-	prestige = -500
-	ai_chance = { factor = 0.1 }
-  }
-
-  option = {
-    name = EVT_8500311_B
-	relation = { who = ENG value = -50 } 
-	ENG = { country_event = 8500315 }
-	ISR = { country_event = 8500315 }
-	ai_chance = { factor = 0.2 }
-  }
-
-  option = {
-    name = EVT_8500311_C
-	relation = { who = ENG value = -50 } 
-	ENG = { country_event = 8500315 }
-	ISR = { country_event = 8500315 }
-	RUS = { country_event = 8500312 } 
-	ai_chance = { factor = 0.7 }
-  }
-
- }
-country_event = {
-  id = 8500312
-  title = EVT_8500312_NAME
-  desc = EVT_8500312_DESC
-  picture = "nwo2_suez_war_intervention"
   is_triggered_only = yes
 
-  option = {
-    name = EVT_8500312_A
-	relation = { who = EGY value = 150 } 
-	relation = { who = ENG value = -100 } 
-	relation = { who = ISR value = -100 } 
-	ENG = { country_event = 8500313 }
-	EGY = { country_event = 8500316 } 
-	ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = "The Suez Canal is ours!"
+		badboy = 5
+		
+		diplomatic_influence = { who = EGY value = -100 }
+		
+		#For US and USSR involvement
+		set_global_flag = suez_crisis_triggered
+		relation = { who = USA value = -50 }
+		relation = { who = RUS value = -50 }
+		
+		#Start the war
+		casus_belli = { target = EGY type = war_reparations months = 12 }
+		war = { 
+			target = EGY 
+			attacker_goal = { casus_belli = war_reparations } 
+			defender_goal = { casus_belli = status_quo } 
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "I don't want to stir the hornet's nest"
+		prestige_factor = -0.2
+		money = -250000
+		relation = { who = EGY value = 100 }
+		ai_chance = { factor = 0.1 }
+	}
 
-  option = {
-    name = EVT_8500312_B
-	relation = { who = USA value = -10 } 
-	relation = { who = EGY value = -50 } 
-	ai_chance = { factor = 0.1 }
-  }
 }
+
+#Nationalisation of the Suez Canal - ISR response
 country_event = {
-  id = 8500313
-  title = EVT_8500313_NAME
-  desc = EVT_8500313_DESC
-  picture = "nwo2_suez_war_intervention"
-  is_triggered_only = yes
-
-
-  option = {
-    name = EVT_8500313_A
-	relation = { who = EGY value = -100 } 
-	relation = { who = USA value = 10 } 
-	end_war = EGY
-	any_pop = { militancy = 0.7  consciousness = 1.0 }
-	prestige = -500
-	ai_chance = { factor = 0.8 }
-  }
-
-  option = {
-    name = EVT_8500313_B
-	relation = { who = USA value = -150 } 
-	RUS = { country_event = 8500314 }
-	ai_chance = { factor = 0.2 }
-  }
-}
-country_event = {
-  id = 8500314
-  title = EVT_8500314_NAME
-  desc = EVT_8500314_DESC
-  picture = "nwo2_suez_war_intervention"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8500314_A
-	create_alliance = EGY 
-	relation = { who = EGY value = 200 }
-	any_pop = { militancy = 3  consciousness = 5 }
-RUS = { diplomatic_influence = { who = EGY value = 200 } }
-	ai_chance = { factor = 0.75 }
-  }
-
-  option = {
-    name = EVT_8500314_B
-	any_pop = { militancy = 2.5  consciousness = 1.0 }
-	ai_chance = { factor = 0.25 }
-  }
-}
-country_event = {
-  id = 8500315
-  title = EVT_8500315_NAME
-  desc = EVT_8500315_DESC
+  id = 8500307
+  title = "The Suez Crisis of 1956"
+  desc = EVTDESC8500307
   picture = "nwo2_operation_kadesh"
+  fire_only_once = yes
   is_triggered_only = yes
 
-  option = {
-    name = EVT_8500315_A
-	any_pop = { militancy = -5 consciousness = -2 }
-  }
-}
-country_event = {
-  id = 8500316
-  title = EVT_8500316_NAME
-  desc = EVT_8500316_DESC
-  picture = "nwo2_nasser_in_crowd"
-  is_triggered_only = yes
+	option = {
+		name = "Begin Operation Kadesh!"
+		badboy = 5
+		
+		relation = { who = ENG value = 100 }
+		relation = { who = FRA value = 100 }
+		
+		#For US and USSR involvement
+		relation = { who = USA value = -100 }
+		relation = { who = RUS value = -100 }
+		
+		#Start the war, take territory up to the Suez Canal
+		casus_belli = { target = EGY type = acquire_state months = 12 }
+		war = { 
+			target = EGY 
+			attacker_goal = { casus_belli = acquire_state state_province_id = 920 } 
+			attacker_goal = { casus_belli = acquire_state state_province_id = 1755 } 
+			attacker_goal = { casus_belli = acquire_state state_province_id = 1756 }
+			defender_goal = { casus_belli  = status_quo }
+		} 
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "We are not greedy"
+		relation = { who = ENG value = -50 }
+		relation = { who = FRA value = -50 }
+		ai_chance = { factor = 0.1 }
+	}
 
-  option = {
-    name = EVT_8500316_A
-	any_pop = { militancy = -5  consciousness = -1 }
-  }
 }
+
+#US choice to pressure ISR, FRA and ENG to cease the war
 country_event = {
-  id = 8500322
-  title = EVT_8500322_NAME
-  desc = EVT_8500322_DESC
-  picture = "nwo2_egypt_wins_suez_war"
+  id = 8500308
+  title = "US Involvement in the Suez Crisis?"
+  desc = EVTDESC8500309
+  picture = "nwo2_suez_war_intervention"
   fire_only_once = yes
 
-  trigger = {
-	tag = EGY 
-	owns = 1756
-    ISR = { has_country_flag = operation_kadesh }
-	war = no
-  }
+	trigger = {
+    	tag = USA
+		government = democracy
+    	has_global_flag = suez_crisis_triggered
+		NOT = { year = 1965 }
+    	OR = {
+			ENG = { war_with = EGY }
+			FRA = { war_with = EGY }
+			ISR = { war_with = EGY }
+		}
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
+	}
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 2 }
 
-  option = {
-    name = EVT_8500320_A
-	prestige = 10
-	ENG = { country_event = 8005004 }
-  }
+	option = {
+		name = "Pressure the participants to withdraw"
+		
+		prestige_factor = 0.02
+	
+		badboy = -5
+	
+		#Send the request
+		any_country = {
+			limit = {
+				OR = { tag = ENG tag = FRA tag = ISR }
+				war_with = EGY
+			}
+			country_event = 8500309 #Pressure to withdraw
+		}
+	
+		ai_chance = { factor = 0.7 }
+	}
+
+	option = {
+		name = "Let bygones be bygones"
+		prestige_factor = -0.02
+		relation = { who = EGY value = -50 }
+		diplomatic_influence = { who = EGY value = -50 }
+		
+		#War participants are happy
+		any_country = {
+			limit = {
+				OR = { tag = ENG tag = FRA tag = ISR }
+				war_with = EGY
+			}
+			relation = { who = THIS value = 100 }
+		}
+		
+		#Put the ball in RUS's court
+		RUS = { country_event = 8500310 } 
+		
+		ai_chance = { factor = 0.2 }
+	}
 
 }
+
+#US demands the end of the war
 country_event = {
-  id = 8500323
-  title = EVT_8500323_NAME
-  desc = EVT_8500323_DESC
-  picture = "nwo2_egypt_loses_suez_war"
-  fire_only_once = yes
+	id = 8500309
+	title = "$FROMCOUNTRY_ADJ$ Pressure to Withdraw"
+	desc = EVTDESC8500309
+	picture = "nwo2_suez_war_intervention"
+	is_triggered_only = yes
 
-  trigger = {
-	tag = EGY 
-	NOT = { owns = 1756 }
-    ISR = { has_country_flag = operation_kadesh }
-	war = no
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8500323_A
-	any_pop = { militancy = 2.0  consciousness = 1.0 }
-  }
+	option = {
+		name = "Accept the UN peace deal (status quo)"
+		prestige_factor = -0.05
+		end_war = EGY
+		relation = { who = FROM value = 100 }
+		ai_chance = { factor = 0.9 }
+	}
+	option = {
+		name = "Continue the war!"
+		badboy = 5
+		any_pop = { militancy = 2.5 consciousness = 2.5 }
+		relation = { who = FROM value = -100 }
+		ai_chance = { factor = 0.1 }
+	}
 }
+
+#USSR choice to pressure ISR, FRA and ENG to cease the war
 country_event = {
-  id = 8500324
-  title = EVT_8500324_NAME
-  desc = EVT_8500324_DESC
-  picture = "nwo2_egypt_loses_suez_war"
-  fire_only_once = yes
+	id = 8500310
+	title = "Soviet Involvement in the Suez Crisis?"
+	desc = EVTDESC8500310
+	picture = "nwo2_suez_war_intervention"
+	fire_only_once = yes
 
-  trigger = {
-	tag = EGY 
-	ENG = { owns = 1755 }
-	truce_with = ENG
-	has_recently_lost_war = yes
-	government = presidential_dictatorship
-	war = no
-	is_vassal = no
-  }
+	is_triggered_only = yes
 
-  mean_time_to_happen = { months = 1  }
+	option = {
+		name = "Pressure the participants to withdraw (war if refuse)"
+	
+		prestige_factor = 0.02
+	
+		badboy = -5
+	
+		#Send the request
+		any_country = {
+			limit = {
+				OR = { tag = ENG tag = FRA tag = ISR }
+				war_with = EGY
+			}
+			country_event = 8500311 #Pressure to withdraw
+		}
+	
+		ai_chance = { factor = 0.7 }
+	}
 
-  option = {
-    	name = EVT_8500324_A
-	government = hms_government 
-	country_event = 800054 
-	ENG = { diplomatic_influence = { who = EGY value = 200 } }
-  }
+	option = {
+		name = "Let bygones be bygones"
+		prestige_factor = -0.02
+		relation = { who = EGY value = -50 }
+		diplomatic_influence = { who = EGY value = -50 }
+		
+		#War participants are happy
+		any_country = {
+			limit = {
+				OR = { tag = ENG tag = FRA tag = ISR }
+				war_with = EGY
+			}
+			relation = { who = THIS value = 100 }
+		}
+		
+		ai_chance = { factor = 0.2 }
+	}
 
+}
+
+#USSR demands the end of the war
+country_event = {
+	id = 8500311
+	title = "$FROMCOUNTRY_ADJ$ Pressure to Withdraw"
+	desc = EVTDESC8500310
+	picture = "nwo2_suez_war_intervention"
+	is_triggered_only = yes
+
+	option = {
+		name = "Accept the UN peace deal (status quo)"
+		prestige_factor = -0.05
+		end_war = EGY
+		relation = { who = FROM value = 100 }
+		ai_chance = { factor = 0.9 }
+	}
+	option = {
+		name = "Continue the war! (War with USSR)"
+		badboy = 5
+		any_pop = { militancy = 2.5 consciousness = 2.5 }
+		
+		war = { 
+			target = FROM
+			attacker_goal = { casus_belli = dismantle_cb } 
+			defender_goal = { casus_belli = status_quo } 
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
 }

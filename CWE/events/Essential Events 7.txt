@@ -2404,34 +2404,62 @@ any_country = { limit = { alliance_with = THIS } leave_alliance = THIS relation 
 #Zimbabwe Name
 country_event = {
 	id = 1412207
-title = "Transition to Zimbabwe"
+	title = "Transition to Zimbabwe"
 	desc = EVTDESC1412207	
 	picture = "zimbabwe_name"
 
-fire_only_once = yes
+	fire_only_once = yes
 
-trigger = { 
-tag = RHO
-government = democracy1
-war = no
-election = no
-is_vassal = no
-year = 1978
-}
-
-mean_time_to_happen = { 
-months = 12
+	trigger = { 
+		tag = ZIM
+		OR = { government = democracy1 government = hms_government government = hms_government1 }
+		war = no
+		election = no
+		OR = { 
+			is_vassal = no
+			
+			#Landcaster House Agreement
+			AND = {
+				has_country_flag = RHO_ENG_revert_flag
+				vassal_of = ENG
+			} 
+		}
+		
+		OR = { 
+			AND = { year = 1980 has_country_flag = RHO_ENG_revert_flag }
+			
+			#5 years slower if no British help
+			AND = { year = 1985 NOT = { has_country_flag = RHO_ENG_revert_flag } }
+		}
+		
+		NOT = { primary_culture = shona }
+		
+		NOT = { minorities_reform = minorities_oppression }
 	}
 
-option = {
-	name = "Transition to Zimbabwe"
-		government = democracy
-		prestige = 10
-		primary_culture = shona
-		remove_accepted_culture = black_anglo
-		any_pop = { militancy = -3 }
+	mean_time_to_happen = {
+		months = 4
+	}
 
-		random_country = { 
+	option = {
+		name = "End white rule once and for all!"
+		
+		#If Landcaster House Agreement was accepted, option for ENG to grant independence
+		overlord = { country_event = 8012217 }
+		
+		government = democracy
+		prestige = 50
+		primary_culture = shona
+		add_accepted_culture = british
+		ruling_party_ideology = socialist
+		
+		any_pop = {
+			limit = { is_primary_culture = shona }
+			militancy = -10
+			ideology = { factor = 0.30 value = socialist }
+		}
+
+		random_country = {
 			limit = { OR = { primary_culture = british accepted_culture = british } } 
 			diplomatic_influence = { who = THIS value = -50 }
 		}
@@ -2439,9 +2467,9 @@ option = {
 		ai_chance = { factor = 0.8 }
 	}
 
-option = {
-	name = "Stay as Zimbabwe-Rhodesia"
-		any_pop = { limit = { is_primary_culture = no } militancy = 3 }
+	option = {
+		name = "Stay as Zimbabwe-Rhodesia"
+		any_pop = { limit = { is_primary_culture = no } militancy = 5 }
 		add_country_modifier = { name = revolution_chaos duration = 3650 }
 
 		random_country = { 

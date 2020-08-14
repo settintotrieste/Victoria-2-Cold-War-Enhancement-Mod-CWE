@@ -6,57 +6,57 @@ country_event = {
   picture = "nwo2_14_july_revolution"
   fire_only_once = yes
 
-  trigger = {
+	trigger = {
     	tag = IRQ
-	year = 1958 NOT = { year = 1990 }
-OR = { government = hms_government government = absolute_monarchy government = mandate_government }
-	war = no
-	OR = { is_vassal = no government = mandate_government }
-  }
-
-  mean_time_to_happen = { months = 6  }
-
-  option = {
-    name = EVT_8007514_A
-	government = presidential_dictatorship 
-	country_event = 800050
-	ruling_party_ideology = socialist
-sphere_owner = { diplomatic_influence = { who = THIS value = -200 } }
-
-overlord = { release_vassal = THIS add_casus_belli = { target = THIS type = make_puppet months = 24 } } 
-
-random_owned = { 
-limit = { 
-owner = { JOR = { vassal_of = IRQ } } 
+		year = 1958 NOT = { year = 1990 }
+		OR = { government = hms_government government = absolute_monarchy government = mandate_government }
+		war = no
+		OR = { is_vassal = no government = mandate_government }
 	}
-owner = { release_vassal = JOR } 
-}
 
-random_owned = { 
-limit = { 
-owner = { JOR = { exists = no } } 
+	mean_time_to_happen = { months = 6  }
+
+	option = {
+		name = EVT_8007514_A
+		government = presidential_dictatorship 
+		country_event = 800050
+		ruling_party_ideology = socialist
+		sphere_owner = { diplomatic_influence = { who = THIS value = -200 } }
+
+		overlord = { release_vassal = THIS add_casus_belli = { target = THIS type = make_puppet months = 24 } } 
+
+		random_owned = { 
+			limit = { 
+				owner = { JOR = { vassal_of = IRQ } } 
+			}
+			owner = { release_vassal = JOR } 
+		}
+
+		random_owned = { 
+			limit = { 
+				owner = { JOR = { exists = no } } 
+			}
+			owner = { release = JOR } 
+		}
+
+		any_owned = { limit = { is_core = PAL } secede_province = JOR }
+
+		ai_chance = { factor = 0.8 }
 	}
-owner = { release = JOR } 
-}
-
-any_owned = { limit = { is_core = PAL } secede_province = JOR }
-
-	ai_chance = { factor = 0.8 }
-  }
   
-  option = {
-    name = EVT_8007514_B
-	any_pop = { militancy = 2.0 }
-	any_pop = { consciousness = 2.0 }
+	option = {
+		name = EVT_8007514_B
+		any_pop = { militancy = 2.0 }
+		any_pop = { consciousness = 2.0 }
 
-	random = {
-	chance = 50
-	country_event = 1512001
+		random = {
+			chance = 50
+			country_event = 1512001
+		}
+
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.2 }
 	}
-
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-	ai_chance = { factor = 0.2 }
-  }
   
 }
 
@@ -464,41 +464,113 @@ country_event = {
   picture = "nwo2_invasion_of_kuwait"
   fire_only_once = yes
 
-  trigger = {
+	trigger = {
     	tag = IRQ
-	year = 1991 
-	NOT = { has_global_flag = 1990_gulf_war_fired_flag }
+		year = 1990
+		NOT = { has_global_flag = 1990_gulf_war_fired_flag }
+		NOT = { has_global_flag = 1992_start_date_flag }
 
-OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship }
+		OR = { 
+			government = presidential_dictatorship 
+			government = populist_dictatorship 
+			government = nationalist_dictatorship 
+		}
 
-	war = no
-	is_vassal = no
-	KUW = { is_vassal = no }
-
-	#NOT = { KUW = { alliance_with = USA } }
-    	#NOT = { KUW = { alliance_with = ENG } }
-    	#NOT = { KUW = { alliance_with = RUS } }
+		war = no
+		is_vassal = no
+		KUW = { is_vassal = no }
 
     	exists = KUW
-  }
+	}
 
-  mean_time_to_happen = { months = 8 }
+	mean_time_to_happen = { months = 8 }
 
-  option = {
-    name = EVT_8007550_A
-	badboy = 20 
-	war = { target = KUW attacker_goal = { casus_belli = conquest } defender_goal = { casus_belli  = status_quo } }
-	any_pop = { consciousness = 2 }
-	935 = { add_core =  THIS }
-	set_global_flag = 1990_gulf_war_fired_flag
-ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = "We shall annex Kuwait!"
+		any_pop = { consciousness = 2 }
+		935 = { add_core =  THIS }
+		set_global_flag = 1990_gulf_war_fired_flag
+		
+		#If USSR is not available
+		random_owned = {
+			limit = { 
+				owner = {
+					RUS = { 
+						NOT = {
+							is_greater_power = yes 
+							OR = { is_sphere_leader_of = IRQ alliance_with = IRQ } 
+						}
+					}
+				}
+			}
+			owner = {
+				war = { target = KUW attacker_goal = { casus_belli = conquest } defender_goal = { casus_belli  = status_quo } }
+			}
+		}
+		
+		#If USSR is available
+		random_country = {
+			limit = { 
+				tag = RUS 
+				is_greater_power = yes 
+				OR = { is_sphere_leader_of = IRQ alliance_with = IRQ } 
+			}
+			country_event = 80075501 #Choice to support IRQ
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8007550_B
-	relation = { who = KUW value = 20 } 
-ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = EVT_8007550_B
+		relation = { who = KUW value = 25 } 
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+#Gulf War, 1990 - RUS choice to support
+country_event = {
+  id = 80075501
+  title = EVT_8007550_NAME
+  desc = EVT_8007550_DESC
+  picture = "nwo2_invasion_of_kuwait"
+ 
+	is_triggered_only = yes
+
+	option = {
+		name = "Do not support Iraq's aggression"
+		badboy = -10
+		relation = { who = IRQ value = -200 }
+		diplomatic_influence = { who = IRQ value = -200 }
+		leave_alliance = IRQ
+		IRQ = { 
+			war = { 
+				target = KUW 
+				attacker_goal = { casus_belli = conquest } 
+				defender_goal = { casus_belli = status_quo } 
+				call_ally = no
+			}
+		}
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Support Iraq!"
+		prestige = 100
+		relation = { who = IRQ value = 100 }
+		diplomatic_influence = { who = IRQ value = 100 }
+		create_alliance = IRQ
+		IRQ = { 
+			war = { 
+				target = KUW 
+				attacker_goal = { casus_belli = conquest } 
+				defender_goal = { casus_belli = status_quo } 
+				call_ally = yes
+			} 
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
 }
 
 #UN Coalition against Iraq in the Gulf War 1991 - Start
@@ -509,48 +581,51 @@ country_event = {
   picture = "nwo2_invasion_of_kuwait_victory"
   fire_only_once = yes
 
-  trigger = {
+	trigger = {
     	tag = IRQ
-	year = 1991 NOT = { year = 1999 }
-	is_vassal = no
+		year = 1990
+		NOT = { has_global_flag = 1992_start_date_flag }
+		is_vassal = no
 
-OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship }
+		OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship }
 
-#Gulf War event accepted
-has_global_flag = 1990_gulf_war_fired_flag
+		#Gulf War event accepted
+		has_global_flag = 1990_gulf_war_fired_flag
 
-#US is a democratic GP
-USA = { government = democracy is_greater_power = yes }
+		#US is a democratic GP
+		USA = { government = democracy is_greater_power = yes }
 
-#Owns Kuwait
-any_owned_province = { province_id = 935 }  
-  }
-
-  mean_time_to_happen = { months = 1 }
-
-  option = {
-    name = EVT_8007551_A
-
-#Russia has a 75% of following history and abandoning Iraq
-	random = {
-	chance = 75
-	leave_alliance = RUS
-RUS = { diplomatic_influence = { who = IRQ value = -200 } }
-	relation = { who = RUS value = -150 }
+		#Owns Kuwait
+		any_owned_province = { province_id = 935 }  
 	}
 
-	any_pop = { militancy = -4 }
-	relation = { who = USA value = -150 } 
-	relation = { who = ENG value = -100 } 
-	relation = { who = FRA value = -100 } 
-	relation = { who = ISR value = -100 } 
-	relation = { who = SAA value = -150 } 
-	relation = { who = EGY value = -50 }
-	set_global_flag = 1990_gulf_war_kuw_annexed
+	mean_time_to_happen = { months = 0.1 }
 
-	#Get USA involved
-	USA = { country_event = 8007560 }
-  }
+	option = {
+		name = EVT_8007551_A
+
+		any_country = {
+			limit = { 
+				is_vassal = no 
+				exists = yes 
+				OR = { 
+					government = democracy 
+					government = democracy1 
+					government = hms_government 
+					government = hms_government1 
+				} 
+				neighbour = THIS
+			}
+			relation = { who = THIS value = -100 }
+		}
+
+		any_pop = { militancy = -4 }
+
+		set_global_flag = 1990_gulf_war_kuw_annexed
+
+		#Get USA involved
+		USA = { country_event = 8007560 }
+	}
 
 }
 
@@ -562,38 +637,68 @@ country_event = {
   picture = "nwo2_desert_storm"
   is_triggered_only = yes
   
-  option = {
-name = "Try to form a coalition with Saudi Arabia (90% if Kingdom or Democracy)"
+	option = {
+		name = "We shall lead this coalition against Iraq!"
 
-casus_belli = { target = IRQ type = liberate_country months = 12 }
+		casus_belli = { target = IRQ type = liberate_country months = 12 }
 	
-#Saudi event
-random_country = {
-limit = { tag = SAA is_vassal = no OR = { government = absolute_monarchy government = hms_government government = hms_government1 government = democracy government = democracy1 government = socialist_democracy } }
-country_event = 8007561
-}
+		#Saudi event
+		random_country = {
+			limit = { 
+				tag = SAA 
+				is_vassal = no 
+				OR = { government = absolute_monarchy government = hms_government government = hms_government1 government = democracy government = democracy1 government = socialist_democracy } 
+			}
+			country_event = 8007561 #Call to war!
+		}
+		
+		#If SAA is not available
+		random_owned = {
+			limit = { 
+				owner = {
+					SAA = { 
+						NOT = {
+							exists = yes
+							is_vassal = no
+							OR = { government = absolute_monarchy government = hms_government government = hms_government1 government = democracy government = democracy1 government = socialist_democracy }
+						}
+					}
+				}
+			}
+			owner = {
+				IRQ = { 
+					war = { 
+						target = THIS
+						defender_goal = { casus_belli = liberate_country country = KUW } 
+						attacker_goal = { casus_belli = humiliate } 
+					}
+				}
+			}
+		}
 
-	IRQ = { release = KUR }
+		#Kurdistan uprising
+		IRQ = { release = KUR }
 
-#NATO allies
-any_country = { limit = { alliance_with = USA NOT = { alliance_with = IRQ } OR = { tag = NET tag = USA tag = TUR tag = AST tag = FRA tag = ENG } } create_alliance = KUR }
+		#NATO allies
+		any_country = { limit = { alliance_with = USA NOT = { alliance_with = IRQ } OR = { tag = NET tag = USA tag = TUR tag = AST tag = FRA tag = ENG } } create_alliance = KUR }
 
-IRQ = {
-war = { 
-target = KUR 
-attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } 
-}
+		IRQ = {
+			war = { 
+				target = KUR 
+				attacker_goal = { casus_belli = annex_core_country } 
+				defender_goal = { casus_belli = status_quo } 
+			}
+		}
+
+		ai_chance = { factor = 1 }
 	}
 
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8007560_B
-prestige_factor = -0.1
-random_state = { any_pop = { dominant_issue = { value = jingoism factor = 0.6 } } }
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = EVT_8007560_B
+		prestige_factor = -0.1
+		random_state = { any_pop = { dominant_issue = { value = jingoism factor = 0.6 } } }
+		ai_chance = { factor = 0 }
+	}
 
 }
 
@@ -605,30 +710,30 @@ country_event = {
   picture = "nwo2_desert_storm"
   is_triggered_only = yes
 
-  option = {
-    name = "Form the coalition against Iraq"
-	create_alliance = USA 
-	relation = { who = USA value = 200 }
-casus_belli = { target = IRQ type = liberate_country months = 12 }
+	option = {
+		name = "Form the coalition against Iraq"
+		create_alliance = USA 
+		relation = { who = USA value = 200 }
+		casus_belli = { target = IRQ type = liberate_country months = 12 }
 
-IRQ = { 
-war = { 
-target = SAA
-defender_goal = { casus_belli = liberate_country country = KUW } 
-attacker_goal = { casus_belli = humiliate } 
-}
+		IRQ = { 
+			war = { 
+				target = SAA
+				defender_goal = { casus_belli = liberate_country country = KUW } 
+				attacker_goal = { casus_belli = humiliate } 
+			}
+		}
+
+		ai_chance = { factor = 1 }
 	}
 
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8007561_B
-	prestige_factor = -0.1
-	relation = { who = USA value = -100 }
-	relation = { who = IRQ value = 50 } 
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = EVT_8007561_B
+		prestige_factor = -0.1
+		relation = { who = USA value = -100 }
+		relation = { who = IRQ value = 50 } 
+		ai_chance = { factor = 0 }
+	}
 
 }
 

@@ -1,45 +1,53 @@
-country_event = { # form the Malayan Union
+### Malaya and Malaysia ###
+
+#form the Malayan Union - FMS
+country_event = {
   id = 8009700
   title = "The Malayan Union"
   desc = EVT_8009701_DESC
   picture = "malayan_union_protest"
   fire_only_once = yes
 
-  trigger = {
-    tag = FMS
-    year = 1946 
-	FMS = { government = colonial_government }
-	ENG = { is_our_vassal = FMS }
-	NOT = { year = 1953 }
-	war = no
-  }
+	trigger = {
+		tag = FMS
+		year = 1946
+		NOT = { year = 1990 }
+		NOT = { has_global_flag = 1950_start_date_flag }
+		
+		government = colonial_government
+		vassal_of = ENG
+		war = no
+	}
 
-  mean_time_to_happen = { months = 4 }
+	mean_time_to_happen = { months = 4 }
 
-  option = {
-    name = "Yes"
-	ENG = { country_event = 8009701 }
-	ai_chance = { factor = 0.9 }
-  }
-  option = {
-    name = "No"
-	prestige = -10
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Propose to form the Malayan Union"
+		ENG = { country_event = 8009701 }
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Keep Malaya tribalised"
+		prestige = -10
+		ai_chance = { factor = 0.1 }
+	}
   
 }
-country_event = { # form the Malayan Union
+
+#Form the Malayan Union - ENG decision
+country_event = {
   id = 8009701
-  title = EVT_8009701_NAME
+  title = "The Malayan Union"
   desc = EVT_8009701_DESC
   picture = "malayan_union_formation"
   is_triggered_only = yes
 
 	option = {
-		name = EVT_8009701_A
+		name = "Form the Malayan Union"
 		1388 = { secede_province = FMS }
 		1386 = { secede_province = FMS }
-		FMS = { 
+		FMS = {
 			any_country = {
 				limit = { 
 					vassal_of = FMS 
@@ -48,11 +56,15 @@ country_event = { # form the Malayan Union
 				country_event = 80097011
 			}
 		}
-		FMS = { government = hms_government add_accepted_culture = chinese add_accepted_culture = indian }
+		FMS = { 
+			government = hms_government 
+			add_accepted_culture = chinese 
+			add_accepted_culture = indian 
+		}
 		FMS = { add_country_modifier = { name = revolution_chaos duration = 3650 } }
 		prestige = 50
 		badboy = -2
-		ai_chance = { factor = 1 }
+		ai_chance = { factor = 0.9 }
 	}
 	
 	option = {
@@ -71,15 +83,15 @@ country_event = { # form the Malayan Union
 			government = hms_government1
 			any_pop = { 
 				limit = { 
-					NOT = { culture = malay } 
+					culture = chinese
 				}
 				ideology = {
-					factor = 0.30
+					factor = 0.33
 					value = communist
 				}
 			}
 		}
-		ai_chance = { factor = 0 }
+		ai_chance = { factor = 0.1 }
 	}
 
 }
@@ -87,7 +99,7 @@ country_event = { # form the Malayan Union
 #Join the Malayan Union? - substates
 country_event = {
   id = 80097011
-  title = EVT_8009701_NAME
+  title = "The Malayan Union"
   desc = EVT_8009701_DESC
   picture = "malayan_union_formation"
   is_triggered_only = yes
@@ -105,380 +117,1466 @@ country_event = {
 
 }
 
-country_event = { # Singapore independence
+#Self-Rule for Singapore, 1959
+country_event = {
   id = 8009702
   title = "Self-Rule for Singapore"
   desc = EVT_8009702_DESC
   picture = "sng_self_rule"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = ENG
-    is_our_vassal = FMS
-    year = 1957 
-	NOT = { year = 1963 }
-	NOT = { exists = SNG }
-	owns = 1384 # Singapore
-  }
+	trigger = {
+		tag = ENG
+		year = 1959
+		NOT = { year = 1990 }
+		is_possible_vassal = SNG
 
-  mean_time_to_happen = { months = 11 }
+		is_vassal = no
+	}
 
-  option = {
-    name = "Grant full internal self-governance"
-	release_vassal = SNG
-	release_vassal = FMS
-	diplomatic_influence = { who = SNG value = 200 }
-	prestige = 10
-	badboy = -2
-	ai_chance = { factor = 0.9 }
-  }
-  option = {
-    name = "Cling on to the Crown Colony"
-	prestige = -10
-	badboy = 2
-	1384 = { any_pop = { militancy = 5 consciousness = 2 } }
-	ai_chance = { factor = 0.1 }
-  }
+	mean_time_to_happen = { months = 5 }
+
+	option = {
+		name = "Grant full internal self-governance"
+		release_vassal = SNG
+		
+		SNG = { 
+			government = colonial_government 
+			country_event = 800054 
+			ruling_party_ideology = nationalist
+		}
+		
+		diplomatic_influence = { who = SNG value = 200 }
+		prestige = 25
+		badboy = -2
+		ai_chance = { factor = 0.9 }
+	}
+	option = {
+		name = "Cling on to the Crown Colony"
+		prestige = -25
+		badboy = 2
+		1384 = { 
+			any_pop = { 
+				militancy = 5 
+				consciousness = 2 
+			} 
+			any_pop = { 
+				limit = { 
+					culture = chinese
+				}
+				ideology = {
+					factor = 0.33
+					value = communist
+				}
+			}
+		}
+		ai_chance = { factor = 0.1 }
+	}
 }
+
+#Independence of Malaya, 1957
+country_event = {
+  id = 8009703
+  title = "Independence of Malaya"
+  desc = EVTDESC8009703
+  picture = "FMS_indy"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = ENG
+		year = 1957
+		NOT = { year = 1963 }
+		is_our_vassal = FMS
+		is_vassal = no
+	}
+
+	mean_time_to_happen = { months = 8 }
+
+	option = {
+		name = "Grant them self-determination"
+		release_vassal = FMS
+		FMS = { political_reform = minorities_equal_rights }
+		diplomatic_influence = { who = FMS value = 200 }
+		prestige = 25
+		badboy = -2
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "This is not the time!"
+		prestige = -25
+		badboy = 2
+		FMS = {
+			add_country_modifier = { name = revolution_chaos duration = 3650 }
+			any_pop = { 
+				militancy = 5 
+				consciousness = 2 
+			}
+			any_pop = { 
+				limit = { 
+					culture = chinese
+				}
+				ideology = {
+					factor = 0.33
+					value = communist
+				}
+			}
+		}
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+#Assassination of High Commissioner Henry Gurney
 country_event = {
   id = 8009704
-  title = EVT_8009704_NAME
+  title = "Assassination of Sir Henry Gurney"
   desc = EVT_8009704_DESC
   picture = "nwo2_tomb_of_gurney"
   fire_only_once = yes
 
-  trigger = {
-    tag = FMS
-    year = 1951 
-	NOT = { year = 1953 }
-  }
+	trigger = {
+		tag = ENG
+		year = 1951
+		NOT = { year = 1960 }
+		is_our_vassal = FMS
+		government = hms_government
+		has_country_modifier = malayan_emergency
+	}
 
-  mean_time_to_happen = { months = 8  }
+	mean_time_to_happen = { months = 10 }
 
-  option = {
-    name = EVT_8009704_A
-	prestige = -5
-  }
+	option = {
+		name = "The communists are a nuisance!"
+		prestige = -25
+		
+		FMS = {
+			any_pop = { 
+				limit = { 
+					culture = chinese
+				}
+				ideology = {
+					factor = 0.10
+					value = communist
+				}
+			}
+			any_pop = { 
+				limit = { 
+					culture = chinese
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = communist
+				}
+			}
+		}
+	}
 }
 
 #Formation of the Federation of Malaya
 country_event = {
   id = 8009719
-  title = "End of the Malayan Union"
-  desc = EVT_8009719_DESC
+  title = "The Federation of Malaya"
+  desc = EVTDESC8009719
   picture = "malayan_federation_formation"
   fire_only_once = yes
 
-  trigger = {
-    tag = FMS
-    government = hms_government
-	is_vassal = yes
-    year = 1948 
-	NOT = { year = 1960 }
-  }
+	trigger = {
+		tag = ENG
+		year = 1948
+		NOT = { year = 1960 }
+		NOT = { has_global_flag = 1950_start_date_flag }
+		
+		government = hms_government
+		is_vassal = no
+		
+		FMS = { 
+			vassal_of = ENG 
+			government = hms_government 
+		}
+	}
 
-  mean_time_to_happen = { months = 7 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = "Head on the path to a greater Malaya"
-    government = hms_government1
+	option = {
+		name = "Give in to the Malay nationalists"
+		prestige = -25
+		
+		FMS = {
+			government = hms_government1
 
-remove_accepted_culture = chinese 
-remove_accepted_culture = indian
+			remove_accepted_culture = chinese 
+			remove_accepted_culture = indian
 
-	any_pop = { limit = { culture = chinese } militancy = 4 consciousness = 2 }
-	ai_chance = { factor = 0.8 }
-  }
+			any_pop = { 
+				limit = { culture = chinese } 
+				ideology = {
+					factor = 0.05
+					value = communist
+				}
+				militancy = 4 
+				consciousness = 2 
+			}
+		}
+		ai_chance = { factor = 0.8 }
+	}
 
-  option = {
-    name = "Maintain the Union"
-	prestige = 10
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-    ai_chance = { factor = 0.2 }
-  }
+	option = {
+		name = "Maintain the Union"
+		prestige = 25
+		
+		FMS = { 
+			any_pop = { 
+				limit = { culture = malay } 
+				militancy = 6
+				consciousness = 6
+				ideology = {
+					factor = 0.15
+					value = nationalist
+				}
+			}
+			add_country_modifier = { name = revolution_chaos duration = 3650 }
+		}
+		
+		ai_chance = { factor = 0.2 }
+	}
 
 }
+
+#Merger of Singapore and Malaya - ENG
 country_event = {
   id = 8009720
-  title = EVT_8009720_NAME
+  title = "The Federation of Malaysia"
   desc = EVT_8009720_DESC
   picture = "singapore_malaysia_merger"
   fire_only_once = yes
 
-  trigger = {
+	trigger = {
     	tag = ENG
-    	year = 1963 
-	NOT = { year = 1966 }
-    	exists = FMS
-	MSY = { exists = no }
-	SNG = { exists = yes }
-	FMS = { government = hms_government1 }
-	is_our_vassal = SNG
-  }
+    	year = 1963
+		NOT = { year = 1970 }
+		
+		government = hms_government
+		is_vassal = no
+		
+    	FMS = { 
+			exists = yes 
+			is_vassal = no 
+			OR = {
+				government = hms_government
+				government = hms_government1
+				government = democracy
+				government = democracy1
+			}
+		}
+		
+		#Malaysia does not exist
+		MSY = { exists = no }
+		
+		#Singapore has self rule
+		SNG = { 
+			exists = yes 
+			vassal_of = ENG
+		}
+		
+	}
 
-  mean_time_to_happen = { months = 4 }
+	mean_time_to_happen = { months = 8 }
 
-  option = {
-    name = "Approve the Merger"
-	relation = { who = FMS value = 100 }
-	FMS = { country_event = 8009721 }
-	ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = "Allow the merger (up to Malaya to decide)"
+		prestige = 50
+		relation = { who = FMS value = 100 }
+		
+		#Merger choice for FMS
+		FMS = { country_event = 8009721 }
+		
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = "Hold onto Singapore"
-	badboy = 2
-	SNG = { any_pop = { militancy = 3 consciousness = 2 } }
-	relation = { who = FMS value = -100 }
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Hold onto Singapore"
+		badboy = 2
+		SNG = { any_pop = { militancy = 3 consciousness = 2 } }
+		relation = { who = FMS value = -100 }
+		ai_chance = { factor = 0.1 }
+	}
+
 }
+
+#Merger of Singapore and Malaya - FMS choice
 country_event = {
   id = 8009721
-  title = EVT_8009721_NAME
+  title = "The Federation of Malaysia?"
   desc = EVT_8009721_DESC
   picture = "singapore_malaysia_merger"
   is_triggered_only = yes
 
-  option = {
-    name = EVT_8009721_A
-	change_tag = MSY
-	inherit = SNG
-	prestige = 50
-	any_pop = { militancy = -5 consciousness = -3 }
-  }
+	option = {
+		name = "Merge with Singapore!"
+		prestige = 50
+		
+		#Become Malaysia
+		change_tag = MSY
+		
+		#Annex Singapore
+		SNG = { country_event = 11101 }
+		
+		#Trigger union with East Malaysia if Kalimantan is under British rule
+		random_owned = {
+			limit = { 
+				owner = {
+					ENG = {
+						#Kalimantan does not exist
+						KLM = { exists = no }
+		
+						#East Malaysia is under British rule
+						OR = { 
+							is_our_vassal = SWK
+							is_our_vassal = SAB
+							is_sphere_leader_of = SWK
+							is_sphere_leader_of = SAB
+							is_possible_vassal = SWK
+							is_possible_vassal = SAB
+						}
+					}
+				}
+			}
+			owner = { ENG = { country_event = 8009722 } }
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "We don't want more chinese in Malaya"
+		any_pop = { 
+			limit = { culture = malay } 
+			militancy = -5 
+			consciousness = -3 
+		}
+		relation = { who = SNG value = -100 }
+		relation = { who = FROM value = -50 }
+		ai_chance = { factor = 0.1 }
+	}
+	
 }
+
+#MSY annexes East Malaysia - ENG
 country_event = {
   id = 8009722
-  title = EVT_8009722_NAME
+  title = "The Question of East Malaysia"
   desc = EVT_8009722_DESC
   picture = "formation_of_malaysia"
-  fire_only_once = yes
 
-  trigger = {
-    tag = ENG
-    year = 1963 NOT = { year = 1965 }
-    exists = MSY
-    NOT = { exists = SNG }
-    MSY = { is_vassal = no }
-	KLM = { exists = no }
-  }
+	is_triggered_only = yes
 
-  mean_time_to_happen = { months = 1 }
+	option = {
+		name = "Give Sabah and Sarawak to Malaysia"
+		prestige = -50
+		
+		relation = { who = MSY value = 100 }
+		diplomatic_influence = { who = MSY value = 200 }
+		
+		any_pop = { militancy = -5 consciousness = 2 }
 
-  option = {
-    name = "Approve the Federation of Malaysia"
-	relation = { who = MSY value = 100 } 
-	any_pop = { militancy = 0.5  consciousness = 2 }
+		#Release states if not already a puppet
+		random_owned = {
+			limit = { owner = { is_possible_vassal = SAB } }
+			owner = { release = SAB }
+		}
+		random_owned = {
+			limit = { owner = { is_possible_vassal = SWK } }
+			owner = { release = SWK }
+		}
+		
+		#Release the Brunei Protectorate if not already done so
+		random_owned = {
+			limit = { owner = { is_possible_vassal = BRU } }
+			owner = { 
+				release_vassal = BRU 
+				BRU = { 
+					government = absolute_monarchy 
+					country_event = 800050 
+				}
+			}
+		}
 
-	#MSY = { country_event =  8009723 }
+		MSY = { 
+			random_country = { 
+				limit = { tag = BRU exists = yes }
+				country_event = 1512113
+			}
+			random_country = { 
+				limit = { tag = SWK exists = yes } 
+				country_event = 1281423
+			}
+			random_country = { 
+				limit = { tag = SAB exists = yes } 
+				country_event = 1281424
+			}
+		}
 
-	any_owned = { limit = { OR = { province_id = 1394 province_id = 1395 province_id = 1396 province_id = 1397 } } secede_province = MSY } 
-
-	#release_vassal = MSY
-
-	diplomatic_influence = { who = MSY value = 200 } 
-
-	BRU = { country_event = 1512113 }
-
-	MSY = { 
-	any_country = { 
-	limit = { tag = SWK exists = yes } 
-	country_event = 1281423
-		}  
-	any_country = { 
-	limit = { tag = SAB exists = yes } 
-	country_event = 1281424
-		}  
+		ai_chance = { factor = 0.9 }
 	}
 
-	ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = "Hold onto our colonies in Borneo"
+		relation = { who = MSY value = -200 } 
+		
+		relation = { who = IDO value = 100 } 
+		
+		any_pop = { 
+			limit = { culture = malay } 
+			militancy = 6 
+			consciousness = 5 
+		}
+		
+		any_owned = {
+			limit = { OR = { is_core = SAB is_core = SWK } }
+			add_province_modifier = { name = nationalist_agitation duration = 3650 }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
 
-  option = {
-    name = "Hold onto our colonies in Borneo"
-	relation = { who = MSY value = -200 } 
-	any_pop = { limit = { culture = malay } militancy = 6 consciousness = 5 }
-	ai_chance = { factor = 0.1 }
-  }
 }
+
+#1963 Operation Cold Store
+country_event = {
+	id = 80097221
+	title = "Operation Cold Store"
+	desc = EVTDESC80097221
+	picture = "1963_SNG_cold_store"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = SNG
+		year = 1963
+		NOT = { year = 1990 }
+		
+		ruling_party_ideology = nationalist
+
+		OR = { 
+			is_vassal = no 
+			vassal_of = ENG 
+		}
+		
+		OR = {
+			government = colonial_government
+			government = hms_government
+			government = hms_government1
+			government = democracy
+			government = democracy1
+		}
+		
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "Crush the Barisan Socialis!"
+		prestige_factor = -0.02
+		badboy = 2.5
+		any_owned = {
+			any_pop = {
+				limit = { 
+					location = { is_core = SNG }
+				}
+				ideology = {
+					factor = 0.30
+					value = nationalist
+				}
+			}
+			any_pop = { 
+				limit = { 
+					culture = chinese
+					location = { is_core = SNG }
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = communist
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = socialist
+				}
+			}
+		}
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Let the socialists flourish!"
+		any_owned = {
+			limit = { is_core = SNG }
+			any_pop = {
+				limit = { 
+					culture = chinese
+				}
+				ideology = {
+					factor = 0.10
+					value = socialist
+				}
+				ideology = {
+					factor = 0.05
+					value = communist
+				}
+			}
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#1964 Race Riots
+country_event = {
+	id = 80097222
+	title = "$YEAR$ Race Riots in Singapore"
+	desc = EVTDESC80097222
+	picture = "1964_SNG_race_riots"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = MSY
+		year = 1964
+		NOT = { year = 1990 }
+		is_possible_vassal = SNG
+		
+		NOT = { accepted_culture = chinese }
+		NOT = { minorities_reform = minorities_affirmative_action }
+	}
+
+	mean_time_to_happen = { months = 7 }
+
+	option = {
+		name = "Is the merger really sustainable?"
+		
+		set_country_flag = 1964_SNG_race_riots_flag
+		
+		prestige_factor = -0.03
+		any_owned = {
+			any_pop = {
+				limit = { 
+					culture = chinese
+				}
+				ideology = {
+					factor = 0.05
+					value = communist
+				}
+			}
+			any_pop = { 
+				limit = { 
+					culture = chinese
+					location = { is_core = SNG }
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = communist
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = socialist
+				}
+			}
+		}
+	}
+
+}
+
+#Independence of Singapore
 country_event = {
   id = 8009723
-  title = EVT_8009723_NAME
-  desc = EVT_8009723_DESC
-  picture = "nwo2_federation_of_malaysia"
-  is_triggered_only = yes
+  title = "Independence of Singapore"
+  desc = EVTDESC8009723
+  picture = "singapore_independence"
+  fire_only_once = yes
 
-  option = {
-    name = EVT_8009723_A
-	government = hms_government1 country_event = 800054
-	any_pop = { militancy = -0.3  consciousness = 1 }
-  }
+	trigger = {
+		tag = MSY
+		year = 1965 
+		NOT = { year = 1990 }
+		is_vassal = no
+		war = no
+		
+		OR = {
+			government = hms_government
+			government = hms_government1
+			government = democracy
+			government = democracy1
+		}
+		
+		is_possible_vassal = SNG
+		
+		#1964 Race Riots
+		has_country_flag = 1964_SNG_race_riots_flag
+	}
+
+	mean_time_to_happen = { months = 8 }
+
+	option = {
+		name = "Expel Singapore from Malaysia!"
+		any_pop = { consciousness = 2 }
+		
+		SNG = { 
+			all_core = { remove_core = MSY }
+		}
+		
+		release = SNG
+		SNG = { 
+			government = democracy 
+			
+			ruling_party_ideology = conservative
+			
+			set_country_flag = parliamentary_system_republic
+		}
+		badboy = -1
+		sphere_owner = { diplomatic_influence = { who = SNG value = 200 } }
+		ai_chance = { factor = 0.7 }
+	}
+
+	option = {
+		name = "Grant Singapore special status in Malaysia"
+		prestige = -25
+		release_vassal = SNG
+		SNG = { government = sar_government country_event = 800054 }
+		ENG = { diplomatic_influence = { who = SNG value = 200 } }
+		1384 = { any_pop = { militancy = 5 } }
+		any_pop = { limit = { culture = chinese } militancy = 5 consciousness = 2 }
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		badboy = 1
+		ai_chance = { factor = 0.2 }
+	}
+
+	option = {
+		name = "We can manage the Singapore problem"
+		prestige = -50
+		1384 = { any_pop = { militancy = 10 } }
+		1384 = { add_province_modifier = { name = nationalist_agitation duration = 7300 } }
+		any_pop = { limit = { culture = chinese } militancy = 8 }
+		badboy = 5
+		ai_chance = { factor = 0.1 }
+	}
+
 }
+
+#Konfrontasi - start
 country_event = {
   id = 8009724
-  title = EVT_8009724_NAME
+  title = "The Konfrontasi"
   desc = EVT_8009724_DESC
   picture = "nwo2_konfrontasi"
   fire_only_once = yes
 
-  trigger = {
-    tag = IDO
-	MSY = { is_vassal = no }
-    year = 1962 NOT = { year = 1965 }
-    NOT = { owns = 1394 owns = 1397 }
-	MSY = { owns = 1394 owns = 1397 }
-  }
+	trigger = {
+		tag = IDO
+		year = 1963 
+		NOT = { year = 1967 }
+		
+		is_vassal = no
+		
+		#East Malaysia and Singapore is under MSY
+		MSY = { 
+			is_vassal = no 
+			is_possible_vassal = SNG
+			is_possible_vassal = SWK
+			is_possible_vassal = SAB
+		}
+	}
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8009724_A
-	any_pop = { militancy = -0.5  consciousness = 2 }
-	badboy = 15 
-	money = -5000
-	any_state = { any_pop = { dominant_issue = { value = jingoism factor = 0.43 } } }
-	MSY = { country_event = 8009725 }
-	ai_chance = { factor = 1 }
-  }
+	option = {
+		name = "Demand Malaysia vacate Borneo (war if they reject)"
+		any_pop = { militancy = -5 consciousness = 2 }
+		badboy = 10
+		money = -50000
+		any_pop = {
+			ideology = {
+				factor = 0.15
+				value = nationalist
+			}
+		}
+		MSY = { country_event = 8009725 }
+		ai_chance = { factor = 0.8 }
+	}
 
-  option = {
-    name = EVT_8009724_B
-	any_pop = { militancy = 0.5  consciousness = 2 }
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = "Accept the presence of Malaysia in Borneo"
+		prestige_factor = -0.1
+		any_pop = {
+			ideology = {
+				factor = 0.05
+				value = communist
+			}
+		}
+		ai_chance = { factor = 0.2 }
+	}
+
 }
+
+#Konfrontasi - MSY response
 country_event = {
   id = 8009725
-  title = "Indonesian-Malaysian Confrontation"
-  desc = EVT_8009725_DESC
+  title = "The Konfrontasi"
+  desc = EVT_8009724_DESC
   picture = "nwo2_konfrontasi"
   is_triggered_only = yes # MSY
 
-  option = {
-    name = EVT_8009725_A
-	any_pop = {  consciousness = 2 }
-	IDO = { country_event = 8009726 }
-	ai_chance = { factor = 1 }
-  }
-  option = {
-    name = EVT_8009725_B
-	any_pop = { militancy = 1.0 }
-	1394 = { secede_province = IDO } 1395 = { secede_province = IDO } 1396 = { secede_province = IDO } 1397 = { secede_province = IDO }
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8009726
-  title = "Indonesian-Malaysian Confrontation"
-  desc = EVT_8009726_DESC
-  picture = "nwo2_konfrontasi"
-  fire_only_once = yes
-  is_triggered_only = yes # IDO
-
-  option = {
-    name = EVT_8009726_A
-	any_pop = { militancy = 1.0 }
-	ai_chance = { factor = 0.4 }
-  }
-
-  option = {
-    name = EVT_8009726_B
-	MSY = { create_alliance = ENG }
-	war = { target = MSY attacker_goal = { casus_belli = acquire_state state_province_id = 1397 } defender_goal = { casus_belli = cut_down_to_size } }
-	any_pop = { consciousness = 2 }
-	ai_chance = { factor = 0.6 }
-  }
-}
-country_event = { # Independence of Singapore
-  id = 8009727
-  title = EVT_8009727_NAME
-  desc = EVT_8009727_DESC
-  picture = "singapore_independence"
-  fire_only_once = yes
-
-  trigger = {
-	tag = MSY
-    owns = 1384
-    year = 1965 NOT = { year = 1990 }
-  }
-
-  mean_time_to_happen = { months = 8  }
-
-  option = {
-    name = EVT_8009727_A
-	any_pop = { consciousness = 2 }
-	release = SNG
-	SNG = { government = democracy }
-	badboy = -1
-	ENG = { diplomatic_influence = { who = SNG value = 200 } }
-	ai_chance = { factor = 0.7 }
-  }
-
-  option = {
-    name = "Grant Singapore special status in Malaysia"
-	prestige = -25
-	release_vassal = SNG
-SNG = { government = sar_government country_event = 800054 }
-ENG = { diplomatic_influence = { who = SNG value = 200 } }
-	1384 = { any_pop = { militancy = 5 } }
-	any_pop = { limit = { culture = chinese } militancy = 3 consciousness = 2 }
-
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-
-	badboy = 1
-	ai_chance = { factor = 0.2 }
-  }
-
-  option = {
-    name = EVT_8009724_B
-	prestige = -50
-	1384 = { any_pop = { militancy = 10 } }
-1384 = { add_province_modifier = { name = nationalist_agitation duration = 7300 } }
-	any_pop = { limit = { culture = chinese } militancy = 8 }
-	badboy = 5
-	ai_chance = { factor = 0.1 }
-  }
-
+	option = {
+		name = "Wage an undeclared war with Indonesia!"
+		prestige = 50
+		
+		IDO = {
+			war = { 
+				target = MSY 
+				attacker_goal = { casus_belli = acquire_state state_province_id = 1394 } #Sarawak
+				attacker_goal = { casus_belli = acquire_state state_province_id = 1396 } #Sabah
+				defender_goal = { casus_belli = status_quo } 
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Concede to Indonesian demands to leave East Malaysia"
+		prestige_factor = -0.1
+		any_pop = { militancy = 5 }
+		
+		#MSY hands over East Malaysia to Indonesia
+		any_owned = {
+			limit = { 
+				OR = { is_core = SWK is_core = SAB is_core = BRU } 
+			}
+			secede_province = IDO
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
 }
 
+#The May 13 Incident
 country_event = {
   id = 8009728
-  title = EVT_8009728_NAME
-  desc = EVT_8009728_DESC
+  title = "The 13 May Incident"
+  desc = EVTDESC8009728
   picture = "nwo2_may_13_incident"
   fire_only_once = yes
 
-  trigger = {
-    tag = IDO
-    year = 1968 NOT = { year = 1969 }
-    war = no
-  }
+	trigger = {
+		tag = MSY
+		year = 1968 
+		NOT = { year = 1990 }
+		
+		OR = {
+			government = hms_government
+			government = hms_government1
+			government = democracy
+			government = democracy1
+		}
+		
+		NOT = { accepted_culture = chinese }
+		NOT = { minorities_reform = minorities_affirmative_action }
+		
+	}
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 5 }
 
-  option = {
-    name = EVT_8009728_A
-	any_pop = { militancy = 1.0  consciousness = 1 }
-  }
+	option = {
+		name = "Crack down on the Chinese and strengthen Malay rule"
+		ruling_party_ideology = conservative
+	
+		#More authoritarian reforms to consolidate Malay rule
+		political_reform = first_past_the_post
+		political_reform = registered_voting
+		political_reform = open_opinion
+		political_reform = limited_meetings
+		political_reform = open_unregulated
+		political_reform = firewall_publishing
+		political_reform = gender_equal
+		political_reform = parties_only_nominated
+		
+		set_country_flag = MSY_pro_malay_path
+		
+		any_pop = {
+			limit = {
+				culture = malay
+			}
+			ideology = {
+				factor = 0.25
+				value = conservative
+			}
+		}
+		
+		any_pop = { 
+			limit = { culture = chinese } 
+			militancy = 10  
+			consciousness = 10 
+		}
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Give the chinese greater rights"
+		prestige_factor = -0.025
+		add_accepted_culture = chinese
+		any_pop = { 
+			limit = { culture = malay } 
+			militancy = 10  
+			consciousness = 10 
+		}
+		
+		election = yes
+		
+		ai_chance = { factor = 0.1 }
+	}
+
 }
+
+#The New Economic Policy, 1971
 country_event = {
   id = 8009729
-  title = EVT_8009729_NAME
-  desc = EVT_8009729_DESC
-  picture = "nwo2_malaysian_economy"
+  title = "The New Economic Policy"
+  desc = EVTDESC8009729
+  picture = "MSY_NEP_1971"
   fire_only_once = yes
 
-  trigger = {
-    tag = IDO
-    year = 1969 NOT = { year = 1970 }
-    war = no
-  }
+	trigger = {
+		tag = MSY
+		year = 1971
+		NOT = { year = 1990 }
+		
+		OR = {
+			government = hms_government
+			government = hms_government1
+			government = democracy
+			government = democracy1
+		}
+		
+		has_country_flag = MSY_pro_malay_path
+		ruling_party_ideology = conservative
+		
+		NOT = { accepted_culture = chinese }
+		NOT = { minorities_reform = minorities_affirmative_action }
+		
+		is_vassal = no
+	}
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 5 }
 
-  option = {
-    name = EVT_8009729_A
-	add_country_modifier = { name = economic_boom duration = 365 }
-  }
+	option = {
+		name = "Embrace communal politics"
+		ruling_party_ideology = socialist
+		political_reform = minorities_oppression
+		
+		social_reform = generous_subsidies
+		social_reform = limited_child_care
+		social_reform = low_pensions
+		social_reform = low_health_care 
+		social_reform = subsidised_higher_education
+		social_reform = social_abuse_protection
+		
+		#Drain money from the Chinese pops
+		any_pop = {
+			limit = { culture = chinese }
+			money = -10
+		}
+		
+		any_pop = {
+			limit = {
+				culture = malay
+			}
+			ideology = {
+				factor = 0.25
+				value = socialist
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "We do not want affirmative action for the malays"
+		any_pop = { 
+			limit = { culture = malay } 
+			militancy = 5  
+			consciousness = 5
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#The Mahathir Administration, 1981
+country_event = {
+  id = 8009730
+  title = "The Mahathir Administration"
+  desc = EVTDESC8009730
+  picture = "MSY_mahathir_1981"
+  fire_only_once = yes
+
+	trigger = {
+		tag = MSY
+		year = 1981
+		NOT = { year = 1990 }
+		
+		OR = {
+			government = hms_government
+			government = hms_government1
+			government = democracy
+			government = democracy1
+		}
+		
+		has_country_flag = MSY_pro_malay_path
+		ruling_party_ideology = socialist
+		
+		NOT = { accepted_culture = chinese }
+		NOT = { minorities_reform = minorities_affirmative_action }
+		
+		is_vassal = no
+	}
+
+	mean_time_to_happen = { months = 5 }
+
+	option = {
+		name = "We welcome this great man"
+		
+		set_country_flag = MSY_mahathir_1981_flag
+		
+		ruling_party_ideology = big_tent
+		political_reform = minorities_oppression
+
+		#Economic Boom
+		add_country_modifier = { name = economic_boom duration = 1825 }
+
+		#Become more industrious
+		set_country_flag = industrious_nation
+		clr_country_flag = economic_malaise
+		any_pop = { 
+			limit = { culture = malay }
+			literacy = 0.025
+		}
+		
+		#Conduct privatisation
+		add_tax_relative_income = 50
+		add_country_modifier = { name = privatisation_in_progress duration = 3650 }
+		add_country_modifier = { name = privatisation_of_industry duration = -1 }	
+		remove_country_modifier = nationalisation_of_industry
+
+		#Drain money from the Chinese pops
+		any_pop = {
+			limit = { culture = chinese }
+			money = -5
+		}
+		
+		any_pop = {
+			limit = {
+				culture = malay
+			}
+			ideology = {
+				factor = 0.25
+				value = big_tent
+			}
+			ideology = {
+				factor = 0.05
+				value = traditionalist
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "He is too divisive to be our $MONARCHTITLE$"
+		any_pop = { 
+			limit = { culture = malay } 
+			militancy = 5  
+			consciousness = 5
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#The 1983 Constitutional Crisis, 1983
+country_event = {
+  id = 8009731
+  title = "The 1983 Constitutional Crisis"
+  desc = EVTDESC8009731
+  picture = "MSY_constitutional_crisis_1983"
+  fire_only_once = yes
+
+	trigger = {
+		tag = MSY
+		year = 1983
+		NOT = { year = 1990 }
+		
+		OR = {
+			government = hms_government
+			government = hms_government1
+		}
+		
+		has_country_flag = MSY_mahathir_1981_flag
+		ruling_party_ideology = big_tent
+		
+		is_vassal = no
+		war = no
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "Come to a compromise with the monarchy"
+		
+		any_pop = {
+			limit = {
+				culture = malay
+			}
+			ideology = {
+				factor = 0.05
+				value = big_tent
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Abolish the Monarchy unilaterally!"
+		prestige = 50
+		government = democracy
+		
+		any_pop = {
+			limit = {
+				culture = malay
+			}
+			ideology = {
+				factor = 0.15
+				value = traditionalist
+			}
+		}
+		
+		any_pop = { 
+			limit = { 
+				culture = malay
+			}
+			scaled_militancy = {
+				factor = 5
+				ideology = conservative
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Operation Lalang, 1983
+country_event = {
+  id = 8009732
+  title = "Operation Lalang"
+  desc = EVTDESC8009732
+  picture = "MSY_operation_lalang_1987"
+  fire_only_once = yes
+
+	trigger = {
+		tag = MSY
+		year = 1987
+		NOT = { has_global_flag = 1992_start_date_flag }
+		
+		OR = {
+			government = hms_government
+			government = hms_government1
+			government = democracy
+			government = democracy1
+		}
+		
+		has_country_flag = MSY_mahathir_1981_flag
+		ruling_party_ideology = big_tent
+		
+		is_vassal = no
+		war = no
+	}
+
+	mean_time_to_happen = { months = 10 }
+
+	option = {
+		name = "Arrest the trouble-makers"
+		badboy = 2.5
+		
+		ruling_party_ideology = conservative
+		
+		#Authoritarian reforms
+		political_reform = censored_publishing
+		political_reform = limited_meetings
+		political_reform = quality_of_service
+		political_reform = parties_only_nominated
+		political_reform = minorities_oppression
+		political_reform = ruling_party_opinion
+		
+		social_reform = security_clearance_for_gov_services
+		
+		any_pop = {
+			limit = {
+				culture = malay
+			}
+			ideology = {
+				factor = 0.25
+				value = conservative
+			}
+		}
+		
+		any_pop = {
+			limit = {
+				culture = chinese
+			}
+			ideology = {
+				factor = 0.25
+				value = populist
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Let the unrest fester"
+
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
+		
+		any_pop = {
+			limit = {
+				culture = malay
+			}
+			ideology = {
+				factor = 0.05
+				value = liberal
+			}
+		}
+		
+		any_pop = {
+			limit = {
+				culture = chinese
+			}
+			militancy = 10
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+### Singapore ###
+
+#Leadership of Lee Kuan Yew
+country_event = {
+	id = 8001900
+	title = "Leadership of Lee Kuan Yew"
+	desc = EVTDESC8001900
+	picture = "lky"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = SNG
+		year = 1965
+		NOT = { year = 1990 }
+		
+		OR = { 
+			government = democracy 
+			government = hms_government 
+		}
+		
+		OR = {
+			ruling_party_ideology = conservative
+			ruling_party_ideology = nationalist
+		}
+		
+		NOT = { has_country_flag = lky }
+		is_vassal = no
+		war = no
+	}
+	
+	option = {
+		name = "A great leader is before us!"
+		prestige = 50
+		ruling_party_ideology = conservative
+		
+		#All pops become conservative
+		any_pop = {
+			ideology = {
+				factor = 0.40
+				value = conservative
+			}
+		}
+		
+		add_country_modifier = { name = leekuanyew duration = 9125 }
+		
+		#Enact authoritarian reforms
+		political_reform = universal_voting
+		political_reform = open_opinion
+		political_reform = firewall_publishing
+		political_reform = limited_meetings
+		political_reform = gender_equal
+		political_reform = parties_only_nominated
+		political_reform = net_neutrality
+		political_reform = promoted_immigration
+		political_reform = minorities_equal_rights
+		political_reform = first_past_the_post
+		
+		set_country_flag = lky
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "We shall go for a competent placeholder instead"
+		
+		ruling_party_ideology = big_tent
+		
+		#All pops become more centrist
+		any_pop = {
+			ideology = {
+				factor = 0.10
+				value = big_tent
+			}
+		}
+		
+		set_country_flag = lky
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+### Brunei ###
+
+#Self-government Brunei
+country_event = {
+	id = 8002900
+	title = "The Dominion of Brunei?"
+	desc = EVTDESC1512107
+	picture = "bru_indy"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = ENG
+		year = 1959
+		NOT = { year = 1990 }
+		OR = { 
+			is_possible_vassal = BRU 
+			is_our_vassal = BRU 
+		}
+		is_vassal = no
+	}
+
+	mean_time_to_happen = { 
+		months = 5
+	}
+
+	option = {
+		name = "Yes"
+		
+		#If Brunei is not already a vassal
+		random_owned = {
+			limit = { owner = { is_possible_vassal = BRU } }
+			owner = { release_vassal = BRU }
+		}
+		
+		diplomatic_influence = { who = BRU value = 200 }
+		BRU = { 
+			government = absolute_monarchy 
+			country_event = 800050 
+			ruling_party_ideology = traditionalist 
+		}
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "No"
+		badboy = 2
+		prestige = -50
+		1393 = { add_province_modifier = { name = nationalist_agitation duration = 3650 } }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Brunei Revolt, 1962
+country_event = {
+	id = 8002901
+	title = "The Brunei Revolt of $YEAR$"
+	desc = EVTDESC8002901
+	picture = "BRU_revolt_1962"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = ENG
+		year = 1962
+		NOT = { year = 1990 }
+		
+		government = hms_government
+		
+		BRU = { 
+			OR = { 
+				government = absolute_monarchy
+				government = hms_government 
+				government = colonial_government
+			}
+		}
+		
+		is_our_vassal = BRU
+		is_possible_vassal = KLM
+		
+		is_vassal = no
+	}
+
+	mean_time_to_happen = { 
+		months = 11
+	}
+
+	option = {
+		name = "Crack down on the revolt!"
+		prestige = 50
+		badboy = 2.5
+		
+		relation = { who = BRU value = 50 }
+		
+		random_country = {
+			limit = { OR = { tag = FMS tag = MSY } }
+			relation = { who = THIS value = 50 }
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "The socialists succeed in their coup"
+		
+		random_owned = {
+			limit = { owner = { exists = MSY } }
+			owner = { 
+				diplomatic_influence = { who = MSY value = -100 } 
+				relation = { who = MSY value = -100 } 
+			}
+		}
+		
+		random_owned = {
+			limit = { owner = { exists = FMS } }
+			owner = { 
+				diplomatic_influence = { who = FMS value = -100 } 
+				relation = { who = FMS value = -100 } 
+			}
+		}
+		
+		release_vassal = BRU
+		
+		BRU = { 
+			government = democracy 
+			country_event = 800054 
+			ruling_party_ideology = socialist 
+			
+			#All pops become more socialist
+			any_pop = {
+				ideology = {
+					factor = 0.15
+					value = socialist
+				}
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#The North Borneo Federation
+country_event = {
+	id = 8002902
+	title = "North Borneo Federation?"
+	desc = EVTDESC1512108
+	picture = "KLM_indy"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = ENG
+		year = 1962
+		NOT = { year = 1990 }
+		
+		#Brunei Revolt succeeded
+		BRU = { 
+			government = democracy 
+			ruling_party_ideology = socialist 
+		}
+
+		is_possible_vassal = KLM
+		is_vassal = no
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+	
+	option = {
+		name = "Implement the federation"
+		release = KLM
+		diplomatic_influence = { who = KLM value = 200 }
+		KLM = { 
+			government = hms_government 
+			country_event = 800054 
+			ruling_party_ideology = socialist 
+		}
+		KLM = {
+			random_country = { 
+				limit = { tag = BRU exists = yes OR = { is_vassal = no vassal_of = THIS } }
+				country_event = 11101
+			}
+			random_country = { 
+				limit = { tag = SWK exists = yes OR = { is_vassal = no vassal_of = THIS } } 
+				country_event = 11101
+			}
+			random_country = { 
+				limit = { tag = SAB exists = yes OR = { is_vassal = no vassal_of = THIS } } 
+				country_event = 11101
+			}
+		}
+		relation = { who = MSY value = -100 }
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "There shall be no federation!"
+		prestige_factor = -0.025
+		badboy = 3
+		
+		diplomatic_influence = { who = BRU value = -200 } 
+		relation = { who = BRU value = -200 } 
+		
+		random_owned = {
+			limit = { owner = { exists = MSY } }
+			owner = { 
+				diplomatic_influence = { who = MSY value = 100 } 
+				relation = { who = MSY value = 100 } 
+			}
+		}
+		
+		random_owned = {
+			limit = { owner = { exists = FMS } }
+			owner = { 
+				diplomatic_influence = { who = FMS value = 100 } 
+				relation = { who = FMS value = 100 } 
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
 }
