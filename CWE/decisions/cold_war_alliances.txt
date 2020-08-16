@@ -412,121 +412,118 @@ NOT = { sphere_owner = { has_country_modifier = democratic_bloc_leader } }
 
 	# NATO
 	alliance_nato = {
-			picture = "alliance_nato"
-			potential = {
-has_global_flag = form_nato
-NOT = { has_global_flag = nato_abolish }
-is_vassal = no
-NOT = { tag = RUS }	
-NOT = { has_country_modifier = alliance_sato }			
-NOT = { has_country_modifier = csto_alliance }
-OR = { capital_scope = { is_core = USA }NOT = { has_country_modifier = rio_pact } }	
-NOT = { has_country_modifier = alliance_nato }
-NOT = { has_country_modifier = leave_alliance_nato }
+		picture = "alliance_nato"
+		potential = {
+			has_global_flag = form_nato
+			NOT = { has_global_flag = nato_abolish }
+			is_vassal = no
+			NOT = { tag = RUS }
+			NOT = { has_country_modifier = alliance_sato }			
+			NOT = { has_country_modifier = csto_alliance }
+			OR = {
+				capital_scope = { is_core = USA } 
+				NOT = { has_country_modifier = rio_pact } 
+			}
+			NOT = { has_country_modifier = alliance_nato }
+			NOT = { has_country_modifier = leave_alliance_nato }
 
-				OR = {
-	capital_scope = { OR = { is_core = USA is_core = CAN capital_scope = { continent = europe } } }
-					tag = TUR
-				}
+			OR = {
+				capital_scope = { OR = { is_core = USA is_core = CAN continent = europe } }
+				tag = TUR
+			}
+		}
+
+		allow = {
+
+			NOT = { badboy = 0.6 }
+
+			NOT = { ruling_party_ideology = communist }
+			NOT = { ruling_party_ideology = communist_social }
+
+			NOT = { in_sphere = RUS }
+
+			NOT = { has_country_flag = neutrality }
+			NOT = { has_country_modifier = neutrality }
+
+			war = no
+
+			OR = { 
+				has_country_modifier = nato_leader
+				sphere_owner = { has_country_modifier = alliance_nato } 
+				any_greater_power = { 
+					has_country_modifier = nato_leader 
+					relation = { who = THIS value = 100 }
+				} 
+			}
+
+			OR = { 
+				AND = { government = socialist_democracy NOT = { has_global_flag = blocsenabled } }
+				government = democracy 
+				government = democracy1 
+				government = hms_government 
+				government = hms_government1 
+			}
+
+		}
+
+		effect = {
+			set_country_flag = nato_flag_member
 			
-			}
+			create_alliance = USA
 
-			allow = {
-
-NOT = { badboy = 0.6 }
-
-NOT = { ruling_party_ideology = communist }
-NOT = { ruling_party_ideology = communist_social }
-
-NOT = { in_sphere = RUS }
-
-NOT = { has_country_flag = neutrality }
-NOT = { has_country_modifier = neutrality }
-
-war = no
-
-OR = { 
-has_country_modifier = nato_leader
-sphere_owner = { has_country_modifier = alliance_nato } 
-any_greater_power = { has_country_modifier = nato_leader 
-relation = { who = THIS value = 100 } } 
-}
-
-OR = { 
-	AND = { government = socialist_democracy NOT = { has_global_flag = blocsenabled } }
-	government = democracy 
-	government = democracy1 
-	government = hms_government 
-	government = hms_government1 
-}
-
-			}
-
-			effect = {
-				set_country_flag = nato_flag_member
-
-				random_country = {
-					limit = {
-						tag = THIS
-						NOT = { tag = USA }
-					}
-					create_alliance = USA
-				}
-				any_country = { 
-					limit = {
+			any_country = { 
+				limit = {
 					has_country_modifier = alliance_nato
-					}
-					relation = { who = THIS value = 200 }
-					create_alliance = THIS
 				}
-				add_country_modifier = {
-					name = alliance_nato
-					duration = 1825
-				}
+				relation = { who = THIS value = 200 }
+				create_alliance = THIS
 			}
+			add_country_modifier = {
+				name = alliance_nato
+				duration = 1825
+			}
+		}
 		ai_will_do = {
 			factor = 1
-		modifier = { tag = CHC factor = 0 }
-		}		
+			modifier = { tag = CHC factor = 0 }
+		}
 	}
 
 	leave_alliance_nato = {
-			picture = "alliance_nato"
-			potential = {
-OR = { has_country_modifier = alliance_nato has_country_flag = nato_flag_member }
-			}
+		picture = "alliance_nato"
+		potential = {
+			OR = { has_country_modifier = alliance_nato has_country_flag = nato_flag_member }
+		}
 
-			allow = {
+		allow = {
 
-				NOT = { 
-					OR = { 
-has_country_modifier = nato_leader
-
-any_greater_power = { has_country_modifier = nato_leader 
-alliance_with = THIS }
-
-any_greater_power = { has_country_modifier = nato_leader 
-is_sphere_leader_of = THIS }
-
-sphere_owner = { has_country_modifier = alliance_nato }
-					}
-				}
-
+			NOT = { 
 				OR = { 
-is_vassal = yes
+					has_country_modifier = nato_leader
 
-has_country_modifier = neutrality
+					any_greater_power = { has_country_modifier = nato_leader alliance_with = THIS }
 
-has_country_flag = neutrality
+					any_greater_power = { has_country_modifier = nato_leader is_sphere_leader_of = THIS }
 
-NOT = { OR = { government = socialist_democracy government = democracy government = democracy1 government = hms_government government = hms_government1 } }
-
-any_greater_power = { has_country_modifier = nato_leader 
-relation = { who = THIS value = -100 } }
+					sphere_owner = { has_country_modifier = alliance_nato }
 				}
 			}
 
-			effect = {
+			OR = { 
+				is_vassal = yes
+
+				has_country_modifier = neutrality
+
+				has_country_flag = neutrality
+
+				NOT = { OR = { government = socialist_democracy government = democracy government = democracy1 government = hms_government government = hms_government1 } }
+
+				any_greater_power = { has_country_modifier = nato_leader relation = { who = THIS value = -100 } }
+			}
+
+		}
+
+		effect = {
 			remove_country_modifier = alliance_nato
 			clr_country_flag = nato_flag_member	
 			remove_country_modifier = natohigh
@@ -539,20 +536,19 @@ relation = { who = THIS value = -100 } }
 			remove_country_modifier = nato_leader
 			clr_country_flag = nato_leader
 
-				add_country_modifier = {
-					name = leave_alliance_nato
-					duration = 3650
-				}
-				any_country = { 
-			limit = { has_country_modifier = alliance_nato }
-					relation = { who = THIS value = -50 }
-					leave_alliance = THIS
-				}
-				
+			add_country_modifier = {
+				name = leave_alliance_nato
+				duration = 3650
 			}
+			any_country = { 
+				limit = { has_country_modifier = alliance_nato }
+				relation = { who = THIS value = -50 }
+				leave_alliance = THIS
+			}
+		}
 		ai_will_do = {
 			factor = 1
-		}		
+		}
 	}
 
 	#Inter-American Treaty of Reciprocal Assistance
