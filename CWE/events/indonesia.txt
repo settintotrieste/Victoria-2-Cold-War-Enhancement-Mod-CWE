@@ -1,171 +1,300 @@
+#The Independence of Timor-Leste
 country_event = {
 	id = 1007301
-	title = EVT_1007301_NAME
-	desc = EVT_1007301_DESC
-	picture = "d_east_timor"
+	title = "The Independence of Timor Leste"
+	desc = EVTDESC1007301
+	picture = "2002_indy_timor"
 	fire_only_once = yes
 	
 	trigger = {
 		tag = IDO
 		year = 2002
-		NOT = { exists = TIM }
+		
+		#Reformasi chosen
+		government = democracy
+
 		war = no
-		1446 = { controlled_by = IDO } # Dili
+		is_vassal = no
+		
+		#Annexed TIM
+		is_possible_vassal = TIM
 	}
 
 	mean_time_to_happen = {
-		months = 2
+		months = 5
 	}
 
 	option = {
-		name = EVT_1007301_A 
-		ai_chance = { factor = 0.1 }
-		prestige = -100 
-		badboy = 10
-		any_pop = {
-			limit = {
-				location = { province_id = 1446 }
-				culture = ambon_timor
-			}
-			militancy = 10
-			consciousness = 10
+		name = "Set the Timorese people free!"
+		prestige = 25
+		badboy = -5
+		
+		release = TIM
+		TIM = { 
+			government = democracy 
+			country_event = 800054 
+			ruling_party_ideology = big_tent 
 		}
+		1446 = { remove_core = IDO }
+		
+		ai_chance = { factor = 0.7 }
 	}
-
+	
 	option = {
-		name = "Grant greater autonomy"
-		ai_chance = { factor = 0.2 }
+		name = "Grant greater autonomy instead"
 		prestige = -50
 		badboy = 5
-		any_pop = {
-			limit = {
-				location = { province_id = 1446 }
-				culture = ambon_timor
-			}
-			militancy = 5
-			consciousness = 5
-		}
+		
 		release_vassal = TIM
-TIM = { government = sar_government country_event = 800054 }
-1446 = { remove_core = IDO }
+		TIM = { 
+			government = sar_government 
+			country_event = 800054 
+			ruling_party_ideology = socialist
+			set_country_flag = former_devolved_nation
+		}
+		
+		1446 = { remove_core = IDO }
+		
+		ai_chance = { factor = 0.2 }
+	}
+	
+	option = {
+		name = "East Timor remains Indonesian!"
+		prestige = -100 
+		badboy = 10
+		
+		1446 = { remove_core = IDO }
+		
+		#Add nationalist insurgency
+		1446 = { 
+			any_pop = { 
+				ideology = { factor = 0.40 value = nationalist } 
+				militancy = 10
+			}
+			add_province_modifier = { name = nationalist_agitation duration = 3650 }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+# The capital of Indonesia
+country_event = {
+  id = 8007303
+  title = "The Capital of Indonesia"
+  desc = EVTDESC8007303
+  picture = "IDO_capital_selection"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = IDO
+		year = 1949
+		NOT = { has_global_flag = 1992_start_date_flag }
+		
+		capital = 1416
+		NOT = { capital = 1413 }
+		war = no
+		
+		owns = 1413 # Jakarta
+	}
+
+	mean_time_to_happen = { months = 3 }
+
+	option = {
+		name = "Jakarta shall be the capital"
+		capital = 1413
+		
+		#Change province name
+		1413 = { change_province_name  = "Jakarta" }
+		set_global_flag = batavia_jakarta
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "I prefer Yogyakarta"
+		capital = 1416
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#The abandonment of East Timor - POR
+country_event = {
+  id = 8007321
+  title = "The Independence of Portuguese Timor"
+  desc = EVTDESC8007321
+  picture = "nwo2_east_timor"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = POR
+		NOT = { has_global_flag = 1992_start_date_flag }
+		
+		is_possible_vassal = TIM
+		
+		#When the dictatorship falls
+		government = democracy
+		
+		war = no
+		is_vassal = no
+	}
+	
+	mean_time_to_happen = { months = 11 }
+
+	option = {
+		name = "Abandon the colony!"
+		
+		release = TIM
+		TIM = { 
+			government = democracy1 
+			country_event = 800054 
+			ruling_party_ideology = nationalist 
+			all_core = { add_core = IDO } 
+		}
+		
+		#Add communist insurgency
+		1446 = { 
+			any_pop = { 
+				ideology = { factor = 0.25 value = communist } 
+				militancy = 10
+			}
+		}
+		
+		#Involve IDO
+		random_country = {
+			limit = { 
+				tag = IDO 
+				is_vassal = no 
+				OR = { 
+					ruling_party_ideology = conservative 
+					ruling_party_ideology = nationalist 
+					ruling_party_ideology = traditionalist 
+				}		
+			}
+			country_event = 8007322
+		}
+		
+		ai_chance = { factor = 0.8 }
 	}
 
 	option = {
-		name = EVT_1007301_B
-		ai_chance = { factor = 0.7  }
-		prestige = 25
+		name = "Grant them some autonomy"
+		
+		#Add communist insurgency
+		1446 = { 
+			any_pop = { 
+				ideology = { factor = 0.25 value = communist } 
+				militancy = 10
+			}
+		}
+		
 		release = TIM
+		TIM = { 
+			government = colonial_government
+			country_event = 800054
+			ruling_party_ideology = nationalist
+			all_core = { add_core = IDO }
+		}
+		
+		ai_chance = { factor = 0.1 }
 	}
 	
-	
+	option = {
+		name = "We shall keep Timor by force!"
+		
+		badboy = 5
+		
+		#Add communist insurgency
+		1446 = { 
+			any_pop = { 
+				ideology = { factor = 0.30 value = communist }
+			}
+		}
+		
+		TIM = {
+			government = proletarian_dictatorship
+			country_event = 800052
+			ruling_party_ideology = communist
+			all_core = { add_core = IDO }
+		}
+		
+		war = {
+			target = TIM
+			attacker_goal = { casus_belli = colonial_war }
+			defender_goal = { casus_belli = become_independent } 
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
 }
 
-country_event = { # Independence of Indonesia
-  id = 8007303
-  title = EVT_8007303_NAME
-  desc = EVT_8007303_DESC
-  picture = "nwo2_independence_of_indonesia"
-  fire_only_once = yes
-
-  trigger = {
-    tag = IDO
-    year = 1945 NOT = { year = 1990 }
-	exists = yes
-	NOT = { government = proletarian_dictatorship }
-	is_vassal = no
-	owns = 1413
-	war = no
-  }
-
-  mean_time_to_happen = { months = 8 }
-
-  option = {
-    name = EVT_8007303_A
-	capital = 1413
-  }
-}
-
-
-country_event = {
-  id = 8007320
-  title = EVT_8007320_NAME
-  desc = EVT_8007320_DESC
-  picture = "nwo2_indonesian_new_order"
-  fire_only_once = yes
-
-  trigger = {
-    tag = IDO
-    year = 1965
-	NOT = { year = 1990 }
-    NOT = { government = proletarian_dictatorship }
-    war = no
-  }
-
-  mean_time_to_happen = { months = 12 }
-
-  option = {
-    name = EVT_8007320_A
-	any_pop = { consciousness = 0.5 militancy = 0.5 }
-  }
-}
-
-country_event = {
-  id = 8007321
-  title = EVT_8007321_NAME
-  desc = EVT_8007321_DESC
-  picture = "nwo2_east_timor"
-  fire_only_once = yes
-
-  trigger = {
-    tag = POR
-    government = democracy
-	IDO = { exists = yes war = no }
-	owns = 1446
-	war = no
-  }
-  mean_time_to_happen = { months = 12 }
-
-  option = {
-		name = EVT_8007321_A
-		any_pop = {  consciousness = 2 }
-		IDO = { country_event = 8007322 }
-		ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8007321_B
-	badboy = 10
-	1446 = { add_core = IDO }
-	ai_chance = { factor = 0 }
-  }
-}
-
+#Indonesian Annexation of East Timor?
 country_event = {
   id = 8007322
-  title = EVT_8007321_NAME
-  desc = EVT_8007321_DESC
+  title = "The Invasion of East Timor"
+  desc = EVTDESC8007322
   picture = "nwo2_east_timor"
 
-  is_triggered_only = yes
+	is_triggered_only = yes
   
-  option = {
-		name = EVT_8007322_A
-		any_pop = { militancy = -0.5  consciousness = 1.0 }
-		1446 = { secede_province = IDO } 
-		badboy = 10
+	option = {
+		name = "East Timor is ours!"
+		
+		badboy = 5
+		
+		war = {
+			target = TIM
+			attacker_goal = { casus_belli = annex_core_country }
+			defender_goal = { casus_belli = become_independent } 
+		}
+		
+		#Add more communist support
+		TIM = { 
+			any_pop = { 
+				ideology = { factor = 0.05 value = communist }
+			}
+		}
+		
+		#USA is pleased
+		random_country = {
+			limit = { 
+				tag = USA 
+				has_global_flag = blocsenabled 
+			}
+			relation = { who = THIS value = 100 }
+			diplomatic_influence = { who = THIS value = 100 }
+		}
+		
+		#USSR is angry
+		random_country = {
+			limit = { 
+				tag = RUS
+				has_global_flag = blocsenabled 
+			}
+			relation = { who = THIS value = -100 }
+			diplomatic_influence = { who = THIS value = -100 }
+		}
+		
+		#More nationalist support
+		any_pop = { ideology = { factor = 0.10 value = nationalist } }
+		
 		ai_chance = { factor = 0.9 }
-  }
+	}
 
-  option = {
-    name = EVT_8007322_B
-	any_pop = { militancy = 0.5  consciousness = 1 }
-	POR = { release = TIM }
-	TIM = { government = democracy1 country_event = 800054 }
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Leave them be"
+		prestige_factor = -0.05
+		any_pop = { ideology = { factor = 0.05 value = communist } }
+		ai_chance = { factor = 0.1 }
+	}
+
 }
 
-#Indonesian War of Independece start - IDO
+#Indonesian War of Independence start - IDO
 country_event = {
   id = 8299001
   title = EVT_8007303_NAME
@@ -175,8 +304,13 @@ country_event = {
 
 	option = {
 		name = EVT_8007303_A
-		define_general = { name = "Sukarno" personality = energetic background = no_background }
-		random_country = { limit = { tag = NET } leave_alliance = ENG leave_alliance = USA }
+		
+		random_country = { 
+			limit = { tag = NET } 
+			leave_alliance = ENG 
+			leave_alliance = USA 
+		}
+		
 		war = {
 			target = NET
 			attacker_goal = { casus_belli = become_independent }

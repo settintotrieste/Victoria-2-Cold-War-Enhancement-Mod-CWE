@@ -1,0 +1,245 @@
+#Restore WPA to IDO
+country_event = {
+  id = 8206040
+  title = EVT_8206080_NAME
+  desc = EVT_8206080_DESC
+  picture = "nwo2_dutch_west_guinea"
+  fire_only_once = yes
+
+	trigger = {
+    	tag = NET
+    	year = 1962 
+		NOT = { year = 1990 }
+
+		OR = { 
+			is_possible_vassal = WPA 
+			is_our_vassal = WPA 
+		}
+		
+		is_vassal = no
+		war = no
+
+    	IDO = { exists = yes is_vassal = no }
+
+		has_global_flag = blocsenabled
+	}
+
+	mean_time_to_happen = { months = 8 }
+
+	option = {
+		name = "Prepare to leave Western New Guinea"
+		inherit = WPA
+		
+		WPA = { all_core = { add_core = IDO } }
+		
+		#Establish UN mandate
+		release_vassal = WPA
+		WPA = { government = mandate_government country_event = 800054 ruling_party_ideology = nationalist }
+		
+		set_global_flag = return_WPA_to_IDO
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "We shall never vacate the colony!"
+		prestige = -50
+		badboy = 10
+		
+		#Choice for IDO to wage war
+		IDO = { country_event = 8206043 } 
+
+		#Superpowers are not happy
+		relation = { who = USA value = -100 }
+		relation = { who = RUS value = -100 }
+		
+		#Add nationalist insurgency
+		WPA = {
+			all_core = { 
+				any_pop = { 
+					ideology = { factor = 0.40 value = nationalist } 
+					militancy = 10
+				}
+				add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Transfer of Sovereignty to Indonesia
+country_event = {
+  id = 8206041
+  title = "The Irian Barat"
+  desc = EVTDESC8206041
+  picture = "nwo2_dutch_west_guinea"
+  fire_only_once = yes
+
+	trigger = {
+    	tag = IDO
+    	year = 1963
+		NOT = { year = 1990 }
+		
+		WPA = { 
+			government = mandate_government 
+			vassal_of = NET 
+		}
+		
+		war = no
+
+		has_global_flag = return_WPA_to_IDO
+	}
+
+	mean_time_to_happen = { months = 5 }
+
+	option = {
+		name = "Indonesia is now complete!"
+		prestige = 100
+		inherit = WPA
+	}
+
+}
+
+#The Act of Free Choice
+country_event = {
+	id = 8206042
+	title = "The Act of Free Choice"
+	desc = EVTDESC1512121
+	picture = "wpa_free_choice"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = IDO
+		year = 1969
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		is_possible_vassal = WPA 
+	}
+
+	mean_time_to_happen = { 
+		months = 8
+	}
+
+	option = {
+		name = "Rig the vote"
+		badboy = 5
+		prestige = -50
+		
+		#Add nationalist insurgency
+		WPA = {
+			all_core = { 
+				any_pop = { 
+					ideology = { factor = 0.40 value = nationalist } 
+					militancy = 10
+				}
+				add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Let the vote be free and fair"
+		
+		WPA = { all_core = { remove_core = IDO } }
+
+		release = WPA
+		WPA = { government = democracy country_event = 800054 ruling_party_ideology = nationalist }
+		relation = { who = WPA value = 200 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#War to reclaim west papua
+country_event = {
+  id = 8206043
+  title = EVT_8206081_NAME
+  desc = EVT_8206081_DESC
+  picture = "nwo2_dutch_west_guinea_1"
+
+	is_triggered_only = yes
+
+	option = {
+		name = EVT_8206081_A
+		
+		war = { 
+			target = NET
+			attacker_goal = { casus_belli = acquire_state state_province_id = 1453 }
+			defender_goal = { casus_belli = territorial_dispute }
+		}
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = EVT_8206081_B
+		prestige_factor = -0.10
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#WPA dominion government if WPA was retained
+country_event = {
+  id = 8206044
+  title = EVT_8206052_NAME
+  desc = EVT_8206052_DESC
+  picture = "nwo2_dutch_west_guinea_2"
+  
+  fire_only_once = yes
+
+	trigger = {
+		tag = NET
+		year = 1968
+		NOT = { year = 1990 }
+		is_possible_vassal = WPA
+		war = no
+		is_vassal = no
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "Establish an autonomous colony"
+		release_vassal = WPA
+		WPA = { 
+			government = colonial_government 
+			country_event = 800054 
+			ruling_party_ideology = conservative 
+		}
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Continue direct rule from $CAPITAL$"
+		badboy = 5
+		prestige = -50
+		
+		random_country = {
+			limit = { tag = IDO is_vassal = no }
+			relation = { who = THIS value = -200 }
+		}
+		
+		#Add nationalist insurgency
+		WPA = {
+			all_core = { 
+				any_pop = { 
+					ideology = { factor = 0.20 value = nationalist } 
+				}
+				any_pop = { 
+					ideology = { factor = 0.20 value = communist } 
+				}
+				add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
