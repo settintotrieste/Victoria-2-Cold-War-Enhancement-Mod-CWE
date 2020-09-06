@@ -2633,58 +2633,61 @@ add_province_modifier = { name = collectivisation duration = -1 }
 #Trade Union conspiracy
 country_event = {
 	id = 1512059
-title = "Trade Unions Threaten Strikes"
+	title = "Threat of a General Strike"
 	desc = EVTDESC1512059
 	picture = "trade_union_action"
 
-trigger = {
+	trigger = {
 
-OR = { government = socialist_democracy government = democracy government = democracy1 government = hms_government government = hms_government1 }
+		OR = { government = socialist_democracy government = democracy government = democracy1 government = hms_government government = hms_government1 }
 
-OR = { pop_majority_ideology = socialist pop_majority_ideology = communist pop_majority_ideology = communist_social }
+		OR = { pop_majority_ideology = socialist pop_majority_ideology = communist pop_majority_ideology = communist_social }
 
-average_militancy = 2
+		average_militancy = 2
 
-NOT = { gender_rights = gender_role_based }
-NOT = { gender_rights = gender_equal }
+		NOT = { gender_rights = gender_role_based }
+		NOT = { gender_rights = gender_equal }
 
-OR = { NOT = { wage_and_work_hours = six_hours }
-
-NOT = { safety_regulations = rigid_regulations }
-
-NOT = { unemployment_subsidies = citizen_salary }
-
-NOT = { pensions = good_pensions }
-
-NOT = { social_service_reform = the_safety_grid } }
-
-}
-
-mean_time_to_happen = { 
-months = 120
-
-modifier = { factor = 1.75 pop_majority_ideology = traditionalist }
-
-modifier = { factor = 1.5 pop_majority_ideology = conservative }
-
-modifier = { factor = 1.25 pop_majority_ideology = big_tent }
-
-modifier = { factor = 0.75 pop_majority_ideology = socialist }
-
-modifier = { factor = 0.25 pop_majority_ideology = communist }
-
-modifier = { factor = 0.5 pop_majority_ideology = communist_social }
+		OR = { 
+			NOT = { wage_and_work_hours = six_hours }
+			NOT = { safety_regulations = rigid_regulations }
+			NOT = { unemployment_subsidies = citizen_salary }
+			NOT = { pensions = good_pensions }
+			NOT = { social_service_reform = the_safety_grid } 
+		}
 
 	}
 
-option = {
-name = "Give in to the Trade Unions"
+	mean_time_to_happen = { 
+		months = 120
 
-#Wage and Work
+		modifier = { factor = 0.50 pop_majority_ideology = communist }
 
-random_owned = { 
-limit = { owner = { wage_and_work_hours = paid_sick_leave_hours } } 
-owner = { social_reform = six_hours } }
+		modifier = { factor = 0.75 pop_majority_ideology = communist_social }
+
+	}
+
+	option = {
+		name = "Give in to the Trade Unions"
+		
+		#Right wing groups are angry
+		any_pop = {
+			scaled_militancy = {
+				factor = 5
+				ideology = conservative
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
+			}
+		}
+		
+		#Wage and Work
+
+		random_owned = { 
+			limit = { owner = { wage_and_work_hours = paid_sick_leave_hours } } 
+			owner = { social_reform = six_hours } 
+		}
 
 random_owned = { 
 limit = { owner = { wage_and_work_hours = paid_vacation_hours } } 
@@ -2770,45 +2773,48 @@ random_owned = {
 limit = { owner = { social_service_reform = no_social_service  } } 
 owner = { social_reform = social_services } }
 
-ai_chance = { 
-factor = 1 
-
-modifier = { 
-
-factor = 0 
-
-NOT = { OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social } } 
-
-} 
-
-}
-
-
+		ai_chance = { 
+			factor = 1 
+			modifier = { 
+				factor = 0 
+				NOT = { OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social } }
+			}
 		}
-
-option = {
-name = "Defy the Trade Unions!"
-
-prestige_factor = -0.025
-
-any_owned = { add_province_modifier = { name = trade_union_action duration = 365 } }
-
-any_pop = { militancy = 2 }
-
-ai_chance = { 
-factor = 1 
-
-modifier = { 
-
-factor = 0 
-
-OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social }
-
-} 
 
 	}
 
+	option = {
+		name = "Defy the Trade Unions!"
+
+		prestige_factor = -0.025
+
+		any_owned = { add_province_modifier = { name = trade_union_action duration = 365 } }
+
+		#Left wing groups are angry
+		any_pop = {
+			scaled_militancy = {
+				factor = 5
+				ideology = socialist
+			}
+			scaled_militancy = {
+				factor = 7.5
+				ideology = communist_social
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
 		}
+
+		ai_chance = { 
+			factor = 1 
+			modifier = { 
+				factor = 0 
+				OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social }
+			}
+		}
+
+	}
 
 }
 
