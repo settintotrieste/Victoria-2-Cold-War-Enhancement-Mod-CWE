@@ -1,193 +1,572 @@
-country_event = {
-	id = 1005001
-	title = EVT_1005001_NAME
-	desc = EVT_1005001_DESC
-	picture = "nasser_in_crowd"
-	is_triggered_only = yes
-	
-	option = {
-		name = EVT_1005001_A 
-		ai_chance = { factor = 0.9 }
-		FROM = {
-			relation = { who = THIS value = -10 }
-		}
-		prestige = -10
-any_owned = { limit = { is_core = EGY } secede_province = EGY }
-	}
-	
-	option = {
-		name = EVT_1005001_B 
-		ai_chance = { factor = 0.1 }
-		FROM = {
-			add_casus_belli = {
-				target = THIS
-				type = acquire_core_state
-				months = 12
-			}		
-			relation = { who = THIS value = -200 }
-		}
-		badboy = 0.5
-	}
-}
-
-country_event = {
-  id = 8005004
-  title = "EVT_8005004_NAME"
-  desc = "EVT_8005004_DESC"
-  picture = "nwo2_anthony_eden"
-  fire_only_once = yes
-
-  is_triggered_only = yes
-
-  option = {
-    name = "EVT_8005004_A"
-	prestige = -20
-  }
-}
-country_event = {
-  id = 8005006
-  title = "EVT_8005006_NAME"
-  desc = "EVT_8005006_DESC"
-  picture = "nwo2_harold_macmillan"
-  is_triggered_only = yes
-
-  option = {
-    name = "EVT_8005006_A"
-	prestige = -20
-  }
-}
+#The Profumo Affair
 country_event = {
   id = 8005017
-  title = EVT_8005017_NAME
-  desc = EVT_8005017_DESC
+  title = "The Profumo Affair"
+  desc = EVTDESC8005017
   picture = "nwo2_profumo_affair"
   fire_only_once = yes
 
-  trigger = {
-    tag = ENG
-    year = 1963 
-	NOT = { year = 1964 }
-	government = hms_government 
-  }
+	trigger = {
+		tag = ENG
+		year = 1963 
+		NOT = { year = 1990 }
+		
+		government = hms_government
+		ruling_party_ideology = conservative
+	}
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 3 }
 
-  option = {
-    name = EVT_8005017_A
-	any_pop = { limit = { is_primary_culture = yes } militancy = 0.3 consciousness = 0.6 }
-	country_event = 8005006
-  }
+	option = {
+		name = "The party takes responsibility"
+		prestige = -50
+		all_core = {
+			any_pop = { ideology = { factor = -0.05 value = conservative } } 
+		}
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "So what?"
+		any_pop = { 
+			scaled_militancy = {
+				factor = 5
+				ideology = conservative
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = populist
+			}
+		}
+		ai_chance = { factor = 0.1 }
+	}
+	
 }
+
+#Death of George VI
 country_event = {
   id = 8005018
-  title = EVT_8005018_NAME
-  desc = EVT_8005018_DESC
+  title = "The Death of King George VI"
+  desc = EVTDESC8005018
   picture = "nwo2_george_vi_funeral"
+  
   fire_only_once = yes
 
-  trigger = {
-    tag = ENG
-	government = hms_government
-    year = 1952 NOT = { year = 1963 }
-  }
+	trigger = {
+		tag = ENG
+		year = 1952 
+		NOT = { year = 1963 }
+		
+		OR = { government = hms_government government = hms_government1 government = absolute_monarchy }
+	}
 
-  mean_time_to_happen = { months = 3 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8005018_A
-	set_country_flag = george_vi_funeral
-	any_pop = { limit = { is_primary_culture = yes } militancy = -1.0 consciousness = -0.5 }
-  }
+	option = {
+		name = "The King is dead. Long live the Queen!"
+		set_country_flag = george_vi_funeral
+		
+		all_core = {
+			any_pop = { 
+				ideology = { factor = 0.02 value = conservative } 
+				militancy = -10
+				consciousness = -5
+			}
+		}
+	}
+
 }
+
+#Coronation of Queen Elizabeth II
 country_event = {
   id = 8005019
-  title = EVT_8005019_NAME
+  title = "Coronation of Queen Elizabeth II"
   desc = EVT_8005019_DESC
   picture = "nwo2_elizabeth_ii_coronation"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = ENG
-	government = hms_government
-    year = 1953 NOT = { year = 1963 }
-    has_country_flag = george_vi_funeral
-  }
+	trigger = {
+		tag = ENG
+		year = 1953 
+		NOT = { year = 1963 }
+		has_country_flag = george_vi_funeral
+		OR = { government = hms_government government = hms_government1 government = absolute_monarchy }
+	}
 
-  mean_time_to_happen = { months = 6 }
+	mean_time_to_happen = { months = 6 }
 
-  option = {
-    name = EVT_8005019_A
-	any_pop = { militancy = -5 consciousness = -5 }
-	prestige = 50
-  }
+	option = {
+		name = "God Save the Queen"
+		prestige = 100
+		all_core = {
+			any_pop = { 
+				ideology = { factor = 0.03 value = conservative } 
+				militancy = -10
+				consciousness = -5
+			}
+		}
+	}
+
 }
+
+#Devaluation of the Pound
 country_event = {
   id = 8005020
-  title = EVT_8005020_NAME
-  desc = EVT_8005020_DESC
-  picture = "nwo2_london_1948"
-  fire_only_once = yes
+  title = "$YEAR$ Devaluation of the Pound"
+  desc = EVTDESC8005020
+  picture = "nwo2_1967_uk_devaluation"
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = ENG
-    year = 1948 NOT = { year = 1949 }
-    war = no
-  }
+	trigger = {
+		tag = ENG
+		year = 1967
+		NOT = { year = 1979 }
+		
+		OR = { government = hms_government government = democracy }
+		war = no
+		is_vassal = no
+		
+		#Labour party in power
+		ruling_party_ideology = socialist
+	}
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 11 }
 
-  option = {
-    name = EVT_8005020_A
-	any_pop = { militancy = -3 }
-  }
+	option = {
+		name = "We have no choice"
+		prestige_factor = -0.01
+		all_core = {
+			any_pop = { 
+				ideology = { factor = 0.05 value = conservative }
+			}
+		}
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "We shall not devalue our dignity!"
+		add_country_modifier = { name = stagflation duration = 1825 }
+		ai_chance = { factor = 0.1 }
+	}
+
 }
+
+#The Industrial Relations Act 1971
+country_event = {
+  id = 80050201
+  title = "The Industrial Relations Act $YEAR$"
+  desc = EVTDESC80050201
+  picture = "nwo2_1971_uk_strikes"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = ENG
+		year = 1971
+		NOT = { year = 1975 }
+		
+		OR = { government = hms_government government = democracy }
+		war = no
+		is_vassal = no
+		
+		#Conservative party in power
+		ruling_party_ideology = conservative
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "Force through the reforms!"
+		
+		#More conservative policies
+		political_reform = gender_equal
+		social_reform = eight_work_hours
+		
+		all_core = {
+			any_pop = {
+				limit = { strata = poor }
+				ideology = { factor = 0.05 value = socialist }
+			}
+		}
+		
+		set_country_flag = 1971_uk_strikes_flag
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "We shall not rock the boat"
+		prestige_factor = -0.01
+		remove_country_modifier = stagflation
+		add_country_modifier = { name = stagflation duration = 1825 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Who Governs Britain?
+country_event = {
+  id = 80050202
+  title = "Who Governs Britain?"
+  desc = EVTDESC80050202
+  picture = "nwo2_1974_uk_election"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = ENG
+		year = 1974
+		NOT = { year = 1979 }
+		
+		OR = { government = hms_government government = democracy }
+		war = no
+		is_vassal = no
+		
+		has_country_flag = 1971_uk_strikes_flag
+		
+		#Conservative party in power
+		ruling_party_ideology = conservative
+	}
+
+	mean_time_to_happen = { months = 4 }
+
+	option = {
+		name = "Labour is the way forward"
+		
+		#More socialist policies
+		political_reform = gender_promotive
+		social_reform = paid_vacation_hours
+		
+		all_core = {
+			any_pop = {
+				limit = { strata = poor }
+				ideology = { factor = 0.075 value = socialist }
+			}
+		}
+		
+		set_country_flag = 1971_uk_strikes_flag
+		
+		election = yes
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "I like the Conservatives"
+
+		#Socialist and Communist are pissed
+		all_core = {
+			any_pop = {
+				scaled_militancy = {
+					factor = 5
+					ideology = socialist
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = communist
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = communist_social
+				}
+			}
+		}
+		
+		election = yes
+
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#The Winter of Discontent
 country_event = {
   id = 8005021
-  title = EVT_8005021_NAME
-  desc = EVT_8005021_DESC
+  title = "The Winter of Discontent"
+  desc = EVTDESC8005021
   picture = "nwo2_winter_of_discontent"
   fire_only_once = yes
 
-  trigger = {
-    tag = ENG
-OR = { government = hms_government government = democracy }
-    year = 1979 NOT = { year = 1990 }
-    war = no
-  }
+	trigger = {
+		tag = ENG
+		year = 1979
+		NOT = { year = 1990 }
+		
+		OR = { government = hms_government government = democracy }
+		
+		war = no
+		is_vassal = no
+		
+		#Labour party in power
+		ruling_party_ideology = socialist
+	}
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 11 }
 
-  option = {
-    name = EVT_8005021_A
-	any_pop = { limit = { is_primary_culture = yes } militancy = 1.2 consciousness = 2.0 }
-  }
+	option = {
+		name = "The government falls!"
+		
+		#Thatcher has a chance of victory
+		all_core = {
+			any_pop = { 
+				limit = { NOT = { type = labourers } }
+				ideology = { factor = 0.25 value = conservative }
+			}
+		}
+		
+		#Call an election
+		election = yes
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Compromise with the devolutionists and Trade Unions"
+		
+		#More socialist policies
+		political_reform = feminist
+		social_reform = six_hours
+		
+		#More Socialist support
+		all_core = {
+			any_pop = { 
+				limit = { type = labourers }
+				ideology = { factor = 0.05 value = socialist }
+			}
+		}
+		
+		#Conservative and nationlists are pissed
+		all_core = {
+			any_pop = { 
+				scaled_militancy = {
+					factor = 5
+					ideology = conservative
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = traditionalist
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = nationalist
+				}
+			}
+		}
+		
+		#Release Scotland
+		random_owned = {
+			limit = { owner = { is_possible_vassal = SCO } }
+			owner = { 
+				release_vassal = SCO 
+				diplomatic_influence = { who = SCO value = 200 }
+				SCO = { government = sar_government country_event = 800054 set_country_flag = former_devolved_nation }
+			}
+		}
+		
+		#Release Northern Ireland
+		random_owned = {
+			limit = { owner = { is_possible_vassal = NIR } }
+			owner = { 
+				release_vassal = NIR
+				diplomatic_influence = { who = NIR value = 200 }
+				NIR = { government = sar_government country_event = 800054 set_country_flag = former_devolved_nation }
+			}
+		}
+		
+		#Release Wales
+		random_owned = {
+			limit = { owner = { is_possible_vassal = WAE } }
+			owner = { 
+				release_vassal = WAE
+				diplomatic_influence = { who = WAE value = 200 }
+				WAE = { government = sar_government country_event = 800054 set_country_flag = former_devolved_nation }
+			}
+		}
+
+		ai_chance = { factor = 0.1 }
+	}
+
 }
+
+#The Miner's Strike of the 1980s
 country_event = {
   id = 8005022
-  title = EVT_8005022_NAME
-  desc = EVT_8005022_DESC
+  title = "The Miner's Strike"
+  desc = EVTDESC8005022
   picture = "nwo2_miners_strike"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = ENG
-OR = { government = hms_government government = democracy }
-    year = 1984 NOT = { year = 1990 }
-    war = no
-  }
+	trigger = {
+		tag = ENG
+		year = 1984
+		NOT = { year = 1990 }
+		
+		OR = { government = hms_government government = democracy }
+		war = no
+		is_vassal = no
+		
+		#Conservative party in power
+		ruling_party_ideology = conservative
+	}
 
-  mean_time_to_happen = { months = 5 }
+	mean_time_to_happen = { months = 6 }
 
-  option = {
-    name = EVT_8005022_A
-	any_pop = { limit = { is_primary_culture = yes }  militancy = 2 consciousness = 2 }
-	ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = "Fight the Trade Unions!"
+	
+		#More conservative policies
+		political_reform = gender_equal
+		social_reform = eight_work_hours
+		social_reform = minimal_subsidies
+	
+		#More Socialist support
+		all_core = {
+			any_pop = { 
+				limit = { type = labourers }
+				ideology = { factor = 0.05 value = socialist }
+			}
+		}
+		
+		#Socialist and Communist are pissed
+		all_core = {
+			any_pop = {
+				scaled_militancy = {
+					factor = 5
+					ideology = socialist
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = communist
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = communist_social
+				}
+			}
+		}
+	
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8005022_B
-	any_pop = { limit = { is_primary_culture = yes }  militancy = 3 consciousness = 6 }
-	money = -50000 
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Cave in to their demands"
+		
+		#More socialist policies
+		political_reform = feminist
+		social_reform = six_hours
+
+		#Conservative and nationlists are pissed
+		all_core = {
+			any_pop = { 
+				scaled_militancy = {
+					factor = 5
+					ideology = conservative
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = traditionalist
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = nationalist
+				}
+			}
+		}
+
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+#The Poll Tax
+country_event = {
+  id = 8005023
+  title = "The Poll Tax"
+  desc = EVTDESC8005023
+  picture = "nwo2_poll_tax"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = ENG
+		year = 1990
+		NOT = { year = 1992 }
+		
+		OR = { government = hms_government government = democracy }
+		war = no
+		is_vassal = no
+		
+		#Conservative party in power
+		ruling_party_ideology = conservative
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "Push it through!"
+	
+		#More conservative policies
+		social_reform = low_pensions
+		
+		money = 1000000
+	
+		#More Socialist support
+		all_core = {
+			any_pop = { 
+				ideology = { factor = 0.05 value = socialist }
+			}
+		}
+		
+		#Socialist and Communist are pissed
+		all_core = {
+			any_pop = {
+				scaled_militancy = {
+					factor = 3
+					ideology = socialist
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = communist
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = communist_social
+				}
+			}
+		}
+	
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Cave in to their demands"
+
+		#Conservative and nationlists are pissed
+		all_core = {
+			any_pop = { 
+				scaled_militancy = {
+					factor = 5
+					ideology = conservative
+				}
+			}
+		}
+		
+		#More Socialist support
+		all_core = {
+			any_pop = { 
+				limit = { strata = poor }
+				ideology = { factor = 0.025 value = socialist }
+			}
+		}
+
+		ai_chance = { factor = 0.1 }
+	}
+	
 }
