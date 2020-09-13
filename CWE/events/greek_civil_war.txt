@@ -383,28 +383,93 @@ country_event = {
 	war_exhaustion = 50 
   }
 }
+
+#Clean up tags if there are 2 similar Greece
 country_event = {
   id = 8500541
-  title = EVT_8500541_NAME
+  title = "End of the Greek Civil War"
   desc = EVT_8500541_DESC
   picture = "nwo2_kke_victory"
   fire_only_once = yes
 
-  trigger = {
-    	tag = UGR
-	NOT = { exists = GRE }
-	war = no
-  }
+	trigger = {
+		OR = { tag = UGR tag = GRE }
+		GRE = { war = no is_vassal = no }
+		UGR = { war = no is_vassal = no }
+		
+		OR = { 
+			AND = { 
+				tag = GRE 
+				NOT = { exists = UGR } 
+			}
+			AND = { 
+				tag = UGR
+				NOT = { exists = GRE } 
+			}
+			AND = { 
+				UGR = { government = proletarian_dictatorship }
+				GRE = { government = proletarian_dictatorship } 
+			}
+			AND = { 
+				UGR = { OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 government = socialist_democracy } }
+				GRE = { OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 government = socialist_democracy } } 
+			}
+		}
+		
+	}
 
-  mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 0.1 }
 
-  option = {
-    name = EVT_8500541_A
-	any_pop = { militancy = -2.5 consciousness = -1}
-	change_tag = GRE
-	capital = 834 # Athens
-	RUS  = { country_event = 8225000 } 
-  }
+	option = {
+		name = "We are a united nation once again!"
+		any_pop = { militancy = -2.5 consciousness = -1 }
+		
+		#Player is GRE
+		random_owned = {
+			limit = { 
+				owner = { GRE = { ai = no } } 
+			}
+			owner = { inherit = UGR }
+		}
+		
+		#Player is UGR
+		random_owned = {
+			limit = { 
+				owner = { UGR = { ai = no } } 
+			}
+			owner = { inherit = GRE }
+		}
+		
+		#Both are AI - GRE
+		random_owned = {
+			limit = { 
+				owner = { 
+					tag = GRE
+					GRE = { ai = no } 
+					UGR = { ai = no } 
+				} 
+			}
+			owner = { inherit = UGR }
+		}
+		
+		#Both are AI - GRE
+		random_owned = {
+			limit = { 
+				owner = { 
+					tag = UGR
+					GRE = { ai = no } 
+					UGR = { ai = no } 
+				} 
+			}
+			owner = { 
+				inherit = GRE
+				change_tag = GRE
+				GRE = { capital = 834 } # Athens
+			}
+		}
+
+	}
+
 }
 country_event = {
   id = 8500550
