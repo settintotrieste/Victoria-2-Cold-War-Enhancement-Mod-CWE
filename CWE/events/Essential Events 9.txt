@@ -569,6 +569,7 @@ title = "New Supreme Court Judge"
 trigger = {
 war = no
 OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 government = socialist_democracy }
+is_vassal = no
 }
 
 mean_time_to_happen = { 
@@ -7336,6 +7337,151 @@ country_event = {
 			}
 			add_country_modifier = { name = revolution_chaos duration = 3650 }
 		}
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Gibraltar SAR
+country_event = {
+	id = 1610126
+	title = "Gibraltar Constitution Order $YEAR$"
+	desc = EVTDESC1610126
+	picture = "GIB_SAR_ENG"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = ENG
+		year = 2006
+		
+		OR = { government = hms_government government = democracy }
+		NOT = { OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist ruling_party_ideology = traditionalist } }
+		
+		war = no
+		is_vassal = no
+		
+		#Owns Gibraltar
+		is_possible_vassal = GIB
+	}
+
+	mean_time_to_happen = { 
+		months = 11
+	}
+
+	option = {
+		name = "Grant Gibraltar full internal autonomy"
+		prestige_factor = 0.01
+		release_vassal = GIB
+		GIB = { government = sar_government country_event = 800054 ruling_party_ideology = conservative }
+		diplomatic_influence = { who = GIB value = 200 }
+		
+		relation = { tag = SPA value = 50 }
+		
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "Keep Gibraltar an integral part of the nation"
+		badboy = 5
+		
+		#Nationalist pops are not happy
+		any_pop = {
+			limit = {
+				location = { is_core = GIB }
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = populist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+		}
+		
+		relation = { tag = SPA value = -50 }
+		
+		ai_chance = { factor = 0.2 }
+	}
+
+}
+
+#French Guiana Autonomy referendum
+country_event = {
+	id = 1610127
+	title = "$YEAR$ Status of French Guiana Referendum"
+	desc = EVTDESC1610127
+	picture = "GUN_SAR_FRA"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = FRA
+		year = 2010
+		
+		government = democracy
+		NOT = { OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist ruling_party_ideology = traditionalist } }
+		
+		war = no
+		is_vassal = no
+		
+		#Owns French Guiana
+		is_possible_vassal = GUN
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "Let the natives decide (30% chance of self-rule)"
+		
+		random_list = {
+		
+			#Remain part of France, become a state province
+			70 = {  
+				prestige = 50
+				random_owned = {
+					limit = { 
+						owner = { 2241 = { is_colonial = yes } } 
+					}
+					owner = {
+						release = GUN
+						inherit = GUN
+					}
+				}
+			}
+			
+			30 = {
+				release_vassal = GUN
+				GUN = { government = colonial_government country_event = 800054 ruling_party_ideology = conservative }
+				diplomatic_influence = { who = GUN value = 200 }
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Keep Guiana an integral part of France"
+		badboy = 5
+		
+		#Nationalist pops are not happy
+		any_pop = {
+			limit = {
+				location = { is_core = GUN }
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = populist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+		}
+		
 		ai_chance = { factor = 0.1 }
 	}
 

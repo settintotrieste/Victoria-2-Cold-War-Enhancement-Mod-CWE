@@ -1,78 +1,85 @@
-country_event = { # Fall of the Fourth Republic
+#The May 1958 Crisis
+country_event = {
   id = 8005730
-  title = EVT_8005730_NAME
-  desc = EVT_8005730_DESC
-  picture = "nwo2_de_gaulle_fifth_republic"
+  title = "The May 1958 Crisis"
+  desc = EVTDESC8005730
+  picture = "nwo2_may_13_crisis"
   fire_only_once = yes
 
-  trigger = {
-    tag = FRA
-	UFR = { exists = no } 
-    year = 1958 NOT = { year = 1990 }
-	government = democracy
-	has_country_flag = endoffra
-	war = no
-	ALG = { exists = no }
-  }
-
-  mean_time_to_happen = { months = 5 }
-
-  option = {
-    name = EVT_8005730_A
-	any_pop = { militancy = -1.0 consciousness = 1 }
-	define_general = { name = "Charles de Gaulle" personality = energetic background = no_background }
-	prestige = -50
-	set_country_flag = fifth_republic
-	ruling_party_ideology = conservative
-	
-	clr_country_flag = presidential_system_republic
-	clr_country_flag = semi_presidential_system_republic
-	clr_country_flag = parliamentary_system_republic
-			
-	set_country_flag = semi_presidential_system_republic
-			
-	add_country_modifier = { name = changecentral duration = 1825 }
-	
-	ai_chance = { factor = 0.8 }
-  }
-
-  option = {
-    name = EVT_8005730_B
-	any_pop = { militancy = 1.0 consciousness = 1 }
-	any_state = {
-		limit = { is_core = FRA }
-		add_core = UFR
+	trigger = {
+		tag = FRA
+		year = 1958
+		NOT = { year = 1990 }
+		
+		UFR = { exists = no }
+		
+		government = democracy
+		is_vassal = no
+		
+		#Formed the French Community
+		has_country_flag = endoffra
+		
+		#Algeria is part of France
+		is_possible_vassal = ALG
 	}
-	any_owned = { limit = { OR = { province_id = 473 is_core = ALG } } secede_province = UFR }
 
-	UFR = { government = nationalist_dictatorship }
-	UFR = { capital = 1700 } # Algiers
-	UFR = { war = { target = FRA attacker_goal = { casus_belli = civil_war } defender_goal = { casus_belli = civil_war } } }
-	prestige_factor = -0.25
-	UFR = { ruling_party_ideology = traditionalist }
-	UFR = { country_event = 800050 }
-	ai_chance = { factor = 0.1 }
-  }
-  
-  option = {
-    name = EVT_8005730_C
-	any_pop = { militancy = 1.0 consciousness = 1 }
-	any_state = {
-		limit = { is_core = FRA }
-		add_core = UFR
+	mean_time_to_happen = { months = 5 }
+
+	option = {
+		name = "The Fourth Republic falls!"
+		prestige_factor = -0.05
+		any_pop = { militancy = -2.0 consciousness = 1 }
+		
+		any_pop = { 
+			limit = { culture = french } 
+			ideology = { factor = 0.15 value = conservative } 
+		}
+		
+		#Trigger the foundation of the Fifth Republic
+		set_country_flag = fifth_republic
+		ruling_party_ideology = conservative
+	
+		ai_chance = { factor = 0.8 }
 	}
-	any_owned = { limit = { OR = { province_id = 473 is_core = ALG } } secede_province = UFR }
 
-	UFR = { government = nationalist_dictatorship }
-	UFR = { capital = 1700 } # Algiers
-	UFR = { war = { target = FRA attacker_goal = { casus_belli = civil_war } defender_goal = { casus_belli = civil_war } } }
-	prestige_factor = -0.25
-	change_tag_no_core_switch = UFR
-	UFR = { ruling_party_ideology = traditionalist }
-	UFR = { country_event = 800050 }
+	option = {
+		name = "We shall defend the Fourth Republic!"
+		prestige_factor = -0.025
+		
+		any_pop = { militancy = 5 consciousness = 5 }
+		
+		any_state = {
+			limit = { is_core = FRA }
+			add_core = UFR
+		}
+		
+		#Release Rebel France
+		any_owned = {
+			limit = { OR = { province_id = 473 is_core = ALG is_core = COR } } 
+			secede_province = UFR
+		}
 
-	ai_chance = { factor = 0.1 }
-  }
+		UFR = { 
+			capital = 1700 # Algiers
+			government = nationalist_dictatorship
+			ruling_party_ideology = traditionalist
+			country_event = 800050
+			
+			any_pop = { 
+				limit = { culture = french } 
+				ideology = { factor = 0.15 value = traditionalist } 
+			}
+			
+			#Start the Civil War
+			war = { 
+				target = FRA 
+				attacker_goal = { casus_belli = civil_war } 
+				defender_goal = { casus_belli = civil_war } 
+			}
+		}
+		
+		ai_chance = { factor = 0.2 }
+	}
   
 }
 
@@ -89,16 +96,20 @@ country_event = {
 		year = 1958
 		NOT = { year = 1990 }
 		
-		is_greater_power = yes
 		government = democracy
+		is_vassal = no
 		
-		ALG = { 
+		has_country_flag = fifth_republic
+		ruling_party_ideology = conservative
+		
+		#Algerian War is ongoing
+		ALG = {
 			exists = yes 
 			is_vassal = no 
 		}
 	}
 	
-	mean_time_to_happen = { months = 10 }
+	mean_time_to_happen = { months = 5 }
 
 	option = {
 		name = "Strengthen the Presidency!"
@@ -136,7 +147,7 @@ country_event = {
 		
 		
 		any_pop = {
-			limit = { is_primary_culture = yes } 
+			limit = { is_primary_culture = yes }
 			scaled_militancy = {
 				factor = 10
 				ideology = liberal
@@ -151,47 +162,56 @@ country_event = {
 
 }
 
-country_event = { # Restore Unified France under the Fourth Republic
+# Restore Unified France under the Fourth Republic
+country_event = {
   id = 8005732
   title = EVT_8005732_NAME
   desc = EVT_8005732_DESC
   picture = "nwo2_de_gaulle_fifth_republic"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = UFR
-	war = no
-	FRA = { exists = no }
-	owns = 425
-	NOT = { capital = 425 }
-  }
+	trigger = {
+		tag = UFR
+		war = no
+		FRA = { exists = no }
+		
+		#Owns Paris
+		owns = 425
+		NOT = { capital = 425 }
+	}
 
-  option = {
-    name = EVT_8005732_A
-	change_tag = FRA
-	capital = 425
-  }
+	option = {
+		name = EVT_8005732_A
+		capital = 425
+		change_tag = FRA
+	}
   
 }
 
-country_event = { # Common Programme of Socialists, Communists & MRG
+# Common Programme of Socialists, Communists & MRG
+country_event = {
     id = 8005733
-    title = EVT_8005733_NAME
-    desc = EVT_8005733_DESC
+    title = "The Programme commun"
+    desc = EVTDESC8005733
     picture = "common_programme"
     fire_only_once = yes
 
     trigger = {
         tag = FRA
-        year =  1972
+        year = 1972
         NOT = { year = 1990 }
         government = democracy
-        # require a flag that the 5th Republic has been established
-		has_country_flag = fifth_republic # from event 8005730
+		has_country_flag = fifth_republic
+		
         OR = {
+			ruling_party_ideology = traditionalist
             ruling_party_ideology = conservative
             ruling_party_ideology = liberal
         }
+		
+		#Cold War is ongoing
+		has_global_flag = blocsenabled
     }
 
     mean_time_to_happen = {
@@ -199,13 +219,21 @@ country_event = { # Common Programme of Socialists, Communists & MRG
     }
 
     option = {
-        name = EVT_8005733_A
-        # make communists, socialists and left radicals more concious
-		any_pop = { 
-			limit = { 
-				OR = { pop_majority_ideology = socialist pop_majority_ideology = communist }
-			} 
-			consciousness = 0.4 
+        name = "We have to watch this closely"
+		
+		any_pop = {
+			limit = { is_primary_culture = yes }
+			ideology = {
+				factor = 0.10
+				value = socialist
+			}
+		}
+		any_pop = {
+			limit = { is_primary_culture = yes }
+			ideology = {
+				factor = 0.05
+				value = communist
+			}
 		}
     }
 
@@ -223,7 +251,10 @@ country_event = {
 	trigger = {
 		tag = FRA
 		year = 1998
+		NOT = { year = 2000 }
 		month = 5
+		
+		war = no
 	}
 	
 	mean_time_to_happen = {
@@ -232,7 +263,7 @@ country_event = {
 	
 	option = {
 		name = "EVTOPTA4"
-		prestige = 10
+		prestige = 50
 	}
 }
 
@@ -248,6 +279,7 @@ country_event = {
 	trigger = {
 		tag = FRA
 		year = 2000
+		NOT = { year = 2003 }
 		has_country_modifier = concorde
 	}
 
@@ -257,7 +289,7 @@ country_event = {
 	
 	option = {
 		name = "EVTOPTA3"
-		prestige = -5
+		prestige = -25
 	}
 }
 
@@ -282,26 +314,31 @@ country_event = {
 	
 	option = {
 		name = "EVTOPTA6"
-		prestige = 5
+		prestige = 50
 	}
 }
 
-country_event = { #1961 Vitry-Le-François train bombing
+#1961 Vitry-Le-François train bombing
+country_event = {
   id = 8005737
   title = EVT_8005737_NAME
   desc = EVT_8005737_DESC
   picture = "1961_vitry_bombing"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = FRA
-	year = 1961
-	NOT = { year = 1990 }
-	OR = { government = democracy government = hms_government }
-	ALG = { OR = { vassal_of = FRA war_with = FRA }}
-  }
+	trigger = {
+		tag = FRA
+		year = 1961
+		NOT = { year = 1990 }
+		
+		OR = { government = democracy government = hms_government }
+		
+		#Algerian War is ongoing
+		ALG = { OR = { vassal_of = FRA war_with = FRA } }
+	}
 
-  mean_time_to_happen = { months = 6 }
+	mean_time_to_happen = { months = 6 }
 
 	option = {
 		name = EVT_8003737_A
@@ -309,7 +346,7 @@ country_event = { #1961 Vitry-Le-François train bombing
 		408 = { 
 			add_province_modifier = { name = terrorist_chaos duration = 365 } #Chalons
 			infrastructure = -1
-			}
+		}
 		add_country_modifier = { name = recent_terrorist_attack duration = 183 }
 	}
 }
@@ -317,7 +354,6 @@ country_event = { #1961 Vitry-Le-François train bombing
 #India demands the return of Pondicherry - HND start
 country_event = {
 	id = 10057011
-
 	title = EVT_1005701_NAME
 	desc = EVT_1005701_DESC
 	picture = "pondicherry"
@@ -330,6 +366,7 @@ country_event = {
 		NOT = { year = 1990 }
 		war = no
 		is_vassal = no
+		
 		1312 = { owned_by = FRA }
 		FRA = { is_vassal = no }
 	}
@@ -394,9 +431,9 @@ country_event = {
 
 }
 
+#End the IAR
 country_event = { # FROM = GER THIS = FRA
 	id = 1005702
-
 	title = end_international_authority_over_ruhr_title
 	desc = end_international_authority_over_ruhr_desc
 	picture = "nwo2_occupation_zones_in_germany"
@@ -435,20 +472,29 @@ country_event = { # FROM = GER THIS = FRA
 	}
 }
 
-country_event = { # 1987 New Caledonia indpedence referendum
+# 1987 New Caledonia indpedence referendum
+country_event = {
 	id = 1005705
 	title = "EVT_1005705_NAME"
 	desc= "EVT_1005705_DESC"
-	picture = "new_caledonia"
+	picture = "new_caledonia_1987"
 	
 	fire_only_once = yes
 	
 	trigger = {
 		tag = FRA
-		government = democracy
 		year = 1987
-		owns = 1097
 		NOT = { has_global_flag = 1992_start_date_flag }
+		
+		government = democracy
+		war = no
+		is_vassal = no
+		
+		#Owns Caledonia
+		is_possible_vassal = NCA
+		
+		#Unrest in Caledonia
+		has_country_flag = path_to_indy_NCA
 	}
 	
 	mean_time_to_happen = {
@@ -456,96 +502,214 @@ country_event = { # 1987 New Caledonia indpedence referendum
 	}
 	
 	option = {
-		name = "EVT_1005705_A"
-		ai_chance = { factor = 0.90 }
-		any_pop = { limit = { culture = kanak } militancy = 2  consciousness = 1 }
-		any_pop = { limit = { culture = french location = { is_core = NCA } } militancy = -2  consciousness = -1 }
+		name = "Let the referendum proceed! (80% chance of independence)"
+		any_pop = { limit = { culture = kanak } militancy = 2 consciousness = 1 }
+		any_pop = { limit = { culture = french location = { is_core = NCA } } militancy = -2 consciousness = -1 }
+		
+		set_country_flag = NCA_indy_referendum_passed
+		
+		random_list = {
+			#Remain part of France, become a state province
+			80 = {  
+				prestige = 50
+				random_owned = {
+					limit = { 
+						owner = { 2241 = { is_colonial = yes } } 
+					}
+					owner = {
+						release = NCA
+						inherit = NCA
+					}
+				}
+			}
+			
+			20 = {
+				release = NCA
+				NCA = { government = democracy country_event = 800054 ruling_party_ideology = conservative }
+				diplomatic_influence = { who = NCA value = 200 }
+			}
+		}
+		
+		#Add slight nationalist movement
+		NCA = {
+			all_core = {
+				any_pop = {
+					limit = { culture = kanak }
+					ideology = { factor = 0.05 value = nationalist }
+				}
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
 	}
 	
 	option = {
-		name = "EVT_1005705_B"
-		ai_chance = { factor = 0.10 }
-		any_pop = { limit = { culture = french location = { is_core = NCA } } militancy = 4  consciousness = 2 }
-		release = NCA
+		name = "Deny them a referendum!"
+		badboy = 5
+		
+		any_pop = { limit = { culture = french location = { is_core = NCA } } militancy = -10 consciousness = -10 }
+		
+		#Add nationalist movement
+		NCA = {
+			all_core = { 
+				add_province_modifier = { name = nationalist_agitation duration = 3650 }
+				any_pop = {
+					limit = { culture = kanak }
+					
+					ideology = { factor = 0.15 value = nationalist }
+					militancy = 10
+					consciousness = 10
+				}
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
 	}
 }
 
-country_event = { # Growing Unrest in New Caledonia
+# Growing Unrest in New Caledonia
+country_event = {
 	id = 1005706
-	title = "EVT_1005706_NAME"
+	title = "Growing Unrest in New Caledonia"
 	desc= "EVT_1005706_DESC"
-	picture = "new_caledonia"
+	picture = "new_caledonia_unrest"
 	
 	fire_only_once = yes
 	
 	trigger = {
 		tag = FRA
-		government = democracy
-		year = 1987
-		owns = 1097
+		year = 1986
 		NOT = { has_global_flag = 1992_start_date_flag }
+		
+		government = democracy
+		war = no
+		is_vassal = no
+		
+		#Owns Caledonia
+		is_possible_vassal = NCA
+		
+		#Colonial NCA
+		any_owned_province = {
+			is_colonial = yes 
+			is_core = NCA
+		}
 	}
 	
 	mean_time_to_happen = {
-		months = 2
+		months = 6
 	}
 	
 	option = {
-		name = "EVT_1005706_A"
-		ai_chance = { factor = 0.7 }
-		any_pop = { limit = { culture = kanak } militancy = 4  consciousness = 2 }
-		country_event =  { id = 1005707 days = 56 } 
+		name = "Promise an independence referendum in New Caledonia"
+		prestige_factor = -0.03
+		any_pop = { limit = { culture = kanak } militancy = -4 consciousness = -2 }
+		any_pop = { limit = { culture = french location = { is_core = NCA } } militancy = 4 consciousness = 2 }
+		
+		set_country_flag = path_to_indy_NCA
+		ai_chance = { factor = 0.8 }
 	}
 	
 	option = {
-		name = "EVT_1005706_B"
+		name = "The colony remains French!"
+		
+		badboy = 5
+		
+		any_pop = { limit = { culture = french location = { is_core = NCA } } militancy = -10 consciousness = -10 }
+		
+		#Add nationalist movement
+		NCA = {
+			all_core = { 
+				add_province_modifier = { name = nationalist_agitation duration = 3650 }
+				any_pop = {
+					limit = { culture = kanak }
+					
+					ideology = { factor = 0.15 value = nationalist }
+					militancy = 10
+					consciousness = 10
+				}
+			}
+		}
+		
 		ai_chance = { factor = 0.2 }
-		any_pop = { limit = { culture = kanak } militancy = 4  consciousness = 2 }
-		any_pop = { limit = { culture = french location = { is_core = NCA } } militancy = -4  consciousness = -2 }
-	}
-	
-	option = {
-		name = "EVT_1005706_C"
-		ai_chance = { factor = 0.1 }
-		any_pop = { limit = { culture = kanak } militancy = -4  consciousness = -2 }
-		any_pop = { limit = { culture = french location = { is_core = NCA } } militancy = 4  consciousness = 2 }
-		release = NCA
+		
 	}
 }
 
-country_event = { # Matignon Agreements
+# Matignon Agreements
+country_event = {
 	id = 1005707
 	title = "EVT_1005707_NAME"
 	desc= "EVT_1005707_DESC"
 	picture = "matignon_agreements"
 	
-	is_triggered_only = yes
+	fire_only_once = yes
+	
+	trigger = {
+		tag = FRA
+		year = 1988
+		NOT = { has_global_flag = 1992_start_date_flag }
+		
+		government = democracy
+		war = no
+		is_vassal = no
+		
+		#Owns Caledonia
+		is_possible_vassal = NCA
+		
+		has_country_flag = NCA_indy_referendum_passed
+	}
+	
+	mean_time_to_happen = {
+		months = 6
+	}
 	
 	option = {
-		name = "EVT_1005707_A"
-		ai_chance = { factor = 0.7 }
+		name = "Promise to grant New Caledonia eventual independence"
 		any_pop = { limit = { culture = kanak } militancy = -5  consciousness = -3 }
 		any_pop = { limit = { culture = french location = { is_core = NCA } } militancy = -4  consciousness = -2 }
+		
+		
+		#Boost nationalist movement
+		NCA = {
+			all_core = { 
+				any_pop = {
+					limit = { culture = kanak }
+					ideology = { factor = 0.05 value = nationalist }
+				}
+			}
+		}
+		
 		set_country_flag = matignon_agreements
+		ai_chance = { factor = 0.8 }
 	}
 	
 	option = {
-		name = "EVT_1005707_B"
-		ai_chance = { factor = 0.2 }
+		name = "Outline a future where they are an autonomous overseas territory"
+		
+		badboy = 5
+		
 		any_pop = { limit = { culture = kanak } militancy = 5  consciousness = 3 }
-		any_pop = { limit = { culture = french location = { is_core = NCA } } militancy = -4  consciousness = -2 }
+		any_pop = { limit = { culture = french location = { is_core = NCA } } militancy = -4 consciousness = -2 }
+		
+		#Add nationalist movement
+		NCA = {
+			all_core = { 
+				add_province_modifier = { name = nationalist_agitation duration = 1825 }
+				any_pop = {
+					limit = { culture = kanak }
+					ideology = { factor = 0.15 value = nationalist }
+				}
+			}
+		}
+		
+		set_country_flag = matignon_agreements_vassal
+		ai_chance = { factor = 0.2 }
 	}
 	
-	option = {
-		name = "EVT_1005707_C"
-		ai_chance = { factor = 0.1 }
-		any_pop = { limit = { culture = kanak } militancy = -4  consciousness = -2 }
-		any_pop = { limit = { culture = french location = { is_core = NCA } } militancy = 4  consciousness = 2 }
-		release = NCA
-	}
 }
 
-country_event = { # Nouméa Accords
+# Nouméa Accords
+country_event = {
 	id = 1005708
 	title = "EVT_1005708_NAME"
 	desc= "EVT_1005708_DESC"
@@ -555,10 +719,19 @@ country_event = { # Nouméa Accords
 	
 	trigger = {
 		tag = FRA
-		government = democracy
 		year = 1998
-		owns = 1097
-		has_country_flag = matignon_agreements
+		
+		government = democracy
+		war = no
+		is_vassal = no
+		
+		#Owns Caledonia
+		is_possible_vassal = NCA
+		
+		OR = { 
+			has_country_flag = matignon_agreements 
+			has_country_flag = matignon_agreements_vassal 
+		}
 	}
 	
 	mean_time_to_happen = {
@@ -566,33 +739,52 @@ country_event = { # Nouméa Accords
 	}
 	
 	option = {
-		name = "EVT_1005708_A"
-		ai_chance = { factor = 0.7 }
-		any_pop = { limit = { culture = kanak } militancy = -4  consciousness = 3 }
+		name = "Begin the process of granting autonomy"
+		any_pop = { limit = { culture = kanak } militancy = -4 consciousness = 3 }
 		any_pop = { limit = { culture = french location = { is_core = NCA } } militancy = -4  consciousness = -3 }
-		clr_country_flag = matignon_agreements
+
+		#Release NCA as a dominion
+		release_vassal = NCA
+		NCA = { 
+			government = colonial_government 
+			country_event = 800054 
+			ruling_party_ideology = big_tent
+			
+			any_pop = {
+				limit = { culture = kanak }
+				ideology = { factor = 0.25 value = conservative }
+			}
+		}
+		diplomatic_influence = { who = NCA value = 200 }
+
 		set_country_flag = noumea_accords
+		ai_chance = { factor = 0.9 }
 	}
 	
 	option = {
-		name = "EVT_1005708_B"
-		ai_chance = { factor = 0.2 }
-		any_pop = { limit = { culture = kanak } militancy = 4  consciousness = 2 }
-		any_pop = { limit = { culture = french location = { is_core = NCA } } militancy = -4  consciousness = -2 }
-		clr_country_flag = matignon_agreements
-	}
-	
-	option = {
-		name = "EVT_1005708_C"
+		name = "Renege on our promise, New Caledonia remains French!"
+		badboy = 5
+		any_pop = { limit = { culture = kanak } militancy = 10 consciousness = 10 }
+		any_pop = { limit = { culture = french location = { is_core = NCA } } militancy = -10  consciousness = -5 }
+		
+		#Add nationalist movement
+		NCA = {
+			all_core = { 
+				add_province_modifier = { name = nationalist_agitation duration = 1825 }
+				any_pop = {
+					limit = { culture = kanak }
+					ideology = { factor = 0.15 value = nationalist }
+				}
+			}
+		}
+		
 		ai_chance = { factor = 0.1 }
-		any_pop = { limit = { culture = kanak } militancy = -4  consciousness = -2 }
-		any_pop = { limit = { culture = french location = { is_core = NCA } } militancy = 4  consciousness = 2 }
-		clr_country_flag = matignon_agreements
-		release = NCA
 	}
+	
 }
 
-country_event = { # 2018 New Caledonia independence referendum
+# 2018 New Caledonia independence referendum
+country_event = {
 	id = 1005709
 	title = "EVT_1005709_NAME"
 	desc= "EVT_1005709_DESC"
@@ -602,9 +794,19 @@ country_event = { # 2018 New Caledonia independence referendum
 	
 	trigger = {
 		tag = FRA
-		government = democracy
 		year = 2018
-		owns = 1097
+		
+		government = democracy
+		war = no
+		is_vassal = no
+		
+		#Owns Caledonia
+		is_our_vassal = NCA
+		
+		#Promised the indy referendum
+		has_country_flag = matignon_agreements
+		
+		#Released NCA as a colonial government
 		has_country_flag = noumea_accords
 	}
 	
@@ -613,28 +815,58 @@ country_event = { # 2018 New Caledonia independence referendum
 	}
 	
 	option = {
-		name = "EVT_1005709_A"
-		ai_chance = { factor = 0.50 }
-		any_pop = { limit = { culture = kanak } militancy = 2  consciousness = 4 }
-		any_pop = { limit = { culture = french location = { is_core = NCA } } militancy = -4  consciousness = -3 }
-		clr_country_flag = noumea_accords
+		name = "Let the referendum proceed! (40% chance of independence)"
+		any_pop = { limit = { culture = kanak } militancy = 2 consciousness = 1 }
+		any_pop = { limit = { culture = french location = { is_core = NCA } } militancy = -2 consciousness = -1 }
+		
+		set_country_flag = NCA_indy_referendum_passed
+		
+		random_list = {
+			#Remain part of France, become a state province
+			60 = {  
+				prestige = 50
+				NCA = { 
+					add_country_modifier = { name = recently_attempted_independence duration = 3650 } 
+					any_pop = {
+						limit = { culture = kanak }
+						ideology = { factor = 0.05 value = conservative }
+					}
+				}
+			}
+			
+			#Independence!
+			40 = {
+				release_vassal = NCA
+				NCA = { government = democracy country_event = 800054 ruling_party_ideology = conservative }
+				diplomatic_influence = { who = NCA value = 200 }
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
 	}
 	
 	option = {
-		name = "EVT_1005709_B"
-		ai_chance = { factor = 0.40 }
-		release = NCA
-		any_pop = { limit = { culture = kanak } militancy = -4  consciousness = -2 }
-		any_pop = { limit = { culture = french location = { is_core = NCA } } militancy = 2  consciousness = 3 }
-		clr_country_flag = noumea_accords
+		name = "Deny them a referendum!"
+		badboy = 5
+		
+		any_pop = { limit = { culture = french location = { is_core = NCA } } militancy = -10 consciousness = -10 }
+		
+		#Add nationalist movement
+		NCA = {
+			add_country_modifier = { name = recently_attempted_independence duration = 3650 }
+			all_core = { 
+				add_province_modifier = { name = nationalist_agitation duration = 3650 }
+				any_pop = {
+					limit = { culture = kanak }
+					
+					ideology = { factor = 0.20 value = nationalist }
+					militancy = 10
+					consciousness = 10
+				}
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
 	}
-	option = {
-		name = "Devolve greater power to New Caledonia"
-		ai_chance = { factor = 0.10 }
-		prestige = 20
-		release_vassal = NCA
-NCA = { government = colonial_government country_event = 800054 ruling_party_ideology = conservative }
-diplomatic_influence = { who = NCA value = 200 }
-		clr_country_flag = noumea_accords
-	}
+
 }
