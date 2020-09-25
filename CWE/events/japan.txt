@@ -1,14 +1,15 @@
 #The post war constitution
 country_event = {
   id = 8007825
-  title = EVT_8007825_NAME
+  title = "The Post War Constitution"
   desc = EVT_8007825_DESC
   picture = "nwo2_japanese_constitution_1947"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
 	trigger = {
 		tag = JAP
-		year = 1947 
+		year = 1947
 		NOT = { has_global_flag = 1950_start_date_flag }
 		NOT = { has_global_flag = 1992_start_date_flag }
 		
@@ -25,398 +26,384 @@ country_event = {
 	mean_time_to_happen = { months = 5 }
 
 	option = {
-		name = EVT_8007825_A
+		name = "SCAP will draft the new constitution"
 		prestige = 10
 		USA = { country_event = 1512199 }
 	}
 
 }
 
-#changed so the event fires directly after the San Francisco treaty
+#The San Francisco Treaty
 country_event = {
   id = 8007826
-  title = EVT_8007826_NAME
-  desc = EVT_8007826_DESC
-  picture = "nwo2_macarthur_with_hirohito"
-  is_triggered_only = yes
+  title = "The Treaty of San Francisco"
+  desc = EVTDESC8007826
+  picture = "nwo2_sanfrancisco"
+  
+	major = yes
+  
+	fire_only_once = yes
 
-  option = {
-    name = EVT_8007826_A
-	release_vassal = JAP
-	country_event = 8007830
-	ai_chance = { factor = 0.9 }
-  }
-  option = {
-    name = EVT_8007826_B
-	badboy = 10
-	relation = { who = JAP value = -200 }
-	ai_chance = { factor = 0.1 }
-  }
+	trigger = {
+		tag = USA
+		year = 1952
+		NOT = { year = 1990 }
+		
+		JAP = {
+			OR = {
+				government = hms_government 
+				government = hms_government1 
+				government = democracy 
+				government = democracy1 
+			}
+			war = no
+		}
+		
+		is_our_vassal = JAP
+		
+		#Cold War
+		has_global_flag = blocsenabled
+		government = democracy
+	}
+
+	mean_time_to_happen = { months = 4 }
+
+	option = {
+		name = "Japan is a sovereign state once more"
+		prestige = 100
+		release_vassal = JAP
+		
+		relation = { who = JAP value = 100 }
+		diplomatic_influence = { who = JAP value = 200 }
+		
+		#Make way for the Mutual Cooperation Treaty
+		set_global_flag = sanfrancisco_treaty_flag
+		
+		#Enemies of Japan are pissed
+		relation = { who = RUS value = -100 }
+		relation = { who = CHI value = -100 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Continue the administration of Japan"
+		badboy = 5
+		
+		JAP = {
+			government = mandate_government 
+			
+			#Nationalism increases
+			any_pop = {
+				limit = { culture = japanese }
+				ideology = {
+					factor = 0.125
+					value = nationalist
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = nationalist
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = traditionalist
+				}
+			}
+			
+		}
+		
+		#Enemies of Japan are happy
+		relation = { who = RUS value = 100 }
+		relation = { who = CHI value = 100 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
 }
+
+#US Japan Treaty of Mutual Cooperation
 country_event = {
   id = 8007827
   title = EVT_8007827_NAME
   desc = EVT_8007827_DESC
   picture = "nwo2_american_japanese_treaty"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = JAP
-    year = 1960 NOT = { year = 1963 }
-    NOT = { war_with = USA }
-    exists = USA
-    
-  }
+	trigger = {
+		tag = JAP
+		year = 1960
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		
+		OR = {
+			government = hms_government 
+			government = hms_government1 
+			government = democracy 
+			government = democracy1 
+		}
+		
+		relation = { who = USA value = 0 }
+		
+		#San Francisco Treaty
+		has_global_flag = sanfrancisco_treaty_flag
+		
+		#Cold War
+		has_global_flag = blocsenabled
+	}
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8007827_A
-	relation = { who = USA value = 100 } 
-	create_alliance = USA
-	set_global_flag = american_japanese_treaty_flag
-	ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = "We shall enjoy the free ride!"
+		relation = { who = USA value = 100 }
+		create_alliance = USA
+		set_global_flag = american_japanese_treaty_flag
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8007827_B
-	leave_alliance = USA
-	USA = { end_military_access = THIS } 
-	relation = { who = USA value = -150 } 
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "We don't need the Yankee protection"
+		leave_alliance = USA
+		USA = { end_military_access = THIS } 
+		relation = { who = USA value = -50 } 
+		ai_chance = { factor = 0.1 }
+	}
+
 }
-#sligthly modified transfer japanese islands
+
+#Return of Okinawa
 country_event = {
   id = 8007828
-  title = EVT_8007828_NAME
+  title = "Okinawa Reversion Agreement"
   desc = EVT_8007828_DESC
   picture = "nwo2_okinawa"
-  fire_only_once = yes
-
-  trigger = {
-    tag = USA
-    year = 1971 NOT = { year = 1990 }
-	owns = 1678
-
-	#owns = 1679
-
-  OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
-  }
-
-  mean_time_to_happen = { months = 11 }
-
-  option = {
-    name = EVT_8007828_A
-	1678 = { secede_province = JAP add_core = JAP }
-
-	#1679 = { secede_province = JAP add_core = JAP }
-
-	badboy = -5
-	relation = { who = JAP value = 70 } 
-	JAP = { country_event = 8007829 }
-	ai_chance = { factor = 0.9 }
-  }
-
-  option = {
-    name = EVT_8007828_B
-	  ai_chance = { factor = 0.1 }
-	  relation = { who = JAP value = -30 } 
-    JAP  = { country_event = 8007847 } 
-  }
-}
-country_event = {
-  id = 8007829
-  title = EVT_8007829_NAME
-  desc = EVT_8007829_DESC
-  picture = "nwo2_okinawa"
-  is_triggered_only = yes
   
-  option = {
-    name = EVT_8007829_A
-	prestige = 100
-	any_pop = { consciousness = 2 }
-  }
-}
-country_event = {
-  id = 8007830
-  title = EVT_8007826_NAME
-  desc = EVT_8007826_DESC
-  picture = "nwo2_macarthur_with_hirohito"
-  is_triggered_only = yes
+	fire_only_once = yes
 
-  option = {
-    name = EVT_8007826_A
-    relation = { who = JAP value = 100 } 
-  }
+	trigger = {
+		tag = USA
+		year = 1971
+		NOT = { year = 1990 }
+		
+		#Okinawa
+		owns = 1678
+		
+		government = democracy
+		war = no
+		is_vassal = no
+		
+		JAP = {
+			OR = {
+				government = hms_government 
+				government = hms_government1 
+				government = democracy 
+				government = democracy1 
+			}
+			is_vassal = no
+			exists = yes
+		}
+	}
+
+	mean_time_to_happen = { months = 11 }
+
+	option = {
+		name = "Return Okinawa to Japan"
+		
+		1678 = { secede_province = JAP add_core = JAP }
+
+		badboy = -5
+		
+		relation = { who = JAP value = 100 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "We shall continue to hold on to the island"
+		relation = { who = JAP value = -50 }
+		
+		#Japan gains cores over the Okinawan islands
+	    1679 = { add_core = JAP }
+		1678 = { add_core = JAP }
+		
+		#Nationalism increases
+		any_pop = {
+			limit = { culture = japanese location = { is_core = JAP } }
+			ideology = {
+				factor = 0.25
+				value = nationalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
+			}
+		}
+	
+		ai_chance = { factor = 0.1 }
+	}
+
 }
-#slightly modified transfer japanese islands again
+
+#Return of the Bonin and Marcus Islands
 country_event = {
   id = 8007831
-  title = EVT_8007831_NAME
+  title = "Return of the Bonin and Marcus Islands"
   desc = EVT_8007831_DESC
-  picture = "nwo2_okinawa"
-  fire_only_once = yes
-
-  trigger = {
-    tag = USA
-    year = 1968 NOT = { year = 1990 }
-	owns = 2525
-	owns = 1654
-  OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
-  }
-
-  mean_time_to_happen = { months = 2 }
-
-  option = {
-    name = EVT_8007831_A
-	2525 = { secede_province = JAP add_core = JAP }
-	1654 = { secede_province = JAP add_core = JAP }
-	badboy = -2 
-	relation = { who = JAP value = 70 } 
-	JAP = { country_event = 8007832 }
-	ai_chance = { factor = 0.9 }
-  }
-
-  option = {
-    name = EVT_8007831_B
-	  ai_chance = { factor = 0.1 }
-	  relation = { who = JAP value = -30 }
-    JAP  = { country_event = 8007848 } 
-  }
-}
-country_event = {
-  id = 8007832
-  title = EVT_8007831_NAME
-  desc = EVT_8007831_DESC
-  picture = "nwo2_okinawa"
-  is_triggered_only = yes
+  picture = "nwo2_bonin_marcus"
   
-  option = {
-    name = EVT_8007829_A
-	any_pop = { consciousness = 2 }
-  }
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 1968 
+		NOT = { year = 1990 }
+		
+		#Marcus and Bonin Islands
+		owns = 2525
+		owns = 1654
+		
+		government = democracy
+		war = no
+		is_vassal = no
+		
+		JAP = {
+			OR = {
+				government = hms_government 
+				government = hms_government1 
+				government = democracy 
+				government = democracy1 
+			}
+			is_vassal = no
+			exists = yes
+		}
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "Return those islands"
+		
+		2525 = { secede_province = JAP add_core = JAP }
+		1654 = { secede_province = JAP add_core = JAP }
+		
+		badboy = -5
+		
+		relation = { who = JAP value = 100 }
+	
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "We are not returning those islands!"
+		
+		relation = { who = JAP value = -50 }
+	
+		#Japan gains cores over the Bonin and Marcus Islands
+		2525 = { add_core = JAP }
+		1654 = { add_core = JAP }
+		
+		#Nationalism increases
+		any_pop = {
+			limit = { culture = japanese location = { is_core = JAP } }
+			ideology = {
+				factor = 0.25
+				value = nationalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
+			}
+		}
+	
+		ai_chance = { factor = 0.1 }
+	}
 }
 
-#New event chain Japan - waiting for approval
+#Return of the Amami Islands
 country_event = {
-  id = 8007840
-  title = EVT_8007840_NAME
-  desc = EVT_8007840_DESC
-  picture = "nwo2_sanfrancisco"
-  fire_only_once = yes
+	id = 8007832
+	title = "Return of the Amami Islands to Japan"
+	desc = EVTDESC1512150
+	picture = "amami_islands_return"
 
-  trigger = {
-    tag = JAP
-    year = 1951 
-	NOT = { year = 1990 }
-	is_vassal = yes  
-  }
+	fire_only_once = yes
 
-  mean_time_to_happen = { months = 9  }
+	trigger = {
+		tag = USA
+		year = 1953
+		NOT = { year = 1990 }
+		
+		government = democracy
+		war = no
+		is_vassal = no
+		
+		#Amani Islands
+		owns = 1679
+		
+		JAP = { 
+			OR = {
+				government = hms_government 
+				government = hms_government1 
+				government = democracy 
+				government = democracy1 
+			}
+			is_vassal = no
+			exists = yes
+		}
+	}
 
-  option = {
-    name = EVT_8007840_A
-    ai_chance = { factor = 0.9 }
-    USA  = { country_event = 8007846 } 
-    RUS  = { country_event = 8007843 } 
-    JAP  = { country_event = 8007842 }
-  }
+	mean_time_to_happen = { 
+		months = 12
+	}
 
-  option = {
-    name = EVT_8007840_B
-    ai_chance = { factor = 0.1 }  
-    country_event = 8007841
-  }
-}
+	option = {
+		name = "Give Japan a Christmas present"
+		
+		1679 = { secede_province = JAP add_core = JAP }
+		
+		badboy = -5
+		
+		relation = { who = JAP value = 100 }
 
-#ahistorical followup
-country_event = {
-  id = 8007841
-  title = EVT_8007841_NAME 
-  desc = EVT_8007841_DESC 
-  picture = "nwo2_sanfrancisco"
-  is_triggered_only = yes
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8007841_A 
-    ai_chance = { factor = 0.1 }
-    USA  = { country_event = 8007846 } 
-    RUS  = { country_event = 8007843 } 
-    badboy = 20
-    1089 = { add_core = JAP }
-    1088 = { add_core = JAP }
-    1087 = { add_core = JAP }
-    1086 = { add_core = JAP }
-  }
+	option = {
+		name = "Keep it for strategic reasons"
+		relation = { who = JAP value = -50 }
+	
+		#Japan gains cores over the Amami Islands
+		1679 = { add_core = JAP }
+		
+		#Nationalism increases
+		any_pop = {
+			limit = { culture = japanese location = { is_core = JAP } }
+			ideology = {
+				factor = 0.25
+				value = nationalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
 
-  option = {
-    name = EVT_8007841_B
-    ai_chance = { factor = 0.1 }
-    USA  = { country_event = 8007846 } 
-    RUS  = { country_event = 8007843 } 
-    badboy = 15
-    1089 = { add_core = JAP }
-    1088 = { add_core = JAP }
-    1087 = { add_core = JAP }
-  }
-
-  option = {
-    name = EVT_8007841_C 
-    ai_chance = { factor = 0.1 }
-    USA  = { country_event = 8007846 } 
-    RUS  = { country_event = 8007843 } 
-    badboy = 10
-    1089 = { add_core = JAP }
-    1087 = { add_core = JAP }
-  }
-
-  option = {
-    name = EVT_8007841_D
-    ai_chance = { factor = 0.1 }
-    USA  = { country_event = 8007846 } 
-    RUS  = { country_event = 8007843 } 
-    badboy = 5
-    1089 = { add_core = JAP }
-    1088 = { add_core = JAP }
-  }
-
-  option = {
-    name = EVT_8007841_E 
-    ai_chance = { factor = 0.5 }
-    USA  = { country_event = 8007846 } 
-    RUS  = { country_event = 8007843 } 
-    JAP  = { country_event = 8007842 }
-  }
-
-  option = {
-    name = EVT_8007841_F 
-    ai_chance = { factor = 0.1 }
-    USA  = { country_event = 8007845  } 
-    RUS  = { country_event = 8007844 } 
-    badboy = -5
-  }
-}
-
-#historical followup
-country_event = {
-  id = 8007842
-  title = EVT_8007842_NAME
-  desc = EVT_8007840_DESC
-  picture = "nwo2_sanfrancisco"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8007842_A 
-    1089 = { add_core = JAP }
-
-  }
-}
-
-#negative outcome Russia
-country_event = {
-  id = 8007843
-  title = EVT_8007840_NAME 
-  desc = EVT_8007843_DESC 
-  picture = "nwo2_sanfrancisco"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8007843_A 
-    relation = { who = JAP value = -50 } 
-    diplomatic_influence = { who = JAP value = -100 }
-  }
-}
-
-#positive outcome Russia
-country_event = {
-  id = 8007844
-  title = EVT_8007840_NAME 
-  desc = EVT_8007844_DESC 
-  picture = "nwo2_sanfrancisco"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8007844_A 
-    relation = { who = JAP value = 50 } 
-    diplomatic_influence = { who = JAP value = 50 }
-    prestige = 5
-  }
-}
-
-#negative outcome US
-country_event = {
-  id = 8007845
-  title = EVT_8007840_NAME 
-  desc = EVT_8007845_DESC 
-  picture = "nwo2_sanfrancisco"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8007845_A 
-    diplomatic_influence = { who = JAP value = -50 }
-    USA  = { country_event = 8007826  } 
-  }
-}
-
-#positive outcome US
-country_event = {
-  id = 8007846
-  title = EVT_8007840_NAME 
-  desc = EVT_8007846_DESC 
-  picture = "nwo2_sanfrancisco"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8007846_A 
-    relation = { who = JAP value = 50 } 
-    diplomatic_influence = { who = JAP value = 50 }
-    USA  = { country_event = 8007826  } 
-  }
-}
-
-#reaction of japan to refusal withdrawing US in pacific islands
-country_event = {
-  id = 8007847
-  title = EVT_8007847_NAME 
-  desc = EVT_8007847_DESC #
-  picture = "nwo2_okinawa"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8007847_A 
-    relation = { who = USA value = -100 } 
-    badboy = 5
-    1679 = { add_core = JAP }
-    1678 = { add_core = JAP }
-    ai_chance = { factor = 0.8 }
-  }
-  option = {
-    name = EVT_8007847_B 
-    relation = { who = USA value = 100 }
-    ai_chance = { factor = 0.2 } 
-  }
-}
-
-#reaction of japan to refusal withdrawing US in pacific islands again
-country_event = {
-  id = 8007848
-  title = EVT_8007847_NAME
-  desc = EVT_8007848_DESC
-  picture = "nwo2_okinawa"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8007847_A
-    relation = { who = USA value = -100 } 
-    badboy = 5
-    1654 = { add_core = JAP }
-    2525 = { add_core = JAP }
-    ai_chance = { factor = 0.8 }
-  }
-  option = {
-    name = EVT_8007847_B
-    relation = { who = USA value = 100 } 
-    ai_chance = { factor = 0.2 }
-  }
 }

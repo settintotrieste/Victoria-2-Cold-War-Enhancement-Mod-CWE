@@ -1,158 +1,120 @@
-# Burma
+#The Independence of Burma
 country_event = {
-	id = 1214001
-	title = EVT_1214001_NAME
-	desc = EVT_1214001_DESC
-	picture = "independence_of_burma"
+	id = 1214002
+	title = "The Independence of Burma"
+	desc = EVTDESC1214002
+	picture = "independence_of_burma2"
+
 	fire_only_once = yes
+	
 	trigger = {
 		tag = ENG
-		year = 1947
-		NOT = { exists = BUR }
-		war = no
+		year = 1948
+		NOT = { has_global_flag = 1950_start_date_flag }
 		NOT = { year = 1990 }
-		1330 = { controlled_by = ENG } # Rangoon
+		
+		government = hms_government
+		war = no
+		is_vassal = no
+		
+		#owns BUR
+		is_possible_vassal = BUR
+		
+		#India is independent
+		OR = {
+			RAJ = { exists = yes is_vassal = no }
+			HND = { exists = yes is_vassal = no }
+		}
 	}
 
 	mean_time_to_happen = {
-		months = 4
-modifier = { factor = 10 has_country_modifier = denied_independence }
+		months = 1
 	}
 
 	option = {
-		name = EVT_1214001_A # Promise Burmese Independence
-		ai_chance = { factor = 0.8 }
-		prestige = -2 
-		country_event = { id = 1214002 days = 100 } 
-	}
-	
-	option = {
-		name = EVT_1214001_B # Outline the future for Burma as a British Dominion
-		any_pop = {
-			limit = {
-				culture = burmese
-				is_primary_culture = no
-				is_accepted_culture = no
-			}
-			consciousness = 2
-			militancy = 2
-		}
-		ai_chance = { factor = 0.2 }
-		country_event = { id = 1214003 days = 100 } 
-	}
-
-	option = {
-		name = EVT_1214001_C
-		ai_chance = { factor = 0 }
-		any_pop = {
-			limit = {
-				culture = burmese
-				is_primary_culture = no
-				is_accepted_culture = no
-			}
-			militancy = 7
-			consciousness = 6
-		}
-		add_country_modifier = { name = denied_independence duration = -1 }
-	}
-
-}
-
-country_event = {
-	id = 1214002
-	title = EVT_1214002_NAME
-	desc = EVT_1214002_DESC
-	picture = "independence_of_burma2"
-
-	is_triggered_only = yes
-
-	option = {
-		name = EVT_1214002_A # Burmese Independence
-		ai_chance = { factor = 0.9 }
-		prestige = -20 
+		name = "Release Burma as a republic!"
 		release = BUR
-	ENG = { diplomatic_influence = { who = BUR value = 200 } }
-	BUR = { government = democracy1 country_event = 800054 }
-		remove_country_modifier = denied_independence
+		
+		BUR = { 
+			government = democracy1 
+			country_event = 800054 
+			ruling_party_ideology = nationalist
+			
+			#Add nationalism support
+			any_pop = {
+				limit = {
+					culture = burmese
+				}
+				ideology = { factor = 0.25 value = nationalist }
+				militancy = -5
+				consciousness = -5
+			}
+			
+		}
+		
+		ai_chance = { factor = 0.7 }
 	}
 	
 	option = {
-		name = EVT_1214002_B # Go back on our promise
-		ai_chance = { factor = 0.1 }
-		badboy = 3.0
-
-any_owned = { 
-limit = { is_core = BUR } 
-add_province_modifier = { name = nationalist_agitation duration = 3650 } 
-}
-
-		any_pop = {
-			limit = {
-				culture = burmese
-				is_primary_culture = no
-				is_accepted_culture = no
-			}
-			militancy = 7
-			consciousness = 5
-		}
-	}
-
-}
-
-country_event = {
-	id = 1214003
-
-	title = EVT_1214003_NAME
-	desc = EVT_1214003_DESC
-	picture = "independence_of_burma2"
-
-	is_triggered_only = yes
-
-	option = {
-		name = EVT_1214003_A # Burmese Dominion
-		ai_chance = { factor = 1 }
-		prestige = -2 
-		any_pop = {
-			limit = {
-				culture = burmese
-				is_primary_culture = no
-				is_accepted_culture = no
-			}
-			consciousness = 2
-			militancy = 7
-		}
+		name = "Burma's future is that of a British Dominion"
+		
+		prestige = -50
+		badboy = 2.5
+		
 		release_vassal = BUR
-		BUR = { set_country_flag = full_independance }
-BUR = { government = colonial_government country_event = 800054 }
-ENG = { diplomatic_influence = { who = BUR value = 200 } }
-		remove_country_modifier = denied_independence
+		BUR = { 
+			government = colonial_government
+			country_event = 800054
+			ruling_party_ideology = conservative 
+			
+			#Add nationalism
+			any_pop = {
+				limit = {
+					culture = burmese
+				}
+				ideology = { factor = 0.125 value = nationalist }
+				militancy = 5
+				consciousness = 5
+			}
+			
+		}
+		
+		diplomatic_influence = { who = BUR value = 200 }
+		
+		ai_chance = { factor = 0.2 }
 	}
 	
 	option = {
-		name = EVT_1214003_B # Go back on our promise
-		ai_chance = { factor = 0 }
-		badboy = 0.1
+		name = "Burma shall remain a crown colony"
+
+		prestige = -100
+		badboy = 5
+
+		#Add nationalism
+		any_owned = { 
+			limit = { is_core = BUR } 
+			add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+		}
+
 		any_pop = {
 			limit = {
 				culture = burmese
-				is_primary_culture = no
-				is_accepted_culture = no
 			}
-			militancy = 7
+			ideology = { factor = 0.25 value = nationalist }
+			militancy = 10
+			consciousness = 10
 		}
-any_owned = { 
-limit = { is_core = BUR } 
-add_province_modifier = { name = nationalist_agitation duration = 3650 } 
-}
+		
+		ai_chance = { factor = 0.1 }
 	}
 
 }
 
-#Ne Win
+#Ne Win's coup
 country_event = {
   id = 8002304
-  title = "EVT_8002304_NAME"
-  desc = "EVT_8002304_DESC"
+  title = "Ne Win's $YEAR$ Coup"
+  desc = EVTDESC8002304
   picture = "nwo2_ne_win"
   fire_only_once = yes
 
@@ -164,12 +126,15 @@ country_event = {
 		is_vassal = no
 		war = no
 		OR = { government = democracy1 government = democracy }
+		
+		#AFFL
+		ruling_party_ideology = nationalist
 	}
 
 	mean_time_to_happen = { months = 2 }
 
 	option = {
-		name = "EVT_8002304_A"
+		name = "We begin on the road to socialism!"
 		government = populist_dictatorship
 		country_event = 800050
 		ruling_party_ideology = socialist
@@ -181,6 +146,33 @@ country_event = {
 	option = {
 		name = "Stick to the status quo"
 		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		#Create a federal Burma
+		random_owned = {
+			limit = { owner = { is_possible_vassal = KAY } }
+			owner = {
+				release_vassal = KAY
+				KAY = { government = sar_government country_event = 800054 ruling_party_ideology = conservative set_country_flag = former_devolved_nation }
+				sphere_owner = { diplomatic_influence = { who = KAY value = 200 } }
+			}
+		}
+		random_owned = {
+			limit = { owner = { is_possible_vassal = SHA } }
+			owner = {
+				release_vassal = SHA
+				SHA = { government = sar_government country_event = 800054 ruling_party_ideology = conservative set_country_flag = former_devolved_nation }
+				sphere_owner = { diplomatic_influence = { who = SHA value = 200 } }
+			}
+		}
+		random_owned = {
+			limit = { owner = { is_possible_vassal = RAK } }
+			owner = {
+				release_vassal = RAK
+				RAK = { government = sar_government country_event = 800054 ruling_party_ideology = conservative set_country_flag = former_devolved_nation }
+				sphere_owner = { diplomatic_influence = { who = RAK value = 200 } }
+			}
+		}
+		
 		ai_chance = { factor = 0.2 }
 	}
 
@@ -189,8 +181,8 @@ country_event = {
 #Communist Dictatorship
 country_event = {
   id = 8002309
-  title = "EVT_8002309_NAME"
-  desc = "EVT_8002309_DESC"
+  title = "The Burmese Way to Socialism"
+  desc = EVTDESC8002309
   picture = "nwo2_burmese_road_to_socialism"
   fire_only_once = yes
 
@@ -202,6 +194,9 @@ country_event = {
 		government = populist_dictatorship
 		is_vassal = no
 		war = no
+		
+		#Ne Win
+		ruling_party_ideology = socialist
 	}
 	
 	mean_time_to_happen = { months = 6 }
@@ -211,9 +206,18 @@ country_event = {
 		government = proletarian_dictatorship
 		ruling_party_ideology = communist  
 		country_event = 800052
-		sphere_owner = { diplomatic_influence = { who = THIS value = -200 } }
-		any_pop = { consciousness = 1.0 }
-		money = -2000 
+		
+		#Remove non-communist influence
+		any_country = {
+			limit = { 
+				is_greater_power = yes
+				NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
+				is_sphere_leader_of = THIS
+			}
+			diplomatic_influence = { who = THIS value = -200 }
+		}
+		
+		any_pop = { consciousness = -5.0 }
 		ai_chance = { factor = 0.8 }
 	}
 
@@ -224,69 +228,80 @@ country_event = {
 	}
 
 }
+
+#Karen insurgency
 country_event = {
   id = 8002310
   title = "EVT_8002310_NAME"
   desc = "EVT_8002310_DESC"
   picture = "nwo2_burmese_insurgency"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = BUR
-	exists = BUR
-    year = 1948
-	war = no
-	government = democracy1
-	NOT = { year = 1955 }
-  }
-
-  mean_time_to_happen = { months = 24  }
-
-  option = {
-    name = "EVT_8002310_A"
-	release = KAY
-	war = {
-        target = KAY
-        attacker_goal = {
-                casus_belli = annex_core_country
-        }
-        defender_goal = {
-                casus_belli = status_quo
-        }
+	trigger = {
+		tag = BUR
+		year = 1948
+		NOT = { has_global_flag = 1950_start_date_flag }
+		
+		war = no
+		is_vassal = no
+		
+		is_possible_vassal = KAY
 	}
-  }
+
+	mean_time_to_happen = { months = 24 }
+
+	option = {
+		name = "EVT_8002310_A"
+		release = KAY
+		war = {
+			target = KAY
+			attacker_goal = {
+                casus_belli = annex_core_country
+			}
+			defender_goal = {
+				casus_belli = status_quo
+			}
+		}
+	}
+
 }
+
+#Shan state insurgency
 country_event = {
   id = 8002311
   title = "EVT_8002310_NAME"
   desc = "EVT_8002310_DESC"
   picture = "nwo2_burmese_insurgency"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = BUR
-	exists = BUR
-    year = 1949
-	war = no
-	government = democracy1
-	NOT = { year = 1955 }
-  }
+	trigger = {
+		tag = BUR
+		year = 1948
+		NOT = { has_global_flag = 1950_start_date_flag }
+		
+		war = no
+		is_vassal = no
+		
+		is_possible_vassal = SHA
+	}
 
-  mean_time_to_happen = { months = 24  }
+	mean_time_to_happen = { months = 24 }
 
-  option = {
-    name = "EVT_8002310_A"
-	release = SHA
-	war = {
-        target = SHA
-        attacker_goal = {
+	option = {
+		name = "EVT_8002310_A"
+		release = SHA
+		war = {
+			target = SHA
+			attacker_goal = {
                 casus_belli = annex_core_country
-        }
-        defender_goal = {
+			}
+			defender_goal = {
                 casus_belli = status_quo
-        }
-	}	
-  }
+			}
+		}	
+	}
 }
 
 #8888 Uprising
@@ -361,6 +376,8 @@ country_event = {
 		
 		set_country_flag = 1990_BUR_elections_flag
 		
+		government = nationalist_dictatorship
+		
 		any_pop = { 
 			scaled_militancy = {
 				factor = 10
@@ -370,6 +387,7 @@ country_event = {
 				factor = 10
 				ideology = progressive
 			}
+			ideology = { factor = 0.05 value = liberal }
 		}
 		ai_chance = { factor = 0.9 }
 	}
@@ -385,6 +403,7 @@ country_event = {
 		any_pop = { 
 			limit = { type = officers }
 			militancy = 10 
+			ideology = { factor = 0.25 value = nationalist }
 		}
 		
 		any_pop = { 
@@ -415,7 +434,55 @@ country_event = {
 
 }
 
-#2011 USDP
+#2007 Saffron Revolution
+country_event = {
+	id = 80023131
+	title = "The Saffron Revolution"
+	desc = EVTDESC80023131
+	picture = "BUR_saffron_revolution"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUR
+		year = 2007
+		
+		has_country_flag = 1990_BUR_elections_flag
+		
+		war = no
+		is_vassal = no
+
+		OR = { government = populist_dictatorship government = nationalist_dictatorship }
+		ruling_party_ideology = nationalist
+	}
+
+	mean_time_to_happen = { 
+		months = 9
+	}
+
+	option = {
+		name = "How long can we cling on to power?"
+		
+		prestige_factor = -0.025
+		badboy = 5
+		
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = liberal
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = progressive
+			}
+			ideology = { factor = 0.05 value = liberal }
+		}
+		
+	}
+
+}
+
+#2010 USDP
 country_event = {
 	id = 8002314
 	title = "The Roadmap to Democracy"
@@ -433,7 +500,7 @@ country_event = {
 		war = no
 		is_vassal = no
 
-		government = populist_dictatorship
+		OR = { government = populist_dictatorship government = nationalist_dictatorship }
 		ruling_party_ideology = nationalist
 	}
 
@@ -442,7 +509,9 @@ country_event = {
 	}
 
 	option = {
-		name = "Hand power to Aung San Suu Kyi"
+		name = "Embark on a gradual democratisation of Myanmar"
+		
+		set_country_flag = BUR_road_map_to_democracy
 		
 		government = presidential_dictatorship
 		ruling_party_ideology = conservative
@@ -479,6 +548,7 @@ country_event = {
 				factor = 10
 				ideology = progressive
 			}
+			ideology = { factor = 0.10 value = liberal }
 		}
 		
 		ai_chance = { factor = 0.1 }
@@ -499,7 +569,7 @@ country_event = {
 		tag = BUR
 		year = 2015
 		
-		has_country_flag = 1990_BUR_elections_flag
+		has_country_flag = BUR_road_map_to_democracy
 		
 		war = no
 		is_vassal = no
@@ -524,6 +594,7 @@ country_event = {
 				factor = 10
 				ideology = nationalist
 			}
+			ideology = { factor = 0.25 value = nationalist }
 		}
 		
 		ai_chance = { factor = 0.9 }
@@ -543,6 +614,7 @@ country_event = {
 				factor = 10
 				ideology = progressive
 			}
+			ideology = { factor = 0.15 value = liberal }
 		}
 		
 		ai_chance = { factor = 0.1 }
