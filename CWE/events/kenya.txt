@@ -1,5 +1,5 @@
 #Mau Mau Uprising
-country_event = { # Mau Mau Uprising
+country_event = {
 	id = 8029800
 	title = EVT_8029800_NAME 
 	desc = EVT_8029800_DESC
@@ -9,19 +9,32 @@ country_event = { # Mau Mau Uprising
 	
 	trigger = {
 		tag = ENG
-		owns = 2024 # Nairobi
-		year = 1952 NOT = { year = 1990 }
+		year = 1952 
+		NOT = { year = 1990 }
+		
 		war = no
+		is_vassal = no
+		
+		#owns KEN
+		is_possible_vassal = KEN
 	}
 	
 	mean_time_to_happen = { months = 3 }
 	
 	option = {
-		name = "Quash the rebellion!" 
+		name = "Quash the rebellion!"
 		badboy = 5
-any_pop = { limit = { culture = kikuyu } militancy = 10 consciousness = 2 }
+		
+		any_pop = { 
+			limit = { culture = kikuyu } 
+			militancy = 10 
+			consciousness = 10
+		}
 
-any_owned = { limit = { is_core = KEN } add_province_modifier = { name = nationalist_agitation duration = 3650 } }
+		any_owned = { 
+			limit = { is_core = KEN } 
+			add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+		}
 
 		ai_chance = { factor = 0.9 }
 	}
@@ -30,7 +43,7 @@ any_owned = { limit = { is_core = KEN } add_province_modifier = { name = nationa
 		name = "Give in to the Mau Mau" 
 		prestige = -100
 		release = KEN
-KEN = { government = nationalist_dictatorship country_event = 800050 }
+		KEN = { government = nationalist_dictatorship country_event = 800050 ruling_party_ideology = nationalist }
 		ai_chance = { factor = 0.1 }
 	}
 	
@@ -39,7 +52,7 @@ KEN = { government = nationalist_dictatorship country_event = 800050 }
 #Independence of Kenya
 country_event = {
 	id = 8029801
-	title = EVT_8029801_NAME # Independence of Kenya
+	title = "The Independence of Kenya"
 	desc = EVT_8029801_DESC
 	picture = "independence_kenya" 
 	
@@ -47,53 +60,89 @@ country_event = {
 	
 	trigger = {
 		tag = ENG
-		owns = 2024 # Nairobi
-		year = 1963 NOT = { year = 1990 }
-		exists = TAN
+		year = 1963
+		NOT = { year = 1990 }
+		
+		war = no
+		is_vassal = no
+		
+		#owns KEN
+		is_possible_vassal = KEN
 	}
 	
 	mean_time_to_happen = { months = 3 }
 	
     option = {
-	  name = EVT_8029801_A
-	  prestige = 10
-	  release = KEN
-	KEN = { set_country_flag = full_independance }
-	ENG = { diplomatic_influence = { who = KEN value = 200 } } 
+		name = "Kenya is now a free country"
+		prestige = 25
+		
+		release = KEN
 
-	KEN = { government = hms_government1 }
-	KEN = { set_country_flag = former_colonial_nation }
-	KEN = { election = yes }
+		KEN = { 
+			government = hms_government1
+			country_event = 800054
+			ruling_party_ideology = conservative
+			
+			set_country_flag = former_colonial_nation
+			set_country_flag = full_independance 
+		}
 
-	  create_alliance = KEN
-  	  ai_chance = { factor = 0.7 }
+		ENG = { diplomatic_influence = { who = KEN value = 200 } } 
+		
+		ai_chance = { factor = 0.7 }
     }
   
-  option = {
-	name = EVT_8029801_B
-	release_vassal = KEN
+	option = {
+		name = "Outline Kenya's future as a dominion"
+		
+		release_vassal = KEN
+	
+		KEN = { 
+			government = colonial_government
+			country_event = 800054
+			ruling_party_ideology = conservative
+			
+			any_pop = {
+				limit = { NOT = { culture = british } } 
+				militancy = 4
+				consciousness = 2
+			}
+			
+			add_country_modifier = { name = revolution_chaos duration = 3650 }
+		}
+	
+		ENG = { diplomatic_influence = { who = KEN value = 200 } }
+		ai_chance = { factor = 0.2 }
+	}  
 
-	KEN = { government = colonial_government }
-
-	ENG = { diplomatic_influence = { who = KEN value = 200 } }
-	any_pop = { limit = { NOT = { culture = british } location = { is_core = KEN } } militancy = 4  consciousness = 2 }
-	create_alliance = KEN
-	ai_chance = { factor = 0.2 }
-  }  
-
-  option = {
-	name = EVT_8029801_C
-	prestige = -25
-any_pop = { limit = { NOT = { culture = british } location = { is_core = KEN } } militancy = 10 consciousness = 6 }
-	ai_chance = { factor = 0.1 }
-  }	
+	option = {
+		name = "Kenya shall remain British!"
+		prestige = -50
+		badboy = 5
+		
+		any_pop = { 
+			limit = { 
+				NOT = { culture = british } 
+				location = { is_core = KEN } 
+			} 
+			militancy = 10 
+			consciousness = 6 
+		}
+		
+		any_owned = { 
+			limit = { is_core = KEN } 
+			add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}	
 	
 }
 
 #The Kenyatta Regime
 country_event = {
 	id = 8029802
-	title = EVT_8029802_NAME # The Kenyatta Regime
+	title = "The Kenyatta Regime"
 	desc = EVT_8029802_DESC
 	picture = "kenyatta" 
 	
@@ -101,25 +150,28 @@ country_event = {
 	
 	trigger = {
 		tag = KEN
+		year = 1964
+		NOT = { year = 1990 }
+		
+		OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
 		is_vassal = no
 		war = no
-		election = no
-		year = 1964 NOT = { year = 1990 }
 	}
 
 	mean_time_to_happen = { months = 3 }
 	
     option = {
-	  name = EVT_8029802_A
+		name = "This is the way forward"
 	  	government = presidential_dictatorship 
 		country_event = 800050
+		ruling_party_ideology = conservative
 		ai_chance = { factor = 0.9 }
     }
 
 	option = {
-	  name = "Stick to the status quo"
-add_country_modifier = { name = revolution_chaos duration = 3650 }
+		name = "Stick to the status quo"
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
 		ai_chance = { factor = 0.1 }
-	      	}
+	}
 
 }
