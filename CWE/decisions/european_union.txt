@@ -45,7 +45,10 @@ political_decisions = {
 			NOT = { has_country_flag = imp_ambition }
 
 			#Brexit
-			NOT = { has_country_flag = brexit_option }
+			OR = { 
+				ruling_party_ideology = progressive 
+				NOT = { has_country_flag = brexit_option } 
+			}
 		}
 
 		allow = {
@@ -59,8 +62,9 @@ political_decisions = {
 			OR = { new_synthesis = 1 has_global_flag = european_coal_and_steel_community }
 			has_country_flag = trade_block_ambition 
 			NOT = { has_country_modifier = in_bankrupcy }
-			OR = { part_of_sphere = no 
-			sphere_owner = { OR = { has_country_flag = xeu_ambition NOT = { has_country_flag = deny_superstate } } }
+			OR = {
+				part_of_sphere = no 
+				sphere_owner = { OR = { has_country_flag = xeu_ambition NOT = { has_country_flag = deny_superstate } } }
 			}
 			OR = {
 				government = socialist_democracy
@@ -82,6 +86,10 @@ political_decisions = {
 		}
 		
 		effect = {
+		
+			#Clear Brexit flag
+			clr_country_flag = brexit_option
+		
 			set_country_flag = xeu_ambition
 			set_country_flag = in_trade_block
 			any_pop = {
@@ -110,7 +118,13 @@ political_decisions = {
 		
 		allow = {
 			OR = { 
-				AND = { part_of_sphere = yes sphere_owner = { has_country_flag = deny_superstate NOT = { has_country_flag = xeu_ambition } } }
+				AND = { 
+					part_of_sphere = yes 
+					sphere_owner = { 
+						has_country_flag = deny_superstate 
+						NOT = { has_country_flag = xeu_ambition } 
+					} 
+				}
 				NOT = {
 					OR = {
 						government = socialist_democracy
@@ -120,12 +134,32 @@ political_decisions = {
 						government = hms_government1
 					}
 				}
-				has_country_modifier = in_bankrupcy
+				ruling_party_ideology = populist
+				ruling_party_ideology = nationalist
 			}
 			war = no
 		}
 		
 		effect = {
+		
+			#Block rejoining if leaving the EU was not because of Sphere Owner's intervention
+			random_owned = {
+				limit = { 
+					owner = { 
+						NOT = { 
+							AND = { 
+								part_of_sphere = yes 
+								sphere_owner = { 
+									has_country_flag = deny_superstate 
+									NOT = { has_country_flag = xeu_ambition } 
+								} 
+							}
+						}
+					}
+				}
+				owner = { set_country_flag = brexit_option }
+			}
+		
 			clr_country_flag = xeu_ambition
 			remove_country_modifier = eec
 			clr_country_flag = in_trade_block

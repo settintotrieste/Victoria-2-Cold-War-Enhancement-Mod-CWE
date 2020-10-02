@@ -49,6 +49,7 @@ acquire_core_state
 annex_core_country
 acquire_substate_region
 annex_all_cores
+annex_un_occupied territories
 free_allied_cores
 install_democracy
 assert_hegemony
@@ -1420,12 +1421,16 @@ annex_all_cores = {
 
 		THIS = { NOT = { has_country_flag = neutrality } }
 		
-		THIS = { OR = { is_greater_power = yes has_country_flag = bypass_normal_CB_requirements } }
-
-		NOT = { is_our_vassal = THIS }
-		is_vassal = no
-		number_of_states = 2
+		#Target country has THIS cores which is not the capital
+		any_owned_province = { is_core = THIS is_capital = no }
 		
+		#Target is not a small country
+		OR = {
+			number_of_states = 3 
+			has_country_flag = bypass_normal_CB_requirements 
+		}
+		
+		#Other conditions
 		OR = {
 			war_with = THIS
 			THIS = { military_score = 1 }
@@ -1455,23 +1460,6 @@ annex_all_cores = {
 		
 	}
 
-	# THIS - us
-	# FROM - country scope is possible match?
-	# war target country of goal is scope
-	
-	allowed_countries = {
-		
-		#Target country has THIS cores which is not the capital
-		any_owned_province = { is_core = THIS is_capital = no }
-		
-		#Target is not a small country
-		OR = { 
-			number_of_states = 3 
-			has_country_flag = bypass_normal_CB_requirements 
-		}
-		
-	}
-
 	war_name = WAR_ANNEX_ALL_CORE_NAME
 
 	on_add = {
@@ -1489,6 +1477,131 @@ annex_all_cores = {
 	
 		THIS = { set_country_flag = annex_all_cores_victor }
 		country_event = 1610097
+		
+		THIS = { set_country_flag = this_won_CB }
+		set_country_flag = this_lost_CB
+		
+	}
+	
+}
+
+annex_un_occupied territories = {
+	sprite_index = 25
+	is_triggered_only = yes
+	months = 12
+	
+	constructing_cb = no
+
+	badboy_factor = 2
+	prestige_factor = 1
+	peace_cost_factor = 50
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 48
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	can_use = {
+
+		THIS = { NOT = { has_country_modifier = no_more_war } }
+
+		#CWE conditions
+		THIS = { NOT = { has_country_flag = renounced_war_rights } }
+
+		THIS = { 
+		
+			OR = { 
+
+				government = theocracy
+				government = absolute_monarchy
+				government = populist_dictatorship
+				government = nationalist_dictatorship
+				government = presidential_dictatorship
+				government = proletarian_dictatorship
+				government = proletarian_dictatorship1
+
+				NOT = { war_policy = pacifism }
+				war = yes 
+				has_country_flag = world_high 
+				has_country_flag = cold_war_high 
+				has_country_modifier = cold_war_hot 
+			}
+			
+		}
+
+		THIS = { NOT = { has_country_flag = neutrality } }
+		
+		#Target country has THIS cores which is not the capital and is an occupied_province
+		any_owned_province = { 
+			is_core = THIS 
+			is_capital = no 
+			has_province_modifier = occupied_province 
+		}
+		
+		#THIS is also a part of the UN armistice
+		THIS = {
+			any_owned_province = {
+				is_core = THIS 
+				has_province_modifier = occupied_province
+			}
+		}
+		
+		#Other conditions
+		OR = {
+			war_with = THIS
+			THIS = { military_score = 1 }
+		}
+
+		OR = {
+			war_with = THIS
+			THIS = { NOT = { has_country_modifier = no_more_war } }
+		}
+		
+		OR = {
+			THIS = { government = nationalist_dictatorship }
+			THIS = { government = populist_dictatorship }
+			THIS = { government = proletarian_dictatorship }
+			THIS = { government = proletarian_dictatorship1 }
+			THIS = { government = theocracy }
+			war_with = THIS
+			NOT = { relation = { who = THIS value = 0 } }
+			THIS = { ai = no }
+		}
+		
+		OR = {
+			NOT = { has_country_flag = dismantle_declared }
+			THIS = { NOT = { has_country_flag = in_great_war } }
+			THIS = { ai = no }
+		}
+		
+	}
+
+	war_name = WAR_ANNEX_ALL_CORE_NAME
+
+	on_add = {
+	
+		#Remove UN armistice
+		clr_country_flag = un_armistice
+		remove_country_modifier = un_armistice
+	
+		set_country_flag = this_is_aggressor
+	
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+	
+	on_po_accepted = {
+	
+		THIS = { set_country_flag = annex_all_UN_armistice_lands }
+		country_event = 16100971
 		
 		THIS = { set_country_flag = this_won_CB }
 		set_country_flag = this_lost_CB
