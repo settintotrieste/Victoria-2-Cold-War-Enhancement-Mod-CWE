@@ -520,14 +520,8 @@ war_policy = jingoism war = yes has_country_flag = world_medium has_country_flag
 civil_war = {
 	sprite_index = 2
 	is_triggered_only = yes
-	months = 1
-	constructing_cb = no
+	months = 6
 	crisis = no
-	
-	can_use = {
-		NOT = { is_our_vassal = THIS }
-		always = no
-	}
 
 	badboy_factor = 0
 	prestige_factor = 1
@@ -538,11 +532,67 @@ civil_war = {
 	break_truce_prestige_factor = 5
 	break_truce_infamy_factor = 2
 	break_truce_militancy_factor = 2
-	truce_months = 0
+	truce_months = 48
 	
 	good_relation_prestige_factor = 1
 	good_relation_infamy_factor = 1
 	good_relation_militancy_factor = 1
+	
+	can_use = {
+		THIS = { NOT = { has_country_modifier = no_more_war } }
+
+		THIS = { NOT = { has_country_flag = renounced_war_rights } }
+
+		THIS = { NOT = { has_country_flag = un_armistice } }
+
+		THIS = {
+			OR = {
+				government = theocracy
+				government = absolute_monarchy
+				government = populist_dictatorship
+				government = nationalist_dictatorship
+				government = presidential_dictatorship
+				government = proletarian_dictatorship
+				government = proletarian_dictatorship1
+
+				war_policy = jingoism 
+				war = yes 
+				has_country_flag = world_high 
+				has_country_flag = cold_war_high 
+				has_country_modifier = cold_war_hot 
+			} 
+		}
+		
+		#THIS is not disarmed
+		THIS = { is_disarmed = no }
+		
+		#Target is independent
+		is_independant = yes
+		
+		#Target is a Special Civil War nation
+		OR = {
+			AND = { THIS = { tag = CHI } tag = KMT }
+			AND = { THIS = { tag = KMT } tag = CHI }
+			
+			AND = { THIS = { tag = AUS } tag = ROA }
+			AND = { THIS = { tag = ROA } tag = AUS }
+			
+			AND = { THIS = { tag = DAI } tag = SVI }
+			AND = { THIS = { tag = SVI } tag = DAI }
+			
+			AND = { THIS = { tag = SKO } tag = NKO }
+			AND = { THIS = { tag = NKO } tag = SKO }
+			
+			AND = { THIS = { tag = YEM } tag = SYE }
+			AND = { THIS = { tag = SYE } tag = YEM }
+			
+			AND = { THIS = { tag = GER } tag = DDR }
+			AND = { THIS = { tag = DDR } tag = GER }
+			
+			AND = { THIS = { tag = ALG } tag = FAG }
+			AND = { THIS = { tag = FAG } tag = ALG }
+		}
+	}
 
 	po_annex = yes
 	
@@ -920,7 +970,7 @@ NOT = { war_policy = pacifism } war = yes has_country_flag = world_medium has_co
 			}
 		}
 		#THIS = { NOT = { war_policy = pacifism } }
-		NOT = { AND = { THIS = { ai = yes } part_of_sphere  = yes }} # the ai shall not attack a sphered nation.
+		NOT = { AND = { THIS = { ai = yes } part_of_sphere  = yes } } # the ai shall not attack a sphered nation.
 	}
 
 	po_annex = yes
