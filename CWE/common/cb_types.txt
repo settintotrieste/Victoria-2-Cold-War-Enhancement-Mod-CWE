@@ -442,38 +442,45 @@ conquest = {
 	
 	can_use = {
 
-THIS = { NOT = { has_country_modifier = no_more_war } }
+		THIS = { NOT = { has_country_modifier = no_more_war } }
 
-NOT = { is_our_vassal = THIS }
+		THIS = { NOT = { has_country_flag = renounced_war_rights } }
 
-THIS = { NOT = { has_country_flag = renounced_war_rights } }
+		THIS = { NOT = { has_country_flag = un_armistice } }
 
-THIS = { NOT = { has_country_flag = un_armistice } }
+		THIS = { 
+			OR = { 
 
+				government = theocracy
+				government = absolute_monarchy
+				government = populist_dictatorship
+				government = nationalist_dictatorship
+				government = presidential_dictatorship
+				government = proletarian_dictatorship
+				government = proletarian_dictatorship1
 
-THIS = { OR = { 
+				war_policy = jingoism 
+				war = yes 
+				has_country_flag = world_medium 
+				has_country_flag = world_high 
+				has_country_flag = cold_war_high 
+				has_country_modifier = cold_war_hot 
+			} 
+		}
 
-government = theocracy
-government = absolute_monarchy
-government = populist_dictatorship
-government = nationalist_dictatorship
-government = presidential_dictatorship
-government = proletarian_dictatorship
-government = proletarian_dictatorship1
-
-war_policy = jingoism war = yes has_country_flag = world_medium has_country_flag = world_high has_country_flag = cold_war_high has_country_modifier = cold_war_hot } }
-
-
-		# only one state or unciv
-		NOT = { number_of_states = 5 }
+		#Target state size
+		NOT = { number_of_states = 2 }
 		OR = {
 			AND = {
-				civilized = yes
-				NOT = { number_of_states = 2 }
+				THIS = { is_greater_power = yes }
+				NOT = { number_of_states = 10 }
 			}
 			AND = {
-				civilized = no
-				THIS = { civilized = no }
+				THIS = { is_secondary_power = yes }
+				NOT = { number_of_states = 5 }
+			}
+			AND = {
+				THIS = { is_greater_power = no is_secondary_power = no }
 				NOT = { number_of_states = 2 }
 			}
 		}
@@ -1334,25 +1341,36 @@ cut_down_to_size = {
 	
 	can_use = {
 
-THIS = { NOT = { has_country_modifier = no_more_war } }
+		THIS = { NOT = { has_country_modifier = no_more_war } }
 
-THIS = { NOT = { has_country_flag = renounced_war_rights } }
-THIS = { NOT = { has_country_flag = un_armistice } }
-NOT = { is_our_vassal = THIS }
+		THIS = { NOT = { has_country_flag = renounced_war_rights } }
+		THIS = { NOT = { has_country_flag = un_armistice } }
 
+		#Target is not disarmed
 		is_disarmed = no
+		
+		#THIS is not disarmed
+		THIS = { is_disarmed = no }
 
-THIS = { OR = { 
+		THIS = { 
+			OR = { 
 
-government = theocracy
-government = absolute_monarchy
-government = populist_dictatorship
-government = nationalist_dictatorship
-government = presidential_dictatorship
-government = proletarian_dictatorship
-government = proletarian_dictatorship1
+				government = theocracy
+				government = absolute_monarchy
+				government = populist_dictatorship
+				government = nationalist_dictatorship
+				government = presidential_dictatorship
+				government = proletarian_dictatorship
+				government = proletarian_dictatorship1
 
-NOT = { war_policy = pacifism } war = yes has_country_flag = world_medium has_country_flag = world_high has_country_flag = cold_war_high has_country_modifier = cold_war_hot } }
+				NOT = { war_policy = pacifism } 
+				war = yes 
+				has_country_flag = world_medium 
+				has_country_flag = world_high 
+				has_country_flag = cold_war_high 
+				has_country_modifier = cold_war_hot 
+			} 
+		}
 
 	}
 	
@@ -1441,21 +1459,12 @@ annex_all_cores = {
 			THIS = { NOT = { has_country_modifier = no_more_war } }
 		}
 		
-		OR = {
-			THIS = { government = nationalist_dictatorship }
-			THIS = { government = populist_dictatorship }
-			THIS = { government = proletarian_dictatorship }
-			THIS = { government = proletarian_dictatorship1 }
-			THIS = { government = theocracy }
-			war_with = THIS
-			NOT = { relation = { who = THIS value = 0 } }
-			THIS = { ai = no }
-		}
+		#THIS is not disarmed
+		THIS = { is_disarmed = no }
 		
 		OR = {
 			NOT = { has_country_flag = dismantle_declared }
 			THIS = { NOT = { has_country_flag = in_great_war } }
-			THIS = { ai = no }
 		}
 		
 	}
@@ -1562,21 +1571,12 @@ annex_un_occupied territories = {
 			THIS = { NOT = { has_country_modifier = no_more_war } }
 		}
 		
-		OR = {
-			THIS = { government = nationalist_dictatorship }
-			THIS = { government = populist_dictatorship }
-			THIS = { government = proletarian_dictatorship }
-			THIS = { government = proletarian_dictatorship1 }
-			THIS = { government = theocracy }
-			war_with = THIS
-			NOT = { relation = { who = THIS value = 0 } }
-			THIS = { ai = no }
-		}
+		#THIS is not disarmed
+		THIS = { is_disarmed = no }
 		
 		OR = {
 			NOT = { has_country_flag = dismantle_declared }
 			THIS = { NOT = { has_country_flag = in_great_war } }
-			THIS = { ai = no }
 		}
 		
 	}
@@ -1658,29 +1658,18 @@ NOT = { war_policy = pacifism } war = yes has_country_flag = world_medium has_co
 		OR = {
 			war_with = THIS
 			THIS = {
-		NOT = { has_country_flag = neutrality }
+				NOT = { has_country_flag = neutrality }
 				military_score = 1
 			}
 		}
 		NOT = { has_country_flag = neutrality }
 		OR = {
 			war_with = THIS
-	THIS = { NOT = { has_country_modifier = no_more_war } }
-		}
-		OR = {
-			THIS = { government = nationalist_dictatorship }
-			THIS = { government = populist_dictatorship }
-			THIS = { government = proletarian_dictatorship }
-			THIS = { government = proletarian_dictatorship1 }
-			THIS = { government = theocracy }
-			war_with = THIS
-			NOT = { relation = { who = THIS value = 0 } }
-			THIS = { ai = no }
+			THIS = { NOT = { has_country_modifier = no_more_war } }
 		}
 		OR = {
 			NOT = { has_country_flag = dismantle_declared }
-		THIS = { NOT = { has_country_flag = in_great_war } }
-			THIS = { ai = no }
+			THIS = { NOT = { has_country_flag = in_great_war } }
 		}
 	}
 
