@@ -515,9 +515,9 @@ diplomacy = {
 	BASE_TRUCE_MONTHS = 60,
 	MAX_INFLUENCE = 100,
 	WARSUBSIDIES_PERCENT = 1.00, -- TODO How many percent of imports you are going to pay each day(mil. constructions and mil. maintainence)
-	NEIGHBOUR_BONUS_INFLUENCE_PERCENT = 0.30, -- Bonus to neighbouring countries when influencing
-	SPHERE_NEIGHBOUR_BONUS_INFLUENCE_PERCENT = 0.8, -- Bonus to countries in your sphere neighbouring when influencing
-	OTHER_CONTINENT_BONUS_INFLUENCE_PERCENT = -0.10, -- TODO Bonus to neighbouring countries when influencing
+	NEIGHBOUR_BONUS_INFLUENCE_PERCENT = 0.8, -- Bonus to neighbouring countries when influencing
+	SPHERE_NEIGHBOUR_BONUS_INFLUENCE_PERCENT = 0.3, -- Bonus to countries in your sphere neighbouring when influencing
+	OTHER_CONTINENT_BONUS_INFLUENCE_PERCENT = -0.20, -- TODO Bonus to neighbouring countries when influencing
 	PUPPET_BONUS_INFLUENCE_PERCENT = 5.0, -- bonus if they are our puppet
 	
 	-- effects of manually releasing a nation
@@ -607,7 +607,7 @@ diplomacy = {
 	TWS_FULFILLED_IDLE_SPACE = 0.75, -- How much % the CB fulfillment must done, so TWS starts ticking.
 	TWS_BATTLE_MIN_COUNT = 5, -- At least X battles before the aspect of wins will count
 	TWS_BATTLE_MAX_ASPECT = 8.0, -- Max allowed battle wins aspect for TWS
-	LARGE_POPULATION_INFLUENCE_PENALTY = 0.01,
+	LARGE_POPULATION_INFLUENCE_PENALTY = -0.02,
 },  
 
 
@@ -691,18 +691,18 @@ ai = {
 	INDUSTRYWORKER_WEIGHT = 15.0, -- ai weight for new industry workers
 	EDUCATOR_WEIGHT = 25.0, -- ai weigth for new clergy
 	SOLDIER_WEIGHT = 35.0, -- ai weight for soldiers
-	SOLDIER_FRACTION = 0.045, -- max amount of population AI wants to be soldiers
+	SOLDIER_FRACTION = 0.04, -- max amount of population AI wants to be soldiers
 	CAPITALIST_FRACTION = 0.01, -- max amount of population AI wants to be capis
 	PRODUCTION_WEIGHT = 0.05, -- ai weight for new production
 	SPAM_PENALTY = 20, -- makes certain diplomatic action less common 
 	ONE_SIDE_MAX_WARSCORE = 100, -- don't add too many wargoals to one side in a war
-	POP_PROJECT_INVESTMENT_MAX_BUDGET_FACTOR = 0.90, -- how much % of our current budget can be spend on the pop project investments.
+	POP_PROJECT_INVESTMENT_MAX_BUDGET_FACTOR = 0.50, -- how much % of our current budget can be spend on the pop project investments.
 	RELATION_LIMIT_NO_ALLIANCE_OFFER = 100, -- if relation lower then this value, AI will not ally
 	NAVAL_SUPPLY_PENALTY_LIMIT = 0.2, -- AI will allow to have max X% of supply penalty (when too little naval bases)
 	CHANCE_BUILD_RAILROAD = 0.3, -- chances in % of AI decisions (max value 1.0)
 	CHANCE_BUILD_NAVAL_BASE = 0.75,
 	CHANCE_BUILD_FORT = 0.5, -- TODO
-	CHANCE_INVEST_POP_PROJ = 0.70,
+	CHANCE_INVEST_POP_PROJ = 0.50,
 	CHANCE_FOREIGN_INVEST = 0.80,
 	TWS_AWARENESS_SCORE_LOW_CAP = 0.2, -- AI will always add CBs if current warscore is less then that number (including TWS)
 	TWS_AWARENESS_SCORE_ASPECT = 0.5, -- AI will not add any more CBs when TWS is more then X% of total WS. (to not destroy the progress)
@@ -719,11 +719,11 @@ ai = {
 	PEACE_ALLY_WAR_EXHAUSTION_MULT = 1.0, -- Multiplies PEACE_WAR_EXHAUSTION_FACTOR for allies in a war
 	PEACE_ALLY_WAR_DIRECTION_MULT = 1, -- Multiplies PEACE_WAR_DIRECTION_FACTOR for allies in a war
 	PEACE_ALLY_FORCE_BALANCE_MULT = 1, -- Multiplies PEACE_FORCE_BALANCE_FACTOR for allies in a war
-	AGGRESSION_BASE = 1, -- general AI aggression
+	AGGRESSION_BASE = 1.5, -- general AI aggression
 	AGGRESSION_UNCIV_BONUS = 20, -- additional AI civ aggression against uncivs
 	FLEET_SIZE = 50, -- AI will attempt to keep fleets of roughly this size (fewer fleets generally results in more competent naval AI)
 	MIN_FLEETS = 1, -- Minimum amount of main fleets the AI will divide its navy into (does not include specialized fleets such as blockades and naval invasions)
-	MAX_FLEETS = 10, -- Maximal amount of main fleets the AI will divide its navy into (does not include specialized fleets such as blockades and naval invasions)
+	MAX_FLEETS = 8, -- Maximal amount of main fleets the AI will divide its navy into (does not include specialized fleets such as blockades and naval invasions)
 	MONTHS_BEFORE_DISBAND = 6, -- Months from start date before AI will disband armies/navies (to avoid disbands because of early economic turmoil)
 },
 
