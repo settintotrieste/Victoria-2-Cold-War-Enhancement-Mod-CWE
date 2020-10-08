@@ -1,4 +1,4 @@
-country_event = {
+    country_event = {
 	id = 5070
 	title = "The Transfer of KaNgwane"
 	desc = "In 1982 after the tumultous protests by the ruling Inyandza National Movement to oppose self-government and independence, the Pretoria Government considered the claim of King Subhuza II of Swaziland to the land. South Africa planned to transfer the former Swazi Territorial Authority and the Zulu land of Ingwavuma to the neighbour Kingdom, securing a buffer state against FRELIMO in Mozambique and getting rid of the ongoing protests."
@@ -34,13 +34,14 @@ country_event = {
 		2109 = {
 			state_scope = { flashpoint_tension = 30 }
 			}
-		ai_chance = { factor = 0.7 }	
 		badboy = 2
+		
+		ai_chance = { factor = 0.7 }	
 		}
 	
 	option = {
 		name = "Swaziland welcomes back KaNgwane!"
-		2099 = { secede_province = ZUL }
+		2099 = { secede_province = SWA }
                 SWA = { inherit = NGW }
                 SWA = { prestige = 50 }
 		ZUL = { country_event = 5071 }
@@ -51,7 +52,7 @@ country_event = {
 
 
 
-country_event = {
+    country_event = {
 	id = 5071
 	title = "Pretoria wants us to give away our land"
 	desc = "Pretoria and Mbanane just signed an agreement transfering the Homeland of KaNgwane and the territory of Ingwavuma to Swaziland. This is a violation of our national autonomy, even after having moved the holiday residence to Ingwavuma, the Boers went on with their plan, how can westand this insult?"
@@ -87,3 +88,259 @@ country_event = {
 		}
 				
 	}
+	
+	#Operation Katzen
+	
+	country_event = {
+	id = 5072
+	title = "Operation Katzen"
+	desc = "Operation Katzen was a clandestine operation setup by the SADF to estalish a regional resistance movement to counter the influence of the ANC and UDF in the eastern cape region by overthrowing the Ciskei Government of Lennox Sebe, that had been deemed rebellious, with the help of the Transkei Defence Forces and President Matanzima. Once the operation succeeded in its goal through kidnapping of major Ciskei government figures, such as Sebe himself and his son, the two homelands were meant to be merged into a new state called Xhosaland, that would have beneiffted of East London as a Free Port."
+	picture = "operation_katzen"
+	fire_only_once = yes
+
+    trigger = {
+		tag = SAF
+		year = 1986
+		NOT = { year = 1990 
+                ZUL = exists
+			}
+			
+		AND = {
+			OR = {
+				government = democracy
+				government = hms_government
+				}
+			OR = { 
+				primary_culture = british 
+				primary_culture = afrikaaner 
+				}
+			OR = {
+				citizenship_policy = residency
+				citizenship_policy = limited_citizenship
+				}
+			}
+	    }
+	
+	option = {
+		name = "Authorize the Operation"  
+		CIS = { country_event = 5073 }	
+		badboy = 2
+		
+		ai_chance = { factor = 0.8 }
+		}
+	
+	option = {
+		name = "We can't afford this"
+		any_pop = { ideology = { factor = 0.5 value = socialist } }		
+
+		ai_chance = { factor = 0.2 }
+		}
+	}
+	
+	country_event = {
+	id = 5073
+	title = "Transkeian Raids"
+	desc = "In 1986 and 1987, Transkei, a larger, wealthier and more populous entity, undertook a series of military raids on Ciskei and attempted to seize control of Ciskei. One of these raids was an attack on leader Lennox Sebe's compound, with the apparent goal of taking him hostage, in order to force a merger of the two Bantustans. Transkei had previously granted sanctuary to Lennox Sebe's estranged brother Charles, the former head of Ciskei's security forces, who had been imprisoned in Ciskei on charges of sedition, and kidnapped Lennox Sebe's son."
+	picture = "saffie_raid"
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = "The Raid Fails" 
+		relation = { who = TRK value = -100 }
+		any_pop = { militancy = 0.2 consciousness = 0.3 }  
+		SAF = { prestige = -10 }
+		SAF = { country_event = 5074 }
+		
+		ai_chance = { factor = 0.8 }	
+		}
+	
+	option = {
+		name = "Sebe has been kidnapped!"
+		any_pop = { militancy = 0.5 consciousness = 0.3 }		
+                TRK = { inherit = CIS }
+		TRK = { country_event = 5075 }
+
+		ai_chance = { factor = 0.2 }
+		}
+	}
+	
+	country_event = {
+	id = 5074
+	title = "Operation Katzen fails?"
+	desc = "A failed raid by the Transkei Defence Forces to kindap Ciskei President Lennox Sebe pushed the ciskeian government to ask for our intervention in the conflict and reinstall the status quo. Now we have two options, disclose the operation and pacify the two Keis, or turn our back on the Ciskei Homeland and face international outcry with a military intervention to secure the new Xhosaland State."
+	picture = "pw_botha"
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = "Cease all activities and apologise" 
+		relation = { who = TRK value = -50 }
+		any_pop = { ideology = { factor = 0.2 value = socialist } }
+	    prestige = -10 
+		
+		ai_chance = { factor = 0.9 }	
+		}
+	
+	option = {
+		name = "The Operation must continue"
+		any_pop = { militancy = 0.2 consciousness = 0.2 }		
+        war = {
+			target = CIS 
+			
+			attacker_goal = { casus_belli = conquest } 
+				
+			defender_goal = { casus_belli = status_quo }
+			
+            }
+		TRK = { country_event = 5075 }
+		badboy = 2
+
+		ai_chance = { factor = 0.1 }
+		}
+	}
+	
+	country_event = {
+	id = 5075
+	title = "Operation Katzen Successful"
+	desc = "With President Lennox Sebe out of the games we can now proceed with the last stage of Operation Katzen, the establishment of Xhosaland and of Iliso Lomzi. With the collaboration of Charles Sebe and President Matanzima we are full ready to transition into the State of Xhosaland."
+	picture = "xhosaland"
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = "A Bright Future awaits Xhosaland and the Union of South Africa!" 
+		relation = { who = SAF value = 200 }
+		any_pop = { ideology = { factor = -0.2 value = socialist } } 
+	    prestige = 25 
+		TRK = { inherit = CIS }
+		2098 = { secede_province = TRK }
+		
+		ai_chance = { factor = 1 }	
+		}
+	}
+	
+	#1994 Bophuthatswana Crisis
+	
+	country_event = {
+	id = 5076
+	title = "South Africa asks submission"
+	desc = "."
+	picture = "pw_botha"
+	is_triggered_only = yes
+	
+	option = {
+		name = "Bophuthatswana is and will remain an Independent Nation" 
+		relation = { who = SAF value = -100 }
+	    prestige = 10 
+		any_pop = { militancy = 0.5 consciousness = 0.5 }	
+        SAF = { country_event = 5077 }	
+        SAF { release_vassal = BOP }			
+		
+		ai_chance = { factor = 0.9 }	
+		}
+	
+	option = {
+		name = "We cant afford this"
+		country_event = 8012624
+
+		ai_chance = { factor = 0.1 }
+		}
+	}
+	
+	country_event = {
+	id = 5077
+	title = "The 1994 Bophuthatswana Crisis"
+	desc = "."
+	picture = "pw_botha"
+	is_triggered_only = yes
+	
+	option = {
+		name = "Press Mangope to listen to the protestors"  
+        BOP = { country_event = 5078 }	 		
+		
+		ai_chance = { factor = 0.8 }	
+		}
+	
+	option = {
+		name = "Respect Bophuthatswana's independence"
+		prestige = -10 
+		relation = { who = BOP value = 50 }
+		badboy = 2
+
+		ai_chance = { factor = 0.1 }
+		}
+		
+    option = {
+		name = "Intervene on the side of the protestors"
+		badboy = 4
+		war = {
+			target = BOP 
+			
+			attacker_goal = { casus_belli = conquest } 
+				
+			defender_goal = { casus_belli = status_quo }
+			
+            }
+
+		ai_chance = { factor = 0.1 }
+		}
+	}
+	
+	country_event = {
+	id = 5078
+	title = "The 1994 Bophuthatswana Crisis"
+	desc = "."
+	picture = "pw_botha"
+	is_triggered_only = yes
+	
+	option = {
+		name = "We will use any means possible to stay independent"  	
+        SAF = { country_event = 5079 }	
+        government = nationalist_dictatorship 
+		
+		ai_chance = { factor = 0.2 }	
+		}
+	
+	option = {
+		name = "The AWB withdrawals and the Temporary Council Succeeds"
+		TRK = { inherit = BOP }
+		SAF = { prestige = 10 }
+
+		ai_chance = { factor = 0.8 }
+		}
+	}
+	
+	country_event = {
+	id = 5079
+	title = "Mangope doesn't back down"
+	desc = "."
+	picture = "pw_botha"
+	is_triggered_only = yes
+	
+	option = {
+		name = "Bophuthatswana will by one way or another be incorporated"	
+        prestige = -15	
+        war = {
+			target = BOP 
+			
+			attacker_goal = { casus_belli = conquest } 
+				
+			defender_goal = { casus_belli = status_quo }
+			
+            } 
+		badboy = 4
+		
+		ai_chance = { factor = 0.2 }	
+		}
+	
+	option = {
+		name = "Maybe we should accept their will"
+		prestige = -10
+		any_pop = { militancy = 0.2 consciousness = 0.3 }		
+
+		ai_chance = { factor = 0.8 }
+		}
+	}
+	
+	
