@@ -515,10 +515,10 @@ diplomacy = {
 	BASE_TRUCE_MONTHS = 60,
 	MAX_INFLUENCE = 100,
 	WARSUBSIDIES_PERCENT = 1.00, -- TODO How many percent of imports you are going to pay each day(mil. constructions and mil. maintainence)
-	NEIGHBOUR_BONUS_INFLUENCE_PERCENT = 0.30, -- Bonus to neighbouring countries when influencing
-	SPHERE_NEIGHBOUR_BONUS_INFLUENCE_PERCENT = 0.8, -- Bonus to countries in your sphere neighbouring when influencing
-	OTHER_CONTINENT_BONUS_INFLUENCE_PERCENT = -0.10, -- TODO Bonus to neighbouring countries when influencing
-	PUPPET_BONUS_INFLUENCE_PERCENT = 5.0, -- bonus if they are our puppet
+	NEIGHBOUR_BONUS_INFLUENCE_PERCENT = 0.80, -- Bonus to neighbouring countries when influencing
+	SPHERE_NEIGHBOUR_BONUS_INFLUENCE_PERCENT = 0.30, -- Bonus to countries in your sphere neighbouring when influencing
+	OTHER_CONTINENT_BONUS_INFLUENCE_PERCENT = -0.25, -- TODO Bonus to neighbouring countries when influencing
+	PUPPET_BONUS_INFLUENCE_PERCENT = 2.0, -- bonus if they are our puppet
 	
 	-- effects of manually releasing a nation
 	RELEASE_NATION_PRESTIGE = 5,
@@ -607,7 +607,7 @@ diplomacy = {
 	TWS_FULFILLED_IDLE_SPACE = 0.75, -- How much % the CB fulfillment must done, so TWS starts ticking.
 	TWS_BATTLE_MIN_COUNT = 5, -- At least X battles before the aspect of wins will count
 	TWS_BATTLE_MAX_ASPECT = 8.0, -- Max allowed battle wins aspect for TWS
-	LARGE_POPULATION_INFLUENCE_PENALTY = 0.01,
+	LARGE_POPULATION_INFLUENCE_PENALTY = -0.10,
 },  
 
 
