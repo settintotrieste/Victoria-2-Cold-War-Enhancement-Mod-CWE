@@ -1,40 +1,55 @@
+#USSR releases NKO to allow the Korean War to start
 country_event = {
   id = 8500824
   title = EVT_8500824_NAME
   desc = EVT_8500824_DESC
   picture = "nwo2_kim_il_sung_speaking"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = RUS
-	year = 1949 NOT = { year = 1960 }
-	war = no
-    exists = NKO
-    is_our_vassal = NKO
-    exists = SKO
-	exists = CHI
-	CHI = { government = proletarian_dictatorship }
-	CHI = { war = no }
-  }
+	trigger = {
+		tag = RUS
+		year = 1949 
+		NOT = { year = 1960 }
+		
+		war = no
+		has_global_flag = blocsenabled
+		
+		#North Korea
+		exists = NKO
+		is_our_vassal = NKO
+		
+		#South Korea
+		exists = SKO
+		SKO = { is_vassal = no }
+		
+		#Communist China
+		exists = CHI
+		CHI = { government = proletarian_dictatorship }
+		CHI = { war = no }
+	}
 
-  mean_time_to_happen = { months = 6  }
+	mean_time_to_happen = { months = 6 }
 
-  option = {
-    name = EVT_8500824_A
-	release_vassal = NKO
+	option = {
+		name = EVT_8500824_A
+		release_vassal = NKO
+		
+		NKO = { set_country_flag = NKO_korean_war_permisssion }
 
-	#NKO = { country_event = 8500800 } 
+		any_pop = { consciousness = 2 }
+		ai_chance = { factor = 0.9 }
+	}
 
-	any_pop = { consciousness = 2 }
-	ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = EVT_8500824_B
+		prestige = -50
+		badboy = 5
+		ai_chance = { factor = 0.1 }
+	}
 
-  option = {
-    name = EVT_8500824_B
-	prestige = -50
-    ai_chance = { factor = 0.1 }
-  }
 }
+
 #Fire the Korean War
 country_event = {
   id = 8500800
@@ -42,34 +57,40 @@ country_event = {
   desc = EVT_8500800_DESC
   picture = "korean_war_start"
 
-fire_only_once = yes
+	fire_only_once = yes
 
-  trigger = {
+	trigger = {
     	tag = NKO
-	is_vassal = no
-	CHI = { owns = 2221 } #Won civil war
-	NOT = { year = 1960 }
-	war = no
+		OR = { has_country_flag = NKO_korean_war_permisssion has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1960 }
+		
+		is_vassal = no
+		war = no
+		
+		#PRC civil war
+		exists = CHI
+		CHI = { owns = 2221 government = proletarian_dictatorship }
+		
+		#SKO
      	exists = SKO
-	exists = CHI
-	CHI = { government = proletarian_dictatorship }
-	CHI = { war = no }
-  }
+		SKO = { is_vassal = no }
+	}
 
-  mean_time_to_happen = { months = 6 }
+	mean_time_to_happen = { months = 6 }
 
-  option = {
-    name = EVT_8500800_A
-	SKO = { country_event = 8500801 } 
-	ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = EVT_8500800_A
+		SKO = { country_event = 8500801 } 
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8500800_B
-	prestige = -50
-	any_pop = { militancy = 3.0 }
-    ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = EVT_8500800_B
+		prestige = -50
+		any_pop = { militancy = 3.0 }
+		ai_chance = { factor = 0.1 }
+	}
+	
 }
 country_event = {
   id = 8500801
