@@ -336,7 +336,7 @@ country_event = {
 		}
 		
 		#Release truncated Namibia and capital to avoid capital shifting
-		2078 = { secede_province = NAM }
+		2078 = { secede_province = NAM } #Capital
 		2082 = { secede_province = NAM }
 		
 		any_owned = {
@@ -410,6 +410,25 @@ country_event = {
 			government = proletarian_dictatorship
 			ruling_party_ideology = communist
 			country_event = 800052
+		}
+		
+		#NAM incorporates East Capriv and the Bantustans
+		any_country = {
+			limit = {
+				vassal_of = SAF
+				OR = {
+					tag = ECA
+					tag = KAV
+					tag = OVA
+					tag = KAO
+					tag = HRO
+					tag = SAN
+					tag = DAM
+					tag = BST
+					tag = NML
+				}
+			}
+			country_event = 8012624
 		}
 		
 		#Afrikaaners become unhappy
@@ -833,10 +852,10 @@ country_event = {
 	
 }
 
-#Establishment of the Bantustans, 1963
+#Establishment of the Bantustans in SAF, 1963
 country_event = { 
   id = 80126221
-  title = "Establishment of the Bantustans"
+  title = "The South African Bantustans"
   desc = EVTDESC80126221
   picture = "bantustans_day"
   fire_only_once = yes
@@ -879,7 +898,6 @@ country_event = {
 					AND = { THIS = { is_possible_vassal = LBW } tag = LBW }
 					AND = { THIS = { is_possible_vassal = VED } tag = VED }
 					AND = { THIS = { is_possible_vassal = ZUL } tag = ZUL }
-					AND = { THIS = { is_possible_vassal = ECA } tag = ECA }
 				}
 			}
 			country_event = 8012623
@@ -890,6 +908,85 @@ country_event = {
 	
     option = {
 		name = "There is no need to partition South Africa"
+		
+		#Afrikaaners become very unhappy!
+		any_pop = {
+			limit = { culture = afrikaaner }
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = populist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
+			}
+		}
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		ai_chance = { factor = 0.1 }
+    }
+}
+
+#Establishment of the Bantustans in Namibia, 1973
+country_event = { 
+  id = 801262211
+  title = "The Namibian Bantustans"
+  desc = EVTDESC801262211
+  picture = "NAM_bantustans_day"
+  fire_only_once = yes
+
+	trigger = {
+		tag = SAF
+    	year = 1973
+		NOT = { has_global_flag = 1992_start_date_flag }
+		primary_culture = afrikaaner
+		OR = {
+			citizenship_policy = residency
+			citizenship_policy = limited_citizenship
+		}
+		minorities_reform = minorities_oppression
+		is_vassal = no
+		war = no
+		
+		#Enacted Bantustans in SAF
+		has_country_flag = bantustans_formed_flag
+		
+		#Owns Namibia
+		is_possible_vassal = NAM
+	}
+
+	mean_time_to_happen = { months = 3 }
+	
+    option = {
+		name = "Form the Bantustans!"
+		
+		set_country_flag = namibian_bantustans_formed_flag
+		
+		badboy = 5
+		
+		#Form the Bantustans
+		any_country = {
+			limit = { 
+				exists = no 
+				OR = {
+					AND = { THIS = { is_possible_vassal = ECA } tag = ECA }
+					AND = { THIS = { is_possible_vassal = KAV } tag = KAV }
+					AND = { THIS = { is_possible_vassal = OVA } tag = OVA }
+				}
+			}
+			country_event = 8012623
+		}
+		
+		ai_chance = { factor = 0.9 }
+    }
+	
+    option = {
+		name = "There is no need to partition South West Africa"
 		
 		#Afrikaaners become very unhappy!
 		any_pop = {
@@ -936,14 +1033,6 @@ country_event = {
     option = {
 		name = "Free Namibia!"
 		
-		#NAM incorporates East Capriv
-		random_owned = {
-			limit = { 
-				owner = { ECA = { vassal_of = SAF } } 
-			}
-			owner = { inherit = ECA }
-		}
-		
 		badboy = -5
 		
 		release = NAM
@@ -953,6 +1042,25 @@ country_event = {
 			government = democracy 
 			ruling_party_ideology = socialist 
 			country_event = 800054
+		}
+		
+		#NAM incorporates East Capriv and the Bantustans
+		any_country = {
+			limit = {
+				vassal_of = SAF
+				OR = {
+					tag = ECA
+					tag = KAV
+					tag = OVA
+					tag = KAO
+					tag = HRO
+					tag = SAN
+					tag = DAM
+					tag = BST
+					tag = NML
+				}
+			}
+			country_event = 8012624
 		}
 		
 		#Wavis Bay
@@ -1012,7 +1120,7 @@ country_event = {
 
 }
 
-#SAF inherits Bantustans
+#SAF or NAM inherits Bantustans
 country_event = {
   id = 8012624
   title = apartheid_end_bantustans_title
@@ -1024,6 +1132,7 @@ country_event = {
 		name = apartheid_end_bantustans_title
 		FROM = { inherit = THIS }
 	}
+	
 }
 
 #End of Apartheid, 1994 or otherwise - Conversion to RSA
@@ -1097,6 +1206,9 @@ country_event = {
 				OR = { vassal_of = THIS vassal_of = SAF }
 				ai = yes
 				OR = {
+				
+					#South African Bantustans
+					
 					tag = CIS
 					tag = TRK
 					tag = QWA
@@ -1106,15 +1218,27 @@ country_event = {
 					tag = LBW
 					tag = VED
 					tag = ZUL
+					
+					#Namibian Bantustans
+					
 					tag = ECA
+					tag = KAV
+					tag = OVA
+					tag = KAO
+					tag = HRO
+					tag = SAN
+					tag = DAM
+					tag = BST
+					tag = NML
+					
 				}
 			}
 			country_event = 8012624
 		}
 		
-		BOP = { country_event = 5076 }
-		
 		all_core = { remove_core = SAF }
+		
+		BOP = { country_event = 5076 }
 		
 		ai_chance = { factor = 0.9 }
 	}
@@ -1135,6 +1259,9 @@ country_event = {
 				vassal_of = SAF
 				ai = yes
 				OR = {
+				
+					#South African Bantustans
+					
 					tag = CIS
 					tag = TRK
 					tag = QWA
@@ -1144,7 +1271,19 @@ country_event = {
 					tag = LBW
 					tag = VED
 					tag = ZUL
+					
+					#Namibian Bantustans
+					
 					tag = ECA
+					tag = KAV
+					tag = OVA
+					tag = KAO
+					tag = HRO
+					tag = SAN
+					tag = DAM
+					tag = BST
+					tag = NML
+					
 				}
 			}
 			country_event = 8012624
@@ -1476,3 +1615,4 @@ country_event = {
     }
 
 }
+
