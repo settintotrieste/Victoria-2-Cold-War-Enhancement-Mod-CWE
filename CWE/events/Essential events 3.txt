@@ -2271,43 +2271,6 @@ factor = 0.1
 		}
 }
 
-#Total Embargo
-country_event = {
-	id = 1410077
-	title = "Total Embargo of $COUNTRY$!"
-	desc = "Due to all our neighbouring country embargoing us, we have been severely cut off from the world market."
-	picture = "embargoing"
-	
-trigger = { 
-NOT = { has_country_modifier = total_embargo_nation }
-NOT = { any_neighbor_country = { NOT = { has_country_modifier = embargoing_nation } } }
-has_country_modifier = embargo_nation
-}
-
-option = {
-name = "Our enemies will pay for this!"
-add_country_modifier = { name = total_embargo_nation duration = -1 }
-	}
-}
-
-#Total Embargo
-country_event = {
-	id = 1410078
-	title = "Total Embargo of $COUNTRY$ lifted!"
-	desc = "Due to not all our neighbouring country embargoing us, we have not been severely cut off from the world market now."
-	picture = "embargoing"
-	
-trigger = { 
-any_neighbor_country = { NOT = { has_country_modifier = embargoing_nation } }
-has_country_modifier = total_embargo_nation
-}
-
-option = {
-name = "Our enemies will still pay for this!"
-remove_country_modifier = total_embargo_nation
-	}
-}
-
 #Regime Change Target Nation
 country_event = {
 	id = 1410079
@@ -3697,55 +3660,50 @@ prestige = 5
 
 }
 
-#End of Special Economic Zones
+#Special Economic Zone Investment
 country_event = {
 	id = 1410125
-	title = "End of Special Economic Zones in $COUNTRY$"
-	desc = "As our country has transitioned fully into an open democractic capitalist economy, the rationale of having a Special Economic Zone to allow for economic openess is lost."
+	title = "$FROMCOUNTRY_ADJ$ Investment in $COUNTRY_ADJ$ SEZ"
+	desc = EVTDESC1410125
 	picture = "spez"
 	
-trigger = {
-has_country_modifier = spez_gp
-#any_owned_province = { has_province_modifier = spez }
-NOT = { OR = { government = presidential_dictatorship government = proletarian_dictatorship government = proletarian_dictatorship1 government = theocracy government = nationalist_dictatorship government = populist_dictatorship } }
-}	
-
-
-option = {
-	name = "We don't need it anyway now!"
-any_owned = { remove_province_modifier = spez }
-remove_country_modifier = spez_gp
-			}
-
-}
-
-country_event = {
-	id = 1410126
-	title = "End of Special Economic Zones Program Involvement"
-	desc = "As no country in the world currently has an active Special Economic Zone Program that we can participate in, our involvement in it will therefore be terminated"
-	picture = "spez"
+	allow_multiple_instances = yes
 	
-	trigger = {
-		has_country_modifier = spez_participate_member
-		NOT = {
-			trade_policy = free_trade
-			OR = { 
-				economic_policy = laissez_faire 
-				economic_policy = interventionism 
+	is_triggered_only = yes
+
+	option = {
+		name = "We thank the $FROMCOUNTRY_ADJ$ Government for their money!"
+		
+		prestige = 25
+		
+		random_owned = {
+			limit = {
+				state_scope = {
+					any_owned_province = {
+						is_core = THIS
+						has_building = naval_base
+						has_building = railroad
+					}
+					any_owned_province = {
+						total_pops = 250000
+						NOT = { has_province_modifier = spez }
+						is_capital = no
+					}
+				}
+				is_state_capital = yes
 			}
-			OR = {
-				any_neighbor_country = { has_country_modifier = spez_gp } 
-				any_greater_power = { has_country_modifier = spez_gp } 
+			add_province_modifier = { name = spez duration = 3650 }
+			
+			#Increase literacy
+			any_pop = { 
+				limit = { 
+					OR = { is_primary_culture = yes is_accepted_culture = yes } 
+				}
+				consciousness = 5
+				literacy = 0.04
 			}
 		}
-	}	
-
-
-option = {
-name = "Perhaps we may get an opportunity again in the future"
-any_owned = { remove_province_modifier = spez }
-remove_country_modifier = spez_participate_member
-			}
+	}
 
 }
 

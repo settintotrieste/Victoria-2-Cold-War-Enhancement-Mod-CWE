@@ -124,24 +124,81 @@ clr_country_flag = commerce_raiding
 #Announce embargo
 country_event = {
 	id = 1412150
-title = "$FROMCOUNTRY$ embargoing $COUNTRY$"
+	title = "The $FROMCOUNTRY_ADJ$ Embargo of $COUNTRY$"
 	desc = "Due to the recent deterioration in our relations with $FROMCOUNTRY$, they have decided to punish us by embargoing our nation. They hope that this will serve as a warning not to antagonise them and trigger a push to repair relations."
 	picture = "end_commerce_raiding"
 
-major = yes
+	major = yes
 
-is_triggered_only = yes
+	is_triggered_only = yes
 
-option = {
-name = "They will pay for this!"
-prestige = -25
+	option = {
+		name = "They will pay for this!"
+		prestige = -25
+		
+		random_owned = {
+			limit = { 
+				owner = { FROM = { is_greater_power = yes } } 
+			}
+			owner = { add_country_modifier = { name = embargoed_by_GP duration = 365 } }
 		}
-
-option = {
-name = "Seek dialogue!"
-prestige = -50
-relation = { who = FROM value = 25 }
+		
+		random_owned = {
+			limit = { 
+				owner = { FROM = { is_secondary_power = yes } } 
+			}
+			owner = { add_country_modifier = { name = embargoed_by_SP duration = 365 } }
 		}
+		
+		random_owned = {
+			limit = { 
+				owner = { FROM = { is_greater_power = no is_secondary_power = no } } 
+			}
+			owner = { add_country_modifier = { name = embargoed_by_minor_nation duration = 365 } }
+		}
+		
+		#Retaliate with our own embargo
+		random_owned = {
+			limit = { 
+				owner = { FROM = { has_country_flag = embargo_nation_flag } } 
+			}
+			owner = { FROM = { country_event = 1412150 } }
+		}
+		
+		FROM = { clr_country_flag = embargo_nation_flag }
+		
+	}
+
+	option = {
+		name = "Seek dialogue!"
+		prestige = -50
+		
+		relation = { who = FROM value = 25 }
+		
+		random_owned = {
+			limit = { 
+				owner = { FROM = { is_greater_power = yes } } 
+			}
+			owner = { add_country_modifier = { name = embargoed_by_GP duration = 365 } }
+		}
+		
+		random_owned = {
+			limit = { 
+				owner = { FROM = { is_secondary_power = yes } } 
+			}
+			owner = { add_country_modifier = { name = embargoed_by_SP duration = 365 } }
+		}
+		
+		random_owned = {
+			limit = { 
+				owner = { FROM = { is_greater_power = no is_secondary_power = no } } 
+			}
+			owner = { add_country_modifier = { name = embargoed_by_minor_nation duration = 365 } }
+		}
+		
+		FROM = { clr_country_flag = embargo_nation_flag }
+		
+	}
 
 }
 
