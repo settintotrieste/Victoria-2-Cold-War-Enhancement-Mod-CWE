@@ -3591,14 +3591,30 @@ rude_boy = {
 	always = yes
 
 	can_use = {
-
-THIS = { NOT = { has_country_modifier = no_more_war } }
-
-THIS = { NOT = { has_country_flag = renounced_war_rights } }
-THIS = { NOT = { has_country_flag = un_armistice } }
-		NOT = { is_our_vassal = THIS }
+	
+		#Attacker
+		THIS = { NOT = { has_country_modifier = no_more_war } }
+		THIS = { NOT = { has_country_flag = renounced_war_rights } }
+		THIS = { NOT = { has_country_flag = un_armistice } }
 		THIS = { NOT = { war_policy = pacifism } }
+		THIS = { is_disarmed = no }
+		
+		#Target
+		NOT = { is_our_vassal = THIS }
+		is_disarmed = no
+		
+		has_country_modifier = international_pariah
 		badboy = 1
+		
+		#Has not lost a dismantle
+		NOT = { has_country_modifier = punitive_effects }
+		
+		OR = {
+            NOT = { has_country_flag = dismantle_declared }
+            THIS = { NOT = { has_country_flag = in_great_war } }
+            THIS = { ai = no }
+        }
+		
 	}
 	
 	po_remove_prestige = yes
@@ -3618,8 +3634,7 @@ THIS = { NOT = { has_country_flag = un_armistice } }
 	on_po_accepted = {
 		badboy = -1000
 		badboy = 24
-		remove_country_modifier = sdi_completed
-		remove_country_modifier = sdi_development
+
 		country_event = 10020
 
 		THIS = { set_country_flag = this_won_CB }

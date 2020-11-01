@@ -2,11 +2,11 @@
 
 #########################################################################
 #																		#
-#         Infamy Wars -- Coalition Against a High-Infamy Player			#
+#         Infamy Wars -- Coalition Against a High-Infamy country		#
 #																		#
 #########################################################################
 
-#First warning against the player
+#First warning against the nation
 country_event = {
 
 	id = 96130
@@ -17,11 +17,13 @@ country_event = {
 	news_desc_medium = "EVTDESC96130_NEWS_MEDIUM"
 	news_desc_short = "EVTDESC96130_NEWS_SHORT"
 	picture = "greatpowers"
+	
+	major = yes
 
 	trigger = {
-		ai = no
-		badboy = 1.2
+		badboy = 1
 		is_disarmed = no
+		is_vassal = no
 		NOT = {
 			has_country_modifier = international_pariah
 			has_country_modifier = punitive_effects
@@ -29,7 +31,11 @@ country_event = {
 	}
 
 	mean_time_to_happen = {
-		months = 1
+		months = 3
+		modifier = { factor = 2 has_global_flag = UNSG_passive }
+		modifier = { factor = 0.5 has_global_flag = UNSG_aggressive }
+		
+		modifier = { factor = 0.5 badboy = 1.25 }
 	}
 
 	option = {
@@ -39,21 +45,78 @@ country_event = {
 			name = international_pariah
 			duration = -1
 		}
+		
+		#All nations that are pacifist stay away from us
 		any_country = {
 			limit = {
 				ai = yes
-				rank = 16
-				NOT = {
-					alliance_with = THIS
-					in_sphere = THIS
-					vassal_of = THIS
-				}
+				is_vassal = no
+				war_policy = pacifism
 			}
 			relation = {
 				who = THIS
-				value = -100
+				value = -200
 			}
 		}
+		
+		### International anger based on ideology group ###
+		
+		#Communist group
+		random_owned = { 
+			limit = { owner = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } } 
+			owner = { 
+				any_country = { 
+					limit = { 
+						is_vassal = no 
+						NOT = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } 
+					} 
+					relation = { who = THIS value = -200 }
+				}
+			}
+		}
+		
+		#Traditionalist group
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = traditionalist } }
+			owner = { 
+				any_country = { 
+					limit = { 
+						is_vassal = no 
+						NOT = { ruling_party_ideology = traditionalist } 
+					} 
+					relation = { who = THIS value = -200 }
+				}
+			}
+		}
+		
+		#Nationalist and Populist group
+		random_owned = { 
+			limit = { owner = { OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist } } }
+			owner = { 
+				any_country = { 
+					limit = { 
+						is_vassal = no 
+						NOT = { OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist } } 
+					} 
+					relation = { who = THIS value = -200 }
+				}
+			}
+		}
+		
+		#Remainder group
+		random_owned = { 
+			limit = { owner = { NOT = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social ruling_party_ideology = traditionalist ruling_party_ideology = nationalist ruling_party_ideology = populist } } } }
+			owner = { 
+				any_country = { 
+					limit = { 
+						is_vassal = no 
+						NOT = { OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist } } 
+					} 
+					relation = { who = THIS value = -200 }
+				}
+			}
+		}
+
 	}
 }
 
@@ -68,7 +131,10 @@ country_event = {
 	trigger = {
 		has_country_modifier = international_pariah
 		NOT = { has_country_modifier = punitive_effects }
-		NOT = { badboy = 1 }
+		OR = { 
+			NOT = { badboy = 1 } 
+			is_vassal = yes 
+		}
 	}
 
 	mean_time_to_happen = {
@@ -81,7 +147,7 @@ country_event = {
 	}
 }
 
-#An AI GP will deliver the ultimatum
+#An AI UNSC GP will deliver the ultimatum
 country_event = {
 	
 	id = 96135
@@ -90,31 +156,51 @@ country_event = {
 	
 	trigger = {
 		ai = yes
+		
+		#Capable of going to war
 		war = no
-		is_greater_power = yes
 		is_disarmed = no
+		
+		#Member of the UNSC
+		is_greater_power = yes
+		has_country_modifier = unsc_permanent_member
+		
+		#Not a pariah as well
+		NOT = { has_country_modifier = international_pariah }
+		NOT = { badboy = 1 }
+		
 		NOT = {
 			has_global_flag = ultimatum_delivered
 			has_global_flag = ultimatum_refused
 			has_country_modifier = no_more_war
 			has_country_modifier = punitive_effects
 		}
+		
 		any_greater_power = {
-			badboy = 2
+			badboy = 1
 			is_disarmed = no
+
 			has_country_modifier = international_pariah
+			
 			NOT = { has_country_modifier = punitive_effects }
 			NOT = { has_country_flag = ultimatum_accepted }
+			
+			NOT = { relation = { who = THIS value = 50 } }
 			NOT = { alliance_with = THIS }
 			NOT = { truce_with = THIS }
 		}
 	}
 
 	mean_time_to_happen = {
-		months = 12
+		months = 6
+		
+		#Fast response if THIS is a Superpower
 		modifier = {
 			factor = 0.5
-			rank = 1
+			OR = { 
+				has_country_modifier = un_king1 
+				has_country_modifier = un_king2 
+			}
 		}
 		modifier = {
 			factor = 0.5
@@ -139,11 +225,15 @@ country_event = {
 		set_global_flag = ultimatum_delivered
 		random_country = {
 			limit = {
-				badboy = 2
+				badboy = 1
 				is_disarmed = no
+				is_vassal = no
 				has_country_modifier = international_pariah
+			
 				NOT = { has_country_modifier = punitive_effects }
 				NOT = { has_country_flag = ultimatum_accepted }
+			
+				NOT = { relation = { who = THIS value = 50 } }
 				NOT = { alliance_with = THIS }
 				NOT = { truce_with = THIS }
 			}
@@ -175,12 +265,15 @@ country_event = {
 		any_country = {
 			limit = {
 				ai = yes
-				rank = 16
-				NOT = {
-					tag = FROM
-					alliance_with = THIS
-					in_sphere = THIS
-					vassal_of = THIS
+				is_vassal = no
+				OR = {
+					NOT = {
+						tag = FROM
+						alliance_with = THIS
+						in_sphere = THIS
+						vassal_of = THIS
+					}
+					war_policy = pacifism
 				}
 			}
 			relation = {
@@ -198,6 +291,9 @@ country_event = {
 				target = THIS
 				attacker_goal = {
 					casus_belli = dismantle_cb
+				}
+				defender_goal = {
+					casus_belli = humiliate
 				}
 				call_ally = yes
 			}
@@ -235,10 +331,15 @@ country_event = {
 		is_disarmed = no
 		is_greater_power = yes
 		any_greater_power = {
-			badboy = 2
+			badboy = 1
 			is_disarmed = no
+
 			has_country_modifier = international_pariah
+			
 			NOT = { has_country_modifier = punitive_effects }
+			NOT = { has_country_flag = ultimatum_accepted }
+			
+			NOT = { relation = { who = THIS value = 50 } }
 			NOT = { alliance_with = THIS }
 			NOT = { truce_with = THIS }
 		}
@@ -249,7 +350,7 @@ country_event = {
 		modifier = {
 			factor = 0.5
 			any_greater_power = {
-				badboy = 2
+				badboy = 1
 				is_disarmed = no
 				has_country_modifier = international_pariah
 				NOT = { has_country_modifier = punitive_effects }
@@ -261,7 +362,7 @@ country_event = {
 		modifier = {
 			factor = 1.5
 			any_greater_power = {
-				badboy = 2
+				badboy = 1
 				is_disarmed = no
 				has_country_modifier = international_pariah
 				NOT = { has_country_modifier = punitive_effects }
@@ -273,7 +374,7 @@ country_event = {
 		modifier = {
 			factor = 2
 			any_greater_power = {
-				badboy = 2
+				badboy = 1
 				is_disarmed = no
 				has_country_modifier = international_pariah
 				NOT = { has_country_modifier = punitive_effects }
@@ -288,7 +389,7 @@ country_event = {
 		modifier = {
 			factor = 2
 			any_greater_power = {
-				badboy = 2
+				badboy = 1
 				is_disarmed = no
 				has_country_modifier = international_pariah
 				NOT = { has_country_modifier = punitive_effects }
@@ -303,7 +404,7 @@ country_event = {
 		modifier = {
 			factor = 2
 			any_greater_power = {
-				badboy = 2
+				badboy = 1
 				is_disarmed = no
 				has_country_modifier = international_pariah
 				NOT = { has_country_modifier = punitive_effects }
@@ -318,7 +419,7 @@ country_event = {
 		modifier = {
 			factor = 2
 			any_greater_power = {
-				badboy = 2
+				badboy = 1
 				is_disarmed = no
 				has_country_modifier = international_pariah
 				NOT = { has_country_modifier = punitive_effects }
@@ -333,7 +434,7 @@ country_event = {
 		modifier = {
 			factor = 2
 			any_greater_power = {
-				badboy = 2
+				badboy = 1
 				is_disarmed = no
 				has_country_modifier = international_pariah
 				NOT = { has_country_modifier = punitive_effects }
@@ -365,10 +466,12 @@ country_event = {
 		remove_country_modifier = no_more_war
 		any_greater_power = {
 			limit = {
-				badboy = 2
+				badboy = 1
 				is_disarmed = no
 				has_country_modifier = international_pariah
 				NOT = { has_country_modifier = punitive_effects }
+				
+				NOT = { relation = { who = THIS value = 50 } }
 				NOT = { alliance_with = THIS }
 				NOT = { truce_with = THIS }
 				NOT = { neighbour = THIS }
@@ -420,7 +523,7 @@ country_event = {
 		war = yes
 		NOT = { has_country_modifier = end_the_war }
 		any_greater_power = {
-			badboy = 2
+			badboy = 1
 			is_disarmed = yes
 			has_country_modifier = international_pariah
 			NOT = { has_country_modifier = punitive_effects }
@@ -491,7 +594,9 @@ country_event = {
 	mean_time_to_happen = {
 		months = 12
 	}
-immediate = { badboy = -1000 }
+	
+	immediate = { badboy = -1000 }
+	
 	option = {
 		name = "EVTOPTA96150" #Excellent
 		clr_global_flag = ultimatum_refused
