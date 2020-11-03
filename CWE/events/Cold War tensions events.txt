@@ -7,35 +7,55 @@ country_event = {
 	desc = EVTDESC1800000
 	picture = "berlin_wall_stand_off"
 
-trigger = {
-	NOT = { has_global_flag = cwcrisis_initiated }
-	has_global_flag = blocsenabled
-	war = no
-	is_vassal = no
-	RUS = { has_recently_lost_war = no has_country_modifier = cold_war_high }
-	USA = { has_recently_lost_war = no has_country_modifier = cold_war_high }
+	trigger = {
+		NOT = { has_global_flag = cwcrisis_initiated }
+		has_global_flag = blocsenabled
+		
+		war = no
+		is_vassal = no
+		is_disarmed = no
+		has_recently_lost_war = no
+		
+		RUS = { has_recently_lost_war = no has_country_modifier = cold_war_high }
+		USA = { has_recently_lost_war = no has_country_modifier = cold_war_high }
 
-#No normal crisis
-crisis_exist = no
+		#No normal crisis
+		crisis_exist = no
 
-#This country is a neighbour of a rival cold war government
-OR = {
+		#This country is a neighbour of a rival cold war government
+		OR = {
 
-AND = {
-has_country_modifier = democratic_bloc
-any_neighbor_country = { is_vassal = no has_country_modifier = communist_bloc NOT = { relation = { who = THIS value = 0 } } }
+			AND = {
+				has_country_modifier = democratic_bloc
+				any_neighbor_country = { 
+					war = no
+					is_vassal = no
+					is_disarmed = no
+					has_recently_lost_war = no 
+					has_country_modifier = communist_bloc 
+					NOT = { war_policy = pacifism }
+					NOT = { relation = { who = THIS value = -150 } } 
+				}
+			}
+
+			AND = {
+				has_country_modifier = communist_bloc
+				any_neighbor_country = { 
+					war = no
+					is_vassal = no
+					is_disarmed = no
+					has_recently_lost_war = no
+					has_country_modifier = democratic_bloc 
+					NOT = { war_policy = pacifism }
+					NOT = { relation = { who = THIS value = -150 } } 
+				}
+			}
+
+		}
+
 	}
 
-AND = {
-has_country_modifier = communist_bloc
-any_neighbor_country = { is_vassal = no has_country_modifier = democratic_bloc NOT = { relation = { who = THIS value = 0 } } }
-	}
-
-}
-
-	}
-
-immediate = { set_global_flag = cwcrisis_initiated }
+	immediate = { set_global_flag = cwcrisis_initiated }
 
 	mean_time_to_happen = {
 		months = 6 
@@ -43,87 +63,87 @@ immediate = { set_global_flag = cwcrisis_initiated }
 		modifier = { factor = 4 war_policy = pacifism }
 	}
 
-option = {
-	name = "Concede in their favour!"
-	prestige_factor = -0.1
-	clr_global_flag = cwcrisis_initiated
+	option = {
+		name = "Concede in their favour!"
+		prestige_factor = -0.1
+		clr_global_flag = cwcrisis_initiated
 
-#Concede to Communist bloc country
-random_country = {
-
-limit = { 
-exists = yes 
-neighbour = THIS
-is_vassal = no 
-THIS = { has_country_modifier = democratic_bloc }
-has_country_modifier = communist_bloc
-NOT = { relation = { who = THIS value = 0 } } 
-	}
-
-prestige_factor = 0.1
-relation = { who = THIS value = 50 }
-
-}
-
-#Concede to Democratic bloc country
-random_country = {
-
-limit = { 
-exists = yes 
-neighbour = THIS
-is_vassal = no 
-THIS = { has_country_modifier = communist_bloc }
-has_country_modifier = democratic_bloc
-NOT = { relation = { who = THIS value = 0 } } 
-	}
-
-prestige_factor = 0.1
-relation = { who = THIS value = 50 }
-
-}
-
-	ai_chance = { factor = 0.1 }
+		#Concede to Communist bloc country
+		random_country = {
+			limit = { 
+				exists = yes 
+				neighbour = THIS
+				war = no
+				is_vassal = no
+				is_disarmed = no
+				has_recently_lost_war = no 
+				THIS = { has_country_modifier = democratic_bloc }
+				has_country_modifier = communist_bloc
+				NOT = { relation = { who = THIS value = -150 } } 
+			}
+			prestige_factor = 0.1
+			relation = { who = THIS value = 60 }
 		}
 
-option = {
-	name = "Continue the stand off!"
+		#Concede to Democratic bloc country
+		random_country = {
+			limit = { 
+				exists = yes 
+				neighbour = THIS
+				war = no
+				is_vassal = no
+				is_disarmed = no
+				has_recently_lost_war = no 
+				THIS = { has_country_modifier = communist_bloc }
+				has_country_modifier = democratic_bloc
+				NOT = { relation = { who = THIS value = -150 } } 
+			}
+			prestige_factor = 0.1
+			relation = { who = THIS value = 60 }
+		}
 
-set_country_flag = cw_crisis_target
+		ai_chance = { factor = 0.1 }
+	}
+
+	option = {
+		name = "Continue the stand off!"
+
+		set_country_flag = cw_crisis_target
 	
-#Notification to Communist bloc country
-random_country = {
-
-limit = { 
-exists = yes 
-neighbour = THIS
-is_vassal = no 
-THIS = { has_country_modifier = democratic_bloc }
-has_country_modifier = communist_bloc
-NOT = { relation = { who = THIS value = 0 } } 
-	}
-
-country_event = 1800001
-
-}
-
-#Notification to Democratic bloc country
-random_country = {
-
-limit = { 
-exists = yes 
-neighbour = THIS
-is_vassal = no 
-THIS = { has_country_modifier = communist_bloc }
-has_country_modifier = democratic_bloc
-NOT = { relation = { who = THIS value = 0 } } 
-	}
-
-country_event = 1800001
-
-}
-
-	ai_chance = { factor = 0.9 }
+		#Notification to Communist bloc country
+		random_country = {
+			limit = { 
+				exists = yes 
+				neighbour = THIS
+				war = no
+				is_vassal = no
+				is_disarmed = no
+				has_recently_lost_war = no 
+				THIS = { has_country_modifier = democratic_bloc }
+				has_country_modifier = communist_bloc
+				NOT = { relation = { who = THIS value = -150 } } 
+			}
+			country_event = 1800001
 		}
+
+		#Notification to Democratic bloc country
+		random_country = {
+			limit = { 
+				exists = yes 
+				neighbour = THIS
+				war = no
+				is_vassal = no
+				is_disarmed = no
+				has_recently_lost_war = no 
+				THIS = { has_country_modifier = communist_bloc }
+				has_country_modifier = democratic_bloc
+				NOT = { relation = { who = THIS value = -150 } } 
+			}
+			country_event = 1800001
+		}
+
+		ai_chance = { factor = 0.9 }
+	}
 
 }
 
@@ -136,37 +156,41 @@ country_event = {
 
 	is_triggered_only = yes
 
-option = {
-	name = "Concede in the $FROMCOUNTRY_ADJ$ favour!"
-	prestige_factor = -0.1
-	FROM = { prestige_factor = -0.1 } 
-	FROM = { clr_country_flag = cw_crisis_target }
-	relation = { who = FROM value = 50 }
-	clr_global_flag = cwcrisis_initiated
-	ai_chance = { factor = 0.2 }
-		}
+	option = {
+		name = "Concede in the $FROMCOUNTRY_ADJ$ favour!"
+		prestige_factor = -0.1
+		FROM = { prestige_factor = 0.1 } 
+		FROM = { clr_country_flag = cw_crisis_target }
+		relation = { who = FROM value = 60 }
+		clr_global_flag = cwcrisis_initiated
+		ai_chance = { factor = 0.2 }
+	}
 
-option = {
-	name = "Seek superpower intervention"
+	option = {
+		name = "Seek superpower intervention"
 
-relation = { who = FROM value = -50 }
+		relation = { who = FROM value = -50 }
 	
-#If THIS is a communist bloc country
-random_country = {
-limit = { has_country_modifier = communist_bloc_leader THIS = { has_country_modifier = communist_bloc } }
-
-country_event = 1800002
-}
-
-#If THIS is a democratic bloc country
-random_country = {
-limit = { has_country_modifier = democratic_bloc_leader THIS = { has_country_modifier = democratic_bloc } }
-
-country_event = 1800002
-}
-
-	ai_chance = { factor = 0.8 }
+		#If THIS is a communist bloc country
+		random_country = {
+			limit = { 
+				has_country_modifier = communist_bloc_leader 
+				THIS = { has_country_modifier = communist_bloc } 
+			}
+			country_event = 1800002
 		}
+
+		#If THIS is a democratic bloc country
+		random_country = {
+			limit = { 
+				has_country_modifier = democratic_bloc_leader 
+				THIS = { has_country_modifier = democratic_bloc } 
+			}
+			country_event = 1800002
+		}
+
+		ai_chance = { factor = 0.8 }
+	}
 
 }
 
