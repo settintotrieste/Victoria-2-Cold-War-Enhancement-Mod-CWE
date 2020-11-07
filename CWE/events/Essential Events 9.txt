@@ -7685,3 +7685,118 @@ country_event = {
 	}
 
 }
+
+#Rapid capitulation by the AI
+country_event = {
+	id = 1610129
+	title = "$COUNTRY_ADJ$ Unconditional Surrender"
+	desc = EVTDESC1610129
+	picture = "remove_all_bourgeoisie"
+	
+	major = yes
+
+	trigger = {
+		ai = yes
+		
+		war = yes
+		
+		is_vassal = no
+		
+		#Capital is occupied by the enemy
+		capital_scope = {
+			NOT = { controlled_by = THIS } 
+			controlled_by_rebels = no
+		}
+		
+		#Situation is grim
+		OR = {
+			AND = { national_provinces_occupied = 0.50 war_policy = pacifism }
+			AND = { national_provinces_occupied = 0.75 war_policy = pro_military }
+		}
+		
+		#Not jingoism
+		NOT = { war_policy = jingoism }
+		
+		#THIS army has been defeated
+		NOT = { total_amount_of_divisions = 1 }
+		
+		#Not when the cold war is hot
+		NOT = { has_country_modifier = cold_war_hot }
+		
+		#Not already surrended
+		NOT = { has_country_flag = nation_has_capitulated }
+	}
+
+	mean_time_to_happen = {
+		months = 2
+	}
+
+	option = {
+		name = "The $COUNTRY_ADJ$ nation has been defeated"
+		
+		set_country_flag = nation_has_capitulated
+		
+		#Surrender to a country we are at war with
+		random_country = {
+			limit = { war_with = THIS }
+			country_event = 1610130
+		}
+		
+		#Nationalists are furious!
+		any_pop = { 
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = populist
+			}
+		}
+	}
+
+}
+
+#Rapid capitulation by the AI
+country_event = {
+	id = 1610130
+	title = "$FROMCOUNTRY_ADJ$ Unconditional Surrender"
+	desc = EVTDESC1610130
+	picture = "ai_quick_capitulation"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Is end of the war near?"
+		
+		FROM = {
+			any_owned = { 
+				limit = { controlled_by = FROM } 
+				change_controller = THIS
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+
+	}
+	
+	option = {
+		name = "They shall pay for the war!"
+		
+		badboy = 3
+		
+		FROM = {
+			any_owned = { 
+				limit = { controlled_by = FROM } 
+				change_controller = THIS
+				owner = { THIS = { money = 5000 } }
+				add_province_modifier = { name = war_bombed duration = 1825 }
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+
+	}
+
+}
