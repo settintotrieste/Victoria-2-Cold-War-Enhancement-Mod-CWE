@@ -4,43 +4,47 @@ country_event = {
   title = EVT_8501101_NAME
   desc = EVT_8501101_DESC
   picture = "nwo2_hungarian_revolution_1956"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
+	trigger = {
     	tag = HUN
-	year = 1956 
-	NOT = { year = 1960 }
-	government = proletarian_dictatorship
-	is_vassal = yes
-	vassal_of = RUS
+		year = 1956 
+		NOT = { year = 1960 }
+		government = proletarian_dictatorship
+		is_vassal = yes
+		vassal_of = RUS
     	war = no
-	has_global_flag = blocsenabled
-  }
+		has_global_flag = blocsenabled
+	}
 
-  mean_time_to_happen = { months = 10 }
+	mean_time_to_happen = { months = 10 }
 
-  option = {
-    name = EVT_8501101_A #War with RUS
+	option = {
+		name = EVT_8501101_A #War with RUS
 
-	government = socialist_democracy country_event = 800054
+		government = socialist_democracy 
+		country_event = 800054
 
-	RUS = { country_event = 8501104 }
+		#Soviet choice to restore order
+		RUS = { country_event = 8501104 }
 
-	set_global_flag = hungarian_revolution_1956
+		set_global_flag = hungarian_revolution_1956
 
-	any_pop = { consciousness = 5 }
-	
-define_general = { name = "Imre Nagy" personality = energetic background = no_background }
+		any_pop = { consciousness = 5 }
 
-	ai_chance = { factor = 0.9 }
-  }
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8501101_B #No war
-	any_pop = { militancy = 5.0 }
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = EVT_8501101_B #No war
+		any_pop = { 
+			militancy = 7.0 
+			ideology = { factor = 0.05 value = liberal }
+		}
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
@@ -50,28 +54,18 @@ country_event = {
   title = EVT_8501115_NAME
   desc = EVT_8501115_DESC
   picture = "nwo2_hungarian_revolution_1956_victory"
-  fire_only_once = yes
+  
+	is_triggered_only = yes
 
-  trigger = {
-    	tag = RUS
-	year = 1958 NOT = { year = 1990 }
-	HUN = { 
-		NOT = { government = proletarian_dictatorship }
-		is_vassal = no
-		war = no
+	option = {
+		name = "The Hungarian people are now free!"
+		prestige = 250
+		any_pop = { 
+			militancy = -5.0 
+			consciousness = 10 
+			ideology = { factor = 0.10 value = nationalist }
+		}
 	}
-	has_global_flag = hungarian_revolution_1956
-	has_global_flag = blocsenabled
-  }
-
-  option = {
-    name = EVT_8501115_A
-	any_pop = { militancy = 2.0 consciousness = 3 }
-	country_event = 8225001
-	diplomatic_influence = { who = HUN value = -200 }
-add_country_modifier = { name = revolution_chaos duration = 1825 }
-	prestige_factor = -0.1
-  }
 
 }
 
@@ -81,30 +75,45 @@ country_event = {
   title = EVT_8501105_NAME
   desc = EVT_8501105_DESC
   picture = "nwo2_hungarian_revolution_1956_victory"
-  fire_only_once = yes
+  
+	is_triggered_only = yes
 
-  trigger = {
-    	tag = RUS
-	year = 1958 NOT = { year = 1990 }
-	HUN = { 
+	option = {
+		name = "We shall submit to Soviet domination!"
 		government = proletarian_dictatorship
-		vassal_of = RUS
-		war = no
-	}
-	has_global_flag = hungarian_revolution_1956
-	has_global_flag = blocsenabled
-  }
-
-  option = {
-    name = EVT_8501105_A
-	any_pop = { militancy = -2.0 consciousness = -3 }
-	diplomatic_influence = { who = HUN value = 200 }
-	HUN = { 
-		government = proletarian_dictatorship 
 		ruling_party_ideology = communist
 		country_event = 800052
+		
+		#Domestic pops get angry
+		any_pop = { 
+			militancy = 10
+			consciousness = 10
+			ideology = { factor = 0.15 value = liberal }
+		}
+		
+		ai_chance = { factor = 0.9 }
 	}
-  }
+	
+	option = {
+		name = "We shall fight to be free!"
+		any_pop = { militancy = -2.0 consciousness = -3 }
+		
+		#Domestic pops become nationalist
+		any_pop = { 
+			militancy = -10
+			consciousness = -10
+			ideology = { factor = 0.15 value = nationalist }
+		}
+		
+		#War of independence
+		war = { 
+			target = RUS 
+			attacker_goal = { casus_belli = become_independent }
+			defender_goal = { } 
+		}
+
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
@@ -118,32 +127,39 @@ country_event = {
 	is_triggered_only = yes
 
 	option = {
-		name = "Restore order in Hungary"
-
-	release_vassal = HUN
-
-	diplomatic_influence = { who = HUN value = -200 }
-
-	USA = { country_event = 8501105 }
-
-	HUN = {
-	war = { 
-	target = RUS 
-	attacker_goal = { casus_belli = become_independent }
-	defender_goal = { } 
+		name = "Restore order in Hungary!"
+		
+		#Domestic pops are happy
+		any_pop = { 
+			militancy = -2.0 
+			consciousness = -3 
 		}
-	}
+
+		#US intervention?
+		USA = { country_event = 8501105 }
 
 		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
 		name = "Let them be free"
-
 		prestige_factor = -0.1
+		diplomatic_influence = { who = HUN value = -100 }
 		release_vassal = HUN
+		
+		#Domestic pops get angry
+		any_pop = { 
+			militancy = 2.0 
+			consciousness = 3 
+			ideology = { factor = 0.05 value = liberal }
+		}
+		
+		#US is happy
 		relation = { who = USA value = 100 }
-
+		
+		#Hungarian Revolution succeeds
+		HUN = { country_event = 8501102 }
+		
 		ai_chance = { factor = 0.1 }
 	}
 
@@ -162,9 +178,12 @@ country_event = {
 		name = "Issue only protests"
 
 		prestige_factor = -0.05
-		RUS = { prestige = -500 badboy = 2.5 }
+		
+		RUS = { prestige_factor = -0.025 badboy = 2.5 }
 		relation = { who = RUS value = -100 }
-		relation = { who = HUN value = 100 }
+		
+		#Hungarian Revolution fails!
+		HUN = { country_event = 8501103 }
 
 		ai_chance = { factor = 0.9 }
 	}
@@ -172,15 +191,19 @@ country_event = {
 	option = {
 		name = "Fight alongside Hungary (WW3)"
 
-	diplomatic_influence = { who = HUN value = 200 }
+		diplomatic_influence = { who = HUN value = 200 }
+		relation = { who = HUN value = 200 }
+		create_alliance = HUN
 
-	create_alliance = HUN
-
-	war = { 
-	target = RUS 
-	attacker_goal = { casus_belli = dismantle_cb }
-	defender_goal = { casus_belli = dismantle_cb }
-	call_ally = yes
+		#USSR goes to war against Hungary!
+		RUS = {
+			release_vassal = HUN
+			diplomatic_influence = { who = HUN value = -200 }
+			war = {
+				target = HUN
+				attacker_goal = { casus_belli = make_puppet }
+				defender_goal = { casus_belli = status_quo } 
+			}
 		}
 
 		ai_chance = { factor = 0.1 }
