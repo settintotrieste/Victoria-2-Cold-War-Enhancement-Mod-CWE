@@ -3342,21 +3342,50 @@ dismantle_cb = {
 	
 	can_use = {
 
-THIS = { NOT = { has_country_flag = renounced_war_rights } }
-THIS = { NOT = { has_country_flag = un_armistice } }
+		THIS = { NOT = { has_country_flag = renounced_war_rights } }
+		THIS = { NOT = { has_country_flag = un_armistice } }
 
-THIS = { OR = { 
+		THIS = { 
+			OR = { 
 
-government = theocracy
-government = absolute_monarchy
-government = populist_dictatorship
-government = nationalist_dictatorship
-government = presidential_dictatorship
-government = proletarian_dictatorship
-government = proletarian_dictatorship1
+				government = theocracy
+				government = absolute_monarchy
+				government = populist_dictatorship
+				government = nationalist_dictatorship
+				government = presidential_dictatorship
+				government = proletarian_dictatorship
+				government = proletarian_dictatorship1
 
-war_policy = jingoism war = yes has_country_flag = world_medium has_country_flag = world_high has_country_flag = cold_war_high has_country_modifier = cold_war_hot } }
-
+				war_policy = jingoism 
+				war = yes 
+				has_country_flag = world_medium 
+				has_country_flag = world_high 
+				has_country_flag = cold_war_high 
+				has_country_modifier = cold_war_hot 
+			} 
+		}
+		
+		#Stop AI trigger happiness
+		OR = {
+			THIS = { war = yes }
+			THIS = { ai = no }
+			
+			#AI only start dismantle wars if it is between superpowers or cold war is over
+			AND = {
+				THIS = { 
+					OR = {
+						NOT = { has_global_flag = blocsenabled }
+						has_country_modifier = un_king1
+						has_country_modifier = un_king2
+					} 
+				}
+				OR = { 
+					NOT = { has_global_flag = blocsenabled }
+					has_country_modifier = un_king1
+					has_country_modifier = un_king2
+				} 
+			}
+		}
 
 		OR = {
 			is_greater_power = yes
@@ -3364,6 +3393,7 @@ war_policy = jingoism war = yes has_country_flag = world_medium has_country_flag
 			colonial_nation = yes
 			any_owned_province = { is_overseas = yes }
 		}	
+		
 		is_disarmed = no
 		is_vassal = no
 		NOT = { is_our_vassal = THIS }
@@ -3384,6 +3414,7 @@ war_policy = jingoism war = yes has_country_flag = world_medium has_country_flag
 			NOT = { has_country_flag = in_great_war }
 			NOT = { has_country_modifier = no_more_war }
 		}
+		
 		NOT = { has_country_modifier = neutrality }
 		THIS = {
 			NOT = { has_country_modifier = neutrality }
