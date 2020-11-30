@@ -1,328 +1,128 @@
-# First move goes to the owner of Wien
+# RUS choice over what to do with Austria
 country_event = {
 	id = 8203000
-	title = "EVT_8203000_NAME"
-	desc = "EVT_8203000_DESC"
-	picture = "nwo2_soviet_occupation_of_austria"
+	title = "The Second Control Agreement"
+	desc = EVTDESC8203000
+	picture = "nwo2_occupation_of_austria"
 	fire_only_once = yes
 
 	trigger = {
-		year = 1944 NOT = { year = 1963 }
-		NOT = { tag = AUS }
-		NOT = { primary_culture = german } # In case of SGF
-		NOT = { primary_culture = austrian_german } # AUS or SGF
-		owns = 619 # Wien, RUS
+		tag = RUS
+		year = 1946
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		has_global_flag = blocsenabled
+		
+		is_vassal = no
+		war = no
+		
+		is_possible_vassal = AUS
 	}
 
-	mean_time_to_happen = { months = 3 }
+	mean_time_to_happen = { months = 5 }
 
-	immediate = {
-		inherit = AUS
+	option = {
+		name = "Set up a Communist regime in practice"
+		prestige = 50
+		
+		relation = { who = USA value = -50 }
+		
+		#Release East Austria
+		release_vassal = AUS
+		AUS = {
+			government = proletarian_dictatorship1
+			country_event = 800052
+			ruling_party_ideology = communist
+		}
+		
+		relation = { who = AUS value = 200 }
+		diplomatic_influence = { who = AUS value = 200 }
+		
+		ai_chance = { factor = 0.7 }
+	}
+	
+	option = {
+		name = "Cede Austria to the West"
+		prestige_factor = -0.05
+		
+		relation = { who = USA value = 100 }
+		
+		#Release an independent democratic Austria
+		release = AUS
+		AUS = {
+			government = government
+			country_event = 800054
+			ruling_party_ideology = conservative
+		}
+		
+		#Clean up any occupied provincces
+		any_country = {
+			limit = {
+				any_owned_province = { is_core = AUS }
+				NOT = { tag = AUS }
+				NOT = { tag = ROA }
+			}
+			country_event = 1400050
+		}
+		
+		relation = { who = AUS value = 200 }
+		diplomatic_influence = { who = AUS value = 100 }
+		
+		ai_chance = { factor = 0.2 }
 	}
 
 	option = {
-		name = "EVT_8203000_A"
-		country_event = 8203002
-		#any_pop = { consciousness = 2 }
-		ai_chance = { factor = 0.8 }
-	}
-
-	option = {
-		name = "EVT_8203000_B"
-		set_country_flag = keep_austria
+		name = "Proclaim that Austria is Soviet territory now"
+		badboy = 10
+		
 		any_pop = {
 			limit = { culture = german }
 			militancy = 4
 			consciousness = 2
 		}
-		badboy = 10
 		any_owned = { 
 			limit = { OR = { is_core = ROA is_core = AUS } } 
 			add_province_modifier = { name = occupied_province duration = -1 } 
 		}
-		ai_chance = {
-			factor = 0.2
-			modifier = {
-				factor = 0
-				badboy = 0.4
-			}
-		}
+		ai_chance = { factor = 0.1 }
 	}
 }
 
-# If Soviets occupy Austria, Allies release Renner, but non-neutral
+# USA choice over what to do with Austria
 country_event = {
 	id = 8203001
-	title = "EVT_8203000_NAME"
-	desc = "EVT_8203001_DESC"
-	picture = "nwo2_karl_renner"
+	title = "The Second Control Agreement"
+	desc = EVTDESC8203000
+	picture = "nwo2_occupation_of_austria"
+	fire_only_once = yes
 
 	trigger = {
-		any_owned_province = { is_core = AUS }
-		NOT = { primary_culture = german }
-		NOT = { primary_culture = austrian_german } # AUS or SGF
-		NOT = { has_country_flag = keep_austria }
-		619 = { owner = { has_country_flag = keep_austria } } # Wien
-	}
-
-	mean_time_to_happen = {
-		months = 6
-		modifier = {
-			factor = 0.75
-			has_country_modifier = democratic_bloc_leader # USA
-		}
-		modifier = {
-			factor = 0.5
-			ai = no
-		}
-	}
-
-	option = {
-		name = "EVT_8203001_A"
-		release = AUS
-		random_owned = { limit = { owner = { has_country_modifier = democratic_bloc_leader } } owner = { diplomatic_influence = { who = AUS value = 200 } } } # USA
-		ai_chance = { factor = 0.8 }
-	}
-
-	option = {
-		name = "keep_austria"
-		any_pop = { limit = { culture = german } militancy = 4 consciousness = 2 }
-		set_country_flag = keep_austria
-		badboy = 10
-		any_owned = { limit = { OR = { is_core = ROA is_core = AUS } } add_province_modifier = { name = occupied_province duration = -1 } }
-		ai_chance = {
-			factor = 0.20
-			modifier = {
-				factor = 0
-				badboy = 0.4
-			}
-		}
-	}
-}
-
-# Else if independence and not occupation was chosen, Soviets may choose its form
-country_event = {
-	id = 8203002
-	title = "EVT_8203002_NAME" # Renner's cabinet
-	desc = "EVT_8203002_DESC"
-	picture = "nwo2_karl_renner"
-	is_triggered_only = yes # RUS
-
-	option = {
-		name = "EVT_8203002_A"
-		prestige = 10
-		release = AUS
-		random_country = { limit = { has_country_modifier = democratic_bloc_leader } diplomatic_influence = { who = AUS value = 50 } } # USA
-		diplomatic_influence = { who = AUS value = 100 }
-		random_country = {
-			limit = {
-				any_owned_province = { is_core = AUS }
-				NOT = { tag = THIS }
-				NOT = { tag = AUS }
-				NOT = { has_country_flag = keep_austria }
-			}
-			country_event = { id = 8203003 days = 90 }
-		}
-		ai_chance = {
-			factor = 0.65
-			modifier = {
-				factor = 0.5
-				OR = { owns = 613 owns = 614 owns = 615 } # Tricky player tried releasing Austria as vassal
-			}
-			modifier = {
-				factor = 0
-				NOT = { AUS = { any_core = { NOT = { owner = { tag = THIS } } } } } # Owns all of Austria
-			}
-		}
-	}
-
-	option = {
-		name = "EVT_8203002_B"
-		release_vassal = AUS
-		AUS = {
-			country_event = { id = 8203004 days = 180 }
-			any_pop = {
-				scaled_consciousness = {
-					value = 3
-					ideology = liberal
-				}
-				scaled_consciousness = {
-					value = 4
-					ideology = conservative
-				}
-			}
-		}
-		ai_chance = {
-			factor = 0.35
-			modifier = {
-				factor = 2
-				619 = { pop_majority_ideology = communist } # Wien
-			}
-		}
-	}
-}
-
-###########
-# Democracy
-###########
-
-# Allies choose whether to recognize Renner
-country_event = {
-	id = 8203003
-	title = "EVT_8203003_NAME"
-	desc = "EVT_8203003_DESC"
-	picture = "nwo2_karl_renner"
-	is_triggered_only = yes
-
-	option = {
-		name = "EVT_8203003_A"
-		prestige = 10
-		release = AUS
-		diplomatic_influence = { who = AUS value = 100 }
-		random_country = {
-			limit = {
-				any_owned_province = { is_core = AUS }
-				NOT = { tag = THIS }
-				NOT = { tag = AUS }
-				NOT = { has_country_flag = keep_austria }
-			}
-			country_event = { id = 8203003 days = 1 }
-		}
-		AUS = { country_event = { id = 8203010 days = 30 } }
-		ai_chance = { factor = 0.6 }
-	}
-
-	option = {
-		name = "EVT_8203003_B"
-		AUS = { country_event = 8203004 }
-		any_country = { # If allies already gave land to Renner, lose relations
-			limit = {
-				NOT = { any_owned_province = { is_core = AUS } }
-				NOT = { has_country_flag = keep_austria }
-				OR = { tag = FRA tag = ENG tag = USA }
-			}
-			relation = { who = THIS value = -75 }
-		}
-		country_event = 8203005
-		ai_chance = { factor = 0.3 }
-	}
-
-	option = {
-		name = "keep_austria"
-		any_pop = { limit = { culture = german } militancy = 4 consciousness = 2 }
-		set_country_flag = keep_austria
-		badboy = 15
-		random_country = {
-			limit = {
-				any_owned_province = { is_core = AUS }
-				NOT = { tag = THIS }
-				NOT = { tag = AUS }
-				NOT = { has_country_flag = keep_austria }
-			}
-			country_event = { id = 8203003 days = 1 }
-		}
-		ai_chance = {
-			factor = 0.10
-			modifier = {
-				factor = 0
-				badboy = 0.4
-			}
-		}
-	}
-}
-
-###########
-# Communism
-###########
-
-#Event to partition Austria
-country_event = {
-	id = 8203005
-	title = "EVT_8203005_NAME"
-	desc = "EVT_8203005_DESC"
-	picture = "nwo2_allied_occupation_of_austria"
-
-	trigger = {
-		any_owned_province = { is_core = AUS }
-		NOT = { primary_culture = german } # AUS or SGF
-		NOT = { primary_culture = austrian_german } # AUS or SGF
-		NOT = { has_country_flag = keep_austria }
-
-		NOT = { has_country_flag = communist_austria_flag }
-
-		AUS = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
-	}
-
-	mean_time_to_happen = {
-		months = 6
-		modifier = {
-			factor = 0.75
-			has_country_modifier = democratic_bloc_leader
-		}
-		modifier = {
-			factor = 0.5
-			ai = no
-		}
-		modifier = {
-			factor = 0.1
-			exists = ROA
-		}
-	}
-
-	option = {
-		name = "EVT_8203005_A" # Recognize communist Austria
-		random_owned = {
-			limit = { owner = { NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } } }
-			owner = { prestige = -20 }
-		}
-
-		any_owned = { 
-			limit = { OR = { is_core = AUS is_core = ROA } } 
-			secede_province = AUS 
-		}
-
-		set_global_flag = communist_austria
-
-		set_country_flag = communist_austria_flag
-
-		ai_chance = {
-			factor = 0.20
-			modifier = { # Only take this option if is communist or another ally already has (player-controlled)
-				factor = 0
-				NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
-				NOT = { has_global_flag = communist_austria }
-			}
-		}
-	}
-
-	option = {
-		name = "EVT_8203005_B" # Hand Austria over to our German administration
-		AUS = {
-			all_core = {
-				limit = { is_core = AUS }
-				add_core = GER
-				any_pop = {
-					limit = { culture = german }
-					consciousness = 3
-				}
-			}
-		}
+		tag = USA
+		year = 1946
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
 		
-		random_country = { limit = { tag = SGF exists = yes } THIS = { any_owned = { limit = { is_core = AUS } add_core = SGF secede_province = SGF } } }
-
-		set_country_flag = communist_austria_flag
-
-		ai_chance = {
-			factor = 0.30
-				modifier = { # Take this option if ally took this option
-				factor = 5
-				GER = { any_core = { is_core = AUS } }
-			}
-		}
+		has_global_flag = blocsenabled
+		
+		is_vassal = no
+		war = no
+		
+		#Rival Soviet government in Austria
+		AUS = { exists = yes OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
+		
+		#Owns Austrian provinces
+		any_owned_province = { is_core = AUS }
 	}
 
+	mean_time_to_happen = { months = 1 }
+
 	option = {
-		name = "EVT_8203005_C" # The Iron Curtain goes no further.
+		name = "Begin Austria's path to democracy"
+		prestige = 50
+		
+		relation = { who = RUS value = -50 }
+		
 		AUS = {
 			all_core = {
 				limit = { 
@@ -332,179 +132,434 @@ country_event = {
 				add_core = ROA
 			}
 		}
-		release = ROA
-		random_country = {
+		
+		#Release South Austria
+		any_owned = { 
+			limit = { is_core = ROA } 
+			secede_province = ROA 
+		}
+		create_vassal = ROA
+		
+		ROA = {
+			capital = 613
+			government = democracy
+			country_event = 800054
+			ruling_party_ideology = conservative
+		}
+		
+		relation = { who = ROA value = 200 }
+		diplomatic_influence = { who = ROA value = 200 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Cede Austria to the Soviets"
+		prestige_factor = -0.05
+		
+		relation = { who = RUS value = 100 }
+		
+		#Transfer provinces to Austria
+		any_owned = {
+			limit = { is_core = AUS }
+			secede_province = AUS
+		}
+		
+		#Clean up any occupied provincces
+		any_country = {
 			limit = {
-				tag = SGF
-				exists = yes
+				any_owned_province = { is_core = AUS }
+				NOT = { tag = AUS }
+				NOT = { tag = ROA }
 			}
-			inherit = ROA
-			ROA = {
-				all_core = {
-					remove_core = ROA
-					add_core = SGF
-					add_core = AUS
-				}
-			}
+			country_event = 1400050
 		}
-
-		set_country_flag = communist_austria_flag
-
-		random_country = { 
-			limit = { has_country_modifier = democratic_bloc_leader } 
-			diplomatic_influence = { who = ROA value = 200 }
-		}
-
-		ai_chance = {
-			factor = 0.40
-			modifier = { # Take this option if ally took this option
-				factor = 2
-				OR = {
-					exists = ROA
-					exists = SGF
-				}
-			}
-		}
+		
+		ai_chance = { factor = 0.1 }
 	}
 
 	option = {
-		name = "keep_austria"
-		any_pop = { limit = { culture = german } militancy = 4 consciousness = 2 }
-		set_country_flag = keep_austria
-		any_owned = { limit = { OR = { is_core = ROA is_core = AUS } } add_province_modifier = { name = occupied_province duration = -1 } }
+		name = "We do not trust the Austrians"
 		badboy = 10
-		ai_chance = {
-			factor = 0.10
-			modifier = {
-				factor = 0
-				badboy = 0.4
-			}
+		
+		any_pop = {
+			limit = { culture = german }
+			militancy = 4
+			consciousness = 2
 		}
+		any_owned = { 
+			limit = { OR = { is_core = ROA is_core = AUS } } 
+			add_province_modifier = { name = occupied_province duration = -1 } 
+		}
+		ai_chance = { factor = 0 }
 	}
 }
 
+# FRA, ENG choice over what to do with Austria
 country_event = {
-	id = 8203004
-	title = "EVT_8203004_NAME" # Lack of recognition
-	desc = "EVT_8203004_DESC"
-	picture = "nwo2_soviet_occupation_of_austria"
-	is_triggered_only = yes # AUS
+	id = 8203002
+	title = "The Second Control Agreement"
+	desc = EVTDESC8203000
+	picture = "nwo2_occupation_of_austria"
+	
+	#fire_only_once = yes
+
+	trigger = {
+		OR = { tag = ENG tag = FRA }
+		year = 1946
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		NOT = { has_country_flag = AUS_SCA_flag }
+		
+		is_vassal = no
+		war = no
+		
+		#Rival governments in Austria
+		AUS = { exists = yes OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
+		ROA = { exists = yes OR = { government = democracy government = democracy1 } }
+		
+		#Owns Austrian provinces
+		any_owned_province = { is_core = AUS }
+	}
+	
+	immediate = {
+		set_country_flag = AUS_SCA_flag
+	}
+
+	mean_time_to_happen = { months = 1 }
 
 	option = {
-		name = "EVT_8203004_A"
-		country_event = 120001
-		any_pop = {
-			limit = {
-				NOT = { type = aristocrats }
-				NOT = { type = capitalists }
-			}
-			ideology = {
-				factor = 0.5
-				value = communist
-			}
+		name = "Defer to the US administration in Austria"
+		prestige = 50
+		
+		relation = { who = USA value = 50 }
+		relation = { who = RUS value = -50 }
+		
+		#Transfer territory to West Austria
+		any_owned = {
+			limit = { is_core = ROA }
+			secede_province = ROA
 		}
-		clr_country_flag = neutrality
-		clr_country_flag = renounced_war_rights
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Cede Austria to the Soviets"
+		prestige_factor = -0.05
+		
+		relation = { who = RUS value = 100 }
+		
+		#Transfer provinces to Austria
+		any_owned = {
+			limit = { is_core = AUS }
+			secede_province = AUS
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+	option = {
+		name = "We want our own administration"
+		badboy = 10
+		
+		any_pop = {
+			limit = { culture = german }
+			militancy = 4
+			consciousness = 2
+		}
+		any_owned = { 
+			limit = { OR = { is_core = ROA is_core = AUS } } 
+			add_province_modifier = { name = occupied_province duration = -1 } 
+		}
+		ai_chance = { factor = 0 }
 	}
 }
 
-# Choice to unify Bavaria and Austria to oppose Soviet influence
+# The Question of South Tyrol
 country_event = {
-	id = 8203006
-	title = "The South German Federation"
-	desc = "EVT_8203006_DESC"
-	picture = "austrian_lands"
+	id = 8203003
+	title = "The Question of South Tyrol"
+	desc = EVTDESC8203003
+	picture = "nwo2_austrian_tyrol"
 	
 	fire_only_once = yes
 
 	trigger = {
-		is_possible_vassal = BAV # USA
-		ROA = {
-			exists = yes
-			OR = { # American Austria; USA supported ROA or tried to release Austria manually (mostly)
-				# Will block against, for example, all the allies recognizing neutral Renner Austria but one
-				owns = 613
-				owns = 622
-				AND = {
-					AUS = { owns = 613 }
-					AUS = { owns = 622 }
-					NOT = { has_global_flag = communist_austria }
-				}
-			}
+		tag = ITA
+		year = 1946
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		
+		#Austria exists
+		OR = { 
+			exists = AUS 
+			exists = ROA 
 		}
-		NOT = { primary_culture = german }
+		
+		is_possible_vassal = SUT
+		owns = 735
 	}
 
-	mean_time_to_happen = {
-		months = 48
-		modifier = {
-			factor = 0.5
-			ROA = { ruling_party_ideology = socialist }
-		}
-		modifier = {
-			factor = 0.01
-			ROA = {
-				OR = {
-				ruling_party_ideology = communist
-				ruling_party_ideology = communist_social
-				}
-			}
-		}
-		# TODO: lower if Soviet meddling is found
-	}
+	mean_time_to_happen = { months = 4 }
 
 	option = {
-		name = "EVT_8203006_A"
-		any_country = {
-			limit = {
-				OR = { tag = AUS tag = ROA }
-			}
-			scaled_militancy = {
-				factor = 5
-				ideology = nationalist
-			}
+		name = "Sign the Gruber-De Gasperi Agreement"
+		prestige = 50
+		
+		relation = { who = USA value = 50 }
+		relation = { who = AUS value = -50 }
+		relation = { who = ROA value = -50 }
+		
+		release_vassal = SUT
+		SUT = { 
+			government = sar_government
+			country_event = 800054
+			ruling_party_ideology = conservative
 		}
+		735 = { add_core = AUS }
+		
+		sphere_owner = { diplomatic_influence = { who = SUT value = 200 } }
+		
+		ai_chance = { factor = 0.7 }
+	}
+	
+	option = {
+		name = "We don't want to give any autonomy"
+		badboy = 5
+		
+		relation = { who = USA value = -50 }
+		relation = { who = AUS value = -100 }
+		relation = { who = ROA value = -100 }
+		
 		any_pop = {
-			limit = {
-				has_pop_culture = german
-				has_pop_religion = catholic
-			}
-			consciousness = -4
-		}
-		release = BAV
-		BAV = {
-			change_tag = SGF
-			inherit = ROA
-		}
-		ROA = {
-			all_core = {
-				remove_core = ROA
-				add_core = SGF
-				add_core = AUS
+			limit = { culture = german }
+			militancy = 10
+			consciousness = 10
+			ideology = {
+				factor = 0.50
+				value = nationalist
 			}
 		}
-		random = {
-			chance = 50
-			571 = { # Kaiserslautern
-				add_core = SGF
-				owner = { relation = { who = THIS value = -20 } } # FRA
+		
+		SUT = { all_core = { add_province_modifier = { name = nationalist_agitation duration = 3650 } } }
+		735 = { add_core = AUS }
+
+		ai_chance = { factor = 0.2 }
+	}
+	
+	option = {
+		name = "Cede South Tyrol to Austria"
+		prestige_factor = -0.05
+		
+		relation = { who = RUS value = 100 }
+		relation = { who = AUS value = 100 }
+		relation = { who = ROA value = 100 }
+		
+		#If ROA exists
+		random_owned = {
+			limit = { owner = { exists = ROA } }
+			owner = {
+				any_owned = {
+					limit = { province_id = 735 }
+					add_core = AUS
+					secede_province = ROA
+				}
 			}
 		}
-		ai_chance = {
-			factor = 0.75
+		
+		#If ROA does not exists
+		random_owned = {
+			limit = { owner = { ROA = { exists = no } } }
+			owner = {
+				any_owned = {
+					limit = { province_id = 735 }
+					add_core = AUS
+					secede_province = AUS
+				}
+			}
 		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+# Unite Austria and Germany
+country_event = {
+	id = 8203004
+	title = "The Future of Austria"
+	desc = EVTDESC8203004
+	picture = "nwo2_united_austria"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 1946
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		
+		has_global_flag = blocsenabled
+		
+		#Germany exists
+		is_our_vassal = GER
+		GER = { is_possible_vassal = BAV }
+		
+		#West Austria exists
+		is_our_vassal = ROA
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "Germany and Austria shall remain separate"
+		prestige = 50
+		relation = { who = RUS value = 50 }
+		relation = { who = ENG value = 50 }
+		relation = { who = FRA value = 50 }
+		relation = { who = ITA value = 50 }
+		
+		ai_chance = { factor = 0.7 }
+	}
+	
+	option = {
+		name = "Form a South German Federation"
+		relation = { who = RUS value = -50 }
+		relation = { who = ENG value = -50 }
+		relation = { who = FRA value = -50 }
+		relation = { who = ITA value = -50 }
+
+		#Release SGF
+		GER = { release = BAV }
+		BAV = { inherit = ROA }
+		BAV = { change_tag = SGF }
+		create_vassal = SGF
+		
+		SGF = {
+			government = democracy
+			country_event = 800054
+			ruling_party_ideology = conservative
+		}
+		
+		relation = { who = SGF value = 200 }
+		diplomatic_influence = { who = SGF value = 200 }
+		
+		#South Germany gets claims over Austria
+		AUS = { 
+			all_core = { 
+				add_core = SGF 
+				remove_core = ROA 
+			} 
+		}
+		
+		ai_chance = { factor = 0.2 }
+	}
+	
+	option = {
+		name = "Do what Hitler did in 1938"
+		relation = { who = RUS value = -200 }
+		relation = { who = ENG value = -100 }
+		relation = { who = FRA value = -200 }
+		relation = { who = ITA value = -200 }
+		
+		#Germany inherits Austria
+		GER = { inherit = ROA }
+		
+		#Germany gets claims over Austria
+		AUS = { 
+			all_core = { 
+				add_core = GER 
+				remove_core = ROA 
+			} 
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+### The Austrian State Treaty ###
+#USA's choice
+country_event = {
+	id = 8203014
+	title = "The Austrian State Treaty?"
+	desc = "EVT_8203014_DESC"
+	picture = "nwo2_austrian_state_treaty"
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 1955
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		
+		RUS = { 
+			is_vassal = no 
+			war = no
+			
+			is_our_vassal = AUS 
+		}
+		is_our_vassal = ROA
+	}
+
+	mean_time_to_happen = { months = 5 }
+
+	option = {
+		name = "Propose a unified and independent Austria (80% chance)"
+		badboy = -5
+		
+		#Choice for Russia
+		RUS = { country_event = 8203015 }
+		
+		ai_chance = { factor = 0.75 }
 	}
 
 	option = {
-		name = "EVT_8203006_B"
-		ai_chance = {
-			factor = 0.25
-		}
+		name = "It is in our interests to keep Austria divided"
+		prestige_factor = -0.02
+		ai_chance = { factor = 0.2 }
 	}
 }
 
-###########
+#Russia's choice
+country_event = {
+	id = 8203015
+	title = "The Austrian State Treaty?"
+	desc = "EVT_8203014_DESC"
+	picture = "nwo2_austrian_state_treaty"
 
+	is_triggered_only = yes
+
+	option = {
+		name = "Accept the American proposal"
+		
+		badboy = -5
+		USA = { prestige = 250 }
+
+		#The State Treaty
+		ROA = { country_event = 8203010 }
+
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "It is in our interests to keep Austria divided"
+		relation = { who = USA value = -50 }
+		ai_chance = { factor = 0.2 }
+	}
+}
+
+#State Treaty - Austria - ROA
 country_event = {
 	id = 8203010
 	title = "$YEAR$ Austrian State Treaty"
@@ -514,151 +569,38 @@ country_event = {
 
 	option = {
 		name = "EVT_8203010_A"
+		
+		#Make Austria independent
+		USA = { release_vassal = ROA }
+		
+		#Change ROA to AUS
+		inherit = AUS
+		change_tag = AUS
+		all_core = { remove_core = ROA }
+		
+		#Set AUS
+		capital = 619 # Wien
 		primary_culture = austrian_german
 		set_country_flag = austrianisation_germanisation
+		any_pop = { ideology = { value = conservative factor = 0.25 } }
+		
+		#Victors of WW2
 		RUS = { military_access = THIS }
 		ENG = { military_access = THIS }
 		USA = { military_access = THIS }
 		FRA = { military_access = THIS }
+		
+		relation = { who = USA value = 50 }
+		relation = { who = RUS value = 50 }
+		relation = { who = ENG value = 50 }
+		relation = { who = FRA value = 50 }
+		
+		#Neutrality
 		set_country_flag = neutrality
 		set_country_flag = renounced_war_rights
 		neutrality = yes
-	}
-}
-country_event = {
-	id = 8203011
-	title = "EVT_8203011_NAME"
-	desc = "EVT_8203011_DESC"
-	picture = "nwo2_usia"
-	fire_only_once = yes
-
-	trigger = {
-		tag = RUS
-		year = 1946 NOT = { year = 1963 }
-		AUS = { has_country_flag = neutrality }
-	}
-
-	mean_time_to_happen = { months = 1 }
-
-	option = {
-		name = "EVT_8203011_A"
-		any_pop = { consciousness = 2 }
-		badboy = 1
-		relation = { who = AUS value = -100 }
-		treasury = 10000 # TODO balance the money to make these choices desirable
-		AUS = { country_event = 8203012 }
-		ai_chance = {
-			factor = 0.30
-			modifier = {
-				factor = 0
-				badboy = 0.96
-			}
-		}
-	}
-
-	option = {
-		name = "EVT_8203011_B"
-		any_pop = { militancy = 1 }
-		badboy = 2
-		relation = { who = AUS value = -250 }
-		treasury = 25000
-		AUS = { country_event = 8203012 }
-		ai_chance = {
-			factor = 0.35
-			modifier = {
-				factor = 0
-				badboy = 0.92
-			}
-		}
-	}
-
-	option = {
-		name = "EVT_8203011_C"
-		badboy = -1
-		relation = { who = AUS value = 100 }
-		ai_chance = {
-			factor = 0.35
-			modifier = {
-				factor = 0.1
-				NOT = { money = 1000 }
-			}
-		}
-	}
-}
-country_event = {
-	id = 8203012
-	title = "EVT_8203012_NAME"
-	desc = "EVT_8203012_DESC"
-	picture = "nwo2_usia"
-	is_triggered_only = yes
-
-	option = {
-		name = "EVT_8203012_A"
-		any_pop = { militancy = 1.0 }
-		add_country_modifier = { name = great_depression duration = 365 }
-	}
-}
-country_event = {
-	id = 8203014
-	title = "EVT_8203014_NAME"
-	desc = "EVT_8203014_DESC"
-	picture = "nwo2_austrian_state_treaty"
-	fire_only_once = yes
-
-	trigger = {
-		year = 1954 NOT = { year = 1963 } # TODO: more complex starting, happen after Stalin's death
-		OR = {
-			AND = {
-				tag = RUS
-				OR = {
-					any_owned_province = { is_core = AUS }
-					is_our_vassal = AUS
-					AND = {
-						exists = ROA
-						OR = {
-							is_sphere_leader_of = AUS
-							is_our_vassal = AUS
-						}
-					}
-				}
-			}
-			AND = {
-				tag = AUS
-				exists = ROA
-				OR = {
-					NOT = { has_global_flag = blocsenabled }
-					NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
-				}
-			}
-		}
-	}
-
-	mean_time_to_happen = { months = 1 }
-
-	option = {
-		name = "EVT_8203014_A"
-		badboy = -10
-		relation = { who = AUS value = 100 }
-		relation = { who = USA value = 50 }
-		# TODO check for an existing ROA or AUS and give them the choice to decline forced neutrality
-		random_country = {
-			limit = {
-				exists = yes
-				tag = ROA
-			}
-			inherit = AUS
-			change_tag = AUS
-			all_core = { remove_core = ROA }
-		}
-		release = AUS
-		AUS = {
-			capital = 619 # Wien
-			set_country_flag = neutrality
-			set_country_flag = renounced_war_rights
-			neutrality = yes
-any_pop = { ideology = { value = communist factor = -0.75 } }
-any_pop = { ideology = { value = socialist factor = -0.5 } }
-		}
+		
+		#Clean up any occupied provincces
 		any_country = {
 			limit = {
 				any_owned_province = { is_core = AUS }
@@ -667,49 +609,10 @@ any_pop = { ideology = { value = socialist factor = -0.5 } }
 			}
 			country_event = 1400050
 		}
-		ai_chance = { factor = 0.75 }
-	}
-
-	option = {
-		name = "EVT_8203014_B"
-		any_pop = { militancy = 0.5 consciousness = 1 }
-		badboy = 10
-		ai_chance = {
-			factor = 0.25
-			modifier = {
-				factor = 0
-				primary_culture = german
-			}
-		}
 	}
 }
-# country_event = {
-	# id = 8203015
-	# title = "EVT_8203015_NAME"
-	# desc = "EVT_8203014_DESC"
-	# picture = "nwo2_austrian_state_treaty"
-	# is_triggered_only = yes # AUS
 
-	# option = {
-		# name = "EVT_8203015_A"
-		# any_pop = { militancy = -0.1 consciousness = 1 }
-		# country_event = 8203016
-	# }
-# }
-# country_event = {
-	# id = 8203016
-	# title = "EVT_8203016_NAME"
-	# desc = "EVT_8203016_DESC"
-	# picture = "nwo2_austrian_state_treaty"
-	# is_triggered_only = yes
-
-	# option = {
-		# name = "EVT_8203016_A"
-		# any_pop = { militancy = -2.0 consciousness = -2 }
-		# overlord = { release_vassal = THIS }
-		# neutrality = yes
-	# }
-# }
+#Economic Boom for Austria
 country_event = {
 	id = 8203030
 	title = "EVT_8203030_NAME"
@@ -721,8 +624,7 @@ country_event = {
 		OR = { tag = AUS tag = ROA tag = SGF }
 		year = 1954 NOT = { year = 1963 }
 		is_vassal = no
-NOT = { OR = { government = proletarian_dictatorship 
-		government = proletarian_dictatorship1 } }
+		OR = { government = democracy government = democracy1 }
 	}
 
 	mean_time_to_happen = {
@@ -735,6 +637,8 @@ NOT = { OR = { government = proletarian_dictatorship
 
 	option = {
 		name = "EVT_8203030_A"
+		prestige = 50
+		money = 50000
 		add_country_modifier = { name = economic_boom duration = 3650 }
 	}
 }
@@ -750,29 +654,20 @@ country_event = {
 	option = {
 		name = "We shall return the lands!"
 		prestige = 10
+		
 		any_owned = { limit = { is_core = AUS } remove_core = THIS }
 		any_owned = { limit = { is_core = AUS } secede_province = AUS }
 		AUS = { capital = 619 } # Wien
-		random_owned = {
-			limit = { owner = { tag = SGF } }
-			owner = { change_tag = BAV }
-		}
+		
 		ai_chance = {
-			factor = 0.90
-			modifier = {
-				factor = 0.03 # 3:1 chance
-				has_country_flag = keep_austria # Chose to occupy
-			}
-			modifier = {
-				factor = 0.01 # 1:1 chance
-				tag = SGF
-			}
+			factor = 0.9
 		}
 	}
 	option = {
 		name = "We will not return the lands!"
 		relation = { who = FROM value = -100 }
 		prestige = -10
+		badboy = 10
 		ai_chance = { factor = 0.1 }
 	}
 }
