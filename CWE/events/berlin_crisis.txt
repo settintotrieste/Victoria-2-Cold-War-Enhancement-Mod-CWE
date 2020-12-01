@@ -1,210 +1,147 @@
+#The Berlin Crisis of 1961
+country_event = {
+  id = 8500700
+  title = "The Berlin Crisis of $YEAR$"
+  desc = EVTDESC8500700
+  picture = "nwo2_1961_berlin_crisis"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		year = 1961
+		NOT = { year = 1990 }
+		
+		war = no
+		
+		has_country_flag = nikita_khrushchev
+		
+		is_our_vassal = DDR
+		GER = { is_vassal = no }
+		
+		#Cold War
+		has_global_flag = blocsenabled
+		
+		#Divided Berlin
+		owns = 551  
+		GER = { owns = 549 }
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "Demand that the West leave Berlin"
+		badboy = 5 
+	
+		set_global_flag = 1961_berlin_crisis_flag
+		
+		relation = { who = DDR value = 50 }
+		relation = { who = GER value = -50 }
+	
+		USA = { country_event = 8500701 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Let's not rock the boat"
+		prestige_factor = -0.01
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+#Berlin Wall - USA
 country_event = {
   id = 8500701
-  title = EVT_8500701_NAME
-  desc = EVT_8500701_DESC
-  picture = "nwo2_khrushchev_ulbricht"
-  fire_only_once = yes
+  title = "The Berlin Crisis of $YEAR$"
+  desc = EVTDESC8500700
+  picture = "nwo2_1961_berlin_crisis"
+  
+	is_triggered_only = yes
 
-  trigger = {
-    year = 1963
-	tag = RUS
-    exists = GER
-    exists = DDR
-    has_global_flag = divided_berlin
-    NOT = { owns = 549 } # Berlin
-    NOT = { DDR = { owns = 549 } } # Berlin
-	NOT = { has_country_modifier = open_borders }
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8500701_A
-	badboy = 5 
-	USA = { country_event = 8500702 }
-	ai_chance = { factor = 0.9 }
-  }
-
-  option = {
-    name = EVT_8500701_B
-	random_state = { any_pop = { dominant_issue = { value = jingoism factor = 0.55 } } }
-	relation = { who = DDR value = -50 } 
-	any_pop = { consciousness = 2  }
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Reject the ultimatum to leave Berlin (10% chance of war)"
+		relation = { who = RUS value = -100 }
+		
+		#USSR choice to build wall or wage war
+		RUS = { country_event = 8500703 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Accept the Soviet demands (War if Germany refuses)"
+		relation = { who = RUS value = 50 }
+		
+		#German choice to hand over Berlin
+		GER = { country_event = 8500702 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
 }
+
+#Berlin Wall - GER
 country_event = {
   id = 8500702
-  title = EVT_8500702_NAME
-  desc = EVT_8500702_DESC
-  picture = "nwo2_khrushchev_ulbricht"
-  is_triggered_only = yes # USA
+  title = "The Berlin Crisis of $YEAR$"
+  desc = EVTDESC8500700
+  picture = "nwo2_1961_berlin_crisis"
   
-  option = {
-    name = EVT_8500702_A
-	any_pop = { consciousness = -1 }
-	relation = { who = DDR value = -25 } 
-	relation = { who = GER value = 75 } 
-	RUS = { country_event = { id = 8500703 days = 30 } }
-	ai_chance = { factor = 0.9 }
-  }
+	is_triggered_only = yes
 
-  option = {
-    name = EVT_8500702_B
-	random_state = { any_pop = { dominant_issue = { value = jingoism factor = 0.55 } } }
-	relation = { who = GER value = -150 } 
-	relation = { who = DDR value = 150 } 
-	any_pop = { militancy = 1.0 consciousness = 1 } 
-	clr_global_flag = divided_berlin 
-	RUS  = { country_event = 8225000 } 
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Hand over Berlin to East Germany"
+		prestige_factor = -0.2
+		relation = { who = RUS value = 100 }
+		relation = { who = DDR value = 100 }
+		549 = { secede_province = DDR }
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "We will fight to keep Berlin"
+		549 = { secede_province = DDR }
+		war = { 
+			target = DDR 
+			attacker_goal = { casus_belli = install_communist_gov_cb }
+			defender_goal = { casus_belli = acquire_any_state state_province_id = 549 }
+			call_ally = yes 
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
 }
-country_event = { # Decision to close off West Berlin
+
+#Berlin Wall - RUS
+country_event = {
   id = 8500703
-  title = EVT_8500703_NAME
-  desc = EVT_8500703_DESC
+  title = "The Berlin Wall"
+  desc = EVTDESC8500703
   picture = "nwo2_berlin_wall"
-  is_triggered_only = yes # RUS
   
-  immediate = { set_global_flag = berlin_wall }
+	is_triggered_only = yes
 
-  option = {
-    name = EVT_8500703_A
-	any_pop = { consciousness = 2  }
-	relation = { who = DDR value = -50 } 
-	relation = { who = GER value = -100 } 
-	USA = { country_event =  8500704 } 
-	RUS = { country_event = 8225000 }
-	DDR = { political_reform = nobody_gets_out }
-	DDR = { 551 = { add_province_modifier = { name = berlin_wall duration = -1 } } }
-	GER = { 549 = { add_province_modifier = { name = berlin_wall duration = -1 } } }
-	ai_chance = { factor = 0.9 }
-  }
-
-  option = {
-    name = EVT_8500703_B
-	random_state = { any_pop = { dominant_issue = { value = jingoism factor = 0.55 } } }
-	relation = { who = GER value = -50 } 
-	relation = { who = DDR value = 25 }
-	# some event to make DDR angry DDR = { country_event = xxx } 
-	any_pop = { militancy = 1 consciousness = 1 }
-	ai_chance = { factor = 0.1 }
-  }
-}
-country_event = { # East Berlin is off limits
-  id = 8500704
-  title = EVT_8500704_NAME
-  desc = EVT_8500704_DESC
-  picture = "nwo2_berlin_crisis_1961"
-  is_triggered_only = yes #USA
-
-  option = {
-    name = EVT_8500704_A
-	any_pop = { consciousness = 1 }
-	relation = { who = GER value = -25 } 
-	ai_chance = { factor = 0.1 }
-  }
-
-  option = {
-    name = EVT_8500704_B
-	random_state = { any_pop = { dominant_issue = { value = jingoism factor = 0.55 } } }
-	relation = { who = GER value = -50 } 
-	relation = { who = DDR value = 25 } 
-	any_pop = { consciousness = 2  }
-	USA = { country_event = 8500705 }
-	RUS  = { country_event = 8225000 } 
-	ai_chance = { factor = 0.9 }
-  }
-}
-country_event = { # Access to East Berlin
-  id = 8500705
-  title = EVT_8500705_NAME
-  desc = EVT_8500705_DESC
-  picture = "nwo2_berlin_crisis_1961"
-  is_triggered_only = yes # USA
-
-  option = {
-    name = EVT_8500705_A
-	any_pop = { consciousness = -1 }
-	country_event = { id = 8500706 days = 30 }
-	ai_chance = { factor = 0.9 }
-  }
-
-  option = {
-    name = EVT_8500705_B
-	relation = { who = GER value = -50 } 
-	relation = { who = DDR value = 25 } 
-	any_pop = { militancy = 0.5 consciousness = 1 }
-	RUS  = { country_event = 8225001 } 
-	ai_chance = { factor = 0.1 }
-  }
-
-}
-country_event = {
-  id = 8500706
-  title = EVT_8500706_NAME
-  desc = EVT_8500706_DESC
-  picture = "nwo2_berlin_crisis_1961"
-  is_triggered_only = yes # USA
-
-  option = {
-    name = EVT_8500706_A
-	any_pop = { consciousness = 2  }
-	RUS = { country_event = 8500707 }
-	ai_chance = { factor = 0.8 }
-  }
-
-  option = {
-    name = EVT_8500706_B
-	relation = { who = GER value = -50 } 
-	relation = { who = DDR value = 25 } 
-	any_pop = { militancy = 1.0 consciousness = 1 }
-	RUS  = { country_event = 8225000 } 
-    ai_chance = { factor = 0.1 }  
-  }
-
-  option = {
-    name = EVT_8500706_C
-    any_pop = { militancy = 1.5 }
-	badboy = 5
-	# TODO DDR event rais internal doscontent
-    ai_chance = { factor = 0.1 }  
-  }
-}
-country_event = { 
-  id = 8500707
-  title = EVT_8500707_NAME
-  desc = EVT_8500707_DESC
-  picture = "nwo2_berlin_crisis_1961"
-  is_triggered_only = yes # RUS
-
-  option = {
-    name = EVT_8500707_A
-	any_pop = {  consciousness = 1 }
-	USA = { country_event =  8500708  }
-	ai_chance = { factor = 0.9 }
-   }
-
-  option = {
-    name = EVT_8500707_B
-	relation = { who = GER value = -50 } 
-	relation = { who = DDR value = 25 } 
-	any_pop = { militancy = 1.5 }
-	war = { target = USA attacker_goal  = { casus_belli = free_allied_cores state_province_id = 549 } } 
-	ai_chance = { factor = 0.1 }
- }
-}
-country_event = {
-  id = 8500708
-  title = EVT_8500708_NAME
-  desc = EVT_8500708_DESC
-  picture = "nwo2_berlin_crisis_1961"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8500708_A
-	any_pop = { militancy = -0.3 }
-	RUS  = { country_event = 8225001 } 
-  }
+	option = {
+		name = "We shall settle for a wall instead"
+		prestige_factor = -0.02
+		set_global_flag = 1961_berlin_crisis_flag_build_wall
+		
+		relation = { who = USA value = 50 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "We will take Berlin by force!"
+		
+		war = { 
+			target = GER
+			attacker_goal = { casus_belli = install_communist_gov_cb }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = yes 
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
 }
