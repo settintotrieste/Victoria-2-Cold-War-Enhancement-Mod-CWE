@@ -12,7 +12,7 @@ country_event = {
 		year = 1949
 		NOT = { year = 1990 }
 		
-		OR = { government = democracy government = hms_government }
+		OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
 		is_vassal = no
 		war = no
 	}
@@ -118,6 +118,81 @@ country_event = {
 
 }
 
+#1970 Pakistani general election
+country_event = {
+  id = 80110081
+  title = "$YEAR$ Pakistani General Election"
+  desc = EVTDESC80110081
+  picture = "nwo2_pakistani_coup_1970"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = PAK
+		year = 1970
+		NOT = { year = 1990 }
+		
+		government = presidential_dictatorship
+		
+		war = no
+		is_vassal = no
+		
+		#Owns Bangladesh
+		is_possible_vassal = BNG
+	}
+
+	mean_time_to_happen = { months = 11 }
+
+	option = {
+		name = "Annul the election results!"
+		badboy = 5
+		
+		#Boost nationalist support
+		any_pop = {
+			limit = { culture = bengali }
+			militancy = 10
+			ideology = {
+				factor = 0.10
+				value = nationalist
+			}
+		}
+		
+		set_country_flag = 1970_PAK_historical_option
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Accept the results"
+	
+		#Return of democracy
+		government = democracy
+		country_event = 800054
+		
+		#Awami League wins
+		ruling_party_ideology = progressive
+	
+		#Boost socialist support in west pakistan
+		any_pop = {
+			limit = { 
+				location = { 
+					is_core = PAK 
+					NOT = { is_core = BNG } 
+				} 
+			}
+			militancy = 7
+			ideology = {
+				factor = 0.10
+				value = socialist
+			}
+		}
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
 #Zulfikar Ali Bhutto
 country_event = {
   id = 8011009
@@ -131,6 +206,8 @@ country_event = {
 		tag = PAK
 		year = 1971
 		NOT = { year = 1990 }
+		
+		has_country_flag = 1970_PAK_historical_option
 		
 		government = presidential_dictatorship 
 		ruling_party_ideology = conservative
@@ -322,7 +399,7 @@ country_event = {
 			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
 			militancy = 3
 			ideology = {
-				factor = 0.05
+				factor = 0.10
 				value = socialist
 			}
 		}
@@ -334,6 +411,48 @@ country_event = {
 		name = "Stick to the status quo"
 		add_country_modifier = { name = revolution_chaos duration = 3650 }
 		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#The Assassination of Benazir Bhutto
+country_event = {
+  id = 8011013
+  title = "The Assassination of Benazir Bhutto"
+  desc = EVTDESC8011013
+  picture = "nwo2_PAK_2007_assassination"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = PAK
+		year = 2007
+		NOT = { year = 2012 }
+		
+		government = democracy
+		ruling_party_ideology = conservative
+		
+		war = no
+		is_vassal = no
+	}
+
+	mean_time_to_happen = { months = 12 }
+
+	option = {
+		name = "A tragedy!"
+		prestige = -50
+		
+		#Boost socialist support
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			militancy = 3
+			ideology = {
+				factor = 0.05
+				value = socialist
+			}
+		}
+		
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
 	}
 
 }

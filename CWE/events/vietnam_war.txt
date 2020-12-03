@@ -1,7 +1,7 @@
-# South Vietnam 
+# South Vietnam - Set choose monarchy or democracy
 country_event = {
 	id = 1228001
-	title = "State of Vietnam"
+	title = "The State of Vietnam"
 	desc = EVTDESC1228001
 	picture = "state_of_vietnam"
 
@@ -9,11 +9,20 @@ country_event = {
 	
 	trigger = {
 		tag = FRA
-		NOT = { exists = SVI }
-		exists = DAI
 		year = 1949
+		NOT = { has_global_flag = 1950_start_date_flag }
 		NOT = { year = 1990 }
+		
+		is_vassal = no
 		war_with = DAI
+		
+		#North Vietnam exists 
+		DAI = { exists = yes }
+		
+		#Owns South Vietnam
+		SVI = { exists = no }
+		any_owned_province = { is_core = SVI }
+		
 		1380 = { NOT = { controlled_by = FRA } } # Saigon
 		1369 = { NOT = { controlled_by = FRA } } # Hanoi
 	}
@@ -23,1068 +32,353 @@ country_event = {
 	}
 
 	option = {
-	name = "Create a Vietnamese state within the French Union"
-		prestige = -50
+		name = "Continue the war!"
+		prestige = -25
 		badboy = 5 
-any_owned = { limit = { is_core = SVI } secede_province = SVI }
-		create_vassal = SVI
-diplomatic_influence = { who = SVI value = 200 }
-	SVI = { government = democracy1 country_event = 800054 }
-		DAI = { government = proletarian_dictatorship1 }
+		
+		#Release South Vietnam
+		release_vassal = SVI
+		any_owned = { limit = { is_core = SVI } secede_province = SVI }
+		SVI = { 
+			government = democracy1 
+			country_event = 800054 
+			ruling_party_ideology = conservative
+			any_pop = { 
+				ideology = {
+					factor = 0.25
+					value = conservative
+				}
+			}
+		}
+	
+		#Vietnam becomes North Vietnam
+		random_country = {
+			limit = { tag = DAI government = proletarian_dictatorship }
+			government = proletarian_dictatorship1
+		}
+		
 		ai_chance = { factor = 0.7 }
 	}
 	
 	option = {
-		name = "Accept's Vietnam's independence!"
-DAI = { government = proletarian_dictatorship1 }
+		name = "Accept North Vietnam's independence!"
+		prestige = -50
+		
+		#End war with DAI
 		end_war = DAI
-		prestige = -25
+		
+		#Vietnam becomes North Vietnam
+		random_country = {
+			limit = { tag = DAI government = proletarian_dictatorship }
+			government = proletarian_dictatorship1
+		}
+		
+		#Release South Vietnam
 		release = SVI
-any_owned = { limit = { is_core = SVI } secede_province = SVI }
-diplomatic_influence = { who = SVI value = 200 }
-	create_alliance = SVI
-	SVI = { government = democracy country_event = 800054 }
-	SVI = {
-	war = {
-	target = DAI
-	attacker_goal = { casus_belli = civil_war }
-	defender_goal = { casus_belli = civil_war }
-	call_ally = yes
-	} 
-	}
+		any_owned = { limit = { is_core = SVI } secede_province = SVI }
+		SVI = { 
+			government = democracy1 
+			country_event = 800054 
+			ruling_party_ideology = conservative
+			any_pop = { 
+				ideology = {
+					factor = 0.25
+					value = conservative
+				}
+			}
+		}
+		
+		create_alliance = SVI
+		diplomatic_influence = { who = SVI value = 200 }
+		
 		ai_chance = { factor = 0.2 }
 	}
 
 	option = {
 		name = "Withdraw from Vietnam completely"
-		end_war = DAI
-DAI = { government = proletarian_dictatorship1 }
+		prestige = -100
+		
 		badboy = -5
-		release = SVI
-any_owned = { limit = { is_core = SVI } secede_province = SVI }
-	SVI = { government = democracy country_event = 800054 }
-	SVI = {
-	war = {
-	target = DAI
-	attacker_goal = { casus_belli = civil_war }
-	defender_goal = { casus_belli = civil_war }
-	} 
-	}
-		ai_chance = { factor = 0.1 }
+		
+		#End war with DAI
+		end_war = DAI
+		
+		#Vietnam becomes unified
+		any_owned = { 
+			limit = { is_core = DAI } 
+			secede_province = DAI 
 		}
+		
+		#DAI gains prestige
+		DAI = { prestige = 200 }
+		
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
+#1954 Geneva Conference
 country_event = {
 	id = 1228002
-	title = EVT_1228002_NAME
-	desc = EVT_1228002_DESC
-	picture = "nwo2_chinese_vietnam"
-	is_triggered_only = yes # USA
+	title = "1954 Geneva Conference"
+	desc = EVTDESC1512224
+	picture = "1954_geneva_dai"
 
-	option = {
-		name = EVT_1228002_A # South Vietnam Independence
-		ai_chance = { factor = 1 }
-		FRA = { release = SVI }
-		DAI = { country_event = 8228005 }
-		diplomatic_influence = {
-			who = SVI
-			value = 200
-		}
-		diplomatic_influence = {
-			who = CAM
-			value = 50
-		}
-		diplomatic_influence = {
-			who = LUA
-			value = 50
-		}
-	}
-	
-	option = {
-		name = EVT_1228002_B # Leave Vietnam to it's faith
-		ai_chance = { factor = 0 }
-		FRA = { release = DAI }
-	}
-	
-	option = {
-		name = EVT_8228002_A # Let's ask Chiang to help
-		FRA = { release = SVI }
-		FRA = { release = DAI }
-		KMT = { country_event = 8228003 }
-		ai_chance = { factor = 0 }
-	}
-
-}
-
-# French won Vietnam war
-country_event = {
-	id = 1228003
-	title = EVT_1228003_NAME
-	desc = EVT_1228003_DESC
-	picture = "french_vietnam"
 	fire_only_once = yes
 
 	trigger = {
 		tag = FRA
-		NOT = { exists = SVI }
-		NOT = { exists = DAI }
-		war = no
-		owns = 1380 # Saigon
-		owns = 1369 # Hanoi
+		year = 1954
 		NOT = { year = 1990 }
+		
+		is_vassal = no
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
+
+		exists = DAI
+		exists = SVI
+
+		CAM = { is_vassal = no }
+		LUA = { is_vassal = no }
+
+		is_our_vassal = SVI
 	}
 
-	mean_time_to_happen = {
-		months = 24 # militanyc modifier
+	mean_time_to_happen = { 
+		months = 4
 	}
 
 	option = {
-		name = EVT_1228003_A # Vietnam Independence
-		ai_chance = { factor = 0 }
-		prestige = -2
-		release_vassal = DAI
-		DAI = { government = hms_government }
+		name = "Accept the decolonisation of Indochina"
+		prestige = -50
+		
+		end_war = DAI
+		DAI = { badboy = -25 }
+		
+		#Release South Vietnam
+		release_vassal = SVI
+		SVI = { 
+			government = democracy
+			country_event = 800054
+			ruling_party_ideology = conservative
+			
+			#Presidential Republic
+			clr_country_flag = presidential_system_republic
+			clr_country_flag = semi_presidential_system_republic
+			clr_country_flag = parliamentary_system_republic
+		
+			set_country_flag = presidential_system_republic
+			
+			any_pop = { 
+				ideology = {
+					factor = 0.25
+					value = conservative
+				}
+			}
+			any_pop = { 
+				ideology = {
+					factor = 0.05
+					value = communist
+				}
+			}
+		}
+		
+		relation = { who = DAI value = 50 }
+		diplomatic_influence = { who = SVI value = -100 }
+		
+		#USA takes over South Vietnam
+		USA = { 
+			relation = { who = SVI value = 200 } 
+			diplomatic_influence = { who = SVI value = 200 } 
+		}
+		
+		#Leave Indochina
+		diplomatic_influence = { who = CAM value = -200 }
+		diplomatic_influence = { who = LUA value = -200 }
+		
+		set_global_flag = 1956_vietnam_unification_election
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "Try to keep Indochina in the French sphere!"
+		prestige = -50
+		badboy = 10
+		relation = { who = USA value = -100 }
+		relation = { who = RUS value = -200 }
+		relation = { who = CHI value = -200 }
+		relation = { who = DAI value = -200 }
+		SVI = { 
+			any_pop = { 
+				ideology = {
+					factor = 0.25
+					value = nationalist
+				}
+			}
+			any_pop = { 
+				ideology = {
+					factor = 0.10
+					value = communist
+				}
+			}
+		}
+		ai_chance = { factor = 0.2 }
+	}
+
+}
+
+#Unification election, 1956
+country_event = {
+  id = 1228003
+  title = "The $YEAR$ Unification Election"
+  desc = EVTDESC1228003
+  picture = "nwo2_vietnam_elections"
+  
+	fire_only_once = yes
+
+	trigger = {
+		OR = { tag = DAI tag = SVI }
+		year = 1956 
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		
+		DAI = { ruling_party_ideology = communist }
+		SVI = { NOT = { ruling_party_ideology = communist } }
+		
+		has_global_flag = 1956_vietnam_unification_election
+	}
+
+	mean_time_to_happen = { months = 7 }
+
+	option = {
+		name = "The result was never in any doubt"
+		
+		random_owned = {
+			limit = { owner = { tag = DAI } }
+			owner = { 	
+				relation = { who = SVI value = -50 }
+				any_pop = { 
+					ideology = {
+						factor = 0.10
+						value = communist
+					}
+				}
+			}
+		}
+		
+		random_owned = {
+			limit = { owner = { tag = SVI } }
+			owner = { 	
+				relation = { who = DAI value = -50 }
+				any_pop = { 
+					ideology = {
+						factor = 0.10
+						value = populist
+					}
+				}
+			}
+		}
+	}
+
+}
+
+#The Vietnam War - DAI
+country_event = {
+  id = 1228004
+  title = "The $YEAR$ Offensive"
+  desc = EVTDESC1228004
+  picture = "nwo2_vietnam_war_DAI"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = DAI
+		year = 1964
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		
+		ruling_party_ideology = communist
+		
+		has_global_flag = blocsenabled
+		
+		SVI = { 
+			exists = yes
+			is_vassal = no
+			NOT = { ruling_party_ideology = communist } 
+		}
+	}
+
+	mean_time_to_happen = { months = 10 }
+
+	option = {
+		name = "Escalate the confrontation!"
+		war = { 
+			target = SVI
+			attacker_goal = { casus_belli = civil_war } 
+			defender_goal = { casus_belli = civil_war } 
+			call_ally = no
+		}
+		
+		any_pop = { 
+			ideology = {
+				factor = 0.10
+				value = communist
+			}
+		}
+		
+		#US intervention
+		random_country = {
+			limit = { tag = USA has_global_flag = blocsenabled }
+			country_event = 1228005
+		}
+		ai_chance = { factor = 0.9 }
 	}
 	
 	option = {
-		name = EVT_1228003_B
-		ai_chance = { factor = 0 }
-		any_pop = {
-			limit = {
-				culture = vietnamese
-				is_primary_culture = no
-				is_accepted_culture = no
-			}
-			militancy = 4
-			consciousness = 2
-	   }
-	   badboy = 1
+		name = "We don't want an all out war"
+		relation = { who = SVI value = 50 }
+		ai_chance = { factor = 0.1 }
 	}
 
 }
+
+#The Vietnam War - USA
 country_event = {
-  id = 8228003
-  title = EVT_8228003_NAME
-  desc = EVT_8228003_DESC
-  picture = "nwo2_chinese_vietnam"
-  is_triggered_only = yes # KMT
-
-  option = {
-    name = EVT_8228003_A
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8228003_B
-	war = { target = DAI attacker_goal = { casus_belli = make_puppet } defender_goal = { casus_belli = status_quo } }
-	ai_chance = { factor = 0 }
-	badboy = 10 
-	relation = { who = FRA value = -150 } 
-  }
-}
-country_event = {
-  id = 8228005
-  title = EVT_8228005_NAME
-  desc = EVT_8228005_DESC
-  picture = "nwo2_american_support_for_vietnam"
-  is_triggered_only = yes # DAI
-  
-  option = {
-    name = EVT_8228005_A
-	any_pop = { militancy = -1.5 consciousness = -1 }
-	relation = { who = USA value = -100 } 
-	add_country_modifier = { name = military_man duration = 3500 } 
-  }
-}
-country_event = {
-  id = 8228010
-  title = EVT_8228010_NAME
-  desc = EVT_8228010_DESC
-  picture = "nwo2_first_indochina_war"
-  fire_only_once = yes
-
-  trigger = {
-    tag = SVI
-    year = 1948 NOT = { year = 1964 }
-    NOT = { SVI = { war_with = DAI } }
-    exists = DAI
-    
-	DAI = { brigades_compare = 1.5 } 
-  }
-
-  mean_time_to_happen = { months = 4  }
-
-  option = {
-    name = EVT_8228010_A
-	war = { target = DAI attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } }
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8228010_B
-	relation = { who = DAI value = 25 } 
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8228011
-  title = EVT_8228011_NAME
-  desc = EVT_8228011_DESC
-  picture = "nwo2_first_indochina_war"
-  fire_only_once = yes
-
-  trigger = {
-    tag = DAI
-    year = 1948 NOT = { year = 1964 }
-    NOT = { SVI = { war_with = DAI } }
-    exists = SVI
-    
-	SVI = { brigades_compare = 1.5 } 
-  }
-
-  mean_time_to_happen = { months = 4  }
-
-  option = {
-    name = EVT_8228011_A
-	war = { target = SVI attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } }
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8228011_B
-	relation = { who = SVI value = 25 }
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8228020
-  title = EVT_8228020_NAME
-  desc = EVT_8228020_DESC
-  picture = "nwo2_north_vietnam"
-  fire_only_once = yes
-
-  trigger = {
-    tag = DAI
-    year = 1949 NOT = { year = 1955 }
-    war_with = FRA
-  }
-
-  mean_time_to_happen = { months = 6  }
-
-  option = {
-    name = EVT_8228020_A
-	ai_chance = { factor = 1 }
-add_country_modifier = { name = lord_admiral duration = 350 }
-  }
-
-  option = {
-    name = EVT_8228020_B
-	ai_chance = { factor = 0 }
-	small_arms = 200
-	weaponry = 100
-  }
-}
-country_event = {
-  id = 8228021
-  title = EVT_8228021_NAME
-  desc = EVT_8228021_DESC
-  picture = "nwo2_south_vietnam"
-  fire_only_once = yes
-
-  trigger = {
-    tag = SVI
-    year = 1949 NOT = { year = 1955 }
-    war_with = DAI
-  }
-
-  mean_time_to_happen = { months = 6  }
-
-   option = {
-    name = EVT_8228021_A
-	ai_chance = { factor = 1 }
-	add_country_modifier = { name = lord_admiral duration = 150 }
-  }
-
-  option = {
-    name = EVT_8228021_B
-	ai_chance = { factor = 0 }
-	small_arms = 200
-	weaponry = 100
-  }
-}
-country_event = {
-  id = 8228022
-  title = EVT_8228022_NAME
-  desc = EVT_8228022_DESC
-  picture = "nwo2_french_in_south_vietnam"
-  fire_only_once = yes
-
-  trigger = {
-    tag = FRA
-    year = 1947 NOT = { year = 1955 }
-    war_with = DAI
-  }
-
-  mean_time_to_happen = { months = 2 }
-
-  option = {
-    name = EVT_8228022_A
-	money = -50000
-	any_pop = { militancy = 0.2 consciousness = 0.5 }
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8228022_B
-	any_pop = { militancy = -0.2 consciousness = -0.1 }
-	ai_chance = { factor = 0 }
-  }
-
-}
-country_event = {
-  id = 8228030
-  title = EVT_8228030_NAME
-  desc = EVT_8228030_DESC
-  picture = "nwo2_south_vietnam"
-  fire_only_once = yes
-
-  trigger = {
-    tag = DAI
-    year = 1949 NOT = { year = 1955 }
-    war_with = FRA
-  }
-
-  mean_time_to_happen = { months = 24  }
-
-  option = {
-    name = EVT_8228030_A
-	war_exhaustion = -10
-  }
-}
-country_event = {
-  id = 8228031
-  title = EVT_8228031_NAME
-  desc = EVT_8228031_DESC
-  picture = "nwo2_south_vietnam"
-  fire_only_once = yes
-
-  trigger = {
-    tag = FRA
-    year = 1948 NOT = { year = 1952 }
-    war_with = DAI
-  }
-
-  mean_time_to_happen = { months = 24  }
-
-  option = {
-    name = EVT_8228031_A
-	any_pop = { militancy = 0.1 consciousness = 0.5 }
-  }
-}
-country_event = {
-  id = 8228032
-  title = EVT_8228032_NAME
-  desc = EVT_8228032_DESC
-  picture = "nwo2_north_vietnam"
-  fire_only_once = yes
-
-  trigger = {
-    tag = DAI
-    year = 1948 NOT = { year = 1955 }
-    has_global_flag = CHI_won_civil_war
-    war = yes
-  }
-
-  mean_time_to_happen = { months = 24  }
-
-  option = {
-    name = EVT_8228032_A
-	any_pop = { militancy = -1.0 consciousness = -0.5 }
-	small_arms = 200
-	weaponry = 100
-	relation = { who = CHI value = 50 }
-	diplomatic_influence = { who = RUS value = 100 }
-  }
-}
-country_event = {
-  id = 8228033
-  title = EVT_8228033_NAME
-  desc = EVT_8228033_DESC
-  picture = "nwo2_dien_bien_phu"
-  fire_only_once = yes
-
-  trigger = {
-    tag = DAI
-    year = 1948 NOT = { year = 1955 }
-    war_with = FRA
-  }
-
-  mean_time_to_happen = { months = 24  }
-
-  option = {
-    name = EVT_8228033_A
-	war_exhaustion = -1
-	any_pop = { militancy = -1.0 consciousness = -0.2 }
-  }
-}
-country_event = {
-  id = 8228034
-  title = EVT_8228034_NAME
-  desc = EVT_8228034_DESC
-  picture = "nwo2_south_vietnam"
-  fire_only_once = yes
-
-  trigger = {
-    tag = FRA
-    year = 1948 NOT = { year = 1955 }
-    war_with = DAI
-  }
-
-  mean_time_to_happen = { months = 2 }
-
-  option = {
-    name = EVT_8228034_A
-	any_pop = { limit = { culture = vietnamese } militancy = 3.5 consciousness = 3 }
-	any_owned = { limit = { pop_majority_culture = vietnamese controlled_by = THIS } change_controller = REB }
-  }
-}
-country_event = {
-  id = 8228040
-  title = EVT_8228040_NAME
-  desc = EVT_8228040_DESC
-  picture = "nwo2_geneva_conference"
-  fire_only_once = yes
-
-  trigger = {
-    tag = FRA
-    year = 1952 NOT = { year = 1963 }
-    war = no
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8228040_B
-	DAI = { country_event = 8228041 } 
-  }
-}
-country_event = {
-  id = 8228041
-  title = EVT_8228041_NAME
-  desc = EVT_8228041_DESC
-  picture = "nwo2_geneva_conference"
-  is_triggered_only = yes # DAI
-
-  option = {
-    name = EVT_8228041_A
-	any_pop = { militancy = 0.3 consciousness = 0.6 }
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8228041_B
-	any_pop = { militancy = -0.5 consciousness = -0.1 }
-	casus_belli = { target = FRA type = annex_core_country } 
-	ai_chance = { factor = 0 }
-  }
-}
-
-country_event = {
-  id = 8228050
-  title = EVT_8228050_NAME
-  desc = EVT_8228050_DESC
-  picture = "nwo2_vietnam_elections"
-  fire_only_once = yes
-
-  trigger = {
-    tag = DAI
-    year = 1956 
-	NOT = { year = 1963 }
-    exists = SVI
-	has_global_flag = 1956_vietnam_unification_election
-  }
-
-  mean_time_to_happen = { months = 7 }
-
-  option = {
-    name = EVT_8228050_A
-	any_pop = { militancy = -0.3 consciousness = -0.1 }
-	SVI = { country_event = 8228051 } 
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8228050_B
-	any_pop = { militancy = 1.0 consciousness = 2.0 }
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8228051
-  title = EVT_8228051_NAME
-  desc = EVT_8228051_DESC
-  picture = "nwo2_vietnam_elections"
-  is_triggered_only = yes # SVI
-
-  option = {
-    name = EVT_8228051_A
-	any_pop = { militancy = 1.0 consciousness = 2.0 }
-	ai_chance = { factor = 0 }
-  }
-
-  option = {
-    name = EVT_8228051_B
-	any_pop = { militancy = -0.3 consciousness = -0.1 }
-	DAI = { country_event = 8228052 }
-	ai_chance = { factor = 1 }
-  }
-}
-country_event = {
-  id = 8228052
-  title = EVT_8228052_NAME
-  desc = EVT_8228052_DESC
-  picture = "nwo2_vietnam_elections"
-  is_triggered_only = yes # DAI
-
-  option = {
-    name = EVT_8228052_A
-	any_pop = { militancy = 0.5 consciousness = 0.6 }
-	set_global_flag = vietnamese_elections_rigged_by_DAI 
-	SVI = { country_event = 8228060 }
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8228052_B
-	SVI = { country_event = 8228053 }
-	any_pop = { militancy = -0.5 consciousness = -0.1 }
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8228053
-  title = EVT_8228053_NAME
-  desc = EVT_8228053_DESC
-  picture = "nwo2_vietnam_elections"
-  is_triggered_only = yes # SVI
-
-  option = {
-    name = EVT_8228053_A
-	any_pop = { militancy = 0.5 consciousness = 0.8 }
-	set_global_flag = vietnamese_elections_rigged_by_SVI 
-	DAI = { country_event = 8228062 }
-	ai_chance = { factor = 0.5 }
-  }
-
-  option = {
-	name = EVT_8228053_B
-	any_pop = { militancy = -0.5 consciousness = -0.1 }
-	SVI = { country_event = 8228064 }
-	ai_chance = { factor = 0.5 }
-  }
-}
-country_event = {
-  id = 8228060
-  title = EVT_8228060_NAME
-  desc = EVT_8228060_DESC
-  picture = "nwo2_vietnam_elections"
-  is_triggered_only = yes # SVI
-  
-  option = {
-    name = EVT_8228060_A
-	war = DAI any_pop = { militancy = 1.2 consciousness = 1.0 }
-  }
-
-  option = {
-    name = EVT_8228060_B
-	DAI = { country_event = 8228061 }
-  }
-}
-country_event = {
-  id = 8228061
-  title = EVT_8228061_NAME
-  desc = EVT_8228061_DESC
-  picture = "nwo2_united_vietnam_under_hanoi"
-  is_triggered_only = yes # DAI
-
-  option = {
-    name = EVT_8228061_A
-	inherit = SVI 
-  }
-}
-country_event = {
-  id = 8228062
-  title = EVT_8228062_NAME
-  desc = EVT_8228062_DESC
-  picture = "nwo2_vietnam_elections"
-  is_triggered_only = yes # DAI
-
-  option = {
-    name = EVT_8228060_A
-	war = SVI 
-	any_pop = { militancy = 1.5 consciousness = 1.0 }
-  }
-
-  option = {
-    name = EVT_8228062_B
-    country_event = 8228063 
-  }
-}
-country_event = {
-  id = 8228063
-  title = EVT_8228063_NAME
-  desc = EVT_8228063_DESC
-  picture = "nwo2_united_vietnam_under_saigon"
-  is_triggered_only = yes # SVI
-
-  option = {
-    name = EVT_8228063_A
-    inherit = DAI 
-  }
-}
-country_event = {
-  id = 8228064
-  title = EVT_8228064_NAME
-  desc = EVT_8228064_DESC
-  picture = "nwo2_vietnam_elections"
-  is_triggered_only = yes # SVI
-
-  option = {
-    name = EVT_8228064_A
-	war = DAI 
-	any_pop = { militancy = 0.8 consciousness = 1 }
-	ai_chance = { factor = 0.7 }
-  }
-
-  option = {
-    name = EVT_8228060_B
-	DAI = { country_event = 8228061 }
-	ai_chance = { factor = 0.3 }
-  }
-}
-country_event = {
-  id = 8228100
-  title = EVT_8228100_NAME
-  desc = EVT_8228100_DESC
-  picture = "nwo2_second_indochina_war"
-  fire_only_once = yes
-
-  trigger = {
-    tag = DAI
-    year = 1955 NOT = { year = 1964 }
-    NOT = { DAI = { war_with = SVI } }
-    exists = SVI
-    
-  }
-
-  mean_time_to_happen = { months = 4  }
-
-  option = {
-    name = EVT_8228100_A
-	war = { target = SVI attacker_goal = { casus_belli = territorial_dispute } defender_goal = { casus_belli = territorial_dispute } }
-SVI = { 
-any_pop = { limit = { pop_type = soldiers } reduce_pop = 1.50 } 
-}
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8228100_B
-	relation = { who = SVI value = 50 } 
-  }
-}
-country_event = {
-  id = 8228110
-  title = EVT_8228110_NAME
-  desc = EVT_8228110_DESC
-  picture = "nwo2_vietcong"
-  fire_only_once = yes
-
-  trigger = {
-    tag = DAI
-    year = 1956 NOT = { year = 1975 }
-    SVI = { exists = yes }
-  }
-
-  mean_time_to_happen = { months = 8  }
-
-  option = {
-    name = EVT_8228110_A
-	ai_chance = { factor = 1 }
-	add_country_modifier = { name = lord_admiral duration = 350 }
-  }
-
-  option = {
-    name = EVT_8228110_B
-	ai_chance = { factor = 0 }
-	small_arms = 200
-	weaponry = 100
-  }
-}
-country_event = {
-  id = 8228111
-  title = EVT_8228111_NAME
-  desc = EVT_8228111_DESC
-  picture = "nwo2_americans_in_vietnam"
-  fire_only_once = yes
-
-  trigger = {
-    tag = SVI
-    year = 1956 NOT = { year = 1975 }
-    DAI = { exists = yes }
-  }
-
-  mean_time_to_happen = { months = 2 }
-
-  option = {
-    name = EVT_8228111_A
-	ai_chance = { factor = 1 }
-	any_pop = { militancy = -0.1 consciousness = -0.1 }
-	USA = { diplomatic_influence = { who = SVI value = 100 } }
-  }
-
-  option = {
-    name = EVT_8228111_B
-	ai_chance = { factor = 0 }
-	small_arms = 200
-	weaponry = 100
-  }
-}
-country_event = {
-  id = 8228120
-  title = EVT_8228120_NAME
-  desc = EVT_8228120_DESC
+  id = 1228005
+  title = "The Vietnam War"
+  desc = EVTDESC1228005
   picture = "nwo2_vietnam_war"
-  fire_only_once = yes
+  
+	is_triggered_only = yes
 
-  trigger = {
-    tag = USA
-    year = 1957 NOT = { year = 1963 }
-    DAI = { exists = yes }
-	SVI = { exists = yes }
-  }
-
-  mean_time_to_happen = { months = 24  }
-
-  option = {
-    name = EVT_8228120_A
-	relation = { who = SVI value = 50 } 
-	relation = { who = DAI value = -50 } 
-	diplomatic_influence = { who = SVI value = 100 }
-	any_pop = { militancy = -0.5 consciousness = -0.1 }
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8228120_B
-	relation = { who = SVI value = 100 } 
-	relation = { who = DAI value = -100 } 
-	any_pop = { militancy = 0.5 consciousness = 0.5 }
-	ai_chance = { factor = 0 }
-  }
-
-  option = {
-    name = EVT_8228120_C
-	any_pop = { militancy = 0.8 consciousness = 1 }
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8228130
-  title = EVT_8228130_NAME
-  desc = EVT_8228130_DESC
-  picture = "nwo2_strategic_hamlet_program"
-  fire_only_once = yes
-
-  trigger = {
-    tag = SVI
-    year = 1957 NOT = { year = 1963 }
-    DAI = { exists = yes }
-  }
-
-  mean_time_to_happen = { months = 4  }
-
-  option = {
-    name = EVT_8228130_A
-	any_pop = { militancy = -0.5 consciousness = -0.1 }
-  }
-
-}
-country_event = {
-  id = 8228131
-  title = EVT_8228131_NAME
-  desc = EVT_8228131_DESC
-  picture = "nwo2_le_duan"
-  fire_only_once = yes
-
-  trigger = {
-    tag = DAI
-    year = 1958 NOT = { year = 1963 }
-    DAI = { exists = yes }
-  }
-
-  mean_time_to_happen = { months = 4  }
-
-  option = {
-    name = EVT_8228131_A
-	any_pop = { militancy = -0.5 consciousness = -0.1 }
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8228131_B
-	random_state = { any_pop = { dominant_issue = { value = free_opinion factor = 0.05 } } }
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8228132
-  title = EVT_8228132_NAME
-  desc = EVT_8228132_DESC
-  picture = "nwo2_ngo_dinh_diem_dead"
-  fire_only_once = yes
-
-  trigger = {
-    tag = SVI
-    year = 1958 NOT = { year = 1963 }
-    DAI = { exists = yes }
-  }
-
-  mean_time_to_happen = { months = 4  }
-
-  option = {
-    name = EVT_8228132_A
-	any_pop = { militancy = 1.0 consciousness = 2 }
-  }
-
-  option = {
-    name = EVT_8228132_B
-	any_pop = { militancy = 2.0 consciousness = 1 }
-  }
-}
-country_event = {
-  id = 8228140
-  title = EVT_8228140_NAME
-  desc = EVT_8228140_DESC
-  picture = "nwo2_vietcong_attacks"
-  fire_only_once = yes
-
-  trigger = {
-    tag = SVI
-    year = 1970 NOT = { year = 1990 }
-    DAI = { exists = yes }
-  }
-
-  mean_time_to_happen = { months = 6  }
-
-  option = {
-    name = "Let slip the dogs of War!"
-
-DAI = { war = { target = SVI attacker_goal = { casus_belli = civil_war } defender_goal = { casus_belli = civil_war } } }
-
-	any_pop = { militancy = 0.4 consciousness = 0.8 }
-
-ai_chance = { factor = 0.9 }
-
-  }
-
-  option = {
-    name = "Try to keep the peace"
-prestige_factor = -0.9
-ai_chance = { factor = 0.1 }
-
-  }
-
-}
-country_event = {
-  id = 8228150
-  title = EVT_8228150_NAME
-  desc = EVT_8228150_DESC
-  picture = "nwo2_vietnam_war_protests"
-  fire_only_once = yes
-
-  trigger = {
-    tag = USA
-    year = 1958 NOT = { year = 1963 }
-    DAI = { exists = yes }
-	SVI = { exists = yes }
-  }
-
-  mean_time_to_happen = { months = 1 }
-
-  option = {
-    name = EVT_8228150_A
-	any_pop = { militancy = 0.3 consciousness = 0.6 }
-  }
-}
-country_event = {
-  id = 8228198
-  title = EVT_8228198_NAME
-  desc = EVT_8228198_DESC
-  picture = "nwo2_north_vietnam"
-  fire_only_once = yes
-
-  trigger = {
-    tag = DAI
-    year = 1945 NOT = { year = 1963 }
-  }
-
-  mean_time_to_happen = { months = 6  }
-
-  option = {
-    name = EVT_8228198_A
-	add_country_modifier = { name = five_year_plan duration = 3500 }
-  }
-}
-country_event = {
-  id = 8228199
-  title = EVT_8228199_NAME
-  desc = EVT_8228199_DESC
-  picture = "nwo2_south_vietnam"
-  fire_only_once = yes
-
-  trigger = {
-    tag = SVI
-    year = 1945 NOT = { year = 1963 }
-  }
-
-  mean_time_to_happen = { months = 6  }
-
-  option = {
-    name = EVT_8228199_A
-  }
-}
-country_event = {
-  id = 8228200
-  title = EVT_8228200_NAME
-  desc = EVT_8228200_DESC
-  picture = "nwo2_ho_chi_minh_trail"
-  fire_only_once = yes
-
-  trigger = {
-    tag = DAI
-    NOT = { war_with = LUA }
-    exists = LUA
-NOT = { is_our_vassal = LUA }
-	OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
-    owns = 1380 # Saigon
-  }
-
-  mean_time_to_happen = { months = 1 }
-
-  option = {
-    name = EVT_8228200_A
-	casus_belli = { target = LUA type = make_puppet months = 24 }
-	casus_belli = { target = LUA type = install_communist_gov_cb months = 24 }
-	LUA = { country_event = 8228201 }
-	ai_chance = { factor = 1 }
-   }
-
-  option = {
-    name = EVT_8228200_B
- 	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8228201
-  title = EVT_8228201_NAME
-  desc = EVT_8228201_DESC
-  picture = "nwo2_ho_chi_minh_trail"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8228201_A
-	DAI = {
-		war = {
-			target = LUA
-			attacker_goal = { casus_belli = make_puppet }
-			#attacker_goal = { casus_belli = install_communist_gov_cb }
+	option = {
+		name = "We shall begin the ground war against the Viet Cong"
+		war = { 
+			target = DAI
+			attacker_goal = { casus_belli = cut_down_to_size } 
 			defender_goal = { casus_belli = humiliate } 
+			call_ally = no
 		}
-	} 
-	ai_chance = { factor = 1 }
-   }
-  
-  option = {
-    name = EVT_8228201_B
-	DAI = { military_access = THIS } 
- 	ai_chance = { factor = 0 }
-  }
-  
-}
-country_event = {
-  id = 8228101
-  title = EVT_8228101_NAME
-  desc = EVT_8228101_DESC
-  picture = "ngo_dinh_diem"
-  fire_only_once = yes
-
-  trigger = {
-    tag = SVI
-    year = 1963
-	government = democracy
+		
+		any_pop = {
+			dominant_issue = {
+				value = pacifism
+				factor = 0.10
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "We don't want an all out war"
+		relation = { who = SVI value = -50 }
+		ai_chance = { factor = 0.1 }
 	}
 
-  mean_time_to_happen = { months = 4  }
-
-  option = {
-    name = EVT_8228101_A
-	random_country = {
-		limit = { is_sphere_leader_of = THIS }
-		country_event = 8228102
-	}
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8228101_B
-	country_event = 8228104
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8228102
-  title = EVT_8228102_NAME
-  desc = EVT_8228102_DESC
-  picture = "ngo_dinh_diem"
-  is_triggered_only = yes # USA
-
-  option = {
-    name = EVT_8228102_A
-	SVI = { country_event = 8228104 }
-	ai_chance = { factor = 0.9 }
-  }
-
-  option = {
-    name = EVT_8228102_B
-	SVI = { country_event = 8228103 }
-	ai_chance = { factor = 0.1 }
-  }
-}
-country_event = {
-  id = 8228103
-  title = EVT_8228103_NAME
-  desc = EVT_8228103_DESC
-  picture = "ngo_dinh_diem"
-  is_triggered_only = yes # SVI
-
-  option = {
-    name = EVT_8228103_A
-	SVI = { any_pop = { limit = { religion = buddhist } militancy = 0.8 consciousness = 0.1 } }
-  }
-}
-country_event = {
-  id = 8228104
-  title = EVT_8228104_NAME
-  desc = EVT_8228104_DESC
-  picture = "ngo_dinh_diem"
-  is_triggered_only = yes # SVI
-
-  option = {
-    name = EVT_8228104_A
-	government = presidential_dictatorship country_event = 800050
-	primary_culture = vietnamese
-	SVI = { any_pop = { limit = { religion = buddhist } militancy = -0.5 consciousness = 0.1 } }
-  }
 }

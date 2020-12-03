@@ -1,193 +1,312 @@
+#Choose South Vietnam's government type
 country_event = {
   id = 8018013
-  title = EVT_8018013_NAME
+  title = "The Referendum of $YEAR$"
   desc = EVT_8018013_DESC
   picture = "the_ngo_dinh_diem"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = SVI
-	OR = { government = democracy government = democracy1 }
-	year = 1955
-	is_vassal = no
-	war = no
-	election = no
-	NOT = { year = 1962 }
-  }
+	trigger = {
+		tag = SVI
+		year = 1955
+		NOT = { year = 1990 }
+		
+		OR = { government = democracy government = democracy1 }
+		is_vassal = no
+		war = no
+		
+		election = no
+	}
 
-  mean_time_to_happen = { months = 5 }
+	mean_time_to_happen = { months = 5 }
 
-  option = {
-    name = EVT_8018013_A
-	define_general = { name = "Ngo Dinh Diem" personality = energetic background = no_background }
-	government = presidential_dictatorship
-	ruling_party_ideology = populist
-	country_event = 800050
-	any_pop = { militancy = -3 consciousness = 5 }
-	relation = { who = USA value = 150 }
-	relation = { who = FRA value = -100 }
-	USA = { diplomatic_influence = { who = SVI value = 200 } } 
+	option = {
+		name = "The vote was successfully rigged!"
+		government = presidential_dictatorship
+		country_event = 800050
+		ruling_party_ideology = populist
+		
+		religion = catholic
+		
+		any_pop = { militancy = -3 consciousness = 5 }
+		
+		relation = { who = USA value = 150 }
+		relation = { who = FRA value = -100 }
+		USA = { diplomatic_influence = { who = SVI value = 200 } } 
+		
+		create_alliance = USA
 
-   political_reform = universal_weighted_voting   
-   political_reform = ruling_party_opinion
-   political_reform = limited_meetings
-   political_reform = quality_of_service #politicized
-   political_reform = firewall_publishing
-   political_reform = parties_not_allowed
-   political_reform = minorities_oppression
-   political_reform = gender_promotive    
+		#Set reforms
+		political_reform = universal_weighted_voting   
+		political_reform = ruling_party_opinion
+		political_reform = limited_meetings
+		political_reform = quality_of_service #politicized
+		political_reform = firewall_publishing
+		political_reform = parties_not_allowed
+		political_reform = minorities_oppression
+		political_reform = gender_promotive    
 
-	ai_chance = { factor = 0.9 }
-  }
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8018013_B
-	any_pop = { militancy = 5 consciousness = 10 }
-	government = hms_government
-	country_event = 800054
-	election = yes
-	relation = { who = JAP value = 50 }
-   	relation = { who = CAM value = 50 }
-add_country_modifier = { name = revolution_chaos duration = 3650 }
+	option = {
+		name = "Emperor Bao Dai wins"
+		
+		government = hms_government
+		country_event = 800054
+		
+		election = yes
+	
+		any_pop = { militancy = 5 consciousness = 10 }
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		#Set reforms
+		political_reform = promoted_voting   
+		political_reform = regulated_opinion
+		political_reform = limited_meetings
+		political_reform = net_neutrality
+		political_reform = firewall_publishing
+		political_reform = gender_promotive #non-socialist
+		political_reform = parties_restrict_non_democratic
+		political_reform = open_immigration
+		political_reform = lgbt_outlawed #no_draft
+		political_reform = minorities_oppression
 
-   political_reform = promoted_voting   
-   political_reform = regulated_opinion
-   political_reform = limited_meetings
-   political_reform = net_neutrality
-   political_reform = firewall_publishing
-   political_reform = gender_promotive #non-socialist
-   political_reform = parties_restrict_non_democratic
-   political_reform = open_immigration
-   political_reform = lgbt_outlawed #no_draft
-   political_reform = minorities_oppression
-
-	relation = { who = USA value = -100 }
-	FRA = { diplomatic_influence = { who = SVI value = 200 } }
-	ai_chance = { factor = 0.1 }
-  }
+		relation = { who = JAP value = 50 }
+		relation = { who = CAM value = 50 }
+		relation = { who = USA value = -100 }
+		FRA = { diplomatic_influence = { who = SVI value = 200 } }
+		ai_chance = { factor = 0.1 }
+	}
 }
+
+#The Buddhist crisis
+country_event = {
+  id = 80180131
+  title = "The Buddhist Crisis"
+  desc = EVTDESC80180131
+  picture = "nwo2_self_immolation"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = SVI
+		year = 1963
+		NOT = { year = 1990 }
+		
+		government = presidential_dictatorship
+		is_vassal = no
+		
+		ruling_party_ideology = populist
+		
+		DAI = { exists = yes is_vassal = no }
+	}
+
+	mean_time_to_happen = { months = 5 }
+
+	option = {
+		name = "Blame the communists!"
+		relation = { who = DAI value = -50 }
+		
+		#US loses influence
+		random_country = {
+			limit = { tag = USA has_global_flag = blocsenabled }
+			diplomatic_influence = { who = SVI value = -100 }
+		}
+		
+		set_country_flag = self_immolation_historical_option
+ 
+		#Buddhist are angry
+		any_pop = {
+			limit = { has_pop_religion = buddhist }
+			militancy = 10
+			ideology = {
+				factor = 0.25
+				value = traditionalist
+			}
+		}
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Cave in to the Buddhist demands"
+		ruling_party_ideology = traditionalist
+		
+		#Non Buddhist are angry
+		any_pop = {
+			limit = { NOT = { has_pop_religion = buddhist } }
+			militancy = 10
+			ideology = {
+				factor = 0.25
+				value = populist
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+#The Fall of Ngo Deim
 country_event = {
   id = 8018014
-  title = EVT_8018014_NAME
+  title = "The Fall of Ngo Dinh Diem"
   desc = EVT_8018014_DESC
   picture = "ngo_dinh_diem_killed"
-  is_triggered_only = yes
+  
+	fire_only_once = yes
 
-  option = {
-    name = EVT_8018014_A
-	government = presidential_dictatorship 
-	country_event = 800050
-  }
+	trigger = {
+		tag = SVI
+		year = 1963
+		NOT = { year = 1990 }
+		
+		government = presidential_dictatorship
+		is_vassal = no
+		
+		ruling_party_ideology = populist
+		
+		has_country_flag = self_immolation_historical_option
+	}
+
+	mean_time_to_happen = { months = 5 }
+
+	option = {
+		name = "The dictator falls!"
+		ruling_party_ideology = conservative
+		religion = buddhist
+
+		#US gains influence
+		random_country = {
+			limit = { tag = USA has_global_flag = blocsenabled }
+			diplomatic_influence = { who = SVI value = 200 }
+			relation = { who = SVI value = 200 }
+		}
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Cave in to the Buddhist demands"
+
+		
+		ai_chance = { factor = 0.1 }
+	}
 }
+
+#The 1967 Election
 country_event = {
-  id = 8018020
-  title = EVT_8018020_NAME
-  desc = EVT_8018020_DESC
-  picture = "nwo2_self_immolation"
-  fire_only_once = yes
+  id = 8018015
+  title = "The $YEAR$ Presidential Election"
+  desc = EVTDESC8018015
+  picture = "SVI_1967_election"
+  
+	fire_only_once = yes
 
-  trigger = {
-    	tag = SVI
-	government = presidential_dictatorship
-	year = 1963 NOT = { year = 1964 }
-  }
+	trigger = {
+		tag = SVI
+		year = 1967
+		NOT = { year = 1990 }
+		
+		government = presidential_dictatorship
+		is_vassal = no
+		
+		ruling_party_ideology = conservative
+		
+		has_global_flag = blocsenabled
+	}
 
-  mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 9 }
 
-  option = {
-    name = EVT_8018020_A
-	any_pop = { militancy = 1.0  consciousness = 2.0 }
-	set_country_flag = self_immolation
-  }
+	option = {
+		name = "Hold elections!"
+		government = democracy
+		country_event = 800054
+		election = yes
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "An election is a bad idea"
+		
+		any_pop = { 
+			limit = { strata = poor }
+			ideology = {
+				factor = 0.10
+				value = communist
+			}
+		}
+
+		#US loses influence
+		random_country = {
+			limit = { tag = USA has_global_flag = blocsenabled }
+			diplomatic_influence = { who = SVI value = -100 }
+			relation = { who = SVI value = -100 }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
 }
+
+#Break up of the Indochinese Union
 country_event = {
   id = 8018021
-  title = EVT_8018021_NAME
+  title = "The Dissolution of the Indochinese Union"
   desc = EVT_8018021_DESC
   picture = "nwo2_french_vietnam"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = ICU
-government = colonial_government
-	war = no
-	election = no
-	year = 1950 
-	is_vassal = yes
-	NOT = { year = 1963 }
-  }
+	trigger = {
+		tag = ICU
+		year = 1950 
+		NOT = { year = 1990 }
+		
+		OR = { 
+			government = democracy 
+			government = democracy1 
+			government = hms_government 
+			government = hms_government1 
+		}
+		war = no
+		is_vassal = no
+	}
 
-  mean_time_to_happen = { months = 4 }
+	mean_time_to_happen = { months = 4 }
 
-  option = {
-    name = EVT_8018021_A
-	release = CAM 
-	release = LUA 
+	option = {
+		name = "We don't mind"
+		release = CAM 
+		release = LUA 
+		
+		DAI = { all_core = { add_core = ICU } }
+		CAM = { government = absolute_monarchy country_event = 800050 ruling_party_ideology = conservative all_core = { add_core = ICU } }
+		LUA = { government = absolute_monarchy country_event = 800050 ruling_party_ideology = conservative all_core = { add_core = ICU } }
 
-FRA = { release_vassal = ICU }
+		change_tag = DAI
 
-ICU = { government = hms_government }
+		ai_chance = { factor = 0.7 }
+	}
 
-CAM = { government = absolute_monarchy }
-LUA = { country_event = 800050 }
-
-LUA = { government = absolute_monarchy }
-LUA = { country_event = 800050 }
-
-	change_tag = DAI
-
-FRA = { diplomatic_influence = { who = CAM value = 200 } }
-FRA = { diplomatic_influence = { who = LUA value = 200 } }
-	ai_chance = { factor = 0.7 }
-  }
-
-  option = {
-    name = EVT_8018021_B
-	any_pop = { militancy = 2.5 consciousness = 1.0 }
-any_owned = { limit = { OR = { is_core = DAI is_core = LUA is_core = CAM } } add_core = ICU }
-	ai_chance = { factor = 0.3 }
-  }
-}
-country_event = {
-  id = 8018022
-  title = EVT_8018022_NAME
-  desc = EVT_8018022_DESC
-  picture = "diem_coup"
-  fire_only_once = yes
-
-  trigger = {
-    tag = SVI
-	year = 1963 NOT = { year = 1971 }
-    has_country_flag = self_immolation
-	government = presidential_dictatorship
-  }
-
-  mean_time_to_happen = { months = 8  }
-
-  option = {
-    name = EVT_8018022_A
-	country_event = 8018014 
-	relation = { who = DAI value = 50 } 
-	USA = { diplomatic_influence = { who = SVI value = 100 } }
-	ai_chance = { factor = 0.9 }
-  }
-
-  option = {
-    name = EVT_8018022_B
-	ai_chance = { factor = 0.1 }
-	country_event = 8018023 
-	relation = { who = DAI value = -50 } 
-  }
-}
-country_event = {
-  id = 8018023
-  title = EVT_8018023_NAME
-  desc = EVT_8018023_DESC
-  picture = "nwo2_ngo_dinh_diem"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8018023_A
-	any_pop = { militancy = 2.5  consciousness = 1.0 }
-  }
+	option = {
+		name = "This is not what we want"
+		
+		#Everyone gets angry
+		any_owned = { 
+			limit = { OR = { is_core = DAI is_core = LUA is_core = CAM } } 
+			any_pop = { 
+				militancy = 7 
+				consciousness = 7 
+			}
+		}
+		
+		#Add cores
+		DAI = { all_core = { add_core = ICU add_province_modifier = { name = nationalist_agitation duration = 3650 } } }
+		CAM = { all_core = { add_core = ICU add_province_modifier = { name = nationalist_agitation duration = 3650 } } }
+		LUA = { all_core = { add_core = ICU add_province_modifier = { name = nationalist_agitation duration = 3650 } } }
+		
+		ai_chance = { factor = 0.3 }
+	}
 }

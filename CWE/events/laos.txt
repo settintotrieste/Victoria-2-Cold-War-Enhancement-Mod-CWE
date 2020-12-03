@@ -1,103 +1,196 @@
+#New King
 country_event = {
   id = 8008410
-  title = EVT_8008410_NAME
+  title = "Death of King Sisavang Vong"
   desc = EVT_8008410_DESC
   picture = "nwo2_sisavang_vong"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = LUA
-    year = 1954 NOT = { year = 1959 }
-is_vassal = no
-	OR = { government = hms_government government = absolute_monarchy }
-  }
+	trigger = {
+		tag = LUA
+		year = 1954 
+		NOT = { year = 1990 }
+		
+		OR = { government = hms_government government = hms_government1 government = absolute_monarchy }
+		
+		is_vassal = no
+	}
 
-  mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 2 }
 
-  option = {
-    name = EVT_8008410_A
-	define_general = { name = "HM Sisavang Vong" personality = energetic background = no_background }
-	prestige = 10
-  }
+	option = {
+		name = "Rest in peace"
+		
+		#Communist support grows
+		any_pop = { 
+			limit = { strata = poor }
+			ideology = {
+				factor = 0.05
+				value = communist
+			}
+		}
+	}
 }
+
+#Laotian Civil War - Start
 country_event = {
   id = 8008411
-  title = EVT_8008411_NAME
-  desc = EVT_8008411_DESC
-  picture = "nwo2_kong_le_coup"
-  fire_only_once = yes
+  title = "The Laotian Civil War"
+  desc = EVTDESC8008411
+  picture = "nwo2_laotian_civil_war"
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = LUA
-    year = 1960 NOT = { year = 1961 }
-is_vassal = no
-	OR = { government = hms_government government = absolute_monarchy }
-  }
+	trigger = {
+		tag = LUA
+		year = 1959
+		NOT = { year = 1990 }
+		
+		OR = { government = hms_government government = hms_government1 government = absolute_monarchy }
+		
+		has_global_flag = blocsenabled
+		
+		is_vassal = no
+		war = no
+		
+		#Vietnam is communist
+		DAI = { ruling_party_ideology = communist }
+	}
 
-  mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8008411_A
-	government = presidential_dictatorship 
-	country_event = 800050
-	define_general = { name = "Kong Le" personality = energetic background = no_background }
-	ai_chance = { factor = 0.9 }
-  }
-
-  option = {
-    name = "Stick to the status quo"
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "The communist insurgency begins"
+		
+		#North Vietnamese choice to invade
+		random_country = {
+			limit = { tag = DAI is_vassal = no }
+			country_event = 8008412
+		}
+		
+		#Communist support surges
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = 10
+			ideology = {
+				factor = 0.50
+				value = communist
+			}
+		}
+		
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = {
+				factor = 0.50
+				value = conservative
+			}
+		}
+		
+	}
 
 }
+
+#Laotian Civil War - DAI
 country_event = {
   id = 8008412
-  title = EVT_8008412_NAME
-  desc = EVT_8008412_DESC
-  picture = "nwo2_kong_le_coup"
-  fire_only_once = yes
+  title = "The Laotian Civil War"
+  desc = EVTDESC8008411
+  picture = "nwo2_laotian_civil_war"
+  
+	is_triggered_only = yes
 
-  trigger = {
-    tag = LUA
-    year = 1961 NOT = { year = 1962 }
-government = presidential_dictatorship
-is_vassal = no
-  }
+	option = {
+		name = "Aid our communist brothers in Laos"
+		
+		war = { 
+			target = LUA
+			attacker_goal = { casus_belli = make_puppet }
+			defender_goal = { casus_belli = humiliate }
+			call_ally = no
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
 
-  mean_time_to_happen = { months = 2 }
-
-  option = {
-    name = EVT_8008412_A
-	government = absolute_monarchy country_event = 800050
-	define_general = { name = "H.R.H. Savang Vatana" personality = energetic background = no_background }
-	ai_chance = { factor = 0.9 }
-  }
-
-  option = {
-    name = "Stick to the status quo"
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Let them settle their issues on their own"
+		ai_chance = { factor = 0.1 }
+	}
 
 }
+
+#Kong Le's Coup
+country_event = {
+  id = 8008413
+  title = "Kong Le's Coup"
+  desc = EVTDESC8008413
+  picture = "nwo2_kong_le_coup"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = LUA
+		year = 1960 
+		NOT = { year = 1990 }
+		
+		OR = { government = hms_government government = hms_government1 government = absolute_monarchy }
+		
+		is_vassal = no
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "The neutralists are now in charge"
+		government = presidential_dictatorship 
+		country_event = 800050
+		ruling_party_ideology = nationalist
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Stick to the status quo"
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#The Battle of Vientiane
 country_event = {
   id = 8008414
-  title = EVT_8008414_NAME
-  desc = EVT_8008414_DESC
-  picture = "nwo2_pathet_lao"
-  fire_only_once = yes
+  title = "The Battle of Vientiane"
+  desc = EVTDESC8008414
+  picture = "nwo2_LUA_1960_vientiane"
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = LUA
-    year = 1991 NOT = { year = 1990 }
-	government = proletarian_dictatorship
-  }
+	trigger = {
+		tag = LUA
+		year = 1960
+		NOT = { year = 1990 }
+		
+		government = presidential_dictatorship
+		ruling_party_ideology = nationalist
+		
+		is_vassal = no
+	}
 
-  mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 10 }
 
-  option = {
-    name = EVT_8008414_A
-	define_general = { name = "Souphanouvong" personality = energetic background = no_background }
-  }
+	option = {
+		name = "The King returns!"
+		government = absolute_monarchy 
+		country_event = 800050
+		ruling_party_ideology = conservative
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Stick to the status quo"
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.1 }
+	}
+
 }
