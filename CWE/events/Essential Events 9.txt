@@ -7820,3 +7820,89 @@ country_event = {
 	}
 
 }
+
+#USSR overthrow the reformists
+country_event = {
+	id = 1610132
+	title = "Coup by the Soviet Hardliners?"
+	desc = EVTDESC1610132
+	picture = "soviet_coup_no_reformists"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		
+		government = proletarian_dictatorship
+		war = yes
+		is_vassal = no
+		
+		ruling_party_ideology = communist_social
+		war_policy = pacifism
+		
+		#Must be losing the war
+		national_provinces_occupied = 0.10
+		
+		#THIS is not an aggressor
+		NOT = { has_country_flag = this_is_aggressor }
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "Remove the pacifists!"
+		
+		#Switch to hardliners
+		ruling_party_ideology = communist
+		
+		#Purge the government
+		any_pop = { 
+			limit = { OR = { type = officers type = bureaucrats type = aristocrats } } 
+			reduce_pop = 0.90
+			ideology = { factor = 0.25 value = communist } 
+			dominant_issue = {
+				value = jingoism
+				factor = 0.25
+			}
+		}
+		
+		#Middle class is pissed
+		any_pop = { 
+			limit = { NOT = { type = bureaucrats } strata = middle } 
+			militancy = 5
+			ideology = { factor = 0.25 value = liberal } 
+		}
+		
+		#Lower class doesn't really care
+		any_pop = { 
+			limit = { NOT = { type = soldiers } strata = poor } 
+			militancy = 1
+			ideology = { factor = 0.05 value = liberal } 
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "The coup fails"
+		
+		add_country_modifier = { name = political_strife duration = 365 }
+		
+		#Hardliners are furious
+		any_pop = {
+			limit = { OR = { type = officers type = bureaucrats type = aristocrats } } 
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+			dominant_issue = {
+				value = jingoism
+				factor = 0.25
+			}
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
+}

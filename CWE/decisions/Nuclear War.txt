@@ -16,16 +16,33 @@ nuclear_ultimatum = {
 		}
 
 		allow = {
+		
+			#Pacifists will never choose to blow up the world
+			NOT = { war_policy = pacifism }
 
 			NOT = { has_country_modifier = nuclear_system_down }
 
 			OR = { 
+			
+				ai = no
+				
+				#Escalation if tatical nukes were used
+				AND = { 
+					NOT = { war_policy = pacifism } 
+					any_owned_province = { has_province_modifier = tactical_nuked } 
+				}
 
-				has_country_modifier = defcon1 
-
-				AND = { NOT = { war_policy = pacifism } ai = no }
-
-				AND = { national_provinces_occupied = 0.40 war_policy = jingoism any_owned_province = { has_province_modifier = tactical_nuked } }
+				#Normal willingness
+				AND = { 
+					national_provinces_occupied = 0.40 
+					war_policy = jingoism 
+				}
+				
+				#Special cases
+				AND = { 
+					national_provinces_occupied = 0.20
+					has_country_flag = more_willing_nuke_behaviour 
+				}
 
 			}
 
@@ -51,7 +68,9 @@ nuclear_ultimatum = {
 
 		}
 	
-		ai_will_do = { factor = 0.25 }
+		ai_will_do = { 
+			factor = 0.75 
+		}
 
 	}
 
@@ -64,16 +83,25 @@ fire_tactical_nuke = {
 		}
 
 		allow = {
+		
+			#Pacifists will never choose to blow up the world
+			NOT = { war_policy = pacifism }
 	
 			NOT = { has_country_modifier = nuclear_system_down }
 
 			OR = { 
+			
+				ai = no
 
-				has_country_modifier = defcon1 
-
-				AND = { NOT = { war_policy = pacifism } ai = no }
+				has_country_modifier = defcon1
 
 				any_owned_province = { has_province_modifier = tactical_nuked } 
+				
+				#Special cases
+				AND = { 
+					national_provinces_occupied = 0.20
+					has_country_flag = more_willing_nuke_behaviour 
+				}
 
 			}
 
@@ -87,7 +115,7 @@ fire_tactical_nuke = {
 		}
 		
 		ai_will_do = { 
-			factor = 0.75
+			factor = 0.25
 		}
 
 	}
