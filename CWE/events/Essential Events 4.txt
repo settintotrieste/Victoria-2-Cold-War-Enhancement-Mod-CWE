@@ -95,123 +95,6 @@ country_event = {
 		remove_country_modifier = anti_war_strike 
 	}
 }
-
-#UNSC Veto Option
-country_event = {
-	id = 1412013
-	title = "UN Resolution to end $FROMCOUNTRY$'s conflict"
-	desc = "$FROMCOUNTRY$ is currently facing an war with another country and has requested United Nations intervention to stop the war. As a Permanent Member of the UNSC, should we let the resolution pass?"
-	picture = "unsc_vote"
-
-	is_triggered_only = yes
-	
-	option = {
-		name = "Support the Resolution!"
-
-any_country = { 
-limit = { NOT = { alliance_with = FROM } war_policy = pacifism }
-relation = { who = THIS value = 10 } 
-}
-
-any_country = { 
-limit = { alliance_with = FROM } 
-relation = { who = THIS value = 50 } 
-}
-
-any_country = { 
-limit = { war_with = FROM } 
-relation = { who = THIS value = -50 } 
-}
-
-any_pop = {
-dominant_issue = {
-	value = pacifism
-	factor = 0.05
-}
-	}
-
-relation = { who = FROM value = 50 }
-
-ai_chance = { 
-factor = 1 
-modifier = { 
-factor = 0 
-NOT = { relation = { who = FROM value = 0 } }
-		}
-}
-		}
-
-	option = {
-		name = "Abstain from voting!"
-
-prestige = -25
-
-relation = { who = FROM value = -50 }
-
-any_country = { 
-limit = { NOT = { alliance_with = FROM } war_policy = pacifism }
-relation = { who = THIS value = -10 } 
-}
-
-any_country = { 
-limit = { alliance_with = FROM } 
-relation = { who = THIS value = -50 } 
-}
-
-any_country = { 
-limit = { war_with = FROM } 
-relation = { who = THIS value = 50 } 
-}
-
-ai_chance = { 
-factor = 1 
-modifier = { 
-factor = 0 
-OR = { NOT = { relation = { who = FROM value = -150 } } relation = { who = FROM value = 0 } }
-		}
-}
-		}
-
-	option = {
-		name = "Veto the Resolution!"
-
-prestige = -20
-
-FROM = { add_country_modifier = { name = resolution_vetoed_unsc duration = 600 } }
-
-any_country = { limit = { AND = { war_with = THIS has_country_modifier = called_allies_un } } add_country_modifier = { name = resolution_vetoed_unsc duration = 600 } }
-
-relation = { who = FROM value = -100 }
-
-any_country = { 
-limit = { NOT = { alliance_with = FROM } war_policy = pacifism }
-relation = { who = THIS value = -20 } 
-}
-
-any_country = { 
-limit = { alliance_with = FROM } 
-relation = { who = THIS value = -100 } 
-}
-
-any_country = { 
-limit = { war_with = FROM } 
-relation = { who = THIS value = 100 } 
-}
-
-any_pop = {
-dominant_issue = {
-	value = jingoism
-	factor = 0.05
-}
-	}
-
-ai_chance = { 
-factor = 1 
-modifier = { factor = 0 NOT = { relation = { who = FROM value = -150 } } }
-}
-		}
-
-	}
 	
 #1412014 to 1412018 is found in virus epidemic.txt
 
@@ -814,54 +697,64 @@ country_event = {
 	desc = EVTDESC1412042
 	picture = "uniting_for_peace"
 
-is_triggered_only = yes
+	is_triggered_only = yes
 	
 	option = {
-		name = "Vote in favour"
-relation = { who = FROM value = 20 }
-any_country = { limit = { is_vassal = no war_with = FROM } country_event = 1412043 }
-
-ai_chance = { factor = 1 modifier = { factor = 0 NOT = { relation = { who = FROM value = 100 } } } }
-					}
-	option = {
-		name = "Vote against"
-relation = { who = FROM value = -20 }
-any_country = { limit = { war_with = FROM } relation = { who = THIS value = 10 } }
-
-ai_chance = { factor = 1 modifier = { factor = 0 relation = { who = FROM value = 100 } } }
-					}
-
+		name = "Vote in favour of $FROMCOUNTRY$!"
+		relation = { who = FROM value = 20 }
+		any_country = { 
+			limit = { 
+				is_vassal = no 
+				war_with = FROM 
+			} 
+			country_event = 1412043 
 		}
+
+		ai_chance = { 
+			factor = 1 
+			modifier = { 
+				factor = 0 
+				NOT = { relation = { who = FROM value = 100 } } 
+			} 
+		}
+	}
+	option = {
+		name = "Vote against $FROMCOUNTRY$!"
+		relation = { who = FROM value = -20 }
+		any_country = { 
+			limit = { war_with = FROM } 
+			relation = { who = THIS value = 10 } 
+		}
+
+		ai_chance = { 
+			factor = 1 
+			modifier = { 
+				factor = 0 
+				relation = { who = FROM value = 100 } 
+			} 
+		}
+	}
+
+}
 
 #Uniting for Peace war with Recipients
 country_event = {
 	id = 1412043
-	title = "$FROMCOUNTRY$ condemns our nation's war"
-	desc = "As the UNSC failed to pass the opposing nation's resolution to end the conflict, they decided to use the Uniting for Peace Resolution to impose sanctions on our nation. $FROMCOUNTRY$ voted to condemn us."
+	title = "$FROMCOUNTRY$ Condemns $COUNTRY$"
+	desc = "As the UNSC failed to pass the opposing nation's resolution to end the conflict, they decided to use a Uniting for Peace Resolution to impose sanctions on our nation. $FROMCOUNTRY$ voted to condemn us."
 	picture = "uniting_for_peace"
 
-is_triggered_only = yes
+	is_triggered_only = yes
 	
 	option = {
 		name = "SAD, but the war goes on!"
-prestige = -25
-badboy = 3
-money = -50000
-add_tax_relative_income = -10
-ai_chance = { factor = 1 modifier = { factor = 0 money = 200000 } }
-					}
+		prestige = -25
+		badboy = 3
+		money = -50000
+		add_tax_relative_income = -10
+	}
 
-	option = {
-		name = "Sue for peace!"
-prestige = -100
-
-any_country = { limit = { AND = { exists = yes NOT = { tag = REB } is_vassal = no war_with = THIS } } prestige = 10 country_event = 1512251 }
-
-ai_chance = { factor = 1 modifier = { factor = 0 NOT = { money = 200000 } } }
-					}
-
-
-		}
+}
 
 #Communist Togo
 country_event = {
