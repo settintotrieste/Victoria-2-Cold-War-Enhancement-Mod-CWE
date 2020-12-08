@@ -696,6 +696,356 @@ country_event = {
 	}
 }
 
+#Watergate - Republican Party - start
+country_event = {
+  id = 8015850
+  title = "The Watergate Scandal"
+  desc = EVT_8015850_DESC
+  picture = "nwo2_watergate"
+  
+	fire_only_once = yes
+
+	trigger = {
+    	tag = USA
+		year = 1972 NOT = { year = 1990 }
+    	war = no
+		government = democracy
+		OR = { 
+			has_country_flag = nixon_elected
+			ruling_party_ideology = conservative
+			ruling_party_ideology = big_tent
+		}
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "Can we cover this issue up?"
+		any_pop = { consciousness = 2 }
+		set_country_flag = watergate_scandal_flag
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Nixon resigns to avoid further controversy"
+		prestige_factor = -0.05
+		
+		#Change leader
+		country_event = 111222
+		
+		#Add Democrat support
+		any_pop = { ideology = { factor = 0.1 value = liberal } }
+		
+		#Republican are furious
+		any_pop = {
+			scaled_militancy = {
+				factor = 5
+				ideology = conservative
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = populist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+#Watergate - Republican Party - Investigation
+country_event = {
+  id = 8015851
+  title = "The Watergate Investigation"
+  desc = EVT_8015851_DESC
+  picture = "nwo2_watergate"
+  
+	fire_only_once = yes
+  
+  	trigger = {
+    	tag = USA
+		year = 1972 NOT = { year = 1990 }
+    	war = no
+		government = democracy
+		
+		OR = { 
+			has_country_flag = nixon_elected
+			ruling_party_ideology = conservative
+			ruling_party_ideology = big_tent
+		}
+		
+		has_country_flag = watergate_scandal_flag
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = EVT_8015851_A
+		any_pop = { militancy = 5 consciousness = 1 }
+		set_country_flag = watergate_scandal_flag_stage_2
+	}
+}
+
+#Watergate - Republican Party
+country_event = {
+  id = 8015852
+  title = "The Watergate Investigation Complete"
+  desc = EVT_8015852_DESC
+  picture = "nwo2_watergate_investigation"
+  
+	fire_only_once = yes
+  
+  	trigger = {
+    	tag = USA
+		year = 1972 NOT = { year = 1990 }
+    	war = no
+		government = democracy
+		
+		OR = { 
+			has_country_flag = nixon_elected
+			ruling_party_ideology = conservative
+			ruling_party_ideology = big_tent
+		}
+		
+		has_country_flag = watergate_scandal_flag
+		has_country_flag = watergate_scandal_flag_stage_2
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "Gracefully resign"
+		any_pop = { militancy = -5 consciousness = -1 }
+		country_event = 8015810
+		ai_chance = { factor = 0.80 }
+	}
+
+	option = {
+		name = "Let the senate decide Nixon's fate"
+		any_pop = { militancy = 5 consciousness = 1 }
+		
+		set_country_flag = watergate_scandal_flag_stage_3
+		
+		ai_chance = { factor = 0.10 }
+	}
+
+	option = {
+		name = "Try all remaining tricks!"
+		any_pop = { militancy = 2.5 consciousness = 5 }
+		
+		#Dictatorship?
+		set_country_flag = watergate_scandal_flag_stage_dictatorship_end
+		
+		ai_chance = { factor = 0.10 }
+	}
+}
+
+#Impeachment of the President Nixon
+country_event = {
+  id = 8015853
+  title = "The Impeachment of President Nixon?"
+  desc = EVT_8015853_DESC
+  picture = "nixon_civil_war"
+  
+	fire_only_once = yes
+  
+  	trigger = {
+    	tag = USA
+		year = 1972 NOT = { year = 1990 }
+    	war = no
+		government = democracy
+		
+		OR = { 
+			has_country_flag = nixon_elected
+			ruling_party_ideology = conservative
+			ruling_party_ideology = big_tent
+		}
+		
+		has_country_flag = watergate_scandal_flag
+		has_country_flag = watergate_scandal_flag_stage_2
+		has_country_flag = watergate_scandal_flag_stage_3
+	}
+
+	mean_time_to_happen = { months = 3 }
+
+	option = {
+		name = "Nixon's fate rests on the Senate"
+		
+		#Chance of impeachment
+		random_list = {
+			60 = { country_event = 1610032 } #Impeached - generic event
+			40 = { country_event = 8015855 } #Acquitted leads to weakening of democracy
+		}
+		
+		ai_chance = { factor = 1 }
+	}
+
+}
+
+#Watergate - dictatorship ending
+country_event = {
+  id = 8015854
+  title = "Save Nixon by Suspending the Constitution?"
+  desc = EVTDESC80158545
+  picture = "nwo2_impeachment"
+  
+	fire_only_once = yes
+  
+  	trigger = {
+    	tag = USA
+		year = 1972 
+		NOT = { year = 1990 }
+    	
+		government = democracy
+		war = no
+		is_vassal = no
+		
+		OR = { 
+			has_country_flag = nixon_elected
+			ruling_party_ideology = conservative
+			ruling_party_ideology = big_tent
+		}
+		
+		has_country_flag = watergate_scandal_flag
+		has_country_flag = watergate_scandal_flag_stage_dictatorship_end
+	}
+
+	mean_time_to_happen = { months = 3 }
+
+	option = {
+		name = "We must act decisively!"
+		
+		government = presidential_dictatorship
+		country_event = 800050
+		ruling_party_ideology = conservative
+		
+		#Military becomes more disloyal
+		remove_country_modifier = military_loyalty_high
+		add_country_modifier = { name = military_loyalty_medium duration = -1 }
+		remove_country_modifier = military_loyalty_low
+		
+		#Democrats are furious
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = liberal
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = progressive
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = socialist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist_social
+			}
+		}
+		
+		set_country_flag = nixon_entrenched
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "We will not blatantly destroy democracy!"
+		
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
+		
+		#Weaken US democracy
+		political_reform = regulated_opinion
+		political_reform = universal_weighted_voting
+		political_reform = quality_of_service
+		
+		#Military becomes more disloyal
+		remove_country_modifier = military_loyalty_high
+		remove_country_modifier = military_loyalty_medium
+		add_country_modifier = { name = military_loyalty_low duration = -1 }
+		
+		#Republican are furious
+		any_pop = {
+			scaled_militancy = {
+				factor = 5
+				ideology = conservative
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = populist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+		}
+		
+		clr_country_flag = nixon_entrenched
+		ai_chance = { factor = 0.2 }
+	}
+	
+}
+
+#Watergate - weakened democracy ending
+country_event = {
+  id = 8015855
+  title = "President Nixon is Acquitted"
+  desc = EVTDESC8015855
+  picture = "nwo2_impeachment_acquitted"
+  
+	is_triggered_only = yes
+
+	option = {
+		name = "A win for Nixon, a loss for America"
+		
+		#Weaken US democracy
+		political_reform = regulated_opinion
+		political_reform = universal_weighted_voting
+		political_reform = quality_of_service
+		
+		#Democrats are furious
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = liberal
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = progressive
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = socialist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist_social
+			}
+		}
+		
+	}
+	
+}
+
 #Reganomics - Republican Party
 country_event = {
   id = 8015847
@@ -734,384 +1084,115 @@ country_event = {
 	
 }
 
-#Watergate - Republican Party
-country_event = {
-  id = 8015850
-  title = EVT_8015850_NAME
-  desc = EVT_8015850_DESC
-  picture = "nwo2_watergate"
-  fire_only_once = yes
-
-  trigger = {
-    	tag = USA
-	year = 1972 NOT = { year = 1990 }
-    	war = no
-	government = democracy
-	OR = { 
-	has_country_flag = nixon_elected
-	ruling_party_ideology = conservative
-	ruling_party_ideology = big_tent
-	}
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8015850_A
-	any_pop = { consciousness = 0.5 }
-	set_country_flag = watergate_scandal_flag
-	country_event = { id = 8015851 days = 300 }
-  }
-}
-country_event = {
-  id = 8015851
-  title = EVT_8015851_NAME
-  desc = EVT_8015851_DESC
-  picture = "nwo2_watergate"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8015851_A
-	any_pop = { militancy = 0.5 consciousness = 0.1 }
-	country_event = { id = 8015852 days = 150 }
-  }
-}
-country_event = {
-  id = 8015852
-  title = EVT_8015852_NAME
-  desc = EVT_8015852_DESC
-  picture = "nwo2_watergate"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8015852_A
-	any_pop = { militancy = -0.5 consciousness = -0.1 }
-	country_event = 8015810 
-	ai_chance = { factor = 0.80 }
-  }
-
-  option = {
-    name = EVT_8015852_B
-	any_pop = { militancy = 0.5 consciousness = 1 }
-	country_event = 8015853 
-	ai_chance = { factor = 0.10 }
-  }
-
-  option = {
-    name = EVT_8015852_C
-	any_pop = { militancy = 2.5 consciousness = 0.5 }
-	country_event = 8015854 
-	ai_chance = { factor = 0.10 }
-  }
-}
-country_event = {
-  id = 8015853
-  title = EVT_8015853_NAME
-  desc = EVT_8015853_DESC
-  picture = "nwo2_impeachment"
-  is_triggered_only = yes # USA
-
-  option = {
-    name = EVT_8015853_A
-	country_event = 8015855 
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8015853_B
-	any_pop = { militancy = 0.2 consciousness = 0.5 }
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8015854
-  title = EVT_8015854_NAME
-  desc = EVT_8015854_DESC
-  picture = "nwo2_impeachment"
-  is_triggered_only = yes # USA
-
-  option = {
-    name = EVT_8015854_A
-	country_event = 8015855 
-	ai_chance = { factor = 0.75 }
-  }
-
-  option = {
-    name = EVT_8015854_B
-	ai_chance = { factor = 0.25 }
-	any_pop = { militancy = 2.0 consciousness = 1 }
-	set_country_flag = nixon_entrenched
-  }
-}
-country_event = {
-  id = 80158545
-  title = "Entrench Nixon?"
-  desc = EVTDESC80158545
-  picture = "nwo2_impeachment"
-  fire_only_once = yes
-  
-  trigger = { 
-  tag = USA
-  has_country_flag = nixon_entrenched
-  government = democracy
-  year = 1974
-  average_militancy = 4
-  }
-  mean_time_to_happen = { months = 12 }
-  
-  option = {
-    name = "We must act."
-	ruling_party_ideology = conservative
-	government = presidential_dictatorship
-	country_event = 800050
-	any_pop = { militancy = 1.0 consciousness = 1.0 }
-	ai_chance = { factor = 0.2 }
-  }
-
-  option = {
-    name = "We will not blatantly destroy democracy."
-	ai_chance = { factor = 0.8 }
-	clr_country_flag = nixon_entrenched
-  }
-}
-country_event = {
-  id = 8015855
-  title = EVT_8015855_NAME
-  desc = EVT_8015855_DESC
-  picture = "nwo2_nixon_leaves"
-  is_triggered_only = yes # USA
-
-  option = {
-    name = EVT_8015855_A
-	prestige = -10
-  }
-}
-country_event = {
-  id = 80158546
-  title = "Suspend the Constitution?"
-  desc = EVTDESC80158546
-  picture = "nixon_civil_war"
-  fire_only_once = yes
-  
-  trigger = { 
-  tag = USA
-  has_country_flag = nixon_elected
-  NOT = { has_country_flag = nixon_resigns }
-  government = democracy
-  year = 1970
-  average_militancy = 7
-  }
-  mean_time_to_happen = { months = 4 }
-  
-  option = {
-    name = "We must declare a state of emergency."
-	ruling_party_ideology = conservative
-	government = presidential_dictatorship
-	country_event = 800050
-	any_pop = { militancy = -3.0 consciousness = 3.0 }
-	ai_chance = { factor = 0.8 }
-  }
-
-  option = {
-    name = "America will survive this crisis."
-	ai_chance = { factor = 0.2 }
-  }
-}
-country_event = {
-  id = 8015855
-  title = EVT_8015855_NAME
-  desc = EVT_8015855_DESC
-  picture = "nwo2_nixon_leaves"
-  is_triggered_only = yes # USA
-
-
-  option = {
-    name = EVT_8015855_A
-	prestige = -500
-  }
-}
-
-#US-Pakistan Defence Pact, 1954
-country_event = {
-  id = 8015856
-  title = EVT_8015856_NAME
-  desc = EVT_8015856_DESC
-  picture = "nwo2_pakistani_coup_1977"
-  fire_only_once = yes
-
-  trigger = {
-    	tag = USA
-	government = democracy
-	is_greater_power = yes
-	has_global_flag = blocsenabled
-	is_greater_power = yes
-	year = 1954 NOT = { year = 1960 }
-    	exists = PAK
-	PAK = { is_vassal = no }
-	HND = { exists = yes }
-	relation = { who = PAK value = 0 }
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8015856_A
-	PAK = { country_event = 8011024 }
-	ai_chance = { factor = 0.9 }
-  }
-
-  option = {
-    name = EVT_8015856_B
-	any_pop = { militancy = 0.1 consciousness = 0.2 }
-	relation = { who = PAK value = -75 } 
-	ai_chance = { factor = 0.1 }
-  }
-}
-
-#Disabled
-country_event = {
-  id = 8015857
-  title = EVT_8015857_NAME
-  desc = EVT_8015857_DESC
-  picture = "nwo2_pakistani_coup_1977"
-  fire_only_once = yes
-
-  trigger = {
-    tag = USA
-	year = 1954 NOT = { year = 1959 }
-    has_global_flag = event_fired_8011024
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8015857_A
-	money = -15000
-	relation = { who = PAK value = 75 } 
-	relation = { who = HND value = -35 } 
-	diplomatic_influence =  { who = PAK value = 100 }
-	PAK = { country_event = 8011025 }
-  }
-}
-country_event = {
-  id = 8015858
-  title = EVT_8015858_NAME
-  desc = EVT_8015858_DESC
-  picture = "nwo2_kashmir"
-  is_triggered_only = yes # event_fired_8007260
-
-  option = {
-    name = EVT_8015858_A
-	relation = { who = PAK value = -100 } 
-	relation = { who = HND value = -50 } 
-  }
-}
-country_event = {
-  id = 8015859
-  title = EVT_8015859_NAME
-  desc = EVT_8015859_DESC
-  picture = "nwo2_kashmir"
-  is_triggered_only = yes # event_fired_8229120
-
-  option = {
-    name = EVT_8015859_A
-	relation = { who = HND value = 75 } 
-	HND = { country_event = 8007276 } 
-	relation = { who = PAK value = -50 } 
-  }
-}
-
 #Impeachment of Bill Clinton - Start
 country_event = {
 	id = 8015860
-title = "Clinton–Lewinsky Scandal"
+	title = "Clinton–Lewinsky Scandal"
 	desc = EVTDESC8015860
 	picture = "clinton_lewinsky_scandal"
 
-fire_only_once = yes
+	fire_only_once = yes
 
-trigger = {
-tag = USA
-government = democracy
-year = 1998
-NOT = { year = 2008 }
-is_vassal = no
-war = no
-ruling_party_ideology = liberal
+	trigger = {
+		tag = USA
+		year = 1998
+		NOT = { year = 2004 }
+		
+		government = democracy
+
+		is_vassal = no
+		war = no
+		ruling_party_ideology = liberal
 	}
 
-mean_time_to_happen = { 
-months = 8
+	mean_time_to_happen = { 
+		months = 8
 	}
 
-option = {
-name = "I did not have sexual relations with that woman!"
-any_pop = { limit = { OR = { pop_majority_ideology = conservative pop_majority_ideology = traditionalist } } ideology = { factor = -0.02 value = liberal } }
-set_country_flag = bill_clinton_impeachment_trial
-ai_chance = { factor = 0.9 }
+	option = {
+		name = "I did not have sexual relations with that woman!"
+		any_pop = { ideology = { factor = -0.02 value = liberal } }
+		
+		#Republican are furious
+		any_pop = {
+			scaled_militancy = {
+				factor = 5
+				ideology = conservative
+			}
+			scaled_militancy = {
+				factor = 5
+				ideology = traditionalist
+			}
 		}
+		
+		set_country_flag = bill_clinton_impeachment_trial
+		ai_chance = { factor = 0.9 }
+	}
 
-option = {
-name = "Okay, I did do it"
-any_pop = { ideology = { factor = -0.05 value = liberal } }
+	option = {
+		name = "Okay, I did do it"
+		any_pop = { ideology = { factor = -0.05 value = liberal } }
 
-country_event = 111222
+		#Change leader
+		country_event = 111222
 
-remove_country_modifier = ruling_party_scandal
-remove_country_modifier = party_scandal_evidence 
+		remove_country_modifier = ruling_party_scandal
+		remove_country_modifier = party_scandal_evidence 
 
-ai_chance = { factor = 0.1 }
-		}
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
 #Impeachment of Bill Clinton - Trial, 75% chance of acquittal
 country_event = {
 	id = 8015861
-title = "Impeachment Trial of Bill Clinton"
+	title = "Impeachment Trial of Bill Clinton"
 	desc = EVTDESC8015861
 	picture = "clinton_impeachment_trial"
 
-fire_only_once = yes
+	fire_only_once = yes
 
-trigger = {
-tag = USA
-government = democracy
-year = 1998
-NOT = { year = 2008 }
-is_vassal = no
-war = no
-ruling_party_ideology = liberal
-has_country_flag = bill_clinton_impeachment_trial
+	trigger = {
+		tag = USA
+		year = 1998
+		NOT = { year = 2004 }
+		
+		government = democracy
+		is_vassal = no
+		war = no
+		
+		ruling_party_ideology = liberal
+		has_country_flag = bill_clinton_impeachment_trial
 	}
 
-mean_time_to_happen = { 
-months = 4
+	mean_time_to_happen = { 
+		months = 4
 	}
 
-option = {
-name = "Let the Senate decide!"
-random_list = {
-	75 = { country_event = 8015862 }
-	25 = { country_event = 1610032 }
-}
+	option = {
+		name = "Let the Senate decide!"
+		random_list = {
+			75 = { country_event = 8015862 } #Acquitted
+			25 = { country_event = 1610032 } #Impeached
 		}
+	}
 
 }
 
 #Impeachment of Bill Clinton - End
 country_event = {
 	id = 8015862
-title = "Bill Clinton is Acquitted"
+	title = "Bill Clinton is Acquitted"
 	desc = EVTDESC8015862
 	picture = "clinton_impeachment_acquittal"
 
-is_triggered_only = yes
+	is_triggered_only = yes
 
-option = {
-name = "This is right and just!"
-any_pop = { ideology = { factor = 0.10 value = liberal } }
-		}
+	option = {
+		name = "This is right and just!"
+		any_pop = { ideology = { factor = 0.05 value = liberal } }
+	}
 
 }
 
