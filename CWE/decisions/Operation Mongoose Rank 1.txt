@@ -1,228 +1,108 @@
 political_decisions = {
 
-change_rebels = {
+	instigate_rebels = {
 		picture = "change_rebels"
-		alert = no
+		
 		potential = {
+		
+			#Starting from the 1950s
 			wars_of_national_liberation = 1
-OR = { has_country_modifier = un_king1 has_country_modifier = un_king2 }
-
-OR = {
-
-AND = { 
-has_country_modifier = un_king1 
-OR = { has_global_flag = rank_1_high_rebels 
-has_global_flag = rank_1_low_rebels 
-has_global_flag = rank_1_no_rebels } 
-}
-
-AND = { 
-has_country_modifier = un_king2
-OR = { has_global_flag = rank_2_high_rebels 
-has_global_flag = rank_2_low_rebels 
-has_global_flag = rank_2_no_rebels } 
-}
-
-	}
-
-						}
-		allow = {
-
-election = no
-
-OR = { 
-
-ai = no 
-
-AND = { has_country_modifier = high_rebels NOT = { war_policy = jingoism } }
-
-AND = { has_country_modifier = low_rebels NOT = { war_policy = pro_military } }
-
-AND = { has_country_modifier = no_rebels NOT = { war_policy = pacifism } }
-
-}
-						}
-
-	effect = {
-remove_country_modifier = no_rebels
-remove_country_modifier = low_rebels
-remove_country_modifier = high_rebels
-
-#Clear global flag for Rank 1 GP
-random_owned = { 
-limit = { owner = { has_country_modifier = un_king1 } }
-owner = { clr_global_flag = rank_1_high_rebels clr_global_flag = rank_1_low_rebels clr_global_flag = rank_1_no_rebels }
-}
-
-#Clear global flag for Rank 2 GP
-random_owned = { 
-limit = { owner = { has_country_modifier = un_king2 } }
-owner = { clr_global_flag = rank_2_high_rebels clr_global_flag = rank_2_low_rebels clr_global_flag = rank_2_no_rebels }
-}
-
-	}
-		ai_will_do = { 
-			factor = 100 
+			
+			#Has a spy agency
+			has_country_modifier = spy_agency
+			
+			#Is a superpower
+			OR = { 
+				has_country_modifier = un_king1 
+				has_country_modifier = un_king2 
 			}
-	}
+			
+			#Not a unipolar world
+			any_greater_power = { has_country_modifier = un_king1 }
+			any_greater_power = { has_country_modifier = un_king2 }
+		}
 
-high_rebels = {
-		picture = "high_rebels"
-		potential = {
+		alert = no
+		
+		allow = {
+		
+			NOT = { has_country_modifier = superpower_rebels_timer }
 
-OR = {
+			NOT = { is_disarmed = yes }
+			
+			money = 125000
 
-AND = { 
-has_country_modifier = un_king1 
-NOT = { has_global_flag = rank_1_high_rebels 
-has_global_flag = rank_1_low_rebels 
-has_global_flag = rank_1_no_rebels } 
-}
+			OR = { 
+				war_policy = jingoism 
+				war_policy = pro_military 
+			}
+			
+			#Relation with rival superpower
+			OR = {
+				ai = no
+				any_greater_power = { 
+					has_country_modifier = un_king1 
+					NOT = { relation = { who = THIS value = -100 } } 
+				}
+				any_greater_power = { 
+					has_country_modifier = un_king2 
+					NOT = { relation = { who = THIS value = -100 } } 
+				}
+			}
+			
+		}
 
-AND = { 
-has_country_modifier = un_king2
-NOT = { has_global_flag = rank_2_high_rebels 
-has_global_flag = rank_2_low_rebels 
-has_global_flag = rank_2_no_rebels } 
-}
+		effect = {
+		
+			money = -100000
+		
+			badboy = 5
 
-	}
-
+			#Jingoism is more effective
+			random_owned = { 
+				limit = { owner = { war_policy = jingoism } }
+				owner = { 
+				
+					add_country_modifier = { name = superpower_rebels_timer duration = 730 }
+					
+					random_country = {
+						limit = { 
+							NOT = { tag = THIS }
+							OR = { 
+								has_country_modifier = un_king1 
+								has_country_modifier = un_king2 
+							} 
+						}
+						country_event = 1410112
 					}
-
-		allow = {
-			election = no
-			OR = { ai = no NOT = { badboy = 0.8 } }
-			OR = { ai = no war_policy = jingoism }
-						}
-
-	effect = {
-add_country_modifier = { name = high_rebels duration = -1 }
-
-#Add global flag for Rank 1 GP
-random_owned = { 
-limit = { owner = { has_country_modifier = un_king1 } }
-owner = { set_global_flag = rank_1_high_rebels }
-}
-
-#Add global flag for Rank 2 GP
-random_owned = { 
-limit = { owner = { has_country_modifier = un_king2 } }
-owner = { set_global_flag = rank_2_high_rebels }
-}
-
-	}
-
-		ai_will_do = { 
-			factor = 100 
+				}
 			}
 
-	}
-
-low_rebels = {
-		picture = "low_rebels"
-		potential = {
-
-OR = {
-
-AND = { 
-has_country_modifier = un_king1 
-NOT = { has_global_flag = rank_1_high_rebels 
-has_global_flag = rank_1_low_rebels 
-has_global_flag = rank_1_no_rebels } 
-}
-
-AND = { 
-has_country_modifier = un_king2
-NOT = { has_global_flag = rank_2_high_rebels 
-has_global_flag = rank_2_low_rebels 
-has_global_flag = rank_2_no_rebels } 
-}
-
-	}
-
+			#Pro military is less effective
+			random_owned = { 
+				limit = { owner = { war_policy = pro_military } }
+				owner = { 
+				
+					add_country_modifier = { name = superpower_rebels_timer duration = 1095 }
+					
+					random_country = {
+						limit = { 
+							NOT = { tag = THIS }
+							OR = { 
+								has_country_modifier = un_king1 
+								has_country_modifier = un_king2 
+							} 
+						}
+						country_event = 1410112
 					}
-
-		allow = {
-			election = no
-			OR = { ai = no NOT = { badboy = 0.8 } }
-			OR = { ai = no war_policy = pro_military }
-						}
-
-	effect = {
-add_country_modifier = { name = low_rebels duration = -1 }
-
-#Add global flag for Rank 1 GP
-random_owned = { 
-limit = { owner = { has_country_modifier = un_king1 } }
-owner = { set_global_flag = rank_1_low_rebels }
-}
-
-#Add global flag for Rank 2 GP
-random_owned = { 
-limit = { owner = { has_country_modifier = un_king2 } }
-owner = { set_global_flag = rank_2_low_rebels }
-}
-
-	}
-
-		ai_will_do = { 
-			factor = 100 
+				}
 			}
 
-	}
-
-no_rebels = {
-		picture = "no_rebels"
-		potential = {
-
-OR = {
-
-AND = { 
-has_country_modifier = un_king1 
-NOT = { has_global_flag = rank_1_high_rebels 
-has_global_flag = rank_1_low_rebels 
-has_global_flag = rank_1_no_rebels } 
-}
-
-AND = { 
-has_country_modifier = un_king2
-NOT = { has_global_flag = rank_2_high_rebels 
-has_global_flag = rank_2_low_rebels 
-has_global_flag = rank_2_no_rebels } 
-}
-
-	}
-
-					}
-
-		allow = {
-			election = no
-		OR = { ai = no war_policy = pacifism }
-						}
-
-	effect = {
-
-add_country_modifier = { name = no_rebels duration = -1 }
-
-#Add global flag for Rank 1 GP
-random_owned = { 
-limit = { owner = { has_country_modifier = un_king1 } }
-owner = { set_global_flag = rank_1_no_rebels }
-}
-
-#Add global flag for Rank 2 GP
-random_owned = { 
-limit = { owner = { has_country_modifier = un_king2 } }
-owner = { set_global_flag = rank_2_no_rebels }
-}
-
-	}
-
+		}
 		ai_will_do = { 
-			factor = 100 
-			}
-
+			factor = 1
+			modifier = { factor = 0 badboy = 0.5 }
+		}
 	}
 
 }

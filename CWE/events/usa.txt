@@ -63,16 +63,23 @@ country_event = {
 #Formation of Puerto Rico
 country_event = {
 	id = 1015801
-	title = EVT_1015801_NAME
+	title = "The Commonwealth of Puerto Rico"
 	desc = EVT_1015801_DESC
-	picture = "us_congress"
+	picture = "usa_pur_autonomy"
+	
 	fire_only_once = yes
 
 	trigger = {
 		tag = USA
-		NOT = { exists = PUR }
-		war = no
 		year = 1951
+		NOT = { year = 1990 }
+		
+		government = democracy
+		
+		war = no
+		is_vassal = no
+		
+		is_possible_vassal = PUR
 	}
 
 	mean_time_to_happen = {
@@ -80,31 +87,41 @@ country_event = {
 	}
 
 	option = {
-		name = EVT_1015801_A 
-		ai_chance = { factor = 0.9 }
+		name = "Create the Commonwealth"
+		prestige = 25
+		
 		release_vassal = PUR
+		PUR = { 
+			government = sar_government 
+			country_event = 800054 
+			ruling_party_ideology = conservative 
+		}
+		
 		diplomatic_influence = { who = PUR value = 200 } 
-		PUR = { government = sar_government }
-		prestige = 2
+		ai_chance = { factor = 0.9 }
 	}
 	
 	option = {
-		name = EVT_1015801_B 
-		ai_chance = { factor = 0.1 }
-		any_pop = {
-			limit = {
-				OR = { culture = mestizo culture = white_spanish culture = black_spanish }
-			}
-			consciousness = 1
-		}
-		any_country = {
-			limit = { 
-				OR = { 
-					primary_culture = mestizo primary_culture = white_spanish primary_culture = black_spanish } 
-				}
-			relation = { who = THIS value = -5 }
-		}
+		name = "Continue direct rule from Washington DC"
 		badboy = 5
+		
+		PUR = { 
+			all_core = { 
+			
+				any_pop = { 
+					militancy = 10
+					ideology = {
+						factor = 0.25
+						value = nationalist
+					}
+				}
+				
+				add_province_modifier = { name = nationalist_agitation duration = 3650 }
+			
+			} 
+		}
+		
+		ai_chance = { factor = 0.1 }
 	}
 
 }
@@ -112,7 +129,7 @@ country_event = {
 #Afghan Intervention
 country_event = {
 	id = 1015802
-	title = EVT_1015802_NAME
+	title = "The War in Afghanistan"
 	desc = EVT_1015802_DESC
 	picture = "intervention_in_afghanistan"
 	fire_only_once = yes
@@ -120,12 +137,21 @@ country_event = {
 	trigger = {
 		tag = USA
 		government = democracy
-		OR = { war_policy = jingoism war_policy = pro_military }
+		
+		#9/11 happened
 		has_country_flag = 911
-		war = no
+		
+		is_greater_power = yes
+		
+		OR = { 
+			war_policy = jingoism 
+			war_policy = pro_military 
+		}
+		
+		#Afghanistan is controlled by the Taliban
 		AFG = { 
 			is_vassal = no 
-			OR = { government = theocracy government = nationalist_dictatorship } 
+			OR = { government = theocracy ruling_party_ideology = traditionalist } 
 		}
 
 		PAK = { 
@@ -151,7 +177,7 @@ country_event = {
 		set_global_flag = afghanistan_war_911
 		
 		any_country = { 
-			limit = { alliance_with = USA } 
+			limit = { alliance_with = USA ai = yes } 
 			relation = { who = AFG value = -200 } 
 		}
 		any_country = { 
@@ -203,10 +229,18 @@ country_event = {
 	
 	trigger = {
 		tag = USA
-		exists = PNM
-		NOT = { war_with = PNM }
-		owns = 1723
 		year = 1999
+		
+		government = democracy
+		
+		war = no
+		is_vassal = no
+		
+		#Panama exists
+		PNM = { exists = yes is_vassal = no war = no }
+		
+		#Owns Panama Canal
+		owns = 1723
 	}
 	
 	mean_time_to_happen = {
@@ -215,13 +249,15 @@ country_event = {
 	
 	option = {
 		name = "EVTOPTA44200"
-		1723 = { secede_province = PNM }
 		prestige = 100
+		1723 = { secede_province = PNM }
+		relation = { who = PNM value = 100 }
 		ai_chance = { factor = 0.9 }
 	}
 	option = {
 		name = "EVTOPTB44200"
-		prestige_factor = -0.1
+		badboy = 5
+		relation = { who = PNM value = -100 }
 		ai_chance = { factor = 0.1 }
 	}
 }
@@ -242,7 +278,7 @@ country_event = {
 	trigger = {
 		tag = USA
 		year = 2001
-		month = 8
+		month = 9
 		government = democracy
 		is_greater_power = yes
 		NOT = { has_global_flag = blocsenabled }
@@ -285,6 +321,7 @@ country_event = {
 		set_global_flag = war_on_terror
 		
 		set_country_flag = 911
+		
 		country_event = 1511109 # Terrorism.txt; TODO check for UN headquarters or membership
 	}
 }
@@ -612,7 +649,7 @@ country_event = {
 #The Great Society - Democratic Party
 country_event = {
   id = 8015846
-  title = EVT_8015846_NAME
+  title = "The Great Society"
   desc = EVT_8015846_DESC
   picture = "nwo2_great_society"
   
@@ -621,22 +658,159 @@ country_event = {
 	trigger = {
 		tag = USA
 		year = 1964 
-		NOT = { year = 1968 }
+		NOT = { year = 1972 }
+		
 		government = democracy
+		
 		OR = { 
 			has_country_flag = lbj_elected
 			ruling_party_ideology = liberal
 			ruling_party_ideology = progressive
 			ruling_party_ideology = socialist
 		}
+		
+		money = 600000
 	}
 
 	mean_time_to_happen = { months = 6 }
 
 	option = {
-		name = EVT_8015846_A
+		name = "Truly, a great society we are"
+		money = -500000
 		any_pop = { militancy = -5 consciousness = -2 }
 		add_country_modifier = { name = great_society duration = 3650 }
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "What do you mean? Our society is already great!"
+		
+		#African Americans become more communist
+		any_pop = { 
+			limit = { culture = afro_american }
+			ideology = {
+				factor = 0.25
+				value = communist
+			}
+		}
+		
+		#Socialists are not happy
+		any_pop = {
+			limit = { is_primary_culture = yes }
+			scaled_militancy = {
+				factor = 10
+				ideology = socialist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist_social
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+#Women's liberation movement
+country_event = {
+  id = 8015847
+  title = "Women's Liberation Movement"
+  desc = EVTDESC8015847
+  picture = "nwo2_usa_womens_rights"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 1963
+		NOT = { year = 1990 }
+		
+		government = democracy
+		
+		#No support for working women
+		child_care = no_child_care
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "I welcome this development"
+		
+		#Increase progressive support
+		any_pop = { 
+			ideology = {
+				factor = 0.05
+				value = progressive
+			}
+		}
+		
+		#Conservatives are not happy
+		any_pop = {
+			scaled_militancy = {
+				factor = 3
+				ideology = conservative
+			}
+			scaled_militancy = {
+				factor = 5
+				ideology = traditionalist
+			}
+		}
+	}
+}
+
+#The Counterculture Years
+country_event = {
+  id = 8015848
+  title = "The Counterculture Years"
+  desc = EVTDESC8015848
+  picture = "nwo2_us_hippies"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 1965
+		NOT = { year = 1990 }
+		
+		government = democracy
+		
+		#War in Vietnam
+		war_with = DAI
+	}
+
+	mean_time_to_happen = { months = 3 }
+
+	option = {
+		name = "Where's the weed?"
+		
+		#Increase progressive support
+		any_pop = { 
+			limit = { literacy = 0.20 }
+			ideology = {
+				factor = 0.05
+				value = progressive
+			}
+			dominant_issue = {
+				value = pacifism
+				factor = 0.05
+			}
+		}
+		
+		#Conservatives are not happy
+		any_pop = {
+			scaled_militancy = {
+				factor = 3
+				ideology = conservative
+			}
+			scaled_militancy = {
+				factor = 5
+				ideology = traditionalist
+			}
+		}
 	}
 }
 
@@ -1102,6 +1276,8 @@ country_event = {
 
 		is_vassal = no
 		war = no
+		
+		#Democrat party
 		ruling_party_ideology = liberal
 	}
 
@@ -1162,7 +1338,9 @@ country_event = {
 		is_vassal = no
 		war = no
 		
+		#Democrat
 		ruling_party_ideology = liberal
+		
 		has_country_flag = bill_clinton_impeachment_trial
 	}
 
@@ -1239,6 +1417,275 @@ country_event = {
 			militancy = -3 
 			consciousness = 3 
 		}
+	}
+
+}
+
+#The Patriot Act
+country_event = {
+	id = 80158631
+	title = "The Patriot Act"
+	desc = EVTDESC80158631
+	picture = "USA_patriot_act"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 2001
+		NOT = { year = 2011 }
+		
+		government = democracy
+		is_greater_power = yes
+		
+		#9/11
+		has_global_flag = war_on_terror
+		
+		#Has reforms to repeal
+		NOT = { 
+			OR = { 
+				publishing_rights = censored_publishing 
+				publishing_rights = firewall_publishing 
+			} 
+		}
+		
+		NOT = { security_reform = preemptive_security_actions }
+		
+		#Republicans
+		ruling_party_ideology = conservative
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "This is a necessary evil"
+		
+		#Roll back press reforms and increase security reforms
+		political_reform = firewall_publishing
+		social_reform = preemptive_security_actions
+		
+		#Progressives are furious
+		any_pop = {
+			scaled_militancy = {
+				factor = 5
+				ideology = liberal
+			}
+			scaled_militancy = {
+				factor = 5
+				ideology = progressive
+			}
+		}
+		
+		#More progressive support
+		any_pop = { ideology = { factor = 0.05 value = progressive } }
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Freedom will not be the price of anti-terrorism"
+		
+		#Minority tensions increase
+		any_pop = {
+			limit = { is_primary_culture = no }
+			militancy = 5
+		}
+		
+		#Opposition says govt is weak
+		any_pop = { ideology = { factor = 0.05 value = liberal } }
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#The Housing Bubble of 2008
+country_event = {
+	id = 80158632
+	title = "The Housing Bubble of $YEAR$"
+	desc = EVTDESC80158632
+	picture = "USA_2008_bubble"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 2008
+		NOT = { year = 2016 }
+		
+		government = democracy
+		
+		#Has the appropriate economic climate
+		NOT = { has_country_modifier = bkrhigh }
+		
+		#Does not already have an economic crisis in the USA
+		NOT = { has_country_modifier = financial_crisis }
+		NOT = { has_country_modifier = recession }
+		NOT = { has_country_modifier = great_recession }
+		NOT = { has_country_modifier = great_depression }
+
+		#Republican
+		ruling_party_ideology = conservative
+	}
+
+	mean_time_to_happen = { 
+		months = 11
+	}
+
+	option = {
+		name = "A crisis is brewing!"
+		any_pop = { militancy = 1 consciousness = 2 }
+		
+		#Generic Financial Crisis event
+		country_event = 1412094
+	}
+
+}
+
+#The Obama Administration
+country_event = {
+	id = 80158633
+	title = "The Obama Administration"
+	desc = EVTDESC80158633
+	picture = "USA_obama_administration"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 2009
+		NOT = { year = 2017 }
+		
+		government = democracy
+		
+		#2009 Great Recession
+		has_country_modifier = great_recession
+
+		#Democrat
+		ruling_party_ideology = liberal
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "Focus on Social Justice"
+		
+		#Big tent Obama
+		ruling_party_ideology = big_tent
+		
+		#Add social reforms
+		random_owned = {
+			limit = { 
+				owner = { 
+					OR = { 
+						wage_and_work_hours = unregulated_hours 
+						wage_and_work_hours = eight_work_hours 
+					} 
+				} 
+			}
+			social_reform = paid_vacation_hours
+		}
+		random_owned = {
+			limit = { 
+				owner = { 
+					OR = { 
+						safety_regulations = some_regulations
+						safety_regulations = balanced_regulations 
+					} 
+				} 
+			}
+			social_reform = restrictive_regulations
+		}
+		random_owned = {
+			limit = { 
+				owner = { 
+					OR = { 
+						unemployment_subsidies = no_subsidies
+						unemployment_subsidies = minimal_subsidies
+					} 
+				} 
+			}
+			social_reform = ghent_system
+		}
+		random_owned = {
+			limit = { 
+				owner = { 
+					OR = { 
+						pensions = no_pensions
+						pensions = trinket_pensions
+					} 
+				} 
+			}
+			social_reform = low_pensions
+		}
+		random_owned = {
+			limit = { 
+				owner = { 
+					OR = { 
+						health_care = no_health_care
+						health_care = trinket_health_care
+					} 
+				} 
+			}
+			social_reform = low_health_care
+		}
+		random_owned = {
+			limit = { 
+				owner = { 
+					OR = { 
+						pollution = no_controls
+						pollution = trinket_envir
+					} 
+				} 
+			}
+			social_reform = low_envir
+		}
+		
+		#Rise in populist support
+		any_pop = {
+			limit = { strata = poor }
+			ideology = { factor = 0.05 value = populist }
+		}
+		any_pop = {
+			limit = { strata = rich }
+			ideology = { factor = 0.05 value = conservative }
+		}
+		
+		#Republican are furious
+		any_pop = {
+			scaled_militancy = {
+				factor = 5
+				ideology = conservative
+			}
+			scaled_militancy = {
+				factor = 5
+				ideology = traditionalist
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Do nothing of substance"
+		
+		#Rise in progressive support
+		any_pop = {
+			limit = { strata = middle }
+			ideology = { factor = 0.05 value = progressive }
+		}
+		
+		#Rise in socialist support
+		any_pop = {
+			limit = { strata = poor }
+			ideology = { factor = 0.05 value = socialist }
+		}
+		
+		ai_chance = { factor = 0.1 }
 	}
 
 }
