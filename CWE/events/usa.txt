@@ -1690,6 +1690,75 @@ country_event = {
 
 }
 
+#The Deepwater Horizon Disaster
+country_event = {
+	id = 801586331
+	title = "The Deepwater Horizon Disaster"
+	desc = EVTDESC801586331
+	picture = "USA_deepwater_horizon"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 2010
+		NOT = { year = 2016 }
+		
+		#Poor pollution controls
+		NOT = { OR = { pollution = acceptable_envir pollution = good_envir } }
+		
+		#Affected area
+		any_owned_province = { is_core = LOU port = yes }
+	}
+
+	mean_time_to_happen = { 
+		months = 4
+	}
+
+	option = {
+		name = "Spare no expense to clean up the spill"
+		money = -500000
+		
+		#Rise in progressive support
+		any_pop = {
+			limit = { OR = { strata = middle strata = rich } }
+			ideology = { factor = 0.05 value = progressive }
+		}
+		
+		#Add oil spill
+		LOU = { 
+			all_core = { 
+				limit = { is_coastal = yes } 
+				add_province_modifier = { name = local_economic_downturn duration = 365 } 
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "The oil will disperse on its own"
+		prestige_factor = -0.01
+		
+		#Rise in progressive support
+		any_pop = {
+			limit = { OR = { strata = middle strata = rich } }
+			ideology = { factor = 0.10 value = progressive }
+		}
+		
+		#Add oil spill
+		LOU = { 
+			all_core = { 
+				limit = { is_coastal = yes } 
+				add_province_modifier = { name = local_economic_downturn duration = 730 } 
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
 #Assassination of Osama bin Laden
 country_event = {
 	id = 8015864
@@ -1737,6 +1806,55 @@ country_event = {
 			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
 			militancy = -3 consciousness = 3
 		}
+	}
+
+}
+
+#The Boston Bombing
+country_event = {
+	id = 80158641
+	title = "The Boston Bombing"
+	desc = EVTDESC80158641
+	picture = "USA_boston_bombing"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 2013
+		NOT = { year = 2025 }
+		
+		government = democracy
+		is_vassal = no
+
+		is_greater_power = yes
+		
+		#Boston
+		owns = 243
+		
+		#9/11
+		has_global_flag = war_on_terror
+		
+		#Invovled in the endless wars
+		OR = { 
+			has_global_flag = afghanistan_war_911
+			has_global_flag = iraq_war
+		}
+	}
+
+	mean_time_to_happen = { 
+		months = 4
+	}
+
+	option = {
+		name = "May the victims rest in peace"
+		prestige_factor = -0.01
+		
+		#People are on the edge
+		any_pop = { militancy = 1 consciousness = 2 }
+		
+		#Populism becomes more attractive
+		any_pop = { limit = { OR = { AND = { location = { is_core = CSA } NOT = { culture = afro_american } } strata = rich type = farmers type = labourers is_state_capital = no } } ideology = { factor = 0.05 value = populist } }
 	}
 
 }
@@ -1807,4 +1925,554 @@ country_event = {
 		ai_chance = { factor = 0.5 }
 	}
 
+}
+
+#The quid pro quo
+country_event = {
+	id = 8015866
+	title = "A Quid Pro Quo?"
+	desc = EVTDESC8015866
+	picture = "trump_2019_UKR"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 2019
+		NOT = { year = 2024 }
+		
+		government = democracy
+		is_vassal = no
+
+		#Trump
+		ruling_party_ideology = populist
+		has_country_flag = trump_2016_election
+		
+		#Ukraine crisis
+		UKR = { 
+			exists = yes 
+			government = democracy 
+			is_vassal = no 
+			NOT = { alliance_with = RUS } 
+			war = no
+		}
+		RUS = { exists = yes is_possible_vassal = CRI }
+	}
+
+	mean_time_to_happen = { 
+		months = 7
+	}
+
+	option = {
+		name = "No risk, no reward"
+		
+		#Gain influence over Ukraine
+		relation = { who = UKR value = 50 }
+		diplomatic_influence = { who = UKR value = 50 }
+		
+		#Let's see what happens
+		random_list = {
+			75 = { set_country_flag = trump_scandal_UKR_flag } #We were discovered
+			25 = { any_pop = { limit = { OR = { AND = { location = { is_core = CSA } NOT = { culture = afro_american } } strata = rich type = farmers type = labourers is_state_capital = no } } ideology = { factor = 0.1 value = populist } } } #Gain popularity
+		}
+
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Nobody hates a quid pro quo more than me!"
+		any_pop = { limit = { OR = { location = { is_core = CAL } culture = afro_american strata = rich strata = middle is_state_capital = yes } } ideology = { factor = 0.05 value = big_tent } }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#The Trump-Ukraine Scandal
+country_event = {
+	id = 8015867
+	title = "The Trump-Ukraine Scandal"
+	desc = EVTDESC8015867
+	picture = "trump_2019_UKR_phone"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 2019
+		NOT = { year = 2024 }
+		
+		government = democracy
+		is_vassal = no
+
+		#Trump
+		ruling_party_ideology = populist
+		has_country_flag = trump_2016_election
+		
+		#Quid Pro Quo accepted
+		has_country_flag = trump_scandal_UKR_flag
+	}
+
+	mean_time_to_happen = { 
+		months = 2
+	}
+
+	option = {
+		name = "It was a perfect phone call!"
+		prestige_factor = -0.01
+		
+		#Gain further influence over Ukraine
+		relation = { who = UKR value = 50 }
+		diplomatic_influence = { who = UKR value = 50 }
+		
+		#Set the stage for the impeachment trial
+		set_country_flag = trump_scandal_UKR_flag_impeachment
+		
+		#Democrats are not amused
+		any_pop = {
+			scaled_militancy = {
+				factor = 5
+				ideology = liberal
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = progressive
+			}
+			scaled_militancy = {
+				factor = 5
+				ideology = socialist
+			}
+		}
+		
+		#Progressives gain in strength
+		any_pop = { limit = { OR = { location = { is_core = CAL } culture = afro_american strata = rich strata = middle is_state_capital = yes } } ideology = { factor = 0.05 value = progressive } }
+
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "America does not deserve me"
+		prestige_factor = -0.02
+		
+		#Change Leader
+		country_event = 111222
+		
+		#Sleepy Joe becomes more popular
+		any_pop = { limit = { OR = { location = { is_core = CAL } culture = afro_american strata = rich strata = middle is_state_capital = yes } } ideology = { factor = 0.10 value = big_tent } }
+		
+		#Republican love their president and hate him to leave
+		any_pop = {
+			scaled_militancy = {
+				factor = 5
+				ideology = conservative
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = populist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Impeachment of Trump - Trial, 90% chance of acquittal
+country_event = {
+	id = 8015868
+	title = "Impeachment Trial of Donald Trump"
+	desc = EVTDESC8015868
+	picture = "trump_impeachment_trial"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 2019
+		NOT = { year = 2024 }
+		
+		government = democracy
+		is_vassal = no
+
+		#Trump
+		ruling_party_ideology = populist
+		has_country_flag = trump_2016_election
+		
+		#Quid Pro Quo accepted
+		has_country_flag = trump_scandal_UKR_flag
+		has_country_flag = trump_scandal_UKR_flag_impeachment
+	}
+
+	mean_time_to_happen = { 
+		months = 3
+	}
+
+	option = {
+		name = "The Senate shall decide the President's fate!"
+		random_list = {
+			90 = { country_event = 8015869 } #Acquitted
+			10 = { country_event = 1610032 } #Impeached
+		}
+	}
+
+}
+
+#Impeachment of Trump - End
+country_event = {
+	id = 8015869
+	title = "Donald Trump is Acquitted"
+	desc = EVTDESC8015869
+	picture = "trump_impeachment_acquittal"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "This was all bullshit anyway!"
+		
+		#Increase polarisation in US politics
+		any_pop = { limit = { OR = { location = { is_core = CAL } culture = afro_american strata = rich strata = middle is_state_capital = yes } } ideology = { factor = 0.05 value = big_tent } }
+		any_pop = { limit = { OR = { AND = { location = { is_core = CSA } NOT = { culture = afro_american } } strata = rich type = farmers type = labourers is_state_capital = no } } ideology = { factor = 0.05 value = populist } }
+		
+		#Democrats are not amused
+		any_pop = {
+			scaled_militancy = {
+				factor = 5
+				ideology = liberal
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = progressive
+			}
+			scaled_militancy = {
+				factor = 5
+				ideology = socialist
+			}
+		}
+		
+	}
+
+}
+
+#Assassination of Qasem Soleimani
+country_event = {
+	id = 8015870
+	title = "Assassination of Qasem Soleimani"
+	desc = EVTDESC8015870
+	picture = "soleimani_assassination"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 2020
+		NOT = { year = 2024 }
+		
+		government = democracy
+		is_vassal = no
+		war = no
+
+		#Trump
+		ruling_party_ideology = populist
+		has_country_flag = trump_2016_election
+		
+		#Iran
+		PER = { 
+			exists = yes 
+			government = theocracy 
+			is_vassal = no
+			has_global_flag = quds_force 
+		}
+		
+		#Iraq
+		IRQ = { 
+			exists = yes 
+			OR = { government = democracy government = democracy1 }
+			is_vassal = no
+		}
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "Do it (risk of war)"
+		
+		badboy = 5
+		
+		#Iran has a choice of whether to retaliate
+		relation = { who = PER value = -50 }
+		diplomatic_influence = { who = PER value = -100 }
+		PER = { country_event = 8015871 }
+		
+		#Pro Iranian nations are angry
+		any_country = {
+			limit = { religion = shiite }
+			relation = { who = THIS value = -25 }
+		}
+		
+		#US becomes more powerful in Iraq
+		relation = { who = IRQ value = 50 }
+		diplomatic_influence = { who = IRQ value = 50 }
+		
+		#Trump gains support
+		any_pop = { limit = { OR = { AND = { location = { is_core = CSA } NOT = { culture = afro_american } } strata = rich type = farmers type = labourers is_state_capital = no } } ideology = { factor = 0.05 value = populist } }
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Let's not anger the Iranians"
+		prestige_factor = -0.01
+		
+		#Iraq becomes more traditionalist
+		IRQ = { any_pop = { ideology = { factor = 0.10 value = traditionalist } } }
+		
+		#US becomes less powerful in Iraq
+		diplomatic_influence = { who = IRQ value = -50 }
+
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Assassination of Qasem Soleimani - PER response
+country_event = {
+	id = 8015871
+	title = "Assassination of Qasem Soleimani"
+	desc = EVTDESC8015870
+	picture = "soleimani_assassination"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Retaliate with some missile strikes!"
+		prestige_factor = -0.02
+		
+		relation = { who = FROM value = -50 }
+		relation = { who = IRQ value = -50 }
+		
+		#If Ukraine exists
+		random_owned = {
+			limit = { 
+				owner = { 
+					UKR = { 
+						exists = yes 
+						is_vassal = no 
+					} 
+				} 
+			}
+			owner = {
+				#Chance of downing an aeroplane
+				random = {
+					chance = 50
+					country_event = 8015872
+				}
+			}
+		}
+		
+		ai_chance = { factor = 0.8 }
+	}
+	
+	option = {
+		name = "Declare war on the United States!"
+		
+		war = {
+			target = USA
+			attacker_goal = { casus_belli = humiliate }
+			defender_goal = { casus_belli = humiliate }
+			call_ally = yes
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+	option = {
+		name = "Do nothing of substance"
+		prestige_factor = -0.10
+		
+		#Reactionaries are furious
+		any_pop = {
+			scaled_militancy = {
+				factor = 5
+				ideology = conservative
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = populist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Assassination of Qasem Soleimani - PER collateral damage
+country_event = {
+	id = 8015872
+	title = "Ukraine International Airlines Flight 752"
+	desc = EVTDESC8015872
+	picture = "UKIAF752"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "That was unexpected..."
+		prestige_factor = -0.02
+		
+		badboy = 5
+		
+		relation = { who = UKR value = -100 }
+		
+		#Anti regime pops are not amused
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = liberal
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = progressive
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = socialist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist_social
+			}
+		}
+	}
+
+}
+
+#The BLM protests
+country_event = {
+  id = 8015873
+  title = "The George Floyd Protests"
+  desc = EVTDESC8015873
+  picture = "2020_BLM_protests"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 2020
+		NOT = { year = 2024 }
+		
+		government = democracy
+		
+		#No support for working women
+		NOT = { minorities_reform = minorities_affirmative_action }
+	}
+
+	mean_time_to_happen = { months = 6 }
+	
+	option = {
+		name = "Maybe holding a bible upside down will appease them?"
+		
+		#National unrest
+		add_country_modifier = { name = communal_violence duration = 365 }
+		
+		#Violence in New Afrika states
+		RNA = { all_core = { add_province_modifier = { name = nationalist_agitation duration = 365 } } }
+		
+		#Increase progressive support
+		any_pop = { 
+			limit = { culture = afro_american }
+			ideology = {
+				factor = 0.05
+				value = progressive
+			}
+			ideology = {
+				factor = 0.05
+				value = nationalist
+			}
+		}
+		
+		#Democrats are furious
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = liberal
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = progressive
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = socialist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist_social
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Do something meaningful"
+		
+		#Enact affirmative action
+		political_reform = minorities_affirmative_action
+		
+		#White backlash
+		any_pop = { 
+			limit = { culture = white_anglo }
+			ideology = {
+				factor = 0.10
+				value = nationalist
+			}
+		}
+		
+		#Republican are furious
+		any_pop = {
+			limit = { culture = white_anglo }
+			scaled_militancy = {
+				factor = 10
+				ideology = conservative
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = populist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
 }
