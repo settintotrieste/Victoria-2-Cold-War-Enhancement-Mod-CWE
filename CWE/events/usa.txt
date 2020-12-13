@@ -2053,20 +2053,23 @@ country_event = {
 		name = "America does not deserve me"
 		prestige_factor = -0.02
 		
+		#Pence becomes President
+		ruling_party_ideology = traditionalist
+		
 		#Change Leader
 		country_event = 111222
 		
 		#Sleepy Joe becomes more popular
 		any_pop = { limit = { OR = { location = { is_core = CAL } culture = afro_american strata = rich strata = middle is_state_capital = yes } } ideology = { factor = 0.10 value = big_tent } }
 		
-		#Republican love their president and hate him to leave
+		#Republicans love their president and hate him to leave
 		any_pop = {
 			scaled_militancy = {
 				factor = 5
 				ideology = conservative
 			}
 			scaled_militancy = {
-				factor = 10
+				factor = 5
 				ideology = traditionalist
 			}
 			scaled_militancy = {
@@ -2118,13 +2121,13 @@ country_event = {
 		name = "The Senate shall decide the President's fate!"
 		random_list = {
 			90 = { country_event = 8015869 } #Acquitted
-			10 = { country_event = 1610032 } #Impeached
+			10 = { country_event = 80158691 } #Impeached
 		}
 	}
 
 }
 
-#Impeachment of Trump - End
+#Impeachment of Trump - Acquitted - End
 country_event = {
 	id = 8015869
 	title = "Donald Trump is Acquitted"
@@ -2156,6 +2159,86 @@ country_event = {
 			}
 		}
 		
+	}
+
+}
+
+#Impeachment of Trump - Impeached - End
+country_event = {
+	id = 80158691
+	title = "Donald Trump is Impeached"
+	desc = EVTDESC80158691
+	picture = "trump_impeachment_success"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Resist removal!"
+		
+		#Generate a Civil War
+		any_owned = {
+			limit = { OR = { is_core = CSA is_core = CUA } }
+			
+			#Militancy rises
+			add_province_modifier = { name = nationalist_agitation duration = 365 }
+			
+			#More Trump support
+			any_pop = { limit = { OR = { AND = { location = { OR = { is_core = CSA is_core = CUA } } NOT = { culture = afro_american } } strata = rich type = farmers type = labourers is_state_capital = no } } ideology = { factor = 0.05 value = populist } }
+			
+			#Trump Republicans love their president and hate him to leave
+			any_pop = {
+				scaled_militancy = {
+					factor = 10
+					ideology = populist
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = nationalist
+				}
+			}
+		}
+
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "America does not deserve me"
+		prestige_factor = -0.02
+		
+		#Pence becomes President
+		ruling_party_ideology = traditionalist
+		
+		#Change Leader
+		country_event = 111222
+		
+		#Sleepy Joe becomes more popular
+		any_pop = { limit = { OR = { location = { is_core = CAL } culture = afro_american strata = rich strata = middle is_state_capital = yes } } ideology = { factor = 0.05 value = big_tent } }
+		
+		#Normal Republicans welcome this development
+		any_pop = {
+			scaled_militancy = {
+				factor = -5
+				ideology = conservative
+			}
+			scaled_militancy = {
+				factor = -5
+				ideology = traditionalist
+			}
+		}
+		
+		#Trump Republicans love their president and hate him to leave
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = populist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
 	}
 
 }
@@ -2475,4 +2558,457 @@ country_event = {
 		
 		ai_chance = { factor = 0.1 }
 	}
+}
+
+#Hypothetical US civil war - Stage 1
+country_event = {
+	id = 8015874
+	title = "Apocalyptic Republican Fury"
+	desc = EVTDESC8015874
+	picture = "trump_2020_civil_war"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 2020
+		NOT = { year = 2024 }
+		
+		government = democracy
+		is_vassal = no
+
+		#Biden won the election
+		ruling_party_ideology = big_tent
+		has_country_flag = trump_2016_election
+		has_country_flag = biden_2020_flag
+	}
+
+	mean_time_to_happen = { 
+		months = 0.1
+	}
+
+	option = {
+		name = "Joe Biden is the legitimate President!"
+		
+		#Agitation grows in Republican states
+		any_owned = {
+			limit = { OR = { is_core = CSA is_core = CUA } }
+			
+			#Militancy rises
+			add_province_modifier = { name = nationalist_agitation duration = 365 }
+			
+			#More Trump support
+			any_pop = { limit = { OR = { AND = { location = { OR = { is_core = CSA is_core = CUA } } NOT = { culture = afro_american } } strata = rich type = farmers type = labourers is_state_capital = no } } ideology = { factor = 0.05 value = populist } }
+			
+			#Trump Republicans love their president and hate him to leave
+			any_pop = {
+				scaled_militancy = {
+					factor = 7
+					ideology = conservative
+				}
+				scaled_militancy = {
+					factor = 7
+					ideology = traditionalist
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = populist
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = nationalist
+				}
+			}
+		}
+		
+		#Chance of a civil war
+		random = {
+			chance = 25
+			set_country_flag = 2020_US_Civil_War_flag
+		}
+
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Succumb to the glowing orange orb of fury"
+		prestige_factor = -0.05
+		
+		#Trump seizes power!
+		ruling_party_ideology = populist
+		
+		#Government becomes like Russia
+		political_reform = registered_voting
+		political_reform = regulated_opinion
+		political_reform = no_meetings
+		political_reform = quality_of_service
+		political_reform = firewall_publishing
+		political_reform = gender_equal
+		political_reform = parties_only_nominated
+		
+		#Trump policies
+		political_reform = quota_immigration
+		political_reform = minorities_oppression
+		
+		#Democrats become more popular
+		any_pop = { limit = { OR = { location = { is_core = CAL } culture = afro_american strata = middle is_state_capital = yes } } ideology = { factor = 0.25 value = liberal } }
+		
+		#Democrats are furious
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = liberal
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = progressive
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = socialist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist_social
+			}
+		}
+		
+		#Chance of Cascadian and Californian succession
+		random_owned = {
+			limit = { owner = { is_possible_vassal = CAL } }
+			owner = { 
+				random = {
+					chance = 80
+					release = CAL
+					CAL = { government = democracy country_event = 800054 ruling_party_ideology = liberal }
+					CAL = { 
+						war = {
+							target = USA
+							attacker_goal = { casus_belli = war_reparations }
+							defender_goal = { casus_belli = annex_core_country }
+							call_ally = no
+						}
+					}
+				}
+			}
+		}
+		random_owned = {
+			limit = { owner = { is_possible_vassal = CSC } }
+			owner = { 
+				random = {
+					chance = 80
+					release = CSC
+					CSC = { government = democracy country_event = 800054 ruling_party_ideology = liberal }
+					CSC = { 
+						war = {
+							target = USA
+							attacker_goal = { casus_belli = war_reparations }
+							defender_goal = { casus_belli = annex_core_country }
+							call_ally = no
+						}
+					}
+				}
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Hypothetical US civil war - Stage 2
+country_event = {
+	id = 8015875
+	title = "Calls for Secession"
+	desc = EVTDESC8015875
+	picture = "trump_2020_civil_war_2"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 2020
+		NOT = { year = 2024 }
+		
+		government = democracy
+		is_vassal = no
+
+		#Biden won the election
+		OR = { ruling_party_ideology = big_tent ruling_party_ideology = liberal ruling_party_ideology = progressive ruling_party_ideology = socialist }
+		has_country_flag = 2020_US_Civil_War_flag
+		
+		#USA owns the Republican states
+		OR = { is_possible_vassal = CUA is_possible_vassal = CSA }
+	}
+
+	mean_time_to_happen = { 
+		months = 0.1
+	}
+
+	option = {
+		name = "The Federal Government shall remain supreme"
+		
+		set_country_flag = 2020_US_Civil_War_flag_2
+		
+		add_country_modifier = { name = communal_violence duration = 100 }
+		
+		#Unrest in the Republican states
+		all_core = { 
+			limit = { OR = { is_core = CSA is_core = CUA } } 
+			add_province_modifier = { name = nationalist_agitation duration = 1825 }
+			
+			#White backlash
+			any_pop = { 
+				limit = { culture = white_anglo }
+				ideology = {
+					factor = 0.10
+					value = nationalist
+				}
+			}
+			
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Grant the Republican states special autonomy"
+		prestige_factor = -0.10
+		
+		#Form puppets
+		random_owned = {
+			limit = { owner = { is_possible_vassal = CSA } }
+			owner = { 
+				release_vassal = CSA
+				CSA = { 
+					government = sar_government
+					ruling_party_ideology = populist
+					
+					#Russian style government
+					political_reform = registered_voting
+					political_reform = regulated_opinion
+					political_reform = no_meetings
+					political_reform = quality_of_service
+					political_reform = firewall_publishing
+					political_reform = gender_equal
+					political_reform = parties_only_nominated
+		
+					#Trump policies
+					political_reform = quota_immigration
+					political_reform = minorities_oppression
+					
+					#Allow possible future independence
+					set_country_flag = former_devolved_nation
+				}
+				THIS = { diplomatic_influence = { who = CSA value = 200 } }
+			}
+		}
+		random_owned = {
+			limit = { owner = { is_possible_vassal = CUA } }
+			owner = { 
+				release_vassal = CUA
+				CUA = { 
+					government = sar_government
+					ruling_party_ideology = populist
+					
+					#Russian style government
+					political_reform = registered_voting
+					political_reform = regulated_opinion
+					political_reform = no_meetings
+					political_reform = quality_of_service
+					political_reform = firewall_publishing
+					political_reform = gender_equal
+					political_reform = parties_only_nominated
+		
+					#Trump policies
+					political_reform = quota_immigration
+					political_reform = minorities_oppression
+					
+					#Allow possible future independence
+					set_country_flag = former_devolved_nation
+				}
+				THIS = { diplomatic_influence = { who = CUA value = 200 } }
+			}
+		}
+		
+		RNA = { all_core = { add_province_modifier = { name = nationalist_agitation duration = 1825 } } }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Hypothetical US civil war - Stage 3
+country_event = {
+	id = 8015876
+	title = "The American Civil War of $YEAR$"
+	desc = EVTDESC8015876
+	picture = "trump_2020_civil_war_3"
+	
+	major = yes
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 2020
+		NOT = { year = 2024 }
+		
+		government = democracy
+		is_vassal = no
+
+		#Biden won the election
+		OR = { ruling_party_ideology = big_tent ruling_party_ideology = liberal ruling_party_ideology = progressive ruling_party_ideology = socialist }
+		has_country_flag = 2020_US_Civil_War_flag_2
+		
+		#USA owns the Republican states
+		OR = { is_our_vassal = CUA is_our_vassal = CSA }
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "I shall be the President of all Americans!"
+		prestige_factor = -0.05
+		
+		#Begin the war
+		random_owned = {
+			limit = { owner = { is_possible_vassal = CSA } }
+			owner = { 
+				release = CSA
+				
+				CSA = { 
+					government = democracy
+					ruling_party_ideology = populist
+					
+					#Government becomes like Russia
+					political_reform = registered_voting
+					political_reform = regulated_opinion
+					political_reform = no_meetings
+					political_reform = quality_of_service
+					political_reform = firewall_publishing
+					political_reform = gender_equal
+					political_reform = parties_only_nominated
+		
+					#Trump policies
+					political_reform = quota_immigration
+					political_reform = minorities_oppression
+				}
+				
+				USA = { 
+					war = {
+						target = CSA
+						attacker_goal = { casus_belli = annex_core_country }
+						defender_goal = { casus_belli = status_quo }
+						call_ally = no
+					}
+				}
+				RNA = { all_core = { add_province_modifier = { name = nationalist_agitation duration = 1825 } } }
+			}
+		}
+		random_owned = {
+			limit = { owner = { is_possible_vassal = CUA } }
+			owner = { 
+				release = CUA
+				
+				CUA = { 
+					government = democracy
+					ruling_party_ideology = populist
+					
+					#Government becomes like Russia
+					political_reform = registered_voting
+					political_reform = regulated_opinion
+					political_reform = no_meetings
+					political_reform = quality_of_service
+					political_reform = firewall_publishing
+					political_reform = gender_equal
+					political_reform = parties_only_nominated
+		
+					#Trump policies
+					political_reform = quota_immigration
+					political_reform = minorities_oppression
+				}
+				
+				USA = {
+					war = {
+						target = CUA
+						attacker_goal = { casus_belli = annex_core_country }
+						defender_goal = { casus_belli = status_quo }
+						call_ally = no
+					}
+				}
+			}
+		}
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "If they're complaining all the time, they can leave!"
+		
+		#Set the Republican states free
+		random_owned = {
+			limit = { owner = { is_possible_vassal = CSA } }
+			owner = { 
+				release = CSA
+				
+				CSA = { 
+					government = democracy
+					ruling_party_ideology = populist
+					
+					#Government becomes like Russia
+					political_reform = registered_voting
+					political_reform = regulated_opinion
+					political_reform = no_meetings
+					political_reform = quality_of_service
+					political_reform = firewall_publishing
+					political_reform = gender_equal
+					political_reform = parties_only_nominated
+		
+					#Trump policies
+					political_reform = quota_immigration
+					political_reform = minorities_oppression
+				}
+				
+				THIS = { diplomatic_influence = { who = CSA value = 200 } }
+
+				RNA = { all_core = { add_province_modifier = { name = nationalist_agitation duration = 1825 } } }
+			}
+		}
+		
+		random_owned = {
+			limit = { owner = { is_possible_vassal = CUA } }
+			owner = { 
+				release = CUA
+				
+				CUA = { 
+					government = democracy
+					ruling_party_ideology = populist
+					
+					#Government becomes like Russia
+					political_reform = registered_voting
+					political_reform = regulated_opinion
+					political_reform = no_meetings
+					political_reform = quality_of_service
+					political_reform = firewall_publishing
+					political_reform = gender_equal
+					political_reform = parties_only_nominated
+		
+					#Trump policies
+					political_reform = quota_immigration
+					political_reform = minorities_oppression
+				}
+				
+				THIS = { diplomatic_influence = { who = CUA value = 200 } }
+
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
 }
