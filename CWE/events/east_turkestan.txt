@@ -1,228 +1,146 @@
-country_event = {
-  id = 8013801
-  title = EVT_8013801_NAME
-  desc = EVT_8013801_DESC
-  picture = "nwo2_sinkiang"
-  fire_only_once = yes
-
-  trigger = {
-    tag = KMT
-    year = 1944 NOT = { year = 1945 }
-    NOT = { KMT = { war_with = ETS } }
-    exists = ETS
-	ETS = { ai = yes }
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8013801_A
-	inherit = ETS 
-    ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8013801_B
-	any_pop = { militancy = 0.5 consciousness = 1 }
-    ai_chance = { factor = 0 }
-  }
-}
-
+#Soviet interference in East Turkestan
 country_event = {
   id = 8013802
-  title = EVT_8013802_NAME
-  desc = EVT_8013802_DESC
-  picture = "nwo2_sinkiang"
-  fire_only_once = yes
-
-  trigger = {
-    tag = RUS
-    year = 1945 NOT = { year = 1948 }
-    exists = ETS
-	ETS = { war = no }
-  }
-
-  option = {
-    name = EVT_8013802_A
-	#create_vassal = ETS 
-	any_pop = { militancy = 0.5 consciousness = 0.1 }
-	badboy = 10 
-	diplomatic_influence = { who = ETS value = 200 } 
-	relation = { who = KMT value = -100 } 
-	relation = { who = CHI value = -100 } 
-    ai_chance = { factor = 1  modifier = { factor = 0 exists = CHI } }
-  }
-
-  option = {
-    name = EVT_8013802_B
-	relation = { who = KMT value = 100 } 
-	relation = { who = CHI value = 100 } 
-	diplomatic_influence = { who = ETS value = -100 } 
-    ai_chance = { factor = 1 modifier = { factor = 0 NOT = { exists = CHI } } }
-  }
-}
-country_event = {
-  id = 8013803
-  title = EVT_8013803_NAME
-  desc = EVT_8013803_DESC
+  title = "The East Turkestan Question"
+  desc = EVTDESC8013802
   picture = "nwo2_east_turkestan"
-  fire_only_once = yes
-
-  trigger = {
-    tag = KMT
-    year = 1944 NOT = { year = 1948 }
-    NOT = { exists = ETS }
-	owns = 1595 # Illi
-  }
-
-  mean_time_to_happen = { months = 4  }
-
-  option = {
-    name = EVT_8013803_A
-	release = ETS
-	casus_belli = { target = ETS type = annex_core_country }
-	ETS = { country_event = 8013804 }
-  }
   
-  option = {
-    name = EVT_8013803_B
-	release = ETS
-	casus_belli = { target = ETS type = annex_core_country }
-	war = { target = ETS attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } }
-	ETS = { country_event = 8013804 }
-  }  
-}
-country_event = {
-  id = 8013804
-  title = EVT_8013804_NAME
-  desc = EVT_8013804_DESC
-  picture = "nwo2_east_turkestan"
-  is_triggered_only = yes
+	fire_only_once = yes
 
+	trigger = {
+		tag = RUS
+		year = 1946 
+		NOT = { year = 1992 }
+		
+		is_vassal = no
+		war = no
+		
+		#Cold War
+		has_global_flag = blocsenabled
+		
+		#Sino-Soviet Split
+		has_global_flag = sino_soviet_split
+		
+		#China
+		CHI = {
+			is_greater_power = yes
+			government = proletarian_dictatorship
+			
+			#China owns East Turkestan
+			is_possible_vassal = ETS
+		}
+	}
 
-  option = {
-    name = OK
-  }
+	option = {
+		name = "Get involved in Chinese affairs"
+		badboy = -5
+		
+		relation = { who = CHI value = -100 }
+		
+		#Uighur separatism
+		ETS = { 
+			all_core = { 
+				add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+				any_pop = {
+					limit = { OR = { has_pop_religion = sunni has_pop_religion = ibad has_pop_religion = shiite } }
+					ideology = { factor = 0.25 value = traditionalist } 
+					scaled_militancy = {
+						factor = 10
+						ideology = traditionalist
+					}
+				}
+			} 
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Stay out of China's domestic disputes"
+		
+		relation = { who = CHI value = 100 }
+		
+		ai_chance = { factor = 0.1 }
+	}
 }
+
+#East Turkestan Incorporation - CHI
 country_event = {
   id = 8013805
-  title = EVT_8013805_NAME
-  desc = EVT_8013805_DESC
+  title = "Incorporation of East Turkestan"
+  desc = EVTDESC8013805
   picture = "nwo2_east_turkestan"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = CHI
-    year = 1949 NOT = { year = 1990 }
-    exists = ETS
-	ETS = { is_vassal = no }
-    has_global_flag = CHI_won_civil_war
-  }
+	trigger = {
+		tag = CHI
+		year = 1949 
+		NOT = { year = 1990 }
+		
+		government = proletarian_dictatorship
+		is_vassal = no 
+		
+		ETS = { 
+			exists = yes 
+			is_vassal = no 
+		}
+		
+		#China won the Civil War
+		has_global_flag = CHI_won_civil_war
+	}
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8013805_A
-	ETS = { country_event = 8013806 } 
-	ai_chance = { factor = 1 }
-  }
+	option = {
+		name = "Propose to unite China! (War if refuse)"
+		ETS = { country_event = 8013806 } 
+		ai_chance = { factor = 1 }
+	}
 
-  option = {
-    name = EVT_8013805_B
-	any_pop = { consciousness = 2 }
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = "Leave them be"
+		prestige_factor = -0.05
+		
+		relation = { who = ETS value = 200 }
+		diplomatic_influence = { who = ETS value = 200 }
+		
+		ai_chance = { factor = 0 }
+	}
 }
+
+#East Turkestan Incorporation - ETS
 country_event = {
   id = 8013806
-  title = EVT_8013806_NAME
-  desc = EVT_8013806_DESC
+  title = "Incorporation of East Turkestan"
+  desc = EVTDESC8013805
   picture = "nwo2_east_turkestan"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8013806_A
-	CHI = { country_event = 8013807 }
-  }
-
-  option = {
-    name = EVT_8013806_B
-	any_pop = { militancy = 1.0 consciousness = 1 }
-	neutrality = yes
-	CHI = { war = { target = ETS attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } } }
-  }
-}
-country_event = {
-  id = 8013807
-  title = EVT_8013807_NAME
-  desc = EVT_8013807_DESC
-  picture = "nwo2_east_turkestan"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8013807_A
-	inherit = ETS 
-  }
-}
-country_event = {
-  id = 8013808
-  title = EVT_8013808_NAME
-  desc = EVT_8013808_DESC
-  picture = "nwo2_east_turkestan"
-  fire_only_once = yes
-
-  trigger = {
-    tag = KMT
-    year = 1949 NOT = { year = 1990 }
-    exists = ETS
-	ETS = { is_vassal = no }
-    has_global_flag = KMT_won_civil_war
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-    option = {
-    name = EVT_8013808_A
-	country_event = 8013809 
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8013808_B
-	any_pop = { consciousness = 1 }
-	ai_chance = { factor = 0 }
-  }
   
-}
-country_event = {
-  id = 8013809
-  title = EVT_8013809_NAME
-  desc = EVT_8013809_DESC
-  picture = "nwo2_east_turkestan"
-  is_triggered_only = yes
+	is_triggered_only = yes
 
-  option = {
-    name = EVT_8013809_A
-	country_event = 8013810 
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = "Agree to be annexed"
+		
+		#All ETS cores change controller to PRC
+		all_core = { change_controller = CHI }
+		
+		CHI = { 
+			prestige = 100
+			inherit = ETS 
+		}
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8013809_B
-	any_pop = { militancy = 1.0 }
-	KMT = { war = { target = ETS attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } } }
-	ai_chance = { factor = 1 }
-  }
-}
-country_event = {
-  id = 8013810
-  title = EVT_8013810_NAME
-  desc = EVT_8013810_DESC
-  picture = "nwo2_east_turkestan"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8013810_A
-	inherit = ETS 
-  }
+	option = {
+		name = "Fight for our independence!"
+		prestige = 50
+		CHI = { 
+			war = { 
+				target = ETS 
+				attacker_goal = { casus_belli = annex_core_country } 
+				defender_goal = { casus_belli = humiliate } 
+			} 
+		}
+		ai_chance = { factor = 0.1 }
+	}
 }

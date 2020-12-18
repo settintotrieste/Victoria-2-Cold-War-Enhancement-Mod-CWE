@@ -1,0 +1,71 @@
+#Restore Traditionalist party
+country_event = {
+	id = 20201800
+	title = "$COUNTRY_ADJ$ Theocratic Government"
+	desc = EVTDESC20201800
+	picture = "theocracy_gov"
+
+	trigger = {
+		government = theocracy
+		
+		#Does not have a traditionalist ruling party
+		NOT = { ruling_party_ideology = traditionalist }
+		
+		#Not a democratic theocracy
+		political_opinions = ruling_party_opinion
+	}
+
+	option = {
+		name = "$COUNTRY_ADJ$ clerics shall rule the nation!"
+		ruling_party_ideology = traditionalist
+	}
+
+}
+
+#Internal elections
+country_event = {
+	id = 20201801
+	title = "Parliamentary Elections of $YEAR$"
+	desc = EVTDESC20201801
+	picture = "theocracy_gov_election"
+
+	trigger = {
+		government = theocracy
+		
+		#Election has not fired recently
+		NOT = { has_country_modifier = leader_cooldown }
+		
+		#Is a democratic theocracy
+		NOT = { political_opinions = ruling_party_opinion }
+	}
+	
+	mean_time_to_happen = {
+		months = 48
+	}
+
+	option = {
+		name = "May new parliament serve the Supreme Leader well"
+		
+		add_country_modifier = { name = leader_cooldown duration = 365 }
+		
+		#Traditionalist - Radicals
+		random_owned = {
+			limit = { owner = { OR = { pop_majority_ideology = traditionalist pop_majority_ideology = nationalist pop_majority_ideology = populist } } }
+			owner = { ruling_party_ideology = traditionalist }
+		}
+		
+		#Conservative - Normal
+		random_owned = {
+			limit = { owner = { pop_majority_ideology = conservative } }
+			owner = { ruling_party_ideology = conservative }
+		}
+		
+		#Centrist - Reformists
+		random_owned = {
+			limit = { owner = { OR = { pop_majority_ideology = big_tent pop_majority_ideology = liberals pop_majority_ideology = progressive pop_majority_ideology = socialist pop_majority_ideology = communist pop_majority_ideology = communist_social } } }
+			owner = { ruling_party_ideology = big_tent }
+		}
+		
+	}
+
+}
