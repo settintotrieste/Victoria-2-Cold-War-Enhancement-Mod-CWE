@@ -1,102 +1,84 @@
 political_decisions = {
 
-reduce_corruption = {
-       picture = "reduce_corruption"
-       potential = {
-OR = { has_country_modifier = massive_government_corruption has_country_modifier = large_government_corruption has_country_modifier = medium_government_corruption has_country_modifier = low_government_corruption }
+	reduce_corruption = {
+		picture = "reduce_corruption"
+	   
+		potential = {
+			OR = { has_country_modifier = massive_government_corruption has_country_modifier = large_government_corruption has_country_modifier = medium_government_corruption has_country_modifier = low_government_corruption }
 		
-	NOT = { has_country_modifier = reducing_corruption }
-                          } 
+			NOT = { has_country_modifier = reducing_corruption }
+		} 
+		
+		alert = no
 
-       allow = {
-           war = no
-		election = no
-		crime_fighting = 0.5
-OR = { ai = no average_militancy = 5 }
-OR = { ai = no government = democracy government = democracy1 government = socialist_democracy government = hms_government government = hms_government1 ruling_party_ideology = communist_social }
-NOT = { has_country_modifier = bribed_aristocrats }
-           }
+		allow = {
+			war = no
+			election = no
+			crime_fighting = 0.5
+			OR = { ai = no average_militancy = 5 }
+			OR = { ai = no government = democracy government = democracy1 government = socialist_democracy government = hms_government government = hms_government1 ruling_party_ideology = communist_social }
+			NOT = { has_country_modifier = bribed_aristocrats }
+		}
       
-       effect = {
+		effect = {
 
-any_pop = { limit = { NOT = { OR = { type = aristocrats type = officers type = bureaucrats } } } militancy = -4 }
+			#Government folks are angry
+			any_pop = { limit = { OR = { type = aristocrats type = officers type = bureaucrats } } militancy = 5 }
+			
+			#The public is happy
+			any_pop = { limit = { NOT = { OR = { type = aristocrats type = officers type = bureaucrats } } } militancy = -4 }
+			
+			#Money will be dispersed away
+			capitalists = { money = -50 }
+			officers = { money = -25 }
+			bureaucrats = { money = -25 }
+			soldiers = { money = -5 }
 
-any_pop = { limit = { OR = { type = aristocrats type = officers type = bureaucrats } } militancy = 5 }
-
-random = {
-	chance = 30
-	country_event = 1512323
-}
+			#Chance of a civil war
+			random = {
+				chance = 30
+				country_event = 1512323
+			}
            
-add_country_modifier = { name = reducing_corruption duration = 730 }
+			add_country_modifier = { name = reducing_corruption duration = 730 }
+			
+			#Reduce corruption
 
-random_owned = { limit = { owner = { has_country_modifier = low_government_corruption } } 
-owner = { remove_country_modifier = low_government_corruption add_country_modifier = { name = minimal_government_corruption duration = -1 } } }
+			random_owned = { limit = { owner = { has_country_modifier = low_government_corruption } } owner = { remove_country_modifier = low_government_corruption add_country_modifier = { name = minimal_government_corruption duration = -1 } } }
 
-random_owned = { limit = { owner = { has_country_modifier = medium_government_corruption } } 
-owner = { remove_country_modifier = medium_government_corruption add_country_modifier = { name = low_government_corruption duration = -1 } } }
+			random_owned = { limit = { owner = { has_country_modifier = medium_government_corruption } } owner = { remove_country_modifier = medium_government_corruption add_country_modifier = { name = low_government_corruption duration = -1 } } }
 
-random_owned = { limit = { owner = { has_country_modifier = large_government_corruption } } 
-owner = { remove_country_modifier = large_government_corruption add_country_modifier = { name = medium_government_corruption duration = -1 } } }
+			random_owned = { limit = { owner = { has_country_modifier = large_government_corruption } } owner = { remove_country_modifier = large_government_corruption add_country_modifier = { name = medium_government_corruption duration = -1 } } }
 
-random_owned = { limit = { owner = { has_country_modifier = massive_government_corruption } } 
-owner = { remove_country_modifier = massive_government_corruption add_country_modifier = { name = large_government_corruption duration = -1 } } }
+			random_owned = { limit = { owner = { has_country_modifier = massive_government_corruption } } owner = { remove_country_modifier = massive_government_corruption add_country_modifier = { name = large_government_corruption duration = -1 } } }
 
-random_owned = { 
-limit = { owner = { ruling_party_ideology = conservative } }
-owner = { any_pop = { ideology = { factor = 0.1 value = conservative } } }
-}
+			#Boost ideology support
+			
+			random_owned = { limit = { owner = { ruling_party_ideology = conservative } } owner = { any_pop = { ideology = { factor = 0.1 value = conservative } } } }
 
-random_owned = { 
-limit = { owner = { ruling_party_ideology = big_tent } }
-owner = { any_pop = { ideology = { factor = 0.1 value = big_tent } } }
-}
+			random_owned = { limit = { owner = { ruling_party_ideology = big_tent } } owner = { any_pop = { ideology = { factor = 0.1 value = big_tent } } } }
 
-random_owned = { 
-limit = { owner = { ruling_party_ideology = socialist } }
-owner = { any_pop = { ideology = { factor = 0.1 value = socialist } } }
-}
+			random_owned = { limit = { owner = { ruling_party_ideology = socialist } } owner = { any_pop = { ideology = { factor = 0.1 value = socialist } } } }
 
-random_owned = { 
-limit = { owner = { ruling_party_ideology = traditionalist } }
-owner = { any_pop = { ideology = { factor = 0.1 value = traditionalist } } }
-}
+			random_owned = { limit = { owner = { ruling_party_ideology = traditionalist } } owner = { any_pop = { ideology = { factor = 0.1 value = traditionalist } } } }
 
-random_owned = { 
-limit = { owner = { ruling_party_ideology = populist } }
-owner = { any_pop = { ideology = { factor = 0.1 value = populist } } }
-}
+			random_owned = {  limit = { owner = { ruling_party_ideology = populist } } owner = { any_pop = { ideology = { factor = 0.1 value = populist } } } }
 
-random_owned = { 
-limit = { owner = { ruling_party_ideology = nationalist } }
-owner = { any_pop = { ideology = { factor = 0.1 value = nationalist } } }
-}
+			random_owned = { limit = { owner = { ruling_party_ideology = nationalist } } owner = { any_pop = { ideology = { factor = 0.1 value = nationalist } } } }
 
-random_owned = { 
-limit = { owner = { ruling_party_ideology = progressive } }
-owner = { any_pop = { ideology = { factor = 0.1 value = progressive } } }
-}
+			random_owned = { limit = { owner = { ruling_party_ideology = progressive } } owner = { any_pop = { ideology = { factor = 0.1 value = progressive } } } }
 
-random_owned = { 
-limit = { owner = { ruling_party_ideology = liberal } }
-owner = { any_pop = { ideology = { factor = 0.1 value = liberal } } }
-}
+			random_owned = { limit = { owner = { ruling_party_ideology = liberal } } owner = { any_pop = { ideology = { factor = 0.1 value = liberal } } } }
 
-random_owned = { 
-limit = { owner = { ruling_party_ideology = communist } }
-owner = { any_pop = { ideology = { factor = 0.1 value = communist } } }
-}
+			random_owned = { limit = { owner = { ruling_party_ideology = communist } } owner = { any_pop = { ideology = { factor = 0.1 value = communist } } } }
 
-random_owned = { 
-limit = { owner = { ruling_party_ideology = communist_social } }
-owner = { any_pop = { ideology = { factor = 0.1 value = communist_social } } }
-}
+			random_owned = { limit = { owner = { ruling_party_ideology = communist_social } } owner = { any_pop = { ideology = { factor = 0.1 value = communist_social } } } }
 
-                              }
+		}
      
-       ai_will_do = {
-           factor = 1
-       }
-   }
+		ai_will_do = {
+			factor = 1
+		}
+	}
 
 }
