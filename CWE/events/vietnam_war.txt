@@ -120,7 +120,7 @@ country_event = {
 #1954 Geneva Conference
 country_event = {
 	id = 1228002
-	title = "1954 Geneva Conference"
+	title = "$YEAR$ Geneva Conference"
 	desc = EVTDESC1512224
 	picture = "1954_geneva_dai"
 
@@ -224,6 +224,108 @@ country_event = {
 			}
 		}
 		ai_chance = { factor = 0.2 }
+	}
+
+}
+
+#1954-1959 Vietnam Armistice - SVI
+country_event = {
+	id = 12280021
+	title = "Armistice in Vietnam?"
+	desc = EVTDESC12280021
+	picture = "1954_SVI_DAI_armistice"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = SVI
+		year = 1954
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
+
+		DAI = { 
+			exists = yes 
+			is_vassal = no 
+			war = no 
+		}
+	}
+
+	mean_time_to_happen = { 
+		months = 6
+	}
+
+	option = {
+		name = "Propose an armistice (90% success chance)"
+		badboy = -5
+		
+		relation = { who = USA value = 100 }
+		relation = { who = RUS value = 100 }
+		
+		#Propose an armistice to North Vietnam
+		DAI = { country_event = 12280022 }
+	
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Keep all options on the table!"
+		badboy = 5
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#1954-1959 Vietnam Armistice - SVI
+country_event = {
+	id = 12280022
+	title = "Armistice in Vietnam?"
+	desc = EVTDESC12280021
+	picture = "1954_SVI_DAI_armistice"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Accept the armistice agreement"
+		badboy = -5
+		
+		#Clear all cores
+		SVI = { 
+			all_core = { 
+				limit = { is_core = DAI owned_by = SVI } 
+				remove_core = DAI
+			} 
+		}
+		DAI = { 
+			all_core = { 
+				limit = { is_core = SVI owned_by = DAI } 
+				remove_core = SVI
+			} 
+		}
+		
+		relation = { who = SVI value = 200 }
+		relation = { who = RUS value = 100 }
+	
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Peace?! We want war!"
+		badboy = 5
+		
+		#Early Vietnam War
+		war = { 
+			target = SVI
+			attacker_goal = { casus_belli = civil_war } 
+			defender_goal = { casus_belli = civil_war } 
+			call_ally = no
+		}
+		
+		ai_chance = { factor = 0.1 }
 	}
 
 }
