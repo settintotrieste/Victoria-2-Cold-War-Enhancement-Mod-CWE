@@ -866,35 +866,53 @@ acquire_core_state = {
 	good_relation_militancy_factor = 1
 
 	can_use = {
-NOT = { is_our_vassal = THIS }
+		NOT = { is_our_vassal = THIS }
 
-THIS = { NOT = { has_country_modifier = no_more_war } }
+		THIS = { NOT = { has_country_modifier = no_more_war } }
 
-THIS = { NOT = { has_country_flag = renounced_war_rights } }
-THIS = { NOT = { has_country_flag = un_armistice } }
+		THIS = { NOT = { has_country_flag = renounced_war_rights } }
+		THIS = { NOT = { has_country_flag = un_armistice } }
 
-OR = { THIS = { ai = no } AND = { THIS = { ai = yes } NOT = { relation = { who = THIS value = -100 } } } }
+		OR = { THIS = { ai = no } AND = { THIS = { ai = yes } NOT = { relation = { who = THIS value = -100 } } } }
 
-THIS = { OR = { 
+		THIS = { 
+			OR = { 
 
-government = theocracy
-government = absolute_monarchy
-government = populist_dictatorship
-government = nationalist_dictatorship
-government = presidential_dictatorship
-government = proletarian_dictatorship
-government = proletarian_dictatorship1
+				government = theocracy
+				government = absolute_monarchy
+				government = populist_dictatorship
+				government = nationalist_dictatorship
+				government = presidential_dictatorship
+				government = proletarian_dictatorship
+				government = proletarian_dictatorship1
 
-NOT = { war_policy = pacifism } war = yes has_country_flag = world_medium has_country_flag = world_high has_country_flag = cold_war_high has_country_modifier = cold_war_hot } }
+				NOT = { war_policy = pacifism } war = yes has_country_flag = world_medium has_country_flag = world_high has_country_flag = cold_war_high has_country_modifier = cold_war_hot 
+			
+			} 
+		}
 
-
-number_of_states = 2 # annex if you want their last state
+		OR = {
+			#annex if you want their last state
+			number_of_states = 2
+			
+			#GPs can do whatever they want
+			THIS = { is_greater_power = yes }
+		}
 		
-	any_owned_province = {
+		any_owned_province = {
 			is_core = THIS
 		}
-NOT = { AND = { THIS = { ai = yes } part_of_sphere  = yes } } 
-#the ai shall not attack a sphered nation.
+		
+		#Not has a war stopper modifier
+		THIS = {
+			OR = {
+				NOT = { has_country_modifier = no_dismantle_timer }
+				war = yes
+			}
+		}
+		
+		#the ai shall not attack a sphered nation.
+		NOT = { AND = { THIS = { ai = yes } part_of_sphere  = yes } }
 	}
 	
 	allowed_states = {
@@ -2582,6 +2600,14 @@ territorial_dispute = {
 			OR = {
 				war = yes
 				has_country_modifier = united_nations_ga_member
+			}
+		}
+		
+		#Not has a war stopper modifier
+		THIS = {
+			OR = {
+				NOT = { has_country_modifier = no_dismantle_timer }
+				war = yes
 			}
 		}
 		
