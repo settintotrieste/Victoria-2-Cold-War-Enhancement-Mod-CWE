@@ -945,55 +945,186 @@ country_event = {
   	desc = EVT_8014249_DESC
   	picture = "rus_form_pic"
 	
+	fire_only_once = yes
 	
 	trigger = {
 		tag = RUS
 		government = democracy
+		
+		is_vassal = no
+		war = no
+		
+		NOT = { has_global_flag = 1992_start_date_flag }
+		
 		NOT = { has_country_flag = eussr }
 	}
 	
 	option = {
 		name = "It is the end of Communist rule!"
 
-remove_country_modifier = uss_timer
+		remove_country_modifier = uss_timer
 
-clr_country_flag = economic_malaise
+		clr_country_flag = economic_malaise
 
-add_country_modifier = { name = economic_malaise duration = 3650 }
+		add_country_modifier = { name = economic_malaise duration = 3650 }
 
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-
-add_country_modifier = { name = stockcrash duration = 1825 }
-
-add_country_modifier = { name = recession duration = 3650 }
-
-random_owned = { limit = { owner = { NOT = { has_global_flag = breakup_of_ussr } } } owner = { country_event = 8225005 } }
-
-any_country = { 
-limit = { vassal_of = RUS } 
-country_event = 1512136 
-}
-
-any_country = { limit = { exists = no OR = { tag = UKR tag = BYE tag = GEO tag = AZB tag = ARM tag = TKR tag = MOL tag = UZB tag = KYR tag = TAJ tag = KAZ tag = MOL tag = LIT tag = LAT tag = EST } } country_event = 1512240 }
-
-random_owned = { limit = { owner = { owns = 549 } } owner = { 549 = { secede_province = GER } } }
-
-GER = { inherit = ICB }
-
-ruling_party_ideology = socialist
-
-badboy = -1000
-
-any_pop = { 
-limit = { has_pop_culture = russian }
-ideology = {
-	factor = 0.5
-	value = socialist
-}
-	}
-		set_country_flag = eussr
-		#country_event = 8014271
+		#Dissolution of the Warsaw Pact
+		random_owned = { 
+			limit = { owner = { NOT = { has_global_flag = breakup_of_ussr } } } 
+			owner = { country_event = 8225005 } 
 		}
+
+		#Release all vassals
+		any_country = { 
+			limit = { vassal_of = RUS } 
+			country_event = 1512136 
+		}
+
+		#Release SSRs
+		any_country = { 
+			limit = { 
+				exists = no 
+				OR = { tag = UKR tag = BYE tag = GEO tag = AZB tag = ARM tag = TKR tag = MOL tag = UZB tag = KYR tag = TAJ tag = KAZ tag = MOL tag = LIT tag = LAT tag = EST } 
+				any_core = { owned_by = THIS }
+			} 
+			country_event = 1512240 
+		}
+
+		#Return West Berlin, if USSR managed to annex West Berlin
+		random_owned = { 
+			limit = { 
+				owner = { 
+					GER = { exists = yes } 
+					owns = 549 
+				} 
+			} 
+			owner = { 549 = { secede_province = GER } } 
+		}
+
+		GER = { inherit = ICB }
+
+		#Ruling party during independence
+		ruling_party_ideology = socialist
+
+		#Remove badboy
+		badboy = -1000
+
+		#Communist support evaporates
+		any_pop = { 
+			limit = { culture = russian }
+			ideology = {
+				factor = 0.5
+				value = socialist
+			}
+		}
+		
+		set_country_flag = eussr
+		
+		#country_event = 8014271
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Stop the breakup of Russia!"
+		prestige_factor = -0.10
+		
+		badboy = 15
+		
+		remove_country_modifier = uss_timer
+
+		clr_country_flag = economic_malaise
+
+		add_country_modifier = { name = economic_malaise duration = 3650 }
+
+		#Dissolution of the Warsaw Pact
+		random_owned = { 
+			limit = { owner = { NOT = { has_global_flag = breakup_of_ussr } } } 
+			owner = { country_event = 8225005 } 
+		}
+
+		#Release all vassals
+		any_country = { 
+			limit = { vassal_of = RUS } 
+			country_event = 1512136 
+		}
+
+		#Russian Civil War
+		any_country = { 
+			limit = { 
+				exists = no 
+				OR = { tag = UKR tag = BYE tag = GEO tag = AZB tag = ARM tag = TKR tag = MOL tag = UZB tag = KYR tag = TAJ tag = KAZ tag = MOL tag = LIT tag = LAT tag = EST } 
+				any_core = { owned_by = THIS }
+			} 
+			country_event = 19911
+		}
+
+		#Return West Berlin, if USSR managed to annex West Berlin
+		random_owned = { 
+			limit = { 
+				owner = { 
+					GER = { exists = yes } 
+					owns = 549 
+				} 
+			} 
+			owner = { 549 = { secede_province = GER } } 
+		}
+
+		GER = { inherit = ICB }
+
+		#Ruling party during independence
+		ruling_party_ideology = conservative
+
+		#Remove badboy
+		badboy = -1000
+
+		#Communist support evaporates
+		any_pop = { 
+			limit = { culture = russian }
+			ideology = {
+				factor = 0.5
+				value = conservative
+			}
+		}
+		
+		set_country_flag = eussr
+		
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+#Russian Civil War
+country_event = {
+	id = 19911
+	title = "Russian Borders are Inviolable"
+  	desc = EVT_8014249_DESC
+  	picture = "rus_form_pic"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Oh well, war it is then!"
+		
+		FROM = { release = THIS }
+		
+		government = presidential_dictatorship 
+		country_event = 800050 
+		ruling_party_ideology = nationalist
+		
+		#Nationalist support grows
+		any_pop = { 
+			limit = { is_primary_culture = yes } 
+			ideology = { factor = 0.25 value = nationalist } 
+		}
+		
+		war = { 
+			target = FROM 
+			attacker_goal = { casus_belli = war_reparations } 
+			defender_goal = { casus_belli = civil_war } 
+			call_ally = no 
+		}
+	}
+
 }
 
 #Senegal leave
