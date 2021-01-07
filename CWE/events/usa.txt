@@ -2555,14 +2555,14 @@ country_event = {
 		
 		government = democracy
 		
-		#No support for working women
+		#There is African american discrimination
 		NOT = { minorities_reform = minorities_affirmative_action }
 	}
 
 	mean_time_to_happen = { months = 6 }
 	
 	option = {
-		name = "Maybe holding a bible upside down will appease them?"
+		name = "Holding a bible upside down will appease them!"
 		
 		#National unrest
 		add_country_modifier = { name = communal_violence duration = 365 }
@@ -2650,6 +2650,154 @@ country_event = {
 	}
 }
 
+#The Siege of the Capitol
+country_event = {
+  id = 80158731
+  title = "The US Capitol Siege"
+  desc = EVTDESC80158731
+  picture = "2021_US_capitol_siege"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 2021
+		NOT = { year = 2024 }
+		
+		government = democracy
+		is_vassal = no
+
+		#Biden won the election
+		ruling_party_ideology = big_tent
+		has_country_flag = trump_2016_election
+		has_country_flag = biden_2020_flag
+	}
+
+	mean_time_to_happen = { months = 0.1 }
+	
+	option = {
+		name = "WTF?! This is an insurrection folks!"
+		
+		prestige_factor = -0.05
+		
+		#Chance of kicking start the civil war
+		random = {
+			chance = 80
+			set_country_flag = possible_USA_civil_war
+		}
+		
+		#White nationalism grows
+		any_pop = { 
+			limit = { 
+				location = { is_core = CSA } 
+				culture = white_anglo 
+				strata = poor
+			}
+			ideology = {
+				factor = 0.05
+				value = nationalist
+			}
+		}
+		
+		#Far right Republican are furious
+		any_pop = {
+			limit = { culture = white_anglo }
+			scaled_militancy = {
+				factor = 10
+				ideology = populist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Cower in the basement"
+		
+		prestige_factor = -0.10
+		
+		set_country_flag = possible_USA_civil_war
+		
+		#White nationalism grows even more
+		any_pop = { 
+			limit = { 
+				location = { is_core = CSA } 
+				culture = white_anglo 
+				strata = poor
+			}
+			ideology = {
+				factor = 0.10
+				value = populist
+			}
+		}
+		
+		#Far right Republican are angry
+		any_pop = {
+			limit = { culture = white_anglo }
+			scaled_militancy = {
+				factor = 5
+				ideology = populist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+		}
+		
+		#Progressive Democrats become more popular
+		any_pop = { 
+			limit = { 
+				OR = { 
+					location = { is_core = CAL } 
+					culture = afro_american 
+					strata = middle 
+					is_state_capital = yes 
+				} 
+			} 
+			ideology = { 
+				factor = 0.25 
+				value = progressive 
+			} 
+		}
+		
+		#Democrats are furious
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = liberal
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = progressive
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = socialist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist_social
+			}
+		}
+		
+		#Democracy is weakened
+		political_reform = regulated_opinion
+		political_reform = registered_voting
+		political_reform = quality_of_service
+		political_reform = parties_only_nominated
+		
+		ai_chance = { factor = 0.1 }
+	}
+}
+
 #Hypothetical US civil war - Stage 1
 country_event = {
 	id = 8015874
@@ -2671,6 +2819,9 @@ country_event = {
 		ruling_party_ideology = big_tent
 		has_country_flag = trump_2016_election
 		has_country_flag = biden_2020_flag
+		
+		#Capitol sieged
+		has_country_flag = possible_USA_civil_war
 	}
 
 	mean_time_to_happen = { 
