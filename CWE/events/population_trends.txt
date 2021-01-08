@@ -11,10 +11,84 @@
 
 # Special - haredim_jewish, roma and mennonites and not prim/accept
 
-# The Demographic Transition - Population Boom
+# The Demographic Transition - Population Boom - Reviews every 5 years
 country_event = {
 	id = 22600
-	title = "The Demographic Transition - Population Boom"
+	title = "Demographic Transition - Population Boom"
+	desc = EVT_22602_DESC
+	picture = "demographic_transition"
+
+	trigger = {
+		
+		OR = {
+			any_owned_province = { 
+				NOT = { literacy = 0.03 }
+				NOT = { has_province_modifier = iliterate_nation3_modifier }
+			}
+			any_owned_province = { 
+				literacy = 0.03
+				NOT = { literacy = 0.05 }
+				NOT = { has_province_modifier = iliterate_nation2_modifier }
+			}
+			any_owned_province = { 
+				literacy = 0.05
+				NOT = { literacy = 0.10 }
+				NOT = { has_province_modifier = iliterate_nation3_modifier }
+			}
+		}
+		
+		NOT = { has_country_modifier = fertility_timer }
+		
+	}
+	
+	#Review every year so there is no event spam
+	mean_time_to_happen = { months = 12 }
+	
+	option = {
+		name = "We welcome these new $COUNTRY_ADJ$ Citizens"
+		
+		add_country_modifier = { name = fertility_timer duration = 365 }
+		
+		any_owned = {
+			limit = {
+				NOT = { literacy = 0.03 }
+				NOT = { has_province_modifier = iliterate_nation3_modifier }
+			}
+			remove_province_modifier = iliterate_nation1_modifier
+			remove_province_modifier = iliterate_nation2_modifier
+			add_province_modifier = { name = iliterate_nation3_modifier duration = -1 }
+		}
+		
+		any_owned = {
+			limit = {
+				literacy = 0.03
+				NOT = { literacy = 0.05 }
+				NOT = { has_province_modifier = iliterate_nation2_modifier }
+			}
+			remove_province_modifier = iliterate_nation1_modifier
+			add_province_modifier = { name = iliterate_nation2_modifier duration = -1 }
+			remove_province_modifier = iliterate_nation3_modifier
+		}
+		
+		any_owned = {
+			limit = {
+				literacy = 0.05
+				NOT = { literacy = 0.10 }
+				NOT = { has_province_modifier = iliterate_nation1_modifier }
+			}
+			add_province_modifier = { name = iliterate_nation1_modifier duration = -1 }
+			remove_province_modifier = iliterate_nation2_modifier
+			remove_province_modifier = iliterate_nation3_modifier
+		}
+
+	}
+	
+}
+
+# The Demographic Transition - Longer Lifespans
+country_event = {
+	id = 22601
+	title = "Demographic Transition - Longer Lifespans"
 	desc = EVT_22602_DESC
 	picture = "demographic_transition"
 
@@ -22,16 +96,18 @@ country_event = {
 		NOT = { has_country_flag = demographic_transition_stage_1_flag }
 		
 		#Low development
-		literacy = 0.05
+		literacy = 0.10
 		NOT = { literacy = 0.15 }
 		
 		war = no
+		
+		NOT = { has_country_modifier = fertility_timer }
 	}
 	
 	mean_time_to_happen = { months = 6 }
 	
 	option = {
-		name = "We welcome these new $COUNTRY_ADJ$ Citizens"
+		name = "Great, our people can be more productive!"
 		
 		add_country_modifier = { name = industrial_pop_boom duration = 7300 }
 		
@@ -42,8 +118,8 @@ country_event = {
 
 # The Demographic Transition - Stable Growth
 country_event = {
-	id = 22601
-	title = "The Demographic Transition - Stable Growth"
+	id = 22602
+	title = "Demographic Transition - Stable Growth"
 	desc = EVT_22602_DESC
 	picture = "demographic_transition"
 
@@ -60,7 +136,7 @@ country_event = {
 	mean_time_to_happen = { months = 6 }
 	
 	option = {
-		name = "$COUNTRY_ADJ$ Population growth is stabilising"
+		name = "What's next, an ageing population?"
 		
 		remove_country_modifier = industrial_pop_boom
 		
@@ -70,7 +146,7 @@ country_event = {
 
 # The Demographic Transition - Ageing Population
 country_event = {
-	id = 22602
+	id = 22603
 	title = "The Demographic Transition - Ageing Population"
 	desc = EVTDESC22602
 	picture = "demographic_transition"
@@ -93,7 +169,7 @@ country_event = {
 	mean_time_to_happen = { months = 60 }
 	
 	option = {
-		name = "This is a consequence of decreasing fertility rates and longer lifespans"
+		name = "We must care for our seniors"
 		
 		add_country_modifier = { name = ageing_population duration = -1 }
 		
