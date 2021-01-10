@@ -1408,10 +1408,17 @@ country_event = { # Botswana Independence
   fire_only_once = yes
 
 	trigger = {
-		capital_scope = { continent = europe }
-		year = 1965 NOT = { year = 1990 }
-		owns = 2074 # Gaborone
-		NOT = { exists = BOT }
+		OR = { tag = ENG tag = FBU }
+		year = 1965 
+		NOT = { year = 1990 }
+		
+		government = hms_government
+		war = no
+		is_vassal = no
+		
+		#Owns Botswana
+		is_possible_vassal = BOT
+		
 		OR = {
 			AND = { exists = ZAM is_vassal = no }
 			AND = { exists = ZIM is_vassal = no }
@@ -1438,7 +1445,11 @@ country_event = { # Botswana Independence
 		release = BOT
 		diplomatic_influence = { who = BOT value = 200 }
 		create_alliance = BOT
-		BOT = { government = democracy }
+		BOT = { 
+			government = democracy 
+			country_event = 800054 
+			ruling_party_ideology = big_tent 
+		}
 		ai_chance = { factor = 0.9 }
 	}
 
@@ -1446,10 +1457,14 @@ country_event = { # Botswana Independence
 		name = "Delay independence via the Dominion system"
 		prestige = -50
 		release_vassal = BOT
+		BOT = { 
+			government = colonial_government 
+			country_event = 800054 
+			ruling_party_ideology = nationalist 
+			
+			add_country_modifier = { name = revolution_chaos duration = 3650 }
+		}
 		diplomatic_influence = { who = BOT value = 200 }
-		create_alliance = BOT
-		BOT = { government = colonial_government }
-		BOT = { add_country_modifier = { name = revolution_chaos duration = 3650 } }
 		ai_chance = { factor = 0.1 }
 	}
   
@@ -1460,13 +1475,12 @@ country_event = { # Botswana Independence
 			limit = {
 				is_core = BOT
 			}
-			add_province_modifier = { name = nationalist_agitation duration = 1095 }
+			add_province_modifier = { name = nationalist_agitation duration = 3650 }
 			any_pop = {
 				militancy = 8
 				consciousness = 5
 			}
 		}
-		# TODO BOT UDI
 		ai_chance = { factor = 0 }
     }
 }
@@ -1478,31 +1492,43 @@ country_event = { # Lesotho Independence
   title = EVT_8012680_NAME
   desc = EVT_8012680_DESC
   picture = "lesotho_independance"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
 	trigger = {
-		tag = ENG
-		is_our_vassal = LES
-		OR = { 
-			exists = BOT
-			exists = ZIM
-		}
+		OR = { tag = ENG tag = FBU }
+		year = 1966
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		
+		#Owns Lesotho
+		is_possible_vassal = LES
 	}
 
-	mean_time_to_happen = { months = 3 }
+	mean_time_to_happen = { months = 10 }
 	
     option = {
-		name = EVT_8012680_A
+		name = "Grant independence!"
 		prestige = 10
-		release_vassal = LES
-		diplomatic_influence = { who = LES value = 100 } 
-		LES = { government = hms_government country_event = 800054 }
+		
+		release = LES
+		LES = { 
+			government = hms_government 
+			country_event = 800054 
+			ruling_party_ideology = conservative
+		}
+		diplomatic_influence = { who = LES value = 200 } 
+		
 		ai_chance = { factor = 0.9 }
     }
   
     option = {
-		name = EVT_8012680_B
+		name = "They shall remain under our rule"
 		prestige = -10
+		badboy = 3
+		LES = { all_core = { add_province_modifier = { name = nationalist_agitation duration = 3650 } } }
 		ai_chance = { factor = 0.1 }
     }
 }
@@ -1581,33 +1607,46 @@ country_event = { # Swaziland Independence
   title = EVT_8012690_NAME
   desc = EVT_8012690_DESC
   picture = "swaziland_independance"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
 	trigger = {
-		tag = ENG
-		is_our_vassal = SWA
-		OR = { 
-			exists = BOT
-			exists = ZIM
-		}
+		OR = { tag = ENG tag = FBU }
+		year = 1968
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		
+		#Owns Swaziland
+		is_possible_vassal = SWA
 	}
 
-	mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 9 }
 	
     option = {
-		name = EVT_8012690_A
+		name = "Grant them independence!"
 		prestige = 10
-		release_vassal = SWA
-		diplomatic_influence = { who = SWA value = 100 }
-		SWA = { government = hms_government country_event = 800054 } 
+		
+		release = SWA
+		SWA = { 
+			government = hms_government 
+			country_event = 800054 
+			ruling_party_ideology = conservative
+		}
+		diplomatic_influence = { who = SWA value = 200 } 
+		
 		ai_chance = { factor = 0.9 }
     }
   
     option = {
-		name = EVT_8012690_B
+		name = "The natives cannot rule by themselves"
 		prestige = -10
+		badboy = 3
+		SWA = { all_core = { add_province_modifier = { name = nationalist_agitation duration = 3650 } } }
 		ai_chance = { factor = 0.1 }
     }
+	
 }
 
 #
@@ -1626,15 +1665,21 @@ country_event = {
     	OR = { tag = ENG tag = FBU }
 		year = 1955
 		NOT = { year = 1990 }
+		
 		government = hms_government
 		war = no
-		SAF = { government = hms_government war = no }
-		BOT = { exists = no }
-		LES = { exists = no }
-		SWA = { exists = no }
-		any_owned_province = { is_core = BOT }
-		any_owned_province = { is_core = LES }
-		any_owned_province = { is_core = SWA }
+		is_vassal = no
+		
+		#Before the 1960 referendum
+		SAF = { 
+			government = hms_government 
+			war = no 
+			is_vassal = no 
+		}
+		
+		is_possible_vassal = BOT
+		is_possible_vassal = LES
+		is_possible_vassal = SWA
 	}
 
 	mean_time_to_happen = { months = 3 }
@@ -1702,9 +1747,9 @@ country_event = {
 			release_vassal = SWA
 		}
 
-		BOT = { government = colonial_government }
-		LES = { government = colonial_government }
-		SWA = { government = colonial_government }
+		BOT = { government = colonial_government country_event = 800054 ruling_party_ideology = conservative }
+		LES = { government = colonial_government country_event = 800054 ruling_party_ideology = conservative }
+		SWA = { government = colonial_government country_event = 800054 ruling_party_ideology = conservative }
 
 		sphere_owner = { 
 			diplomatic_influence = { who = BOT value = 200 } 
