@@ -48,6 +48,7 @@ country_event = {
 			add_accepted_culture = kikuyu #Kenya
 			add_accepted_culture = swahili #Tanganyika
 			add_accepted_culture = ganda #Uganda
+			add_accepted_culture = indian
 			
 			any_owned = { remove_core = XEF }
 		}
@@ -176,7 +177,10 @@ country_event = {
 		capital_scope = { continent = europe } # ENG or FBU
 		is_our_vassal = ZAN
 		year = 1963 NOT = { year = 1990 }
-		exists = TAN
+		OR = {
+			exists = TAN
+			exists = XEF
+		}
 	}
 
 	mean_time_to_happen = { months = 12 }
@@ -252,78 +256,85 @@ country_event = {
 
 	trigger = {
 		owns = 2036
-		primary_culture = swahili # TAN or XEF
-		is_vassal = no
-		year = 1964 NOT = { year = 1990 }
+		OR = {
+			primary_culture = swahili # TAN
+			accepted_culture = swahili #XEF
+		}
+		year = 1964
+		NOT = { year = 1990 }
 		exists = ZAN
 		ZAN = {
-			OR = {
-			AND = { ai = yes primary_culture = swahili }
+			ai = yes
 			has_country_flag = xef_zan_union
-			}
+			primary_culture = swahili
 			is_vassal = no
 			war = no
 		}
 	}
-
 	mean_time_to_happen = {
 		months = 8
 		modifier = {
 			factor = 0.5
-			ZAN = { OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social } }
-			OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social }
+			ZAN = {
+				OR = {
+					ruling_party_ideology = socialist
+					ruling_party_ideology = communist
+					ruling_party_ideology = communist_social
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = EVT_8029720_A
+		inherit = ZAN
+		ai_chance = { factor = 0.8 }
+	}
+	option = {
+		name = EVT_8029720_B
+		prestige = -5
+		ai_chance = { factor = 0.2 }
+	}
+	
+}
+
+country_event = {
+	id = 8029721
+	title = EVT_8029721_NAME # Arab monarchy petitions to join XEF for protection
+	desc = EVT_8029720_DESC
+	picture = "nwo2_tanzania"
+	fire_only_once = yes
+
+	trigger = {
+		owns = 2036
+		OR = {
+			accepted_culture = swahili #XEF
+		}
+		year = 1951
+		NOT = { year = 1990 }
+		exists = ZAN
+		ZAN = { 
+			ai = yes
+			accepted_culture = arab
+			is_vassal = no
+			war = no
+			OR {
+				government = hms_government
+				government = absolute_monarchy
+			}
 		}
 	}
 
 	option = {
 		name = EVT_8029720_A
 		inherit = ZAN
-		government = democracy
+		add_accepted_culture = arab
 		ai_chance = { factor = 0.8 }
 	}
-
 	option = {
 		name = EVT_8029720_B
 		prestige = -5
 		ai_chance = { factor = 0.2 }
 	}
-
-}
-
-country_event = {
-	id = 8029721
-	title = EVT_8029721_NAME # Union of $FROMCOUNTRY$ and $COUNTRY$
-	desc = EVT_8029720_DESC
-	picture = "nwo2_tanzania"
-	is_triggered_only = yes # ZAN
-
-	option = {
-		name = EVT_8029721_A
-		set_country_flag = xef_zan_union
-		sphere_owner = {
-			diplomatic_influence = { who = THIS value = -200 }
-			casus_belli = { target = THIS type = add_to_sphere months = 6 }
-		}
-		ai_chance = {
-			factor = 0.75
-			modifier = {
-				factor = 0.8
-				NOT = { primary_culture = swahili }
-			}
-		}
-	}
-
-	option = {
-		name = EVT_8029721_B
-		prestige = -5
-		any_pop = { limit = { has_pop_culture = ibad_arab } consciousness = -3 }
-		ai_chance = {
-			factor = 0.25
-			modifier = {
-				factor = 0
-				FROM = { ai = no }
-			}
-		}
-	}
-
+	
 }
