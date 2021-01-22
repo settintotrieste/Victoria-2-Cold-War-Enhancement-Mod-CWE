@@ -25,6 +25,8 @@ country_event = {
 		any_pop = { militancy = -10 consciousness = -10 }
 		2131 = { add_core = ARG }
 		
+		badboy = 5
+		
 		#Option for the UK to go to war or surrender
 		random_country = {
 			limit = { tag = ENG }
@@ -58,20 +60,13 @@ country_event = {
 		
 		set_global_flag = falklands_war_FLK
 		
-		#Falklands
-		release = FLK
-		FLK = { government = hms_government }
-		diplomatic_influence = { who = FLK value = 200 }
-		relation = { who = FLK value = 200 }
-		create_alliance = FLK
-		
 		#Argentina
 		relation = { who = ARG value = -200 }
 		ARG = { 
 			war = { 
-				target = FLK 
-				attacker_goal = { casus_belli = conquest } 
-				defender_goal = { casus_belli = status_quo } 
+				target = ENG
+				attacker_goal = { casus_belli = acquire_any_state state_province_id = 2131 } 
+				defender_goal = { casus_belli = territorial_dispute_internal } 
 			}
 		}
 		ai_chance = { factor = 0.8 }
@@ -101,38 +96,6 @@ country_event = {
 		}
 		
 		ai_chance = { factor = 0.1 }
-	}
-	
-}
-
-#Falklands War - End - UK inherits FLK - Clean Up in case of an armistice
-country_event = {
-  id = 82340011
-  title = EVT_8234000_NAME
-  desc = EVT_8234000_DESC
-  picture = "nwo2_falklands"
-  fire_only_once = yes
-
-	trigger = {
-		tag = FLK
-		has_global_flag = falklands_war_FLK
-		is_vassal = no
-		war = no
-		AND = {
-			government = hms_government
-			ENG = { 
-				government = hms_government 
-				is_vassal = no 
-				NOT = { war_with = ARG } 
-			}
-		}
-		ARG = { has_recently_lost_war = no }
-	}
-
-	option = {
-		name = EVT_8234000_A
-		clr_global_flag = falklands_war_FLK
-		ENG = { inherit = FLK }
 	}
 	
 }
@@ -215,7 +178,6 @@ country_event = {
 		ARG = { controls = 2131 }
 		has_global_flag = falklands_war_FLK
 		ARG = { total_amount_of_ships = 5 }
-		FLK = { blockade = 0.25 }
 	}
 
 	mean_time_to_happen = { months = 1 }
@@ -270,8 +232,7 @@ country_event = {
 
 	option = {
 		name = EVT_8234009_A
-		add_country_modifier = { name = military_man duration = 360 }
-		any_pop = { militancy = -3 }
+		any_pop = { militancy = -3 consciousness = 1 }
 	}
 	
 }
@@ -322,12 +283,6 @@ country_event = {
 		prestige_factor = -0.05
 		any_pop = { militancy = 5 consciousness = 5 }
 		war_exhaustion = 30
-		
-		#Inherit Falkland
-		random_owned = {
-			limit = { owner = { exists = FLK } }
-			owner = { ENG = { inherit = FLK } }
-		}
 	}
 
 }
@@ -347,6 +302,7 @@ country_event = {
 		has_global_flag = falklands_war_FLK
 		ARG = { war = no controls = 2131 }
 		war = no
+		NOT = { owns = 2131 }
 	}
 
 	option = {

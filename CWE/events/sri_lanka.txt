@@ -1,74 +1,103 @@
+#Independence of Ceylon
 country_event = {
   id = 8028320
-  title = EVT_8028320_NAME
+  title = "The Independence of Ceylon"
   desc = EVT_8028320_DESC
   picture = "ceylon_independence"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = ENG
-    year = 1948 NOT = { year = 1990 }
-    exists = HND # independence_of_india.txt
-    owns = 1321  # Colombo
-	NOT = { exists = SRL }
-  }
-
-  mean_time_to_happen = { months = 2 }
-
-  option = {
-    name = EVT_8028320_A
-relation = { who = HND value = 200 }
-any_owned = { limit = { is_core = SRL } secede_province = HND } 
-	ai_chance = { factor = 0.1 }
-  }
-
-  option = {
-    name = EVT_8028320_B
-	prestige = 25
-	release = SRL 
-	diplomatic_influence = { who = SRL value = 200 }
-	SRL = { 
-	set_country_flag = full_independance
-	set_country_flag = former_colonial_nation
-	government = hms_government
-	country_event = 800054 
-	any_pop = { 
-	ideology = {
-	factor = 0.5
-	value = conservative
-		} }
-	}
-	ai_chance = { factor = 0.7 }
-  }
-
-  option = {
-    name = "Delay independence"
-	prestige = -50
-	release_vassal = SRL 
-	diplomatic_influence = { who = SRL value = 200 }
-	SRL = { 
-	government = colonial_government
-	country_event = 800054
-add_country_modifier = { name = revolution_chaos duration = 3650 } 
+	trigger = {
+		tag = ENG
+		year = 1948 
+		NOT = { year = 1990 }
+		
+		government = hms_government
+		is_vassal = no
+		war = no
+		
+		is_possible_vassal = SRL
+		
+		#Dominion of India
+		HND = { 
+			exists = yes 
+			is_vassal = no 
+			OR = { 
+				government = hms_government 
+				government = hms_government1 
+			} 
 		}
-	ai_chance = { factor = 0.2 }
-  }
+	}
 
-  option = {
-    name = EVT_dontliberate
-	prestige = -100
-	any_owned = { limit = { is_core = SRL } any_pop = { militancy = 4   consciousness = 4.0 } } 
-	any_pop = { militancy = 0.3 }
+	mean_time_to_happen = { months = 2 }
 
-any_owned = { 
-limit = { is_core = SRL } 
-add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+	option = {
+		name = "Set them free!"
+		prestige = 25
+		release = SRL 
+		SRL = { 
+			set_country_flag = full_independance
+			set_country_flag = former_colonial_nation
+			
+			government = hms_government
+			country_event = 800054 
+			ruling_party_ideology = conservative
+			
+			any_pop = { 
+				ideology = {
+					factor = 0.10
+					value = conservative
+				} 
+			}
+		}
+		relation = { who = SRL value = 200 }
+		diplomatic_influence = { who = SRL value = 200 }
+		ai_chance = { factor = 0.7 }
+	}
+
+	option = {
+		name = "Delay independence"
+		prestige = -50
+		release_vassal = SRL 
+		SRL = { 
+			government = colonial_government
+			country_event = 800054
+			ruling_party_ideology = big_tent
+			add_country_modifier = { name = revolution_chaos duration = 3650 } 
+		}
+		diplomatic_influence = { who = SRL value = 200 }
+		ai_chance = { factor = 0.2 }
+	}
+  
+  	option = {
+		name = "Hand Ceylon to India"
+		relation = { who = HND value = 200 }
+		any_owned = { 
+			limit = { is_core = SRL } 
+			secede_province = HND 
+		} 
+		ai_chance = { factor = 0.1 }
+	}
+
+	option = {
+		name = "Ceylon shall remain British Ceylon!"
+		prestige = -50
+		badboy = 3
+	
+		any_owned = { 
+			limit = { is_core = SRL } 
+			any_pop = { 
+				militancy = 10
+				consciousness = 10
+				ideology = { factor = 0.15 value = nationalist }
+			} 
+			add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+		}
+		ai_chance = { factor = 0 }
+	}
 }
 
-	ai_chance = { factor = 0 }
-  }
-}
-
+#Sri Lankan Civil War
 country_event = {
   id = 8028321
   title = "Sri Lankan Civil War"
@@ -76,45 +105,65 @@ country_event = {
   picture = "srl_civil_war"
   fire_only_once = yes
 
-  trigger = {
-    tag = SRL
-    year = 1983 NOT = { year = 1990 }
-	is_vassal = no
-    exists = HND # independence_of_india.txt
-    TAE = { exists = no }  # No Tamil Tigers
-any_owned_province = { is_core = TAE }
-NOT = { accepted_culture = tamil }
-NOT = { accepted_culture = indian }
+	trigger = {
+		tag = SRL
+		year = 1983 
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		
+		is_possible_vassal = TAE
+		
+		HND = { exists = yes }
+		
+		#Sinhala only policy
+		NOT = { accepted_culture = tamil }
+		NOT = { accepted_culture = indian }
 	}
 
-  mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 2 }
 
-  option = {
-    name = "Crush the insurgency"
-release = TAE
-TAE = { government = nationalist_dictatorship country_event = 800050 ruling_party_ideology = nationalist }
-ruling_party_ideology = nationalist
-badboy = 5
-war = {
-	target = TAE
-	attacker_goal = { casus_belli = civil_war }
-	defender_goal = { casus_belli = humiliate }
-	call_ally = no
+	option = {
+		name = "Crush the insurgency!"
+		badboy = 5
+		
+		#Release the Tamil Tigers
+		release = TAE
+		TAE = { 
+			government = nationalist_dictatorship 
+			country_event = 800050 
+			ruling_party_ideology = nationalist 
+			relation = { who = HND value = 200 }
+		}
+		
+		war = {
+			target = TAE
+			attacker_goal = { casus_belli = civil_war }
+			defender_goal = { casus_belli = humiliate }
+			call_ally = no
+		}
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		relation = { who = HND value = -200 }
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Give in to the Tamil Tigers"
+		prestige_factor = -0.25
+		badboy = -5
+		
+		release = TAE 
+		TAE = { 
+			government = populist_dictatorship 
+			country_event = 800050 
+			ruling_party_ideology = nationalist 
+		}
+		relation = { who = TAE value = -200 }
+		ai_chance = { factor = 0.1 }
+	}
+
 }
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-TAE = { relation = { who = HND value = 200 } }
-	ai_chance = { factor = 0.9 }
-  }
-
-  option = {
-    name = "Give in to the Tamil Tigers"
-prestige_factor = -0.25
-badboy = -5
-	release = TAE 
-TAE = { government = populist_dictatorship country_event = 800050 ruling_party_ideology = nationalist }
-relation = { who = TAE value = -200 }
-	ai_chance = { factor = 0.1 }
-  }
-
-}
-
