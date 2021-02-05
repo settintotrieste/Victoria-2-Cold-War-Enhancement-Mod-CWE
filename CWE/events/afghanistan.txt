@@ -8,24 +8,26 @@ country_event = {
   	fire_only_once = yes
 
   	trigger = {
-    		tag = AFG
-    		year = 1973 
+    	tag = AFG
+    	year = 1973 
 		NOT = { year = 1990 }
 	
 		OR = { government = hms_government government = absolute_monarchy }
 		is_vassal = no
 		war = no
- 	 }
+ 	}
 
   	mean_time_to_happen = { months = 7 }
-
- 	immediate = { set_global_flag = afghani_coup_1973 } # will trigger 8176110 # Soviet intervention
   
  	option = {
-    		name = EVT_8000109_A
+    	name = EVT_8000109_A
 		government = populist_dictatorship 
 		country_event = 800050
 		ruling_party_ideology = nationalist
+		
+		#Trigger Afghan War later
+		set_global_flag = afghani_coup_1973
+		
 		any_state = { any_pop = { dominant_issue = { value = parties_allowed factor = 0.15 } } }
 		any_state = { any_pop = { dominant_issue = { value = planned_economy factor = 0.10 } } }
 		ai_chance = { factor = 0.9 }
@@ -33,7 +35,8 @@ country_event = {
 
  	option = {
    		name = EVT_8000109_B
-		any_pop = { militancy = 2.0 consciousness = 2 }
+		any_pop = { militancy = 5 consciousness = 5 }
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
 		ai_chance = { factor = 0.1 }
  	}
 }
@@ -50,6 +53,9 @@ country_event = {
 		has_country_flag = soviet_intervention_in_afghanistan
 		NOT = { year = 1996 }
 		NOT = { ruling_party_ideology = traditionalist }
+		
+		#Must have significant traditionalist support to begin with
+		traditionalist = 10
 	}
 
 	mean_time_to_happen = { months = 11 }
@@ -61,10 +67,9 @@ country_event = {
 				has_pop_religion = sunni
 				is_primary_culture = no
 			}
-            		militancy = 5
+            militancy = 5
 			consciousness = 2 
 		}
-		ai_chance = { factor = 1 }
 	}
 
 }
@@ -82,11 +87,15 @@ country_event = {
 		tag = AFG
 		year = 1996
 		
-		NOT = { government = proletarian_dictatorship }
+		NOT = { government = theocracy }
 		is_vassal = no
 		war = no
 		
 		NOT = { ruling_party_ideology = traditionalist }
+		
+		#Must have some traditionalist support to begin with
+		traditionalist = 5
+		
 		NOT = { has_country_modifier = sharia }
 	}
 
@@ -96,18 +105,18 @@ country_event = {
 
 	option = {
 		name = EVT_8000122_A 
-		ai_chance = { factor = 0.9 }
 		any_pop = {
 			limit = {
 				has_pop_religion = sunni
 			}
-            		militancy = -10
+            militancy = -10
 			consciousness = -5 
 		}
 		government = theocracy 
 		country_event = 800051
 		ruling_party_ideology = traditionalist
 		add_country_modifier = { name = sharia duration = 1750 }
+		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
@@ -116,7 +125,7 @@ country_event = {
 			limit = {
 				has_pop_religion = sunni
 			}
-            		militancy = 4
+            militancy = 4
 			consciousness = 2 
 		}
 		ai_chance = { factor = 0.1 }
@@ -124,71 +133,118 @@ country_event = {
 
 }
 
-#Intervention in Afghanistan
-country_event = {
-  id = 8176110
-  title = EVT_8176110_NAME
-  desc = EVT_8176110_DESC
-  picture = "nwo2_soviet_intervention_in_afghanistan"
-  
-  	is_triggered_only = yes
-
- 	option = {
-   		name = EVT_8176110_A
-		relation = { who = AFG value = 150 } 
-		any_pop = { consciousness = 2 }
-		badboy = 2
-		any_state = { any_pop = { dominant_issue = { value = interventionism factor = 0.4 } } }
-		AFG = { country_event = 8017602 }
-		ai_chance = { factor = 0.9 }
- 	}
-
-  	option = {
-    		name = EVT_8176110_B
-		any_pop = { militancy = 1 }
-		AFG = { country_event = 8176111 }
-		ai_chance = { factor = 0.1 }
- 	}
-}
-
-#Saur Revolution
+#Saur Revolution of 1978
 country_event = {
   id = 8000110 
-  title = EVT_8000110_NAME
+  title = "The Saur Revolution"
   desc = EVT_8000110_DESC
   picture = "nwo2_saur_revolution"
   
  	fire_only_once = yes
 
-    	trigger = {
-    		tag = AFG
-    		year = 1978
+    trigger = {
+    	tag = AFG
+    	year = 1978
 		NOT = { year = 1990 }
 		
 		NOT = { government = proletarian_dictatorship }
-    		is_vassal = no 
+    	is_vassal = no 
 		war = no
 		
-    		has_global_flag = afghani_coup_1973
-    	}
+		#Daoud Republic
+    	has_global_flag = afghani_coup_1973
+    }
 	
-    	mean_time_to_happen = {	months = 4 } 
+    mean_time_to_happen = {	months = 4 } 
 	
   	option = {
-    		name = EVT_8000110_A
+    	name = EVT_8000110_A
 		government = proletarian_dictatorship  
 		country_event = 800042
 		ruling_party_ideology = communist
-		country_event = { id = 8176109 days = 3 }
+		
+		#Soviet intervention
+		random_country = {
+			limit = { tag = RUS has_global_flag = blocsenabled }
+			country_event = 8176109
+		}
+		
 		ai_chance = { factor = 0.8 }
  	}
   
   	option = {
-    		name = EVT_8000110_B
-  		RUS  = { country_event = 8176112 }
+    	name = EVT_8000110_B
+		
+		any_pop = { militancy = 5 consciousness = 5 }
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		#Soviet option to intervene
+		random_country = {
+			limit = { tag = RUS has_global_flag = blocsenabled }
+			country_event = 8176112
+		}
+		
 		ai_chance = { factor = 0.2 }
   	}
 
+}
+
+#If Saur Revolution succeeds - RUS choice
+country_event = {
+  id = 8176109
+  title = "The Saur Revolution"
+  desc = EVT_8000110_DESC
+  picture = "nwo2_dem_rep_afghanistan"
+  
+  	is_triggered_only = yes
+
+  	option = {
+    	name = "Exert Soviet influence in Afghanistan!"
+		prestige = 100
+		relation = { who = AFG value = 200 } 
+		diplomatic_influence = { who = AFG value = 200 }
+		create_alliance = AFG
+		AFG = { military_access = RUS }
+		ai_chance = { factor = 0.9 }
+ 	}
+	option = {
+    	name = "Don't get involved in Afghan affairs"
+		prestige = -100
+		ai_chance = { factor = 0.1 }
+ 	}
+}
+
+#If Saur Revolution fails - Intervention in Afghanistan - RUS choice
+country_event = {
+  id = 8176112
+  title = "Intervention in Afghanistan?"
+  desc = EVT_8176112_DESC
+  picture = "nwo2_soviet_intervention_in_afghanistan"
+  
+  	is_triggered_only = yes # RUS
+
+  	option = {
+    	name = "Send in the troops"
+		war = { 
+			target = AFG 
+			attacker_goal = { casus_belli = make_puppet } 
+			defender_goal = { casus_belli = status_quo } 
+		}
+		set_country_flag = soviet_intervention_in_afghanistan
+		ai_chance = { factor = 0.9 }
+ 	}
+
+  	option = {
+    	name = "Stand back"
+		prestige_factor = -0.025
+		badboy = -5
+		any_pop = { consciousness = 2 }
+		
+		AFG = { set_country_flag = failed_soviet_intervention_in_afghanistan }
+		
+		ai_chance = { factor = 0.1 }
+  	}
 }
 
 #The 1979 Coup
@@ -201,8 +257,8 @@ country_event = {
  	fire_only_once = yes
 
   	trigger = {
-   		tag = AFG
-    		year = 1979
+		tag = AFG
+    	year = 1979
 		NOT = { year = 2000 }
 		
 		government = proletarian_dictatorship
@@ -213,24 +269,69 @@ country_event = {
   	mean_time_to_happen = { months = 2 }
 
  	option = {
-    		name = "Long live the Chairman!"
+    	name = "Long live the Chairman!"
 		relation = { who = RUS value = -50 }
 		any_state = { any_pop = { dominant_issue = { value = moralism factor = 0.15 } } }
-		RUS = { country_event = 8176110 }
+		
+		#Soviet intervention?
+		random_country = {
+			limit = { tag = RUS has_global_flag = blocsenabled }
+			
+			#USSR palace coup
+			RUS = { country_event = 8176110 }
+		}
+		
 		war_exhaustion = 10
 		ai_chance = { factor = 0.9 }
   	}
   
   	option = {
-    		name = "Death to traitors!"
+    	name = "Death to traitors!"
+		prestige_factor = -0.02
 		any_state = { any_pop = { dominant_issue = { value = moralism factor = 0.05 } } }
 		any_pop = { militancy = 3 consciousness = 6 }
 		war_exhaustion = 10
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
 		ai_chance = { factor = 0.1 }
   	}
 }
 
-#Operation Storm-333
+#The 1979 Coup - Intervention in Afghanistan - RUS choice
+country_event = {
+  id = 8176110
+  title = "The $YEAR$ Coup in Afghanistan"
+  desc = EVT_8176110_DESC
+  picture = "nwo2_soviet_intervention_in_afghanistan"
+  
+  	is_triggered_only = yes
+
+ 	option = {
+   		name = EVT_8176110_A
+		relation = { who = AFG value = 150 } 
+		any_pop = { consciousness = 2 }
+		badboy = 2
+		any_state = { any_pop = { dominant_issue = { value = interventionism factor = 0.4 } } }
+		
+		#Operation Storm
+		AFG = { country_event = 8017602 }
+		ai_chance = { factor = 0.9 }
+ 	}
+
+  	option = {
+    	name = EVT_8176110_B
+		prestige_factor = -0.03
+		badboy = -5
+		
+		any_pop = { militancy = 1 consciousness = 2 }
+		
+		#Inform of Soviet Withdrawal
+		AFG = { country_event = 8176111 }
+		ai_chance = { factor = 0.1 }
+ 	}
+}
+
+#The 1979 Coup - Operation Storm-333 - AFG choice
 country_event = {
   id = 8017602
   title = "Operation Storm-333"
@@ -251,75 +352,26 @@ country_event = {
   	}
   
   	option = {
-    		name = "Halt this imperialist coup!"
+    	name = "Halt this imperialist coup!"
+		prestige = 50
+		
+		RUS = { 
+			relation = { who = AFG value = -400 } 
+			diplomatic_influence = { who = AFG value = -200 }
+			
+			#Decision to make AFG a puppet
+			country_event = 8176112
+		}
+		
 		any_state = { any_pop = { dominant_issue = { value = moralism factor = 0.4 } } }
-		relation = { who = RUS value = -400 } 
-		diplomatic_influence = { who = RUS value = -200 }
-   		RUS = { country_event = 8176112 }
 		war_exhaustion = 10
+		
   		set_country_flag = failed_soviet_intervention_in_afghanistan
   		ai_chance = { factor = 0.2 }
   	}
 }
 
-#Restoration of Soviet Rule in Afghanistan
-country_event = {
-  id = 8017624
-  title = "Restoration of Soviet Rule"
-  desc = EVTDESC8017624
-  picture = "hungarian_communist_gov_change"
-  
-	fire_only_once = yes
-
-	trigger = {
-    		tag = AFG
-		has_country_flag = failed_soviet_intervention_in_afghanistan
-		
-		government = proletarian_dictatorship
-		vassal_of = RUS
-    		war = no
-		
-		#Cold War
-		has_global_flag = blocsenabled
-	}
-
-	option = {
-		name = "Long live the new Chairman!"
-		prestige_factor = -0.10
-		government = proletarian_dictatorship1
-		ruling_party_ideology = communist_social
-		country_event = 800052
-
-		#Domestic pops get angry
-		any_pop = {
-			consciousness = 5
-			ideology = { 
-				factor = 0.15 
-				value = communist 
-			}
-		}
-
-	}
-	
-}
-
-#Democratic Republic of Afghanistan
-country_event = {
-  id = 8176109
-  title = EVT_8176109_NAME
-  desc = EVT_8176109_DESC
-  picture = "nwo2_dem_rep_afghanistan"
-  
-  	is_triggered_only = yes
-
-  	option = {
-    		name = EVT_8176109_A
-		relation = { who = RUS value = 200 } 
-		RUS = { military_access = THIS } 
- 	}
-}
-
-#Soviet Withdrawal
+#The 1979 Coup - Soviet Withdrawal - AFG
 country_event = {
   id = 8176111
   title = "Soviet Withdrawal"
@@ -329,49 +381,13 @@ country_event = {
   	is_triggered_only = yes
 
   	option = {
-    		name = EVT_8176111_A
-		any_pop = { militancy = 1.0 consciousness = 2  }
+    	name = EVT_8176111_A
+		any_pop = { militancy = 2 consciousness = 2 }
 		prestige = -25
+		
+		#Failed intervention by the USSR
+		set_country_flag = failed_soviet_intervention_in_afghanistan
  	}
-}
-
-#Intervention in Afghanistan continues
-country_event = {
-  id = 8176112
-  title = EVT_8176112_NAME
-  desc = EVT_8176112_DESC
-  picture = "nwo2_soviet_intervention_in_afghanistan"
-  
-  	is_triggered_only = yes # RUS
-
-  	option = {
-    		name = EVT_8176112_A
-		war = { target = AFG attacker_goal = { casus_belli = make_puppet } defender_goal = { casus_belli = status_quo } }
-		set_country_flag = soviet_intervention_in_afghanistan
-		ai_chance = { factor = 0.9 }
- 	}
-
-  	option = {
-    		name = EVT_8176112_B
-		badboy = -10 
-		country_event = 8176114 
-		ai_chance = { factor = 0.1 }
-  	}
-}
-
-#Soviet withdrawal from Afghanistan
-country_event = {
-  id = 8176114
-  title = EVT_8176114_NAME
-  desc = EVT_8176114_DESC
-  picture = "nwo2_soviet_withdrawal_from_afghanistan"
-  
- 	is_triggered_only = yes
-
-  	option = {
-    		name = EVT_8176114_A
-		any_pop = { consciousness = 1 }
-  	}
 }
 
 #Soviet Afghan War
@@ -446,16 +462,18 @@ country_event = {
 			limit = { 
 				OR = {
 					tag = DDR
-                    			tag = RUS
+                    tag = RUS
 					tag = HND
 				}
 				OR = {
 					ruling_party_ideology = socialist
 					ruling_party_ideology = communist
 				}
-				is_vassal = no
+				OR = { is_vassal = no vassal_of = RUS }
 				exists = yes
 			}
+			
+			#Eastern block countries want to intervene
 			country_event = 8000634
 		}
 		
@@ -479,7 +497,10 @@ country_event = {
 					ruling_party_ideology = communist_social
 				}
 				is_vassal = no
+				exists = yes
 			}
+			
+			#US intervention
 			country_event = 8000635
 		}
 		
@@ -487,7 +508,7 @@ country_event = {
 	
 }
 
-#Communist support for the AFG war
+#Communist support for the AFG war - other Communist states
 country_event = {
   id = 8000634
   title = "The War in Afghanistan"
@@ -502,6 +523,7 @@ country_event = {
 		money = -500000
 		AFG = { money = 500000 }
 		badboy = 2
+		
 		relation = { who = AFG value = 200 }
 		AFG = { military_access = THIS } 
 		military_access = AFG
@@ -526,7 +548,10 @@ country_event = {
 			}
 		}
 		
-		ai_chance = { factor = 0.8 }
+		ai_chance = { 
+			factor = 0.8 
+			modifier = { factor = 0 NOT = { money = 550000 } }
+		}
 	}
 	option = {
 		name = "We will not be involved in such wars"
@@ -566,7 +591,10 @@ country_event = {
 			relation = { who = THIS value = -50 }
 		}
 		
-		ai_chance = { factor = 0.8 }
+		ai_chance = { 
+			factor = 0.8 
+			modifier = { factor = 0 NOT = { money = 550000 } }
+		}
 	}
 	option = {
 		name = "We will not be involved in such wars"
@@ -587,29 +615,92 @@ country_event = {
   
   	trigger = {
 		tag = AFG
+		has_country_flag = soviet_intervention_in_afghanistan
+		
+		government = proletarian_dictatorship1
+		
+		#Kabul is taken by Rebels
   		1209 = { controller = REB }
-  		government = proletarian_dictatorship1
-  		has_country_flag = soviet_intervention_in_afghanistan
   	}
   
   	option = {
-    		name = "Down with Communism!"
-		any_state = { any_pop = { dominant_issue = { value = moralism factor = 0.25 } } }
-		government = nationalist_dictatorship
-		ruling_party_ideology = traditionalist
+    	name = "Down with Communism!"
 		
-		#Overlord loses influence
+		#Overlord frees AFG
 		random_owned = {
 			limit = { owner = { is_vassal = yes } }
 			owner = { 
 				overlord = { 
-					relation = { who = THIS value = -400 } 
-					diplomatic_influence = { who = THIS value = -200 }
+					release_vassal = AFG
+					relation = { who = AFG value = -400 } 
+					diplomatic_influence = { who = AFG value = -200 }
 				} 
 			} 
 		}
 		
-		RUS = { event = 8176114 }
+		any_state = { any_pop = { dominant_issue = { value = moralism factor = 0.25 } } }
+		government = nationalist_dictatorship
+		country_event = 800050
+		ruling_party_ideology = traditionalist
+		
+		#Soviet withdrawal
+		random_country = {
+			limit = { tag = RUS government = proletarian_dictatorship }
+			country_event = 8176114
+		}
+  	}
+}
+
+#Soviet withdrawal from Afghanistan
+country_event = {
+  id = 8176114
+  title = "Soviet Withdrawal from Afghanistan"
+  desc = EVT_8176114_DESC
+  picture = "nwo2_soviet_withdrawal_from_afghanistan"
+  
+ 	is_triggered_only = yes
+
+  	option = {
+    	name = EVT_8176114_A
+		prestige_factor = -0.03
+		any_pop = { consciousness = 2 }
+  	}
+}
+
+#The Inauguration of Chairman Najibullah - When Gorbachev is around
+country_event = {
+  id = 8017609
+  title = "The Inauguration of Chairman Najibullah"
+  desc = EVT_8017609_DESC
+  picture = "najibullah"
+  
+  	fire_only_once = yes
+
+	trigger = {
+   	 	tag = AFG
+    	year = 1986
+		has_country_flag = soviet_intervention_in_afghanistan
+		
+		government = proletarian_dictatorship1
+		vassal_of = RUS
+		
+		#Gorbachev
+		RUS = { 
+			is_greater_power = yes 
+			government = proletarian_dictatorship
+			OR = { 
+				ruling_party_ideology = communist_social 
+				has_country_flag = mikhail_gorbachev 
+			}
+		}
+  	}
+	
+	mean_time_to_happen = { months = 1 }
+
+ 	option = {
+    	name = "Long live the Chairman!"
+		any_pop = { militancy = -2 consciousness = -2 }
+		war_exhaustion = 5
   	}
 }
 
@@ -636,6 +727,9 @@ country_event = {
 			controller = REB 
 			average_consciousness = 2
 		}
+		
+		#Must have significant traditionalist support to begin with
+		traditionalist = 10
 	}
 	
 	mean_time_to_happen = { months = 6 }
@@ -675,34 +769,43 @@ country_event = {
 	}
 }
 
-#The Inauguration of Chairman Najibullah
+#If there was a Soviet failed intervention for any reason - Restoration of Soviet Rule in Afghanistan
 country_event = {
-  id = 8017609
-  title = "The Inauguration of Chairman Najibullah"
-  desc = EVT_8017609_DESC
-  picture = "najibullah"
+  id = 8017624
+  title = "Restoration of Soviet Rule"
+  desc = EVTDESC8017624
+  picture = "hungarian_communist_gov_change"
   
-  	fire_only_once = yes
+	fire_only_once = yes
 
-	 trigger = {
-   	 	tag = AFG
-    		year = 1986
-		has_country_flag = soviet_intervention_in_afghanistan
+	trigger = {
+    	tag = AFG
+		has_country_flag = failed_soviet_intervention_in_afghanistan
 		
-		government = proletarian_dictatorship1
+		government = proletarian_dictatorship
 		vassal_of = RUS
+    	war = no
 		
-		#Gorbachev
-		RUS = { 
-			is_greater_power = yes 
-			ruling_party_ideology = communist_social 
+		#Cold War
+		has_global_flag = blocsenabled
+	}
+
+	option = {
+		name = "Long live the new Chairman!"
+		prestige_factor = -0.10
+		government = proletarian_dictatorship1
+		ruling_party_ideology = communist
+		country_event = 800052
+
+		#Domestic pops get angry
+		any_pop = {
+			consciousness = 5
+			ideology = { 
+				factor = 0.15 
+				value = communist 
+			}
 		}
-  	}
 
-
- 	option = {
-    		name = "Long live the Chairman!"
-		any_state = { any_pop = { militancy = -2 } } }
-		war_exhaustion = 5
-  	}
+	}
+	
 }

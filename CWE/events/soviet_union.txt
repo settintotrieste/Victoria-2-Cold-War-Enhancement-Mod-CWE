@@ -388,6 +388,340 @@ country_event = {
 	
 }
 
+### Virgin Lands Scheme Start ####
+
+#Virgin Lands Scheme
+country_event = {
+	id = 1512255
+	title = "The Virgin Lands Campaign"
+	desc = EVTDESC1512255
+	picture = "virgin_lands_scheme"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		year = 1953
+		NOT = { year = 1990 }
+
+		government = proletarian_dictatorship
+		war = no
+		
+		
+		has_country_flag = nikita_khrushchev
+	}
+
+	mean_time_to_happen = { months = 4 }
+
+	option = {
+		name = "Time to be a-maized! (Yearly events)"
+		prestige = 50
+		money = -1500000
+
+		any_owned = { 
+			limit = {
+				OR = {
+					trade_goods = fruit
+					trade_goods = grain
+					trade_goods = oil_seeds
+					trade_goods = sugar
+					trade_goods = tea
+					trade_goods = tobacco
+					trade_goods = coffee
+					trade_goods = cotton
+				} 
+			}
+			add_province_modifier = { name = rgo_boom duration = 365 }
+		}
+
+		#Trigger recurring Virgin Lands events
+		set_country_flag = virgin_lands_campaign_1
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "What a corny idea"
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+# Virgin Lands Campaign - First Year of the Virgin Lands Campaign
+country_event = {
+	id = 9001018
+	title = "First Year of the Virgin Lands Campaign"
+	desc = EVT_9001018_DESC
+	picture = "virgin_land_campaign"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = RUS
+		year = 1954
+		NOT = { year = 1990 }
+		
+		government = proletarian_dictatorship
+		
+		has_country_flag = nikita_khrushchev
+		
+		has_country_flag = virgin_lands_campaign_1
+	}
+	
+	mean_time_to_happen = { months = 12 }
+	
+	option = {
+		name = "The people thank the $MONARCHTITLE$!"
+		any_pop = { 
+			militancy = -2 
+			consciousness = -2 
+			ideology = { factor = 0.03 value = communist }
+		}
+		
+		research_points = 250
+		prestige = 30
+		
+		#Enable recurring events
+		set_country_flag = enable_virgin_lands_campaign_flag
+	}
+
+}
+
+# Virgin Lands Campaign - Repeating yearly events
+country_event = {
+	id = 9001019
+	title = "Annual Virgin Lands Campaign Investment"
+	desc = EVT_9001019_DESC
+	picture = "virgin_land_campaign"
+	
+	trigger = {
+		tag = RUS
+		year = 1954
+		NOT = { year = 1990 }
+		
+		government = proletarian_dictatorship
+		
+		NOT = { has_country_flag = leonid_brezhnev }
+		
+		#Past the 1st year of the VLC
+		has_country_flag = virgin_lands_campaign_1
+		has_country_flag = enable_virgin_lands_campaign_flag
+		
+		#Has provinces with no RGO boom modifier
+		any_owned_province = {
+			OR = {
+				trade_goods = fruit
+				trade_goods = grain
+				trade_goods = oil_seeds
+				trade_goods = sugar
+				trade_goods = tea
+				trade_goods = tobacco
+				trade_goods = coffee
+				trade_goods = cotton
+			} 
+			NOT = { has_province_modifier = rgo_boom }
+		}
+		
+	}
+	
+	mean_time_to_happen = { months = 1 }
+	
+	option = {
+		name = "Let's invest more" #Good outcome
+		any_owned = { 
+			limit = {
+				OR = {
+					trade_goods = fruit
+					trade_goods = grain
+					trade_goods = oil_seeds
+					trade_goods = sugar
+					trade_goods = tea
+					trade_goods = tobacco
+					trade_goods = coffee
+					trade_goods = cotton
+				} 
+			}
+			add_province_modifier = { name = rgo_boom duration = 365 }
+		}
+		
+		money = -200000
+		
+		set_country_flag = virgin_lands_campaign_good
+		clr_country_flag = virgin_lands_campaign_meh
+		clr_country_flag = virgin_lands_campaign_bad
+		
+		ai_chance = { factor = 0.6 }
+	}
+	option = {
+		name = "Let's invest a little" #Moderate outcome
+		any_owned = { 
+			limit = {
+				OR = {
+					trade_goods = fruit
+					trade_goods = grain
+					trade_goods = oil_seeds
+					trade_goods = sugar
+					trade_goods = tea
+					trade_goods = tobacco
+					trade_goods = coffee
+					trade_goods = cotton
+				} 
+			}
+			add_province_modifier = { name = rgo_boom duration = 365 }
+		}
+
+		money = -100000
+		
+		clr_country_flag = virgin_lands_campaign_good
+		set_country_flag = virgin_lands_campaign_meh
+		clr_country_flag = virgin_lands_campaign_bad
+
+		ai_chance = { factor = 0.2 }
+	}
+	option = {
+		name = "That should be enough for this time" #Bad outcome
+		any_owned = { 
+			limit = {
+				OR = {
+					trade_goods = fruit
+					trade_goods = grain
+					trade_goods = oil_seeds
+					trade_goods = sugar
+					trade_goods = tea
+					trade_goods = tobacco
+					trade_goods = coffee
+					trade_goods = cotton
+				} 
+			}
+			add_province_modifier = { name = rgo_boom duration = 365 }
+		}
+
+		money = -50000
+		
+		clr_country_flag = virgin_lands_campaign_good
+		clr_country_flag = virgin_lands_campaign_meh
+		set_country_flag = virgin_lands_campaign_bad
+		
+		ai_chance = { factor = 0.1 }
+	}
+	option = {
+		name = "Let's stop this money pit!" #Stop Virgin Lands system
+		prestige = -100
+		any_pop = { militancy = 3 consciousness = 3 }
+		
+		add_country_modifier = {
+			name = economic_malaise
+			duration = 365
+		}
+		
+		clr_country_flag = virgin_lands_campaign_good
+		clr_country_flag = virgin_lands_campaign_meh
+		clr_country_flag = virgin_lands_campaign_bad
+		
+		clr_country_flag = virgin_lands_campaign_1
+		clr_country_flag = enable_virgin_lands_campaign_flag
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+# Virgin Lands Campaign - Success
+country_event = {
+	id = 9001020
+	title = "Virgin Lands Campaign - Success"
+	desc = EVT_9001020_DESC
+	picture = "virgin_land_campaign_success"
+	
+	trigger = {
+		tag = RUS
+		government = proletarian_dictatorship
+		has_country_flag = virgin_lands_campaign_good
+	}
+	
+	mean_time_to_happen = { months = 12 }
+	
+	option = {
+		name = "The people thank the $MONARCHTITLE$!"
+		any_pop = { 
+			militancy = -2 
+			consciousness = -2 
+			ideology = { factor = 0.03 value = communist }
+		}
+		
+		research_points = 250
+		prestige = 30
+		
+		clr_country_flag = virgin_lands_campaign_good
+	}
+
+}
+
+# Virgin Lands Campaign - Moderate Results
+country_event = {
+	id = 9001021
+	title = "Virgin Lands Campaign - Moderate Results"
+	desc = EVT_9001021_DESC
+	picture = "virgin_land_campaign_mitigate"
+	
+	trigger = {
+		tag = RUS
+		government = proletarian_dictatorship
+		has_country_flag = virgin_lands_campaign_meh
+	}
+	
+	mean_time_to_happen = { months = 12 }
+	
+	option = {
+		name = "Some people thank the $MONARCHTITLE$"
+		any_pop = { 
+			militancy = -1
+			consciousness = -1
+			ideology = { factor = 0.01 value = communist }
+		}
+		
+		research_points = 125
+		prestige = 20
+		
+		clr_country_flag = virgin_lands_campaign_meh
+	}
+	
+}
+
+# Virgin Lands Campaign - Poor Results
+country_event = {
+	id = 9001022
+	title = "Virgin Lands Campaign - Poor Results"
+	desc = EVT_9001022_DESC
+	picture = "virgin_land_campaign_fail"
+	
+	trigger = {
+		tag = RUS
+		government = proletarian_dictatorship
+		has_country_flag = virgin_lands_campaign_bad
+	}
+	
+	mean_time_to_happen = { months = 12 }
+	
+	option = {
+		name = "Some people thank the $MONARCHTITLE$"
+		any_pop = { 
+			militancy = 2
+			consciousness = 2
+			ideology = { factor = -0.02 value = communist }
+		}
+		
+		add_country_modifier = {
+			name = economic_malaise
+			duration = 365
+		}
+		
+		prestige = -10
+		
+		clr_country_flag = virgin_lands_campaign_bad
+	}
+}
+
+### Virgin Lands Scheme end ####
+
 #Nikita Khrushchev's successor
 country_event = {
   id = 8014233
