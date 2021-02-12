@@ -53,6 +53,7 @@ political_decisions = {
 		allow = {
 			NOT = { has_country_modifier = in_bankrupcy }
 
+			#Sphere and neighbouring country limitations
 			OR = {
 				#Starter nation must be a Eastern European GP (usually Russia)
 				AND = { capital_scope = { continent = europe NOT = { is_core = POR } NOT = { is_core = SPA } NOT = { is_core = FRA } } is_greater_power = yes }
@@ -60,6 +61,21 @@ political_decisions = {
 				#Neighbouring nation is part of Eurasia
 				AND = { part_of_sphere = no any_neighbor_country = { has_country_flag = xea_ambition } }
 				AND = { sphere_owner = { OR = { has_country_flag = xea_ambition NOT = { has_country_flag = deny_superstate } } } any_neighbor_country = { has_country_flag = xea_ambition } }
+			}
+			
+			#AI decision making
+			OR = {
+				#Player is free to decide
+				ai = no
+				
+				#GPs don't join Eurasia unless they have extremely good relations with Eurasian members
+				any_neighbor_country = { is_greater_power = yes has_country_flag = xea_ambition relation = { who = THIS value = 150 } }
+				
+				#No restrictions for non GPs
+				is_greater_power = no
+				
+				#For starter nation to enable this decision for others
+				AND = { capital_scope = { continent = europe NOT = { is_core = POR } NOT = { is_core = SPA } NOT = { is_core = FRA } } is_greater_power = yes }
 			}
 			
 			#Eurasia is for authoritarian nations
@@ -103,7 +119,6 @@ political_decisions = {
 		}
 		allow = {
 			OR = { 
-
 				AND = { part_of_sphere = yes sphere_owner = { has_country_flag = deny_superstate NOT = { has_country_flag = xea_ambition } } }
 
 				NOT = {
