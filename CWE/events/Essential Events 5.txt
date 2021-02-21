@@ -21,29 +21,23 @@ country_event = {
 #Demonstrations against the government (Start Civil War)
 country_event = {
 	id = 1412002
-	title = "Peaceful Protests against the $COUNTRY_ADJ$ Government"
-	desc = "Due to the increasing unpopularity of our government, the $COUNTRYCULTURE$ citizens have started protesting against the regime."
+	title = "Mass Demonstrations against the Government"
+	desc = "Due to the increasing unpopularity of our government, the $COUNTRY_ADJ$ citizens have started protesting against the regime."
 	picture = "peaceful_protests"
 
 	trigger = {
-	
-		#Only for dictatorships, semi democracies and colonies
-		NOT = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } }
-
-		NOT = { AND = { ai = yes tag = SAF NOT = { year = 1993 } } }
-
-		NOT = { AND = { ai = yes tag = RHO NOT = { year = 1993 } } }
-
-		NOT = { has_country_flag = specially_disabled }
-
-		#Flag used to prevent interference in scripted CW
-
-		NOT = { AND = { has_global_flag =  blocsenabled OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } }
-		average_militancy = 8
-		NOT = { has_country_modifier = government_consensus }
+		#High militancy
+		average_militancy = 6
+		
+		#Event has not already fired
+		NOT = { has_country_modifier = mass_demonstrations }
 		NOT = { has_country_modifier = violent_crackdown }
+		
+		#Government has not already given in to protestors
+		NOT = { has_country_modifier = government_consensus }
+		
+		#Civil war has not broken out
 		NOT = { num_of_revolts = 1 }
-		NOT = { tag = ISI }
 		
 		#Country is not a nuclear wasteland
 		NOT = { has_country_flag = nuke_protection }
@@ -51,32 +45,38 @@ country_event = {
 	
 	mean_time_to_happen = { 
 		months = 12 
-		modifier = { militancy = 10 factor = 0.1 } 
+		modifier = { factor = 0.5 militancy = 8 }
+		modifier = { factor = 0.5 militancy = 10 }
 	}
+	
 	option = {
-		name = "Send the police to suppress them!"
-		add_country_modifier = { name = violent_crackdown duration = 150 }
+		name = "Send in the Police!"
 		prestige = -10
-		poor_strata = {
-			consciousness = 3
+		
+		add_country_modifier = { name = violent_crackdown duration = 100 }
+		
+		#Pops get angrier
+		any_pop = {
+			consciousness = 1
+			militancy = 1
 		}
-		middle_strata = {
-			consciousness = 6
-		}
-		rich_strata = {
-			consciousness = 1.5
-		}
+
 		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
-		name = "Negotiate with the protesters!"
-		add_country_modifier = { name = government_consensus duration = 180 }
-		set_country_flag = government_extends_peace_hand
-		prestige_factor = -0.10
+		name = "Let the demostrations continue!"
+		prestige = -15
+		
+		add_country_modifier = { name = mass_demonstrations duration = 183 }
+		
+		#Pops get more conscious of their anger
+		any_pop = {
+			consciousness = 2
+		}
+		
 		ai_chance = { 
-			factor = 0.1 
-			modifier = { factor = 0 is_vassal = yes } 
+			factor = 0.1
 		}
 	}
 }
@@ -84,19 +84,25 @@ country_event = {
 #Protests against our nation turns violent (Civil War stage 1)
 country_event = {
 	id = 1412003
-	title = "Protests turn Violent"
+	title = "Mass Riots Across $COUNTRY$"
 	desc = "The police used tear gas and riot weapons against the protesters to suppress the protests, but it has only sparked more violent actions to end our rule."
 	picture = "violent_protests"
 
 	trigger = {
-	
-		#Only for dictatorships, semi democracies and colonies
-		NOT = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } }
+		#High militancy
+		average_militancy = 7
 		
-		average_militancy = 8
-		NOT = { has_country_modifier = government_consensus }
-		NOT = { has_country_modifier = military_crackdown }
+		#Violence begets more violence
 		has_country_modifier = violent_crackdown
+		
+		#Event has not already fired
+		NOT = { has_country_modifier = military_crackdown }
+		NOT = { has_country_modifier = mass_riots }
+		
+		#Government has not already given in to protestors
+		NOT = { has_country_modifier = government_consensus }
+		
+		#Civil war has not broken out
 		NOT = { num_of_revolts = 1 }
 		
 		#Country is not a nuclear wasteland
@@ -105,33 +111,38 @@ country_event = {
 	
 	mean_time_to_happen = { 
 		months = 4
-		modifier = { militancy = 10 factor = 0.1 } 
+		modifier = { factor = 0.5 militancy = 8 }
+		modifier = { factor = 0.5 militancy = 10 }
 	}
-	option = {
-		name = "Send the army to kill the troublemakers!"
-		add_country_modifier = { name = military_crackdown duration = 150 }
-		prestige = -10
-		poor_strata = {
-			consciousness = 3
-		}
-		middle_strata = {
-			consciousness = 6
-		}
-		rich_strata = {
-			consciousness = 1.5
 	
+	option = {
+		name = "Send in the $COUNTRY_ADJ$ Army!"
+		prestige = -10
+		
+		add_country_modifier = { name = military_crackdown duration = 100 }
+		
+		#Pops get angrier
+		any_pop = {
+			consciousness = 1
+			militancy = 1
 		}
+		
 		ai_chance = { factor = 0.8 }
 	}
 
 	option = {
-		name = "Give in to the protesters!"
-		add_country_modifier = { name = government_consensus duration = 180 }
-		set_country_flag = government_extends_peace_hand
-		prestige_factor = -0.20
+		name = "Let the people express their 'free speech'!"
+		prestige = -15
+		
+		add_country_modifier = { name = mass_riots duration = 183 }
+		
+		#Pops get more conscious of their anger
+		any_pop = {
+			consciousness = 2
+		}
+		
 		ai_chance = { 
-			factor = 0.2 
-			modifier = { factor = 0 is_vassal = yes } 
+			factor = 0.2
 		}
 	}
 }
@@ -139,53 +150,69 @@ country_event = {
 #Army Defection (Civil War stage 2)
 country_event = {
 	id = 1412004
-	title = "Defections in the $COUNTRY_ADJ$ Army"
+	title = "$COUNTRY_ADJ$ Military Defections"
 	desc = "Some sections of the $COUNTRY_ADJ$ Army have defected and joined the anti-government forces. A Civil War is brewing!"
 	picture = "army_defects"
 
 	trigger = {
-	
 		#Only for dictatorships, semi democracies and colonies
 		NOT = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } }
+		
+		#High militancy
+		average_militancy = 7
 	
-		average_militancy = 8
-		NOT = { has_country_modifier = government_consensus }
-		NOT = { has_country_modifier = army_defects }
+		#Violence begets more violence
 		has_country_modifier = military_crackdown
+		
+		#Event has not already fired
+		NOT = { has_country_modifier = army_defects }
+		
+		#Government has not already given in to protestors
+		NOT = { has_country_modifier = government_consensus }
+		
+		#Civil war has not broken out
 		NOT = { num_of_revolts = 1 }
+		
+		#Military is not extremely loyal
+		NOT = { has_country_modifier = military_loyalty_high }
 		
 		#Country is not a nuclear wasteland
 		NOT = { has_country_flag = nuke_protection }
 	}
 	
 	mean_time_to_happen = { 
-		months = 1
-		modifier = { militancy = 10 factor = 0.1 } 
+		months = 4
+		modifier = { factor = 0.5 militancy = 8 }
+		modifier = { factor = 0.5 militancy = 10 }
 	}
+	
 	option = {
-		name = "Punish the defectors!"
-		add_country_modifier = { name = army_defects duration = 150 }
+		name = "Declare the defectors as traitors!"
 		prestige = -10
-		poor_strata = {
-			consciousness = 3
+		
+		add_country_modifier = { name = army_defects duration = 150 }
+		
+		#Pops get angrier
+		any_pop = {
+			consciousness = 1
 			militancy = 1
 		}
-		middle_strata = {
-			consciousness = 6
-			militancy = 1
-		}
-		rich_strata = {
-			consciousness = 3
-			militancy = 1
-		}
+		
 		ai_chance = { factor = 0.6 }
 	}
 
 	option = {
-		name = "Let the rebels win!"
+		name = "Hold a conference to resolve differences!"
+		prestige_factor = -0.05
+		
 		add_country_modifier = { name = government_consensus duration = 180 }
 		set_country_flag = government_extends_peace_hand
-		prestige_factor = -0.30
+		
+		#Pops become more peaceful
+		any_pop = {
+			militancy = -3
+		}
+		
 		ai_chance = { 
 			factor = 0.4 
 			modifier = { factor = 0 is_vassal = yes } 
@@ -196,20 +223,27 @@ country_event = {
 #Civil War Breaks Out (Civil War stage 3)
 country_event = {
 	id = 1412005
-	title = "Civil War Breaks Out"
+	title = "The $COUNTRY_ADJ$ Civil War of $YEAR$"
 	desc = "The current unrest in our country has boiled into a full blown Civil War between the rebels and the Government. It is only a matter of time before a coup occurs!"
 	picture = "civil_war"
+	
+	major = yes
 
 	trigger = {
-	
 		#Only for dictatorships, semi democracies and colonies
 		NOT = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } }
-	
-		average_militancy = 9
+		
+		#Government has not already given in to protestors
 		NOT = { has_country_modifier = government_consensus }
-		NOT = { has_country_modifier = civil_war }
-		has_country_modifier = army_defects
+		
+		#Event has not already fired
+		NOT = { has_country_flag = civil_war_in_country }
+		
+		#Rebels have taken at least one province
 		num_of_revolts = 1
+		
+		#Country has more than 1 province
+		num_of_cities = 1
 		
 		#Country is not a nuclear wasteland
 		NOT = { has_country_flag = nuke_protection }
@@ -217,35 +251,43 @@ country_event = {
 	
 	mean_time_to_happen = { 
 		months = 1
-		modifier = { militancy = 10 factor = 0.1 } 
 	}
+	
 	option = {
 		name = "We shall fight the revolutionaries!"
+		prestige_factor = -0.02
 
-		add_country_modifier = { name = civil_war duration = 150 }
+		set_country_flag = civil_war_in_country
 
-		prestige = -10
-		poor_strata = {
-			consciousness = 2
-			militancy = 3
+		#Rebellion spreads if there were military defections
+		random_owned = {
+			limit = { 
+				owner = { 
+					has_country_modifier = army_defects 
+					number_of_states = 2
+				} 
+			}
+			owner = { 
+				any_owned = { 
+					limit = { 
+						is_capital = no 
+						is_state_capital = yes 
+						average_militancy = 9 
+					} 
+					change_controller = REB 
+				}
+			}
 		}
-		middle_strata = {
-			consciousness = 3
-			militancy = 2
-		}
-		rich_strata = {
-			consciousness = 1
-			militancy = 1
-		}
-		any_owned = { limit = { is_capital = no is_state_capital = yes average_militancy = 10 } change_controller = REB }
+		
 		ai_chance = { factor = 0.8 }
 	}
 
 	option = {
-		name = "Accede to the revolutionary demands!"
-
+		name = "Hold a conference to resolve differences"
+		prestige_factor = -0.04
+		
 		set_country_flag = government_extends_peace_hand
-		prestige_factor = -0.40
+		
 		ai_chance = { 
 			factor = 0.2 
 			modifier = { factor = 0 is_vassal = yes } 
@@ -256,7 +298,7 @@ country_event = {
 #Government Conference (Civil War Finish stage 1)
 country_event = {
 	id = 1412006
-	title = "Government-Rebel Transition Conference"
+	title = "Government-Rebel Conference in $CAPITAL$"
 	desc = "A peace conference is underway between the Rebels and the Government to find a means to end the unrest peacefully. The rebels demand that we step down or face conflict!"
 	picture = "government_consensus"
 
@@ -268,16 +310,9 @@ country_event = {
 	}
 	
 	mean_time_to_happen = { 
-		months = 6
-		modifier = { militancy = 10 factor = 0.1 }
-		modifier = { militancy = 9 factor = 0.2 } 
-		modifier = { militancy = 8 factor = 0.3 } 
-		modifier = { militancy = 7 factor = 0.4 } 
-		modifier = { militancy = 6 factor = 0.5 }
-		modifier = { militancy = 5 factor = 0.6 }
-		modifier = { militancy = 4 factor = 0.7 }
-		modifier = { militancy = 3 factor = 0.8 }
+		months = 3
 	}
+	
 	option = {
 		name = "We reject their demands!"
 		prestige = -20
@@ -289,10 +324,14 @@ country_event = {
 	}
 
 	option = {
-		name = "Accede to the anti-government demands!"
+		name = "Give in to the rebels' demands!"
+		prestige_factor = -0.05
+		
 		add_country_modifier = { name = government_consensus duration = 180 }
-		country_event = 1412007 #Rebels Sieze Power
-		prestige_factor = -0.10
+		
+		#Rebels Sieze Power
+		country_event = 1412007
+		
 		ai_chance = { 
 			factor = 0.8 
 			modifier = { factor = 0 is_vassal = yes } 
@@ -303,7 +342,7 @@ country_event = {
 #Peaceful transition of Power (Civil War Finish peace)
 country_event = {
 	id = 1412007
-	title = "Democractic Transfer of Power"
+	title = "A Peaceful Transfer of Power"
 	desc = "As agreed upon by the Government in the recent peace deal, the current regime will now formally transfer power to the Revolutionary Interim Government"
 	picture = "peaceful_transfer_of_power"
 
@@ -312,41 +351,60 @@ country_event = {
 	option = {
 		name = "Vive la révolution!"
 		prestige = 20
+		
+		#Clear Civil War flag
+		clr_country_flag = civil_war_in_country
 
+		#Overlord can declare war on THIS
 		random_country = { 
 			limit = { is_our_vassal = THIS } 
 			release_vassal = THIS 
 			country_event = 1512212 
 		}
 
+		#Country becomes a democracy
 		random_owned = { 
 			limit = { owner = { NOT = { government = absolute_monarchy } } } 
 			owner = { government = democracy }
 		}
-
 		random_owned = { 
 			limit = { owner = { government = absolute_monarchy } } 
 			owner = { government = hms_government }
 		}
 
 		country_event = 800054
-
 		election = yes
 
+		#Militancy plunges
 		any_pop = { militancy = -10 }
-		any_pop = { consciousness = 10 }
-		clr_country_flag = government_extends_peace_hand
+		
+		#Remove modifiers for this chain
+		remove_country_modifier = mass_demonstrations
 		remove_country_modifier = violent_crackdown
-		remove_country_modifier = martial_law
+		remove_country_modifier = mass_riots
+		remove_country_modifier = military_crackdown
 		remove_country_modifier = army_defects
 		remove_country_modifier = civil_war
+		
+		remove_country_modifier = government_consensus
+		clr_country_flag = government_extends_peace_hand
+		
+		#End Civil War
+		clr_country_flag = civil_war_in_country
+		any_owned = { 
+			limit = { controlled_by_rebels = yes } 
+			change_controller = THIS 
+		}
+		
+		#Remove martial law
+		remove_country_modifier = martial_law
 
 		#Remove coup markers
 		remove_country_modifier = military_strife
 		remove_country_modifier = coup_risk
 
+		#Remove revolution modifier
 		remove_country_modifier = revolution_chaos
-
 	}
 
 }
@@ -354,33 +412,68 @@ country_event = {
 #Rebels agree to our demands (Civil War Finish peace)
 country_event = {
 	id = 1412008
-	title = "Rebels agree to our demands"
+	title = "Rebels Surrender to the Government"
 	desc = "Due to the increasingly unfavourable conditions for the rebels, they have decided to surrender to the Government. In exchange, the regime has allowed the rebels to be exiled."
 	picture = "rebels_give_up"
 
-	is_triggered_only = yes
+	trigger = {
+		has_country_flag = civil_war_in_country
+		
+		#No rebel held provinces
+		NOT = { num_of_revolts = 1 }
+	}
+	
+	mean_time_to_happen = { 
+		months = 3
+	}
 	
 	option = {
-		name = "Victory for the Government!"
-		prestige = 20
-		any_pop = { militancy = -9 }
-		any_pop = { consciousness = -6 }
-		clr_country_flag = government_extends_peace_hand
+		name = "Victory for the $MONARCHTITLE$!"
+		prestige = 25
+		
+		clr_country_flag = civil_war_in_country
+		
+		#Everyone becomes peaceful again
+		any_pop = { 
+			militancy = -10 
+			consciousness = -10 
+		}
+		
+		#Gain war exhaustion
+		war_exhaustion = 20
+
+		#Remove modifiers for this chain
+		remove_country_modifier = mass_demonstrations
 		remove_country_modifier = violent_crackdown
+		remove_country_modifier = mass_riots
+		remove_country_modifier = military_crackdown
 		remove_country_modifier = army_defects
 		remove_country_modifier = civil_war
+		
+		remove_country_modifier = government_consensus
+		clr_country_flag = government_extends_peace_hand
+		
+		#Remove martial law
 		remove_country_modifier = martial_law
-		add_country_modifier = { name = revolution_chaos duration = 1102 }
+
+		#Remove coup markers
+		remove_country_modifier = military_strife
+		remove_country_modifier = coup_risk
+
+		#Remove revolution modifier
+		remove_country_modifier = revolution_chaos
 	}
 
 }
 
-#Military Coup (Civil War Finish - Coup)
+#Military Coup (Civil War Finish - Coup) - always results in a dictatorship
 country_event = {
 	id = 1412009
-	title = "Coup d'état in $COUNTRY$"
+	title = "Coup d'etat in $COUNTRY$"
 	desc = EVTDESC152009873
 	picture = "military_coup"
+	
+	#Generate news
 	news = yes
 	news_desc_long = "EVTDESC152009873_NEWS_LONG"
 	news_desc_medium = "EVTDESC152009873_NEWS_MEDIUM"
@@ -390,23 +483,48 @@ country_event = {
 
 		NOT = { has_country_flag = specially_disabled }
 
-		NOT = { AND = { tag = ISI war = yes } }
+		#ISIS is immune
+		NOT = { AND = { tag = ISI government = theocracy war = yes } }
+		
+		#Special gov types do not have independent militaries
+		NOT = { government = sar_government }
+		NOT = { government = colonial_government }
+		NOT = { government = mandate_government }
+		
+		#Country is not at war
+		war = no
 
+		#Must have a military
 		total_amount_of_divisions = 1
-
-		AND = {
-			capital_scope = {
-				controlled_by = THIS
-				country_units_in_province = THIS
-			}
-			average_militancy = 9
-	
-			NOT = { government = sar_government }
-			NOT = { has_country_modifier = government_consensus }
-			has_country_modifier = army_defects
-			has_country_modifier = civil_war
-			num_of_revolts = 1
+		is_disarmed = no
+		
+		#Military is in the Capital and capital is not owned by rebels
+		capital_scope = {
+			controlled_by = THIS
+			country_units_in_province = THIS
 		}
+		
+		#Low military loyalty
+		OR = {
+			has_country_modifier = military_loyalty_low
+			AND = { has_country_modifier = military_loyalty_medium has_recently_lost_war = yes }
+			
+			#Military defections
+			has_country_modifier = army_defects
+		}
+		
+		#Time is right for a coup
+		has_country_modifier = coup_risk
+		any_owned_province = {
+			is_core = THIS
+			any_pop = { 
+				type = officers 
+				militancy = 8 
+			} 
+		}
+		
+		#Military is not already in charge
+		NOT = { ruling_party_ideology = nationalist }
 
 		#Country is not a nuclear wasteland
 		NOT = { has_country_flag = nuke_protection }
@@ -415,100 +533,174 @@ country_event = {
 	
 	mean_time_to_happen = { 
 		months = 40
-		modifier = { militancy = 10 factor = 0.1 }
-		modifier = { militancy = 9 factor = 0.2 } 
-		modifier = { militancy = 8 factor = 0.3 } 
-		modifier = { militancy = 7 factor = 0.4 } 
-		modifier = { militancy = 6 factor = 0.5 }
-		modifier = { militancy = 5 factor = 0.6 }
-		modifier = { militancy = 4 factor = 0.7 }
-		modifier = { militancy = 3 factor = 0.8 }
+		modifier = { militancy = 7 factor = 0.5 }
+		modifier = { militancy = 8 factor = 0.5 }
+		modifier = { militancy = 9 factor = 0.5 }
+		modifier = { militancy = 10 factor = 0.5 }
+
 	}
+	
 	option = {
-		name = "Long live the Revolution!"
-		prestige_factor = -0.20
+		name = "Long live the $COUNTRY_ADJ$ Military!"
+		prestige_factor = -0.05
+		
+		#Dissolve all alliances and set all vassals free
+		neutrality = yes
 
+		#THIS becomes independent if it is a vassal
 		sphere_owner = { diplomatic_influence = { who = THIS value = -200 } }
-
 		random_country = { 
 			limit = { is_our_vassal = THIS } 
 			release_vassal = THIS 
 			country_event = 1512212 
 		}
 
-		remove_country_modifier = martial_law
+		#Remove coup markers
+		remove_country_modifier = military_strife
+		remove_country_modifier = coup_risk
+		
+		#Gain war exhaustion
+		war_exhaustion = 20
 
-
-		#Socialist Group
+		#Remove modifiers for this chain
+		remove_country_modifier = mass_demonstrations
+		remove_country_modifier = violent_crackdown
+		remove_country_modifier = mass_riots
+		remove_country_modifier = military_crackdown
+		remove_country_modifier = army_defects
+		remove_country_modifier = civil_war
+		
+		remove_country_modifier = government_consensus
+		clr_country_flag = government_extends_peace_hand
+		
+		#End Civil War
+		clr_country_flag = civil_war_in_country
+		any_owned = { 
+			limit = { controlled_by_rebels = yes } 
+			change_controller = THIS 
+		}
+		
+		#Soldiers are happy
+		any_pop = { 
+			limit = { 
+				OR = { is_primary_culture = yes is_accepted_culture = yes } 
+				OR = { type = officers type = soldiers } 
+			}
+			militancy = -8
+			consciousness = -4
+		}
+		
+		#Socialist Dictatorship
 		random_owned = { 
 			limit = { 
-				owner = { 
-					OR = { pop_majority_ideology = socialist pop_majority_ideology = communist pop_majority_ideology = communist_social }
-				} 
-			} 
-			owner = { 
-				random_list = {
-					40 = { country_event = 141208 }
-					40 = { country_event = 141509 }
-					20 = { country_event = 141512 } 
-				} 
+				owner = { pop_majority_ideology = socialist }
+			}
+			owner = {
+				government = presidential_dictatorship
+				ruling_party_ideology = socialist
+				country_event = 800050
 			}
 		}
 
-		#Populist Group
+		#Conservative Dictatorship
 		random_owned = { 
 			limit = { 
-				owner = { 
-					OR = { pop_majority_ideology = populist pop_majority_ideology = nationalist }
-				} 
-			} 
-			owner = { 
-				random_list = {
-					40 = { country_event = 141208 }
-					20 = { country_event = 141510 }
-					40 = { country_event = 141509 } 
-				} 
+				owner = { OR = { pop_majority_ideology = traditionalist pop_majority_ideology = conservative pop_majority_ideology = big_tent pop_majority_ideology = liberal pop_majority_ideology = progressive } }
+			}
+			owner = {
+				government = presidential_dictatorship
+				ruling_party_ideology = conservative
+				country_event = 800050
 			}
 		}
 
-		#Conservative Group
+		#Nationalist Dictatorship
 		random_owned = { 
 			limit = { 
-				owner = { 
-					OR = { pop_majority_ideology = conservative pop_majority_ideology = big_tent pop_majority_ideology = liberal pop_majority_ideology = progressive }
-				} 
-			} 
-			owner = { 
-				random_list = {
-					50 = { country_event = 141208 }
-					50 = { country_event = 141510 }
-				} 
+				owner = { OR = { pop_majority_ideology = nationalist pop_majority_ideology = populist } }
 			}
-		} 
-
-		#Traditionalist Group
-		random_owned = { 
-			limit = { 
-				owner = { 
-					OR = { pop_majority_ideology = traditionalist }
-				} 
-			} 
-			owner = { 
-				random_list = {
-					90 = { country_event = 141509 }
-					10 = { country_event = 141511 }
-				} 
+			owner = {
+				government = populist_dictatorship
+				ruling_party_ideology = nationalist
+				country_event = 800050
 			}
 		}
 
+		#Communist Dictatorship
+		random_owned = { 
+			limit = { 
+				owner = { OR = { pop_majority_ideology = communist pop_majority_ideology = communist_social } }
+			}
+			owner = {
+				government = proletarian_dictatorship
+				ruling_party_ideology = communist
+				country_event = 800052
+			}
+		}
+		
+		ai_chance = { factor = 0.75 }
+	}
+	
+	option = {
+		name = EVT152009873OPTB
+
+		#Revolution modifier is reset
+		remove_country_modifier = revolution_chaos
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
+		
+		#No more coups for a while
+		remove_country_modifier = coup_risk
+
+		#Possible Military Rebellion if more than 2 states
+		random_owned = { 
+			limit = { owner = { is_vassal = no number_of_states = 2 any_owned_province = { is_capital = no is_core = THIS average_militancy = 7 } } }
+			owner = {
+				random = {
+					chance = 90
+					country_event = 100102
+				}
+			}
+		}
+
+		any_pop = {
+			limit = {
+				OR = {
+					is_primary_culture = yes
+					is_accepted_culture = yes
+				}
+				NOT = {
+					type = officers
+					type = soldiers
+				}
+			}
+			scaled_militancy = {
+				ideology = nationalist
+				factor = 8
+			}
+		}
+
+		any_pop = { 
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } OR = { type = officers type = soldiers } }
+			ideology = {
+				value = nationalist
+				factor = 0.25
+			}
+			dominant_issue = {
+				value = jingoism
+				factor = 0.25
+			}
+			militancy = 8
+			consciousness = -4
+		}
+		ai_chance = { factor = 0.25 }	
 	}
 
 }
 
-#Military Coup (Civil War Finish - Rebels Overthrow)
+#Popular Revolution (Civil War Finish - Rebels Overthrow)
 country_event = {
 	id = 14120091
-	title = "Revolution in $COUNTRY$"
+	title = "Popular Revolution in $COUNTRY$"
 	desc = EVTDESC14120091
 	picture = "popular_revolution"
 
@@ -516,55 +708,76 @@ country_event = {
 
 		NOT = { has_country_flag = specially_disabled }
 
-		NOT = { tag = ISI }
-
-		OR = {
+		#ISIS is immune
+		NOT = { AND = { tag = ISI government = theocracy war = yes } }
 		
-			AND = {
-				capital_scope = {
-					controlled_by = THIS
-					NOT = { country_units_in_province = THIS }
-				}
-				average_militancy = 9
-	
-				NOT = { government = sar_government }
-				NOT = { has_country_modifier = government_consensus }
-				has_country_modifier = army_defects
-				has_country_modifier = civil_war
-				num_of_revolts = 1
-			}
+		#Country is not at war
+		war = no
 
-			capital_scope = { controlled_by_rebels = yes }
+		#Have open rebellions
+		num_of_revolts = 1
 
-		}
+		#Capital is controlled by Rebels
+		capital_scope = { controlled_by_rebels = yes }
 		
 		#Country is not a nuclear wasteland
 		NOT = { has_country_flag = nuke_protection }
 	}
 	
 	mean_time_to_happen = { 
-		months = 40
-		modifier = { 
-			capital_scope = { controlled_by_rebels = yes } 
-			factor = 0.1 
-		}
+		months = 5
 	}
 
 	option = {
 		name = "Long live the Revolution!"
-		prestige_factor = -0.20
+		prestige_factor = -0.05
+		
+		#Dissolve all alliances and set all vassals free
+		neutrality = yes
 
+		#Become independent if THIS is a vassal
 		sphere_owner = { diplomatic_influence = { who = THIS value = -200 } }
-
 		random_country = { 
 			limit = { is_our_vassal = THIS } 
 			release_vassal = THIS 
 			country_event = 1512212 
 		}
 
+		#Remove martial law
 		remove_country_modifier = martial_law
+		
+		#Military becomes agitated
+		any_pop = { 
+			limit = { 
+				OR = { is_primary_culture = yes is_accepted_culture = yes } 
+				OR = { type = officers type = soldiers } 
+			}
+			militancy = 3
+		}
 
+		#Possible counter coup
 		add_country_modifier = { name = coup_risk duration = 730 }
+		
+		#Gain war exhaustion
+		war_exhaustion = 20
+
+		#Remove modifiers for this chain
+		remove_country_modifier = mass_demonstrations
+		remove_country_modifier = violent_crackdown
+		remove_country_modifier = mass_riots
+		remove_country_modifier = military_crackdown
+		remove_country_modifier = army_defects
+		remove_country_modifier = civil_war
+		
+		remove_country_modifier = government_consensus
+		clr_country_flag = government_extends_peace_hand
+		
+		#End Civil War
+		clr_country_flag = civil_war_in_country
+		any_owned = { 
+			limit = { controlled_by_rebels = yes } 
+			change_controller = THIS 
+		}
 
 		#Socialist Democracy and Communist Dictatorship
 		random_owned = { 
@@ -607,17 +820,10 @@ country_event = {
 	option = {
 		name = "All Hail to the Chief!"
 		government = presidential_dictatorship
-		ruling_party_ideology = conservative
 		country_event = 800050
-		remove_country_modifier = army_defects
-		clr_country_flag = government_extends_peace_hand
-		remove_country_modifier = government_consensus
-		remove_country_modifier = violent_crackdown
-		remove_country_modifier = civil_war
+		ruling_party_ideology = conservative
 
-		any_pop = { militancy = -10 }
-		add_country_modifier = { name = revolution_chaos duration = 1102 }
-		any_owned = { limit = { controlled_by_rebels = yes } change_controller = THIS }
+		any_pop = { limit = { NOT = { OR = { type = officers type = soldiers } } } militancy = -10 consciousness = -5 }
 	}
 
 }
@@ -634,17 +840,10 @@ country_event = {
 	option = {
 		name = "A victory for Patriotism!"
 		government = nationalist_dictatorship 
-		ruling_party_ideology = socialist
 		country_event = 800050
-		remove_country_modifier = army_defects
-		clr_country_flag = government_extends_peace_hand
-		remove_country_modifier = government_consensus
-		remove_country_modifier = violent_crackdown
-		remove_country_modifier = civil_war
+		ruling_party_ideology = nationalist
 
-		any_pop = { militancy = -10 }
-		add_country_modifier = { name = revolution_chaos duration = 1102 }
-		any_owned = { limit = { controlled_by_rebels = yes } change_controller = THIS }
+		any_pop = { limit = { NOT = { OR = { type = officers type = soldiers } } } militancy = -10 consciousness = -5 }
 	}
 
 }
@@ -661,17 +860,10 @@ country_event = {
 	option = {
 		name = "A victory for the People!"
 		government = populist_dictatorship 
-		ruling_party_ideology = nationalist
 		country_event = 800050
-		remove_country_modifier = army_defects
-		clr_country_flag = government_extends_peace_hand
-		remove_country_modifier = government_consensus
-		remove_country_modifier = violent_crackdown
-		remove_country_modifier = civil_war
+		ruling_party_ideology = nationalist
 
-		any_pop = { militancy = -10 }
-		add_country_modifier = { name = revolution_chaos duration = 1102 }
-		any_owned = { limit = { controlled_by_rebels = yes } change_controller = THIS }
+		any_pop = { limit = { NOT = { OR = { type = officers type = soldiers } } } militancy = -10 consciousness = -5 }
 	}
 
 }
@@ -688,17 +880,10 @@ country_event = {
 	option = {
 		name = "Not to make us rest in peace right?"
 		government = theocracy 
-		ruling_party_ideology = traditionalist
 		country_event = 800051
-		remove_country_modifier = army_defects
-		clr_country_flag = government_extends_peace_hand
-		remove_country_modifier = government_consensus
-		remove_country_modifier = violent_crackdown
-		remove_country_modifier = civil_war
+		ruling_party_ideology = traditionalist
 
-		any_pop = { militancy = -10 }
-		add_country_modifier = { name = revolution_chaos duration = 1102 } 
-		any_owned = { limit = { controlled_by_rebels = yes } change_controller = THIS }
+		any_pop = { limit = { NOT = { OR = { type = officers type = soldiers } } } militancy = -10 consciousness = -5 }
 	}
 
 }
@@ -715,17 +900,10 @@ country_event = {
 	option = {
 		name = "Down with evil capitalism"
 		government = proletarian_dictatorship
-		ruling_party_ideology = communist
 		country_event = 800051
-		remove_country_modifier = army_defects
-		clr_country_flag = government_extends_peace_hand
-		remove_country_modifier = government_consensus
-		remove_country_modifier = violent_crackdown
-		remove_country_modifier = civil_war
+		ruling_party_ideology = communist
 
-		any_pop = { militancy = -10 }
-		add_country_modifier = { name = revolution_chaos duration = 1102 } 
-		any_owned = { limit = { controlled_by_rebels = yes } change_controller = THIS }
+		any_pop = { limit = { NOT = { OR = { type = officers type = soldiers } } } militancy = -10 consciousness = -5 }
 	}
 
 }
@@ -742,19 +920,12 @@ country_event = {
 	option = {
 		name = "Liberty!"
 		government = democracy
-		ruling_party_ideology = liberal
 		country_event = 800054
-		remove_country_modifier = army_defects
-		clr_country_flag = government_extends_peace_hand
-		remove_country_modifier = government_consensus
-		remove_country_modifier = violent_crackdown
-		remove_country_modifier = civil_war
+		ruling_party_ideology = liberal
 
 		election = yes
 
-		any_pop = { militancy = -10 }
-		add_country_modifier = { name = revolution_chaos duration = 1102 } 
-		any_owned = { limit = { controlled_by_rebels = yes } change_controller = THIS }
+		any_pop = { limit = { NOT = { OR = { type = officers type = soldiers } } } militancy = -10 consciousness = -5 }
 	}
 
 }
@@ -771,19 +942,12 @@ country_event = {
 	option = {
 		name = "Socialist Liberty!"
 		government = socialist_democracy
-		ruling_party_ideology = socialist
 		country_event = 800054
-		remove_country_modifier = army_defects
-		clr_country_flag = government_extends_peace_hand
-		remove_country_modifier = government_consensus
-		remove_country_modifier = violent_crackdown
-		remove_country_modifier = civil_war
+		ruling_party_ideology = socialist
 
 		election = yes
 
-		any_pop = { militancy = -10 }
-		add_country_modifier = { name = revolution_chaos duration = 1102 } 
-		any_owned = { limit = { controlled_by_rebels = yes } change_controller = THIS }
+		any_pop = { limit = { NOT = { OR = { type = officers type = soldiers } } } militancy = -10 consciousness = -5 }
 	}
 
 }
