@@ -1,64 +1,11 @@
-#Regency starts
+#Regency starts - triggered by king death event
 country_event = {
 	id = 201900
 	title = "EVTNAME201900"
 	desc = "EVTDESC201900"
 	picture = "regency"
 
-	trigger = {
-		OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
-		
-		NOT = { has_country_modifier = regency_government }
-		
-		NOT = { has_country_modifier = leader_cooldown_king }
-		
-		NOT = { has_country_flag = time_to_select_new_king }
-		
-		#Not an elective monarchy
-		NOT = { has_country_flag = elective_monarchy }
-
-		#Has a king
-		OR = { 
-
-			has_country_modifier = centrist_king #Big tent
-
-			has_country_modifier = populist_king #Populist
-	
-			has_country_modifier = socialist_king #Socialist
-
-			has_country_modifier = traditional_king #Traditionalist
-
-			has_country_modifier = nationalist_king #Nationalist
-
-			has_country_modifier = conservative_king #Conservative
-
-		}
-
-	}
-	
-	mean_time_to_happen = {
-		months = 1000
-		
-		modifier = {
-			factor = 1.5
-			NOT = { average_militancy = 2 }
-		}
-		modifier = {
-			factor = 0.75
-			civilized = yes
-			capital_scope = { average_militancy = 9 }
-		}
-		modifier = {
-			factor = 0.75
-			civilized = yes
-			capital_scope = { average_militancy = 8 }
-		}
-		modifier = {
-			factor = 0.9
-			civilized = yes
-			capital_scope = { average_militancy = 7 }
-		}
-	}
+	is_triggered_only = yes
 	
 	option = {
 		name = "EVTOPTA201900"
@@ -809,7 +756,7 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		months = 1
+		months = 1.5
 	}
 	
 	option = {
@@ -881,7 +828,7 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		months = 1
+		months = 1.5
 	}
 	
 	option = {
@@ -953,7 +900,7 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		months = 1
+		months = 1.5
 	}
 	
 	option = {
@@ -1025,7 +972,7 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		months = 1
+		months = 1.5
 	}
 	
 	option = {
@@ -1097,7 +1044,7 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		months = 1
+		months = 1.5
 	}
 	
 	option = {
@@ -1169,7 +1116,7 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		months = 1
+		months = 1.5
 	}
 	
 	option = {
@@ -1258,11 +1205,18 @@ country_event = {
 	picture = "king_death"
 
 	trigger = {
+	
 		OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
 		
+		#So it doesnt interfere with historical events
+		year = 1975
+		
+		#Event has not fired recently
 		NOT = { has_country_modifier = leader_cooldown_king }
 		
 		NOT = { has_country_flag = time_to_select_new_king }
+		
+		#Not in a regency
 		NOT = { has_country_modifier = regency_government }
 		
 		#Not an elective monarchy
@@ -1302,6 +1256,12 @@ country_event = {
 		remove_country_modifier = nationalist_king #Nationalist
 		remove_country_modifier = conservative_king #Conservative
 		
+		#Chance for a regency
+		random = {
+			chance = 25
+			country_event = 201900
+		}
+		
 	}
 
 }
@@ -1336,7 +1296,7 @@ country_event = {
 	}
 	
 	mean_time_to_happen = {
-		months = 60
+		months = 108
 	}
 
 	option = {
@@ -1446,6 +1406,85 @@ country_event = {
 				clr_country_flag = far_left_set_up
 			}
 		}
+	}
+
+}
+
+#Clear generic leaders modifiers for absolute monarchies
+country_event = {
+	id = 201913
+	title = "The $COUNTRY_ADJ$ Absolute Monarchy"
+	desc = EVTDESC201913
+	picture = "king_start"
+
+	trigger = {
+	
+		government = absolute_monarchy
+		
+		#Has generic modifiers to clear
+		OR = {
+			has_country_modifier = expert_diplomat
+			has_country_modifier = successful_industrialist
+			has_country_modifier = ivory_tower_intellectual
+			has_country_modifier = man_of_the_people
+			has_country_modifier = landed_gentleman
+			has_country_modifier = military_man
+			has_country_modifier = lord_admiral
+			has_country_modifier = raving_loon
+			has_country_modifier = luddite
+			has_country_modifier = great_statesman
+			has_country_modifier = backroom_boy
+			has_country_modifier = great_reformer
+			has_country_modifier = gauche_buffoon
+			has_country_modifier = administrative_genius
+			has_country_modifier = visionary_thinker
+			has_country_modifier = competent_placeholder
+			has_country_modifier = imperious_autocrat
+			has_country_modifier = prince_of_terror
+			has_country_modifier = efficient_sociopath
+			has_country_modifier = pig_headed_isolationist
+			has_country_modifier = ambitious_union_boss
+			has_country_modifier = dour_economist
+			has_country_modifier = power_vacuum
+		}
+	}
+
+	option = {
+		name = "All Hail the King!"
+
+		#If leader refused to leave via 'backbencher's plot' event
+		clr_country_flag = leader_refuses_to_leave
+
+		#Clear Generic Leaders
+		remove_country_modifier = expert_diplomat
+		remove_country_modifier = successful_industrialist
+		remove_country_modifier = ivory_tower_intellectual
+		remove_country_modifier = man_of_the_people
+		remove_country_modifier = landed_gentleman
+		remove_country_modifier = military_man
+		remove_country_modifier = lord_admiral
+		remove_country_modifier = raving_loon
+		remove_country_modifier = luddite
+		remove_country_modifier = great_statesman
+		remove_country_modifier = backroom_boy
+		remove_country_modifier = great_reformer
+		remove_country_modifier = gauche_buffoon
+		remove_country_modifier = administrative_genius
+		remove_country_modifier = visionary_thinker
+		remove_country_modifier = competent_placeholder
+		remove_country_modifier = imperious_autocrat
+		remove_country_modifier = prince_of_terror
+		remove_country_modifier = efficient_sociopath
+		remove_country_modifier = pig_headed_isolationist
+		remove_country_modifier = ambitious_union_boss
+		remove_country_modifier = dour_economist
+
+		clr_country_flag = right_set_up
+		clr_country_flag = far_right_set_up
+		clr_country_flag = centre_set_up
+		clr_country_flag = left_set_up
+		clr_country_flag = far_left_set_up
+
 	}
 
 }
