@@ -1841,7 +1841,7 @@ left_reactionary_rebels = {
 }
 
 ###################################
-# Nationalist Dictatorship Rebels
+# Nationalist Dictatorship Rebels (formed by the military)
 ###################################
 populist_rebels = {
 	icon = 2
@@ -1851,8 +1851,8 @@ populist_rebels = {
 	
 	# <this is the government in the country> = <this is what the rebels want>
 	government = {
-	proletarian_dictatorship1 = populist_dictatorship
-
+	
+		proletarian_dictatorship1 = populist_dictatorship
 		colonial_government = populist_dictatorship
 		hms_government1 = populist_dictatorship
 		democracy1 = populist_dictatorship
@@ -1874,11 +1874,9 @@ populist_rebels = {
 	independence = none				# Does not strive for independence
 	defect_delay = 18
 	
-	ideology = populist
-	
 	allow_all_cultures = yes
 	allow_all_religions = yes
-	allow_all_ideologies = no
+	allow_all_ideologies = yes
 	
 	resilient = yes					# Does not disband on retreat
 	reinforcing = yes				# Receives reinforcements
@@ -1933,69 +1931,100 @@ populist_rebels = {
 	spawn_chance = {
 		factor = 1.02
 		
-		modifier = {
-			factor = 0.1
-			OR = {
-				social_movement = yes
-				political_movement = yes
-			}
-			NOT = {		
-				OR = {
-					pop_majority_ideology = populist
-					pop_majority_ideology = traditionalist
-					militancy = 5
-				}
-			}	
-		}
-		modifier = {
-			factor = 0.01
-			NOT = { 
-				OR = { 
-					pop_majority_ideology = populist 
-					pop_majority_ideology = traditionalist 
-				} 
-			}
-		}
-		modifier = {
-			factor = 1.5
-			pop_majority_ideology = populist
-		}
-		modifier = {
-			factor = 3
-			pop_majority_ideology = nationalist
-		}
-
+		#Only rich strata want a military dictatorship
 		modifier = {
 			factor = 0
-			country = { OR = { ruling_party_ideology = populist ruling_party_ideology = nationalist government = populist_dictatorship } }
+			NOT = {
+				OR = { 
+					type = soldiers 
+					type = officers
+					type = aristocrats
+					type = capitalists
+				}
+			}
+        }
+		
+		#Only nationalist and populists pops support this rebel type
+		modifier = {
+			factor = 0
+			NOT = {
+				OR = {
+					pop_majority_ideology = populist
+					pop_majority_ideology = nationalist
+				}
+			}
+		}
+		
+		#Being in a political reform movement reduces support
+		modifier = {
+			factor = 0.5
+			political_movement = yes
+		}
+		
+		#Big boost if country is majority nationalist
+		modifier = {
+			factor = 2
+			is_primary_culture = yes
+			location = {
+				minorities = yes
+			}
+			country = { 
+				pop_majority_ideology = nationalist
+			}
 		}
 
+		#Rebels dont spawn in a populist_dictatorship
 		modifier = {
-			factor = 0.2
+			factor = 0
+			country = { government = populist_dictatorship }
+		}
+		
+		#Rebels spawn less if ruling party is nationalist or populist
+		modifier = {
+			factor = 0.5
+			country = { OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist } }
+		}
+		
+		#Increase spawn if country recently lost a war
+		modifier = {
+			factor = 1.5
+			country = { has_recently_lost_war = yes }
+		}
+		
+		#Increase spawn if country is disarmed
+		modifier = {
+			factor = 1.5
+			country = { is_disarmed = yes }
+		}
+		
+		#Increase spawn if country has high unemployment
+		modifier = {
+			factor = 1.5
+			country = { unemployment = 0.25 }
+		}
+
+		#Less support from unaccepted pops
+		modifier = {
+			factor = 0.25
 			is_primary_culture = no
 			is_accepted_culture = no
 		}
-		modifier = {
-			factor = 1.15
-			NOT = { 
-				political_reform_want = 0.05 
-				social_reform_want = 0.05 
-			}
-		}
-		modifier = {
-			factor = 0.2
-			is_accepted_culture = yes
-		}
+
+		#Low plurality increases spawn
 		modifier = {
 			factor = 1.015
-			country = { plurality = 10 }
+			country = { NOT = { plurality = 10 } }
 		}
+		
+		#Revanchism
 		modifier = {
 			factor = 1.15
 			country = {
 				has_unclaimed_cores = yes
 			}
 		}
+		
+		#Enemy neighbour has nationalists or populists
 		modifier = {
 			factor = 1.25
 			country = {
@@ -2074,7 +2103,7 @@ populist_rebels = {
 }
 
 ###################################
-# Sectarian Regime Rebels
+# Sectarian Regime Rebels (nationalist + populist)
 ###################################
 sectarian_rebels = {
 	icon = 11
@@ -2084,8 +2113,7 @@ sectarian_rebels = {
 	
 	# <this is the government in the country> = <this is what the rebels want>
 	government = {
-	
-	proletarian_dictatorship1 = nationalist_dictatorship
+		proletarian_dictatorship1 = nationalist_dictatorship
 		colonial_government = nationalist_dictatorship
 		hms_government1 = nationalist_dictatorship
 		democracy1 = nationalist_dictatorship
@@ -2107,11 +2135,9 @@ sectarian_rebels = {
 	independence = none				# Does not strive for independence
 	defect_delay = 18
 	
-	ideology = nationalist
-	
 	allow_all_cultures = yes
 	allow_all_religions = yes
-	allow_all_ideologies = no
+	allow_all_ideologies = yes
 	
 	resilient = yes					# Does not disband on retreat
 	reinforcing = yes				# Receives reinforcements
@@ -2166,24 +2192,30 @@ sectarian_rebels = {
 	spawn_chance = {
 		factor = 1.02
 		
+		#Military gravitates towards a military dictatorship
+		modifier = {
+			factor = 0.1
+			OR = { 
+				type = soldiers 
+				type = officers
+			}
+        }
+		
+		#Only nationalist and populists pops support this rebel type
 		modifier = {
 			factor = 0
-			political_movement = yes
 			NOT = {
 				OR = {
 					pop_majority_ideology = populist
-					pop_majority_ideology = traditionalist
 					pop_majority_ideology = nationalist
 				}
 			}
 		}
 		
+		#Being in a political reform movement reduces support
 		modifier = {
-			factor = 0
-			OR = { 
-				pop_majority_ideology = progressive
-				pop_majority_ideology = liberal
-			}
+			factor = 0.5
+			political_movement = yes
 		}
 		
 		#Big boost if country is majority nationalist
@@ -2198,28 +2230,33 @@ sectarian_rebels = {
 			}
 		}
 
+		#Rebels dont spawn in a sectarian regime
 		modifier = {
 			factor = 0
-			country = { OR = { ruling_party_ideology = nationalist government = nationalist_dictatorship } }
+			country = { government = nationalist_dictatorship }
+		}
+		
+		#Rebels spawn less if ruling party is nationalist or populist
+		modifier = {
+			factor = 0.5
+			country = { OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist } }
 		}
 		
 		#Sectarianists are content with minority oppression
 		modifier = {
-			factor = 0
+			factor = 0.5
 			country = { minorities_reform = minorities_oppression }
 		}
-		modifier = {
-			factor = 1.25
-			is_primary_culture = yes
-			OR = { pop_majority_ideology = nationalist pop_majority_ideology = populist }
-			country = { minorities_reform = minorities_equal_rights }
-		}
+
+		#Sectarianists are enraged by affirmative action
 		modifier = {
 			factor = 1.50
 			is_primary_culture = yes
 			OR = { pop_majority_ideology = nationalist pop_majority_ideology = populist }
 			country = { minorities_reform = minorities_affirmative_action }
 		}
+		
+		#Non accept dont support sectarian rebels
 		modifier = {
 			factor = 0
 			is_primary_culture = no
