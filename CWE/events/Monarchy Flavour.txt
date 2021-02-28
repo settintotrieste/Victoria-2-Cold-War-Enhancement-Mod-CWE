@@ -41,6 +41,71 @@ country_event = {
 				}
 			}
 		}
+		
+		#Regency for all PUs
+		any_country = {
+			limit = {
+				OR = { 
+					is_culture_group = THIS 
+					vassal_of = THIS
+					
+					#Commonwealth
+					AND = { 
+						THIS = { has_country_modifier = commonwealthmembereng } #The British Monarch
+						OR = { primary_culture = afrikaaner primary_culture = black_anglo is_culture_group = british_cultures is_culture_group = canadian_cultures is_culture_group = new_zealand_cultures is_culture_group = australian_cultures }
+					}
+				}
+				OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+			}
+			country_event = 2019001
+		}
+	}
+}
+
+#Regency starts - triggered by king death event - PU
+country_event = {
+	id = 2019001
+	title = "$FROMCOUNTRY_ADJ$ Regency"
+	desc = "EVTDESC201900"
+	picture = "regency"
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTA201900"
+		
+		#Get new king after a regency
+		set_country_flag = time_to_select_new_king
+
+		#Remove King trait modifiers
+
+		remove_country_modifier = centrist_king #Big tent
+
+		remove_country_modifier = populist_king #Populist
+	
+		remove_country_modifier = socialist_king #Socialist
+
+		remove_country_modifier = traditional_king #Traditionalist
+
+		remove_country_modifier = nationalist_king #Nationalist
+
+		remove_country_modifier = conservative_king #Conservative
+		
+		#Add Regency modifier
+
+		random_owned = {
+			limit = { owner = { government = absolute_monarchy } }
+			owner = { 
+				random_list = {
+					20 = { add_country_modifier = { name = regency_government duration = 3650 } } #10
+					20 = { add_country_modifier = { name = regency_government duration = 3285 } } #9
+					20 = { add_country_modifier = { name = regency_government duration = 2920 } } #8
+					20 = { add_country_modifier = { name = regency_government duration = 2555 } } #7
+					20 = { add_country_modifier = { name = regency_government duration = 1095 } } #3
+				}
+			}
+		}
+		
 	}
 }
 
@@ -752,11 +817,24 @@ country_event = {
 		NOT = { has_country_modifier = nationalist_king } #Nationalist
 
 		NOT = { has_country_modifier = conservative_king } #Conservative
+		
+		#Vassals follow the King of the overlord
+		OR = {
+			is_vassal = no
+			overlord = { 
+				OR = { government = absolute_monarchy government = hms_government government = hms_government1 } 
+				has_country_modifier = centrist_king
+			}
+			overlord = { 
+				NOT = { OR = { government = absolute_monarchy government = hms_government government = hms_government1 } }
+			}
+		}
 	
 	}
 	
 	mean_time_to_happen = {
 		months = 1.5
+		modifier = { factor = 2 is_greater_power = no }
 	}
 	
 	option = {
@@ -770,7 +848,7 @@ country_event = {
 		add_country_modifier = { name = centrist_king duration = -1 }
 
 		random_owned = {
-			limit = { owner = { NOT = { has_country_flag = elective_monarchy } } }
+			limit = { owner = { is_vassal = no NOT = { has_country_flag = elective_monarchy } } }
 			owner = {
 				any_pop = {
 					limit = { is_culture_group = THIS }
@@ -783,7 +861,7 @@ country_event = {
 		}
 		
 		random_owned = {
-			limit = { owner = { has_country_flag = elective_monarchy } }
+			limit = { owner = { is_vassal = no has_country_flag = elective_monarchy } }
 			owner = {
 				any_pop = {
 					limit = { is_culture_group = THIS }
@@ -824,11 +902,24 @@ country_event = {
 		NOT = { has_country_modifier = nationalist_king } #Nationalist
 
 		NOT = { has_country_modifier = conservative_king } #Conservative
+		
+		#Vassals follow the King of the overlord
+		OR = {
+			is_vassal = no
+			overlord = { 
+				OR = { government = absolute_monarchy government = hms_government government = hms_government1 } 
+				has_country_modifier = populist_king
+			}
+			overlord = { 
+				NOT = { OR = { government = absolute_monarchy government = hms_government government = hms_government1 } }
+			}
+		}
 	
 	}
 	
 	mean_time_to_happen = {
 		months = 1.5
+		modifier = { factor = 2 is_greater_power = no }
 	}
 	
 	option = {
@@ -842,7 +933,7 @@ country_event = {
 		add_country_modifier = { name = populist_king duration = -1 }
 
 		random_owned = {
-			limit = { owner = { NOT = { has_country_flag = elective_monarchy } } }
+			limit = { owner = { is_vassal = no NOT = { has_country_flag = elective_monarchy } } }
 			owner = {
 				any_pop = {
 					limit = { is_culture_group = THIS }
@@ -855,7 +946,7 @@ country_event = {
 		}
 		
 		random_owned = {
-			limit = { owner = { has_country_flag = elective_monarchy } }
+			limit = { owner = { is_vassal = no has_country_flag = elective_monarchy } }
 			owner = {
 				any_pop = {
 					limit = { is_culture_group = THIS }
@@ -896,11 +987,24 @@ country_event = {
 		NOT = { has_country_modifier = nationalist_king } #Nationalist
 
 		NOT = { has_country_modifier = conservative_king } #Conservative
+		
+		#Vassals follow the King of the overlord
+		OR = {
+			is_vassal = no
+			overlord = { 
+				OR = { government = absolute_monarchy government = hms_government government = hms_government1 } 
+				has_country_modifier = socialist_king
+			}
+			overlord = { 
+				NOT = { OR = { government = absolute_monarchy government = hms_government government = hms_government1 } }
+			}
+		}
 	
 	}
 	
 	mean_time_to_happen = {
 		months = 1.5
+		modifier = { factor = 2 is_greater_power = no }
 	}
 	
 	option = {
@@ -914,7 +1018,7 @@ country_event = {
 		add_country_modifier = { name = socialist_king duration = -1 }
 
 		random_owned = {
-			limit = { owner = { NOT = { has_country_flag = elective_monarchy } } }
+			limit = { owner = { is_vassal = no NOT = { has_country_flag = elective_monarchy } } }
 			owner = {
 				any_pop = {
 					limit = { is_culture_group = THIS }
@@ -927,7 +1031,7 @@ country_event = {
 		}
 		
 		random_owned = {
-			limit = { owner = { has_country_flag = elective_monarchy } }
+			limit = { owner = { is_vassal = no has_country_flag = elective_monarchy } }
 			owner = {
 				any_pop = {
 					limit = { is_culture_group = THIS }
@@ -968,11 +1072,24 @@ country_event = {
 		NOT = { has_country_modifier = nationalist_king } #Nationalist
 
 		NOT = { has_country_modifier = conservative_king } #Conservative
+		
+		#Vassals follow the King of the overlord
+		OR = {
+			is_vassal = no
+			overlord = { 
+				OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+				has_country_modifier = traditional_king
+			}
+			overlord = { 
+				NOT = { OR = { government = absolute_monarchy government = hms_government government = hms_government1 } }
+			}
+		}
 	
 	}
 	
 	mean_time_to_happen = {
 		months = 1.5
+		modifier = { factor = 2 is_greater_power = no }
 	}
 	
 	option = {
@@ -986,7 +1103,7 @@ country_event = {
 		add_country_modifier = { name = traditional_king duration = -1 }
 
 		random_owned = {
-			limit = { owner = { NOT = { has_country_flag = elective_monarchy } } }
+			limit = { owner = { is_vassal = no NOT = { has_country_flag = elective_monarchy } } }
 			owner = {
 				any_pop = {
 					limit = { is_culture_group = THIS }
@@ -999,7 +1116,7 @@ country_event = {
 		}
 		
 		random_owned = {
-			limit = { owner = { has_country_flag = elective_monarchy } }
+			limit = { owner = { is_vassal = no has_country_flag = elective_monarchy } }
 			owner = {
 				any_pop = {
 					limit = { is_culture_group = THIS }
@@ -1040,11 +1157,33 @@ country_event = {
 		NOT = { has_country_modifier = nationalist_king } #Nationalist
 
 		NOT = { has_country_modifier = conservative_king } #Conservative
+		
+		#Vassals follow the King of the overlord
+		OR = {
+			is_vassal = no
+			overlord = { 
+				OR = { government = absolute_monarchy government = hms_government government = hms_government1 } 
+				has_country_modifier = nationalist_king
+			}
+			overlord = { 
+				NOT = { OR = { government = absolute_monarchy government = hms_government government = hms_government1 } }
+			}
+			#Commonwealth Head of State
+			AND = {
+				#The British Monarch
+				overlord = { 
+					OR = { government = absolute_monarchy government = hms_government government = hms_government1 } 
+					has_country_modifier = commonwealthmembereng 
+				}
+				OR = { primary_culture = black_anglo is_culture_group = british_cultures is_culture_group = canadian_cultures is_culture_group = new_zealand_cultures is_culture_group = australian_cultures }
+			}
+		}
 	
 	}
 	
 	mean_time_to_happen = {
 		months = 1.5
+		modifier = { factor = 2 is_greater_power = no }
 	}
 	
 	option = {
@@ -1058,7 +1197,7 @@ country_event = {
 		add_country_modifier = { name = nationalist_king duration = -1 }
 
 		random_owned = {
-			limit = { owner = { NOT = { has_country_flag = elective_monarchy } } }
+			limit = { owner = { is_vassal = no NOT = { has_country_flag = elective_monarchy } } }
 			owner = {
 				any_pop = {
 					limit = { is_culture_group = THIS }
@@ -1071,7 +1210,7 @@ country_event = {
 		}
 		
 		random_owned = {
-			limit = { owner = { has_country_flag = elective_monarchy } }
+			limit = { owner = { is_vassal = no has_country_flag = elective_monarchy } }
 			owner = {
 				any_pop = {
 					limit = { is_culture_group = THIS }
@@ -1112,11 +1251,24 @@ country_event = {
 		NOT = { has_country_modifier = nationalist_king } #Nationalist
 
 		NOT = { has_country_modifier = conservative_king } #Conservative
+		
+		#Vassals follow the King of the overlord
+		OR = {
+			is_vassal = no
+			overlord = { 
+				OR = { government = absolute_monarchy government = hms_government government = hms_government1 } 
+				has_country_modifier = conservative_king
+			}
+			overlord = { 
+				NOT = { OR = { government = absolute_monarchy government = hms_government government = hms_government1 } }
+			}
+		}
 	
 	}
 	
 	mean_time_to_happen = {
 		months = 1.5
+		modifier = { factor = 2 is_greater_power = no }
 	}
 	
 	option = {
@@ -1130,7 +1282,7 @@ country_event = {
 		add_country_modifier = { name = conservative_king duration = -1 }
 
 		random_owned = {
-			limit = { owner = { NOT = { has_country_flag = elective_monarchy } } }
+			limit = { owner = { is_vassal = no NOT = { has_country_flag = elective_monarchy } } }
 			owner = {
 				any_pop = {
 					limit = { is_culture_group = THIS }
@@ -1143,7 +1295,7 @@ country_event = {
 		}
 		
 		random_owned = {
-			limit = { owner = { has_country_flag = elective_monarchy } }
+			limit = { owner = { is_vassal = no has_country_flag = elective_monarchy } }
 			owner = {
 				any_pop = {
 					limit = { is_culture_group = THIS }
@@ -1259,10 +1411,61 @@ country_event = {
 		remove_country_modifier = conservative_king #Conservative
 		
 		#Chance for a regency
-		random = {
-			chance = 25
-			country_event = 201900
+		random_list = {
+			25 = { country_event = 201900 } #Regency
+			75 = {
+			
+				#Death event for all personal unions (monarchies that are part of the same cultural group share the same monarch)
+				any_country = {
+					limit = {
+						OR = { 
+							OR = { is_culture_group = THIS vassal_of = THIS }
+					
+							#Commonwealth
+							AND = { 
+								THIS = { has_country_modifier = commonwealthmembereng } #The British Monarch
+								OR = { primary_culture = afrikaaner primary_culture = black_anglo is_culture_group = british_cultures is_culture_group = canadian_cultures is_culture_group = new_zealand_cultures is_culture_group = australian_cultures }
+							}
+						}
+						OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+					}
+					country_event = 2019101
+				}
+				
+			}
+			
 		}
+		
+	}
+
+}
+
+#Monarchy change - Non elective - For Personal Unions
+country_event = {
+	id = 2019101
+	title = "Death of the $FROMCOUNTRY_ADJ$ Monarch"
+	desc = EVTDESC201910
+	picture = "king_death"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "The King is dead. Long live the King!"
+		
+		add_country_modifier = { name = leader_cooldown_king duration = 365 }
+		
+		set_country_flag = time_to_select_new_king
+		
+		#Clear existing monarchy stuff
+		
+		remove_country_modifier = regency_government
+		
+		remove_country_modifier = centrist_king #Big tent
+		remove_country_modifier = populist_king #Populist
+		remove_country_modifier = socialist_king #Socialist
+		remove_country_modifier = traditional_king #Traditionalist
+		remove_country_modifier = nationalist_king #Nationalist
+		remove_country_modifier = conservative_king #Conservative
 		
 	}
 
@@ -1300,6 +1503,55 @@ country_event = {
 	mean_time_to_happen = {
 		months = 108
 	}
+
+	option = {
+		name = "Let's hope the new King is a good one"
+		
+		add_country_modifier = { name = leader_cooldown_king duration = 365 }
+		
+		set_country_flag = time_to_select_new_king
+		
+		#Clear existing monarchy stuff
+		
+		remove_country_modifier = regency_government
+		
+		remove_country_modifier = centrist_king #Big tent
+		remove_country_modifier = populist_king #Populist
+		remove_country_modifier = socialist_king #Socialist
+		remove_country_modifier = traditional_king #Traditionalist
+		remove_country_modifier = nationalist_king #Nationalist
+		remove_country_modifier = conservative_king #Conservative
+		
+		#New king event for all personal unions (monarchies that are part of the same cultural group share the same monarch)
+		any_country = {
+			limit = {
+				OR = { 
+					is_culture_group = THIS 
+					vassal_of = THIS
+					
+					#Commonwealth
+					AND = { 
+						THIS = { has_country_modifier = commonwealthmembereng } #The British Monarch
+						OR = { primary_culture = afrikaaner primary_culture = black_anglo is_culture_group = british_cultures is_culture_group = canadian_cultures is_culture_group = new_zealand_cultures is_culture_group = australian_cultures }
+					}
+				}
+				OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+			}
+			country_event = 2019111
+		}
+		
+	}
+
+}
+
+#Monarchy change - Elective - For Personal Unions
+country_event = {
+	id = 2019111
+	title = "$FROMCOUNTRY_ADJ$ Elective Monarch's Term Expires"
+	desc = EVTDESC201911
+	picture = "king_elective"
+
+	is_triggered_only = yes
 
 	option = {
 		name = "Let's hope the new King is a good one"
