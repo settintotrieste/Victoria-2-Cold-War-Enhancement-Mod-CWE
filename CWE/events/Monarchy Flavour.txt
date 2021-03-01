@@ -28,25 +28,25 @@ country_event = {
 		remove_country_modifier = conservative_king #Conservative
 		
 		#Add Regency modifier
-
-		random_owned = {
-			limit = { owner = { government = absolute_monarchy } }
-			owner = { 
-				random_list = {
-					20 = { add_country_modifier = { name = regency_government duration = 3650 } } #10
-					20 = { add_country_modifier = { name = regency_government duration = 3285 } } #9
-					20 = { add_country_modifier = { name = regency_government duration = 2920 } } #8
-					20 = { add_country_modifier = { name = regency_government duration = 2555 } } #7
-					20 = { add_country_modifier = { name = regency_government duration = 1095 } } #3
-				}
-			}
+		clr_country_flag = 10_year_regency
+		clr_country_flag = 9_year_regency
+		clr_country_flag = 8_year_regency
+		clr_country_flag = 7_year_regency
+		clr_country_flag = 3_year_regency
+		
+		random_list = {
+			20 = { set_country_flag = 10_year_regency add_country_modifier = { name = regency_government duration = 3650 } } #10
+			20 = { set_country_flag = 9_year_regency add_country_modifier = { name = regency_government duration = 3285 } } #9
+			20 = { set_country_flag = 8_year_regency add_country_modifier = { name = regency_government duration = 2920 } } #8
+			20 = { set_country_flag = 7_year_regency add_country_modifier = { name = regency_government duration = 2555 } } #7
+			20 = { set_country_flag = 3_year_regency add_country_modifier = { name = regency_government duration = 1095 } } #3
 		}
 		
 		#Regency for all PUs
 		any_country = {
 			limit = {
 				OR = { 
-					is_culture_group = THIS 
+					#Puppet monarchies
 					vassal_of = THIS
 					
 					#Commonwealth
@@ -65,7 +65,7 @@ country_event = {
 #Regency starts - triggered by king death event - PU
 country_event = {
 	id = 2019001
-	title = "$FROMCOUNTRY_ADJ$ Regency"
+	title = "The $FROMCOUNTRY_ADJ$ Regency"
 	desc = "EVTDESC201900"
 	picture = "regency"
 
@@ -91,21 +91,20 @@ country_event = {
 
 		remove_country_modifier = conservative_king #Conservative
 		
-		#Add Regency modifier
-
-		random_owned = {
-			limit = { owner = { government = absolute_monarchy } }
-			owner = { 
-				random_list = {
-					20 = { add_country_modifier = { name = regency_government duration = 3650 } } #10
-					20 = { add_country_modifier = { name = regency_government duration = 3285 } } #9
-					20 = { add_country_modifier = { name = regency_government duration = 2920 } } #8
-					20 = { add_country_modifier = { name = regency_government duration = 2555 } } #7
-					20 = { add_country_modifier = { name = regency_government duration = 1095 } } #3
-				}
-			}
-		}
+		#PUs follow the regency period of the FROM country
 		
+		clr_country_flag = 10_year_regency
+		clr_country_flag = 9_year_regency
+		clr_country_flag = 8_year_regency
+		clr_country_flag = 7_year_regency
+		clr_country_flag = 3_year_regency
+		
+		random_owned = { limit = { owner = { FROM = { has_country_flag = 10_year_regency } } } owner = { add_country_modifier = { name = regency_government duration = 3650 } } }
+		random_owned = { limit = { owner = { FROM = { has_country_flag = 9_year_regency } } } owner = { add_country_modifier = { name = regency_government duration = 3285 } } }
+		random_owned = { limit = { owner = { FROM = { has_country_flag = 8_year_regency } } } owner = { add_country_modifier = { name = regency_government duration = 2920 } } }
+		random_owned = { limit = { owner = { FROM = { has_country_flag = 7_year_regency } } } owner = { add_country_modifier = { name = regency_government duration = 2555 } } }
+		random_owned = { limit = { owner = { FROM = { has_country_flag = 3_year_regency } } } owner = { add_country_modifier = { name = regency_government duration = 1095 } } }
+
 	}
 }
 
@@ -1168,15 +1167,6 @@ country_event = {
 			overlord = { 
 				NOT = { OR = { government = absolute_monarchy government = hms_government government = hms_government1 } }
 			}
-			#Commonwealth Head of State
-			AND = {
-				#The British Monarch
-				overlord = { 
-					OR = { government = absolute_monarchy government = hms_government government = hms_government1 } 
-					has_country_modifier = commonwealthmembereng 
-				}
-				OR = { primary_culture = black_anglo is_culture_group = british_cultures is_culture_group = canadian_cultures is_culture_group = new_zealand_cultures is_culture_group = australian_cultures }
-			}
 		}
 	
 	}
@@ -1415,11 +1405,12 @@ country_event = {
 			25 = { country_event = 201900 } #Regency
 			75 = {
 			
-				#Death event for all personal unions (monarchies that are part of the same cultural group share the same monarch)
+				#Death event for all personal unions (puppet monarchies and Commonwealth nations)
 				any_country = {
 					limit = {
 						OR = { 
-							OR = { is_culture_group = THIS vassal_of = THIS }
+							#Puppet monarchies
+							vassal_of = THIS
 					
 							#Commonwealth
 							AND = { 
@@ -1522,11 +1513,11 @@ country_event = {
 		remove_country_modifier = nationalist_king #Nationalist
 		remove_country_modifier = conservative_king #Conservative
 		
-		#New king event for all personal unions (monarchies that are part of the same cultural group share the same monarch)
+		#New king event for all personal unions (puppet monarchies and Commonwealth nations)
 		any_country = {
 			limit = {
 				OR = { 
-					is_culture_group = THIS 
+					#Puppet monarchies
 					vassal_of = THIS
 					
 					#Commonwealth
