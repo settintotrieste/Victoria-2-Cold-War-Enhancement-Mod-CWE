@@ -272,28 +272,44 @@ add_country_modifier = { name = commonwealth_timer duration = 730 }
 			}
 	}
 
-becomearepublicire = {
+	becomearepublicire = {
 		picture = "irerepublicday"
 		potential = {
 			tag = IRE
-			exists = IRE
 			government = hms_government1
+			
+			#Decision has not already been fired
+			NOT = { has_country_flag = IRE_republic_day_flag }
 		}
 		allow = {
 			war = no
-			government = hms_government1
+			is_vassal = no
+			
 			year = 1949
 		}
 		effect = {
 			prestige = 20
-			tech_school = commerce_tech_school
-			relation = { who = ENG value = -100 }
-			ENG = { diplomatic_influence = { who = IRE value = -200 } }
+			
+			#So the decision cannot be fired again
+			set_country_flag = IRE_republic_day_flag
+			
+			#Become a republic
 			government = democracy
+			
+			#Remove Commonwealth Realm tech school
+			tech_school = commerce_tech_school
+			
+			#UK will not be pleased
+			random_country = {
+				limit = { tag = ENG is_vassal = no government = hms_government }
+				relation = { who = IRE value = -100 }
+				diplomatic_influence = { who = IRE value = -200 }
+			}
+			
 		}
 		ai_will_do = { 
 			factor = 1 
-			}
+		}
 	}
 
 unitary_ido_form = {
