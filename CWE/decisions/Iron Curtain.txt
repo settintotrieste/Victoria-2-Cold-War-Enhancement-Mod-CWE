@@ -5,24 +5,62 @@ political_decisions = {
 		potential = {
 			is_vassal = no
 			num_of_vassals = 1
-any_neighbor_country = { vassal_of = THIS OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
+			any_neighbor_country = { vassal_of = THIS OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
 			OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
 			immigration_policy = nobody_gets_out
-					}
+		}
 		
 		allow = {
-
-war = no
-
-OR = { ai = no ruling_party_ideology = communist_social }
-
+			war = no
+			OR = { ai = no ruling_party_ideology = communist_social }
 			
+			#Sufficient upper house support
+			NOT = { upper_house = { ideology = communist value = 0.51 } }
+			
+			NOT = { has_country_modifier = law_changed_by_force }
 		}
 			alert = no
 		effect = {
-political_reform = quota_immigration
-any_country = { limit = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } vassal_of = THIS } political_reform = quota_immigration }
-					}
+		
+			add_country_modifier = { name = law_changed_by_force duration = 730 }
+		
+			political_reform = quota_immigration
+			
+			#Political backlash
+			any_pop = { 
+				limit = { OR = { strata = poor strata = middle } }
+				ideology = { factor = 0.05 value = liberal } 
+				consciousness = 5
+			}
+			any_pop = { 
+				limit = { strata = rich }
+				ideology = { factor = 0.10 value = communist } 
+				consciousness = 5
+				militancy = 10
+			}
+			
+			#Open puppet borders
+			any_country = { 
+				limit = { 
+					OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } 
+					vassal_of = THIS 
+				} 
+				political_reform = quota_immigration 
+				
+				#Political backlash
+				any_pop = { 
+					limit = { OR = { strata = poor strata = middle } }
+					ideology = { factor = 0.05 value = liberal } 
+					consciousness = 5
+				}
+				any_pop = { 
+					limit = { strata = rich }
+					ideology = { factor = 0.10 value = communist } 
+					consciousness = 5
+					militancy = 10
+				}
+			}
+		}
 
 		ai_will_do = {
 			factor = 1
@@ -35,21 +73,62 @@ any_country = { limit = { OR = { government = proletarian_dictatorship governmen
 			is_vassal = no
 			num_of_vassals = 1
 			OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
-any_neighbor_country = { vassal_of = THIS OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
+			any_neighbor_country = { vassal_of = THIS OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
 			NOT = { immigration_policy = nobody_gets_out }
-					}
+		}
 		
 		allow = {
-
-OR = { ai = no ruling_party_ideology = communist }
-
+			OR = { ai = no ruling_party_ideology = communist }
 			
+			#Sufficient upper house support
+			upper_house = { ideology = communist value = 0.51 }
+			
+			NOT = { has_country_modifier = law_changed_by_force }
 		}
-			alert = no
+		
+		alert = no
+		
 		effect = {
-political_reform = nobody_gets_out
-any_country = { limit = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } vassal_of = THIS } political_reform = nobody_gets_out }
-					}
+		
+			add_country_modifier = { name = law_changed_by_force duration = 730 }
+		
+			political_reform = nobody_gets_out
+			
+			#Political backlash
+			any_pop = { 
+				limit = { OR = { strata = poor strata = middle } }
+				ideology = { factor = 0.05 value = liberal } 
+				consciousness = -5
+				militancy = 5
+			}
+			any_pop = { 
+				limit = { strata = rich }
+				consciousness = -5
+				militancy = -5
+			}
+			
+			#Close puppet borders
+			any_country = { 
+				limit = { 
+					OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } 
+					vassal_of = THIS 
+				} 
+				political_reform = nobody_gets_out 
+				
+				#Political backlash
+				any_pop = { 
+					limit = { OR = { strata = poor strata = middle } }
+					ideology = { factor = 0.05 value = liberal } 
+					consciousness = -5
+					militancy = 5
+				}
+				any_pop = { 
+					limit = { strata = rich }
+					consciousness = -5
+					militancy = -5
+				}
+			}
+		}
 
 		ai_will_do = {
 			factor = 1
