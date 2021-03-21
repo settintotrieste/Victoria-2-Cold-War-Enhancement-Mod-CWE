@@ -725,6 +725,347 @@ country_event = {
 
 ### Virgin Lands Scheme end ####
 
+### OGAS ###
+
+# XXIIIrd Congress of the CPUS
+country_event = {
+	id = 9001023
+	title = "XXIIIrd Congress of the CPUS"
+	desc = EVT_9001023_DESC
+	picture = "XXIIIrd_congress_of_the_cpus"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = RUS
+		year = 1965
+		NOT = { year = 1982 }
+		
+		government = proletarian_dictatorship
+		war = no
+		is_greater_power = yes
+		
+		#Brezhnev selected
+		has_country_flag = leonid_brezhnev
+		
+		#Cold War
+		has_global_flag = blocsenabled
+	}
+	
+	mean_time_to_happen = { months = 9 }
+	
+	option = {
+		name = "Let's look at Liberman's proposals"
+		country_event = 9001024
+		ai_chance = { factor = 0.8 }
+	}
+	
+	option = {
+		name = "Let's study the proposals of these "Cybermetics""
+		country_event = 9001025
+		ai_chance = { factor = 0.2 }
+	}
+}
+
+# How far do we go with the Liberman reforms?
+country_event = {
+	id = 9001024
+	title = "How far do we go with the Liberman reforms?"
+	desc = EVT_9001024_DESC
+	picture = "liberman_reform"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Enact Kosygin's Partial Reform"
+		
+		set_country_flag = kosygin_reform
+	
+		relation = { who = USA value = 25 }
+		
+		any_pop = { consciousness = 2 }
+		
+		#Boom for a few years then Brezhnev era
+		add_country_modifier = { name = yugoslaveia_economic_boom duration = 2920 }
+		
+		any_country = {
+			limit = {
+				exists = yes
+				government = proletarian_dictatorship
+				ruling_party_ideology = communist
+				capital_scope = { continent = europe }
+			}
+			any_pop = {
+				consciousness = 1
+				militancy = 1
+				ideology = { factor = 0.05 value = liberal }
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Enact Liberman's Full Reform"
+		
+		set_country_flag = liberman_reform
+		
+		#State Capitalist economy
+		ruling_party_ideology = communist_social
+		
+		relation = { who = USA value = 50 }
+		
+		remove_country_modifier = soviet_stability
+		remove_country_modifier = economic_boom
+		add_country_modifier = { name = economic_boom duration = 1825 }
+		
+		any_pop = { 
+			limit = { location = { is_core = THIS } } 
+			consciousness = 3 
+			militancy = 3
+			literacy = -0.02 
+			ideology = { factor = 0.05 value = liberal }
+		}
+		
+		any_country = {
+			limit = {
+				exists = yes
+				government = proletarian_dictatorship
+				ruling_party_ideology = communist
+				capital_scope = { continent = europe }
+			}
+			any_pop = {
+				consciousness = 2
+				militancy = 2
+				ideology = { factor = 0.10 value = liberal }
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+# How should Cybernetics reforms go? - Start OGAS
+country_event = {
+	id = 9001025
+	title = "How far should the Cybernetics reforms go?"
+	desc = EVT_9001025_DESC
+	picture = "cybernetics_project"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Partial Automation"
+		
+		set_country_flag = partial_automation
+		
+		money = -1000000
+		
+		any_pop = { consciousness = -2 literacy = 0.01 }
+		
+		any_country = {
+			limit = {
+				exists = yes
+				government = proletarian_dictatorship
+				ruling_party_ideology = communist
+				capital_scope = { continent = europe }
+			}
+			any_pop = {
+				consciousness = -1
+				militancy = -1
+			}
+		}
+		
+		ai_chance = { factor = 0.8 }
+	}
+	
+	option = {
+		name = "Full automation! Begin the OGAS Project."
+		
+		money = -2000000
+		
+		set_country_flag = ogas_project
+		
+		any_pop = {
+			consciousness = -3
+			literacy = 0.02
+		}
+		
+		any_country = {
+			limit = {
+				exists = yes
+				government = proletarian_dictatorship
+				ruling_party_ideology = communist
+				capital_scope = { continent = europe }
+			}
+			any_pop = {
+				consciousness = -2
+				militancy = -2
+			}
+		}
+		
+		ai_chance = { factor = 0.2 }
+	}
+
+}
+
+# Massive Introduction to Computers - OGAS underway
+country_event = {
+	id = 9001027
+	title = "Massive Introduction to Computers"
+	desc = EVT_9001027_DESC
+	picture = "massive_introduction_computers"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = RUS
+		year = 1967
+		NOT = { year = 1979 }
+		
+		government = proletarian_dictatorship
+		war = no
+		
+		#Planned economy
+		OR = { 
+			economic_policy = planned_economy 
+			economic_policy = planned_economy1
+		}
+		
+		#Opted for the OGAS route
+		OR = {
+			has_country_flag = ogas_project
+			has_country_flag = partial_automation
+		}
+	}
+	
+	mean_time_to_happen = { months = 12 }
+	
+	option = {
+		name = "And how does it work?"
+		
+		random_owned = { 
+			limit = { owner = { has_country_flag = ogas_project } }
+			owner = { 
+				prestige = 50
+				research_points = 500
+				any_pop = { consciousness = 1 literacy = 0.03 }
+				set_country_flag = OGAS_step_1_flag
+			}
+		}
+		
+		random_owned = { 
+			limit = { owner = { has_country_flag = partial_automation } }
+			owner = { 
+				prestige = 20
+				research_points = 200
+				any_pop = { consciousness = 1 literacy = 0.01 }
+				set_country_flag = partial_automation_step_1_flag
+			}
+		}
+		
+	}
+}
+
+# Automated System of Planned Calculations - OGAS activated
+country_event = {
+	id = 9001033
+	title = "Automated System of Planned Calculations"
+	desc = EVT_9001033_DESC
+	picture = "nearly_OGAS"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = RUS
+		year = 1979
+		NOT = { microprocessor = 1 }
+		
+		government = proletarian_dictatorship
+		war = no
+		
+		#Planned economy
+		OR = { 
+			economic_policy = planned_economy 
+			economic_policy = planned_economy1
+		}
+		
+		#OGAS progress
+		has_country_flag = ogas_project
+		has_country_flag = OGAS_step_1_flag
+	}
+	
+	mean_time_to_happen = { months = 12 }
+	
+	option = {
+		name = "The OGAS Project is almost finished..."
+		
+		#Enable OGAS decision before microprocessor is researched
+		set_country_flag = ogas_actived
+		
+		prestige = 50
+		research_points = 500
+		
+		any_pop = { 
+			consciousness = 2 
+			literacy = 0.02 
+		}
+	}
+}
+
+# Wireless Interconnected Network - Partial Automation complete
+country_event = {
+	id = 9001034
+	title = "Wireless Interconnected Network"
+	desc = EVT_9001034_DESC
+	picture = "wireless_interconnected_network"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = RUS
+		year = 1975
+		
+		#Has not already created OGAS systems
+		NOT = { has_country_modifier = ogas }
+		NOT = { has_country_modifier = cybersin }
+		
+		government = proletarian_dictatorship
+		war = no
+		
+		#Planned economy
+		OR = { 
+			economic_policy = planned_economy 
+			economic_policy = planned_economy1
+		}
+		
+		#Partial Automation progress
+		has_country_flag = partial_automation
+		has_country_flag = partial_automation_step_1_flag
+	}
+	
+	mean_time_to_happen = { months = 12 }
+	
+	option = {
+		name = "That's done!"
+		
+		prestige = 25
+		research_points = 250
+		
+		any_pop = {
+			consciousness = 1
+			literacy = 0.01
+		}
+		
+		#Limited effects
+		add_country_modifier = { name = partial_automation_ogas duration = 3650 }
+		add_country_modifier = { name = economic_boom duration = 1825 }
+	}
+}
+
+### OGAS Scheme end ####
+
 #Nikita Khrushchev's successor
 country_event = {
   id = 8014233
@@ -788,18 +1129,37 @@ country_event = {
 		
 		government = proletarian_dictatorship
 		war = no
+		
+		#Kosygin's reforms sets the stage for the stagnation
+		has_country_flag = kosygin_reform
+		
+		#Brezhnev selected
+		has_country_flag = leonid_brezhnev
 	}
 
 	mean_time_to_happen = { months = 3 }
 
 	option = {
-		name = "Such a peaceful time"
+		name = "Such a peaceful time... of stagnation"
 		prestige = -50
+		
 		any_pop = { 
 			militancy = -5 
-			consciousness = 3 
+			consciousness = -5
 			ideology = { factor = 0.10 value = communist }
 		}
+		
+		#Add stagnation modifiers - Level 4
+		random_owned = { limit = { owner = { has_country_modifier = soviet_stagnation_3 } } owner = { remove_country_modifier = soviet_stagnation_3 add_country_modifier = { name = soviet_stagnation_4 duration = -1 } } }
+
+		#Add stagnation modifiers - Level 3
+		random_owned = { limit = { owner = { has_country_modifier = soviet_stagnation_2 } } owner = { remove_country_modifier = soviet_stagnation_2 add_country_modifier = { name = soviet_stagnation_3 duration = -1 } } }
+
+		#Add stagnation modifiers - Level 2
+		random_owned = { limit = { owner = { has_country_modifier = soviet_stagnation_1 } } owner = { remove_country_modifier = soviet_stagnation_1 add_country_modifier = { name = soviet_stagnation_2 duration = -1 } } }
+
+		#Add stagnation modifiers - Level 1
+		random_owned = { limit = { owner = { NOT = { OR = { has_country_modifier = soviet_stagnation_1 has_country_modifier = soviet_stagnation_2 has_country_modifier = soviet_stagnation_3 has_country_modifier = soviet_stagnation_4 } } } } owner = { add_country_modifier = { name = soviet_stagnation_1 duration = -1 } } }
 	}
 
 }
