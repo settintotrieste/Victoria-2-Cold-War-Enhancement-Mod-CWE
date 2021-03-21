@@ -2865,86 +2865,153 @@ country_event = {
 #Keep the Empire - All Colonial Provinces add modifier
 country_event = {
 	id = 1412217
-title = "Dissent amongst our Colonial Subjects"
+	title = "Dissent in the $COUNTRY_ADJ$ Colonies"
 	desc = EVTDESC1412217
 	picture = "colonial_dissent"
 
-trigger = {
+	trigger = {
+	
+		#Blocking decolonisation events
+		has_country_flag = decolonise_yes
 
-has_country_flag = decolonise_yes
+		#Oppressing minorities
+		minorities_reform = minorities_oppression
 
-minorities_reform = minorities_oppression
-
-any_owned_province = { NOT = { is_core = THIS } is_colonial = yes NOT = { has_province_modifier = decolonise_yes } }
-
-}
-
-mean_time_to_happen = { 
-months = 1
-}
-
-option = {
-name = "A necessary evil to preserve the empire"
-badboy = 1
-prestige = -10
-any_owned = { limit = { NOT = { is_core = THIS } is_colonial = yes NOT = { has_province_modifier = decolonise_yes } } add_province_modifier = { name = decolonise_yes duration = -1 } }
+		#Has colonial provinces without the dissent province modifier
+		any_owned_province = { 
+			NOT = { is_core = THIS } 
+			is_colonial = yes 
+			NOT = { has_province_modifier = decolonise_yes } 
 		}
 
+	}
+
+	mean_time_to_happen = { 
+		months = 6
+	}
+
+	option = {
+		name = "A necessary evil to preserve the empire"
+		badboy = 1
+		prestige = -10
+		any_owned = { 
+			limit = { 
+				NOT = { is_core = THIS } 
+				is_colonial = yes 
+				NOT = { has_province_modifier = decolonise_yes } 
+			} 
+			add_province_modifier = { name = decolonise_yes duration = -1 } 
+		}
+	}
+
 }
 
-#Keep the Empire - Remove Province Modifier
-country_event = {
+#Keep the Empire - Remove Province Modifier (province event)
+province_event = {
 	id = 1412218
-title = "Colonial Dissent Review"
+	title = "Anti-Colonial Dissent Eases in $STATENAME$"
 	desc = EVTDESC1412218
 	picture = "dissant_reduce"
 
-trigger = {
+	trigger = {
+	
+		#Has colonial dissent modifier
+		has_province_modifier = decolonise_yes
 
-has_country_flag = decolonise_yes
+		#Owner blocking decolonisation events
+		owner = { has_country_flag = decolonise_yes }
+		
+		#Owner is not oppressing minorities
+		owner = { NOT = { minorities_reform = minorities_oppression } }
+		
+		#Only fires in the state capital
+		is_state_capital = yes
+		
+		#Province conditions
+		controlled_by = owner
+		is_colonial = yes
+		
+		#Don't have a lot of radicals sitting around
+		NOT = { populist = 0.10 }
+		NOT = { nationalist = 0.10 }
+		NOT = { traditionalist = 0.10 }
+		NOT = { socialist = 0.15 }
+		NOT = { communist = 0.10 }
+		NOT = { communist_social = 0.10 }
 
-NOT = { minorities_reform = minorities_oppression }
-
-any_owned_province = { NOT = { pop_majority_ideology = nationalist } is_colonial = yes has_province_modifier = decolonise_yes }
-
-}
-
-mean_time_to_happen = { 
-months = 120
 	}
 
-option = {
-name = "Some colonial subjects are gradually accepting $COUNTRY_ADJ$ rule"
-any_owned = { limit = { NOT = { pop_majority_ideology = nationalist } has_province_modifier = decolonise_yes } remove_province_modifier = decolonise_yes }
+	mean_time_to_happen = { 
+		months = 400
+	}
+
+	option = {
+		name = "Excellent news!"
+		state_scope = { 
+			any_owned = { 
+				remove_province_modifier = decolonise_yes 
+				any_pop = { militancy = -5 consciousness = -5 }
+			} 
 		}
+	}
 
 }
 
-#Keep the Empire - Gain Legitimacy
-country_event = {
+#Keep the Empire - Gain Legitimacy (province event)
+province_event = {
 	id = 1412219
-title = "Colonial Legitimacy"
-	desc = "As we have ruled over some of our colonies for so long, the international community has now accepted our legitimacy to rule over those areas."
+	title = "$COUNTRY_ADJ$ Colonial Legitimacy"
+	desc = EVTDESC1412219
 	picture = "gain_colony_core"
 
-trigger = {
+	trigger = {
+	
+		#Only fires in the state capital
+		is_state_capital = yes
+		
+		#Province conditions
+		controlled_by = owner
+		is_colonial = yes
+		
+		#Not already a core of THIS
+		NOT = { is_core = THIS }
 
-minorities_reform = minorities_affirmative_action
+		#Owner is pro-natives
+		owner = { minorities_reform = minorities_affirmative_action }
+		
+		#Need the requisite tech (post 1990), needs to remove a generation of natives that remembered their former independence
+		owner = { cultural_imperialism = 1 }
 
-has_country_flag = decolonise_yes
+		#Low militancy
+		NOT = { average_militancy = 2 }
+		
+		#Not has colonial dissent modifier
+		NOT = { has_province_modifier = decolonise_yes }
+		
+		#Don't have a lot of radicals sitting around
+		NOT = { populist = 0.10 }
+		NOT = { nationalist = 0.10 }
+		NOT = { traditionalist = 0.10 }
+		NOT = { socialist = 0.15 }
+		NOT = { communist = 0.10 }
+		NOT = { communist_social = 0.10 }
 
-any_owned_province = { NOT = { is_core = THIS } NOT = { pop_majority_ideology = nationalist } NOT = { pop_majority_ideology = populist } is_colonial = yes NOT = { has_province_modifier = decolonise_yes } }
-
-}
-
-mean_time_to_happen = { 
-months = 240
 	}
 
-option = {
-name = "Our empire is finally gaining acceptance"
-any_owned = { limit = { NOT = { is_core = THIS } NOT = { pop_majority_ideology = nationalist } NOT = { pop_majority_ideology = populist } is_colonial = yes NOT = { has_province_modifier = decolonise_yes } } add_core = THIS }
+	mean_time_to_happen = { 
+		months = 1000
+	}
+
+	option = {
+		name = "It's about time!"
+		prestige = 10
+		state_scope = { 
+			any_owned = { 
+				any_pop = { militancy = -5 consciousness = -5 }
+				add_core = THIS
+			}
 		}
+	}
 
 }
 
