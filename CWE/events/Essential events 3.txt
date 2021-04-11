@@ -88,46 +88,59 @@ country_event = {
 #Creditor Nation
 country_event = {
 	id = 1300015
-	title = "We are a Creditor Nation"
-	desc = "Our nation has reached a sufficient politico-economic status to be a creditor nation." 
+	title = "We are a Major Creditor Nation"
+	desc = "Our nation has reached a sufficient politico-economic status to be a major creditor nation." 
 	picture = "world_bank"
 	
 	trigger = {
-		year = 1946
-	NOT = { government = proletarian_dictatorship }
+		#GPs only
 		is_greater_power = yes
-		treasury = 5000000
-		industry_score = 1000
-		NOT = { has_country_flag = creditornation }
-
+		
+		#Must have a large economy
+		industrial_score = 1000
+		
+		#Must have a lot of money
+		money = 4000000
+		
+		#Must not have high infamy
+		NOT = { badboy = 0.8 }
+		
+		#Not at war
+		war = no
+		
+		NOT = { has_country_modifier = creditor_nation }
 	}
 	
+	mean_time_to_happen = { months = 12 }
+	
 	option = {
-	name = "Rejoice!"
-add_country_modifier = { name = creditor_nation duration = -1 } 
-		set_country_flag = creditornation
-		}
+		name = "Rejoice!"
+		prestige = 100
+		add_country_modifier = { name = creditor_nation duration = -1 } 
+	}
 }
 #Creditor Nation lose
 country_event = {
 	id = 1300016
-	title = "We are no longer a Creditor Nation"
+	title = "Major Creditor Nation Status Lost"
 	desc = "Our nation has not reached a sufficient politico-economic status to be a creditor nation anymore." 
 	picture = "world_bank"
 	
 	trigger = {
-		year = 1946
-	NOT = { government = proletarian_dictatorship }
-	is_greater_power = no
-	has_country_flag = creditornation
-
+		has_country_modifier = creditor_nation
+		
+		#THIS is not a GP
+		is_greater_power = no
 	}
 	
+	mean_time_to_happen = { months = 12 }
+	
 	option = {
-	name = "NOOOOOO!"
-remove_country_modifier = creditor_nation
-		clr_country_flag = creditornation
-		}
+		name = "NOOOOOO!"
+		prestige = -100
+		remove_country_modifier = creditor_nation
+	}
+	
 }
 #Rotating Chairmanship of the IMF
 country_event = {
@@ -990,29 +1003,46 @@ country_event = {
 	title = "Gaullism"
 	desc = EVTDESC1400022
 	picture = "gaullism"
+	
+	fire_only_once = yes
 
 	trigger = {
 		tag = FRA
-NOT = { year = 1990 }
-NOT = { has_country_flag = gallisum }
-NOT = { has_country_modifier = gaullism }
-
-			}
+		has_country_flag = fifth_republic
+		NOT = { year = 1990 }
+		
+		government = democracy
+		is_vassal = no
+		war = no
+		
+		NOT = { has_country_flag = gallisum }
+		NOT = { has_country_modifier = gaullism }
+	}
+	
+	mean_time_to_happen = { months = 6 }
 	
 	option = {
-	name = "Rebuild France!"
-		prestige = 10
-		militancy = -4
-		set_country_flag = gallisum
-add_country_modifier = { name = gaullism duration = 10950 }
-			}
+		name = "Rebuild France!"
+		prestige = 50
+		
+		any_pop = { 
+			limit = { is_primary_culture = yes } 
+			militancy = -4 
 		}
+		
+		set_country_flag = gallisum
+		add_country_modifier = { name = gaullism duration = 3650 }
+	}
+	
+}
 #Laos Socialism with Market Characteristics
 country_event = {
 	id = 1400023
 	title = "New Economic Mechanism"
 	desc = EVTDESC1400023
 	picture = "laosmarketreforms"
+	
+	fire_only_once = yes
 
 	trigger = {
 		tag = LUA
