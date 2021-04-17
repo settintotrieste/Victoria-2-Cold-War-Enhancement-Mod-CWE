@@ -352,6 +352,7 @@ country_event = {
 	}
 }
 
+#Liberal and Progressive Ruling Parties immediately restore voting, UH, trade unions, publishing, political parties rights and immigration rights
 country_event = {
 	id = 60140
 	title = "EVTNAME60140"
@@ -359,9 +360,19 @@ country_event = {
 	picture = "Administration"
 	
 	trigger = {
-		is_vassal = no
-		vote_franschise = none_voting
 		OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive }
+		election = no
+		
+		#Missing basic liberties of a citizen
+		OR = {
+			vote_franschise = none_voting
+			political_opinions = ruling_party_opinion
+			political_parties = parties_not_allowed
+			union_rights = no_trade_unions
+			publishing_rights = censored_publishing
+			public_meetings = no_meetings
+			immigration_policy = nobody_gets_out
+		}
 	}
 	
 	mean_time_to_happen = {
@@ -370,7 +381,56 @@ country_event = {
 	
 	option = {
 		name = "EVTOPTA60140"
-		political_reform = registered_voting
+		
+		#People are pleased
+		any_pop = { 
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } } 
+			militancy = -3
+			consciousness = -3
+		}
+		
+		#Restore some voting
+		random_owned = {
+			limit = { owner = { vote_franschise = none_voting } }
+			owner = { political_reform = registered_voting }
+		}
+		
+		#Restore some UH - Limited State Assembly
+		random_owned = {
+			limit = { owner = { political_opinions = ruling_party_opinion } }
+			owner = { political_reform = open_opinion }
+		}
+		
+		#Restore some political parties
+		random_owned = {
+			limit = { owner = { political_parties = parties_not_allowed } }
+			owner = { political_reform = parties_only_nominated }
+		}
+		
+		#Restore some trade unions
+		random_owned = {
+			limit = { owner = { union_rights = no_trade_unions } }
+			owner = { political_reform = state_controlled_unions }
+		}
+		
+		#Restore some press rights
+		random_owned = {
+			limit = { owner = { publishing_rights = censored_publishing } }
+			owner = { political_reform = firewall_publishing }
+		}
+		
+		#Restore some meeting rights
+		random_owned = {
+			limit = { owner = { public_meetings = no_meetings } }
+			owner = { political_reform = limited_meetings }
+		}
+		
+		#Restore some immigration rights
+		random_owned = {
+			limit = { owner = { immigration_policy = nobody_gets_out } }
+			owner = { political_reform = quota_immigration }
+		}
+		
 	}
 }
 
