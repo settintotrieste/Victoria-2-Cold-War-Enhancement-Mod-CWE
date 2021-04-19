@@ -3475,6 +3475,62 @@ uninstall_communist_gov_cb = {
 		set_country_flag = this_lost_CB
 	}
 }
+
+# Free Dismantle CB
+free_dismantle_cb = {
+	sprite_index = 20
+	is_triggered_only = yes
+	months = 12
+	constructing_cb = no
+	crisis = no
+	
+	badboy_factor = 0
+	prestige_factor = 10
+	peace_cost_factor = 35
+	penalty_factor = 3
+
+	break_truce_prestige_factor = 5
+	break_truce_infamy_factor = 3
+	break_truce_militancy_factor = 1
+	truce_months = 48
+	
+	good_relation_prestige_factor = 0
+	good_relation_infamy_factor = 0
+	good_relation_militancy_factor = 0
+
+	po_disarmament = yes
+	po_reparations = yes
+	
+	war_name = WAR_DISMANTLE_NAME
+	
+	on_add = {
+	
+		set_country_flag = this_is_aggressor
+		
+		#AI is more trigger happy with nukes
+		set_country_flag = more_willing_nuke_behaviour
+	
+		FROM = {
+			set_country_flag = dismantle_declared
+		}
+		move_issue_percentage = { 
+			from = pro_military 
+			to = jingoism
+			value = 0.10
+		}
+		country_event = 96000
+	}
+	
+	on_po_accepted = {
+		set_country_flag = dismantling_treaty
+
+		THIS = { set_country_flag = this_won_CB }
+		set_country_flag = this_lost_CB
+		
+	}
+	
+}
+
 # Great War CB's
 dismantle_cb = {
 	sprite_index = 20
@@ -3574,10 +3630,34 @@ dismantle_cb = {
 			NOT = { has_country_modifier = no_more_war }
 		}
 		
-		NOT = { has_country_modifier = neutrality }
-		THIS = {
-			NOT = { has_country_modifier = neutrality }
-		}	
+		OR = {
+			war = yes
+			AND = { NOT = { has_country_modifier = neutrality } THIS = { NOT = { has_country_modifier = neutrality } } }
+		}
+		
+		#Bloc members do not contain each other
+		OR = {
+			war = yes
+			NOT = {
+				OR = {
+					AND = { OR = { has_country_modifier = communist_bloc has_country_modifier = communist_bloc_leader } THIS = { OR = { has_country_modifier = communist_bloc has_country_modifier = communist_bloc_leader } } }
+					AND = { OR = { has_country_modifier = democratic_bloc has_country_modifier = democratic_bloc_leader } THIS = { OR = { has_country_modifier = democratic_bloc has_country_modifier = democratic_bloc_leader } } }
+					
+					AND = { has_country_modifier = alliance_nato THIS = { has_country_modifier = alliance_nato } }
+					AND = { has_country_modifier = rio_pact THIS = { has_country_modifier = rio_pact } }
+					
+					AND = { has_country_modifier = warsaw_pact THIS = { has_country_modifier = warsaw_pact } }
+					AND = { has_country_modifier = csto_alliance THIS = { has_country_modifier = csto_alliance } }
+					
+					AND = { has_country_modifier = anzus_alliance THIS = { has_country_modifier = anzus_alliance } }
+					
+					AND = { has_country_modifier = sco_pact THIS = { has_country_modifier = sco_pact } }
+					
+					AND = { has_country_modifier = cento_member THIS = { has_country_modifier = cento_member } }
+				}
+			}
+		}
+		
 	}
 	
 	po_disarmament = yes
@@ -3636,25 +3716,25 @@ dismantle_cb_add = {
 	good_relation_militancy_factor = 0
 	
 	can_use = {
-THIS = { NOT = { has_country_flag = renounced_war_rights } }
-THIS = { NOT = { has_country_flag = un_armistice } }
+		THIS = { NOT = { has_country_flag = renounced_war_rights } }
+		THIS = { NOT = { has_country_flag = un_armistice } }
 		NOT = { is_our_vassal = THIS }
 		NOT = { has_country_modifier = neutrality }
 		NOT = { has_country_flag = dismantle_declared }
 
+		THIS = { 
+			OR = { 
+				government = theocracy
+				government = absolute_monarchy
+				government = populist_dictatorship
+				government = nationalist_dictatorship
+				government = presidential_dictatorship
+				government = proletarian_dictatorship
+				government = proletarian_dictatorship1
 
-		THIS = { OR = { 
-
-government = theocracy
-government = absolute_monarchy
-government = populist_dictatorship
-government = nationalist_dictatorship
-government = presidential_dictatorship
-government = proletarian_dictatorship
-government = proletarian_dictatorship1
-
-war_policy = jingoism war = yes has_country_flag = world_medium has_country_flag = world_high has_country_flag = cold_war_high has_country_modifier = cold_war_hot } }
-
+				war_policy = jingoism war = yes has_country_flag = world_medium has_country_flag = world_high has_country_flag = cold_war_high has_country_modifier = cold_war_hot 
+			} 
+		}
 
 		has_country_flag = in_great_war
 		OR = {
@@ -3674,6 +3754,29 @@ war_policy = jingoism war = yes has_country_flag = world_medium has_country_flag
 			is_disarmed = no
 			is_vassal = no
 			containment = 1
+		}
+
+		#Bloc members do not contain each other
+		OR = {
+			war = yes
+			NOT = {
+				OR = {
+					AND = { OR = { has_country_modifier = communist_bloc has_country_modifier = communist_bloc_leader } THIS = { OR = { has_country_modifier = communist_bloc has_country_modifier = communist_bloc_leader } } }
+					AND = { OR = { has_country_modifier = democratic_bloc has_country_modifier = democratic_bloc_leader } THIS = { OR = { has_country_modifier = democratic_bloc has_country_modifier = democratic_bloc_leader } } }
+					
+					AND = { has_country_modifier = alliance_nato THIS = { has_country_modifier = alliance_nato } }
+					AND = { has_country_modifier = rio_pact THIS = { has_country_modifier = rio_pact } }
+					
+					AND = { has_country_modifier = warsaw_pact THIS = { has_country_modifier = warsaw_pact } }
+					AND = { has_country_modifier = csto_alliance THIS = { has_country_modifier = csto_alliance } }
+					
+					AND = { has_country_modifier = anzus_alliance THIS = { has_country_modifier = anzus_alliance } }
+					
+					AND = { has_country_modifier = sco_pact THIS = { has_country_modifier = sco_pact } }
+					
+					AND = { has_country_modifier = cento_member THIS = { has_country_modifier = cento_member } }
+				}
+			}
 		}		
 	}
 	
@@ -3729,22 +3832,22 @@ dismantle_cb_add_new = {
 	good_relation_militancy_factor = 0
 	
 	can_use = {
-THIS = { NOT = { has_country_flag = renounced_war_rights } }
-THIS = { NOT = { has_country_flag = un_armistice } }
+		THIS = { NOT = { has_country_flag = renounced_war_rights } }
+		THIS = { NOT = { has_country_flag = un_armistice } }
 
+		THIS = { 
+			OR = { 
+				government = theocracy
+				government = absolute_monarchy
+				government = populist_dictatorship
+				government = nationalist_dictatorship
+				government = presidential_dictatorship
+				government = proletarian_dictatorship
+				government = proletarian_dictatorship1
 
-THIS = { OR = { 
-
-government = theocracy
-government = absolute_monarchy
-government = populist_dictatorship
-government = nationalist_dictatorship
-government = presidential_dictatorship
-government = proletarian_dictatorship
-government = proletarian_dictatorship1
-
-war_policy = jingoism war = yes has_country_flag = world_medium has_country_flag = world_high has_country_flag = cold_war_high has_country_modifier = cold_war_hot } }
-
+				war_policy = jingoism war = yes has_country_flag = world_medium has_country_flag = world_high has_country_flag = cold_war_high has_country_modifier = cold_war_hot 
+			} 
+		}
 
 		NOT = { is_our_vassal = THIS }
 		NOT = { has_country_flag = dismantle_declared }
@@ -3761,6 +3864,30 @@ war_policy = jingoism war = yes has_country_flag = world_medium has_country_flag
 			is_vassal = no
 			containment = 1
 		}
+		
+		#Bloc members do not contain each other
+		OR = {
+			war = yes
+			NOT = {
+				OR = {
+					AND = { OR = { has_country_modifier = communist_bloc has_country_modifier = communist_bloc_leader } THIS = { OR = { has_country_modifier = communist_bloc has_country_modifier = communist_bloc_leader } } }
+					AND = { OR = { has_country_modifier = democratic_bloc has_country_modifier = democratic_bloc_leader } THIS = { OR = { has_country_modifier = democratic_bloc has_country_modifier = democratic_bloc_leader } } }
+					
+					AND = { has_country_modifier = alliance_nato THIS = { has_country_modifier = alliance_nato } }
+					AND = { has_country_modifier = rio_pact THIS = { has_country_modifier = rio_pact } }
+					
+					AND = { has_country_modifier = warsaw_pact THIS = { has_country_modifier = warsaw_pact } }
+					AND = { has_country_modifier = csto_alliance THIS = { has_country_modifier = csto_alliance } }
+					
+					AND = { has_country_modifier = anzus_alliance THIS = { has_country_modifier = anzus_alliance } }
+					
+					AND = { has_country_modifier = sco_pact THIS = { has_country_modifier = sco_pact } }
+					
+					AND = { has_country_modifier = cento_member THIS = { has_country_modifier = cento_member } }
+				}
+			}
+		}
+		
 	}
 	
 	po_disarmament = yes
@@ -3875,6 +4002,29 @@ rude_boy = {
             THIS = { NOT = { has_country_flag = in_great_war } }
             THIS = { ai = no }
         }
+		
+		#Bloc members do not contain each other
+		OR = {
+			war = yes
+			NOT = {
+				OR = {
+					AND = { OR = { has_country_modifier = communist_bloc has_country_modifier = communist_bloc_leader } THIS = { OR = { has_country_modifier = communist_bloc has_country_modifier = communist_bloc_leader } } }
+					AND = { OR = { has_country_modifier = democratic_bloc has_country_modifier = democratic_bloc_leader } THIS = { OR = { has_country_modifier = democratic_bloc has_country_modifier = democratic_bloc_leader } } }
+					
+					AND = { has_country_modifier = alliance_nato THIS = { has_country_modifier = alliance_nato } }
+					AND = { has_country_modifier = rio_pact THIS = { has_country_modifier = rio_pact } }
+					
+					AND = { has_country_modifier = warsaw_pact THIS = { has_country_modifier = warsaw_pact } }
+					AND = { has_country_modifier = csto_alliance THIS = { has_country_modifier = csto_alliance } }
+					
+					AND = { has_country_modifier = anzus_alliance THIS = { has_country_modifier = anzus_alliance } }
+					
+					AND = { has_country_modifier = sco_pact THIS = { has_country_modifier = sco_pact } }
+					
+					AND = { has_country_modifier = cento_member THIS = { has_country_modifier = cento_member } }
+				}
+			}
+		}
 		
 	}
 	
