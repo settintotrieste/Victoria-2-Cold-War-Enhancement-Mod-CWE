@@ -1,68 +1,89 @@
-# common with russia
-# EVT_32506_NAME;$COUNTRY_ADJ$ Oligarchs
-# EVT_32507_NAME;$COUNTRY_ADJ$ financial crisis
-
-## TODO add Leonid Kravchuk kling on to power ai don't do its
+#The 1993 Election
 country_event = {
   id = 1014199
-  title = "EVT_1014199_NAME"
+  title = "The $YEAR$ Presidential Election"
   desc = "EVT_1014199_DESC"
   picture = "leonid_kuchma_election"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = UKR
-	exists = RUS
-	government = democracy
-    year = 1993
-  }
+	trigger = {
+		tag = UKR
+		year = 1993
+		NOT = { year = 2003 }
+		
+		government = democracy
+		is_vassal = no
+		war = no
+		
+		ruling_party_ideology = socialist
+	}
 
-  mean_time_to_happen = { months = 12 }
+	mean_time_to_happen = { months = 12 }
 
-  option = {
-    name = "Leonid Kravchuk clings on"
-	ruling_party_ideology = socialist
-	government = presidential_dictatorship  
-country_event = 800050 # cpcn cahnges culture to russian
-	any_pop = { militancy = 3 consciousness = 1 }
-	ai_chance = { factor = 0.1 }
-  }
-
-  option = {
-    name = "Leonid Kuchma is President"
-	any_pop = { militancy = 1.0  consciousness = 2 }
-	add_accepted_culture = russian
-	political_reform = registered_voting
-	political_reform = ruling_party_opinion
-	political_reform = censored_publishing
-	political_reform = politicised_service
-	political_reform = parties_only_nominated
-	political_reform = politicised_service
-	ruling_party_ideology = conservative
-	ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = "Leonid Kuchma is President"
+		
+		ruling_party_ideology = conservative
+		
+		any_pop = { militancy = 1.0 consciousness = 5 }
+		
+		add_accepted_culture = russian
+		
+		#Russia gains influence
+		random_country = {
+			limit = { tag = RUS is_greater_power = yes }
+			relation = { who = THIS value = 50 }
+			diplomatic_influence = { who = THIS value = 50 }
+		}
+		
+		#Weakened democracy
+		political_reform = registered_voting
+		political_reform = ruling_party_opinion
+		political_reform = censored_publishing
+		political_reform = politicised_service
+		political_reform = parties_only_nominated
+		political_reform = politicised_service
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Leonid Kravchuk clings on!"
+		government = presidential_dictatorship  
+		country_event = 800050
+		ruling_party_ideology = socialist
+		
+		#Russia loses influence
+		random_country = {
+			limit = { tag = RUS is_greater_power = yes }
+			relation = { who = THIS value = -50 }
+			diplomatic_influence = { who = THIS value = -50 }
+		}
+		
+		any_pop = { militancy = 3 consciousness = 1 }
+		ai_chance = { factor = 0.1 }
+	}
   
 }
 
+#The Orange Revolution
 country_event = {
 	id = 1014200
-	title = EVT_1014200_NAME
-	# EVT_1014200_NAME;Orange Revolution
+	title = "The Orange Revolution"
 	desc = EVT_1014200_DESC
-	# EVT_1014200_DESC;The Orange Revolution was a series of protests and political events that took place in Ukraine from late November 2004 to January 2005, in the immediate aftermath of the run-off vote of the 2004 Ukrainian presidential election which was claimed to be marred by massive corruption, voter intimidation and direct electoral fraud. Kiev, the Ukrainian capital, was the focal point of the movement's campaign of civil resistance, with thousands of protesters demonstrating daily.[5] Nationwide, the democratic revolution was highlighted by a series of acts of civil disobedience, sit-ins, and general strikes organized by the opposition movement.
 	picture = "orange_revolution"
+	
 	fire_only_once = yes
 	
 	trigger = {
-		war = no
-		year = 2004
-		exists = UKR
-		exists = RUS
 		tag = UKR
-		government = democracy
+		year = 2004
+		NOT = { year = 2014 }
 		
-		#UKR = { in_sphere = RUS }
-
+		government = democracy
+		is_vassal = no
+		war = no
 	}
 
 	mean_time_to_happen = {
@@ -70,69 +91,112 @@ country_event = {
 	}
 
 	option = {
-		name = "Yushchenko will lead Ukraine"
-		# EVT_1014200_A;Freedom!
-		USA = { country_event = 1014201 }
-		GER = { country_event = 1014201 }
-		government = democracy
-		country_event = 800054
+		name = "Yushchenko will lead Ukraine!"
+		
+		#Western powers gain influence in UKR
+		any_country = { 
+			limit = { 
+				exists = yes 
+				OR = { tag = GER tag = USA tech_school = XEU_tech_school tech_school = XEU_tech_school1 }
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+				is_greater_power = yes
+			}
+			relation = { who = THIS value = 50 }
+			diplomatic_influence = { who = THIS value = 50 }
+		}
+		
+		#Russia loses influence
+		random_country = {
+			limit = { tag = RUS is_greater_power = yes }
+			relation = { who = THIS value = -50 }
+			diplomatic_influence = { who = THIS value = -50 }
+		}
+		
+		#Liberal power
 		ruling_party_ideology = liberal
-		relation = { who = RUS value = -200 }
+
 		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
 		name = "Select Yanukovych instead"
-		# EVT_1014200_B;Stay in power
-		any_pop = { militancy = 3 consciousness = 2 }
-		prestige = -50
-		government = presidential_dictatorship  
-		country_event = 800050
+		prestige_factor = -0.025
+		
+		#Liberals are angry
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = liberal
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = progressive
+			}
+			scaled_militancy = {
+				factor = 5
+				ideology = big_tent
+			}
+			scaled_militancy = {
+				factor = 5
+				ideology = socialist
+			}
+		}
+		
+		#Western powers lose influence in UKR
+		any_country = {
+			limit = { 
+				exists = yes 
+				OR = { tag = GER tag = USA tech_school = XEU_tech_school tech_school = XEU_tech_school1 }
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+				is_greater_power = yes
+			}
+			relation = { who = THIS value = -50 }
+			diplomatic_influence = { who = THIS value = -50 }
+		}
+		
+		#Russia gains influence
+		random_country = {
+			limit = { tag = RUS is_greater_power = yes }
+			relation = { who = THIS value = 50 }
+			diplomatic_influence = { who = THIS value = 50 }
+		}
+
+		#Conservative
 		ruling_party_ideology = conservative
+		
+		#Weakened democracy
+		political_reform = registered_voting
+		political_reform = ruling_party_opinion
+		political_reform = censored_publishing
+		political_reform = politicised_service
+		political_reform = parties_only_nominated
+		political_reform = politicised_service
+		
 		ai_chance = { factor = 0.1 }
 	}
+	
 }
 
+#The 2010 election
 country_event = {
 	id = 1014201
-	title = EVT_1014201_NAME
-	desc = EVT_1014201_DESC
-	picture = "orange_revolution"
-	is_triggered_only = yes
+	title = "The $YEAR$ Presidential Election"
+	desc = EVTDESC1014201
+	picture = "Yanukovych_UKR_2010"
 	
-	option = {
-		name = EVT_1014201_A
-		# EVT_1014201_A;Spread democracy
-		diplomatic_influence = { who = FROM value = 25 }
-		ai_chance = { factor = 1 }
-	}
-	option = {
-		name = EVT_1014201_B
-		# EVT_1014201_B;Don't get involved
-		diplomatic_influence = { who = FROM value = -25 }
-		ai_chance = { factor = 0 }
-	}
-}	
-
-country_event = {
-	id = 1014202
-	title = EVT_1014202_NAME
-	# EVT_1014202_NAME;Euromaidan
-	desc = EVT_1014202_DESC
-	# EVT_1014202_DESC;The Ukrainian revolution of February 2014 (also known as the Euromaidan Revolution) took place after a series of violent events involving protesters, riot police and unknown shooters in capital Kiev that resulted in the ousting of the then-President of Ukraine, Viktor Yanukovych. This was immediately followed by a series of changes in quick succession in Ukraine's sociopolitical system, including the formation of a new interim government, the restoration of the previous constitution, and the call to hold impromptu presidential elections within months.
-	picture = "euromaidan"
 	fire_only_once = yes
 	
 	trigger = {
-		war = no
-		is_vassal = no
 		tag = UKR
+		year = 2010
+		NOT = { year = 2020 }
+		
 		government = democracy
-OR = { year = 2014 UKR = { has_country_modifier = in_bankrupcy } }
-		exists = RUS
-		UKR = { in_sphere = RUS }
-		GER = { government = democracy }
-		USA = { government = democracy }
+		is_vassal = no
+		war = no
+		
+		#Not already in power
+		ruling_party_ideology = conservative
 	}
 
 	mean_time_to_happen = {
@@ -140,71 +204,280 @@ OR = { year = 2014 UKR = { has_country_modifier = in_bankrupcy } }
 	}
 
 	option = {
-name = "Depose Yanukovych and join the EU (Russia annxes Crimea)"
-		# EVT_1014202_A;Turn to Europe
-		GER = { country_event = 1014203 }
+		name = "Yanukovych is the winner!"
+		
+		#Liberals are angry
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = liberal
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = progressive
+			}
+			scaled_militancy = {
+				factor = 5
+				ideology = socialist
+			}
+		}
+		
+		#Conservative gain
+		any_pop = {
+			limit = { strata = poor }
+			ideology = {
+				factor = 0.10
+				value = conservative
+			}
+		}
+		
+		#Western powers lose influence in UKR
+		any_country = {
+			limit = { 
+				exists = yes 
+				OR = { tag = GER tag = USA tech_school = XEU_tech_school tech_school = XEU_tech_school1 }
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+				is_greater_power = yes
+			}
+			relation = { who = THIS value = -50 }
+			diplomatic_influence = { who = THIS value = -50 }
+		}
+		
+		#Russia gains influence
+		random_country = {
+			limit = { tag = RUS is_greater_power = yes }
+			relation = { who = THIS value = 50 }
+			diplomatic_influence = { who = THIS value = 50 }
+		}
+
+		#Conservative
+		ruling_party_ideology = conservative
+		
+		#Weakened democracy
+		political_reform = registered_voting
+		political_reform = ruling_party_opinion
+		political_reform = censored_publishing
+		political_reform = politicised_service
+		political_reform = parties_only_nominated
+		political_reform = politicised_service
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Yulia Tymoshenko wins!"
+		
+		#Right wingers are angry
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = conservative
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = populist
+			}
+		}
+		
+		#Western powers gain influence in UKR
+		any_country = { 
+			limit = { 
+				exists = yes 
+				OR = { tag = GER tag = USA tech_school = XEU_tech_school tech_school = XEU_tech_school1 }
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+				is_greater_power = yes
+			}
+			relation = { who = THIS value = 50 }
+			diplomatic_influence = { who = THIS value = 50 }
+		}
+		
+		#Russia loses influence
+		random_country = {
+			limit = { tag = RUS is_greater_power = yes }
+			relation = { who = THIS value = -50 }
+			diplomatic_influence = { who = THIS value = -50 }
+		}
+		
+		#Socialist
+		ruling_party_ideology = socialist
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+#Euromaidan
+country_event = {
+	id = 1014202
+	title = "The Euromaidan Revolution"
+	desc = EVT_1014202_DESC
+	picture = "euromaidan"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = UKR
+		year = 2014
+		NOT = { year = 2024 }
+	
+		OR = { government = democracy government = presidential_dictatorship }
+		war = no
+		is_vassal = no
+		
+		#Yanukovych in power
+		ruling_party_ideology = conservative
+	}
+
+	mean_time_to_happen = {
+		months = 2
+	}
+
+	option = {
+		name = "Depose Yanukovych!"
+
 		set_global_flag = euromaidan_UKR
-RUS = { diplomatic_influence = { who = UKR value = -200 } }
-USA = { diplomatic_influence = { who = UKR value = 100 } relation = { who = UKR value = 100 } }
-relation = { who = RUS value = -200 }
-relation = { who = RUS value = -200 }
-ruling_party_ideology = liberal
+
+		#Liberal government
+		government = democracy
+		country_event = 800054
+		ruling_party_ideology = liberal
+		
+		#Liberal gain
+		any_pop = {
+			limit = { strata = rich }
+			ideology = {
+				factor = 0.05
+				value = liberal
+			}
+		}
+		any_pop = {
+			limit = { strata = middle }
+			ideology = {
+				factor = 0.15
+				value = liberal
+			}
+		}
+		any_pop = {
+			limit = { strata = poor }
+			ideology = {
+				factor = 0.10
+				value = liberal
+			}
+		}
+
+		#Western powers gain influence in UKR
+		any_country = { 
+			limit = { 
+				exists = yes 
+				OR = { tag = GER tag = USA tech_school = XEU_tech_school tech_school = XEU_tech_school1 }
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+				is_greater_power = yes
+			}
+			relation = { who = THIS value = 50 }
+			diplomatic_influence = { who = THIS value = 50 }
+		}
+
+		#Russia loses influence
+		random_country = {
+			limit = { tag = RUS is_greater_power = yes }
+			relation = { who = THIS value = -200 }
+			diplomatic_influence = { who = THIS value = -200 }
+		}
+
 		ai_chance = { factor = 0.8 }
 	}
 
 	option = {
-		name = EVT_1014202_B
-		# EVT_1014202_B;Stay in power
-		any_pop = { militancy = 3 consciousness = 1 }
-add_country_modifier = { name = revolution_chaos duration = 3650 }
+		name = "The revolution fails!"
+		badboy = 5
+		
+		#UKR becomes a dictatorship
 		government = presidential_dictatorship  
 		country_event = 800050
 		ruling_party_ideology = conservative
-		relation = { who = RUS value = 200 }
-	RUS = { diplomatic_influence = { who = UKR value = 200 } }
+
+		#Liberals are angry
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = liberal
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = progressive
+			}
+			scaled_militancy = {
+				factor = 5
+				ideology = socialist
+			}
+		}
+
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		#Western powers lose influence in UKR
+		any_country = {
+			limit = { 
+				exists = yes 
+				OR = { tag = GER tag = USA tech_school = XEU_tech_school tech_school = XEU_tech_school1 }
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+				is_greater_power = yes
+			}
+			relation = { who = THIS value = -50 }
+			diplomatic_influence = { who = THIS value = -50 }
+		}
+		
+		#Russia gains influence
+		random_country = {
+			limit = { tag = RUS is_greater_power = yes }
+			relation = { who = THIS value = 50 }
+			diplomatic_influence = { who = THIS value = 50 }
+		}
+
 		ai_chance = { factor = 0.2 }
 	}
 }
 
-country_event = {
-	id = 1014203
-	title = EVT_1014202_NAME
-	desc = EVT_1014202_DESC
-	picture = "euromaidan"
-	is_triggered_only = yes
-	
-	option = {
-		name = EVT_1014203_A
-		# EVT_1014203_A;Spread democracy
-		diplomatic_influence = { who = FROM value = 100 }
-		ai_chance = { factor = 1 }
-	}
-	option = {
-		name = EVT_1014203_B
-		# EVT_1014203_B;Don't get involved
-		diplomatic_influence = { who = FROM value = 100 }
-		ai_chance = { factor = 0 }
-	}
-}	
-	
+#The Annexation of Crimea - RUS
 country_event = {
 	id = 1014204
-	title = EVT_1014204_NAME
-	# EVT_1014204_NAME;Annexation of Crimea by the $COUNTRY$
+	title = "The Annexation of Crimea"
 	desc = EVT_1014204_DESC
-	# EVT_1014204_DESC;The military intervention and annexation by Russia took place in the aftermath of the Ukrainian Revolution. It was a part of the wider unrest across southern and eastern Ukraine.[31][32] On 22–23 February, Russian President Vladimir Putin convened an all-night meeting with security services chiefs to discuss extrication of deposed President, Viktor Yanukovych, and at the end of that meeting Putin had remarked that "we must start working on returning Crimea to Russia.
 	picture = "crimea_annexation"
+	
 	fire_only_once = yes
 	
 	trigger = {
-		war = no
 		tag = RUS
-		exists = UKR
-		UKR = { is_vassal = no }
-		UKR = { is_greater_power = no }
-		government = presidential_dictatorship
-		NOT = { relation = { who = UKR value = -50 } }
-		UKR = { NOT = { in_sphere = RUS } owns = 964 }
+		year = 2014
+		NOT = { year = 2024 }
+	
+		OR = { government = democracy government = presidential_dictatorship }
+		war = no
+		is_greater_power = yes
+	
+		#Putin
+		ruling_party_ideology = conservative
+	
+		#Ukraine
+		UKR = {
+			is_vassal = no
+			NOT = { ruling_party_ideology = conservative }
+			NOT = { in_sphere = THIS }
+			neighbour = RUS
+			is_possible_vassal = CRI
+		}
+	
+		#Euromaidan fired
 		has_global_flag = euromaidan_UKR
 	}
 
@@ -213,52 +486,143 @@ country_event = {
 	}
 	
 	option = {
-		name = EVT_1014204_A
-		# EVT_1014204_A;Demand return of Criema
-
-UKR = { release = CRI remove_accepted_culture = russian }
-inherit = CRI
-
-		ai_chance = { factor = 1 }
-	}
-	option = {
-		name = EVT_1014204_B
-		# EVT_1014204_B;Never mind
+		name = "Sieze Crimea! (War if refuse)"
+		prestige_factor = 0.01
+		badboy = 5
+		
+		#Conservative gain
 		any_pop = {
-			scaled_militancy = {
-				ideology = populist
-				factor = 2
-			}
-			scaled_consciousness = {
-				ideology = populist
-				factor = 2
+			limit = { is_primary_culture = yes }
+			militancy = -5
+			ideology = {
+				factor = 0.10
+				value = conservative
 			}
 		}
-		prestige = -1000
+		
+		#Western powers angry with RUS
+		any_country = {
+			limit = { 
+				exists = yes 
+				OR = { tag = GER tag = USA tech_school = XEU_tech_school tech_school = XEU_tech_school1 }
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+				is_greater_power = yes
+			}
+			relation = { who = THIS value = -100 }
+		}
+
+		#Choice for war
+		UKR = { country_event = 10142041 }
+
+		ai_chance = { factor = 0.9 }
+	}
+	option = {
+		name = "We shall not get involved"
+		
+		#Nationalist gain
+		any_pop = {
+			limit = { is_primary_culture = yes }
+			ideology = {
+				factor = 0.10
+				value = nationalist
+			}
+			ideology = {
+				factor = 0.05
+				value = populist
+			}
+		}
+		
+		#Nationalist anger
+		any_pop = {
+			scaled_militancy = {
+				ideology = nationalist
+				factor = 10
+			}
+			scaled_militancy = {
+				ideology = populist
+				factor = 5
+			}
+		}
+
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+#The Annexation of Crimea - UKR response
+country_event = {
+	id = 10142041
+	title = "The Annexation of Crimea"
+	desc = EVT_1014204_DESC
+	picture = "crimea_annexation"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Let Russia have it"
+		prestige_factor = -0.05
+
+		#Give Crimea to Russia
+		any_owned = {
+			limit = { is_core = CRI }
+			secede_province = FROM
+		}
+
+		remove_accepted_culture = russian
+
+		ai_chance = { factor = 0.9 }
+	}
+	option = {
+		name = "We shall fight to keep Crimea"
+		
+		#Start the war
+		RUS = {
+			war = { 
+				target = UKR
+				attacker_goal = { casus_belli = acquire_any_state state_province_id = 967 }
+				defender_goal = { casus_belli = status_quo } 
+			}
+		}
+		
+		remove_accepted_culture = russian
+
 		ai_chance = { factor = 0 }
 	}
 }
 
+#The War in Donbas
 country_event = {
 	id = 1014205
-	title = EVT_1014205_NAME
-	# EVT_1014205_NAME;The Donetsk People's Republic and Luhansk People's Republic
+	title = "The War in Donbas"
 	desc = EVT_1014205_DESC
-	# EVT_1014205_DESC;Attempts to seize the Donetsk Regional State Administration (RSA) building began since pro-Russian protests erupted in the eastern and southern regions of Ukraine, in the wake of the 2014 Ukrainian revolution. Pro-Russian protesters occupied the Donetsk RSA from 1–6 March, before being removed by the Security Service of Ukraine (SBU).[59][60] On 6 April, 1,000–2,000 people gathered at a rally in Donetsk to demand a status referendum similar to the one held in Crimea in March.
 	picture = "donetsk"
 	fire_only_once = yes
 	
 	trigger = {
-		war = no
 		tag = RUS
-		NOT = { exists = NRO }
+		year = 2014
+		NOT = { year = 2024 }
+		
+		OR = { government = democracy government = presidential_dictatorship }
+		war = no
+		is_greater_power = yes
+	
+		#Putin
+		ruling_party_ideology = conservative
+		
+		#RUS owns Crimea
+		is_possible_vassal = CRI
+	
+		#Ukraine
+		UKR = {
+			is_vassal = no
+			NOT = { ruling_party_ideology = conservative }
+			NOT = { in_sphere = THIS }
+			neighbour = RUS
+			is_possible_vassal = NRO
+		}
+	
+		#Euromaidan fired
 		has_global_flag = euromaidan_UKR
-		exists = UKR
-		UKR = { is_vassal = no }
-		UKR = { is_greater_power = no }
-		government = presidential_dictatorship
-	UKR = { NOT = { in_sphere = RUS } NOT = { owns = 964 } }
-		owns = 964
 	}
 
 	mean_time_to_happen = {
@@ -266,22 +630,87 @@ country_event = {
 	}
 
 	option = {
-		name = EVT_1014205_B
-	# EVT_1014205_B;Support our Russian Brothers and Sisters
+		name = "Support our Russian Brothers and Sisters"
+		prestige_factor = 0.01
+		money = -500000
+		badboy = 5
+		
+		#Conservative gain
+		any_pop = {
+			limit = { is_primary_culture = yes }
+			militancy = -2
+			ideology = {
+				factor = 0.05
+				value = conservative
+			}
+		}
+		
+		#Western powers angry with RUS
+		any_country = {
+			limit = { 
+				exists = yes 
+				OR = { tag = GER tag = USA tech_school = XEU_tech_school tech_school = XEU_tech_school1 }
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+				is_greater_power = yes
+			}
+			relation = { who = THIS value = -100 }
+		}
+		
+		#Release NRO
+		UKR = { release = NRO }
+		NRO = {
+			government = nationalist_dictatorship
+			country_event = 800050
+			ruling_party_ideology = nationalist
+			
+			money = 500000
+		}
+		
+		#RUS relations with NRO
+		create_alliance = NRO
+		relation = { who = NRO value = 200 }
+		diplomatic_influence = { who = NRO value = 200 }
+		
+		#Start the war!
+		NRO = {
+			war = { 
+				target = UKR
+				attacker_goal = { casus_belli = territorial_dispute_internal }
+				defender_goal = { casus_belli = annex_core_country } 
+			}
+		}
 
-UKR = { release = NRO }	
-
-RUS = { diplomatic_influence = { who = NRO value = 200 } }
-
-USA = { relation = { who = UKR value = 100 } diplomatic_influence = { who = UKR value = 100 } }
-
-		ai_chance = { factor = 1 }
+		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
 		name = "Crimea is enough"
-		prestige = -100
-		ai_chance = { factor = 0 }
+		
+		#Nationalist gain
+		any_pop = {
+			limit = { is_primary_culture = yes }
+			ideology = {
+				factor = 0.10
+				value = nationalist
+			}
+			ideology = {
+				factor = 0.05
+				value = populist
+			}
+		}
+		
+		#Nationalist anger
+		any_pop = {
+			scaled_militancy = {
+				ideology = nationalist
+				factor = 10
+			}
+			scaled_militancy = {
+				ideology = populist
+				factor = 5
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
 	}
 }
-
