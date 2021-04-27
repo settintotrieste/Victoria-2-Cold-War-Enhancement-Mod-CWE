@@ -130,8 +130,8 @@ political_decisions = {
 					AND = { tag = ROA AUS = { exists = yes } NOT = { has_country_modifier = cold_war_low } has_global_flag = blocsenabled }
 					
 					#China
-					AND = { tag = KMT CHI = { OR = { exists = yes has_country_modifier = unsc_permanent_member } } }
-					AND = { tag = CHI KMT = { OR = { exists = yes has_country_modifier = unsc_permanent_member } } }
+					AND = { tag = KMT CHI = { exists = yes is_vassal = no } }
+					AND = { tag = CHI KMT = { exists = yes is_vassal = no } }
 					
 				}
 			}
@@ -179,18 +179,16 @@ political_decisions = {
 				tag = USA
 				tag = RUS
 				tag = FRA 
-				AND = { 
-					tag = CHI 
-					OR = { 
-						has_country_modifier = one_china_policy 
-						KMT = { exists = no } 
-					}
-					NOT = { KMT = { has_country_modifier = unsc_permanent_member } } 
-				}
+				
+				#China
 
-				AND = { tag = CHI has_country_flag = not_participating_UNSC KMT = { exists = no } }
-				AND = { tag = KMT has_country_flag = not_participating_UNSC CHI = { exists = no } }
-				AND = { tag = KMT NOT = { CHI = { has_country_modifier = unsc_permanent_member } } }
+				#Other China is annexed or our puppet
+				AND = { tag = CHI KMT = { OR = { exists = no vassal_of = CHI } } }
+				AND = { tag = KMT CHI = { OR = { exists = no vassal_of = KMT } } }
+				
+				#Other China is not in the UNSC
+				AND = { tag = KMT CHI = { exists = yes NOT = { has_country_modifier = unsc_permanent_member } } }
+				AND = { tag = CHI KMT = { exists = yes NOT = { has_country_modifier = unsc_permanent_member } } }
 
 			}
 			NOT = { has_country_modifier = unsc_permanent_member }
@@ -199,6 +197,8 @@ political_decisions = {
 		allow = {
 			war = no
 			is_vassal = no
+			NOT = { is_disarmed = yes }
+			is_greater_power = yes
 		}
 		
 		effect = {
