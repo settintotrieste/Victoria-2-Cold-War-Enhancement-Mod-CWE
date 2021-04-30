@@ -226,27 +226,63 @@ country_event = {
 	title = "EVT_19805_NAME" # EVT_19805_NAME;Non Aligned Movement
 	desc = "EVT_19805_DESC" # EVT_19805_ESC;The Non-Aligned Movement is a Movement of 115 members representing the interests and priorities of developing countries. (To remove the independent bloc modifier, join a bloc)
 	picture = "nam"
+	
+	fire_only_once = yes
+	
+	major = yes
 
 	trigger = {
+	
+		#NAM will form in one of the historical founding nations or one of the neutral Great Powers
+		OR = { tag = HND tag = IDO tag = YUG is_greater_power = yes }
 		year = 1961
+		
+		is_vassal = no
+		war = no
+		
+		#Cold War Ongoing
 		has_global_flag = blocsenabled
-		OR = { exists = HND exists = IDO exists = YUG }
-		NOT = { has_country_flag = joinnam } 
-		NOT = { has_country_flag = joindemo }
-		NOT = { has_country_flag = namformformed }
-		NOT = { has_country_flag = joincomm }
-	}
 
-	immediate = {
-		set_global_flag = namformed
+		#THIS is not in a superpower bloc
+		NOT = { 
+			OR = { 
+				has_country_modifier = communist_bloc_leader 
+				has_country_modifier = communist_bloc 
+				
+				has_country_modifier = democratic_bloc_leader 
+				has_country_modifier = democratic_bloc
+			} 
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 9
 	}
 	
 	option = {
 		name = "EVT_19805_A" # EVT_19805_A;Interesting
-		set_country_flag = namformformed
-		set_country_flag = joinnam
-USA =  { relation = { who = THIS value = 50 } }
-USA =  { diplomatic_influence = { who = THIS value = 10 } }
+		
+		prestige = 50
+		
+		#Set up the NAM organisation
+		set_global_flag = namformed
+		
+		#All nations not in a bloc automatically join the NAM
+		any_country = {
+			limit = { 
+				NOT = { 
+					OR = { 
+						has_country_modifier = communist_bloc_leader 
+						has_country_modifier = communist_bloc 
+						
+						has_country_modifier = democratic_bloc_leader 
+						has_country_modifier = democratic_bloc 
+					} 
+				} 
+			}
+			set_country_flag = joinnam
+		}
+		
 	}
 
 }
