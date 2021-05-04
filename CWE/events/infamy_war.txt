@@ -160,6 +160,7 @@ country_event = {
 		#Capable of going to war
 		war = no
 		is_disarmed = no
+		has_recently_lost_war = no
 		
 		#Member of the UNSC
 		is_greater_power = yes
@@ -178,6 +179,7 @@ country_event = {
 			has_country_modifier = punitive_effects
 		}
 		
+		#Enemy GP
 		any_greater_power = {
 			badboy = 1.2
 			is_disarmed = no
@@ -187,9 +189,13 @@ country_event = {
 			NOT = { has_country_modifier = punitive_effects }
 			NOT = { has_country_flag = ultimatum_accepted }
 			
-			NOT = { relation = { who = THIS value = 50 } }
+			#Does not have good relations with THIS
+			NOT = { relation = { who = THIS value = 0 } }
 			NOT = { alliance_with = THIS }
 			NOT = { truce_with = THIS }
+			
+			#Has a lower military score than THIS
+			NOT = { military_score = THIS }
 			
 			#Not member of the same bloc
 			NOT = {
@@ -319,6 +325,11 @@ country_event = {
 			}
 			
 		}
+		ai_chance = { 
+			factor = 0.50
+			modifier = { factor = 0 war_policy = pacifism }
+			modifier = { factor = 0 is_disarmed = yes }
+		}
 	}
 
 	option = {
@@ -332,7 +343,12 @@ country_event = {
 				NOT = { alliance_with = THIS }
 			}
 			set_country_flag = coalition_member
-		}		
+		}
+		ai_chance = { 
+			factor = 0.50 
+			modifier = { factor = 0 AND = { rank = 2 is_disarmed = no NOT = { war_policy = pacifism } } }
+			modifier = { factor = 0 war_policy = jingoism }
+		}
 	}
 }
 

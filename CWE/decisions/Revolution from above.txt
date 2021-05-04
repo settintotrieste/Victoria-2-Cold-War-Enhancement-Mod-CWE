@@ -1,50 +1,84 @@
 political_decisions = {
 
-turn_communist = {
-       picture = "revert_communism"
-       potential = {
-wars_of_national_liberation = 1
-OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social }
+	turn_communist = {
+		picture = "revert_communism"
+		potential = {
+			wars_of_national_liberation = 1
+			OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social }
 
-NOT = { has_country_flag = neutrality }
-NOT =  { has_country_modifier = neutrality }
+			NOT = { has_country_flag = neutrality }
+			NOT =  { has_country_modifier = neutrality }
 
-OR = { ai = no has_global_flag = blocsenabled }
+			OR = { ai = no has_global_flag = blocsenabled }
 
-      NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } }
-	                   } 
+			NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } }
+			
+			#Must be a Republic as otherwise the Head of State will just say no
+			OR = { government = democracy government = democracy1 }
+		} 
      
-       allow = {
-           war = no
-		election = no
-		is_vassal = no
-OR = { ai = no pop_majority_ideology = socialist pop_majority_ideology = communist pop_majority_ideology = communist_social average_militancy = 7 }
-           }
+		allow = {
+			war = no
+			election = no
+			is_vassal = no
+			OR = { ai = no pop_majority_ideology = socialist pop_majority_ideology = communist pop_majority_ideology = communist_social average_militancy = 7 }
+		}
        
-       effect = {
-           government = proletarian_dictatorship
-		country_event = 800052
+		effect = {
+			government = proletarian_dictatorship
+			country_event = 800052
 
-sphere_owner = { diplomatic_influence = { who = THIS value = -100 } }
-
-any_pop = { 
-limit = { 
-OR = { pop_majority_ideology = socialist pop_majority_ideology = communist pop_majority_ideology = communist_social }
-} 
-	militancy = -7
+			sphere_owner = { diplomatic_influence = { who = THIS value = -100 } }
+			
+			#Socialists are happy
+			any_pop = {
+				scaled_militancy = {
+					factor = -10
+					ideology = communist
+				}
+				scaled_militancy = {
+					factor = -10
+					ideology = communist_social
+				}
+				scaled_militancy = {
+					factor = -5
+					ideology = socialist
+				}
+			}
+			
+			#Non socialists are angry
+			any_pop = {
+				scaled_militancy = {
+					factor = 10
+					ideology = liberal
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = progressive
+				}
+				scaled_militancy = {
+					factor = 5
+					ideology = big_tent
+				}
+				scaled_militancy = {
+					factor = 5
+					ideology = populist
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = conservative
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = traditionalist
+				}
 			}
 
-		any_pop = { 
-limit = { 
-NOT = { OR = { pop_majority_ideology = socialist pop_majority_ideology = communist pop_majority_ideology = communist_social } } 
-} 
-	militancy = 10
-			}
-                   }
+		}
      
-       ai_will_do = {
-           factor = 1
-       }
-   }
+		ai_will_do = {
+			factor = 1
+		}
+	}
 
 }
