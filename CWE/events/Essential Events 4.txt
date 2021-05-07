@@ -258,30 +258,6 @@ country_event = {
 		}
 	}
 
-#Remove Residual French Relations
-country_event = {
-	id = 1412026
-	title = "Last vestige of French Indochina removed"
-	desc = "The newly independent Government of $COUNTRY$ has decided to remove French colonial influence from the country."
-	picture = "unclos_3"
-
-	trigger = {
-		ai = yes
-OR = { tag = CAM tag = LUA }
-is_vassal = no
-		NOT = { year = 1990 }
-		NOT = { has_country_flag = outfrench }
-	}
-
-	option = {
-		name = "Good riddance"
-relation = { who = FRA value = -200 }
-diplomatic_influence = { who = FRA value = -150 }
-		set_country_flag = outfrench
-leave_alliance = FRA
-		}
-	}
-
 #Establishment of more concentration camps
 country_event = {
 	id = 1412027
@@ -489,37 +465,60 @@ country_event = {
 #French Indochina
 country_event = {
 	id = 1412035
-	title = "French Indochina"
-	desc = "As we have managed to win the French Indochina War, we can once again form the Colonial Indochina."
+	title = "Consolidate French Indochina?"
+	desc = "EVTDESC1412035"
 	picture = "nwo2_south_vietnam"
+	
+	fire_only_once = yes
 
 	trigger = {
-	tag = FRA
-	war = no
-	NOT = { year = 1990 }
-	DAI = { exists = no }
-	SVI = { exists = no }
-	controls = 1369
-	controls = 1380
+		tag = FRA
+		year = 1946
+		NOT = { year = 1990 }
+		
+		government = democracy
+		war = no
+		is_vassal = no
+		
+		is_possible_vassal = DAI
+		is_possible_vassal = SVI
 	}
+	
+	mean_time_to_happen = { months = 6 }
 	
 	option = {
-		name = "That is a good idea"
-	release_vassal = DAI
-	release_vassal = CAM
-	release_vassal = LUA
+		name = "Unite the Indochinese colonies into a single nation!"
+		prestige = 50
+		
+		release_vassal = DAI
 	
-	DAI = { change_tag = ICU }
+		#Form the ICU
+		DAI = { change_tag = ICU }
 
-	ICU = { government = colonial_government }
-	ICU = { country_event = 800054 }
+		ICU = { 
+			government = colonial_government 
+			country_event = 800054 
+			ruling_party_ideology = conservative
+			inherit = CAM
+			inherit = LUA
+		}
 
-	diplomatic_influence = { who = ICU value = 200 }
-
-	ICU = { inherit = CAM }
-	ICU = { inherit = LUA }
-			}
+		diplomatic_influence = { who = ICU value = 200 }
+		
+		ai_chance = { factor = 0.9 }
 	}
+	option = {
+		name = "Unite the Indochinese colonies into a single nation!"
+		badboy = 5
+		DAI = { 
+			all_core = { 
+				any_pop = { militancy = 10 consciousness = 10 }
+				add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+			} 
+		}
+		ai_chance = { factor = 0.1 }
+	}
+}
 #French Indochina
 country_event = {
 	id = 1412036
