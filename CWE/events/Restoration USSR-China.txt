@@ -1,0 +1,419 @@
+#Political Divisions - Fires only after the Fall of Khruschev
+country_event = {
+	id = 9001074
+	title = "Political Divisions with China"
+	desc = EVT_9001074_DESC
+	picture = "negotiation_1"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		has_global_flag = sino_soviet_split
+		NOT = { year = 1990 }
+		
+		government = proletarian_dictatorship
+		war = no
+		is_vassal = no
+		
+		#Decision selected
+		has_global_flag = reach_out_to_PRC_flag
+		
+		#Khruschev has fallen
+		has_global_flag = fall_of_nikita_khrushchev
+		
+		#Cold War
+		has_global_flag = blocsenabled
+		
+		#Chain has not already been completed by CHI
+		NOT = {
+			has_country_flag = mao_nixon
+			has_global_flag = restoration_done
+		}
+		
+		#CHI is communist
+		CHI = {
+			government = proletarian_dictatorship
+			is_vassal = no
+			war = no
+		}
+	}
+
+	mean_time_to_happen = { 
+		months = 6
+	}
+	
+	option = {
+		name = "We are the land of Lenin!"
+		prestige = 250
+		relation = { who = CHI value = -100 }
+		country_event = 9001077
+		ai_chance = { factor = 0.5 }
+	}
+	
+	option = {
+		name = "Let's make a deal."
+		relation = { who = CHI value = 50 }
+		random_list = {
+			50 = { country_event = 9001075 } #Our Attitude with the USA
+			50 = { country_event = 9001077 } #Negotiations fail!
+		}
+		ai_chance = { factor = 0.3 }
+	}
+	
+	option = {
+		name = "We've made mistakes..."
+		prestige = -250
+		random_list = {
+			90 = { country_event = 9001075 } #Our Attitude with the USA
+			10 = { country_event = 9001077 } #Negotiations fail!
+		}
+		ai_chance = { factor = 0.2 }
+	}
+}
+
+country_event = { #Our Attitude with the USA
+	id = 9001075
+	title = "Our Attitude with the USA"
+	desc = EVT_9001075_DESC
+	picture = "negotiation_2"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Peaceful Coexistence."
+		relation = { who = USA value = 25 }
+		prestige = 50
+		random_list = {
+			10 = { country_event = 9001076 } #Border Issue
+			90 = { country_event = 9001077 } #Negotiations fail!
+		}
+		ai_chance = { factor = 0.3 }
+	}
+	
+	option = {
+		name = "Political Pragmatism."
+		relation = { who = CHI value = 50 }
+		random_list = {
+			60 = { country_event = 9001076 } #Border Issue
+			40 = { country_event = 9001077 } #Negotiations fail!
+		}
+		ai_chance = { factor = 0.6 }
+	}
+	
+	option = {
+		name = "Death to Capitalism!"
+		relation = { who = USA value = -200 }
+		relation = { who = CHI value = 300 }
+		badboy = 5
+		country_event = 9001076
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+country_event = { #Border Issue - RUS
+	id = 9001076
+	title = "Sino-Soviet Border Issue"
+	desc = EVT_9001076_DESC
+	picture = "negotiation_3"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "It's OURS!"
+		relation = { who = CHI value = -100 }
+		country_event = 9001077
+		ai_chance = { factor = 0.3 }
+	}
+	
+	option = {
+		name = "Let's Negotiate Something."
+		relation = { who = CHI value = 25 }
+		money = -1000000
+		CHI = { country_event = 90010761 }
+		ai_chance = { factor = 0.6 }
+	}
+	
+	option = {
+		name = "Let's give them what they want!"
+		relation = { who = CHI value = 100 }
+		prestige = -250
+		badboy = -3
+		random_owned = {
+			limit = { province_id = 2618 }
+			2618 = { secede_province = CHI }
+		}
+		country_event = 9001079
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+country_event = { #Border Issue - CHI
+	id = 90010761
+	title = "Sino-Soviet Border Issue"
+	desc = EVT_9001076_DESC
+	picture = "negotiation_3"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Accept mutual co-existence!"
+		prestige_factor = -0.05
+		any_pop = { 
+			limit = { strata = rich } 
+			militancy = 10 
+			consciousness = 10 
+		}
+		
+		RUS = { country_event = 9001079 } #Sino-Soviet Restoration
+		
+		ai_chance = { factor = 0.4 }
+	}
+	
+	option = {
+		name = "There shall be no compromise!"
+		RUS = { country_event = 9001077 } #Negotiations fail!
+		ai_chance = { factor = 0.6 }
+	}
+
+}
+
+country_event = { #Negotiations fail!
+	id = 9001077
+	title = "Negotiations with the PRC fail!"
+	desc = EVT_9001077_DESC
+	picture = "negotiation_fail"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Maybe next time..."
+		add_country_modifier = { name = restoration_fail duration = 1825 }
+	}
+}
+
+country_event = { #Sino-Soviet Restoration
+	id = 9001079
+	title = "Restoration of Sino-Soviet Ties"
+	desc = EVT_9001079_DESC
+	picture = "friendship_pact"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "A great day for Socialism!"
+		set_global_flag = restoration_win
+		set_global_flag = border_sino_soviet
+		clr_global_flag = sino_soviet_split
+	}
+}
+
+country_event = { #Nixon visits Mao
+	id = 9001081
+	title = "Nixon visits Mao"
+	desc = EVT_9001081_DESC
+	picture = "nwo2_nixon_visit_to_china"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Traitors!"
+		prestige_factor = -0.025
+		set_country_flag = mao_nixon
+	}
+}
+
+country_event = { #Chinese leader visits USSR #1
+	id = 9001082
+	title = "Chinese leader visits the USSR"
+	desc = EVT_9001082_DESC
+	picture = "restoration"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = CHI
+		
+		government = proletarian_dictatorship
+		war = no
+		is_vassal = no
+		
+		#Cold War
+		has_global_flag = blocsenabled
+		
+		#Chain has not already been completed by CHI
+		NOT = { has_global_flag = restoration_done }
+		
+		#Hardliners take over Mao
+		has_country_flag = restoration_china
+	}
+
+	mean_time_to_happen = { 
+		months = 6
+	}
+	
+	option = {
+		name = "Everything goes smoothly."
+		relation = { who = RUS value = 50 }
+		
+		#Normalisation of relations takes 5 years
+		set_country_flag = restoration3
+		add_country_modifier = { name = reconciliation duration = 1825 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Continue the feud!"
+		prestige_factor = 0.03
+		relation = { who = RUS value = -50 }
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+country_event = { #Formalization of the Restoration
+	id = 9001085
+	title = "Restoration of Sino-Soviet Ties"
+	desc = EVT_9001085_DESC
+	picture = "friendship_pact"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = CHI
+		
+		government = proletarian_dictatorship
+		war = no
+		is_vassal = no
+		
+		#Cold War
+		has_global_flag = blocsenabled
+		
+		#Normalisation selected
+		has_country_flag = restoration3
+		
+		#Normalisation period completed
+		NOT = { has_country_modifier = reconciliation }
+		
+		#Chain has not already been completed by CHI
+		NOT = { has_global_flag = restoration_done }
+		
+		#Hardliners take over Mao
+		has_country_flag = restoration_china
+	}
+
+	mean_time_to_happen = { 
+		months = 6
+	}
+	
+	option = {
+		name = "A great day for Socialism!"
+		prestige_factor = 0.02
+		relation = { who = RUS value = 50 }
+		
+		set_global_flag = restoration_win
+		set_global_flag = border_sino_soviet
+		
+		clr_global_flag = sino_soviet_split
+		clr_country_flag = restoration3
+	}
+}
+
+country_event = { #Friendship Pact? - RUS
+	id = 9001087
+	title = "Sino-Soviet Friendship Pact?"
+	desc = EVT_9001087_DESC
+	picture = "friendship_pact"
+	
+	fire_only_once = yes
+	
+	trigger = {
+    	tag = RUS
+		has_country_flag = oleg_appointed
+		
+		government = proletarian_dictatorship
+		is_vassal = no
+		war = no
+		
+		#CHI is communist
+		CHI = {
+			government = proletarian_dictatorship
+			is_vassal = no
+			war = no
+		}
+		
+		#Cold War
+		has_global_flag = blocsenabled
+	}
+	
+	mean_time_to_happen = { months = 10 }
+	
+	option = {
+		name = "Friend?"
+		CHI = { country_event = 90010871 }
+	}
+}
+
+country_event = { #Friendship Pact? - CHI
+	id = 90010871
+	title = "Sino-Soviet Friendship Pact?"
+	desc = EVT_9001087_DESC
+	picture = "friendship_pact"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "We shall be friends with the Soviet Union!"
+		
+		any_pop = { 
+			limit = { strata = rich } 
+			militancy = 10 
+			consciousness = 10 
+		}
+		
+		RUS = { country_event = 9001088 } #Friendship Pact Accepted!
+		ai_chance = { factor = 0.85 }
+	}
+	
+	option = {
+		name = "Never!"
+		prestige_factor = 0.025
+		
+		RUS = { country_event = 9001089 } #It's over... For good!
+		ai_chance = { factor = 0.15 }
+	}
+}
+
+country_event = { #Friendship Pact Accepted!
+	id = 9001088
+	title = "Friendship Pact Accepted!"
+	desc = EVT_9001088_DESC
+	picture = "friendship_pact"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Wonderful !"
+		relation = { who = CHI value = 300 }
+		set_global_flag = restoration_win
+		clr_global_flag = sino_soviet_split
+		clr_country_flag = oleg_appointed
+	}
+}
+
+country_event = { #It's over... For good!
+	id = 9001089
+	title = "It's over... For good!"
+	desc = EVT_9001089_DESC
+	picture = "negotiation_fail"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "The rupture is official!"
+		relation = { who = CHI value = -100 }
+		set_global_flag = full_split
+		clr_global_flag = sino_soviet_split
+		clr_country_flag = oleg_appointed
+	}
+}
