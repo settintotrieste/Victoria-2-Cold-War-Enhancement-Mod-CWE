@@ -589,8 +589,17 @@ country_event = {
 	option = {
 		name = "Hand power to Aung San Suu Kyi"
 		government = democracy
-		country_event = 800054
 		ruling_party_ideology = liberal
+		
+		#Special political set up
+		political_reform = registered_voting
+		political_reform = regulated_opinion
+		political_reform = limited_meetings
+		political_reform = politicised_service
+		political_reform = parties_restrict_non_democratic #Restricted campaigning
+		political_reform = first_past_the_post
+		
+		set_country_flag = ASSK_BUR_flag
 		
 		any_pop = { 
 			limit = { type = officers }
@@ -620,6 +629,82 @@ country_event = {
 			}
 			ideology = { factor = 0.15 value = liberal }
 		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#2021 Return to Dictatorship
+country_event = {
+	id = 8002316
+	title = "The $YEAR$ Military Coup"
+	desc = EVTDESC8002316
+	picture = "2021_BUR_coup"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUR
+		year = 2021
+		NOT = { year = 2026 }
+		
+		government = democracy
+		war = no
+		is_vassal = no
+		
+		#Aung San Suu Kyi won power in 2015
+		has_country_flag = ASSK_BUR_flag
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "Launch the coup!"
+		government = presidential_dictatorship
+		country_event = 800050
+		ruling_party_ideology = nationalist
+		
+		#Public will be very angry!
+		any_pop = { 
+			limit = { NOT = { OR = { type = officers type = soldiers } } }
+			militancy = 10
+			consciousness = 10
+			ideology = { factor = 0.25 value = liberal }
+		}
+		
+		#Military will side with the coup plotters
+		any_pop = { 
+			limit = { OR = { type = officers type = soldiers } }
+			militancy = -10
+			ideology = { factor = 0.30 value = nationalist }
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Let democracy flourish!"
+		
+		#Rich strata will become more nationalist
+		any_pop = { 
+			limit = { strata = rich }
+			ideology = { factor = 0.25 value = nationalist }
+		}
+		
+		#Military will be angry
+		any_pop = { 
+			limit = { OR = { type = officers type = soldiers } }
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+			ideology = { factor = 0.25 value = nationalist }
+		}
+		
+		add_country_modifier = { name = military_strife duration = 3650 }
 		
 		ai_chance = { factor = 0.1 }
 	}
