@@ -1723,18 +1723,28 @@ country_event = {
 		war = no
 		is_vassal = no
 		
-		owns = 918
+		#Own Jerusalem and West Bank
 		owns = 917
-		917 = { is_core = PAL }
+		owns = 920
+		
+		#Owns PAL
+		is_possible_vassal = PAL
 	}
-  
-	immediate = {
+
+	mean_time_to_happen = { months = 11 }
+
+	option = {
+		name = EVT_8007697_A
+		
+		#Jerusalem
 		917 = {
-			remove_core = PAL
 			remove_core = JOR #in case of assimilation while occupied, should be handled by capital decision
 		}
+		
+		#Release Palestine
 		any_owned = {
 			limit = {
+				NOT = { province_id = 917 }
 				OR = {
 					province_id = 920
 					province_id = 918
@@ -1744,28 +1754,50 @@ country_event = {
 			}
 			secede_province = PAL
 		}
-		release_vassal = PAL #just in case
-	}
-
-	mean_time_to_happen = { months = 11 }
-
-	option = {
-		name = EVT_8007697_A
-		any_pop = { militancy = 2.0 }
-		casus_belli = { target = PAL type = annex_core_country months = 12 }
+		PAL = {
+			government = democracy
+			country_event = 800054
+			ruling_party_ideology = socialist
+		}
 		war = {
 			target = PAL
 			attacker_goal = { casus_belli = annex_core_country }
 			defender_goal = { casus_belli = status_quo }
 			call_ally = no
 		}
+		
+		#Israel militancy
+		any_pop = { 
+			limit = { is_primary_culture = no is_accepted_culture = no } 
+			militancy = 10 
+			consciousness = 10 
+		}
+		
 		ai_chance = { factor = 1 }
 	}
 
 	option = {
 		name = EVT_8007697_B
-		any_pop = { consciousness = 2 }
+		prestige_factor = -0.10
+		
+		#Israel militancy
+		any_pop = { 
+			limit = { is_primary_culture = yes } 
+			militancy = 10 
+			consciousness = 10 
+		}
+		
+		#Release Palestine
+		release = PAL
+		PAL = {
+			government = democracy
+			country_event = 800054
+			ruling_party_ideology = socialist
+		}
+		
 		relation = { who = PAL value = 200 }
+		
+		capital = 919
 		ai_chance = { factor = 0 }
 	}
 }
@@ -1775,7 +1807,7 @@ country_event = {
   id = 8007698
   title = EVT_8007698_NAME
   # EVT_8007698_NAME;The Intifada
-  desc = EVT_8007698_DESC
+  desc = EVTDESC8007698
   picture = "intifada"
   
 	fire_only_once = yes
@@ -1787,92 +1819,98 @@ country_event = {
 		is_vassal = no
 		war = no
 	
-		NOT = { exists = PAL }
-		owns = 918
+		#Owns PAL
+		is_possible_vassal = PAL
+		
+		#Owns Gaza
+		is_possible_vassal = GAZ
+		
+		#Owns West Bank and Jerusalem
+		owns = 917
 		owns = 920
 	}
-  
-  mean_time_to_happen = { months = 8 }
-  
-  immediate = {
-	any_pop = {
-		limit = { is_culture_group = arabic }
-		militancy = 7
-		consciousness = 5
-	}
-	any_owned = {
-		limit = {
-			OR = {
-				province_id = 916
-				province_id = 919
-				province_id = 921
-			}
+	
+	mean_time_to_happen = { months = 8 }
+
+	option = {
+		name = EVT_8007698_B
+		# EVT_8007698_B;Crush the rebellion at any cost!
+		#any_pop = { limit = { location = { province_id = 917 } NOT = { strata = poor } } move_pop = 918 } # Settlements on the West Bank
+		
+		any_pop = {
+			limit = { is_primary_culture = no is_accepted_culture = no }
+			militancy = 7
+			consciousness = 5
+			ideology = { factor = 0.10 value = traditionalist }
 		}
-		remove_core = PAL
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 916
+					province_id = 919
+					province_id = 921
+				}
+			}
+			remove_core = PAL
+		}
+		
+		any_owned = {
+			limit = {
+				NOT = { province_id = 917 }
+				OR = {
+					province_id = 920
+					province_id = 918
+					is_core = EGY #Sinai and further
+					is_core = JOR
+				}
+			}
+			secede_province = PAL
+		}
+		
+		war = {
+			target = PAL
+			attacker_goal = { casus_belli = annex_core_country }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = no
+		}
+		badboy = 5
+		ai_chance = { factor = 0.9 }
 	}
-  }
-  
-  # Gaza becomes puppet
-  option = {
-	name = EVT_8007698_A
-	# EVT_8007698_A;Seek a compromise, but continue the Jewish settlements
-	#any_pop = { limit = { location = { province_id = 917 } NOT = { strata = poor } } move_pop = 918 } # Settlements on the West Bank
-	release = GAZ
-	any_owned = {
-		limit = { is_core = EGY }
-		secede_province = GAZ
-	}
-	release = PAL
-	any_owned = {
-		limit = { is_core = JOR }
-		secede_province = PAL
-	}
-	# infamy unsanctioned
-	war = {
-		target = PAL
-		attacker_goal = { casus_belli = annex_core_country }
-		defender_goal = { casus_belli = status_quo }
-	}
-	casus_belli = { target = GAZ type = make_puppet months = 12 }
-	war = {
-		target = GAZ
-		attacker_goal = { casus_belli = make_puppet }
-		defender_goal = { casus_belli = status_quo }
-		call_ally = no
-	}
-	ai_chance = { factor = 0.90 modifier = { factor = 0 owns = 1755 } } # Will not accept Gaza puppet if Sinai owned
-  }
 
-  option = {
-	name = EVT_8007698_B
-	# EVT_8007698_B;Crush the rebellion at any cost!
-	#any_pop = { limit = { location = { province_id = 917 } NOT = { strata = poor } } move_pop = 918 } # Settlements on the West Bank
-	release = PAL
-	any_owned = {
-		limit = { OR = { is_core = EGY is_core = JOR } }
-		secede_province = PAL
-	}
-	# infamy unsanctioned
-	war = {
-		target = PAL
-		attacker_goal = { casus_belli = annex_core_country }
-		defender_goal = { casus_belli = status_quo }
-		call_ally = no
-	}
-	badboy = 5
-	ai_chance = { factor = 0.10 }
-  }
+	option = {
+		name = EVT_8007698_C
+		# EVT_8007698_C;Accept a divided Palestine
+		
+		prestige_factor = -0.20
+		badboy = -5
+		
+		any_pop = {
+			limit = { is_primary_culture = yes }
+			militancy = 7
+			consciousness = 5
+			ideology = { factor = 0.10 value = nationalist }
+		}
+		
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 916
+					province_id = 919
+					province_id = 921
+				}
+			}
+			remove_core = PAL
+		}
+		
+		#Form the Palestinian Authority
+		release_vassal = PAL
+		any_owned = { limit = { OR = { is_core = EGY is_core = JOR } NOT = { province_id = 1755 } } secede_province = PAL } #Sinai except Suez if owned
+		PAL = { government = sar_government country_event = 800054 ruling_party_ideology = socialist }
 
-  option = {
-	name = EVT_8007698_C
-	# EVT_8007698_C;Accept a divided Palestine
-	any_pop = { militancy = 2  consciousness = 2 }
-	release_vassal = PAL
-	any_owned = { limit = { OR = { is_core = EGY is_core = JOR } NOT = { province_id = 1755 } } secede_province = PAL } #Sinai except Suez if owned
-	PAL = { government = sar_government country_event = 800054 }
-	badboy = -5
-	ai_chance = { factor = 0 }
-  }
+		capital = 919
+
+		ai_chance = { factor = 0.1 }
+	}
 }
 
 # This isn't modeled very well
@@ -1904,6 +1942,68 @@ country_event = {
 #  }
 #}
 
+#Form the Palestinian Authority
+country_event = {
+	id = 1412243
+	title = "The Palestinian National Authority"
+	desc = EVTDESC1412243
+	picture = "pal_authority"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = ISR
+		year = 2005
+		
+		is_vassal = no
+		war = no
+
+		is_possible_vassal = PAL
+	}
+
+	mean_time_to_happen = { 
+		months = 4
+	}
+
+	option = {
+		name = "Restore the Palestinian National Authority"
+		prestige = 10
+		badboy = -5
+
+		918 = { remove_core = ISR }
+		920 = { remove_core = ISR }
+
+		918 = { secede_province = PAL }
+		920 = { secede_province = PAL }
+		
+		any_pop = {
+			limit = { is_primary_culture = yes }
+			militancy = 3
+			consciousness = 3
+			ideology = { factor = 0.05 value = nationalist }
+		}
+
+		#Form the PA
+		create_vassal = PAL
+		PAL = { government = sar_government country_event = 800054 ruling_party_ideology = socialist } 
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Continue the occupation!"
+		prestige = -50
+		badboy = 5
+		any_pop = { 
+			limit = { has_pop_religion = sunni } 
+			ideology = { factor = 0.10 value = traditionalist }
+			militancy = 5
+			consciousness = 5
+		} 
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
 
 ###########################################################################
 #Gaza events
@@ -1921,11 +2021,27 @@ country_event = {
 	trigger = {
 		tag = PAL
 		year = 2006
-		ISR = { exists = yes war = no is_vassal = no }
-		vassal_of = ISR
-		owns = 920
+		
 		government = sar_government
+		war = no
+		vassal_of = ISR
 		election = no
+		
+		#Israel exists
+		ISR = { 
+			exists = yes 
+			war = no 
+			is_vassal = no 
+			
+			#Owns Jerusalem
+			owns = 917
+		}
+		
+		#West Bank
+		owns = 920
+		
+		#Owns Gaza
+		is_possible_vassal = GAZ
 	}
 
 	mean_time_to_happen = {
@@ -1944,15 +2060,21 @@ country_event = {
 				is_vassal = no 
 				NOT = { ruling_party_ideology = traditionalist } 
 			}
-			country_event = 80076981
+			relation = { who = THIS value = -50 }
 		}
 		
 		ruling_party_ideology = traditionalist
+		
 		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
-		name = "Block Hamas"
+		name = "Block Hamas from winning the elections!"
+		badboy = 5
+		any_pop = { 
+			limit = { has_pop_religion = sunni } 
+			ideology = { factor = 0.25 value = traditionalist }
+		} 
 		any_pop = {
 			scaled_militancy = {
 				factor = 10
@@ -1981,6 +2103,8 @@ country_event = {
 		name = "Blockade the Gaza Strip!"
 		badboy = 4
 		
+		set_country_flag = GAZ_blockade_flag
+		
 		any_pop = {
 			limit = {
 				NOT = { 
@@ -2006,7 +2130,7 @@ country_event = {
 			limit = { owner = { tag = ISR } }
 			owner = {
 				PAL = { 
-					ruling_party_ideology = socialist 
+					ruling_party_ideology = conservative
 					release = GAZ
 					any_pop = {
 						limit = {
@@ -2026,6 +2150,24 @@ country_event = {
 			}
 		}
 		
+		#GAZ traditionalist support
+		GAZ = { 
+			any_pop = { 
+				limit = { has_pop_religion = sunni } 
+				ideology = { factor = 0.25 value = traditionalist }
+			} 
+		}
+		
+		#EGY response
+		random_country = {
+			limit = {
+				tag = EGY
+				is_vassal = no 
+				NOT = { ruling_party_ideology = traditionalist } 
+			}
+			relation = { who = GAZ value = -200 }
+		}
+		
 		ai_chance = { factor = 0.9 }
 	}
 
@@ -2041,6 +2183,84 @@ country_event = {
 			}
 		}
 		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#2014 Gaza War
+country_event = {
+	id = 80076982
+	title = "The $YEAR$ Gaza War"
+	desc = EVTDESC80076982
+	picture = "2014_GAZ_war"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = ISR
+		year = 2014
+
+		is_vassal = no
+		war = no
+		
+		has_country_flag = GAZ_blockade_flag
+		
+		GAZ = {
+			exists = yes
+			is_vassal = no
+			ruling_party_ideology = traditionalist
+		}
+	}
+
+	mean_time_to_happen = { 
+		months = 7
+	}
+
+	option = {
+		name = "Conduct a limited operation"
+		war = {
+			target = GAZ
+			attacker_goal = { casus_belli = cut_down_to_size }
+			defender_goal = { casus_belli = territorial_dispute_internal }
+			call_ally = no
+		}
+		any_pop = { 
+			limit = { has_pop_religion = sunni } 
+			ideology = { factor = 0.10 value = traditionalist }
+			militancy = 5
+			consciousness = 5
+		} 
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Re-annex the rogue province!"
+		badboy = 5
+		war = {
+			target = GAZ
+			attacker_goal = { casus_belli = annex_core_country }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = no
+		}
+		any_pop = { 
+			limit = { has_pop_religion = sunni } 
+			ideology = { factor = 0.30 value = traditionalist }
+			militancy = 10
+			consciousness = 10
+		} 
+		ai_chance = { factor = 0.1 }
+	}
+	option = {
+		name = "Do nothing"
+		prestige_factor = -0.05
+		any_pop = { 
+			limit = { is_primary_culture = yes } 
+			ideology = { factor = 0.05 value = nationalist }
+			militancy = 4
+			consciousness = 4
+		} 
+		relation = { who = GAZ value = 50 }
 		ai_chance = { factor = 0.1 }
 	}
 
