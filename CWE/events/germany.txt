@@ -1,142 +1,218 @@
-country_event = {
-  id = 8004506
-  title = "EVT_8004506_NAME"
-  desc = "EVT_8004506_DESC"
-  picture = "nwo2_old_adenauer"
-  fire_only_once = yes
-
-  trigger = {
-    tag = GER
-    year = 1963 NOT = {year = 1964}
-  }
-
-  mean_time_to_happen = { months = 2  }
-
-  option = {
-    name = "EVT_8004506_A"
-	prestige = -40
-  }
-}
-country_event = {
-  id = 8004514
-  title = EVT_8004514_NAME
-  desc = EVT_8004514_DESC
-  picture = "nwo2_willy_brandt"
-  fire_only_once = yes
-
-  trigger = {
-    tag = GER
-    year = 1974 NOT = { year = 1975 }
-  }
-
-  mean_time_to_happen = { months = 2 }
-
-  option = {
-    name = EVT_8004514_A
-	add_country_modifier = { name = ruling_party_scandal duration = 1000 }
-  }
-}
+#The Spiegel Affair
 country_event = {
   id = 8004522
-  title = EVT_8004522_NAME
+  title = "The Spiegel Affair"
   desc = EVT_8004522_DESC
   picture = "nwo2_spiegel_affair"
   fire_only_once = yes
 
-  trigger = {
-    tag = GER
-    year = 1962 NOT = { year = 1963 }
-    exists = DDR
-    
-    war = no
-  }
+	trigger = {
+		tag = GER
+		year = 1962
+		NOT = { year = 1967 }
+		
+		OR = { government = democracy government = democracy1 }
+		is_vassal = no
+		war = no
+		election = no
+		
+		#CDU
+		ruling_party_ideology = conservative
+	
+		#East Germany
+		DDR = { exists = yes ruling_party_ideology = communist }
+	}
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 10 }
 
-  option = {
-    name = EVT_8004522_A
-	add_country_modifier = { name = ruling_party_scandal duration = 1000 }
-  }
+	option = {
+		name = "Suppress the Press!"
+		
+		any_pop = { 
+			militancy = -2
+			consciousness = -3
+		}
+		
+		#Undermine the Press
+		political_reform = firewall_publishing
+		
+		add_country_modifier = { name = ruling_party_scandal duration = 365 }
+		
+		set_country_flag = spiegel_affair_flag
+	}
+	
+	option = {
+		name = "Admit our mistake"
+		prestige = -40
+		
+		#Opposition becomes more popular
+		any_pop = { 
+			militancy = 2
+			consciousness = 3
+			ideology = { factor = 0.10 value = socialist }
+		}
+	}
 }
+
+#The Fall of Konrad Adenauer, 1963
+country_event = {
+  id = 8004506
+  title = "The Fall of Konrad Adenauer"
+  desc = "EVT_8004506_DESC"
+  picture = "nwo2_old_adenauer"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = GER
+		year = 1963 
+		NOT = { year = 1967 }
+		
+		OR = { government = democracy government = democracy1 }
+		#is_vassal = no
+		#war = no
+		election = no
+		
+		#CDU
+		ruling_party_ideology = conservative
+		
+		has_country_flag = spiegel_affair_flag
+	}
+
+	mean_time_to_happen = { months = 10 }
+
+	option = {
+		name = "It's time for new leadership!"
+		prestige = -40
+		
+		#Opposition becomes more popular
+		any_pop = { 
+			militancy = 1
+			consciousness = 2
+			ideology = { factor = 0.05 value = socialist }
+		}
+	}
+}
+
+#The Fall of Willy Brandt 
+country_event = {
+  id = 8004514
+  title = "The Fall of Willy Brandt"
+  desc = EVT_8004514_DESC
+  picture = "nwo2_willy_brandt"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = GER
+		year = 1974 
+		NOT = { year = 1990 }
+		
+		OR = { government = democracy government = democracy1 }
+		#is_vassal = no
+		#war = no
+		election = no
+		
+		#SPD
+		ruling_party_ideology = socialist
+	}
+
+	mean_time_to_happen = { months = 5 }
+
+	option = {
+		name = "It's time for new leadership!"
+		prestige = -40
+		
+		#Opposition becomes more popular
+		any_pop = { 
+			militancy = 1
+			consciousness = 2
+			ideology = { factor = 0.05 value = conservative }
+		}
+		
+		add_country_modifier = { name = ruling_party_scandal duration = 365 }
+	}
+}
+
+#F84 Thunderstreak Incident - GER start
 country_event = {
   id = 8004523
-  title = EVT_8004523_NAME
+  title = "The F-84 Thunderstreak Incident"
   desc = EVT_8004523_DESC
   picture = "nwo2_f_84_thunderstreak"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = GER
-    year = 1963
-    exists = DDR
-    
-    war = no
-  }
+	trigger = {
+		tag = GER
+		year = 1961
+		NOT = { year = 1990 }
+		
+		OR = { government = democracy government = democracy1 }
+		is_vassal = no
+		war = no
+		
+		#In NATO
+		alliance_with = USA
 
-  mean_time_to_happen = { months = 1  }
+		#East Germany
+		DDR = { exists = yes ruling_party_ideology = communist vassal_of = RUS }
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
+	}
 
-  option = {
-    name = EVT_8004523_A
-	any_pop = { consciousness = 1 }
-	ai_chance= { factor = 195 }
-  }
+	mean_time_to_happen = { months = 9 }
 
-  option = {
-    name = EVT_8004523_B
-	country_event = 8004524
-	ai_chance= { factor = 5 }
-  }
+	option = {
+		name = "It was an accident!"
+		prestige_factor = -0.02
+		any_pop = { consciousness = 2 }
+		relation = { who = RUS value = -50 }
+		ai_chance= { factor = 0.9 }
+	}
+
+	option = {
+		name = "Our airforce can go where it wants!"
+		RUS = { country_event = 8004524 }
+		relation = { who = RUS value = -50 }
+		ai_chance= { factor = 0.1 }
+	}
 }
+
+#F84 Thunderstreak Incident - RUS reaction
 country_event = {
   id = 8004524
-  title = EVT_8004524_NAME
-  desc = EVT_8004524_DESC
+  title = "The F-84 Thunderstreak Incident"
+  desc = EVT_8004523_DESC
   picture = "nwo2_f_84_thunderstreak"
-  is_triggered_only = yes
+  
+	is_triggered_only = yes
 
-  option = {
-    name = EVT_8004524_A
-	any_pop = { consciousness = 1 }
-	country_event = 8004525 
-	ai_chance = { factor = 0.6 }
-  }
+	option = {
+		name = "Protest angrily!"
+		prestige_factor = -0.02
+		
+		any_pop = { consciousness = 2 }
+		relation = { who = GER value = -50 }
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8004524_B
-	any_pop = { militancy = 0.5 consciousness = 1 } 
-	ai_chance = { factor = 0.4 }
-  }
+	option = {
+		name = "It's WAR!"
+		
+		war = {
+			target = GER
+			attacker_goal = { casus_belli = cut_down_to_size }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = yes
+		} 
+		
+		ai_chance = { factor = 0.1 }
+	}
 }
-country_event = {
-  id = 8004525
-  title = EVT_8004525_NAME
-  desc = EVT_8004525_DESC
-  picture = "nwo2_f_84_thunderstreak"
-  is_triggered_only = yes
 
-
-  option = {
-    name = EVT_8004525_A
-	any_pop = { consciousness = 2 }
-	relation = { who = RUS value = -50 } 
-	relation = { who = DDR value = -50 } 
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8004525_B
-	any_pop = { militancy = 0.5 }
-	relation = { who = RUS value = 25 } 
-	relation = { who = DDR value = 25 } 
-	ai_chance = { factor = 0 }
-  }
-
-  option = {
-    name = EVT_8004525_C
-	any_pop = { militancy = 1.5 }war = RUS 
-	ai_chance = { factor = 0 }
-  }
-}
+#Ostpolitik
 country_event = {
   id = 8004526
   title = EVT_8004526_NAME
