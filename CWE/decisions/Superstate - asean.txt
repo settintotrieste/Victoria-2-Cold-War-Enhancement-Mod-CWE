@@ -1,0 +1,284 @@
+political_decisions = {
+
+#
+# Member Decisions: 	
+#
+	xan_ambition = {
+		picture = "xan_ambition"
+		potential = {
+			NOT = { has_country_flag = hide_superstate }
+			bank_for_international_settlements = 1
+			OR = { tag = BUR tag = SWK tag = THI tag = MSY tag = IDO tag = DAI tag = CAM tag = TIM tag = LUA tag = BRU tag = SNG tag = PHI tag = ICU tag = FMS tag = SAB tag = ATJ tag = HKG }
+			NOT = { has_country_flag = xan_ambition } 
+		}
+
+		allow = {
+			has_country_flag = trade_block_ambition 
+			NOT = { has_country_modifier = in_bankrupcy } 
+			OR = { 
+				part_of_sphere = no 
+				sphere_owner = { OR = { has_country_flag = xan_ambition NOT = { has_country_flag = deny_superstate } } }
+			}
+			OR = { government = socialist_democracy government = democracy government = democracy1 government = hms_government government = hms_government1 government = presidential_dictatorship government = absolute_monarchy }
+			new_synthesis = 1
+			war = no
+			is_vassal = no
+		}
+
+		effect = {
+			set_country_flag = xan_ambition
+			set_country_flag = in_trade_block
+			any_pop = {
+				scaled_militancy = {
+					issue = protectionism
+					factor = 3
+				}
+				scaled_consciousness = {
+					issue = protectionism
+					factor = 3
+				}
+			}
+			tech_school = XAN_tech_school			
+		}
+
+		ai_will_do = { factor = 1 }
+
+	}
+
+	end_xan_ambition = {
+		picture = "xan_parlament"
+		alert = no
+		potential = {
+			NOT = { has_country_flag = hide_superstate }
+			has_country_flag = xan_ambition
+			NOT = { tag = XAN }
+		}
+
+		allow = {
+			OR = { 
+				AND = { part_of_sphere = yes sphere_owner = { NOT = { has_country_flag = xan_ambition } has_country_flag = deny_superstate } }
+				NOT = { OR = { government = socialist_democracy government = democracy government = democracy1 government = hms_government government = hms_government1 government = presidential_dictatorship government = absolute_monarchy } }
+				has_country_modifier = in_bankrupcy
+			}
+			war = no
+		}
+
+		effect = {
+			clr_country_flag = xan_ambition
+			clr_country_flag = in_trade_block
+			all_core = { remove_core = XAN }
+			any_pop = {
+				scaled_militancy = {
+					issue = free_trade
+					factor = 3
+				}
+				scaled_consciousness = {
+					issue = free_trade
+					factor = 3
+				}
+			}
+			tech_school = traditional_academic
+			capital_scope = { 
+				remove_province_modifier = single_market
+				remove_province_modifier = currency_union_province
+				remove_province_modifier = defence_union
+			}
+		}
+
+		ai_will_do = { factor = 1 }
+
+	}
+	
+	xan_single_market = {
+		picture = "single_market"
+		potential = {
+			NOT = { has_country_flag = hide_superstate }
+			NOT = { capital_scope = { has_province_modifier = single_market } }
+			OR = { tag = SWK tag = BUR tag = THI tag = MSY tag = IDO tag = DAI tag = CAM tag = TIM tag = LUA tag = BRU tag = SNG tag = PHI tag = ICU tag = FMS tag = SAB tag = ATJ tag = HKG }
+		}
+
+		allow = {
+			has_country_flag = xan_ambition
+			capitalism = 1
+			war = no
+NOT = { OR = { ruling_party_ideology = populist ruling_party_ideology = nationalist ruling_party_ideology = traditionalist } }
+		}
+
+		effect = {
+			capital_scope = { add_province_modifier = { name = single_market duration = -1 } }
+		}
+
+		ai_will_do = { factor = 1 }
+
+	}
+
+	xan_currency_union = {
+		picture = "currency_union"
+		potential = {
+			NOT = { has_country_flag = hide_superstate }
+			NOT = { capital_scope = { has_province_modifier = currency_union_province } }
+			OR = { tag = SWK tag = BUR tag = THI tag = MSY tag = IDO tag = DAI tag = CAM tag = TIM tag = LUA tag = BRU tag = SNG tag = PHI tag = ICU tag = FMS tag = SAB tag = ATJ tag = HKG }
+		}
+
+		allow = {
+			has_country_flag = xan_ambition
+capital_scope = { has_province_modifier = single_market }
+			economic_globalization = 1
+			election = no
+			war = no
+NOT = { OR = { ruling_party_ideology = populist ruling_party_ideology = nationalist ruling_party_ideology = traditionalist } }
+		}
+
+		effect = {
+			capital_scope = {  add_province_modifier = { name = currency_union_province duration = -1 } }
+		}
+
+		ai_will_do = { factor = 1 } 
+
+	}
+
+	xan_political_union = {
+		picture = "xan_ambition"
+		potential = {
+			NOT = { has_country_flag = hide_superstate }
+			NOT = { capital_scope = { is_core = XAN } }
+			OR = { tag = SWK tag = BUR tag = THI tag = MSY tag = IDO tag = DAI tag = CAM tag = TIM tag = LUA tag = BRU tag = SNG tag = PHI tag = ICU tag = FMS tag = SAB tag = ATJ tag = HKG }
+		}
+
+		allow = {
+			has_country_flag = xan_ambition
+			capital_scope = { has_province_modifier = currency_union_province }
+			election = no
+			war = no
+			commodities_and_credit = 1
+NOT = { OR = { ruling_party_ideology = populist ruling_party_ideology = nationalist ruling_party_ideology = traditionalist } }
+		}
+
+		effect = {
+			all_core = { add_core = XAN }
+		}
+
+		ai_will_do = { factor = 1 }
+
+	}
+
+	xan_defence_union = {
+		picture = "defence_union"
+		potential = {
+			NOT = { has_country_flag = hide_superstate }
+			NOT = { capital_scope = { has_province_modifier = defence_union } }
+			OR = { tag = SWK tag = BUR tag = THI tag = MSY tag = IDO tag = DAI tag = CAM tag = TIM tag = LUA tag = BRU tag = SNG tag = PHI tag = ICU tag = FMS tag = SAB tag = ATJ tag = HKG }
+		}
+
+		allow = {
+			has_country_flag = xan_ambition
+			capital_scope = { is_core = XAN }
+			election = no
+			war = no
+			age_of_protests = 1
+NOT = { OR = { ruling_party_ideology = populist ruling_party_ideology = nationalist ruling_party_ideology = traditionalist } }
+		}
+
+		effect = {
+			capital_scope = { add_province_modifier = { name = defence_union duration = -1 } }
+		}
+
+		ai_will_do = { factor = 1 }
+
+	}
+
+#
+# Leader Decision: Political Union
+#
+	xan_form_union = {
+		picture = "xan_parlament"
+		potential = {
+			NOT = { has_country_flag = hide_superstate }
+			XAN = { exists = no }
+			OR = { tag = SWK tag = BUR tag = THI tag = MSY tag = IDO tag = DAI tag = CAM tag = TIM tag = LUA tag = BRU tag = SNG tag = PHI tag = ICU tag = FMS tag = SAB tag = ATJ tag = HKG }
+		}
+
+		allow = {
+			has_country_flag = xan_ambition
+capital_scope = { has_province_modifier = defence_union } 
+			election = no
+			is_greater_power = yes
+			political_polarization = 1
+            war = no
+            XAN = { 
+				any_core = { 
+					owner = { 
+						war = no 
+						OR = { 
+							tag = THIS 
+							in_sphere = THIS 
+							vassal_of = THIS
+						} 
+					has_country_flag = xan_ambition 
+					}
+				}
+			}
+		}
+
+		effect = {
+			prestige = 20
+			all_core = { add_core = XAN }
+			change_tag = XAN
+			#add_accepted_culture = chinese #too OP
+			add_accepted_culture = indonesian
+			add_accepted_culture = malay
+			add_accepted_culture = thai
+			add_accepted_culture = vietnamese
+			add_accepted_culture = burmese
+			add_accepted_culture = filipino
+			add_accepted_culture = khmer
+			add_accepted_culture = lao
+		}
+
+		ai_will_do = { factor = 1 }
+
+	}
+	
+	xan_enlarge_union = {
+		picture = "xan_ambition"
+		potential = {
+			NOT = { has_country_flag = hide_superstate }
+			tag = XAN
+            XAN = { 
+				any_core = { 
+					owner = { 
+						NOT = { tag = THIS }
+NOT = { OR = { ruling_party_ideology = populist ruling_party_ideology = nationalist ruling_party_ideology = traditionalist } }
+
+OR = { government = socialist_democracy government = democracy government = democracy1 government = hms_government government = hms_government1 government = presidential_dictatorship government = absolute_monarchy }
+			OR = { in_sphere = THIS vassal_of = THIS } 
+					has_country_flag = xan_ambition
+		NOT = { has_country_modifier = rejected_union }
+					}
+				}
+			}
+		}
+
+		allow = {
+			election = no
+			is_greater_power = yes
+			political_polarization = 1
+            	war = no
+		}
+
+		effect = {
+			random_country = {
+				limit = {
+			has_country_flag = xan_ambition 
+			OR = { vassal_of = THIS in_sphere = THIS }
+NOT = { OR = { ruling_party_ideology = populist ruling_party_ideology = nationalist ruling_party_ideology = traditionalist } }
+				} 
+			country_event = 11106
+			}
+		}
+
+		ai_will_do = { factor = 1 }
+
+	}
+
+}
