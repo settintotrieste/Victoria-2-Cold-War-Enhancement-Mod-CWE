@@ -1,112 +1,173 @@
+#Independence of Jordan
 country_event = {
 	id = 1007901
-
-	title = EVT_1007901_NAME
+	title = "The Independence of Jordan"
 	desc = EVT_1007901_DESC
-	picture = "king_abdullah"
+	picture = "nwo2_king_abdullah"
 
 	fire_only_once = yes
 	
 	trigger = {
 		tag = ENG
-		is_our_vassal = JOR
+		year = 1946
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		government = hms_government
 		war = no
+		is_vassal = no
+		
+		is_our_vassal = JOR
 	}
 
 	mean_time_to_happen = {
-		months = 4
+		months = 5
 	}
 
 	option = {
-		name = EVT_1007901_A # Jordan Independence
-		ai_chance = { factor = 1 }
-		prestige = 5
+		name = "Free Jordan from the British Empire"
+		prestige = 50
 		release_vassal = JOR 
+		ai_chance = { factor = 0.9 }
 	}
 	
 	option = {
-		name = EVT_1007901_B # Keep our domination of the Trans Jordan
-		any_pop = {
-			limit = {
-				culture = arab
+		name = "Keep them as a vassal"
+		badboy = 5
+		JOR = {
+			any_pop = {
+				consciousness = 10
+				militancy = 10
+				ideology = { factor = 0.25 value = nationalist }
 			}
-			consciousness = 2
-			militancy = 5
 		}
-		ai_chance = { factor = 0 }
+		ai_chance = { factor = 0.1 }
 	}
 
 }
+
+#Rule of King Abdullah I
 country_event = {
   id = 8007905
-  title = EVT_8007905_NAME
+  title = "The Rule of King Abdullah I"
   desc = EVT_8007905_DESC
-  picture = "nwo2_king_abdullah"
-  fire_only_once = yes
+  picture = "nwo2_king_abdullah_rule"
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = JOR
-    year = 1946 NOT = { year = 1990 }
-    OR = { government = absolute_monarchy government = hms_government }
-  }
+	trigger = {
+		tag = JOR
+		year = 1946 
+		NOT = { year = 1990 }
+		
+		OR = { government = absolute_monarchy government = hms_government }
+	}
 
-  mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8007905_A
-	define_general = { name = "Abdullah I" personality = energetic background = no_background }
-	any_pop = { consciousness = 2 }
-	prestige = 2
-  }
+	option = {
+		name = "Long Live the King!"
+		prestige = 50
+		any_pop = {
+			consciousness = -3
+			militancy = -3
+			ideology = { factor = 0.10 value = conservative }
+		}
+	}
 }
+
+#The Assassination of King Abdullah I
 country_event = {
   id = 8007909
-  title = EVT_8007909_NAME
+  title = "The Assassination of King Abdullah I"
   desc = EVT_8007909_DESC
   picture = "nwo2_assassination_of_abdullah"
-  fire_only_once = yes
-
-  trigger = {
-    tag = JOR
-    year = 1951 NOT = { year = 1990 }
-  }
-
-  mean_time_to_happen = { months = 11 }
-
-  option = {
-    name = EVT_8007909_A
-	any_pop = { militancy = 1.0  consciousness = 2 }
-	relation = { who = ISR value = 100 }
-  }
-}
-country_event = {
-  id = 8007910
-  title = EVT_8007910_NAME
-  desc = EVT_8007910_DESC
-  picture = "nwo2_king_talal"
-  fire_only_once = yes
-
-  trigger = {
-    tag = JOR
-    year = 1952 NOT = { year = 1990 }
-	OR = { government = absolute_monarchy government = hms_government }
-	is_vassal = no
-	war = no
-  }
-
-  mean_time_to_happen = { months = 8 }
-
-  option = {
-    name = EVT_8007910_A
-	define_general = { name = "Talal I" personality = energetic background = no_background }
-	prestige = 5
-	relation = { who = ENG value = -200 }
-	leave_alliance = ENG
-	ENG = { diplomatic_influence = { who = THIS value = -100 } }
-	relation = { who = SAA value = 100 }
-	relation = { who = EGY value = 100 }
-  }
   
+	fire_only_once = yes
+
+	trigger = {
+		tag = JOR
+		year = 1951 
+		NOT = { year = 1990 }
+		
+		OR = { government = absolute_monarchy government = hms_government }
+		is_vassal = no
+		war = no
+		
+		ISR = { exists = yes is_vassal = no }
+	}
+
+	mean_time_to_happen = { months = 7 }
+	
+	option = {
+		name = "Hussein bin Talal becomes King eventually"
+		any_pop = {
+			consciousness = 3
+			militancy = 3
+			ideology = { factor = 0.10 value = liberal }
+		}
+		relation = { who = ISR value = 100 }
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Talal bin Abdullah remains as King"
+		
+		set_country_flag = JOR_reformist_path
+		
+		any_pop = {
+			consciousness = -3
+			militancy = -3
+			ideology = { factor = 0.05 value = conservative }
+		}
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+
+#1952 Jordanian Constitution
+country_event = {
+	id = 1412099
+	title = "The $YEAR$ Constitution"
+	desc = EVTDESC1412099
+	picture = "jor_hms_govt_con"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = JOR
+		year = 1952
+		NOT = { year = 1990 }
+		
+		government = absolute_monarchy
+		is_vassal = no
+		war = no
+		
+		has_country_flag = JOR_reformist_path
+	}
+
+	mean_time_to_happen = { months = 3 }
+
+	option = {
+		name = "Begin the Liberal Experiment!"
+		prestige = 25
+		government = hms_government
+		country_event = 800054
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "The King must be King!"
+		
+		any_pop = {
+			consciousness = 5
+			militancy = 5
+			ideology = { factor = 0.15 value = liberal }
+		}
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.1 }
+	}
 }
 
 #Jordanian Civil War
@@ -117,37 +178,45 @@ country_event = {
   desc = EVT_8007911_DESC 
   # EVT_8007911_DESC;The term Black September refers to the Jordanian Civil War that began in September 1970 and ended in July of 1971. The conflict was fought between the Palestine Liberation Organisation (PLO) under the leadership of Yasser Arafat, and the Jordanian Armed Forces under the leadership of King Hussein. At its core the civil war sought to determine if Jordan would be ruled by the Palestine Liberation Organisation or the Hashemite Monarchy.
   picture = "nwo2_black_september"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-   	tag = JOR
-	exists = ISR
-	NOT = { exists = PAL }
-    OR = { government = absolute_monarchy government = hms_government }
-    year = 1970 NOT = { year = 1990 }
-	is_vassal = no
-	war = no
-  }
+	trigger = {
+		tag = JOR
+		year = 1970 
+		NOT = { year = 1990 }
+		OR = { government = absolute_monarchy government = hms_government }
+		
+		is_vassal = no
+		war = no
+		
+		#Israel exists
+		ISR = { exists = yes is_vassal = no }
+		PAL = { exists = no }
+	}
 
-  mean_time_to_happen = { months = 8 }
+	mean_time_to_happen = { months = 8 }
 
-  option = {
-    name = EVT_8007911_A
-	add_accepted_culture = circassians
-	add_country_modifier = { name = revolution_chaos duration = 3650 }
-	any_owned = { add_province_modifier = { name = instigating_rebels duration = 3650 } }
-	any_pop = { militancy = 2 }
-	ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = EVT_8007911_A
+		add_accepted_culture = circassians
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		any_owned = { add_province_modifier = { name = instigating_rebels duration = 3650 } }
+		any_pop = { 
+			onsciousness = 3
+			militancy = 3
+		}
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8007911_B 
-	prestige_factor = -0.10
-	government = presidential_dictatorship
-	country_event = 800050
-	ruling_party_ideology = traditionalist
-	primary_culture = palestinian
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = EVT_8007911_B 
+		prestige_factor = -0.10
+		government = presidential_dictatorship
+		country_event = 800050
+		ruling_party_ideology = traditionalist
+		primary_culture = palestinian
+		ai_chance = { factor = 0.1 }
+	}
 
 }

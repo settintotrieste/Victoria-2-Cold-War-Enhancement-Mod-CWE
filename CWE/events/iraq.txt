@@ -174,34 +174,58 @@ JOR = { add_country_modifier = { name = revolution_chaos duration = 3650 } }
 #Independence of Iraq
 country_event = {
   id = 8007525
-  title = EVT_8007525_NAME
+  title = "British Occupation of Iraq Ends"
   desc = EVT_8007525_DESC
   picture = "nwo2_iraq"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
+	trigger = {
     	tag = ENG
-	year = 1947 
-	NOT = { year = 1963 }
-	is_our_vassal = IRQ
-  }
+		year = 1947 
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		government = hms_government
+		war = no
+		is_vassal = no
+		
+		is_our_vassal = IRQ
+	}
 
-  mean_time_to_happen = { months = 8 }
+	mean_time_to_happen = { months = 10 }
 
-  option = {
-    name = EVT_8007525_A
-	release_vassal = IRQ
-	IRQ = { ruling_party_ideology  = socialist }
-	ai_chance = { factor = 0.9 }
-  }
-  option = {
-    name = "Continue the occupation of Iraq"
-	prestige = -100
-	badboy = 5
-	IRQ = { government = mandate_government }
-	IRQ = { ruling_party_ideology  = nationalist }
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Leave behind a pro-British government!"
+		
+		#Set Iraq free
+		release_vassal = IRQ
+		IRQ = { 
+			government = absolute_monarchy
+			country_event = 800050
+			ruling_party_ideology = conservative 
+		}
+		
+		#UK retains influence
+		diplomatic_influence = { who = IRQ value = 50 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+	option = {
+		name = "Continue the occupation of Iraq"
+		prestige = -100
+		badboy = 5
+		IRQ = { 
+			government = mandate_government 
+			any_pop = {
+				consciousness = 10
+				militancy = 10
+				ideology = { factor = 0.25 value = nationalist }
+			}
+			add_country_modifier = { name = revolution_chaos duration = 3650 }
+		}
+		ai_chance = { factor = 0.1 }
+	}
   
 }
 
