@@ -6,16 +6,62 @@ political_decisions = {
 	xmu_ambition = {
 		picture = "xmu_ambition"
 		potential = {
-NOT = { has_country_flag = hide_superstate }
-			new_synthesis = 1
-			NOT = { OR = { exists = XGC exists = XAL } } OR = { tag = MAU tag = MOR tag = ALG tag = TUN tag = TRI tag = WSA tag = AZA }
-			NOT = { has_country_flag = xmu_ambition } 
+			NOT = { has_country_flag = hide_superstate }
+			
+			NOT = { tag = XMU }
+			
+			#Only for regional arab states
+			is_culture_group = regional_arabic_1
+			
+			OR = {
+				pop_majority_religion = sunni
+				pop_majority_religion = ibad
+				pop_majority_religion = shiite
+			}
+			
+			NOT = { has_country_flag = xac_ambition }
+			NOT = { has_country_flag = xal_ambition }
+			NOT = { has_country_flag = xan_ambition }
+			NOT = { has_country_flag = xau_ambition }
+			NOT = { has_country_flag = xcc_ambition }
+			NOT = { has_country_flag = xci_ambition }
+			NOT = { has_country_flag = xea_ambition }
+			NOT = { has_country_flag = xec_ambition }
+			NOT = { has_country_flag = xef_ambition }
+			NOT = { has_country_flag = xeu_ambition }
+			NOT = { has_country_flag = xew_ambition }
+			NOT = { has_country_flag = xgc_ambition }
+			NOT = { has_country_flag = xio_ambition }
+			NOT = { has_country_flag = xms_ambition }
+			NOT = { has_country_flag = xmu_ambition }
+			NOT = { has_country_flag = xna_ambition }
+			NOT = { has_country_flag = xpi_ambition }
+			NOT = { has_country_flag = xsa_ambition }
+			NOT = { has_country_flag = xsu_ambition }
+			NOT = { has_country_flag = xtc_ambition }
+			NOT = { has_country_flag = xmu_ambition }
 		}
+		
 		allow = {
-			has_country_flag = trade_block_ambition 
-			NOT = { has_country_modifier = in_bankrupcy } 
-			OR = { part_of_sphere = no sphere_owner = { OR = { has_country_flag = xmu_ambition NOT = { has_country_flag = deny_superstate } } } }
-			OR = { government = democracy government = hms_government }
+			#has_country_flag = trade_block_ambition
+			NOT = { has_country_modifier = in_bankrupcy }
+			
+			#Republican nation only so as not to clash with the Gulf Council
+			OR = {
+				government = democracy
+				government = democracy1
+				government = socialist_democracy
+			}
+			NOT = { religious_policy = pro_atheism }
+			OR = {
+				part_of_sphere = no
+				sphere_owner = {
+					OR = {
+						has_country_flag = xmu_ambition
+						NOT = { has_country_flag = deny_superstate }
+					}
+				}
+			}
 			bank_for_international_settlements = 1
 			war = no
 		}
@@ -41,19 +87,34 @@ NOT = { has_country_flag = hide_superstate }
 		picture = "xmu_parlament"
 		alert = no
 		potential = {
-NOT = { has_country_flag = hide_superstate }
+			NOT = { has_country_flag = hide_superstate }
 			has_country_flag = xmu_ambition
-			NOT = {tag = XMU}
+			NOT = { tag = XMU }
 		}
 		allow = {
-			OR = { 
-
-AND = { part_of_sphere = yes sphere_owner = { 
-NOT = { has_country_flag = xmu_ambition } has_country_flag = deny_superstate } }
-
-				NOT = { OR = { government = democracy government = hms_government } }
+			OR = {
+				NOT = {
+					OR = {
+						government = democracy
+						government = democracy1
+						government = socialist_democracy
+					}
+				}
+				NOT = {
+					pop_majority_religion = sunni
+					pop_majority_religion = ibad
+					pop_majority_religion = shiite
+				}
+				religious_policy = pro_atheism
+				AND = {
+					part_of_sphere = yes
+					sphere_owner = {
+						NOT = { has_country_flag = xmu_ambition }
+						has_country_flag = deny_superstate
+					}
+				}
 				has_country_modifier = in_bankrupcy
-				exists = XAL exists = XGC
+				NOT = { is_culture_group = regional_arabic_1 }
 			}
 			war = no
 		}
@@ -72,7 +133,7 @@ NOT = { has_country_flag = xmu_ambition } has_country_flag = deny_superstate } }
 				}
 			}
 			tech_school = traditional_academic
-			capital_scope = { 
+			capital_scope = {
 				remove_province_modifier = single_market			
 				remove_province_modifier = currency_union_province
 				remove_province_modifier = defence_union
@@ -81,21 +142,33 @@ NOT = { has_country_flag = xmu_ambition } has_country_flag = deny_superstate } }
 		ai_will_do = { factor = 1 }
 	}
 	
-	xmu_single_market= {
+	xmu_single_market = {
 		picture = "single_market"
 		potential = {
-NOT = { has_country_flag = hide_superstate }
+			NOT = { has_country_flag = hide_superstate }
 			NOT = { capital_scope = { has_province_modifier = single_market } }
-			NOT = { OR = { exists = XGC exists = XAL } } OR = { tag = MAU tag = MOR tag = ALG tag = TUN tag = TRI tag = WSA tag = AZA }
+			OR = {
+				pop_majority_religion = sunni
+				pop_majority_religion = ibad
+				pop_majority_religion = shiite
+			}
+			
+			#Only for regional arab states
+			is_culture_group = regional_arabic_1
 		}
 		allow = {
 			has_country_flag = xmu_ambition
-			OR = { government = democracy government = hms_government }
+			OR = {
+				government = democracy
+				government = democracy1
+				government = socialist_democracy
+			}
+			NOT = { religious_policy = pro_atheism }
 			capitalism = 1
 			war = no
 		}
 		effect = {
-			capital_scope = {  add_province_modifier = { name = single_market duration = -1 } }
+			capital_scope = { add_province_modifier = { name = single_market duration = -1 } }
 		}
 		ai_will_do = { factor = 1 }
 	}
@@ -103,14 +176,26 @@ NOT = { has_country_flag = hide_superstate }
 	xmu_currency_union = {
 		picture = "currency_union"
 		potential = {
-NOT = { has_country_flag = hide_superstate }
+			NOT = { has_country_flag = hide_superstate }
 			NOT = { capital_scope = { has_province_modifier = currency_union_province } }
-			NOT = { OR = { exists = XGC exists = XAL } } OR = { tag = MAU tag = MOR tag = ALG tag = TUN tag = TRI tag = WSA tag = AZA }
+			OR = {
+				pop_majority_religion = sunni
+				pop_majority_religion = ibad
+				pop_majority_religion = shiite
+			}
+			
+			#Only for regional arab states
+			is_culture_group = regional_arabic_1
 		}
 		allow = {
 			has_country_flag = xmu_ambition
 			capital_scope = { has_province_modifier = single_market }
-			OR = { government = democracy government = hms_government }
+			OR = {
+				government = democracy
+				government = democracy1
+				government = socialist_democracy
+			}
+			NOT = { religious_policy = pro_atheism }
 			economic_globalization = 1
 			election = no
 			war = no
@@ -124,14 +209,26 @@ NOT = { has_country_flag = hide_superstate }
 	xmu_political_union = {
 		picture = "xmu_ambition"
 		potential = {
-NOT = { has_country_flag = hide_superstate }
+			NOT = { has_country_flag = hide_superstate }
 			NOT = { capital_scope = { is_core = XMU } }
-			NOT = { OR = { exists = XGC exists = XAL } } OR = { tag = MAU tag = MOR tag = ALG tag = TUN tag = TRI tag = WSA tag = AZA }
+			OR = {
+				pop_majority_religion = sunni
+				pop_majority_religion = ibad
+				pop_majority_religion = shiite
+			}
+			
+			#Only for regional arab states
+			is_culture_group = regional_arabic_1
 		}
 		allow = {
 			has_country_flag = xmu_ambition
 			capital_scope = { has_province_modifier = currency_union_province }
-			OR = { government = democracy government = hms_government }
+			OR = {
+				government = democracy
+				government = democracy1
+				government = socialist_democracy
+			}
+			NOT = { religious_policy = pro_atheism }
 			election = no
 			#has_unclaimed_cores = no
 			war = no
@@ -140,19 +237,32 @@ NOT = { has_country_flag = hide_superstate }
 		effect = {
 			all_core = { add_core = XMU }
 		}
-		ai_will_do = { factor = 1 } # modifier = { factor = 1 consciousness = 2 } }
+		ai_will_do = { factor = 1 }
 	}
+
 	xmu_defence_union = {
 		picture = "defence_union"
 		potential = {
-NOT = { has_country_flag = hide_superstate }
+			NOT = { has_country_flag = hide_superstate }
 			NOT = { capital_scope = { has_province_modifier = defence_union } }
-			NOT = { OR = { exists = XGC exists = XAL } } OR = { tag = MAU tag = MOR tag = ALG tag = TUN tag = TRI tag = WSA tag = AZA }
+			OR = {
+				pop_majority_religion = sunni
+				pop_majority_religion = ibad
+				pop_majority_religion = shiite
+			}
+			
+			#Only for regional arab states
+			is_culture_group = regional_arabic_1
 		}
 		allow = {
 			has_country_flag = xmu_ambition
 			capital_scope = { is_core = XMU }
-			OR = { government = democracy government = hms_government }
+			OR = {
+				government = democracy
+				government = democracy1
+				government = socialist_democracy
+			}
+			NOT = { religious_policy = pro_atheism }
 			election = no
 			war = no
 			age_of_protests = 1
@@ -170,19 +280,48 @@ NOT = { has_country_flag = hide_superstate }
 	xmu_form_union = {
 		picture = "xmu_parlament"
 		potential = {
-NOT = { has_country_flag = hide_superstate }
+			NOT = { has_country_flag = hide_superstate }
 			XMU = { exists = no }
-			NOT = { OR = { exists = XGC exists = XAL } } OR = { tag = MAU tag = MOR tag = ALG tag = TUN tag = TRI tag = WSA tag = AZA }
+			OR = {
+				pop_majority_religion = sunni
+				pop_majority_religion = ibad
+				pop_majority_religion = shiite
+			}
+			
+			#Only for regional arab states
+			is_culture_group = regional_arabic_1
 		}
 		allow = {
 			has_country_flag = xmu_ambition
 			capital_scope = { has_province_modifier = defence_union } 
-			OR = { government = democracy government = hms_government }
-			election = no
+			OR = {
+				government = democracy
+				government = democracy1
+				government = socialist_democracy
+			}
+			NOT = { religious_policy = pro_atheism }
 			OR = { is_greater_power = yes is_secondary_power = yes }
-			political_polarization = 1
+			election = no
             war = no
-            XMU = { any_core = { owner = { war = no OR = { tag = THIS in_sphere = THIS vassal_of = THIS } has_country_flag = xmu_ambition } } }
+			is_vassal = no
+			political_polarization = 1
+			
+			#A neighbouring nation must also be in the XMU
+			any_neighbor_country = { is_vassal = no war = no has_country_flag = xmu_ambition }
+			
+            XMU = {
+				any_core = {
+					owner = {
+						war = no
+						OR = {
+							tag = THIS
+							in_sphere = THIS
+							vassal_of = THIS
+						}
+						has_country_flag = xmu_ambition
+					}
+				}
+			}
 		}
 		effect = {
 			prestige = 20
@@ -190,8 +329,8 @@ NOT = { has_country_flag = hide_superstate }
 				add_core = XMU
 			}
 			change_tag = XMU
-			primary_culture = arab
-			add_accepted_culture = berber
+			add_accepted_culture = arab
+			add_accepted_culture = persian
 		}
 		ai_will_do = {
 			factor = 1
@@ -201,22 +340,62 @@ NOT = { has_country_flag = hide_superstate }
 	xmu_enlarge_union = {
 		picture = "xmu_ambition"
 		potential = {
-NOT = { has_country_flag = hide_superstate }
+			NOT = { has_country_flag = hide_superstate }
 			tag = XMU
-			any_neighbor_country = { has_country_flag = xmu_ambition in_sphere = THIS NOT = { has_country_modifier = rejected_union } }
 		}
 		allow = {
-			OR = { government = democracy government = hms_government }
-			election = no
+			NOT = {
+				government = proletarian_dictatorship
+				government = proletarian_dictatorship1
+				government = socialist_democracy
+			}
+			NOT = { religious_policy = pro_atheism }
 			OR = { is_greater_power = yes is_secondary_power = yes }
-			political_polarization = 1
             war = no
+			is_vassal = no
+			election = no
+			political_polarization = 1
+			
+			#Has eligible states
+			XMU = {
+				any_core = {
+					NOT = { owned_by = THIS }
+					owner = {
+						war = no
+						OR = {
+							in_sphere = THIS
+							vassal_of = THIS
+						}
+						OR = {
+							is_vassal = no
+							vassal_of = THIS
+						}
+						has_country_flag = xmu_ambition
+						NOT = { has_country_modifier = rejected_union }
+					}
+				}
+			}
 		}
 		effect = {
-			any_neighbor_country = { limit = { has_country_flag = xmu_ambition OR = { vassal_of = THIS in_sphere = THIS } } country_event = 11106 }
+			any_country = {
+				limit = {
+					exists = yes
+					war = no
+					OR = {
+						in_sphere = THIS
+						vassal_of = THIS
+					}
+					OR = {
+						is_vassal = no
+						vassal_of = THIS
+					}
+					has_country_flag = xmu_ambition
+					NOT = { has_country_modifier = rejected_union }
+				}
+				country_event = 11106
+			}
 		}
-		ai_will_do = {
-			factor = 1
-		}
-	}		
+		ai_will_do = { factor = 1 }
+	}
+
 }
