@@ -273,7 +273,7 @@ country_event = {
 		}
 		release = PAL
 		PAL = { 
-			country_event = 8007626 
+			country_event = 1007604
 			
 			government = democracy
 			country_event = 800054 
@@ -313,7 +313,7 @@ country_event = {
 		release = PAL
 		
 		PAL = { 
-			country_event = 8007626
+			country_event = 1007604
 			government = democracy
 			country_event = 800054 
 			any_owned = { limit = { is_core = ISR } add_province_modifier = { name = nationalist_agitation duration = 3650 } } 
@@ -392,35 +392,51 @@ country_event = {
 	
 }
 
+#US Support for Israel?
 country_event = {
 	id = 1007603
-
-	title = EVT_1007603_NAME
-	desc = EVT_1007603_DESC
+	title = "US Support for Israel?"
+	desc = EVTDESC1007603
 	picture = "independence_of_israel"
 
 	is_triggered_only = yes # USA
 	
-	immediate = {
-		set_country_flag = support_zionism 
-	}
-	
 	option = {
-		name = EVT_1007603_A 
-		ai_chance = { factor = 1 }
-		prestige = 25
+		name = "Support Israel!"
+		prestige = 100
+		
+		money = -250000
+		
+		#Increase relations with Israel
+		relation = { who = ISR value = 100 }
 		diplomatic_influence = { who = ISR value = 100 }
+		
+		#Arab nations are not happy
 		any_country = {
-			limit = { is_culture_group = arabic }
-			relation = { who = THIS value = -10 }
+			limit = { OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 } }
+			relation = { who = THIS value = -50 }
 		}
-		ISR = { weaponry = 100 small_arms = 100 }
+		
+		#Give support to Israel
+		ISR = { 
+			money = 500000
+			
+			small_arms = 200
+			weaponry = 200
+			aeroplanes = 200
+			ammunition = 200
+			automobiles = 200
+		}
+		
+		set_country_flag = support_zionism 
+		
+		ai_chance = { factor = 0.95 }
 	}
 	
 	option = {
-		name = EVT_1007603_B
-		ai_chance = { factor = 0 }
-		add_country_modifier = { name = ruling_party_scandal duration = 1000 }
+		name = "Nevermind"
+		remove_accepted_culture = jewish
+		ai_chance = { factor = 0.05 }
 	}
 	
 }
@@ -532,481 +548,214 @@ activate_technology = arms_race_doctrine
 #Victory results in West Bank cession to Jordan and Gaza to Egypt, most Arab pops leave to neighbors
 ###########################################################################
 
-country_event = {
-  id = 8007626
-  title = EVT_8007626_NAME
-  desc = EVT_8007626_DESC
-  picture = "nwo2_independence_of_palestine"
-  is_triggered_only = yes # PAL evt 1007602
-
-  option = {
-	name = "OK"
-	any_pop = { militancy = -5  consciousness = -5 }
-	country_event = { id = 1007604 days = 10 }
-  }
-  
-}
-
-#Initiate the 1948 Arab-Israeli War - fires after 10 days from independence
+#Initiate the 1948 Arab-Israeli War - fires immediately upon British withdrawal
 country_event = {
 	id = 1007604
-
-	title = EVT_1007604_NAME
-	desc = EVT_1007604_DESC
-	picture = "independence_of_palestine"
+	title = "The First Arab-Israeli War"
+	desc = EVTDESC1007604
+	picture = "nwo2_arab_israeli_war_1948"
 
 	is_triggered_only = yes # PAL
 	
 	option = {
-		name = EVT_1007604_A 
-		ai_chance = { factor = 1 }
+		name = "Annihilate Israel!"
+		
+		set_global_flag = arab_israeli_war_1948_flag
+		
 		any_country = {
 			limit = { is_culture_group = arabic }
 			relation = { who = THIS value = 200 }
 		}
-		create_alliance = JOR
-		create_alliance = EGY
-		# infamy unsanctioned
+		
+		#Invite the Arab states
+		any_country = {
+			limit = { 
+				is_vassal = no 
+				war = no
+				OR = { tag = JOR tag = EGY tag = IRQ tag = SYR tag = LEB tag = SAA tag = YEM }
+			}
+			create_alliance = THIS
+		}
+
 		war = {
 			target = ISR
 			attacker_goal = { casus_belli = conquest }
 			defender_goal = { casus_belli = status_quo }
 			call_ally = yes
 		}
-		USA = { country_event = 1007603 }
+		
+		#US aid for Israel?
+		random_country = { limit = { tag = USA has_global_flag = blocsenabled } country_event = 1007603 }
+		
+		ai_chance = { factor = 0.95 }
 	}
 	
 	option = {
-		name = EVT_1007604_B
-		prestige = -20
+		name = "Accept a divided Palestine"
+		prestige = -25
+		
 		any_pop = {
 			limit = {
-				is_culture_group = arabic
+				OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 }
 			}
 			consciousness = 1
 			militancy = 10
-		}		
-		ai_chance = { factor = 0 }
-		USA = { country_event = 1007603 }
+		}
+
+		ai_chance = { factor = 0.05 }
 	}
 	
-}
-
-#Inform Israel of the 1948 War
-country_event = {
-  id = 8007640
-  title = EVT_8007640_NAME
-  desc = EVT_8007640_DESC
-  picture = "nwo2_palestine_civil_war_1948"
-  fire_only_once = yes
-
-  trigger = {
-	tag = ISR
-	year = 1948 NOT = { year = 1963 }
-	exists = PAL
-	war_with = PAL
-  }
-
-  mean_time_to_happen = { months = 5 }
-
-  option = {
-	name = EVT_8007640_A
-	prestige = 50
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-	name = EVT_8007640_B
-	ai_chance = { factor = 0 }
-	PAL = { country_event = 8007641 }
-  }
-  
-}
-
-#Israel offer for White Peace
-country_event = {
-  id = 8007641
-  title = EVT_8007640_NAME
-  desc = EVT_8007640_DESC
-  picture = "nwo2_palestine_civil_war_1948"
-  is_triggered_only = yes # PAL
-
-  option = {
-	name = EVT_8007640_A
-	end_war = FROM
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-	name = EVT_8007640_B
-	ai_chance = { factor = 0 }
-	any_pop = { militancy = 2.5  consciousness = 1 }
-  }
-  
-}
-country_event = {
-  id = 8007649
-  title = EVT_8007649_NAME
-  desc = EVT_8007649_DESC
-  picture = "nwo2_independence_of_israel"
-  fire_only_once = yes
-
-  trigger = {
-	tag = ISR
-	is_vassal = no
-	year = 1948 NOT = { year = 1963 }
-	war = yes
-  }
-
-  mean_time_to_happen = { months = 1 }
-
-  option = {
-	name = EVT_8007649_A
-	add_country_modifier = { name = military_man duration = 3650 }
-  }
-  
-}
-
-#1948 Arab Israeli War - Set global flag
-country_event = {
-  id = 8007650
-  title = EVT_8007650_NAME
-  desc = EVT_8007650_DESC
-  picture = "nwo2_arab_israeli_war_1948"
-  fire_only_once = yes
-
-  trigger = {
-	tag = EGY
-	year = 1948 NOT = { year = 1963 }
-	exists = ISR
-	is_vassal = no
-	ISR = { is_vassal = no }
-	has_global_flag = independent_israel
-  }
-
-  option = {
-	name = EVT_8007650_A
-	relation = { who = ISR value = -200 }
-	set_global_flag = arab_israeli_war_1948_flag
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-	name = EVT_8007650_B
-	ai_chance = { factor = 0 }
-	any_pop = { militancy = 1.0  consciousness = 1 }
-  }
-}
-
-#1948 Arab Israeli War - Jordan
-country_event = {
-  id = 8007651
-  title = EVT_8007651_NAME
-  desc = EVT_8007650_DESC
-  picture = "nwo2_arab_israeli_war_1948"
-  fire_only_once = yes
-
-  trigger = {
-	tag = JOR
-	year = 1948 NOT = { year = 1963 }
-	exists = ISR
-	ISR = { is_vassal = no }
-	has_global_flag = arab_israeli_war_1948_flag
-  }
-
-  option = {
-	name = EVT_8007650_A
-	create_alliance = EGY 
-	relation = { who = ISR value = -200 }
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-	name = EVT_8007650_B
-	ai_chance = { factor = 0 }
-	any_pop = { militancy = 1.0  consciousness = 1 }
-  }
-}
-
-#1948 Arab Israeli War - Syria
-country_event = {
-  id = 8007652
-  title = EVT_8007651_NAME
-  desc = EVT_8007650_DESC
-  picture = "nwo2_arab_israeli_war_1948"
-  fire_only_once = yes
-
-  trigger = {
-	tag = SYR
-	year = 1948 NOT = { year = 1963 }
-	exists = ISR
-	ISR = { is_vassal = no }
-	has_global_flag = arab_israeli_war_1948_flag
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-	name = EVT_8007650_A
-	relation = { who = ISR value = -200 }
-	create_alliance = EGY 
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-	name = EVT_8007650_B
-	ai_chance = { factor = 0 }
-	any_pop = { militancy = 1  consciousness = 1 }
-  }
-}
-
-#1948 Arab Israeli War - Lebanon
-country_event = {
-  id = 8007653
-  title = EVT_8007653_NAME
-  desc = EVT_8007650_DESC
-  picture = "nwo2_arab_israeli_war_1948"
-  fire_only_once = yes
-
-  trigger = {
-	tag = LEB
-	year = 1948 NOT = { year = 1963 }
-	exists = ISR
-	ISR = { is_vassal = no }
-	has_global_flag = arab_israeli_war_1948_flag
-  }
-
-  option = {
-	name = EVT_8007650_A
-	relation = { who = ISR value = -200 }
-	create_alliance = EGY 
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-	name = EVT_8007650_B
-	ai_chance = { factor = 0 }
-	any_pop = { militancy = 1 consciousness = 1 }
-  }
-}
-
-##1948 Arab Israeli War - Iraq
-country_event = {
-  id = 8007654
-  title = EVT_8007654_NAME
-  desc = EVT_8007650_DESC
-  picture = "nwo2_arab_israeli_war_1948"
-  fire_only_once = yes
-
-  trigger = {
-	tag = IRQ
-	year = 1948 NOT = { year = 1963 }
-	exists = ISR
-	ISR = { is_vassal = no }
-	has_global_flag = arab_israeli_war_1948_flag
-  }
-
-  option = {
-	name = EVT_8007650_A
-	relation = { who = ISR value = -200 }
-	create_alliance = EGY 
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-	name = EVT_8007650_B
-	ai_chance = { factor = 0 }
-	any_pop = {  consciousness = 2 }
-  }
-}
-
-#1948 Arab Israeli War - Saudi Arabia
-country_event = {
-  id = 8007657
-  title = EVT_8007651_NAME
-  desc = EVT_8007650_DESC
-  picture = "nwo2_arab_israeli_war_1948"
-  fire_only_once = yes
-
-  trigger = {
-	tag = SAA
-	year = 1948 NOT = { year = 1963 }
-	EGY = { war_with = ISR }
-	ISR = { is_vassal = no }
-	has_global_flag = arab_israeli_war_1948_flag
-  }
-
-  option = {
-	name = EVT_8007650_A
-	relation = { who = ISR value = -200 }
-	create_alliance = EGY 
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-	name = EVT_8007650_B
-	ai_chance = { factor = 0 }
-  }
 }
 
 #Palestine lost the 1948 war, PAL annexed by Jordan
 country_event = {
   id = 8007655
-  title = EVT_8007655_NAME
-  desc = EVT_8007655_DESC
+  title = "The $YEAR$ Armistice Agreements"
+  desc = EVTDESC8007655
   picture = "nwo2_king_abdullah"
-  fire_only_once = yes
+  
+	fire_only_once = yes
+	
+	major = yes
 
-  trigger = {
-	tag = JOR
-	year = 1948 NOT = {  year = 1960 }
-	war = no
-	PAL = { ai = yes has_recently_lost_war = yes }
-	exists = ISR
-	ISR = { is_vassal = no }
-	ISR = { NOT = { war_with = PAL } }
-  }
-
-  option = {
-	name = "Annex the Palestinian lands"
-	PAL = { release = GAZ }
-	PAL = { 
-	918 = { secede_province = JOR } 
-	917 = { secede_province = JOR } 
+	trigger = {
+		tag = ISR
+		year = 1948 
+		NOT = { year = 1990 }
+		
+		war = no
+		is_vassal = no
+		
+		#PAL lost the war
+		PAL = { has_recently_lost_war = yes war = no truce_with = ISR }
+	
+		#Arab Israeli war
+		has_global_flag = arab_israeli_war_1948_flag
 	}
-	ISR = { inherit = PAL }
-	ISR = { any_owned = { add_core = ISR } }
-	ai_chance = { factor = 0.9 }
-  }
 
-  option = {
-	name = "Let Palestine remain independent"
-	relation = { who = PAL value = 200 }
-	PAL = { release = GAZ }
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Accept the armistice!"
+		
+		#ISR inherits Palestine
+		ISR = { inherit = PAL }
+		
+		#Territories to Jordan
+		random_owned = {
+			limit = { owner = { tag = JOR is_vassal = no } }
+			owner = {
+				918 = { secede_province = JOR } 
+				917 = { secede_province = JOR } 
+			}
+		}
+		
+		#Territories to Egypt
+		random_owned = {
+			limit = { owner = { tag = EGY is_vassal = no } }
+			owner = {
+				920 = { secede_province = EGY } 
+			}
+		}
+
+		#Israel to core any PAL territory owned
+		any_owned = { limit = { is_core = PAL } add_core = ISR }
+	
+		clr_global_flag = arab_israeli_war_1948_flag
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Continue the war!"
+		war = {
+			target = PAL
+			attacker_goal = { casus_belli = conquest }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = yes
+		}
+		
+		clr_global_flag = arab_israeli_war_1948_flag
+		ai_chance = { factor = 0.1 }
+	}
 
 }
+
+#United Palestine - Jews leave!
 country_event = {
   id = 8007660
-  title = EVT_8007660_NAME
-  desc = EVT_8007660_DESC
-  picture = "nwo2_arab_israeli_war_1948"
-  #fire_only_once = yes
-
-  trigger = {
-OR = { tag = EGY tag = LEB tag = IRQ tag = JOR tag = SYR }
-	year = 1949 NOT = { year = 1963 }
-	NOT = { exists = ISR }
-	PAL = { is_vassal = no }
-	NOT = { has_country_flag = zionist_defeat }
-	has_global_flag = arab_israeli_war_1948_flag
-  }
+  title = "An Independent, United Palestine"
+  desc = EVTDESC8007660
+  picture = "nwo2_independence_of_palestine"
   
-  mean_time_to_happen = { months = 1  }
-  
-  immediate = {
-	set_country_flag = zionist_defeat
-	prestige = 20
-  }
+	fire_only_once = yes
 
-  option = {
-	name = EVT_8007660_A
-	EGY_921 = {
-		any_pop = { limit = { OR = { culture = jewish culture = haredim_jewish } NOT = { country = { tag = JRU } } type = farmers } move_pop = 200 } # Tampa 
-		any_pop = { limit = { OR = { culture = jewish culture = haredim_jewish } NOT = { country = { tag = JRU } } OR = { strata = middle AND = { strata = poor NOT = { type = farmers type = labourers } } } } move_pop = 232 } # New York
-		any_pop = { limit = { OR = { culture = jewish culture = haredim_jewish } NOT = { country = { tag = JRU } } type = labourers } move_pop = 89 } # Los Angeles
-		any_pop = { limit = { OR = { culture = jewish culture = haredim_jewish } NOT = { country = { tag = JRU } } strata = rich } move_pop = 300 } # London
+	trigger = {
+		tag = PAL
+		
+		is_vassal = no
+		war = no
+		
+		#Must own Jerusalem
+		owns = 917
+		
+		#Israel does not exist
+		ISR = { exists = no }
 	}
-	917 = { change_province_name = "Al-Quds" } # Jerusalem
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-	name = EVT_8007660_B
-	ai_chance = { factor = 0 }
-  }
-
-}
-country_event = {
-  id = 8007661
-  title = EVT_8007662_NAME
-  desc = EVT_8007662_DESC
-  picture = "nwo2_arab_israeli_war_1948"
-  fire_only_once = yes
-
-  trigger = {
-	tag = EGY
-	year = 1949 NOT = { year = 1963 }
-	exists = GAZ
-	GAZ = { ai = yes is_vassal = no }
-  }
   
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 1  }
 
-  option = {
-	name = EVT_8007661_A
-	inherit = GAZ
-  }
+	option = {
+		name = "We are free at last!"
+		prestige = 100
+	
+		#Indicate that Israel has lost
+		set_country_flag = zionist_defeat
+	
+		#Rename Jerusalem
+		917 = { change_province_name = "Al-Quds" } # Jerusalem
+	
+		#Jews leave
+		EGY_921 = {
+			any_pop = { limit = { OR = { culture = jewish culture = haredim_jewish } NOT = { country = { tag = JRU } } type = farmers } move_pop = 200 } # Tampa 
+			any_pop = { limit = { OR = { culture = jewish culture = haredim_jewish } NOT = { country = { tag = JRU } } OR = { strata = middle AND = { strata = poor NOT = { type = farmers type = labourers } } } } move_pop = 232 } # New York
+			any_pop = { limit = { OR = { culture = jewish culture = haredim_jewish } NOT = { country = { tag = JRU } } type = labourers } move_pop = 89 } # Los Angeles
+			any_pop = { limit = { OR = { culture = jewish culture = haredim_jewish } NOT = { country = { tag = JRU } } strata = rich } move_pop = 300 } # London
+		}
 
-}
-
-#Israel won the 1948 war
-country_event = {
-  id = 8007662
-  title = EVT_8007662_NAME
-  desc = EVT_8007662_DESC
-  picture = "nwo2_arab_israeli_war_1948"
-  fire_only_once = yes
-
-  trigger = {
-	tag = ISR
-	year = 1948 NOT = { year = 1963 }
-	ISR = { is_vassal = no }
-	war = no
-	has_recently_lost_war = no
-	PAL = { exists = yes }
-	truce_with = PAL
-  }
-
-  option = {
-	name = EVT_8007662_A
-	prestige = 100
-	PAL = { 
-	3349 = { secede_province = ISR }
-	3348 = { secede_province = ISR }
-	3347 = { secede_province = ISR }
-	3346 = { secede_province = ISR } 
 	}
-USA = { diplomatic_influence = { who = THIS value = 100 } }
-  }
+
 }
+
+#Nakba - Palestinian exodus
 country_event = {
   id = 8007669
   title = EVT_8007669_NAME
   desc = EVT_8007669_DESC
   picture = "nakba"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-	tag = ISR
-	year = 1949 NOT = { year = 1990 }
-	war = no
-	owns = 919 # Tel Aviv
-	owns = 921 # Southern District
-	owns = 916 # Haifa
-  }
+	trigger = {
+		tag = ISR
+		year = 1949 
+		NOT = { year = 1990 }
+		
+		war = no
+		is_vassal = no
+		
+		owns = 919 # Tel Aviv
+		owns = 921 # Southern District
+		owns = 916 # Haifa
+	}
 
-  mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-	name = EVT_8007669_A
-	916 = { any_pop = { limit = { religion = orthodox } move_pop = 913 } } # Beirut
-	919 = { any_pop = { limit = { religion = orthodox } move_pop = 902 } } # Damascus
-	921 = { any_pop = { limit = { is_culture_group = arabic strata = poor } move_pop = 918 } } # West Bank
-	916 = { any_pop = { limit = { is_culture_group = arabic OR = { strata = rich strata = middle } } move_pop = 908 } } # Amman
-	919 = { any_pop = { limit = { is_culture_group = arabic strata = poor } move_pop = 920 } } # Gaza
-  }
+	option = {
+		name = EVT_8007669_A
+		916 = { any_pop = { limit = { religion = orthodox } move_pop = 913 } } # Beirut
+		919 = { any_pop = { limit = { religion = orthodox } move_pop = 902 } } # Damascus
+		921 = { any_pop = { limit = { OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 } strata = poor } move_pop = 918 } } # West Bank
+		916 = { any_pop = { limit = { OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 } OR = { strata = rich strata = middle } } move_pop = 908 } } # Amman
+		919 = { any_pop = { limit = { OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 } strata = poor } move_pop = 920 } } # Gaza
+	}
 }
 
 ###########################################################################
@@ -2526,7 +2275,7 @@ country_event = {
 		917 = { remove_core = PAL }
 
 		release = PAL
-		PAL = { country_event = 8007626 }		
+		PAL = { country_event = 1007604 }		
 		
 		set_global_flag = independent_israel
 	}
@@ -2535,7 +2284,7 @@ country_event = {
         name = EVT_22616_OPTB
 		ai_chance = { factor = 0.5 }
 		change_tag = PAL
-		PAL = { country_event = 8007626 }
+		PAL = { country_event = 1007604 }
 
 		921 = { remove_core = PAL }
 		919 = { remove_core = PAL }
