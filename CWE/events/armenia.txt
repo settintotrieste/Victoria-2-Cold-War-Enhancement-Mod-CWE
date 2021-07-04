@@ -61,19 +61,27 @@ country_event = {
 	}
 }
 
+#Turkist Straits Crisis
 country_event = {
 	id = 1014302
 	title = EVT_1014302_NAME
 	desc = EVT_1014302_DESC
 	picture = "turkish_straits_crisis"
+	
 	fire_only_once = yes
 	
 	trigger = {
-		war = no
 		tag = RUS
-		exists = TUR
-		year =  1946
-		NOT = { year = 1950 }
+		year = 1946
+		NOT = { year = 1950 }	
+	
+		war = no
+		
+		#Turkey is independent
+		TUR = { exists = yes is_vassal = no }
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
 	}
 
 	mean_time_to_happen = {
@@ -81,14 +89,15 @@ country_event = {
 	}
 
 	option = {
-		name = EVT_1014301_A
+		name = EVT_1014302_A
 		TUR = { country_event = 1014303 }
-		ai_chance = { factor = 1 }
+		ai_chance = { factor = 0.9 }
 	}
 	option = {
-		name = EVT_1014301_B
-		prestige = -5
-		ai_chance = { factor = 0 }
+		name = EVT_1014302_B
+		prestige = -50
+		relation = { who = TUR value = 100 }
+		ai_chance = { factor = 0.1 }
 	}
 }
 
@@ -101,19 +110,39 @@ country_event = {
 
 	option = {
 		name = EVT_1014303_A
-		FROM = { country_event = { id = 1014304 days = 10 } }
-		relation = { who = USA value = 10 }
-		relation = { who = RUS value = -100 }
-		diplomatic_influence = { who = USA value = 50 }
-		ai_chance = { factor = 1 }
+		
+		#Soviet reaction
+		FROM = { country_event = 1014304 }
+		
+		#USA influence
+		USA = { 
+			relation = { who = THIS value = 50 }
+			diplomatic_influence = { who = THIS value = 50 } 
+		}
+		#USSR influence
+		RUS = { 
+			relation = { who = THIS value = -50 } 
+			diplomatic_influence = { who = THIS value = -50 } 
+		}
+		ai_chance = { factor = 0.9 }
 	}
 	option = {
 		name = EVT_1014303_B
+		prestige = -50
+		
 		military_access = FROM
-		relation = { who = RUS value = 10 }
-		diplomatic_influence = { who = RUS value = 50 }
-		prestige = -10
-		ai_chance = { factor = 0 }
+		
+		#USA influence
+		USA = { 
+			relation = { who = THIS value = -50 }
+			diplomatic_influence = { who = THIS value = -50 } 
+		}
+		#USSR influence
+		RUS = { 
+			relation = { who = THIS value = 50 } 
+			diplomatic_influence = { who = THIS value = 50 } 
+		}
+		ai_chance = { factor = 0.1 }
 	}
 }
 
@@ -126,17 +155,22 @@ country_event = {
 
 	option = {
 		name = EVT_1014304_A
+		
+		relation = { who = USA value = 50 }
+		
 		relation = { who = TUR value = 50 }
+		diplomatic_influence = { who = TUR value = 50 }
 		ai_chance = { factor = 0.8 }
 	}
 	option = {
 		name = EVT_1014304_B
+		prestige = -50
+		
 		relation = { who = TUR value = -50 }
 		diplomatic_influence = { who = TUR value = -50 }
+		
 		886 = { add_core = ADJ add_core = GEO }
 		885 = { add_core = ARM }
-		prestige = -1
 		ai_chance = { factor = 0.2 }
 	}
 }
-

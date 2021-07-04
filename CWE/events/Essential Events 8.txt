@@ -10938,65 +10938,73 @@ random_owned = { limit = { owner = { overlord = { has_country_flag = decide_germ
 #Treaty on the Final Settlement with Respect to Germany
 country_event = {
 	id = 1512288
-title = "Treaty on the Final Settlement with Respect to Germany"
+	title = "Treaty on the Final Settlement with Respect to Germany"
 	desc = EVTDESC1512287
 	picture = "final_settlement_ger"
 
-trigger = {
-NOT = { has_global_flag = blocsenabled }
-NOT = { has_country_flag = final_settlement_ger }
-GER = { exists = yes is_vassal = no }
-year = 1950
-OR = {
-is_our_vassal = OG1
-is_our_vassal = OG2
-is_our_vassal = OG3
-is_our_vassal = OG4
-is_our_vassal = DDR
-}
-OR = {
-AND = { tag = USA is_vassal = no }
-AND = { tag = FRA is_vassal = no }
-AND = { tag = ENG is_vassal = no }
-AND = { tag = RUS is_vassal = no }
-AND = { tag = DDR is_vassal = no }
-	}
-}
-
-mean_time_to_happen = { 
-months = 1
-	}
-
-option = {
-name = "Sign the treaty"
-set_country_flag = final_settlement_ger
-relation = { who = GER value = 100 }
-GER = { prestige = 100 }
-
-random_owned = { limit = { owner = { is_our_vassal = OG1 } } owner = { GER = { inherit = OG1 } } }
-
-random_owned = { limit = { owner = { is_our_vassal = OG2 } } owner = { GER = { inherit = OG2 } } }
-
-random_owned = { limit = { owner = { is_our_vassal = OG3 } } owner = { GER = { inherit = OG3 } } }
-
-random_owned = { limit = { owner = { is_our_vassal = OG4 } } owner = { GER = { inherit = OG4 } } }
-
-random_owned = { limit = { owner = { is_our_vassal = DDR } } owner = { GER = { inherit = DDR } } }
-
-random_owned = { limit = { owner = { tag = DDR } } 
-owner = { GER = { inherit = DDR } } }
-
-ai_chance = { factor = 1 }
+	trigger = {
+		#Cold War is over and USA won
+		year = 1950
+		NOT = { has_global_flag = blocsenabled }
+		
+		#USA victory
+		has_global_flag = cold_warusa
+		
+		OR = {
+			AND = { tag = USA is_vassal = no }
+			AND = { tag = FRA is_vassal = no }
+			AND = { tag = ENG is_vassal = no }
+			AND = { tag = RUS is_vassal = no }
+			AND = { tag = DDR is_vassal = no }
 		}
+		
+		#Independent Germany exists
+		GER = { exists = yes is_vassal = no }
 
-option = {
-name = "Maintain our claims over Germany"
-set_country_flag = final_settlement_ger
-prestige_factor = -0.10
-relation = { who = GER value = -200 }
-badboy = 20
-ai_chance = { factor = 0 }
+		#THIS owns an occupation zone
+		OR = {
+			is_our_vassal = OG1
+			is_our_vassal = OG2
+			is_our_vassal = OG3
+			is_our_vassal = OG4
+			is_our_vassal = DDR
 		}
+		
+		#Event has not already fired for THIS
+		NOT = { has_country_flag = final_settlement_ger }
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "Sign the treaty"
+		set_country_flag = final_settlement_ger
+		
+		relation = { who = GER value = 100 }
+		GER = { prestige = 100 }
+
+		#Return occupied Germany to Germany
+		random_owned = { limit = { owner = { is_our_vassal = OG1 } } owner = { GER = { inherit = OG1 } } }
+		random_owned = { limit = { owner = { is_our_vassal = OG2 } } owner = { GER = { inherit = OG2 } } }
+		random_owned = { limit = { owner = { is_our_vassal = OG3 } } owner = { GER = { inherit = OG3 } } }
+		random_owned = { limit = { owner = { is_our_vassal = OG4 } } owner = { GER = { inherit = OG4 } } }
+		random_owned = { limit = { owner = { is_our_vassal = DDR } } owner = { GER = { inherit = DDR } } }
+		random_owned = { limit = { owner = { tag = DDR } } owner = { GER = { inherit = DDR } } }
+
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "Maintain our claims over Germany"
+		set_country_flag = final_settlement_ger
+		
+		prestige_factor = -0.10
+		badboy = 20
+		relation = { who = GER value = -200 }
+		ai_chance = { factor = 0 }
+	}
 }
 
 #Soviet puppet liberalises
