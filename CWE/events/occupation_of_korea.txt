@@ -1,8 +1,9 @@
 # The Provisional Government of the Republic of Korea
 
-country_event = { #Military Occupation of Korea
+#Military Occupation of Korea - USA
+country_event = {
 	id = 1209000
-	title = EVT_1209000_NAME
+	title = "The Military Occupation of Korea"
 	desc = EVT_1209000_DESC
 	picture = "us_occupation_of_korea"
 
@@ -10,127 +11,15 @@ country_event = { #Military Occupation of Korea
 
 	trigger = {
 		tag = USA
-		NOT = { exists = SKO }
-		NOT = { exists = NKO }
-		NOT = { exists = KOR }
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		government = democracy
+		is_vassal = no
 		war = no
-		owns = 1633 # Daegu
-	}
-
-	mean_time_to_happen = {
-		months = 2
-	}
-
-	option = {
-		name = EVT_1209000_A
-		1633 = { any_pop = { militancy = 7 consciousness = 2 ideology  = { factor = 0.5  value = communist } } }
-		random_country = {
-			limit = { tag = KMT is_greater_power = yes }
-			THIS = { country_event = { id = 1209001 days = 65 } }
-		}
-	}
-
-}
-
-country_event = {
-	id = 1209001
-	title = EVT_1209001_NAME
-	desc = EVT_1209001_DESC
-	picture = "provisional_government_korea"
-	is_triggered_only = yes # USA 1st time, potentially RUS second time
-
-	option = {
-		name = EVT_1209001_A
-		prestige = 5
-		random_owned = { # RUS only - if America recognized and we did not, trigger divided Korea
-			limit = {
-				exists = SKO
-				owner = { is_possible_vassal = NKO }
-			}
-			owner = { country_event = 1209002 }
-		}
-		ai_chance = { factor = 1 }
-	}
-
-	option = {
-		name = EVT_1209001_B
-		prestige = -10
-		release = SKO
-		any_owned = { limit = { is_core = NKO } secede_province = SKO }
-		KMT = {
-			relation = { who = SKO value = 200 }
-			diplomatic_influence = { who = SKO value = 200 }
-		}
-		random_country = { # RUS - if recognized, allow them to recognize also
-			limit = {
-				NOT = { tag = THIS }
-				is_possible_vassal = NKO
-				capital_scope = { continent = europe }
-			}
-			country_event = { id = 1209001 days = 1 }
-		}
-		ai_chance = {
-			factor = 0
-			modifier = {
-				factor = 0
-				ruling_party_ideology = communist
-			}
-		}
-	}
-
-}
-
-# Support towards communism in occupied NKO
-country_event = { # Establishing the Provisional People's Committee
-	id = 1209004
-	title = EVT_1209004_NAME
-	desc = EVT_1209004_DESC
-	picture = "provisional_peoples_committee"
-	fire_only_once = yes
-
-	trigger = {
-		tag = RUS
-		government = proletarian_dictatorship
-		is_possible_vassal = NKO
-	}
-
-	mean_time_to_happen = {
-		months = 12
-	}
-
-	option = {
-		name = EVT_1209004_A
-		any_pop = { limit = { culture = korean } consciousness = 0.2 ideology  = { factor = 0.2  value = communist } }
-		set_global_flag = provisional_peoples_committee
-		ai_chance = { factor = 1 }
-	}
-
-	option = {
-		name = EVT_1209004_B # Begin integrating the land as an SSR
-		prestige = -30
-		badboy = 20
-		clr_country_flag = korea_trusteeship
-		SKO = { change_tag = KOR }
-		NKO = { all_core = { remove_core = NKO add_core = KOR } }
-		random_country = { limit = { is_possible_vassal = SKO } country_event = 1209007 }
-		ai_chance = { factor = 0 }
-	}
-
-}
-
-country_event = { # Korean Trusteeship Scandal
-	id = 1209005
-	title = EVT_1209005_NAME
-	desc = EVT_1209005_DESC
-	picture = "anti_trusteeship_campaign"
-	fire_only_once = yes
-
-	trigger = {
-		tag = USA
-		NOT = { exists = SKO }
-		NOT = { exists = NKO }
-		owns = 1633 # Daegu
-		has_global_flag = provisional_peoples_committee
+		
+		#Owns South Korea
+		is_possible_vassal = SKO
 	}
 
 	mean_time_to_happen = {
@@ -138,178 +27,875 @@ country_event = { # Korean Trusteeship Scandal
 	}
 
 	option = {
-		name = EVT_1209005_A
-		any_pop = { limit = { culture = korean } consciousness = 0.2 militancy = 0.2 }
-		ai_chance = { factor = 0 }
+		name = "Prepare the Korean people for freedom!"
+		
+		set_country_flag = KOR_indy_path_flag
+		
+		#Domestic reaction in South Korea
+		SKO = { 
+			all_core = {
+				any_pop = { 
+					limit = { strata = rich }
+					militancy = 5
+					consciousness = 5
+					ideology  = { factor = 0.10 value = conservative } 
+				} 
+				any_pop = { 
+					limit = { strata = middle }
+					militancy = 5
+					consciousness = 5
+					ideology  = { factor = 0.10 value = liberal } 
+				} 
+				any_pop = { 
+					limit = { strata = poor }
+					militancy = 5
+					consciousness = 5
+					ideology  = { factor = 0.10 value = communist } 
+				} 
+			}
+		}
+		
+		#KMT choice for recognising Korea
+		random_country = {
+			limit = { tag = KMT is_greater_power = yes }
+			country_event = 1209001
+		}
+		
+		ai_chance = { factor = 0.95 }
+	}
+	
+	option = {
+		name = "Korea shall be the next state of the USA!"
+		prestige_factor = -0.05
+		badboy = 5
+		
+		set_global_flag = division_of_korea_flag
+		
+		#Domestic reaction in South Korea
+		SKO = { 
+			all_core = {
+			
+				add_province_modifier = { name = nationalist_agitation duration = 3650 }
+				
+				any_pop = { 
+					limit = { strata = rich }
+					militancy = 6
+					consciousness = 6
+					ideology  = { factor = 0.10 value = nationalist } 
+				} 
+				any_pop = { 
+					limit = { strata = middle }
+					militancy = 8
+					consciousness = 8
+					ideology  = { factor = 0.20 value = liberal } 
+				} 
+				any_pop = { 
+					limit = { strata = poor }
+					militancy = 10
+					consciousness = 10
+					ideology  = { factor = 0.30 value = communist } 
+				} 
+			}
+		}
+		
+		ai_chance = { factor = 0.05 }
+	}
+
+}
+
+#Military Occupation of Korea - USSR
+country_event = {
+	id = 12090001
+	title = "The Military Occupation of Korea"
+	desc = EVT_1209000_DESC
+	picture = "ussr_occupation_of_korea"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		government = proletarian_dictatorship
+		is_vassal = no
+		war = no
+		
+		#Owns North Korea
+		is_possible_vassal = NKO
+	}
+
+	mean_time_to_happen = {
+		months = 1
 	}
 
 	option = {
-		name = EVT_1209005_B
-		any_pop = { limit = { culture = korean } consciousness = 0.2 ideology  = { factor = 0.2  value = conservative } }
+		name = "Prepare the Korean people for 'freedom'!"
+		
+		set_country_flag = KOR_indy_path_flag
+		
+		#Domestic reaction in North Korea
+		NKO = { 
+			all_core = {
+				any_pop = { 
+					limit = { strata = rich }
+					militancy = 5
+					consciousness = 5
+					ideology  = { factor = 0.10 value = nationalist } 
+				} 
+				any_pop = { 
+					limit = { strata = middle }
+					militancy = 5
+					consciousness = 5
+					ideology  = { factor = 0.20 value = communist_social } 
+				} 
+				any_pop = { 
+					limit = { strata = poor }
+					militancy = 5
+					consciousness = 5
+					ideology  = { factor = 0.10 value = communist } 
+				} 
+			}
+		}
+		
+		ai_chance = { factor = 0.95 }
+	}
+	
+	option = {
+		name = "Korea shall be the next state of the USSR!"
+		prestige_factor = -0.05
+		badboy = 5
+		
+		set_global_flag = division_of_korea_flag
+		
+		#Domestic reaction in North Korea
+		NKO = { 
+			all_core = {
+			
+				add_province_modifier = { name = nationalist_agitation duration = 3650 }
+				
+				any_pop = { 
+					limit = { strata = rich }
+					militancy = 6
+					consciousness = 6
+					ideology  = { factor = 0.10 value = nationalist } 
+				} 
+				any_pop = { 
+					limit = { strata = middle }
+					militancy = 8
+					consciousness = 8
+					ideology  = { factor = 0.20 value = liberal } 
+				} 
+				any_pop = { 
+					limit = { strata = poor }
+					militancy = 10
+					consciousness = 10
+					ideology  = { factor = 0.30 value = nationalist } 
+				} 
+			}
+		}
+		
+		ai_chance = { factor = 0.05 }
+	}
+
+}
+
+#Provisional Government of the Republic of Korea
+country_event = {
+	id = 1209001
+	title = "The Provisional Government of Korea"
+	desc = EVT_1209001_DESC
+	picture = "provisional_government_korea"
+	
+	is_triggered_only = yes # USA 1st time, potentially RUS second time
+
+	option = {
+		name = "Refuse to recognise the provisional government!"
+		prestige = 50
+		
+		relation = { who = FROM value = -50 }
+		
+		set_country_flag = KMT_does_not_recognises_KOR_flag
+		
+		ai_chance = { factor = 0.95 }
+	}
+
+	option = {
+		name = "Recognise the nascent state"
+		
+		relation = { who = FROM value = 50 }
+		
+		set_country_flag = KMT_recognises_KOR_flag
+		
+		ai_chance = { factor = 0.05 }
+	}
+
+}
+
+# Support towards communism in occupied NKO
+
+# Establishing the Provisional People's Committee
+country_event = {
+	id = 1209004
+	title = "Korean Provisional People's Committee"
+	desc = EVT_1209004_DESC
+	picture = "provisional_peoples_committee"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		year = 1947
+		NOT = { year = 1990 }
+		
+		government = proletarian_dictatorship
+		is_vassal = no
+		war = no
+		
+		#Owns NKO
+		is_possible_vassal = NKO
+		
+		#Both elected to create an independent Korea
+		has_country_flag = KOR_indy_path_flag
+		USA = { has_country_flag = KOR_indy_path_flag }
+	}
+
+	mean_time_to_happen = {
+		months = 1
+	}
+
+	option = {
+		name = "Do it!"
+		prestige = 50
+		badboy = 2
+		
+		#US reaction
+		random_country = {
+			limit = { tag = USA government = democracy is_vassal = no is_possible_vassal = SKO }
+			country_event = 1209005
+		}
+		
+		#Increase Communist support
+		any_pop = { 
+			limit = { culture = korean } 
+			consciousness = 5 
+			militancy = -5
+			ideology = { factor = 0.1 value = communist } 
+		}
+		
+		#Trigger US reaction
+		set_global_flag = provisional_peoples_committee
+		
+		ai_chance = { factor = 0.95 }
+	}
+
+	option = {
+		name = "The current provisional government is sufficient"
+
+		#Go for a united korea
+		set_global_flag = united_korea_path_flag
+		
+		#Korean socialists are angry
+		any_pop = {
+			limit = { culture = korean }
+			scaled_militancy = { 
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = communist_social
+			}
+			scaled_militancy = { 
+				factor = 5 
+				ideology = socialist
+			}
+		}
+
+		ai_chance = { factor = 0.05 }
+	}
+
+}
+
+# US choice to divide korea
+country_event = {
+	id = 1209005
+	title = "Collapse of the Joint Commission in Korea"
+	desc = EVT_1209005_DESC
+	picture = "anti_trusteeship_campaign"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 1947
+		has_global_flag = provisional_peoples_committee
+		NOT = { year = 1990 }
+		
+		government = democracy
+		is_vassal = no
+		war = no
+		
+		#Owns South Korea
+		is_possible_vassal = SKO
+		
+		#NKO is owned by the USSR
+		RUS = { is_possible_vassal = NKO }
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "Proceed with the division of the Peninsula"
+		badboy = 2
+		any_pop = { 
+			limit = { culture = korean } 
+			consciousness = 10 
+			militancy = 10 
+		}
+		
+		set_global_flag = division_of_korea_flag
+		
+		ai_chance = { factor = 0.95 }
+	}
+
+	option = {
+		name = "Compromise with the Soviets"
+		prestige_factor = -0.05
+		
+		#Choice for the USSR
 		RUS = { country_event = 1209006 }
-		ai_chance = { factor = 1 }
+		
+		ai_chance = { factor = 0.05 }
 	}
 }
 
-country_event = { # Trusteeship dispute
+# USSR choice to form a Socialist Democracy in Korea
+country_event = {
 	id = 1209006
-	title = EVT_1209006_NAME
+	title = "A Socialist Democracy in Korea?"
 	desc = EVT_1209006_DESC
 	picture = "anti_trusteeship_campaign"
+	
 	is_triggered_only = yes # RUS
 
 	option = {
-		name = EVT_1209006_A
-		any_pop = { limit = { culture = korean } ideology  = { factor = 0.1  value = communist } }
-		FROM = { country_event = 1209003 }
+		name = "Accept the US compromise"
+		prestige = 50
+		
+		#Remove divided Korea cores
+		NKO = { all_core = { add_core = KOR remove_core = NKO } }
+		SKO = { all_core = { add_core = KOR remove_core = SKO } }
+		
+		#USA transfers all Korean cores to THIS
+		FROM = { 
+			any_owned = { 
+				limit = { is_core = KOR } 
+				secede_province = THIS
+			} 
+		}
+		
+		#Release Socialist Democracy Korea
+		release = KOR
+		KOR = { 
+			government = socialist_democracy
+			country_event = 800054
+			ruling_party_ideology = socialist
+		}
+		
+		#Set relations
+		THIS = {
+			relation = { who = KOR value = 100 } 
+			diplomatic_influence = { who = KOR value = 100 }
+		}
+		FROM = {
+			relation = { who = KOR value = 100 } 
+			diplomatic_influence = { who = KOR value = 100 }
+		}
+
 		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
-		name = EVT_1209006_B # Go ahead with the trusteeship
+		name = "Refuse!"
+		badboy = 2
+		relation = { who = FROM value = -100 }
+		
+		set_global_flag = division_of_korea_flag
+		
 		ai_chance = { factor = 0.1 }
 	}
 }
 
-country_event = { # The establishment of the Republic of Korea
+
+#Form divided Korea - SKO
+country_event = {
 	id = 1209003
-	title = EVT_1209003_NAME
+	title = "The Republic of Korea"
 	desc = EVT_1209003_DESC
 	picture = "establishment_of_rok"
+	
 	fire_only_once = yes
 
-	# also triggered by 1209006
 	trigger = {
-		year = 1952
-		NOT = { year = 1990 }
 		tag = USA
+		year = 1948
+		has_global_flag = division_of_korea_flag
+		NOT = { year = 1990 }
+		
+		government = democracy
+		is_vassal = no
 		war = no
+		
+		#Owns South Korea
 		is_possible_vassal = SKO
-		NOT = { exists = KOR }
 	}
 
-	mean_time_to_happen = { months = 6 }
+	mean_time_to_happen = { months = 8 }
 
 	option = {
-		name = EVT_1209003_A
+		name = "Release South Korea as an independent state!"
+		prestige = 50
+		
+		#Release SKO
 		release = SKO
-		any_owned = { limit = { is_core = NKO } secede_province = SKO }
-		prestige = 5
+		SKO = {
+			government = democracy
+			country_event = 800054
+			ruling_party_ideology = conservative
+			
+			any_pop = { 
+				limit = { strata = rich }
+				consciousness = 10
+				ideology  = { factor = 0.30 value = conservative } 
+			} 
+			any_pop = { 
+				limit = { strata = middle }
+				consciousness = 10
+				ideology  = { factor = 0.20 value = conservative } 
+			} 
+			any_pop = { 
+				limit = { strata = poor }
+				consciousness = 10
+				ideology  = { factor = 0.10 value = socialist } 
+			}
+		}
+
+		#US influence over SKO
 		diplomatic_influence = { who = SKO value = 200 }
 		relation = { who = SKO value = 200 }
+		create_alliance = SKO
 		military_access = SKO
-		random_country = { # RUS
-			limit = {
-				NOT = { tag = THIS }
-				is_possible_vassal = NKO
-				capital_scope = { continent = europe }
-			}
-			country_event = 1209002
+		
+		#Give military goods
+		SKO = {
+			money = 100000
+			small_arms = 1000
+			weaponry = 1000
+			aeroplanes = 1000
+			ammunition = 1000
+			automobiles = 1000
 		}
+
+		#For North Korea to be released 1 month later
+		set_global_flag = SKO_released_flag
+		
+		#For KMT
+		random_owned = {
+			limit = { 
+				owner = { 
+					KMT = { 
+						exists = yes 
+						is_vassal = no 
+						has_country_flag = KMT_does_not_recognises_KOR_flag
+					} 
+				}
+			}
+			owner = {
+				KMT = {
+					#Lose relations with the Korean government
+					random_country = {
+						limit = { tag = KOR exists = yes }
+						KMT = {
+							relation = { who = KOR value = -100 }
+							diplomatic_influence = { who = KOR value = -100 }
+						}
+					}
+					random_country = {
+						limit = { tag = SKO exists = yes }
+						KMT = {
+							relation = { who = SKO value = -100 }
+							diplomatic_influence = { who = SKO value = -100 }
+						}
+					}
+				}
+			}
+		}
+		random_owned = {
+			limit = { 
+				owner = { 
+					KMT = { 
+						exists = yes 
+						is_vassal = no 
+						has_country_flag = KMT_recognises_KOR_flag
+					} 
+				}
+			}
+			owner = {
+				KMT = {
+					#Gain relations with the Korean government
+					random_country = {
+						limit = { tag = KOR exists = yes }
+						THIS = {
+							relation = { who = KOR value = 100 }
+							diplomatic_influence = { who = KOR value = 100 }
+						}
+					}
+					random_country = {
+						limit = { tag = SKO exists = yes }
+						THIS = {
+							relation = { who = SKO value = 100 }
+							diplomatic_influence = { who = SKO value = 100 }
+						}
+					}
+				}
+			}
+		}
+		
+		ai_chance = { factor = 0.95 }
 	}
 
 	option = {
-		name = EVT_1209003_B
-		prestige = -10
-		random_owned = {
-			limit = { year = 1952 }
-			owner = { prestige = -15 }
-			owner = { release = SKO }
-			random_country = { limit = { tag = NKO exists = yes } inherit = SKO }
+		name = "Give South Korea nominal independence"
+		badboy = 5
+
+		#Release SKO
+		release_vassal = SKO
+		SKO = {
+			government = democracy
+			country_event = 800054
+			ruling_party_ideology = conservative
+			
+			any_pop = { 
+				limit = { strata = rich }
+				consciousness = 10
+				militancy = 2.5
+				ideology  = { factor = 0.20 value = conservative } 
+			} 
+			any_pop = { 
+				limit = { strata = middle }
+				consciousness = 10
+				militancy = 5
+				ideology  = { factor = 0.20 value = liberal } 
+			} 
+			any_pop = { 
+				limit = { strata = poor }
+				consciousness = 10
+				militancy = 5
+				ideology  = { factor = 0.20 value = communist } 
+			}
 		}
-		ai_chance = { factor = 0 }
+
+		#US influence over SKO
+		diplomatic_influence = { who = SKO value = 200 }
+		relation = { who = SKO value = 200 }
+		
+		#Give military goods
+		SKO = {
+			money = 200000
+			small_arms = 1000
+			weaponry = 1000
+			aeroplanes = 1000
+			ammunition = 1000
+			automobiles = 1000
+		}
+
+		#For North Korea to be released 1 month later
+		set_global_flag = SKO_released_flag
+		
+		#For KMT
+		random_owned = {
+			limit = { 
+				owner = { 
+					KMT = { 
+						exists = yes 
+						is_vassal = no 
+						has_country_flag = KMT_does_not_recognises_KOR_flag
+					} 
+				}
+			}
+			owner = {
+				KMT = {
+					#Lose relations with the Korean government
+					random_country = {
+						limit = { tag = KOR exists = yes }
+						KMT = {
+							relation = { who = KOR value = -100 }
+							diplomatic_influence = { who = KOR value = -100 }
+						}
+					}
+					random_country = {
+						limit = { tag = SKO exists = yes }
+						KMT = {
+							relation = { who = SKO value = -100 }
+							diplomatic_influence = { who = SKO value = -100 }
+						}
+					}
+				}
+			}
+		}
+		random_owned = {
+			limit = { 
+				owner = { 
+					KMT = { 
+						exists = yes 
+						is_vassal = no 
+						has_country_flag = KMT_recognises_KOR_flag
+					} 
+				}
+			}
+			owner = {
+				KMT = {
+					#Gain relations with the Korean government
+					random_country = {
+						limit = { tag = KOR exists = yes }
+						THIS = {
+							relation = { who = KOR value = 100 }
+							diplomatic_influence = { who = KOR value = 100 }
+						}
+					}
+					random_country = {
+						limit = { tag = SKO exists = yes }
+						THIS = {
+							relation = { who = SKO value = 100 }
+							diplomatic_influence = { who = SKO value = 100 }
+						}
+					}
+				}
+			}
+		}
+
+		ai_chance = { factor = 0.05 }
 	}
 }
 
+#Form divided Korea - NKO
 country_event = {
 	id = 1209002
-	title = EVT_1209002_NAME
+	title = "The Democratic People's Republic of Korea"
 	desc = EVT_1209002_DESC
-	picture = "divided_korea"
+	picture = "establishment_of_dprk"
+	
 	fire_only_once = yes
 
-	# also triggered by 1209003
 	trigger = {
-		year = 1952
-		NOT = { year = 1990 }
 		tag = RUS
+		year = 1948
+		has_global_flag = division_of_korea_flag
+		NOT = { year = 1990 }
+		
+		government = proletarian_dictatorship
+		is_vassal = no
 		war = no
+		
+		#Owns North Korea
 		is_possible_vassal = NKO
-		NOT = { exists = KOR }
+		
+		has_global_flag = SKO_released_flag
 	}
 
-	option = {
-		name = EVT_1209002_A
-		release_vassal = NKO
-		any_owned = { limit = { is_core = SKO } secede_province = NKO }
-		prestige = 5
-		diplomatic_influence = { who = NKO value = 100 }
-	}
+	mean_time_to_happen = { months = 1 }
 
 	option = {
-		name = EVT_1209002_B
+		name = "Release them as a Soviet client state!"
+		badboy = 2
+		
+		#Release NKO
 		release_vassal = NKO
-		any_owned = { limit = { is_core = SKO } secede_province = NKO }
-		prestige = 5
-		clothes = -1000
-		small_arms = -2000
 		NKO = {
-			clothes = 1000
-			small_arms = 2000
+			government = proletarian_dictatorship
+			country_event = 800052
+			ruling_party_ideology = communist
+			
+			any_pop = { 
+				limit = { strata = rich }
+				consciousness = 10
+				ideology  = { factor = 0.30 value = communist } 
+			} 
+			any_pop = { 
+				limit = { strata = middle }
+				consciousness = 10
+				ideology  = { factor = 0.20 value = communist } 
+			} 
+			any_pop = { 
+				limit = { strata = poor }
+				consciousness = 10
+				ideology  = { factor = 0.10 value = communist } 
+			}
 		}
-		diplomatic_influence = { who = NKO value = 100 }
+
+		#USSR influence over NKO
+		diplomatic_influence = { who = NKO value = 200 }
+		relation = { who = NKO value = 200 }
+		
+		#Give military goods
+		NKO = {
+			money = 200000
+			small_arms = 1000
+			weaponry = 1000
+			aeroplanes = 1000
+			ammunition = 1000
+			automobiles = 1000
+		}
+		
+		ai_chance = { factor = 0.95 }
+	}
+
+	option = {
+		name = "Release North Korea as an independent state"
+		prestige = 50
+		
+		#Release NKO
+		release = NKO
+		NKO = {
+			government = proletarian_dictatorship
+			country_event = 800052
+			ruling_party_ideology = communist
+			
+			any_pop = { 
+				limit = { strata = rich }
+				consciousness = 10
+				ideology  = { factor = 0.30 value = conservative } 
+			} 
+			any_pop = { 
+				limit = { strata = middle }
+				consciousness = 10
+				ideology  = { factor = 0.20 value = conservative } 
+			} 
+			any_pop = { 
+				limit = { strata = poor }
+				consciousness = 10
+				ideology  = { factor = 0.10 value = socialist } 
+			}
+		}
+
+		#USSR influence over NKO
+		diplomatic_influence = { who = NKO value = 200 }
+		relation = { who = NKO value = 200 }
+		create_alliance = NKO
+		military_access = NKO
+		
+		#Give military goods
+		NKO = {
+			money = 100000
+			small_arms = 1000
+			weaponry = 1000
+			aeroplanes = 1000
+			ammunition = 1000
+			automobiles = 1000
+		}
+		
+		ai_chance = { factor = 0.05 }
 	}
 }
 
-country_event = { # The establishment of the ROK
+# The establishment of the ROK
+country_event = {
 	id = 1209007
-	title = EVT_1209007_NAME
+	title = "A United Korean Republic"
 	desc = EVT_1209007_DESC
 	picture = "establishment_of_rok"
+	
 	fire_only_once = yes
+	
 	major = yes
 
 	trigger = {
-		year = 1950 NOT = { year = 1990 }
-		NOT = { exists = SKO }
-		NOT = { exists = NKO }
-		OR = {
-			AND = { owns = 1624 tag = USA } # Seoul
-			AND = { owns = 1619 tag = RUS } # Pyongyang
+		tag = USA
+		year = 1948
+		NOT = { year = 1990 }
+		
+		government = democracy
+		is_vassal = no
+		war = no
+		
+		RUS = {
+			government = proletarian_dictatorship
+			is_vassal = no
+			war = no
 		}
-		USA = { has_country_flag = korea_trusteeship }
-		RUS = { has_country_flag = korea_trusteeship }
+		
+		is_possible_vassal = SKO
+		RUS = { is_possible_vassal = NKO }
+		
+		has_global_flag = united_korea_path_flag
 	}
 
 	mean_time_to_happen = {
-		months = 2
+		months = 8
 	}
 
 	option = {
-		name = "A victory for the Korean peninsula"
-		SKO = { all_core = { add_core = KOR } }
-		NKO = { all_core = { add_core = KOR } }
-		USA = { release = KOR }
-		RUS = { release = NKO }
-		KOR = {
-			inherit = NKO
-			capital = 1624
+		name = "A victory for the Korean peninsula!"
+		prestige = 100
+		
+		#Remove divided Korea cores
+		NKO = { all_core = { add_core = KOR remove_core = NKO } }
+		SKO = { all_core = { add_core = KOR remove_core = SKO } }
+		
+		#USSR transfers all Korean cores to THIS
+		RUS = { 
+			any_owned = { 
+				limit = { is_core = KOR } 
+				secede_province = THIS
+			} 
+		}
+		
+		#Release Democracy Korea
+		release = KOR
+		KOR = { 
+			government = democracy
+			country_event = 800054
+			ruling_party_ideology = big_tent
 			election = yes
+		}
+		
+		#Set relations
+		USA = {
+			relation = { who = KOR value = 100 } 
+			diplomatic_influence = { who = KOR value = 100 }
+		}
+		RUS = {
+			relation = { who = KOR value = 100 } 
+			diplomatic_influence = { who = KOR value = 100 }
 		}
 	}
 
 }
 
-country_event = { # First elections of the ROK
+# First elections of the ROK
+country_event = {
 	id = 1209008
-	title = EVT_1209008_NAME
+	title = "First Korean Elections of $YEAR$"
 	desc = EVT_1209008_DESC
 	picture = "first_elections_of_the_rok"
+	
 	fire_only_once = yes
 
 	trigger = {
 		tag = KOR
+		year = 1946
+		NOT = { year = 1990 }
+		
+		OR = { government = democracy government = democracy1 }
+		is_vassal = no
+		war = no
 		election = no
+		
+		#Cold War
+		has_global_flag = blocsenabled
 	}
 
 	mean_time_to_happen = {
@@ -318,21 +904,22 @@ country_event = { # First elections of the ROK
 
 	option = {
 		name = EVT_1209008_A
+		prestige = 50
 		random_owned = {
 			limit = { owner = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } }
 			owner = { government = proletarian_dictatorship country_event = 800052 }
 			random_country = {
 				limit = { has_country_modifier = communist_bloc_leader }
-				diplomatic_influence = { who = THIS value = 150 }
-				relation = { who = THIS value = 150 }
+				diplomatic_influence = { who = THIS value = 200 }
+				relation = { who = THIS value = 200 }
 			}
 		}
 		random_owned = {
 			limit = { owner = { NOT = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } } }
 			random_country = {
 				limit = { has_country_modifier = democratic_bloc_leader }
-				diplomatic_influence = { who = THIS value = 150 }
-				relation = { who = THIS value = 150 }
+				diplomatic_influence = { who = THIS value = 200 }
+				relation = { who = THIS value = 200 }
 			}
 		}
 	}
