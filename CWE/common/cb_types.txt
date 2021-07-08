@@ -50,6 +50,7 @@ acquire_core_state
 annex_core_country
 acquire_substate_region
 annex_all_cores
+annex_all_colonial_cores
 annex_un_occupied_territories
 free_allied_cores
 install_democracy
@@ -869,7 +870,7 @@ acquire_core_state = {
 	construction_speed = 0.8
 	
 	badboy_factor = 0
-	prestige_factor = 5
+	prestige_factor = 2
 	peace_cost_factor = 0.7
 	penalty_factor = 1
 	always = yes
@@ -1462,6 +1463,153 @@ cut_down_to_size = {
 	}
 }
 
+annex_all_colonial_cores = {
+	sprite_index = 7
+	is_triggered_only = yes
+	months = 12
+	
+	construction_speed = 0.75
+
+	badboy_factor = 0
+	prestige_factor = 2
+	peace_cost_factor = 50
+	penalty_factor = 1
+	is_civil_war = yes
+	always = yes
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 48
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	can_use = {
+
+		THIS = { NOT = { has_country_modifier = no_more_war } }
+
+		#CWE conditions
+		THIS = { NOT = { has_country_flag = renounced_war_rights } }
+		THIS = { NOT = { has_country_flag = un_armistice } }
+
+		THIS = { 
+		
+			OR = { 
+
+				government = theocracy
+				government = absolute_monarchy
+				government = populist_dictatorship
+				government = nationalist_dictatorship
+				government = presidential_dictatorship
+				government = proletarian_dictatorship
+				government = proletarian_dictatorship1
+
+				NOT = { war_policy = pacifism } war = yes has_country_flag = world_medium has_country_flag = world_high has_country_flag = cold_war_high has_country_modifier = cold_war_hot 
+			}
+			
+		}
+
+		THIS = { NOT = { has_country_flag = neutrality } }
+		
+		#Target country has THIS cores which is not the capital
+		any_owned_province = { is_core = THIS is_colonial = yes is_capital = no }
+		
+		#Target is not a small country
+		OR = {
+			number_of_states = 3 
+			has_country_flag = bypass_normal_CB_requirements 
+		}
+		
+		#Other conditions
+		OR = {
+			war_with = THIS
+			THIS = { military_score = 1 }
+		}
+
+		OR = {
+			war_with = THIS
+			THIS = { NOT = { has_country_modifier = no_more_war } }
+		}
+		
+		#THIS is not disarmed
+		THIS = { is_disarmed = no }
+		
+		OR = {
+			NOT = { has_country_flag = dismantle_declared }
+			THIS = { NOT = { has_country_flag = in_great_war } }
+		}
+		
+		#Is not a special tag - Use restore order instead
+		NOT = {
+			OR = {
+		
+				#All provinces in Target are cores of THIS
+				AND = {
+					NOT = {
+						any_owned_province = {
+							NOT = {
+								is_core = THIS
+							}
+						}
+					}
+					any_owned_province = { is_core = THIS }
+				}
+			
+				#Target is a Special Civil War nation
+		
+				AND = { THIS = { tag = CHI } tag = KMT }
+				AND = { THIS = { tag = KMT } tag = CHI }
+			
+				AND = { THIS = { tag = AUS } tag = ROA }
+				AND = { THIS = { tag = ROA } tag = AUS }
+			
+				AND = { THIS = { tag = DAI } tag = SVI }
+				AND = { THIS = { tag = SVI } tag = DAI }
+			
+				AND = { THIS = { tag = SKO } tag = NKO }
+				AND = { THIS = { tag = NKO } tag = SKO }
+			
+				AND = { THIS = { tag = YEM } tag = SYE }
+				AND = { THIS = { tag = SYE } tag = YEM }
+			
+				AND = { THIS = { tag = GER } tag = DDR }
+				AND = { THIS = { tag = DDR } tag = GER }
+			
+				AND = { THIS = { tag = ALG } tag = FAG }
+				AND = { THIS = { tag = FAG } tag = ALG }
+		
+			}
+		}
+		
+	}
+
+	war_name = WAR_ANNEX_ALL_COLONIAL_CORE_NAME
+
+	on_add = {
+	
+		set_country_flag = this_is_aggressor
+	
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+	
+	on_po_accepted = {
+	
+		THIS = { set_country_flag = annex_all_cores_victor }
+		country_event = 1610097
+		
+		THIS = { set_country_flag = this_won_CB }
+		set_country_flag = this_lost_CB
+		
+	}
+	
+}
+
 annex_all_cores = {
 	sprite_index = 25
 	is_triggered_only = yes
@@ -1511,7 +1659,7 @@ annex_all_cores = {
 		THIS = { NOT = { has_country_flag = neutrality } }
 		
 		#Target country has THIS cores which is not the capital
-		any_owned_province = { is_core = THIS is_capital = no }
+		any_owned_province = { is_core = THIS is_colonial = no is_capital = no }
 		
 		#Target is not a small country
 		OR = {
