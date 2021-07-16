@@ -61,6 +61,7 @@ status_quo
 gunboat 
 free_peoples
 liberate_country
+assisted_unification
 install_theocratic_regime
 install_authoritarian_regime
 install_absolute_monarchy
@@ -74,6 +75,7 @@ acquire_any_state
 acquire_colonial_state
 conquest 
 civil_war
+rebel_civil_war
 colonial_war
 cut_down_to_size 
 release_puppet
@@ -576,6 +578,54 @@ civil_war = {
 	on_add = {
 	
 		set_country_flag = this_is_aggressor
+	
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+	
+	on_po_accepted = {
+		THIS = { set_country_flag = this_won_CB }
+		set_country_flag = this_lost_CB
+	}
+	
+}
+
+# Rebel Civil war - Non aggressor war
+rebel_civil_war = {
+	sprite_index = 2
+	is_triggered_only = yes
+	months = 6
+	crisis = no
+	
+	can_use = {
+		always = no
+	}
+
+	badboy_factor = 0
+	prestige_factor = 1
+	peace_cost_factor = 1
+	penalty_factor = 1
+	is_civil_war = yes #this is a civil war
+
+	break_truce_prestige_factor = 5
+	break_truce_infamy_factor = 2
+	break_truce_militancy_factor = 2
+	truce_months = 48
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	po_annex = yes
+	
+	war_name = REBEL_CIVIL_WAR_NAME
+	
+	on_add = {
+	
+		#set_country_flag = this_is_aggressor
 	
 		move_issue_percentage = { 
 			from = jingoism 
@@ -2246,6 +2296,148 @@ liberate_country = {
 	}
 }
 
+# Assisted Unification
+assisted_unification = {
+	sprite_index = 29
+	is_triggered_only = yes
+	months = 12
+
+	badboy_factor = 2.2
+	prestige_factor = 1
+	peace_cost_factor = 75
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 48
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+	
+	po_remove_prestige = yes
+
+	tws_battle_factor = 2.0
+	
+	war_name = WAR_ASSISTED_UNIFICATION_NAME
+
+	can_use = {
+
+		THIS = { NOT = { has_country_modifier = no_more_war } }
+		THIS = { NOT = { has_country_flag = renounced_war_rights } }
+		THIS = { NOT = { has_country_flag = un_armistice } }
+
+		THIS = { 
+			OR = { 
+				government = theocracy
+				government = absolute_monarchy
+				government = populist_dictatorship
+				government = nationalist_dictatorship
+				government = presidential_dictatorship
+				government = proletarian_dictatorship
+				government = proletarian_dictatorship1
+
+				war_policy = jingoism war = yes has_country_flag = world_medium has_country_flag = world_high has_country_flag = cold_war_high has_country_modifier = cold_war_hot 
+			} 
+		}
+
+		is_vassal = no
+		
+		THIS = {
+			OR = { 
+				ai = no
+				AND = { 
+					NOT = { war_policy = pacifism }
+					NOT = { has_country_flag = international_court_of_justice }
+					NOT = { OR = { government = democracy government = hms_government government = democracy1 government = hms_government1 } }
+				}
+			}
+		}
+		
+		#Target is a Special Civil War nation
+		OR = {
+		
+			AND = { tag = CHI exists = KMT THIS = { NOT = { tag = KMT } } }
+			AND = { tag = KMT exists = CHI THIS = { NOT = { tag = CHI } } }
+			
+			AND = { tag = AUS exists = ROA THIS = { NOT = { tag = ROA } } }
+			AND = { tag = ROA exists = AUS THIS = { NOT = { tag = AUS } } }
+			
+			AND = { tag = DAI exists = SVI THIS = { NOT = { tag = SVI } } }
+			AND = { tag = SVI exists = DAI THIS = { NOT = { tag = DAI } } }
+			
+			AND = { tag = SKO exists = NKO THIS = { NOT = { tag = NKO } } }
+			AND = { tag = NKO exists = SKO THIS = { NOT = { tag = SKO } } }
+			
+			AND = { tag = YEM exists = SYE THIS = { NOT = { tag = SYE } } }
+			AND = { tag = SYE exists = YEM THIS = { NOT = { tag = YEM } } }
+			
+			AND = { tag = GER exists = DDR THIS = { NOT = { tag = DDR } } }
+			AND = { tag = DDR exists = GER THIS = { NOT = { tag = GER } } }
+			
+			AND = { tag = ALG exists = FAG THIS = { NOT = { tag = FAG } } }
+			AND = { tag = FAG exists = ALG THIS = { NOT = { tag = ALG } } }
+			
+			AND = { tag = ISR exists = PAL THIS = { NOT = { tag = PAL } } }
+			AND = { tag = PAL exists = ISR THIS = { NOT = { tag = ISR } } }
+			
+		}
+		
+		#Target does not share the same ruling party ideology
+		NOT = {
+			OR = {
+				AND = { OR = { ruling_party_ideology = populist ruling_party_ideology = nationalist ruling_party_ideology = traditionalist } THIS = { OR = { ruling_party_ideology = populist ruling_party_ideology = nationalist ruling_party_ideology = traditionalist } } }
+				AND = { OR = { ruling_party_ideology = conservative ruling_party_ideology = liberal ruling_party_ideology = big_tent } THIS = { OR = { ruling_party_ideology = conservative ruling_party_ideology = liberal ruling_party_ideology = big_tent } } }
+				AND = { OR = { ruling_party_ideology = progressive ruling_party_ideology = socialist } THIS = { OR = { ruling_party_ideology = progressive ruling_party_ideology = socialist } } }
+				AND = { OR = { ruling_party_ideology = communist_social ruling_party_ideology = communist } THIS = { OR = { ruling_party_ideology = communist_social ruling_party_ideology = communist } } }
+			}
+		}
+		
+ 	}	
+	on_add = {
+	
+		set_country_flag = this_is_aggressor
+	
+		move_issue_percentage = { 
+			from = jingoism 
+			to = pro_military
+			value = 0.25
+		}
+	}
+	
+	on_po_accepted = {
+		THIS = { set_country_flag = this_won_CB }
+		set_country_flag = this_lost_CB
+		
+		#Annex nations
+		random_owned = { limit = { owner = { tag = CHI } } owner = { KMT = { inherit = CHI relation = { who = THIS value = 200 } } } }
+		random_owned = { limit = { owner = { tag = KMT } } owner = { CHI = { inherit = KMT relation = { who = THIS value = 200 } } } }
+		
+		random_owned = { limit = { owner = { tag = AUS } } owner = { ROA = { inherit = AUS relation = { who = THIS value = 200 } } } }
+		random_owned = { limit = { owner = { tag = ROA } } owner = { AUS = { inherit = ROA relation = { who = THIS value = 200 } } } }
+		
+		random_owned = { limit = { owner = { tag = DAI } } owner = { SVI = { inherit = DAI relation = { who = THIS value = 200 } } } }
+		random_owned = { limit = { owner = { tag = SVI } } owner = { DAI = { inherit = SVI relation = { who = THIS value = 200 } } } }
+		
+		random_owned = { limit = { owner = { tag = SKO } } owner = { NKO = { inherit = SKO relation = { who = THIS value = 200 } } } }
+		random_owned = { limit = { owner = { tag = NKO } } owner = { SKO = { inherit = NKO relation = { who = THIS value = 200 } } } }
+		
+		random_owned = { limit = { owner = { tag = YEM } } owner = { SYE = { inherit = YEM relation = { who = THIS value = 200 } } } }
+		random_owned = { limit = { owner = { tag = SYE } } owner = { YEM = { inherit = SYE relation = { who = THIS value = 200 } } } }
+		
+		random_owned = { limit = { owner = { tag = GER } } owner = { DDR = { inherit = GER relation = { who = THIS value = 200 } } } }
+		random_owned = { limit = { owner = { tag = DDR } } owner = { GER = { inherit = DDR relation = { who = THIS value = 200 } } } }
+		
+		random_owned = { limit = { owner = { tag = ALG } } owner = { FAG = { inherit = ALG relation = { who = THIS value = 200 } } } }
+		random_owned = { limit = { owner = { tag = FAG } } owner = { ALG = { inherit = FAG relation = { who = THIS value = 200 } } } }
+		
+		random_owned = { limit = { owner = { tag = ISR } } owner = { PAL = { inherit = ISR relation = { who = THIS value = 200 } } } }
+		random_owned = { limit = { owner = { tag = PAL } } owner = { ISR = { inherit = PAL relation = { who = THIS value = 200 } } } }
+	}
+	
+}
+
 # Release Puppet
 release_puppet = {
 	sprite_index = 30
@@ -2659,34 +2851,35 @@ humiliate = {
 
 	can_use = {
 
-THIS = { NOT = { has_country_modifier = no_more_war } }
+		THIS = { NOT = { has_country_modifier = no_more_war } }
 
-THIS = { NOT = { has_country_flag = renounced_war_rights } }
+		THIS = { NOT = { has_country_flag = renounced_war_rights } }
 		NOT = { is_our_vassal = THIS }
-THIS = { NOT = { has_country_flag = un_armistice } }
+		THIS = { NOT = { has_country_flag = un_armistice } }
 
+		THIS = { 
+			OR = { 
+				government = theocracy
+				government = absolute_monarchy
+				government = populist_dictatorship
+				government = nationalist_dictatorship
+				government = presidential_dictatorship
+				government = proletarian_dictatorship
+				government = proletarian_dictatorship1
 
-THIS = { OR = { 
-
-government = theocracy
-government = absolute_monarchy
-government = populist_dictatorship
-government = nationalist_dictatorship
-government = presidential_dictatorship
-government = proletarian_dictatorship
-government = proletarian_dictatorship1
-
-war_policy = jingoism war = yes has_country_flag = world_medium has_country_flag = world_high has_country_flag = cold_war_high has_country_modifier = cold_war_hot } }
-
+				war_policy = jingoism war = yes has_country_flag = world_medium has_country_flag = world_high has_country_flag = cold_war_high has_country_modifier = cold_war_hot 
+			} 
+		}
 
 		is_vassal = no
+		
 		THIS = {
 			OR = { 
 				ai = no
 				AND = { 
 					NOT = { war_policy = pacifism }
-NOT = { has_country_flag = international_court_of_justice }
-NOT = { OR = { government = democracy government = hms_government government = democracy1 government = hms_government1 } }
+					NOT = { has_country_flag = international_court_of_justice }
+					NOT = { OR = { government = democracy government = hms_government government = democracy1 government = hms_government1 } }
 				}
 			}
 		}
