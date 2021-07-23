@@ -25,11 +25,20 @@ political_decisions = {
 				relation = { who = THIS value = 150 }
 			}
 			
-			#Has the right ideology
-			OR = {
-				ruling_party_ideology = socialist
-				ruling_party_ideology = communist
-				ruling_party_ideology = communist_social
+			#Have not good relations with the other bloc leader
+			any_greater_power = { 
+				has_country_modifier = democratic_bloc_leader
+				NOT = { relation = { who = THIS value = 150 } }
+			}
+			
+			#Has the right ideology (non liberal and theocratic)
+			NOT = {
+				OR = {
+					ruling_party_ideology = progressive
+					ruling_party_ideology = big_tent
+					ruling_party_ideology = liberal
+					ruling_party_ideology = traditionalist
+				}
 			}
 
 		}
@@ -125,12 +134,19 @@ political_decisions = {
 				relation = { who = THIS value = 150 }
 			}
 			
-			#Has the right ideology
-			OR = {
-				ruling_party_ideology = conservative
-				ruling_party_ideology = liberal
-				ruling_party_ideology = progressive
-				ruling_party_ideology = populist
+			#Have not good relations with the other bloc leader
+			any_greater_power = { 
+				has_country_modifier = communist_bloc_leader
+				NOT = { relation = { who = THIS value = 150 } }
+			}
+			
+			#Has the right ideology (non communist or theocratic)
+			NOT = {
+				OR = {
+					ruling_party_ideology = communist
+					ruling_party_ideology = communist_social
+					ruling_party_ideology = traditionalist
+				}
 			}
 
 		}
@@ -225,8 +241,24 @@ political_decisions = {
 
 			is_vassal = no
 			
-			#Have bad relations with the bloc leader and not in their Sphere
+			
 			OR = { 
+			
+				#Have good relations with both blocs and is not in a sphere of influence of a bloc leader
+				AND = {
+					any_greater_power = { 
+						has_country_modifier = democratic_bloc_leader
+						relation = { who = THIS value = 175 }
+						NOT = { is_sphere_leader_of = THIS }
+					}
+					any_greater_power = { 
+						has_country_modifier = communist_bloc_leader
+						relation = { who = THIS value = 175 }
+						NOT = { is_sphere_leader_of = THIS }
+					}
+				}
+			
+				#Have bad relations with the bloc leader and not in their Sphere
 				AND = {
 					has_country_flag = joindemo
 					#Demo bloc
@@ -245,15 +277,10 @@ political_decisions = {
 						NOT = { relation = { who = THIS value = 0 } }
 					}
 				}
+				
 			}
 			
-			#Has the right ideology
-			OR = {
-				ruling_party_ideology = socialist
-				ruling_party_ideology = nationalist
-				ruling_party_ideology = big_tent
-				ruling_party_ideology = traditionalist
-			}
+			#No ideology restriction
 
 		}
 		effect = {
