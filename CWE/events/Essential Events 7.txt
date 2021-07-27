@@ -4167,406 +4167,282 @@ ai_chance = { factor = 0.1 }
 #Austria Hungary - From Hungary
 country_event = {
 	id = 1412248
-title = "Desperate times call for desperate measures"
+	title = "Desperate times call for desperate measures"
 	desc = EVTDESC1412248
 	picture = "kuk_union"
 
-fire_only_once = yes
+	fire_only_once = yes
 
-trigger = {
-tag = HUN
-AUS = { is_vassal = no }
-AUS = { ai = yes }
-government = hms_government
-AUS = { exists = yes }
-AUS = { has_unclaimed_cores = no }
-AUS = { government = democracy }
-NOT = { year = 1990 }
-}
-
-mean_time_to_happen = { 
-months = 5
+	trigger = {
+		tag = HUN
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		government = hms_government
+		is_vassal = no
+		war = no
+		
+		AUS = { 
+			exists = yes 
+			
+			government = democracy
+			is_vassal = no 
+			war = no
+			
+			ai = yes 
+			
+			#Occupation of Austria has ended
+			owns = 619 
+			owns = 613 
+			owns = 612 
+			owns = 616
+		}
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
 	}
 
-option = {
-name = "Propose to Austria"
-AUS = { country_event = 1412249 }
-ai_chance = { factor = 0.9 }
-		}
+	mean_time_to_happen = { 
+		months = 5
+	}
 
-option = {
-name = "We are not interested"
-ai_chance = { factor = 0.1 }
-		}
+	option = {
+		name = "Propose to Austria (80% chance)"
+		AUS = { country_event = 1412249 }
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "We are not interested"
+		prestige = 100
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
 #Austria Hungary - 2
 country_event = {
 	id = 1412249
-title = "The Hungarian Proposal"
+	title = "The Hungarian Proposal"
 	desc = EVTDESC1412248
 	picture = "kuk_union"
 
-is_triggered_only = yes 
+	is_triggered_only = yes 
 
-option = {
-name = "Accept"
-HUN = { country_event = 1412250 }
-ai_chance = { factor = 0.8 }
-		}
+	option = {
+		name = "Accept"
+		HUN = { country_event = 1412250 }
+		ai_chance = { factor = 0.8 }
+	}
 
-option = {
-name = "Reject"
-prestige = 10
-relation = { who = HUN value = -50 }
-ai_chance = { factor = 0.2 }
-		}
+	option = {
+		name = "Reject"
+		prestige = 100
+		relation = { who = HUN value = -50 }
+		ai_chance = { factor = 0.2 }
+	}
 
 }
 
 #Austria Hungary - 3
 country_event = {
 	id = 1412250
-title = "Austria-Hungary"
+	title = "Austria-Hungary"
 	desc = EVTDESC1412250
 	picture = "kuk_union_2"
 
-is_triggered_only = yes 
+	is_triggered_only = yes 
 
-option = {
-name = "Long Live the King!"
-change_tag = KUK
-government = hms_government
-primary_culture = austrian_german
-add_accepted_culture = hungarian
-add_accepted_culture = german
-inherit = AUS
-any_owned = { limit = { OR = { is_core = AUS is_core = HUN } } add_core = KUK }
-capital = 619
+	option = {
+		name = "Long Live the King!"
+		
+		inherit = AUS
+		
+		#Become Austria Hungary
+		change_tag = KUK
+		
+		KUK = {
+			government = hms_government
+			primary_culture = austrian_german
+			add_accepted_culture = hungarian
+			add_accepted_culture = german
+
+			AUS = { all_core = { add_core = KUK } }
+			HUN = { all_core = { add_core = KUK } }
+			
+			capital = 619
 		}
-}
-
-#Indonesia wins the war
-country_event = {
-	id = 1412251
-title = "The Indonesian National Revolution succeeds"
-	desc = EVTDESC1412251
-	picture = "dutcheast_indies"
-
-fire_only_once = yes
-
-trigger = {
-tag = NET
-has_country_flag = is_disabled_for_now
-NOT = { war_with = IDO }
-IDO = { is_vassal = no }
-any_owned_province = { is_core = IDO NOT = { is_core = WPA } }
-NOT = { year = 1990 }
-}
-
-option = {
-name = "We have lost our colonial empire"
-prestige = -100
-relation = { who = IDO value = -100 }
-diplomatic_influence = { who = IDO value = -200 }
-any_owned = { limit = { is_core = IDO NOT = { is_core = WPA } } secede_province = IDO }
-		}
-}
+		
+	}
 
 #Vassals pay overlord
 country_event = {
 	id = 1412252
-title = "$COUNTRY$'s tax contribution"
+	title = "$COUNTRY$'s tax contribution"
 	desc = EVTDESC1412252
 	picture = "vts"
 
-
-
-trigger = {
-is_vassal = yes
-overlord = { has_country_flag = vtslow }
-NOT = { has_country_modifier = vts_default }
-NOT = { has_country_modifier = vts_timer }
-money = 250000
-NOT = { overlord = { ai = yes money = 20000000 } }
-}
-
-option = {
-name = "Pay the tax"
-
-add_country_modifier = { name = vts_timer duration = 365 }
-
-#250K to 500K
-random_owned = { 
-
-limit = { 
-owner = { money = 250000 NOT = { money = 500000 } } 
-} 
-
-
-
-owner = { money = -50000 overlord = { money = 50000 } }
-
-}
-
-#500K to 750K
-random_owned = { 
-
-limit = { 
-owner = { money = 500000 NOT = { money = 750000 } } 
-} 
-
-
-
-owner = { money = -75000 overlord = { money = 75000 } }
-
-}
-
-
-#750K to 1000K
-random_owned = { 
-
-limit = { 
-owner = { money = 750000 NOT = { money = 1000000 } } 
-} 
-
-
-
-owner = { money = -100000 overlord = { money = 100000 } }
-
-}
-
-### 1000K ###
-
-#1000K to 1250K
-random_owned = { 
-
-limit = { 
-owner = { money = 1000000 NOT = { money = 1250000 } } 
-} 
-
-
-
-owner = { money = -125000 overlord = { money = 125000 } }
-
-}
-
-#1250K to 1500K
-random_owned = { 
-
-limit = { 
-owner = { money = 1250000 NOT = { money = 1500000 } } 
-} 
-
-
-
-owner = { money = -150000 overlord = { money = 150000 } }
-
-}
-
-
-#1500K to 1750K
-random_owned = { 
-
-limit = { 
-owner = { money = 1500000 NOT = { money = 1750000 } } 
-} 
-
-
-
-owner = { money = -175000 overlord = { money = 175000 } }
-
-}
-
-#1750K to 2000K
-random_owned = { 
-
-limit = { 
-owner = { money = 1750000 NOT = { money = 2000000 } } 
-} 
-
-
-
-owner = { money = -200000 overlord = { money = 200000 } }
-
-}
-
-
-### 2000K ###
-
-#2000K to 2250K
-random_owned = { 
-
-limit = { 
-owner = { money = 2000000 NOT = { money = 2250000 } } 
-} 
-
-
-
-owner = { money = -225000 overlord = { money = 225000 } }
-
-}
-
-#2250K to 2500K
-random_owned = { 
-
-limit = { 
-owner = { money = 2250000 NOT = { money = 2500000 } } 
-} 
-
-
-
-owner = { money = -250000 overlord = { money = 250000 } }
-
-}
-
-
-#2500K to 2750K
-random_owned = { 
-
-limit = { 
-owner = { money = 2500000 NOT = { money = 2750000 } } 
-} 
-
-
-
-owner = { money = -275000 overlord = { money = 275000 } }
-
-}
-
-#2750K to 3000K
-random_owned = { 
-
-limit = { 
-owner = { money = 2750000 NOT = { money = 3000000 } } 
-} 
-
-
-
-owner = { money = -300000 overlord = { money = 300000 } }
-
-}
-
-### 3000K ###
-
-#3000K to 3250K
-random_owned = { 
-
-limit = { 
-owner = { money = 3000000 NOT = { money = 3250000 } } 
-} 
-
-
-
-owner = { money = -325000 overlord = { money = 325000 } }
-
-}
-
-#3250K to 3500K
-random_owned = { 
-
-limit = { 
-owner = { money = 3250000 NOT = { money = 3500000 } } 
-} 
-
-
-
-owner = { money = -350000 overlord = { money = 350000 } }
-
-}
-
-
-#3500K to 3750K
-random_owned = { 
-
-limit = { 
-owner = { money = 3500000 NOT = { money = 3750000 } } 
-} 
-
-
-
-owner = { money = -375000 overlord = { money = 375000 } }
-
-}
-
-#3750K to 4000K
-random_owned = { 
-
-limit = { 
-owner = { money = 3750000 NOT = { money = 4000000 } } 
-} 
-
-
-
-owner = { money = -400000 overlord = { money = 400000 } }
-
-}
-
-### 4000K ###
-
-#4000K to 4250K
-random_owned = { 
-
-limit = { 
-owner = { money = 4000000 NOT = { money = 4250000 } } 
-} 
-
-
-
-owner = { money = -425000 overlord = { money = 425000 } }
-
-}
-
-#4250K to 4500K
-random_owned = { 
-
-limit = { 
-owner = { money = 4250000 NOT = { money = 4500000 } } 
-} 
-
-
-
-owner = { money = -450000 overlord = { money = 450000 } }
-
-}
-
-
-#4500K to 4750K
-random_owned = { 
-
-limit = { 
-owner = { money = 4500000 NOT = { money = 4750000 } } 
-} 
-
-
-
-owner = { money = -475000 overlord = { money = 475000 } }
-
-}
-
-#4750K to 5000K
-random_owned = { 
-
-limit = { 
-owner = { money = 4750000 } 
-} 
-
-
-
-owner = { money = -500000 overlord = { money = 500000 } }
-
-}
-
-ai_chance = { factor = 1 }
+	trigger = {
+		is_vassal = yes
+		overlord = { has_country_flag = vtslow }
+		NOT = { has_country_modifier = vts_default }
+		NOT = { has_country_modifier = vts_timer }
+		money = 250000
+		NOT = { overlord = { ai = yes money = 20000000 } }
+	}
+
+	option = {
+		name = "Pay the tax"
+
+		add_country_modifier = { name = vts_timer duration = 365 }
+
+		#Send construction goods
+		random_owned = { limit = { owner = { copper_wire = 25 } } owner = { overlord = { copper_wire = 25 } } }
+		random_owned = { limit = { owner = { fuel = 25 } } owner = { overlord = { fuel = 25 } } }
+		random_owned = { limit = { owner = { lumber = 25 } } owner = { overlord = { lumber = 25 } } }
+		random_owned = { limit = { owner = { inorganic_chemicals = 25 } } owner = { overlord = { inorganic_chemicals = 25 } } }
+		random_owned = { limit = { owner = { plastics = 25 } } owner = { overlord = { plastics = 25 } } }
+		random_owned = { limit = { owner = { machine_parts = 25 } } owner = { overlord = { machine_parts = 25 } } }
+		random_owned = { limit = { owner = { aluminium = 25 } } owner = { overlord = { aluminium = 25 } } }
+		random_owned = { limit = { owner = { integrated_circuits = 25 } } owner = { overlord = { integrated_circuits = 25 } } }
+		random_owned = { limit = { owner = { electric_gear = 25 } } owner = { overlord = { electric_gear = 25 } } }
+		random_owned = { limit = { owner = { optics = 25 } } owner = { overlord = { optics = 25 } } }
+		random_owned = { limit = { owner = { cement = 25 } } owner = { overlord = { cement = 25 } } }
+
+		#250K to 500K
+		random_owned = { 
+			limit = { owner = { money = 250000 NOT = { money = 500000 } } } 
+			owner = { money = -50000 overlord = { money = 50000 } }
 		}
 
-option = {
-name = "Default on the payment"
-overlord = { relation = { who = THIS value = -50 } }
-add_country_modifier = { name = vts_default duration = 365 }
-ai_chance = { factor = 0 }
+		#500K to 750K
+		random_owned = { 
+			limit = { owner = { money = 500000 NOT = { money = 750000 } } } 
+			owner = { money = -75000 overlord = { money = 75000 } }
 		}
+
+
+		#750K to 1000K
+		random_owned = { 
+			limit = { owner = { money = 750000 NOT = { money = 1000000 } } } 
+			owner = { money = -100000 overlord = { money = 100000 } }
+		}
+
+		### 1000K ###
+
+		#1000K to 1250K
+		random_owned = { 
+			limit = { owner = { money = 1000000 NOT = { money = 1250000 } } } 
+			owner = { money = -125000 overlord = { money = 125000 } }
+		}
+
+		#1250K to 1500K
+		random_owned = { 
+			limit = { owner = { money = 1250000 NOT = { money = 1500000 } } } 
+			owner = { money = -150000 overlord = { money = 150000 } }
+		}
+
+		#1500K to 1750K
+		random_owned = { 
+			limit = { owner = { money = 1500000 NOT = { money = 1750000 } } } 
+			owner = { money = -175000 overlord = { money = 175000 } }
+		}
+
+		#1750K to 2000K
+		random_owned = { 
+			limit = { owner = { money = 1750000 NOT = { money = 2000000 } } } 
+			owner = { money = -200000 overlord = { money = 200000 } }
+		}
+
+		### 2000K ###
+
+		#2000K to 2250K
+		random_owned = { 
+			limit = { owner = { money = 2000000 NOT = { money = 2250000 } } } 
+			owner = { money = -225000 overlord = { money = 225000 } }
+		}
+
+		#2250K to 2500K
+		random_owned = { 
+			limit = { owner = { money = 2250000 NOT = { money = 2500000 } } } 
+			owner = { money = -250000 overlord = { money = 250000 } }
+		}
+
+		#2500K to 2750K
+		random_owned = { 
+			limit = { owner = { money = 2500000 NOT = { money = 2750000 } } } 
+			owner = { money = -275000 overlord = { money = 275000 } }
+
+		}
+
+		#2750K to 3000K
+		random_owned = { 
+			limit = { owner = { money = 2750000 NOT = { money = 3000000 } } } 
+			owner = { money = -300000 overlord = { money = 300000 } }
+		}
+
+		### 3000K ###
+
+		#3000K to 3250K
+		random_owned = { 
+			limit = { owner = { money = 3000000 NOT = { money = 3250000 } } } 
+			owner = { money = -325000 overlord = { money = 325000 } }
+		}
+
+		#3250K to 3500K
+		random_owned = { 
+			limit = { owner = { money = 3250000 NOT = { money = 3500000 } } } 
+			owner = { money = -350000 overlord = { money = 350000 } }
+		}
+
+		#3500K to 3750K
+		random_owned = { 
+			limit = { owner = { money = 3500000 NOT = { money = 3750000 } } } 
+			owner = { money = -375000 overlord = { money = 375000 } }
+		}
+
+		#3750K to 4000K
+		random_owned = { 
+			limit = { owner = { money = 3750000 NOT = { money = 4000000 } } } 
+			owner = { money = -400000 overlord = { money = 400000 } }
+
+		}
+
+		### 4000K ###
+
+		#4000K to 4250K
+		random_owned = { 
+			limit = { owner = { money = 4000000 NOT = { money = 4250000 } } } 
+			owner = { money = -425000 overlord = { money = 425000 } }
+		}
+
+		#4250K to 4500K
+		random_owned = { 
+			limit = { owner = { money = 4250000 NOT = { money = 4500000 } } } 
+			owner = { money = -450000 overlord = { money = 450000 } }
+		}
+
+		#4500K to 4750K
+		random_owned = { 
+			limit = { owner = { money = 4500000 NOT = { money = 4750000 } } } 
+			owner = { money = -475000 overlord = { money = 475000 } }
+		}
+
+		#4750K to 5000K
+		random_owned = { 
+			limit = { owner = { money = 4750000 } } 
+			owner = { money = -500000 overlord = { money = 500000 } }
+		}
+
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "Default on the payment"
+		overlord = { relation = { who = THIS value = -50 } }
+		add_country_modifier = { name = vts_default duration = 365 }
+		ai_chance = { factor = 0 }
+	}
 
 }
 
