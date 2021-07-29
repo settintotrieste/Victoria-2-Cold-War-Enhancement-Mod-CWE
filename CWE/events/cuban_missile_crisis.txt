@@ -1,417 +1,691 @@
+#USSR places missiles in Cuba - RUS
 country_event = {
-  id = 8500201
-  title = EVT_8500201_NAME
-  desc = EVT_8500201_DESC
-  picture = "nwo2_castro_with_khrushchev"
-  fire_only_once = yes
+	id = 8500201
+	title = "Nuclear Missiles in Cuba?"
+	desc = EVT_8500201_DESC
+	picture = "nwo2_castro_with_khrushchev"
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = RUS
-	year = 1962 
-	NOT = { year = 1965 }
-    	government = proletarian_dictatorship
-	CUB = { government = proletarian_dictatorship }
-	USA = { government = democracy }
-	NOT = { has_global_flag = us_accepted_castro }
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8500201_A
-	CUB = { country_event = 8500202 } 
-	ai_chance = { factor = 0.9 }
-  }
-
-  option = {
-    name = EVT_8500201_B
-	prestige = -100
-	relation = { who = USA value = 50 }
-	ai_chance = { factor = 0.1 }
-  }
-}
-country_event = {
-  id = 8500202
-  title = EVT_8500202_NAME
-  desc = EVT_8500202_DESC
-  picture = "nwo2_castro_with_khrushchev"
-  is_triggered_only = yes # CUB
-
-  option = {
-    name = EVT_8500202_A
-	set_global_flag = missiles_in_cuba 
-	relation = { who = RUS value = 200 }
-	create_alliance = RUS
-	RUS = { diplomatic_influence = { who = CUB value = 200 } }
-	USA = { country_event = 8500203 } 
-	ai_chance = { factor = 0.9 }
-  }
-
-  option = {
-    name = EVT_8500202_B
-	relation = { who = RUS value = -100 } 
-	diplomatic_influence = { who = CUB value = -100 }
-	ai_chance = { factor = 0.1 }
-  }
-}
-country_event = {
-  id = 8500203
-  title = EVT_8500203_NAME
-  desc = EVT_8500203_DESC
-  picture = "nwo2_cuban_missile_site"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8500203_A
-	country_event = { id = 8500204 days = 5 }
-	ai_chance = { factor = 0.9 }
-  }
-
-  option = {
-    name = EVT_8500203_B
-	prestige = -200
-	any_pop = { militancy = 2.0 consciousness = 3 }
-	RUS  = { country_event = 8225000 } 
-	ai_chance = { factor = 0.1 }
-  }
-}
-country_event = {
-  id = 8500204
-  title = EVT_8500204_NAME
-  desc = EVT_8500204_DESC
-  picture = "nwo2_cuban_missile_crisis_discussion"
-  is_triggered_only = yes # USA
-
-  option = {
-    name = EVT_8500204_A
-	any_pop = { consciousness = 2 }
-	relation = { who = RUS value = -50 } 
-	RUS = { country_event = { id = 8500207 days = 10 } }
-	ai_chance = { factor = 0.7 }
-  }
-
-  option = {
-    name = EVT_8500204_B
-	prestige = -200
-	any_pop = { militancy = 2.0 }
-	relation = { who = RUS value = 100 } 
-	RUS  = { country_event = 8225000 } 
-	ai_chance = { factor = 0.1 }
-  }
-
-  option = {
-    name = EVT_8500204_C
-	any_pop = { militancy = 1.5 consciousness = 1 }
-	relation = { who = RUS value = -10 } 
-	RUS = { country_event = { id = 8500205 days = 10 } }
-	ai_chance = { factor = 0.1 }
-  }
-
-  option = {
-    name = EVT_8500204_D
-	RUS = { create_alliance = CUB }
-	war = {
-	target = CUB
-	attacker_goal = { casus_belli = install_democracy }
-	defender_goal = { casus_belli = status_quo }
-	call_ally = yes
+	trigger = {
+		tag = RUS
+		year = 1962 
+		NOT = { year = 1990 }
+	
+		government = proletarian_dictatorship
+		is_vassal = no
+    	war = no
+		
+		#Cuba is communist
+		CUB = {
+			government = proletarian_dictatorship
+			is_vassal = no
+			war = no
+		
+			#USA tried to overthrow the Cuban government
+			has_country_flag = bay_of_pigs_invasion_flag
+		}
+		
+		#USA is hostile with Cuba
+		NOT = { has_global_flag = us_accepted_castro }
+		
+		#Turkey is in the US sphere or in NATO or allied with the USA
+		TUR = {
+			OR = { 
+				is_vassal = no
+				vassal_of = USA
+			}
+			OR = { 
+				in_sphere = TUR
+				has_country_modifier = alliance_nato
+				alliance_with = USA
+			}
+		}
+		
+		#Berlin is divided
+		GER = { government = democracy is_vassal = no owns = 549 }
+		DDR = { vassal_of = RUS owns = 551 }
+		
+		#Khruschev and Kennedy
+		has_country_flag = nikita_khrushchev
+		USA = { ruling_party_ideology = liberal }
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
 	}
-	relation = { who = RUS value = -200 } 
-	any_pop = { militancy = -1.0 consciousness = -1 }
-	RUS = { country_event = { id = 8500206 days = 10 } }
-	ai_chance = { factor = 0.1 }
-  }
-}
-country_event = {
-  id = 8500205
-  title = EVT_8500205_NAME
-  desc = EVT_8500205_DESC
-  picture = "nwo2_cuban_missile_crisis_stevenson"
-  is_triggered_only = yes # RUS
 
-  option = {
-    name = EVT_8500205_A
-	badboy = 10
-	relation = { who = USA value = -50 } 
-	ai_chance = { factor = 0.9 }
-  }
+	mean_time_to_happen = { months = 9 }
 
-  option = {
-    name = EVT_8500205_B
-	any_pop = { consciousness = 1 }
-	prestige = -200
-	clr_global_flag = missiles_in_cuba 
-	RUS  = { country_event = 8225001 } 
-	ai_chance = { factor = 0.1 }
-  }
-}
-country_event = {
-  id = 8500206
-  title = EVT_8500206_NAME
-  desc = EVT_8500206_DESC
-  picture = "nwo2_cuban_missile_crisis_attack"
-  is_triggered_only = yes # RUS
-
-  option = {
-    name = EVT_8500206_A
-	badboy = 10 
-	any_pop = { consciousness = 1 }
-	ai_chance = { factor = 0.6 }
-  }
-
-  option = {
-    name = EVT_8500206_B
-	any_pop = { militancy = 1.5 }
-	prestige = -300
-	clr_global_flag = missiles_in_cuba 
-	RUS  = { country_event = 8225001 } 
-	end_war = USA
-	ai_chance = { factor = 0.4 }	
-  }
-}
-country_event = {
-  id = 8500207
-  title = EVT_8500207_NAME
-  desc = EVT_8500207_DESC
-  picture = "nwo2_cuban_missile_crisis_quarantine"
-  is_triggered_only = yes # RUS
-
-  option = {
-    name = EVT_8500207_A
-	badboy = 5
-	USA = { country_event = { id = 8500208 days = 10 } }
-	relation = { who = USA value = -50 } 
-	ai_chance = { factor = 0.7 }
-  }
-
-  option = {
-    name = EVT_8500207_B
-	badboy = -10 
-	prestige = -300
-	relation = { who = USA value = 100 } 
-	clr_global_flag = missiles_in_cuba 
-	RUS  = { country_event = 8225001 } 
-	ai_chance = { factor = 0.2 }
-  }
-
-  option = {
-    name = EVT_8500207_C
-	war = {
-	target = USA
-	attacker_goal = { casus_belli = dismantle_cb }
-	defender_goal = { casus_belli = dismantle_cb }
-	call_ally = yes
+	option = {
+		name = "Propose this to Cuba (90% chance)"
+		CUB = { country_event = 8500202 } 
+		ai_chance = { factor = 0.9 }
 	}
-	any_pop = { militancy = 1.5 }
-	ai_chance = { factor = 0.1 }
-  }
-}
-country_event = {
-  id = 8500208
-  title = EVT_8500208_NAME
-  desc = EVT_8500208_DESC
-  picture = "nwo2_cuban_missile_crisis_danger"
-  fire_only_once = yes
-  is_triggered_only = yes # USA
-
-  option = {
-    name = EVT_8500208_A
-	ai_chance = { factor = 0.7 } 
-	RUS = { country_event = 8500209 }
-  }
-
-  option = {
-    name = EVT_8500208_B
-	badboy = -10 
-	relation = { who = RUS value = 100 } 
-	RUS  = { country_event = 8225000 } 
-	ai_chance = { factor = 0.2 }
-  }
-
-  option = {
-    name = EVT_8500208_C
-	RUS = { create_alliance = CUB }
-	war = {
-	target = CUB
-	attacker_goal = { casus_belli = install_democracy }
-	defender_goal = { casus_belli = status_quo }
-	call_ally = yes
+	
+	option = {
+		name = "Let's not accidentally trigger a nuclear war"
+		prestige_factor = -0.05
+		ai_chance = { factor = 0.1 }
 	}
-	any_pop = { militancy = 1.2 consciousness = 1 }
-	ai_chance = { factor = 0.1 }
-  }
+	
 }
+
+#USSR places missiles in Cuba - CUB
 country_event = {
-  id = 8500209
-  title = EVT_8500209_NAME
-  desc = EVT_8500209_DESC
-  picture = "nwo2_kennedy_khrushchev"
-  is_triggered_only = yes # RUS
+	id = 8500202
+	title = "Soviet Nuclear Missiles in Cuba?"
+	desc = EVT_8500202_DESC
+	picture = "nwo2_castro_with_khrushchev"
+	
+	is_triggered_only = yes # CUB
 
-  option = {
-	name = EVT_8500209_A #Demand withdrawal of American missiles
-	ai_chance = { factor = 0.6 }
-	relation = { who = USA value = -10 } 
-	USA = { country_event = 8500212 }
-  }
-
-  option = {
-    name = EVT_8500209_B #Demand economic concessions
-	badboy = -20 relation = { who = USA value = 50 } 
-	USA = { country_event = 8500210 }
-	ai_chance = { factor = 0.2 }
-  }
-
-  option = {
-    name = EVT_8500209_C #Demand withdrawal from Berlin
-	ai_chance = { factor = 0.1 }
-	relation = { who = USA value = -100 } 
-	USA = { country_event = 8500211 }
-  }
-
-  option = {
-    name = EVT_8500209_D #Nothing can buy our decision
-	relation = { who = USA value = -200 } 
-	war = {
-	target = USA
-	attacker_goal = { casus_belli = dismantle_cb }
-	defender_goal = { casus_belli = dismantle_cb }
-	call_ally = yes
+	option = {
+		name = "Accept their generous offer!"
+		
+		set_global_flag = missiles_in_cuba 
+		
+		#Gain relations with the USSR
+		create_alliance = RUS
+		RUS = { 
+			relation = { who = CUB value = 200 }
+			diplomatic_influence = { who = CUB value = 200 }
+		}
+		
+		#US reaction
+		USA = { set_country_flag = USA_CMC_choice_flag } 
+		ai_chance = { factor = 0.9 }
 	}
-	any_pop = { militancy = 1.0 consciousness = 1 }
-	ai_chance = { factor = 0.1 }
-  }
-}
-country_event = {
-  id = 8500210
-  title = EVT_8500210_NAME
-  desc = EVT_8500210_DESC
-  picture = "nwo2_kennedy_khrushchev"
-  is_triggered_only = yes # USA
 
-  option = {
-    name = EVT_8500210_A
-	prestige = -400
-	USA = { money = -2000000 }
-	RUS = { money = 2000000 }
-	relation = { who = RUS value = 50 } 
-	ai_chance = { factor = 0.8 }
-  }
-
-  option = {
-    name = EVT_8500210_B
-	any_pop = { militancy = 1.0 consciousness = 1 }
-	RUS = { country_event = { id = 8500213 days = 10 } }
-	USA = { country_event = { id = 8500214 days = 10 } }
-	ai_chance = { factor = 0.2 }
-  }
-}
-country_event = {
-  id = 8500211
-  title = EVT_8500211_NAME
-  desc = EVT_8500211_DESC
-  picture = "nwo2_kennedy_khrushchev"
-  is_triggered_only = yes # USA
-
-  option = {
-    name = EVT_8500211_A
-	prestige = -400
-	clr_global_flag = divided_berlin 
-	clr_global_flag = missiles_in_cuba 
-	RUS  = { country_event = 8225000 } 
-	GER = { 549 = { secede_province = DDR } }
-	ai_chance = { factor = 0.8 }
-  }
-
-  option = {
-    name = EVT_8500211_C
-	war = {
-	target = RUS
-	attacker_goal = { casus_belli = dismantle_cb }
-	defender_goal = { casus_belli = dismantle_cb }
-	call_ally = yes
+	option = {
+		name = "We can defend ourselves with conventional forces"
+		prestige = 100
+		
+		FROM = { 
+			relation = { who = THIS value = -50 } 
+			diplomatic_influence = { who = THIS value = -50 }
+		}
+		
+		ai_chance = { factor = 0.1 }
 	}
-	any_pop = { consciousness = 1 }
-	ai_chance = { factor = 0.2 }
-  }
+	
 }
+
+#US reaction to Soviet nukes in Cuba
 country_event = {
-  id = 8500212
-  title = EVT_8500212_NAME
-  desc = EVT_8500212_DESC
-  picture = "nwo2_kennedy_khrushchev"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8500212_A
-	prestige = -100
-	relation = { who = RUS value = 100 } 
-	clr_global_flag = american_nuclear_advantage 
-	clr_global_flag = missiles_in_cuba 
-	RUS = { country_event =  { id = 8500213 days = 10 } }
-	USA = { country_event =  { id = 8500214 days = 10 } }
-	ai_chance = { factor = 0.9 }
-  }
-
-  option = {
-    name = EVT_8500212_B
-	RUS = { create_alliance = CUB }
-	war = {
-	target = CUB
-	attacker_goal = { casus_belli = install_democracy }
-	defender_goal = { casus_belli = status_quo }
-	call_ally = yes
+	id = 8500203
+	title = "Soviet Nuclear Missiles in Cuba"
+	desc = EVT_8500203_DESC
+	picture = "nwo2_cuban_missile_site"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = USA
+		year = 1962 
+		NOT = { year = 1990 }
+	
+		government = democracy
+		is_vassal = no
+    	war = no
+		
+		#Cuba is communist
+		CUB = {
+			government = proletarian_dictatorship
+			is_vassal = no
+			war = no
+		
+			#USA tried to overthrow the Cuban government
+			has_country_flag = bay_of_pigs_invasion_flag
+		}
+		
+		#CMC triggered
+		has_country_flag = USA_CMC_choice_flag
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
 	}
-	any_pop = { militancy = 1.2 }
-	ai_chance = { factor = 0.1 }
-  }
+
+	mean_time_to_happen = { months = 0.5 }
+
+	option = {
+		name = "We will not stand for this!"
+		
+		relation = { who = RUS value = -50 }
+		relation = { who = CUB value = -50 }
+		
+		set_country_flag = USA_CMC_opposition_flag
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Accept this development"
+		prestige_factor = -0.05
+		
+		#Domestic reaction - Republicans gain in strength
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = 5
+			consciousness = 5
+			ideology = { factor = 0.2 value = conservative }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = 6
+			consciousness = 6
+			ideology = { factor = 0.1 value = conservative }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = 3
+			consciousness = 3
+			ideology = { factor = 0.05 value = conservative }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
 }
-country_event = {
-  id = 8500213
-  title = EVT_8500213_NAME
-  desc = EVT_8500213_DESC
-  picture = "nwo2_cuban_missile_crisis_aftermath"
-  is_triggered_only = yes # RUS
 
-  option = {
-    name = EVT_8500213_A
-	relation = { who = RUS value = 75 }
-	any_pop = { militancy = 0.5 consciousness = 1 }
-	RUS  = { country_event = 8225001 } 
-  }
+#The Cuban Missile Crisis - USA
+country_event = {
+	id = 8500204
+	title = "The Cuban Missile Crisis"
+	desc = EVT_8500204_DESC
+	picture = "nwo2_cuban_missile_crisis_discussion"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 1962 
+		NOT = { year = 1990 }
+	
+		government = democracy
+		is_vassal = no
+    	war = no
+		
+		#Cuba is communist
+		CUB = {
+			government = proletarian_dictatorship
+			is_vassal = no
+			war = no
+		
+			#USA tried to overthrow the Cuban government
+			has_country_flag = bay_of_pigs_invasion_flag
+		}
+		
+		#CMC triggered
+		has_country_flag = USA_CMC_opposition_flag
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
+	}
+
+	mean_time_to_happen = { months = 0.1 }
+
+	option = {
+		name = "Impose a naval quarantine around Cuba!"
+		
+		#Domestic reaction - Democrats gain in strength
+		any_pop = { 
+			limit = { strata = rich }
+			consciousness = 8
+			ideology = { factor = 0.05 value = liberal }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			consciousness = 6
+			ideology = { factor = 0.05 value = liberal }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			consciousness = 4
+			ideology = { factor = 0.05 value = liberal }
+		}
+		
+		#Cuban relations
+		relation = { who = CUB value = -50 } 
+		diplomatic_influence = { who = CUB value = -50 } 
+		
+		#Create US embargo
+		CUB = { country_event = 1412150 }
+		
+		#USSR's reaction
+		RUS = { country_event = 8500207 }
+		
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "Protest the matter in the UN"
+		prestige_factor = -0.1
+
+		relation = { who = RUS value = 50 } 
+		relation = { who = CUB value = 50 }
+		
+		#Domestic reaction - Republicans gain in strength
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = 5
+			consciousness = 5
+			ideology = { factor = 0.2 value = conservative }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = 6
+			consciousness = 6
+			ideology = { factor = 0.1 value = conservative }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = 3
+			consciousness = 3
+			ideology = { factor = 0.05 value = conservative }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+	option = {
+		name = "Carry out an airstrike in Cuba!"
+		
+		#Pacifists are furious
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				issue = pacifism
+			}
+			scaled_consciousness = {
+				factor = 10
+				issue = pacifism
+			}
+		}
+		
+		#Start a war against Cuba
+		CUB = { create_alliance = RUS }
+		war = {
+			target = CUB
+			attacker_goal = { casus_belli = install_democracy }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = yes
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
 }
-country_event = {
-  id = 8500214
-  title = EVT_8500214_NAME
-  desc = EVT_8500214_DESC
-  picture = "nwo2_cuban_missile_crisis_aftermath"
-  is_triggered_only = yes # USA
 
-  option = {
-    name = EVT_8500214_A
-	relation = { who = USA value = 75 }
-	any_pop = { militancy = -1.0 consciousness = -1 }
-  }
+#The US Naval Quarantine of Cuba - RUS
+country_event = {
+	id = 8500207
+	title = "The US Naval Quarantine of Cuba"
+	desc = EVT_8500207_DESC
+	picture = "nwo2_cuban_missile_crisis_quarantine"
+	
+	is_triggered_only = yes # RUS
+
+	option = {
+		name = "We will not stop the convoys of nukes to Cuba!"
+		badboy = 5
+		
+		relation = { who = USA value = -50 }
+		
+		#US reaction
+		USA = { country_event = 8500208 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Chicken out, remove the missiles in Cuba"
+		prestige_factor = -0.1
+
+		relation = { who = USA value = 50 } 
+		relation = { who = CUB value = -50 }
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = 10
+			consciousness = 10
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = 5
+			consciousness = 5
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = 2.5
+			consciousness = 2.5
+		}
+		
+		clr_global_flag = missiles_in_cuba 
+
+		ai_chance = { factor = 0.1 }
+	}
+
 }
+
+#A Standoff in Cuba - USA
 country_event = {
-  id = 8500215
-  title = EVT_8500215_NAME
-  desc = EVT_8500215_DESC
-  picture = "nwo2_cuban_missile_crisis_aftermath"
-  fire_only_once = yes
+	id = 8500208
+	title = "A Standoff in Cuba"
+	desc = EVT_8500208_DESC
+	picture = "nwo2_cuban_missile_crisis_standoff"
 
-  trigger = {
-    tag = CUB
-	year = 1962 
-	NOT = { year = 1963 }
-    NOT = { has_global_flag = missiles_in_cuba }
-    
-  }
+	is_triggered_only = yes # USA
 
-  mean_time_to_happen = { months = 11 }
+	option = {
+		name = "We must negotiate with the USSR"
+		
+		#Negotiations with the USSR
+		RUS = { country_event = 8500209 }
+		
+		ai_chance = { factor = 0.9 } 
+	}
 
-  option = {
-    name = EVT_8500215_A
-	any_pop = { militancy = 1.0 consciousness = 1 }
-  }
+	option = {
+		name = "Sink the approaching Soviet nuclear convoys to Cuba!"
+		
+		#Pacifists are furious
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				issue = pacifism
+			}
+			scaled_consciousness = {
+				factor = 10
+				issue = pacifism
+			}
+		}
+		
+		#Start a war against Cuba and the USSR
+		CUB = { create_alliance = RUS }
+		war = {
+			target = CUB
+			attacker_goal = { casus_belli = install_democracy }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = yes
+		}
+		war = {
+			target = RUS
+			attacker_goal = { casus_belli = free_dismantle_cb }
+			defender_goal = { casus_belli = free_dismantle_cb }
+			call_ally = yes
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+#The US Offers to Negotiate! - RUS
+country_event = {
+	id = 8500209
+	title = "The US Offers to Negotiate!"
+	desc = EVT_8500209_DESC
+	picture = "nwo2_cuban_missile_crisis_negotiate"
+	
+	is_triggered_only = yes # RUS
+
+	option = {
+		name = "Demand the US remove their missiles in Turkey!" 
+		
+		#US reaction
+		USA = { country_event = 8500212 }
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Demand the US hand over Berlin to East Germany!"
+		
+		#US reaction
+		USA = { country_event = 8500211 }
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+#Demand the US to hand over Berlin! - USA
+country_event = {
+	id = 8500211
+	title = "The Soviet Demand: Leave West Berlin"
+	desc = EVT_8500211_DESC
+	picture = "nwo2_kennedy_khrushchev"
+  
+	is_triggered_only = yes # USA
+
+	option = {
+		name = "Agree to the trade"
+		
+		prestige_factor = -0.1
+		
+		clr_global_flag = divided_berlin 
+		clr_global_flag = missiles_in_cuba 
+		
+		#Germany transfers West Berlin to East Germany
+		GER = { country_event = 8500216 }
+		
+		relation = { who = GER value = -100 }
+		
+		ai_chance = { factor = 0.7 }
+	}
+
+	option = {
+		name = "Refuse their offer!"
+		
+		#Pacifists are furious
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				issue = pacifism
+			}
+			scaled_consciousness = {
+				factor = 10
+				issue = pacifism
+			}
+		}
+		
+		#Start a war against Cuba and the USSR
+		CUB = { create_alliance = RUS }
+		war = {
+			target = CUB
+			attacker_goal = { casus_belli = install_democracy }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = yes
+		}
+		war = {
+			target = RUS
+			attacker_goal = { casus_belli = free_dismantle_cb }
+			defender_goal = { casus_belli = free_dismantle_cb }
+			call_ally = yes
+		}
+		
+		ai_chance = { factor = 0.3 }
+	}
+	
+}
+
+#Demand the US to remove their missiles in Turkey! - USA
+country_event = {
+	id = 8500212
+	title = "The Soviet Demand: Remove Jupiter Missiles"
+	desc = EVT_8500212_DESC
+	picture = "nwo2_kennedy_khrushchev"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "Agree to the trade"
+		prestige_factor = -0.05
+		
+		relation = { who = RUS value = 100 } 
+		
+		clr_global_flag = missiles_in_cuba 
+		
+		#Aftermath of the CMC
+		RUS = { country_event = 8500213 }
+		USA = { country_event = 8500214 }
+		CUB = { country_event = 8500215 }
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Refuse their offer!"
+		
+		#Pacifists are furious
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				issue = pacifism
+			}
+			scaled_consciousness = {
+				factor = 10
+				issue = pacifism
+			}
+		}
+		
+		#Start a war against Cuba and the USSR
+		CUB = { create_alliance = RUS }
+		war = {
+			target = CUB
+			attacker_goal = { casus_belli = install_democracy }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = yes
+		}
+		war = {
+			target = RUS
+			attacker_goal = { casus_belli = free_dismantle_cb }
+			defender_goal = { casus_belli = free_dismantle_cb }
+			call_ally = yes
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+#Aftermath of Cuban Missile Crisis - RUS
+country_event = {
+	id = 8500213
+	title = "Aftermath of Cuban Missile Crisis"
+	desc = EVT_8500213_DESC
+	picture = "nwo2_cuban_missile_crisis_aftermath_RUS"
+	
+	is_triggered_only = yes # RUS
+
+	option = {
+		name = EVT_8500213_A
+		prestige_factor = -0.05
+		
+		relation = { who = USA value = 50 }
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = 5
+			consciousness = 5
+		}
+		any_pop = { dominant_issue = { value = pacifism factor = 0.20 } }
+	}
+	
+}
+
+#Aftermath of Cuban Missile Crisis - USA
+country_event = {
+	id = 8500214
+	title = "Aftermath of Cuban Missile Crisis"
+	desc = EVT_8500214_DESC
+	picture = "nwo2_cuban_missile_crisis_aftermath"
+	
+	is_triggered_only = yes # USA
+
+	option = {
+		name = EVT_8500214_A
+		
+		relation = { who = TUR value = -100 }
+		
+		#Domestic reaction - Democrats gain in strength
+		any_pop = { 
+			limit = { strata = rich }
+			consciousness = 8
+			ideology = { factor = 0.05 value = liberal }
+			dominant_issue = { value = pacifism factor = 0.50 }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			consciousness = 6
+			ideology = { factor = 0.05 value = liberal }
+			dominant_issue = { value = pacifism factor = 0.50 }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			consciousness = 4
+			ideology = { factor = 0.05 value = liberal }
+			dominant_issue = { value = pacifism factor = 0.50 }
+		}
+		
+	}
+	
+}
+
+#Aftermath of Cuban Missile Crisis - CUB
+country_event = {
+	id = 8500215
+	title = "Aftermath of Cuban Missile Crisis"
+	desc = EVT_8500215_DESC
+	picture = "nwo2_cuban_missile_crisis_aftermath"
+	
+	is_triggered_only = yes # CUB
+
+	option = {
+		name = EVT_8500215_A
+		prestige = 50
+		
+		relation = { who = USA value = 50 }
+		
+		#USSR loses influence
+		RUS = { 
+			relation = { who = THIS value = -50 } 
+			diplomatic_influence = { who = THIS value = -100 }
+		}
+	}
+	
+}
+
+#Aftermath of Cuban Missile Crisis - GER
+country_event = {
+	id = 8500216
+	title = "US Surrenders West Berlin to East Germany"
+	desc = EVT_8500211_DESC
+	picture = "nwo2_cuban_missile_crisis_aftermath"
+	
+	is_triggered_only = yes # GER
+
+	option = {
+		name = "We have no choice but to accept this"
+		prestige = -50
+		
+		#Germany transfers West Berlin to East Germany
+		GER = { 549 = { secede_province = DDR } }
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "We will not comply!"
+
+		#Start a war against the USSR
+		war = {
+			target = RUS
+			attacker_goal = { casus_belli = install_democracy }
+			defender_goal = { casus_belli = install_communist_gov_cb }
+			call_ally = yes
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
 }
