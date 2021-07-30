@@ -5132,51 +5132,145 @@ any_owned = { limit = { has_building = naval_base } naval_base = -10 }
 #State Union between Russia and Belarus
 country_event = {
 	id = 1512123
-title = "Union State of Russia and Belarus"
+	title = "The Union State of Russia and Belarus"
 	desc = EVTDESC1512123
 	picture = "rus_bye_union_treaty"
 
-fire_only_once = yes
+	fire_only_once = yes
 
-trigger = {
-tag = BYE
-government = populist_dictatorship
-is_vassal = no
-war = no
-election = no
-year = 1997
-accepted_culture = russian
-NOT = { truce_with = RUS }
-RUS = { exists = yes is_greater_power = yes war = no }
-NOT = { has_global_flag = blocsenabled }
-}
+	trigger = {
+		tag = BYE
+		year = 1997
+		
+		government = populist_dictatorship
+		is_vassal = no
+		war = no
 
-mean_time_to_happen = { 
-months = 4
+		accepted_culture = russian
+		
+		#Russia situation
+		NOT = { truce_with = RUS }
+		RUS = { exists = yes is_greater_power = yes war = no }
+		
+		#Post Cold War
+		NOT = { has_global_flag = blocsenabled }
 	}
 
-option = {
-name = "Sign the Treaty"
-RUS = { create_vassal = BYE }
-relation = { who = RUS value = 200 }
-diplomatic_influence = { who = RUS value = 200 }
-government = populist_dictatorship
-country_event = 800050
-ai_chance = { factor = 0.7 }
-		}
+	mean_time_to_happen = { 
+		months = 4
+	}
 
-option = {
-name = "Reject the treaty"
-relation = { who = RUS value = -50 }
-ai_chance = { factor = 0.1 }
+	option = {
+		name = "Sign the Treaty but on a confederation status"
+		prestige = 50
+		
+		#Russia gains influence in Belarus
+		RUS = {
+			relation = { who = THIS value = 200 }
+			diplomatic_influence = { who = THIS value = 200 }
 		}
+		
+		ai_chance = { factor = 0.7 }
+	}
+	
+	option = {
+		name = "Sign the Treaty on a federation status"
+		prestige = 100
+		
+		#Belarus becomes a vassal of Russia
+		RUS = { 
+			create_vassal = BYE 
+			any_owned = { 
+				limit = { is_core = BYE } 
+				secede_province = BYE
+			}
+		}
+		
+		#BYE becomes an SAR government
+		government = sar_government
+		
+		#Russia gains influence in Belarus
+		RUS = {
+			relation = { who = THIS value = 200 }
+			diplomatic_influence = { who = THIS value = 200 }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
 
-option = {
-name = "Propose a full union!"
-RUS = { prestige = 100 }
-RUS = { inherit = BYE }
-ai_chance = { factor = 0.2 }
+	option = {
+		name = "Propose a full union! (90% chance)"
+		
+		#Choice for Russia to accept
+		RUS = { country_event = 15121231 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+	option = {
+		name = "Reject the treaty"
+		
+		#Russia loses influence in Belarus
+		RUS = {
+			relation = { who = THIS value = -50 }
+			diplomatic_influence = { who = THIS value = -100 }
 		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#State Union between Russia and Belarus - Full Union
+country_event = {
+	id = 15121231
+	title = "The Union State of Russia and Belarus"
+	desc = EVTDESC1512123
+	picture = "rus_bye_union_treaty"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Accept the offer!"
+		
+		accepted_culture = byelorussian
+		
+		#Become the Union of Russia and Belarus
+		random_owned = {
+			limit = { owner = { BYE = { ai = yes } RUS = { ai = no } } }
+			owner = {
+				RUS = { 
+					prestige = 100
+					inherit = BYE
+					change_tag = RBU
+				}
+				RBU = { capital = 1008 } # Moscow
+			}
+		}
+		random_owned = {
+			limit = { owner = { BYE = { ai = no } RUS = { ai = yes } } }
+			owner = {
+				BYE = { 
+					prestige = 100
+					inherit = RUS
+					change_tag = RBU
+				}
+				RBU = { capital = 1008 } # Moscow
+			}
+		}
+		
+		ai_chance = { factor = 0.7 }
+	}
+	
+	option = {
+		name = "Reject the offer!"
+		
+		#Russia loses influence in Belarus
+		relation = { who = BYE value = -100 }
+		diplomatic_influence = { who = BYE value = -100 }
+		
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
