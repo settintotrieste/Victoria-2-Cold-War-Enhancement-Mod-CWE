@@ -1,0 +1,143 @@
+political_decisions = {
+
+	constrict_international_trade = {
+		picture = "constrict_international_trade"
+		potential = {
+			
+			#Country is at war
+			war = yes
+			
+			#Not a vassal
+			is_vassal = no
+			
+			#Not disarmed
+			is_disarmed = no
+			
+			#There is a trade route to potentially constrict
+			OR = {
+				war_countries = { 
+					owns = 1755 #Suez Canal
+					owns = 1723 #Panama Canal
+					owns = 517 #Gibraltar
+					owns = 1384 #Singapore
+				}
+				
+				owns = 1755 #Suez Canal
+				owns = 1723 #Panama Canal
+				owns = 517 #Gibraltar
+				owns = 1384 #Singapore
+			}
+			
+			NOT = { has_country_modifier = constricting_international_trade }
+		}
+		allow = {
+			NOT = { war_policy = pacifism }
+			
+			#THIS Controls a major trade bottleneck
+			OR = {
+				controls = 1755 #Suez Canal
+				controls = 1723 #Panama Canal
+				controls = 517 #Gibraltar
+				controls = 1384 #Singapore
+			}
+		}
+		effect = {
+			badboy = 5
+			
+			add_country_modifier = { name = constricting_international_trade duration = 365 }
+			
+			any_country = {
+				limit = { 
+					exists = yes 
+					
+					#Enemies get affected
+					OR = { 
+						war_with = THIS
+						NOT = { relation = { who = THIS value = 0 } }
+					}
+					
+					#Not has autarky
+					NOT = { has_country_modifier = juche }
+				}
+				country_event = 1610144
+			}
+			
+		}
+		ai_will_do = { 
+			factor = 1 
+			modifier = { factor = 0 badboy = 0.5 } 
+			modifier = { factor = 0 AND = { war_policy = pro_military NOT = { national_provinces_occupied = 0.30 } } }
+		}
+	}
+	
+	stop_constrict_international_trade = {
+		picture = "stop_constrict_international_trade"
+		potential = {
+			#Has constricted trade modifier
+			has_country_modifier = constricted_international_trade
+			
+			#At war
+			war = yes
+		}
+		allow = {
+		
+			#Must have some military
+			OR = {
+				total_amount_of_divisions = 1
+				total_amount_of_ships = 1
+			}
+		
+			#Enemies no longer control chokepoints
+			war_countries = {
+				NOT = {
+					OR = {
+						controls = 1755 #Suez Canal
+						controls = 1723 #Panama Canal
+						controls = 517  #Gibraltar
+						controls = 1384 #Singapore
+					}
+				}
+			}
+		}
+		effect = {
+			prestige = 50
+		
+			#THIS removes disrupted trade modifier
+			remove_country_modifier = constricted_international_trade
+			
+			#Remove for allies
+			any_country = {
+				limit = { 
+					exists = yes 
+					
+					#Has constricted trade modifier
+					has_country_modifier = constricted_international_trade
+					
+					#Allies benefit
+					OR = { 
+						alliance_with = THIS
+						relation = { who = THIS value = 0 }
+						in_sphere = THIS
+					}
+				}
+				remove_country_modifier = constricted_international_trade
+			}
+			
+			#Enemy stops choking the chokepoints
+			any_country = {
+				limit = { 
+					exists = yes 
+					war_with = THIS
+					has_country_modifier = constricting_international_trade
+				}
+				remove_country_modifier = constricting_international_trade
+				country_event = 1610145
+			}
+			
+		}
+		ai_will_do = { 
+			factor = 1 
+		}
+	}
+	
+}
