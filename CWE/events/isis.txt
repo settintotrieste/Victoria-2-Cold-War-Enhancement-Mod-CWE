@@ -30,48 +30,76 @@ country_event = {
 	}
 }
 
-province_event = {
+#Rise of Jihadism in the Middle East
+country_event = {
 	id = 1014840
-	title = EVT_1014840_NAME
-	# EVT_1014840_NAME;Salafi jihadism
+	title = "Rise of Jihadism"
 	desc = EVT_1014840_DESC
-	# EVT_1014840_DESC;Salafi jihadism or Jihadist-Salafism is a transnational religious-political ideology based on a belief in violent jihadism and the Salafi movement of returning to (what adherents believe is) "true" Sunni Islam.
 	picture = "salafi_jihadism"
 	
 	trigger = {
-		year = 1990
-		NOT = { is_core = ISI }
-		has_province_modifier = salafi_movement
-		is_capital = no
-		owner = { 
-			NOT = { government = theocracy }  
-			OR = { NOT = { government = democracy government = hms_government } tag = NGE } 
+		#Arab state
+		OR = { pop_majority_culture = arab capital_scope = { continent = mena } }
+	
+		#Factors that led to this
+		has_global_flag = war_on_terror #2001
+		has_global_flag = arab_spring #2011
+	
+		#A core province in the middle east does not have ISIS cores
+		any_core = { pop_majority_religion = sunni NOT = { is_core = ISI } }
+	
+		#Sunni state
+		pop_majority_religion = sunni
+		
+		#Has substantial traditionalist support
+		traditionalist = 15
+		
+		#Country is not already a traditionalist or theocratic state
+		NOT = { 
+			OR = { 
+				ruling_party_ideology = traditionalist 
+				government = theocracy 
+			} 
 		}
-		OR = { 
-			pop_majority_culture = arab 
-			AND = { continent = africa pop_majority_religion = sunni } 
-			AND = { continent = mena has_national_minority = no pop_majority_religion = sunni }  
-			AND = { continent = asia has_national_minority = no pop_majority_religion = sunni }  
-		}
+		
+		#Must have some internal unrest
+		average_militancy = 2
 	}
 
 	mean_time_to_happen = {
-		months = 48
+		months = 12
 	}
 	
 	option = {
-		name = EVT_1014840_A
-		# EVT_1014840_A;Islamism is upon us
+		name = "This is a worrying situation"
+		
+		#Pops in our country become more traditionalist
 		any_pop = { 
 			limit = { religion = sunni }
-			dominant_issue = {
-				value = moralism
-				factor = 0.03
-			}
-			ideology = { factor = 0.04 value = traditionalist }
+			dominant_issue = { factor = 0.15 value = moralism }
+			ideology = { factor = 0.10 value = traditionalist }
+			scaled_militancy = { factor = 10 ideology = traditionalist }
 		}
-		add_core = ISI
-		remove_province_modifier = salafi_movement
+		
+		#Affect the rest of the world
+		any_country = {
+			limit = { exists = yes }
+			
+			#Pops  become more traditionalist
+			any_pop = { 
+				limit = { religion = sunni }
+				dominant_issue = { factor = 0.02 value = moralism }
+				ideology = { factor = 0.02 value = traditionalist }
+				scaled_militancy = { factor = 1 ideology = traditionalist }
+			}
+		}
+		
+		#Add ISIS cores in Sunni majority states
+		all_core = {
+			limit = { pop_majority_religion = sunni }
+			add_core = ISI
+			add_province_modifier = { name = salafi_movement duration = 3650 }
+		}
 	}
 
 }
