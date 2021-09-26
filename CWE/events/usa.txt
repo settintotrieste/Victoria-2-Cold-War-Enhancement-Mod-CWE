@@ -149,7 +149,7 @@ country_event = {
 		#Afghanistan is controlled by the Taliban
 		AFG = { 
 			is_vassal = no 
-			OR = { government = theocracy ruling_party_ideology = traditionalist } 
+			AND = { government = theocracy ruling_party_ideology = traditionalist } 
 		}
 
 		PAK = { 
@@ -161,6 +161,8 @@ country_event = {
 					government = nationalist_dictatorship 
 					government = populist_dictatorship 
 					government = proletarian_dictatorship
+					government = proletarian_dictatorship1
+					government = socialist_democracy
 				} 
 			} 
 		}
@@ -276,29 +278,50 @@ country_event = {
 	trigger = {
 		tag = USA
 		year = 2001
+		NOT = { year = 2011 }
+		
 		month = 9
+		
 		government = democracy
 		is_greater_power = yes
-		NOT = { has_global_flag = blocsenabled }
+		war = no
+		
+		#USA is the no.1 superpower hence is a target
+		rank = 1
+		
+		#There is the WTC to attack
 		has_global_flag = world_trade_center
-
+		
+		#US presence in the Middle East is the catalyst for islamist anger against the USA
 		ISR = { exists = yes OR = { in_sphere = USA alliance_with = USA } }
 
+		#Historical reasons to be angry with the USA
 		OR = {
-
+			
+			#OSBL was angry with the outcome of the first gulf war, in particular that Kurdistan was not assisted
 			AND = {
 				has_global_flag = 1990_gulf_war_fired_flag
+				
+				#Kurdistan does not exist
 				KUR = { OR = { vassal_of = IRQ exists = no } }
-				IRQ = { NOT = { OR = { government = democracy government = democracy1 } } } 
+				
+				#Iraq is still under Saddam
+				IRQ = { 
+					ruling_party_ideology = socialist 
+					OR = { government = nationalist_dictatorship government = populist_dictatorship } 
+				}
 			}
-
-			AFG = { government = theocracy }
-			PER = { government = theocracy }
-			IRQ = { government = theocracy }
-			SYR = { government = theocracy }
+			
+			#Presence of a theocracy in the Middle East
+			AFG = { exists = yes government = theocracy ruling_party_ideology = traditionalist NOT = { OR = { in_sphere = USA alliance_with = USA } } }
+			PER = { exists = yes government = theocracy ruling_party_ideology = traditionalist NOT = { OR = { in_sphere = USA alliance_with = USA } } }
+			IRQ = { exists = yes government = theocracy ruling_party_ideology = traditionalist NOT = { OR = { in_sphere = USA alliance_with = USA } } }
+			SYR = { exists = yes government = theocracy ruling_party_ideology = traditionalist NOT = { OR = { in_sphere = USA alliance_with = USA } } }
 
 		}
-
+		
+		#Saudi Funding and the people that organized the attack/planned it being alive
+		SAA = { exists = yes is_vassal = no OR = { government = theocracy government = absolute_monarchy } }
 	}
 	
 	mean_time_to_happen = {
@@ -322,6 +345,7 @@ country_event = {
 		
 		country_event = 1511109 # Terrorism.txt; TODO check for UN headquarters or membership
 	}
+	
 }
 
 #Mc Carthyism
@@ -355,23 +379,29 @@ country_event = {
 		set_country_flag = mc_carthy_politics
 		
 		prestige = -100
+		
 		badboy = 2.5
-		any_pop = { 
+		
+		any_pop = {
+			limit = { strata = middle }
 			ideology = {
 				factor = 0.2
 				value = conservative
 			}
 		}
 		any_pop = {
+			limit = { strata = poor }
 			ideology = {
 				factor = 0.2
 				value = liberal
 			}
 		}
+		
 		any_pop = { 
 			militancy = -5 
 			consciousness = -5
 		}
+		
 		ai_chance = { factor = 0.9 }
 	}
 
@@ -380,11 +410,20 @@ country_event = {
 		any_pop = { militancy = 2 consciousness = 6 } 
 		
 		any_pop = { 
+			limit = { strata = middle }
+			ideology = {
+				factor = 0.25
+				value = socialist
+			}
+		}
+		any_pop = { 
+			limit = { strata = poor }
 			ideology = {
 				factor = 0.25
 				value = communist
 			}
 		}
+		
 		ai_chance = { factor = 0.1 }
 	}
 }
