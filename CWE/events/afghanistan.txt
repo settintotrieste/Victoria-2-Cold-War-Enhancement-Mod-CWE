@@ -1,9 +1,9 @@
 #Afghan Coup of 1973
 country_event = {
-  id = 8000109
-  title = EVT_8000109_NAME
-  desc = EVT_8000109_DESC
-  picture = "nwo2_afghani_coup_1973"
+	id = 8000109
+	title = EVT_8000109_NAME
+	desc = EVT_8000109_DESC
+	picture = "nwo2_afghani_coup_1973"
   
   	fire_only_once = yes
 
@@ -24,7 +24,7 @@ country_event = {
 		government = populist_dictatorship 
 		country_event = 800050
 		ruling_party_ideology = nationalist
-		
+		set_country_flag = afg_daoud_khan
 		#Trigger Afghan War later
 		set_global_flag = afghani_coup_1973
 		
@@ -86,8 +86,10 @@ country_event = {
 	trigger = {
 		tag = AFG
 		year = 1996
+		NOT = { year = 2006 }
 		
-		NOT = { government = theocracy }
+		OR = { government = democracy1 government = democracy government = nationalist_dictatorship }
+		NOT = { ruling_party_ideology = traditionalist }
 		is_vassal = no
 		war = no
 		
@@ -151,7 +153,7 @@ country_event = {
     	year = 1978
 		NOT = { year = 1990 }
 		
-		NOT = { government = proletarian_dictatorship }
+		government = populist_dictatorship 
     	is_vassal = no 
 		war = no
 		
@@ -166,6 +168,10 @@ country_event = {
 		government = proletarian_dictatorship  
 		country_event = 800042
 		ruling_party_ideology = communist
+		
+		set_country_flag = saur_revolution_happened
+		clr_country_flag = afg_daoud_khan
+		set_country_flag = taraki_afg
 		
 		#Soviet intervention
 		random_country = {
@@ -196,10 +202,10 @@ country_event = {
 
 #If Saur Revolution succeeds - RUS choice
 country_event = {
-  id = 8176109
-  title = "The Saur Revolution"
-  desc = EVT_8000110_DESC
-  picture = "nwo2_dem_rep_afghanistan"
+	id = 8176109
+	title = "The Saur Revolution"
+	desc = EVT_8000110_DESC
+	picture = "nwo2_dem_rep_afghanistan"
   
   	is_triggered_only = yes
 
@@ -212,19 +218,21 @@ country_event = {
 		AFG = { military_access = RUS }
 		ai_chance = { factor = 0.9 }
  	}
+	
 	option = {
     	name = "Don't get involved in Afghan affairs"
 		prestige = -100
 		ai_chance = { factor = 0.1 }
  	}
+	
 }
 
 #If Saur Revolution fails - Intervention in Afghanistan - RUS choice
 country_event = {
-  id = 8176112
-  title = "Intervention in Afghanistan?"
-  desc = EVT_8176112_DESC
-  picture = "nwo2_soviet_intervention_in_afghanistan"
+	id = 8176112
+	title = "Intervention in Afghanistan?"
+	desc = EVT_8176112_DESC
+	picture = "nwo2_soviet_intervention_in_afghanistan"
   
   	is_triggered_only = yes # RUS
 
@@ -253,10 +261,10 @@ country_event = {
 
 #The 1979 Coup
 country_event = {
-  id = 8017601
-  title = "The $YEAR$ Coup"
-  desc = EVT_8017601_DESC
-  picture = "hafizullah_amin"
+	id = 8017601
+	title = "The $YEAR$ Coup"
+	desc = EVT_8017601_DESC
+	picture = "hafizullah_amin"
   
  	fire_only_once = yes
 
@@ -268,22 +276,27 @@ country_event = {
 		government = proletarian_dictatorship
 		is_vassal = no 
 		war = no
+		
+		has_country_flag = parcham_purged
+		has_country_flag = taraki_afg
   	}
 	
   	mean_time_to_happen = { months = 2 }
 
  	option = {
     	name = "Long live the Chairman!"
+		set_country_flag = amin_afg
+		set_country_flag = amin_afg_coup
 		relation = { who = RUS value = -50 }
 		any_state = { any_pop = { dominant_issue = { value = moralism factor = 0.15 } } }
 		
 		#Soviet intervention?
-		random_country = {
-			limit = { tag = RUS has_global_flag = blocsenabled }
-			
-			#USSR palace coup
-			RUS = { country_event = 8176110 }
-		}
+		#random_country = {
+		#	limit = { tag = RUS has_global_flag = blocsenabled }
+		#	
+		#	#USSR palace coup
+		#	RUS = { country_event = 8176110 }
+		#}
 		
 		war_exhaustion = 10
 		ai_chance = { factor = 0.9 }
@@ -292,6 +305,7 @@ country_event = {
   	option = {
     	name = "Death to traitors!"
 		prestige_factor = -0.02
+		set_country_flag = amin_purged
 		any_state = { any_pop = { dominant_issue = { value = moralism factor = 0.05 } } }
 		any_pop = { militancy = 3 consciousness = 6 }
 		war_exhaustion = 10
@@ -299,16 +313,43 @@ country_event = {
 		add_country_modifier = { name = revolution_chaos duration = 3650 }
 		ai_chance = { factor = 0.1 }
   	}
+	
 }
 
 #The 1979 Coup - Intervention in Afghanistan - RUS choice
 country_event = {
-  id = 8176110
-  title = "The $YEAR$ Coup in Afghanistan"
-  desc = EVT_8176110_DESC
-  picture = "nwo2_soviet_intervention_in_afghanistan"
-  
-  	is_triggered_only = yes
+	id = 8176110
+	title = "The $YEAR$ Coup in Afghanistan"
+	desc = EVT_8176110_DESC
+	picture = "nwo2_soviet_intervention_in_afghanistan"
+
+	fire_only_once = yes
+
+  	trigger = {
+		tag = RUS
+		year = 1979
+		NOT = { has_global_flag = 1992_start_date_flag }
+		NOT = { year = 2000 }
+		
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+		is_vassal = no
+		war = no
+		
+		AFG = {
+			exists = yes
+
+			government = proletarian_dictatorship
+			is_vassal = no 
+			war = no
+			
+			has_country_flag = amin_afg_coup
+			has_country_flag = amin_afg
+		}
+		
+		has_global_flag = blocsenabled
+  	}
+	
+  	mean_time_to_happen = { months = 4 }
 
  	option = {
    		name = EVT_8176110_A
@@ -346,9 +387,9 @@ country_event = {
 
   	option = {
    		name = "Long live the Chairman!"
+		set_country_flag = karmal_afg
 		any_state = { any_pop = { dominant_issue = { value = moralism factor = 0.35 } } }
 		RUS = { create_vassal = THIS }
-		government = proletarian_dictatorship1 
 		ruling_party_ideology = communist_social
 		set_country_flag = soviet_intervention_in_afghanistan
 		war_exhaustion = 10
@@ -625,6 +666,8 @@ country_event = {
 		has_country_flag = soviet_intervention_in_afghanistan
 		
 		government = proletarian_dictatorship1
+		OR = { is_vassal = no vassal_of = RUS }
+		war = no
 		
 		#Kabul is taken by Rebels
   		1209 = { controlled_by = REB }
@@ -648,7 +691,7 @@ country_event = {
 		any_state = { any_pop = { dominant_issue = { value = moralism factor = 0.25 } } }
 		government = nationalist_dictatorship
 		country_event = 800050
-		ruling_party_ideology = traditionalist
+		ruling_party_ideology = conservative
 		
 		#Soviet withdrawal
 		random_country = {
@@ -676,19 +719,20 @@ country_event = {
 
 #The Inauguration of Chairman Najibullah - When Gorbachev is around
 country_event = {
-  id = 8017609
-  title = "The Inauguration of Chairman Najibullah"
-  desc = EVT_8017609_DESC
-  picture = "najibullah"
+	id = 8017609
+	title = "The Inauguration of Chairman Najibullah"
+	desc = EVT_8017609_DESC
+	picture = "najibullah"
   
   	fire_only_once = yes
 
 	trigger = {
    	 	tag = AFG
     	year = 1986
-		has_country_flag = soviet_intervention_in_afghanistan
+		NOT = { has_global_flag = 1992_start_date_flag }
+		NOT = { year = 2000 }
 		
-		government = proletarian_dictatorship1
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
 		vassal_of = RUS
 		
 		#Gorbachev
@@ -700,15 +744,24 @@ country_event = {
 				has_country_flag = mikhail_gorbachev 
 			}
 		}
+		
+		has_country_flag = soviet_intervention_in_afghanistan
+		has_country_flag = karmal_afg
+		has_country_flag = loss_of_support_karmal
+		NOT = { has_country_flag = unitied_pdpa }
+		NOT = { has_country_flag = afg_stability }
   	}
 	
 	mean_time_to_happen = { months = 1 }
 
  	option = {
     	name = "Long live the Chairman!"
+		clr_country_flag = karmal_afg
+		set_country_flag = najibullah_afg
 		any_pop = { militancy = -2 consciousness = -2 }
 		war_exhaustion = 5
   	}
+	
 }
 
 #Taliban support spikes
@@ -782,11 +835,11 @@ country_event = {
 
 #If there was a Soviet failed intervention for any reason - Restoration of Soviet Rule in Afghanistan
 country_event = {
-  id = 8017624
-  title = "Restoration of Soviet Rule"
-  desc = EVTDESC8017624
-  picture = "hungarian_communist_gov_change"
-  
+	id = 8017624
+	title = "Restoration of Soviet Rule"
+	desc = EVTDESC8017624
+	picture = "hungarian_communist_gov_change"
+
 	fire_only_once = yes
 
 	trigger = {
@@ -805,6 +858,9 @@ country_event = {
 		name = "Long live the new Chairman!"
 		prestige_factor = -0.10
 		government = proletarian_dictatorship1
+		set_country_flag = karmal_afg
+		clr_country_flag = failed_soviet_intervention_in_afghanistan
+		set_country_flag = soviet_intervention_in_afghanistan
 		ruling_party_ideology = communist
 		country_event = 800052
 
