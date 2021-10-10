@@ -1,63 +1,85 @@
 #Yemen 1962 revolution
 country_event = {
-  id = 8018201
-  title = "Coup d'état of 1962"
-  desc = EVTDESC8018201
-  picture = "yemen_1962_coup"
-  fire_only_once = yes
+	id = 8018201
+	title = "Coup d'état of 1962"
+	desc = EVTDESC8018201
+	picture = "yemen_1962_coup"
+	
+	fire_only_once = yes
 
-  trigger = {
+	trigger = {
     	tag = YEM
-    	year = 1962 NOT = { year = 1990 }
-	is_vassal = no
-	war = no
-OR = { government = absolute_monarchy government = hms_government }
-  }
+    	year = 1962 
+		NOT = { year = 1990 }
+		
+		OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+		is_vassal = no
+		war = no
+	}
 
-  mean_time_to_happen = { months = 10 }
+	mean_time_to_happen = { months = 10 }
 
   	option = {
-    		name = "End the monarchy!"
-define_general = { name = "Abdullah Sallal" personality = "energetic" background = "no_background" }
-government = populist_dictatorship 
-country_event = 800050
-ruling_party_ideology = socialist
+		name = "End the monarchy!"
+		government = populist_dictatorship 
+		country_event = 800050
+		ruling_party_ideology = socialist
 
-set_global_flag = 1962_yemen_revolution
+		set_global_flag = 1962_yemen_revolution
 
-#UK's reaction
-random_country = {
-limit = { tag = ENG is_sphere_leader_of = YEM }
-diplomatic_influence = { who = YEM value = -200 }
-relation = { who = YEM value = -200 }
-leave_alliance = YEM
-}
+		#UK's reaction
+		random_country = {
+			limit = { tag = ENG is_sphere_leader_of = YEM }
+			diplomatic_influence = { who = YEM value = -200 }
+			relation = { who = YEM value = -200 }
+			leave_alliance = YEM
+		}
 
-#Jordan and Saudi Arabia's response
-any_country = {
-limit = { OR = { tag = JOR tag = SAA } OR = { government = absolute_monarchy government = hms_government } }
-relation = { who = YEM value = -200 }
-}
+		#Jordan and Saudi Arabia's response
+		any_country = {
+			limit = { OR = { tag = JOR tag = SAA } OR = { government = absolute_monarchy government = hms_government } }
+			relation = { who = YEM value = -200 }
+		}
 
-#Egypt's response
-random_country = { 
-limit = { exists = yes is_vassal = no ruling_party_ideology = socialist OR = { tag = EGY tag = UAR } }
-country_event = 80182011
-}
+		#Egypt's response
+		random_country = { 
+			limit = { OR = { tag = EGY tag = UAR } exists = yes is_vassal = no ruling_party_ideology = socialist }
+			country_event = 80182011
+		}
 
-#USSR's response
-random_country = { 
-limit = { tag = RUS is_greater_power = yes government = proletarian_dictatorship }
-country_event = 80182012
-}
+		#USSR's response
+		random_country = { 
+			limit = { tag = RUS is_greater_power = yes government = proletarian_dictatorship }
+			country_event = 80182012
+		}
 
-	ai_chance = { factor = 0.9 }
-  } 
+		ai_chance = { factor = 0.9 }
+	} 
 
 	option = {
 	  	name = "Keep the monarchy"
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-	  ai_chance = { factor = 0.1 }
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		any_pop = {
+			limit = { strata = rich }
+			consciousness = -10
+			militancy = -10
+			ideology = { factor = 0.2 value = conservative }
+		}
+		any_pop = {
+			limit = { strata = middle }
+			consciousness = 10
+			militancy = 10
+			ideology = { factor = 0.2 value = liberal }
+		}
+		any_pop = {
+			limit = { strata = poor }
+			consciousness = 5 
+			militancy = 5
+			ideology = { factor = 0.2 value = communist }
+		}
+		
+		ai_chance = { factor = 0.1 }
     }
 
 }
@@ -69,10 +91,10 @@ country_event = {
   desc = EVTDESC80182011
   picture = "yemen_1962_coup"
  
-is_triggered_only = yes
+	is_triggered_only = yes
 
   	option = {
-    		name = "Support the Yemeni Arab Republic!"
+    	name = "Support the Yemeni Arab Republic!"
 		create_alliance = YEM
 		relation = { who = YEM value = 200 }
 		ai_chance = { factor = 0.9 }
@@ -82,28 +104,28 @@ is_triggered_only = yes
 	  	name = "Abandon them to the Saudis"
 		prestige_factor = -0.05
 
-#Pan Arab countries won't like this
-any_country = { 
-limit = { exists = yes is_vassal = no primary_culture = arab }
-relation = { who = THIS value = -100 }
-}
+		#Pan Arab countries won't like this
+		any_country = { 
+			limit = { exists = yes is_vassal = no primary_culture = arab }
+			relation = { who = THIS value = -100 }
+		}
 
 	 	ai_chance = { factor = 0.1 }
-    	}
+    }
 
 }
 
 #Yemen 1962 revolution - USSR's response
 country_event = {
-  id = 80182012
-  title = "Yemeni Arab Republic"
-  desc = EVTDESC80182011
-  picture = "yemen_1962_coup"
+	id = 80182012
+	title = "Yemeni Arab Republic"
+	desc = EVTDESC80182011
+	picture = "yemen_1962_coup"
  
-is_triggered_only = yes
+	is_triggered_only = yes
 
   	option = {
-    		name = "Support the Yemeni Arab Republic!"
+    	name = "Support the Yemeni Arab Republic!"
 		relation = { who = YEM value = 50 }
 		diplomatic_influence = { who = YEM value = 200 }
 		ai_chance = { factor = 0.9 }
@@ -113,65 +135,76 @@ is_triggered_only = yes
 	  	name = "Abandon them to the Saudis"
 		prestige_factor = -0.05
 
-#Pan Arab countries won't like this
-any_country = { 
-limit = { is_vassal = no primary_culture = arab }
-relation = { who = THIS value = -100 }
-}
+		#Pan Arab countries won't like this
+		any_country = { 
+			limit = { is_vassal = no primary_culture = arab }
+			relation = { who = THIS value = -100 }
+		}
 
-	 	ai_chance = { factor = 0.1 }
-    	}
+		ai_chance = { factor = 0.1 }
+    }
 
 }
 
 #Yemen 1962 revolution - Saudi counter revolution?
 country_event = {
-  id = 8018202
-  title = "Yemen Arab Republic"
-  desc = EVTDESC8018202
-  picture = "yemen_1962_coup"
-  fire_only_once = yes
+	id = 8018202
+	title = "Yemen Arab Republic"
+	desc = EVTDESC8018202
+	picture = "yemen_1962_coup"
+	
+	fire_only_once = yes
 
-  trigger = {
+	trigger = {
     	tag = SAA
-OR = { government = absolute_monarchy government = hms_government }
+		has_global_flag = 1962_yemen_revolution
     	NOT = { year = 1990 }
-	has_global_flag = 1962_yemen_revolution
-	is_vassal = no
-YEM = { is_vassal = no war = no ruling_party_ideology = socialist }
-  }
+	
+		OR = { government = absolute_monarchy government = hms_government }
+		is_vassal = no
+		
+		YEM = {
+			exists = yes
+			
+			NOT = { OR = { government = absolute_monarchy government = hms_government government = hms_government1 } }
+			is_vassal = no 
+			war = no 
+			
+			ruling_party_ideology = socialist 
+		}
+	}
 
-  mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 1 }
 
  	option = {
-    		name = "Restore the Yemeni King!"
+    	name = "Restore the Yemeni King!"
 		badboy = 5
 
-#Jordanian support
-random_country = { 
-limit = { tag = JOR government = hms_government ai = yes }
-create_alliance = SAA
-relation = { who = SAA value = 200 }
-}
+		#Jordanian support
+		random_country = { 
+			limit = { tag = JOR government = hms_government is_vassal = no ai = yes }
+			create_alliance = SAA
+			relation = { who = SAA value = 200 }
+		}
 
-#UK limited support
-random_country = { 
-limit = { tag = ENG government = hms_government ai = yes }
-leave_alliance = SAA 
-relation = { who = SAA value = 200 }
-}
+		#UK limited support
+		random_country = { 
+			limit = { tag = ENG government = hms_government is_vassal = no ai = yes }
+			leave_alliance = SAA 
+			relation = { who = SAA value = 200 }
+		}
 
-#Israeli support
-random_country = { 
-limit = { tag = ISR ai = yes } 
-relation = { who = SAA value = 200 } 
-}
+		#Israeli support
+		random_country = { 
+			limit = { tag = ISR is_vassal = no ai = yes } 
+			relation = { who = SAA value = 200 } 
+		}
 
 		war = {
-		target = YEM
-attacker_goal = { casus_belli = install_absolute_monarchy }
-defender_goal = { casus_belli = humiliate }
-		call_ally = yes
+			target = YEM
+			attacker_goal = { casus_belli = install_absolute_monarchy }
+			defender_goal = { casus_belli = humiliate }
+			call_ally = yes
 		}
 
 		ai_chance = { factor = 0.9 }
@@ -182,144 +215,203 @@ defender_goal = { casus_belli = humiliate }
 		prestige_factor = -0.05
 		relation = { who = YEM value = 100 }
 	  	ai_chance = { factor = 0.1 }
-    	}
+    }
 
 }
 
 #Victory of the Yemeni Arab Republic
 country_event = {
-  id = 8018203
-  title = "Victory in the North Yemen Civil War"
-  desc = EVTDESC8018203
-  picture = "YAR_win"
-  fire_only_once = yes
+	id = 8018203
+	title = "Victory in the North Yemen Civil War"
+	desc = EVTDESC8018203
+	picture = "YAR_win"
+	
+	fire_only_once = yes
 
-  trigger = {
+	trigger = {
     	tag = YEM
-	has_global_flag = 1962_yemen_revolution
-    	year = 1967 NOT = { year = 1990 }
-	war = no
-	ruling_party_ideology = socialist
-NOT = { OR = { government = absolute_monarchy government = hms_government } }
-  }
+		has_global_flag = 1962_yemen_revolution
+    	year = 1967 
+		NOT = { year = 1990 }
+		
+		NOT = { OR = { government = absolute_monarchy government = hms_government government = hms_government1 } }
+		war = no
+		
+		ruling_party_ideology = socialist
+	}
 
-  mean_time_to_happen = { months = 6 }
+	mean_time_to_happen = { months = 6 }
 
-  option = {
-    name = "Celebrate!"
-	prestige = 100
-  }
+	option = {
+		name = "Celebrate!"
+		prestige = 100
+	}
 
 }
 
 #Yemenite War of 1972
 country_event = {
-  id = 8018204
-  title = "Yemenite War of 1972"
-  desc = EVTDESC8018204
-  picture = "YEM_SYE_war_1972"
-  fire_only_once = yes
+	id = 8018204
+	title = "Yemenite War of 1972"
+	desc = EVTDESC8018204
+	picture = "YEM_SYE_war_1972"
+	
+	fire_only_once = yes
 
-  trigger = {
+	trigger = {
     	tag = YEM
-    	year = 1973 NOT = { year = 1990 }
-	is_vassal = no
-	exists = SYE
-	SYE = { is_vassal = no }
-  }
-
-  mean_time_to_happen = { months = 9 }
-
-  option = {
-    	name = "War!"
-
-	war = {
-		target = SYE
-attacker_goal = { casus_belli = territorial_dispute }
-defender_goal = { casus_belli = territorial_dispute }
-		call_ally = no
+    	year = 1973 
+		NOT = { year = 1990 }
+		
+		OR = { government = presidential_dictatorship government = nationalist_dictatorship government = populist_dictatorship }
+		is_vassal = no
+		war = no
+		
+		ruling_party_ideology = socialist
+		
+		SYE = { 
+			exists = yes 
+			
+			OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+			is_vassal = no 
+		}
 	}
 
-	ai_chance = { factor = 0.9 }
-  }
+	mean_time_to_happen = { months = 9 }
 
-  option = {
-    	name = "Keep the peace!"
-	prestige_factor = -0.1
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+    	name = "War!"
+
+		war = {
+			target = SYE
+			attacker_goal = { casus_belli = territorial_dispute_internal }
+			defender_goal = { casus_belli = territorial_dispute_internal }
+			call_ally = no
+		}
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Keep the peace!"
+		prestige_factor = -0.1
+		
+		relation = { who = SYE value = 100 }
+		
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
 #Yemenite War of 1979
 country_event = {
-  id = 8018205
-  title = "Yemenite War of 1979"
-  desc = EVTDESC8018205
-  picture = "YEM_SYE_war_1979"
-  fire_only_once = yes
+	id = 8018205
+	title = "Yemenite War of 1979"
+	desc = EVTDESC8018205
+	picture = "YEM_SYE_war_1979"
+	
+	fire_only_once = yes
 
-  trigger = {
+	trigger = {
     	tag = YEM
-    	year = 1979 NOT = { year = 1990 }
-	is_vassal = no
-	exists = SYE
-	SYE = { is_vassal = no }
-  }
-
-  mean_time_to_happen = { months = 2 }
-
-  option = {
-    	name = "War!"
-
-	war = {
-		target = SYE
-attacker_goal = { casus_belli = territorial_dispute }
-defender_goal = { casus_belli = territorial_dispute }
-		call_ally = no
+    	year = 1979 
+		NOT = { year = 1990 }
+		
+		OR = { government = presidential_dictatorship government = nationalist_dictatorship government = populist_dictatorship }
+		is_vassal = no
+		war = no
+		
+		ruling_party_ideology = socialist
+		
+		SYE = { 
+			exists = yes 
+			
+			OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+			is_vassal = no 
+		}
 	}
 
-	ai_chance = { factor = 0.9 }
-  }
+	mean_time_to_happen = { months = 2 }
 
-  option = {
+	option = {
+		name = "War!"
+
+		war = {
+			target = SYE
+			attacker_goal = { casus_belli = territorial_dispute_internal }
+			defender_goal = { casus_belli = territorial_dispute_internal }
+			call_ally = no
+		}
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
     	name = "Keep the peace!"
-	prestige_factor = -0.1
-	ai_chance = { factor = 0.1 }
-  }
+		prestige_factor = -0.1
+		
+		relation = { who = SYE value = 100 }
+		
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
 #Unification of Yemen, 1990
 country_event = {
-  id = 8018206
-  title = "Unification of Yemen"
-  desc = EVTDESC1400017
-  picture = "uniteyemen"
-  fire_only_once = yes
+	id = 8018206
+	title = "Unification of Yemen"
+	desc = EVTDESC1400017
+	picture = "uniteyemen"
+	
+	fire_only_once = yes
 
-  trigger = {
+	trigger = {
     	tag = YEM
-    	year = 1990
-	exists = SYE
-	war = no
-	is_vassal = no
-	SYE = { is_vassal = no war = no }
-	has_global_flag = south_yemen_civil_war_1986
-  }
+		year = 1990
+		has_global_flag = south_yemen_civil_war_1986
+		
+		is_vassal = no
+		war = no
+		
+		SYE = { 
+			exists = yes 
+			
+			is_vassal = no 
+			war = no
+			
+			ai = yes 
+		}
+		
+		#Share similar ideologies
+		OR = {
+			AND = { 
+				YEM = { OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social } } 
+				SYE = { OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social } }
+			}
+			AND = { 
+				YEM = { OR = { ruling_party_ideology = big_tent ruling_party_ideology = conservative ruling_party_ideology = traditionalist } } 
+				SYE = { OR = { ruling_party_ideology = big_tent ruling_party_ideology = conservative ruling_party_ideology = traditionalist } }
+			}
+			AND = { 
+				YEM = { OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive ruling_party_ideology = populist } } 
+				SYE = { OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive ruling_party_ideology = populist } }
+			}
+		}
+		
+	}
 
-  mean_time_to_happen = { months = 5 }
+	mean_time_to_happen = { months = 5 }
 
   	option = {
-    		name = "Embrace Yemeni unity!"
-		country_event = 800054
+		name = "Embrace Yemeni unity!"
 		inherit = SYE
-add_country_modifier = { name = revolution_chaos duration = 3650 }
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
 		ai_chance = { factor = 0.9 }
 	}
 
   	option = {
-    		name = "Delay the unification"
+		name = "Delay the unification"
 		relation = { who = SYE relation = -50 }
 		ai_chance = { factor = 0.1 }
 	}
@@ -328,162 +420,429 @@ add_country_modifier = { name = revolution_chaos duration = 3650 }
 
 #The Federation of South Arabia
 country_event = {
-  id = 8018210
-  title = EVT_8018210_NAME
-  desc = EVT_8018210_DESC
-  picture = "independence_of_south_yemen"
-  fire_only_once = yes
+	id = 8018210
+	title = EVT_8018210_NAME
+	desc = EVT_8018210_DESC
+	picture = "independence_of_south_yemen"
+	
+	fire_only_once = yes
 
-  trigger = {
+	trigger = {
     	tag = ENG
-	government = hms_government
-	is_vassal = no
-    	year = 1962 NOT = { year = 1990 }
-	owns = 1412 # Aden
-  }
+		year = 1962 
+		NOT = { year = 1990 }
+		
+		government = hms_government
+		is_vassal = no
+		war = no
+	
+		is_possible_vassal = SYE
+		
+		owns = 1412 # Aden
+	}
 
-  mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 2 }
 
-  option = {
-    name = EVT_8018210_A
-	prestige = 10
-	release_vassal = SYE
-	diplomatic_influence = { who = SYE value = 200 } 
-	create_alliance = SYE
-	ai_chance = { factor = 0.7 }
-  }
+	option = {
+		name = "Form the Federation!"
+		prestige = 10
+		
+		#Release SYE as a vassal
+		release_vassal = SYE
+		SYE = {
+			government = hms_government
+			country_event = 800054
+			ruling_party_ideology = traditionalist
+		}
+		
+		diplomatic_influence = { who = SYE value = 200 } 
+		
+		ai_chance = { factor = 0.8 }
+	}
 
-  option = {
-    name = "Release South Arabia but keep Aden"
-	prestige = -50
-	badboy = 5
-	release_vassal = SYE
-	diplomatic_influence = { who = SYE value = 200 } 
-	create_alliance = SYE
-	SYE = { 1412 = { secede_province = ENG } }
-	ai_chance = { factor = 0.2 }
-  }
+	option = {
+		name = "Release South Arabia but keep Aden"
+		prestige = -50
+		badboy = 5
+		
+		#Release SYE as a vassal
+		release_vassal = SYE
+		SYE = {
+			government = hms_government
+			country_event = 800054
+			ruling_party_ideology = traditionalist
+			
+			1412 = { secede_province = ENG }
+		}
+		
+		diplomatic_influence = { who = SYE value = 200 } 
+		
+		ai_chance = { factor = 0.1 }
+	}
 
-  option = {
-    name = EVT_8018210_B
-	prestige = -100
-	any_pop = { limit = { culture = arab } militancy = 5.0 consciousness = 4.0 }
-	release = SYE
-	SYE = { government = proletarian_dictatorship country_event = 800052 }
-	war = { target = SYE attacker_goal = { casus_belli = make_puppet } defender_goal = { casus_belli  = become_independent } }
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "South Arabia is not ripe for self-rule!"
+		prestige = -100
+		
+		#Middle East British subjects become angry
+		any_pop = { 
+			limit = { 
+				is_primary_culture = no 
+				is_accepted_culture = no 
+				location = { continent = mena }
+			} 
+			militancy = 10 
+			consciousness = 10
+		}
+		
+		#Independence War
+		release = SYE
+		SYE = { 
+			government = proletarian_dictatorship 
+			country_event = 800052 
+			ruling_party_ideology = communist
+		}
+		SYE = {
+			war = { 
+				target = THIS 
+				attacker_goal = { casus_belli  = become_independent } 
+				defender_goal = { } 
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
   
 }
 
 #Independence of South Yemen
 country_event = {
-  id = 8018211
-  title = EVT_8018211_NAME
-  desc = EVT_8018211_DESC
-  picture = "independence_of_south_yemen"
-  fire_only_once = yes
+	id = 8018211
+	title = EVT_8018211_NAME
+	desc = EVT_8018211_DESC
+	picture = "independence_of_south_yemen"
+	
+	fire_only_once = yes
 
-  trigger = {
-    tag = SYE
-    year = 1967 NOT = { year = 1990 }
-	OR = { 
-		is_vassal = yes
-		government = absolute_monarchy
+	trigger = {
+		tag = ENG
+		year = 1967 
+		NOT = { year = 1990 }
+		
 		government = hms_government
-		government = colonial_government
+		is_vassal = no
+		war = no
+	
+		#Owns South Yemen as a monarchy or colony
+		is_our_vassal = SYE
+		SYE = { 
+			OR = {
+				government = absolute_monarchy
+				government = hms_government
+				government = hms_government1
+				government = colonial_government
+			}
+		}
+		
+		#North Yemen is socialist
+		YEM = { exists = yes is_vassal = no ruling_party_ideology = socialist }
 	}
-  }
 
-  mean_time_to_happen = { months = 10 }
+	mean_time_to_happen = { months = 10 }
 
-  option = {
-    name = EVT_8018211_A
-	government = proletarian_dictatorship 
-	country_event = 800052
-	overlord = { 
+	option = {
+		name = "Leave South Yemen for good"
+		prestige_factor = -0.01
+		
+		#Free South Yemen
 		release_vassal = SYE
-		country_event = 8018212
-	}
-	ai_chance = { factor = 0.9 }
-  }
+		SYE = {
+			government = proletarian_dictatorship 
+			country_event = 800052
+			ruling_party_ideology = communist
+		}
+		relation = { who = SYE value = -200 } 
+		diplomatic_influence = { who = SYE value = -200 } 
+		leave_alliance = SYE
 
-  option = {
-    name = EVT_8018211_B
-	prestige = -10
-	any_pop = { limit = { culture = arab } militancy = 10 consciousness = 8 }
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-	ai_chance = { factor = 0.1 }
-  }
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Stop the insurgency!"
+
+		SYE = {
+			war = {
+				target = THIS
+				attacker_goal = { casus_belli = become_independent }
+				defender_goal = { }
+				call_ally = no
+			}
+		}
+		
+		#Socialist nations in the middle east are not happy
+		any_country = {
+			limit = { 
+				exists = yes 
+				is_vassal = no 
+				OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social } 
+			}
+			relation = { who = THIS value = -100 }
+		}
+
+		ai_chance = { factor = 0.1 }
+	}
   
-}
-
-#Independence of South Yemen - Overlord's response
-country_event = {
-  id = 8018212
-  title = EVT_8018211_NAME
-  desc = EVT_8018211_DESC
-  picture = "independence_of_south_yemen"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8018211_A
-	prestige = -25
-	diplomatic_influence = { who = FROM value = -200 } 
-	leave_alliance = FROM
-	ai_chance = { factor = 0.8 }
-	}
-
-  option = {
-    name = "Stop the insurgency"
-	diplomatic_influence = { who = FROM value = -200 } 
-	leave_alliance = FROM
-	war = {
-	target = SYE
-	attacker_goal = { casus_belli = make_puppet }
-	defender_goal = { casus_belli = become_independent }
-	call_ally = no
-	}
-	ai_chance = { factor = 0.2 }
-	}
-
 }
 
 #South Yemen Civil War, 1986
 country_event = {
-  id = 8018213
-  title = EVT_8018213_NAME
-  desc = EVT_8018213_DESC
-  picture = "south_yemen_civil_war"
-  fire_only_once = yes
+	id = 8018213
+	title = EVT_8018213_NAME
+	desc = EVT_8018213_DESC
+	picture = "south_yemen_civil_war"
+	fire_only_once = yes
 
-  trigger = {
+	trigger = {
     	tag = SYE
-    	year = 1986 NOT = { year = 1990 }
-	government = proletarian_dictatorship
-	is_vassal = no
-  }
+    	year = 1986
+		NOT = { year = 1990 }
+		
+		government = proletarian_dictatorship
+		is_vassal = no
+		war = no
+		
+		NOT = { has_global_flag = not_south_yemen_civil_war_1986 }
+	}
 
-  mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8018213_A 
-	government = populist_dictatorship 
-	country_event = 800050
-	relation = { who = YEM value = 100 }
-	relation = { who = RUS value = -100 }
-any_pop = { militancy = 2 consciousness = 1 }
-	set_global_flag = south_yemen_civil_war_1986
-	ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = EVT_8018213_A
+		
+		government = populist_dictatorship 
+		country_event = 800050
+		ruling_party_ideology = socialist
+		
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = 10
+			consciousness = 10 
+		}
+		
+		random_country = {
+			limit = { tag = YEM is_vassal = no ruling_party_ideology = socialist }
+			relation = { who = SYE value = 100 }
+		}
+		random_country = {
+			limit = { tag = RUS is_greater_power = yes OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } }
+			relation = { who = SYE value = -100 }
+		}
+		
+		set_global_flag = south_yemen_civil_war_1986
+		
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8018213_B
-	prestige = -10
-	relation = { who = YEM value = -100 }
-	relation = { who = RUS value = 100 }
-	any_pop = { militancy = 10 consciousness = 1 }
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = EVT_8018213_B
+		prestige = -10
+
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = 10
+			consciousness = 10 
+		}
+		
+		add_country_modifier = { name = political_strife duration = 1825 }
+		
+		random_country = {
+			limit = { tag = YEM is_vassal = no ruling_party_ideology = socialist }
+			relation = { who = SYE value = -100 }
+		}
+		random_country = {
+			limit = { tag = RUS is_greater_power = yes OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } }
+			relation = { who = SYE value = 100 }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+### SOUTH YEMEN OIL ###
+
+country_event = { # Yemen Reunification Project?
+	id = 9001265
+	title = "Yemen Reunification Project?"
+	desc = EVT_9001265_DESC
+	picture = "partition_of_yemen"
   
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		year = 1980
+		NOT = { year = 1986 }
+		
+		government = proletarian_dictatorship
+		is_greater_power = yes
+		war = no
+		
+		SYE = { 
+			exists = yes 
+			
+			OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+			is_vassal = no
+			war = no
+			
+			OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social }
+		}
+		YEM = { 
+			exists = yes 
+			
+			OR = { government = presidential_dictatorship government = nationalist_dictatorship government = populist_dictatorship government = proletarian_dictatorship government = proletarian_dictatorship1 }
+			is_vassal = no
+			war = no
+			
+			OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social }
+		}
+	}
+
+	mean_time_to_happen = { months = 3 }
+	
+	option = {
+		name = "It's not that big a deal."
+		
+		relation = { who = SYE value = 50 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Remove Muhammad and replace him with a pro-USSR person."
+		badboy = 3
+		
+		set_global_flag = not_south_yemen_civil_war_1986
+		
+		create_alliance = SYE
+		
+		diplomatic_influence = { who = SYE value = 200 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+country_event = { # Investment and Soviet Concession - RUS
+	id = 9001266
+	title = "Investment and Soviet Concession"
+	desc = EVT_9001266_DESC
+	picture = "independence_of_south_yemen"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		year = 1991
+		NOT = { year = 1999 }
+		
+		government = proletarian_dictatorship
+		is_greater_power = yes
+		war = no
+		
+		money = 3000000
+		
+		SYE = { 
+			exists = yes 
+			
+			OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+			is_vassal = no 
+			war = no 
+		}
+		
+		has_global_flag = not_south_yemen_civil_war_1986
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "Let's send this proposal."
+		
+		SYE = { country_event = 9001267 }
+		
+		prestige = 250
+		money = -2000000
+		
+		relation = { who = SYE value = 100 }
+		
+		ai_chance = { factor = 0.95 }
+	}
+	
+	option = {
+		name = "It's useless."
+		
+		relation = { who = SYE value = -25 }
+		
+		ai_chance = { factor = 0.05 }
+	}
+	
+}
+
+country_event = { # Investment and Soviet Concession - SYE
+	id = 9001267
+	title = "Investment and Soviet Concession"
+	desc = EVT_9001267_DESC
+	picture = "independence_of_south_yemen"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Accept now!"
+		prestige = 250
+		
+		money = 200000
+		
+		fuel = -1000
+		RUS = { fuel = 1000 }
+		
+		relation = { who = RUS value = 100 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "And submit? Refused!"
+		
+		prestige = 350
+		
+		leave_alliance = RUS
+		
+		relation = { who = RUS value = -100 }
+		
+		RUS = { country_event = 9001268 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+country_event = { # Investment and Soviet Concession - Refused
+	id = 9001268
+	title = "Investment and Soviet Concession - Refused"
+	desc = EVT_9001268_DESC
+	picture = "independence_of_south_yemen"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "How dare they?!"
+		
+		prestige = -250
+		
+		money = 2000000
+		
+		relation = { who = SYE value = -100 }
+	}
+	
 }
