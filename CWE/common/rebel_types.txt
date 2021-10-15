@@ -2696,7 +2696,7 @@ separatist_rebels = {
 	# The rebel type with the highest modifier for this pop gets picked
 	spawn_chance = {
 		factor = 3
-				
+		
 		modifier = {
 			factor = 1.5
 			state_scope = { is_colonial = yes }
@@ -2719,30 +2719,16 @@ separatist_rebels = {
 			factor = 2
 			country = { OR = { has_recently_lost_war = yes is_disarmed = yes num_of_revolts = 1 } }
 		}
+		
 		modifier = {
 			factor = 0
 			is_primary_culture = yes
 		}
-		modifier = {
-			factor = 3
-			location = {
-				any_core = {
-					is_primary_culture = THIS
-					exists = no
-			 	}
-			}
-		}
-		modifier = {
-			factor = 0.5
-			is_cultural_union = THIS
-		}
-		
-		#Non communists only
-		modifier = {
-			factor = 0
-			OR = { pop_majority_ideology = socialist pop_majority_ideology = communist pop_majority_ideology = communist_social }
-			country = { has_global_flag = blocsenabled }
-		}
+
+        modifier = {
+            factor = 1.015
+            NOT = { is_culture_group = THIS }
+        }
 
 		modifier = {
 			factor = 0.5
@@ -2783,6 +2769,11 @@ separatist_rebels = {
 		}
 		
 		modifier = {
+            factor = 2
+            location = { has_province_modifier = nationalist_agitation }
+        }
+		
+		modifier = {
 			factor = 0.25
 			is_accepted_culture = yes
 			state_scope = { is_colonial = no }
@@ -2802,6 +2793,31 @@ separatist_rebels = {
 				is_colonial = yes
 			}
 		}
+		
+		modifier = {
+            factor = 0
+            NOT = {
+                AND = {
+                    country = { any_neighbor_country = { any_core = { owned_by = THIS } } }
+                    location = {
+                        any_core = {
+                            is_primary_culture = THIS
+                            exists = yes
+                        }
+                    }
+                }
+            }
+        }
+        modifier = {
+            factor = 1.3
+            country = { any_neighbor_country = { any_core = { owned_by = THIS } } }
+            location = {
+                any_core = {
+                    is_primary_culture = THIS
+                    exists = yes
+                }
+            }
+        }
 	
 	}
  
@@ -2832,12 +2848,6 @@ separatist_rebels = {
 			factor = 2.0
 			is_capital = yes
 		}
-		modifier = {
-			factor = 0.4
-			country = {
-				has_country_modifier = springtime_of_nations
-			}
-		}
 	}
 	
  	# Province Scope
@@ -2850,10 +2860,6 @@ separatist_rebels = {
 			name = war_torn
 			duration = 365
 		}
-		add_province_modifier = {
-			name = patriot_uprising
-			duration = 1095
-		}
 		owner = { war_exhaustion = 2.5 }
 	}
 	
@@ -2865,10 +2871,22 @@ separatist_rebels = {
         }
     }
 	
-	demands_enforced_effect = {
-		prestige_factor = -0.05
-		
-        random_country = {
+    demands_enforced_effect = {
+        prestige_factor = -0.2
+        any_owned = {
+            limit = {
+                any_core = {
+                    exists = yes
+                    NOT = { is_primary_culture = THIS }
+                    NOT = { has_province_modifier = patriot_uprising }
+                }
+            }
+            add_province_modifier = {
+                name = patriot_uprising
+                duration = 1095
+            }
+        }
+        any_country = {
             limit = {
                 exists = yes
                 any_core = {
@@ -2878,7 +2896,8 @@ separatist_rebels = {
             }
             country_event = 97700
         }
-	}
+    }
+	
 }
 
 ###################################
@@ -2959,6 +2978,29 @@ nationalist_rebels = {
     # The rebel type with the highest modifier for this pop gets picked
     spawn_chance = {
         factor = 3
+		
+		modifier = {
+			factor = 1.5
+			state_scope = { is_colonial = yes }
+			country = { has_global_flag = un_committe_on_decolonisation }
+		}
+
+		modifier = {
+			factor = 1.5
+			state_scope = { is_colonial = yes }
+			country = { has_country_flag = decolonise_yes }
+		}
+
+		modifier = {
+			factor = 1.25
+			state_scope = { is_colonial = yes }
+			country = { has_country_flag = decoloniasation2 }
+		}
+
+		modifier = {
+			factor = 2
+			country = { OR = { has_recently_lost_war = yes is_disarmed = yes num_of_revolts = 1 } }
+		}
 
         modifier = {
             factor = 0
@@ -2983,9 +3025,9 @@ nationalist_rebels = {
                         is_cultural_union = no
                         is_primary_culture = THIS
                         exists = no
-                     }
-                 }
-             }
+                    }
+                }
+            }
         }
         modifier = {
             factor = 1.01
