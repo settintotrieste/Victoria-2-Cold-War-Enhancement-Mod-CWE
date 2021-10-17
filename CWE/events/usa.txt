@@ -153,7 +153,9 @@ country_event = {
 		}
 
 		PAK = { 
+			exists = yes
 			is_vassal = no
+			war = no
 			NOT = { 
 				OR = { 
 					ruling_party_ideology = traditionalist
@@ -166,6 +168,9 @@ country_event = {
 				} 
 			} 
 		}
+		
+		#Not Soviet led Afghan war
+		NOT = { has_global_flag = ussr_usa_vs_afghanistan_flag }
 	}
 	
 	mean_time_to_happen = {
@@ -173,48 +178,78 @@ country_event = {
 	}
 
 	option = {
-		name = EVT_1015802_A 
+		name = "We shall overthrow the Taliban!"
+		
 		set_global_flag = afghanistan_war_911
 		
+		#USA loses influence in Afghanistan
+		relation = { who = AFG value = -200 } 
+		diplomatic_influence = { who = AFG value = -200 } 
+		
+		#US allies are angry with AFG
 		any_country = { 
-			limit = { alliance_with = USA ai = yes } 
+			limit = { 
+				ai = yes 
+				alliance_with = USA
+			} 
 			relation = { who = AFG value = -200 } 
+			diplomatic_influence = { who = AFG value = -200 } 
 		}
-		any_country = { 
+		
+		#Pakistan participated in the operation
+		random_country = { 
 			limit = { tag = PAK ai = yes } 
-			create_alliance = USA 
 			relation = { who = USA value = 200 }
+			create_alliance = USA 
 		}
+		
+		#Commence the war
 		casus_belli = {
 			target = AFG
-			type = install_democracy
+			type = make_puppet
 			months = 60
 		}
-		prestige = 40
-		badboy = 5
-
 		AFG = { 
 			war = {
-				target = PAK
+				target = USA
 				attacker_goal = { casus_belli = humiliate }
-				defender_goal = { casus_belli = install_democracy }
+				defender_goal = { casus_belli = make_puppet }
+				call_ally = no
 			}
 		}
 
-		ai_chance = { factor = 1 }
+		ai_chance = { factor = 0.95 }
 	}
 	
 	option = {
-		name = EVT_1015802_B 
-		any_country = { limit = { alliance_with = USA } relation = { who = AFG value = -200 } } 
-		random_country = { limit = { tag = PAK ai = yes } create_alliance = USA }
-		casus_belli = {
-			target = AFG
-			type = install_democracy
-			months = 60
+		name = "They did nothing wrong!"
+		prestige_factor = -0.1
+		
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = conservative
+			}
+			scaled_militancy = {
+				factor = 5
+				ideology = big_tent
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = populist
+			}
 		}
-		prestige = 10
-		ai_chance = { factor = 0 }
+		
+		ai_chance = { factor = 0.05 }
 	}
 
 }

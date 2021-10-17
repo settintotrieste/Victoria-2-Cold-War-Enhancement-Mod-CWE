@@ -1,0 +1,473 @@
+### AFGHANISTAN WAR OF 2001 - ALTERNATIVE ###
+
+country_event = { # The Afghan Threat
+	id = 9001276
+	title = "The Afghan Threat"
+	desc = EVT_9001276_DESC
+	picture = "911"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		year = 2001
+		NOT = { year = 2011 }
+		
+		government = proletarian_dictatorship
+		is_greater_power = yes
+		war = no
+		
+		NOT = { war_policy = pacifism }
+		
+		has_global_flag = ussr_afghanistan_threat
+		has_global_flag = war_on_terror
+		
+		NOT = { has_global_flag = afghanistan_war_911 }
+		
+		#USA exists
+		USA = {
+			exists = yes
+			government = democracy
+			is_greater_power = yes
+			war = no
+		}
+		
+		#Afghanistan exists
+		AFG = {
+			exists = yes
+			government = theocracy
+			is_vassal = no
+			war = no
+		}
+	}
+	
+	mean_time_to_happen = { days = 10 }
+
+	option = {
+		name = "We shall make the proposal to the USA."
+		
+		USA = { country_event = 9001322 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "We all have our problems."
+		
+		prestige = 50
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+country_event = { # The Afghan Threat - USA
+	id = 9001322
+	title = "The Afghan Threat"
+	desc = EVT_9001322_DESC
+	picture = "soviet_visit"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "The enemy of my enemy is my friend."
+		
+		set_global_flag = ussr_usa_vs_afghanistan_flag
+		
+		any_country = { 
+			limit = { alliance_with = USA ai = yes } 
+			relation = { who = AFG value = -200 }
+		}
+		any_country = { 
+			limit = { alliance_with = RUS ai = yes } 
+			relation = { who = AFG value = -200 }
+		}
+		relation = { who = RUS value = 75 }
+		
+		#USSR intervention
+		RUS = { country_event = 9001323 }
+		
+		#USA intervention
+		country_event = 9001324
+		
+		ai_chance = { factor = 0.95 }
+	}
+	
+	option = {
+		name = "This may cause problems in the future."
+		
+		relation = { who = RUS value = -75 }
+		
+		ai_chance = { factor = 0.05 }
+	}
+	
+}
+
+country_event = { # International Anti-Terrorism Coalition - RUS
+	id = 9001323
+	title = "International Anti-Terrorism Coalition"
+	desc = EVT_9001323_DESC
+	picture = "intervention_in_afghanistan"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Welcome back home!"
+		
+		#Afghanistan declares war so as to call in Soviet allies
+		AFG = {
+			war = {
+				target = THIS
+				attacker_goal = { casus_belli = humiliate }
+				defender_goal = { casus_belli = acquire_any_state state_province_id = 1216 } #Kabul
+				defender_goal = { casus_belli = acquire_any_state state_province_id = 1212 } #Herat
+				defender_goal = { casus_belli = acquire_any_state state_province_id = 1211 } #Balkh
+				defender_goal = { casus_belli = acquire_any_state state_province_id = 1210 } #Faizabad
+				call_ally = no
+			}
+		}
+	}
+	
+}
+
+country_event = { # International Anti-Terrorism Coalition - USA
+	id = 9001324
+	title = "International Anti-Terrorism Coalition"
+	desc = EVT_9001324_DESC
+	picture = "intervention_in_afghanistan"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "For Peace!"
+		
+		#Afghanistan declares war so as to call in Soviet allies
+		AFG = {
+			war = {
+				target = THIS
+				attacker_goal = { casus_belli = humiliate }
+				defender_goal = { casus_belli = acquire_any_state state_province_id = 1217 } #Ghazni
+				defender_goal = { casus_belli = acquire_any_state state_province_id = 1215 } #Kandahar
+				defender_goal = { casus_belli = acquire_any_state state_province_id = 1214 } #Farrah
+				defender_goal = { casus_belli = acquire_any_state state_province_id = 1213 } #Bamyan
+				defender_goal = { casus_belli = acquire_any_state state_province_id = 1209 } #Jalalabad
+				call_ally = no
+			}
+		}
+	}
+	
+}
+
+country_event = { # Kabul under UN supervision
+	id = 9001326
+	title = "The Future of Afghanistan"
+	desc = EVT_9001326_DESC
+	picture = "ai_quick_capitulation"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		year = 2001
+		NOT = { year = 2011 }
+		
+		government = proletarian_dictatorship
+		is_vassal = no
+		war = no
+		
+		has_global_flag = ussr_usa_vs_afghanistan_flag
+		
+		has_global_flag = ussr_afghanistan_threat
+		has_global_flag = war_on_terror
+		
+		NOT = { has_global_flag = afghanistan_war_911 }
+		
+		#Owns Afghanistan
+		is_possible_vassal = AFG
+		
+		#USA also owns Afghanistan
+		USA = {
+			exists = yes
+			government = democracy
+			is_vassal = no
+			war = no
+			
+			any_owned_province = { is_core = AFG }
+		}
+	}
+	
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "Cede control over Afghanistan to the UN!"
+		prestige = 100
+		
+		#Create the Afghanistan mandate
+		release = AFG
+		AFG = {
+			government = democracy
+			country_event = 800054
+			ruling_party_ideology = big_tent
+		}
+		
+		relation = { who = AFG value = 200 }
+		diplomatic_influence = { who = AFG value = 100 }
+		
+		#Option for the USA to join in
+		USA = { country_event = 9001327 }
+		
+		ai_chance = { factor = 0.8 }
+	}
+	
+	option = {
+		name = "Create a Soviet state in Afghanistan!"
+		prestige = 50
+		badboy = 5
+		
+		#Create Northern Afghanistan
+		AFG = { all_core = { add_core = RDA } }
+		release_vassal = RDA
+		RDA = {
+			civilized = yes
+		
+			government = proletarian_dictatorship
+			country_event = 800052
+			ruling_party_ideology = communist
+			
+			any_pop = { militancy = 10 consciousness = 10 }
+		}
+		
+		relation = { who = AFG value = 200 }
+		diplomatic_influence = { who = AFG value = 200 }
+		
+		#US reaction - create Southern Afghanistan
+		USA = { country_event = 9001333 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+	option = {
+		name = "Impose direct Soviet rule instead!"
+		badboy = 10
+		
+		any_owned = {
+			limit = { is_core = AFG }
+			any_pop = { militancy = 10 consciousness = 10 ideology = { factor = 0.10 value = nationalist } }
+			add_province_modifier = { name = occupied_province duration = -1 } 
+			add_province_modifier = { name = nationalist_agitation duration = 3650 }
+		}
+		
+		#US reaction - create Southern Afghanistan
+		USA = { country_event = 9001333 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+country_event = { # The Aftermath of the Afghan War - USA
+	id = 9001327
+	title = "The UN Mandate of Afghanistan"
+	desc = EVT_9001327_DESC
+	picture = "cold_war_crisis_call"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Transfer Afghan territory to the UN mandate."
+		prestige = 100
+		
+		set_global_flag = usa_want_afghan_unified
+		
+		any_pop = {
+			limit = {
+				has_pop_culture = pashtun
+			}
+			consciousness = 3
+		}
+		
+		#Return provinces to Afghanistan mandate
+		any_owned = {
+			limit = { is_core = AFG }
+			secede_province = AFG
+		}
+		
+		#Gain relations in Afghanistan
+		relation = { who = AFG value = 200 }
+		diplomatic_influence = { who = AFG value = 100 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "We shall continue to occupy Afghanistan"
+		badboy = 10
+		
+		set_global_flag = usa_want_afghan_divided
+		
+		any_owned = {
+			limit = { is_core = AFG }
+			any_pop = { militancy = 10 consciousness = 10 ideology = { factor = 0.10 value = nationalist } }
+			add_province_modifier = { name = occupied_province duration = -1 } 
+			add_province_modifier = { name = nationalist_agitation duration = 3650 }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+country_event = { # Creation of the Islamic Republic of Afghanistan
+	id = 9001333
+	title = "Creation of Southern Afghanistan?"
+	desc = EVT_9001333_DESC
+	picture = "election_crowd"
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "Establish an independent democratic state!"
+		prestige = 100
+		
+		#Release AFG
+		release = AFG
+		AFG = {
+			government = democracy
+			country_event = 800054
+			ruling_party_ideology = conservative
+			
+			any_pop = { limit = { has_pop_culture = pashtun } consciousness = 5 }
+		}
+		
+		relation = { who = AFG value = 200 }
+		diplomatic_influence = { who = AFG value = 200 }
+		
+		relation = { who = RUS value = -50 }
+		
+		ai_chance = { factor = 0.8 }
+	}
+	
+	option = {
+		name = "Establish a US friendly democratic state!"
+		prestige = 50
+		badboy = 5
+		
+		#Release AFG as a US puppet
+		release_vassal = AFG
+		AFG = {
+			government = democracy
+			country_event = 800054
+			ruling_party_ideology = liberal
+			
+			any_pop = { limit = { has_pop_culture = pashtun } militancy = 5 }
+		}
+		
+		relation = { who = AFG value = 200 }
+		diplomatic_influence = { who = AFG value = 200 }
+		
+		relation = { who = RUS value = -50 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+	option = {
+		name = "We shall continue to occupy Afghanistan"
+		badboy = 10
+		
+		set_global_flag = usa_want_afghan_divided
+		
+		any_owned = {
+			limit = { is_core = AFG }
+			any_pop = { militancy = 10 consciousness = 10 ideology = { factor = 0.10 value = nationalist } }
+			add_province_modifier = { name = occupied_province duration = -1 } 
+			add_province_modifier = { name = nationalist_agitation duration = 3650 }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+country_event = { # Creation of the Democratic Republic of Afghanistan
+	id = 9001336
+	title = "The Democratic Republic of Afghanistan"
+	desc = EVT_9001336_DESC
+	picture = "election_soviet"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		year = 2005
+		NOT = { year = 2015 }
+		
+		government = proletarian_dictatorship
+		is_vassal = no
+		war = no
+		
+		OR = {
+			has_global_flag = usa_want_afghan_divided
+			has_global_flag = usa_want_afghan_divided
+		}
+
+		#Owns Northern Afghanistan
+		is_our_vassal = RDA
+	}
+	
+	mean_time_to_happen = { months = 5 }
+	
+	option = {
+		name = "Choose a leader of the faction Parcham (Reformist)."
+		prestige = 50
+		
+		#Free Northern Afghanistan
+		release_vassal = RDA
+		RDA = {
+			ruling_party_ideology = communist_social
+			any_pop = {
+				limit = {
+					has_pop_culture = pashtun
+				}
+				consciousness = -3 militancy = -2
+			}
+		}
+		
+		random_country = { limit = { tag = USA is_greater_power = yes government = democracy } relation = { who = THIS value = -25 } }
+		
+		ai_chance = { factor = 0.45 }
+	}
+	
+	option = {
+		name = "Release Afghanistan under Khalq (Communist)."
+		prestige = 25
+		
+		badboy = 2.5
+		
+		#Free Northern Afghanistan
+		release_vassal = RDA
+		RDA = {
+			ruling_party_ideology = communist
+			any_pop = {
+				limit = {
+					has_pop_culture = pashtun
+				}
+				consciousness = -2 militancy = -3
+			}
+		}
+		
+		random_country = { limit = { tag = USA is_greater_power = yes government = democracy } relation = { who = THIS value = -50 } }
+		
+		ai_chance = { factor = 0.45 }
+	}
+	
+	option = {
+		name = "Continue to occupy Afghanistan"
+		
+		badboy = 5
+		
+		random_country = { limit = { tag = USA is_greater_power = yes government = democracy } relation = { who = THIS value = -100 } }
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
