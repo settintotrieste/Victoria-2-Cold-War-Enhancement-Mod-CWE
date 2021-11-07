@@ -22,12 +22,10 @@ The music pack contains an assortment of 96 songs for a better Cold War immersio
 
 ### How to install the CWE Music Addon Pack ###
 
-Step 1: Download the Github zip file containing the music files from the following Github page: https://github.com/settintotrieste/CWE-Music-Addon-Pack or alternatively, Moddb at https://www.moddb.com/mods/victoria-2-cold-war-enhancement-mod/downloads/cwe-music-addon-pack
+Step 1: Download the Github zip file containing the music submod from the following Github page: https://github.com/settintotrieste/CWE-Music-Addon-Pack
 
-Step 2: Extract out the 'music' folder in the zip file.
+Step 2: Extract out the 'CWE Music Addon' folder and CWE Music Addon.mod file in the zip file and move them into 'Program Files (x86)\Steam\steamapps\common\Victoria 2\mod'
 
-Step 3: Copy and paste the 'music' folder from the zip file in Program Files (x86)\Steam\steamapps\common\Victoria 2\mod\CWE
-
-Step 4: When the message to "replace file" pops-up, click okay to replace the existing 'music' file in the CWE programs folder.
+Step 3: Check the options for 'Cold War Enhancement Mod...' and 'CWE Music Addon' in the Victoria 2 launcher then launch the game.
 
 Enjoy!
