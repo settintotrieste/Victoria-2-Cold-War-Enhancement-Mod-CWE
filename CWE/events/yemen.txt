@@ -357,7 +357,7 @@ country_event = {
 
 }
 
-#Unification of Yemen, 1990
+#Historical Unification of Yemen, 1990
 country_event = {
 	id = 8018206
 	title = "Unification of Yemen"
@@ -371,32 +371,30 @@ country_event = {
 		year = 1990
 		has_global_flag = south_yemen_civil_war_1986
 		
+		OR = { government = presidential_dictatorship government = nationalist_dictatorship government = populist_dictatorship }
 		is_vassal = no
 		war = no
+		
+		OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social }
 		
 		SYE = { 
 			exists = yes 
 			
+			OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
 			is_vassal = no 
 			war = no
+			
+			OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social }
 			
 			ai = yes 
 		}
 		
-		#Share similar ideologies
 		OR = {
-			AND = { 
-				YEM = { OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social } } 
-				SYE = { OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social } }
-			}
-			AND = { 
-				YEM = { OR = { ruling_party_ideology = big_tent ruling_party_ideology = conservative ruling_party_ideology = traditionalist } } 
-				SYE = { OR = { ruling_party_ideology = big_tent ruling_party_ideology = conservative ruling_party_ideology = traditionalist } }
-			}
-			AND = { 
-				YEM = { OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive ruling_party_ideology = populist } } 
-				SYE = { OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive ruling_party_ideology = populist } }
-			}
+			#Cold War is over
+			NOT = { has_global_flag = blocsenabled }
+			
+			#Eastern Bloc is falling
+			has_global_flag = autumn_of_nations
 		}
 		
 	}
@@ -407,12 +405,40 @@ country_event = {
 		name = "Embrace Yemeni unity!"
 		inherit = SYE
 		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		#Become a democracy
+		government = democracy
+		country_event = 800054
+		election = yes
+		
+		#Increase in big_tent support
+		any_pop = {
+			limit = { strata = rich }
+			consciousness = 10
+			ideology = { factor = 0.1 value = big_tent }
+		}
+		any_pop = {
+			limit = { strata = middle }
+			militancy = 2.5
+			consciousness = 10
+			ideology = { factor = 0.2 value = big_tent }
+		}
+		any_pop = {
+			limit = { strata = poor }
+			militancy = 5
+			consciousness = 10
+			ideology = { factor = 0.4 value = big_tent }
+		}
+		
 		ai_chance = { factor = 0.9 }
 	}
 
   	option = {
 		name = "Delay the unification"
+		prestige_factor = -0.1
+		
 		relation = { who = SYE relation = -50 }
+		
 		ai_chance = { factor = 0.1 }
 	}
 
