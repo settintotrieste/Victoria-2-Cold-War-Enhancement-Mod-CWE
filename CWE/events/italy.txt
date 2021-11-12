@@ -23,8 +23,8 @@ country_event = {
 	
 	option = {
 		name = "Farewell Sciaboletta! Farewell!"
-		any_pop = { scaled_consciousness = 2 }
-		country_event = { id = 8007704 days = 14 }
+		any_pop = { consciousness = 2 }
+		country_event = 8007704 
 	}
 
 }
@@ -54,22 +54,14 @@ country_event = {
 			}
 		any_pop = {
                 scaled_militancy = { factor = -5 ideology = communist }
-			}	
-		any_pop = {
-                scaled_militancy = { factor = -5 ideology = communist_social }
-			}	
-        any_pop = {
-                scaled_militancy = { factor = -5 ideology = socialist }
-			}		
-        any_pop = {
-                scaled_consciousness = { factor = 2 ideology = communist }
-			}	
-		any_pop = {
-                scaled_consciousness = { factor = 2 ideology = communist_social }
-			}	
-        any_pop = {
-                scaled_consciousness = { factor = 2 ideology = socialist }
-			}				
+				scaled_militancy = { factor = -5 ideology = communist_social }
+				scaled_militancy = { factor = -5 ideology = socialist }
+				scaled_consciousness = { factor = 2 ideology = communist }
+				scaled_consciousness = { factor = 2 ideology = communist_social }
+				scaled_consciousness = { factor = 2 ideology = socialist }
+			}
+
+        set_country_flag = parliamentary_system_republic			
 
 		set_country_flag = ITA_1948_republic_flag 
 		ai_chance = {
@@ -189,7 +181,7 @@ country_event = {
         }
 		
 		random_country = {
-                       limit = { tag = USA government = democracy is_vassal = no }
+                       limit = { tag = USA government = democracy is_vassal = no is_greater_power = yes }
                        diplomatic_influence  = { who = THIS value = -200 }
         }
 		
@@ -246,8 +238,8 @@ country_event = {
 		prestige = 25
 		
 		any_pop = {
-		scaled_consciousness = -2
-		scaled_militancy = -2
+		consciousness = -2
+		militancy = -2
 		}
       
 		clr_country_flag = presidential_system_republic
@@ -264,9 +256,15 @@ country_event = {
 		prestige = -15
 		
 		any_pop = {
-		scaled_consciousness = 2
-		scaled_militancy = 2
+		consciousness = 2
+		militancy = 2
 		}
+		
+		clr_country_flag = presidential_system_republic
+		clr_country_flag = semi_presidential_system_republic
+		clr_country_flag = parliamentary_system_republic
+			
+		set_country_flag = semi_presidential_system_republic
       
 		add_country_modifier = { name = political_strife duration = 1825 }
 
@@ -303,7 +301,7 @@ country_event = {
 			ideology = { factor = 0.1 value = conservative }
 		}
 		set_country_flag = 1948_ITA_Centrism
-		ai_chance = { factor = 0.7 }
+		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
@@ -316,7 +314,7 @@ country_event = {
 			ideology = { factor = 0.1 value = socialist }
 		}
 		set_country_flag = 1948_ITA_FDP
-		ai_chance = { factor = 0.3 }
+		ai_chance = { factor = 0.1 }
 	}
 
 }
@@ -414,6 +412,8 @@ country_event = {
 		is_vassal = no
 		war = no
 		
+		OR = { ruling_party_ideology = communist ruling_party_ideology = socialist }
+		
 		AND = { has_country_flag = 1948_ITA_FDP has_country_flag = ITA_Togliatti_shooting }
 		NOT = { has_country_flag = 1948_ITA_Centrism }
 	}
@@ -427,7 +427,7 @@ country_event = {
                        relation = { who = THIS value = -100 }
         }
 		random_country = {
-                       limit = { tag = ENG government = democracy is_vassal = no }
+                       limit = { tag = ENG government = hms_government is_vassal = no }
                        relation = { who = THIS value = -100 }
         }
 		random_country = {
@@ -440,14 +440,21 @@ country_event = {
         }
 		
 		government = proletarian_dictatorship
-      
-		political_reform = regulated_opinion
-		political_reform = none_voting 
-		political_reform = limited_meetings
-		political_reform = politicised_service 
-		political_reform = censored_publishing
-		political_reform = state_controlled_unions 
-		political_reform = parties_only_nominated
+		
+		country_event = 800052
+		
+		#Break alliances with non communists
+		any_country = {
+			limit = { NOT = { ruling_party_ideology = communist } }
+			leave_alliance = THIS
+			relation = { who = THIS value = -200 }
+		}
+		
+		#Be friends with fellow communists
+		any_country = {
+			limit = { ruling_party_ideology = communist }
+			relation = { who = THIS value = 200 }
+		}
 
 		ai_chance = { factor = 0.99 }
 	}
