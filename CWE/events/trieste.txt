@@ -17,6 +17,7 @@ country_event = {
 		is_vassal = no
 		war = no
 		
+		has_global_flag = paris_peace_treaty_1947
 		owns = 736 # Trieste
 	}
 
@@ -68,6 +69,7 @@ country_event = {
 	option = {
 		name = EVT_8020301_A #Allow its formation.
 		3345 = { secede_province = TRE } 
+		3378 = { secede_province = TRE } 
 		relation = { who = USA value = 50 } 
 		relation = { who = ITA value = 25 } 
 		ai_chance = { factor = 0.9 }
@@ -78,6 +80,50 @@ country_event = {
 		badboy = 5
 		relation = { who = USA value = -100 } 
 		relation = { who = ITA value = -50 }
+		USA = { country_event = 8020309 }
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+#Free Territory of Trieste
+country_event = {
+	id = 8020309
+	title = "The Yugoslavs don't respect the treaties"
+	desc = EVT_8020309_DESC
+	picture = "nwo2_free_city_of_trieste"
+  
+	is_triggered_only = yes 
+
+	option = {
+		name = "Return Zone A to Italy" 
+		inherit = TRE
+		736 = { secede_province = ITA } 
+		relation = { who = ITA value = 50 } 
+		relation = { who = YUG value = -50 } 
+		ai_chance = { factor = 0.8 }
+	}
+  
+	option = {
+		name = "Yugoslavia ought to respect the treaties" 
+		badboy = 5
+		relation = { who = YUG value = -100 } 
+		relation = { who = ITA value = 50 }
+		war = { 
+			target = YUG
+			attacker_goal = { casus_belli = free_allied_cores }
+			defender_goal = { casus_belli = territorial_dispute }
+			call_ally = yes
+		}
+		set_global_flag = TRE_failed_agreement
+		ai_chance = { factor = 0.1 }
+	}
+	
+	option = {
+		name = "We cannot do anything" 
+		prestige = -25
+		relation = { who = ITA value = -100 } 
+		relation = { who = TRE value = -50 }
 		ai_chance = { factor = 0.1 }
 	}
 	
@@ -109,6 +155,8 @@ country_event = {
 		
 		#USA owns any part of Trieste
 		USA = { is_our_vassal = TRE }
+		
+		NOT = { has_global_flag = TRE_failed_agreement }
 	}
 
 	mean_time_to_happen = { months = 9 }
@@ -149,6 +197,7 @@ country_event = {
 		#Split Zones A and B to the two countries
 		736 = { secede_province = ITA }
 		3345 = { secede_province = YUG }
+		3378 = { secede_province = YUG }
 		
 		ITA = { country_event = 8020306 }
 		relation = { who = ITA value = 100 }
