@@ -11,7 +11,12 @@ country_event = {
   
 	fire_only_once = yes 						#MANDATORY for all events that are not generic
 
+	### Full list of scopes at https://vic2.paradoxwikis.com/List_of_scopes ###
+
 	trigger = {
+	
+		### Full list of conditions at https://vic2.paradoxwikis.com/List_of_conditions ###
+	
     		tag = BOL						#MANDATORY
 		year = 1947 						#The year the historical event occured
 		NOT = { has_global_flag = 1950_start_date_flag } 	#Does not fire for the 1950 start date
@@ -25,6 +30,34 @@ country_event = {
 
 		ruling_party_ideology = conservative 			#Optional
 		
+		money = 100000						#Option check for money
+		
+		education = public_education				#Optional
+		
+		owns = 1055						#Check if a province is owned
+		
+		any_owned_province = { is_core = THIS is_state_capital = yes }	#Check if the following type of province is met
+		
+		#Checking status of another country
+		CUB = { 
+			exists = yes 					#MANDATORY
+			
+			government = proletarian_dictatorship
+			is_vassal = no 
+			war = no
+			
+			OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } 
+		}
+		
+		#Checking for the status in a province anywhere in the world
+		749 = { has_province_modifier = vatican_city }
+		
+		#Check for country modifier
+		has_country_modifier = united_nations_ga_member
+		
+		#How to check that the Cold War is still ongoing
+		has_global_flag = blocsenabled
+		
 		has_country_flag = national_indigenous_congress		#Option - check for flags applied by prior events
 
 		#Cold War ongoing					#If this event is cold war specific
@@ -33,14 +66,28 @@ country_event = {
 
 	mean_time_to_happen = { months = 6 }				#The month the event occurred
 
+	### Full list of effects at https://vic2.paradoxwikis.com/List_of_effects ###
+
 	option = {							#(1) Arrange options in order of the highest ai_chance. (2) Each option must have a pro and a cons
 		name = "We don't need to make concessions with them any longer."
 		badboy = 1
-
-		clr_country_flag = national_indigenous_congress
-
-		political_reform = minorities_oppression
 		
+		money = 100000						#Must have a check to make sure the country actually enough money so this won't insta bankrupt the AI
+
+		set_global_flag = BOL_does_this_flag			#global flags must not be generically named like 'set_global_flag = science'
+
+		set_country_flag = 1947_fate_of_the_NIC 		#Country flags must not be generically named like 'set_country_flag = science'
+
+		clr_country_flag = national_indigenous_congress		#Note that country flags remain even after a country is annexed
+		
+		clr_global_flag = BOL_does_this_flag
+
+		political_reform = minorities_oppression		#Remember to create a check in triggered to make sure the reform has not already been enacted
+		social_reform = unlimited_education
+		
+		primary_culture = australian				#How to add/remove primary cultures
+		
+		add_accepted_culture = quechua				#How to add/remove accepted cultures
 		remove_accepted_culture = quechua
 		remove_accepted_culture = aimara
 		
@@ -76,14 +123,33 @@ country_event = {
 			}
 		}
 
-		random_country = {					#If relations with other countries are affected, it must be done via this method.
+		random_country = {					#If relations with another country is affected, it must be done via this method.
 			limit = { 
-				tag = USA 
-				is_vassal = no 				#MANDATORY
+				tag = USA
+				
+				government = democracy
+				is_vassal = no 				#MANDATORY check
+				war = no
+				
 				ruling_party_ideology = liberal 
 			}
 			relation = { who = THIS value = -100 } 
 			diplomatic_influence = { who = THIS value = -50 }
+		}
+		
+		any_country = {						#If relations with other countries are affected, it must be done via this method.
+			limit = {
+				exists = yes				#MANDATORY because any_country does not check if the country exists, unlike random_country
+				
+				OR = { tag = USA tag = FRA tag = ENG }
+				
+				government = democracy
+				is_vassal = no 				#MANDATORY check
+				
+				ruling_party_ideology = liberal 
+			}
+			relation = { who = THIS value = -100 }
+			leave_alliance = THIS
 		}
 
 		ai_chance = { factor = 0.9 }				#Historical options must have a minimum of 80% ai_chance.
@@ -103,30 +169,123 @@ country_event = {
 		ruling_party_ideology = big_tent			#Note ruling party restrictions for the various gov types
 		######################
 		
-		any_pop = {
+		random_owned = { 					#Way to release an independent country from this country
+			limit = { owner = { is_possible_vassal = GEO } } 
+			owner = { 
+				release = GEO 				#release_vassal if you want to release the country as a vassal
+				GEO = { 				#Set gov type of released nation
+					government = proletarian_dictatorship 
+					country_event = 800052 		#democracies use 800054, communist dictatorships use 800052, all other dictatorships use 800050
+					ruling_party_ideology = communist 
+					create_alliance = THIS 
+				} 
+				THIS = { 
+					relation = { who = GEO value = 200 }
+					diplomatic_influence = { who = GEO value = 200 } 
+				} 
+			} 
+		}
+		
+		#How to trigger a war
+		overlord = { release_vassal = THIS }			#If the country already exists as a vassal
+		war = {							#Must check that both the attacking and defending parties are not puppets as that would auto peace
+			target = PEU
+			attacker_goal = { casus_belli = acquire_any_state state_province_id = 1211 }
+			defender_goal = { casus_belli = humiliate } 
+			call_ally = yes/no
+		}
+		
+		any_pop = {						#Various ways to interact with pops in THIS
 			limit = {
-				type = farmers
+				OR = { strata = poor strata = middle strata = rich }
 				OR = {
 					culture = quechua
 					culture = aimara
+					
+					has_pop_religion = catholic
+					
+					location = { is_core = BOL }
 				}
 			}
 			ideology = {
 				value = socialist
 				factor = 0.1
 			}
-			scaled_consciousness = {
-				ideology = socialist
-				factor = -1
-			}
-			scaled_militancy = {
-				factor = -1
-				ideology = socialist
-			}
+			militancy = 2					#How to increase militancy without scaling it to ideology support
+			consciousness = 2
 		}
+		
+		capitalists = { money = 500 }				#How to give money to pops
+		
+		
+		######################					#Way to change Republic system
+		clr_country_flag = presidential_system_republic
+		clr_country_flag = semi_presidential_system_republic
+		clr_country_flag = parliamentary_system_republic
+		
+        	set_country_flag = parliamentary_system_republic
+		######################
 		
 		ai_chance = { factor = 0.1 }
 		
+	}
+	
+}
+
+#### TRIGGERED EVENT ####
+
+#Yugoslavia demands Bolivia
+country_event = {
+	id = 8020304							#Event ID cannot be more than 9 digits
+	title = "Yugoslavia demands Bolivia"
+	desc = EVTDESC8020304						#Localisation to be inserted in a separate file
+	picture = "BOL_YUG_1947_demand_annexation"			#Follow naming format
+
+	is_triggered_only = yes # YUG
+
+	option = {
+		name = "Bolivia remains independent!"
+		relation = { who = FROM value = -200 }
+		FROM = { diplomatic_influence = { who = THIS value = -200 } }
+		
+		war = {							#Must check that both the attacking and defending parties are not puppets as that would auto peace
+			target = FROM
+			attacker_goal = { casus_belli = conquest }
+			defender_goal = { casus_belli = status_quo } 
+			call_ally = yes/no
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Yugoslavia shall give Bolivia some land instead!"
+		
+		######
+		
+		inherit = BOL 						#Generally, a country can only inherit the target if the target is not a vassal and not at war
+		
+		######
+		
+		random_owned = {
+			limit = { 
+				average_militancy = 9
+				is_core = YUG 
+				is_capital = no 			#Remember never to cede the capital province as it will permanently change the capital of the country.
+			}
+			secede_province = FROM
+		}
+		
+		any_owned = {
+			limit = { 
+				is_core = YUG 
+				is_capital = no 			#Remember never to cede the capital province as it will permanently change the capital of the country.
+			}
+			secede_province = FROM
+		}
+
+		
+		ai_chance = { factor = 0.1 }
 	}
 	
 }
