@@ -64,7 +64,17 @@ country_event = {
 		has_global_flag = blocsenabled
 	}
 
-	mean_time_to_happen = { months = 6 }				#The month the event occurred
+	mean_time_to_happen = { 
+		months = 6 						#Ideally it should be the month the event occurred IRL
+		modifier = {
+			factor = 0					#This makes the event fire immediately
+			AND = { war = yes election = yes }		#Must have an AND when checking for 2 or more conditions
+		}
+		modifier = {
+			factor = 5					#This makes the MTTH 30 months instead
+			average_militancy = 5				#Checks for average militancy of entire country
+		}
+	}
 
 	### Full list of effects at https://vic2.paradoxwikis.com/List_of_effects ###
 
@@ -152,7 +162,17 @@ country_event = {
 			leave_alliance = THIS
 		}
 
-		ai_chance = { factor = 0.9 }				#Historical options must have a minimum of 80% ai_chance.
+		ai_chance = { 
+			factor = 0.9					#Historical options must have a minimum of 80% ai_chance.
+			modifier = {
+				factor = 0				#AI will not choose this option if the condition is met
+				OR = { war_policy = jingoism war_policy = pro_militancy }
+			}
+			modifier = {
+				factor = 0.5				#AI have a lower chance of taking this option if these conditions are met
+				PEU = { exists = yes war_with = THIS }
+			}
+		}
 	}	
 
 	option = {
@@ -268,9 +288,7 @@ country_event = {
 		name = "Yugoslavia shall give Bolivia some land instead!"
 		
 		######
-		
 		inherit = BOL 						#Generally, a country can only inherit the target if the target is not a vassal and not at war
-		
 		######
 		
 		random_owned = {
@@ -290,6 +308,8 @@ country_event = {
 			secede_province = FROM
 		}
 
+		#How to change tag of THIS
+		change_tag = BKF					#Remember to check that BKF doesn't already exists or it will do a tag switcheroo so the current BKF becomes YUG and YUG becomes BKF
 		
 		ai_chance = { factor = 0.1 }
 	}
