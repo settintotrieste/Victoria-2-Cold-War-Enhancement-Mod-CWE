@@ -12,13 +12,29 @@ country_event = {
 		year = 1947
 		NOT = { year = 1990 }
 		
-		NOT = { YUG = { war_with = ITA } }
-		
 		is_vassal = no
 		war = no
 		
-		has_global_flag = paris_peace_treaty_1947
+		#Can form TRE as a puppet
+		is_possible_vassal = TRE
 		owns = 736 # Trieste
+		
+		#ITA & YUG are independent and not at war
+		YUG = {
+			exists = yes
+			is_vassal = no
+			war = no
+			
+			owns = 3345
+			owns = 3378
+		}
+		ITA = {
+			exists = yes
+			is_vassal = no
+			war = no
+		}
+		
+		has_global_flag = paris_peace_treaty_1947
 	}
 
 	mean_time_to_happen = { months = 2 }
@@ -42,22 +58,28 @@ country_event = {
 		relation = { who = TRE value = 200 }
 		diplomatic_influence = { who = TRE value = 200 }
 		
-		relation = { who = RUS value = 25 }
+		random_country = {
+			limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = 25 }
+		}
 		
-		ai_chance = { factor = 1 }
+		ai_chance = { factor = 0.95 }
 	}
 
 	option = {
 		name = EVT_8020300_B #Prevent its formation at all cost.
 		badboy = 10 
 		relation = { who = YUG value = -150 } 
-		relation = { who = RUS value = -50 } 
-		ai_chance = { factor = 0 }
+		relation = { who = RUS value = -50 }
+		
+		TRE = { all_core = { add_province_modifier = { name = occupied_province duration = -1 } } }
+		
+		ai_chance = { factor = 0.05 }
 	}
 	
 }
 
-#Free Territory of Trieste
+#Free Territory of Trieste - YUG
 country_event = {
 	id = 8020301
 	title = EVT_8020301_NAME
@@ -72,7 +94,7 @@ country_event = {
 		3378 = { secede_province = TRE } 
 		relation = { who = USA value = 50 } 
 		relation = { who = ITA value = 25 } 
-		ai_chance = { factor = 0.9 }
+		ai_chance = { factor = 0.95 }
 	}
   
 	option = {
@@ -80,13 +102,17 @@ country_event = {
 		badboy = 5
 		relation = { who = USA value = -100 } 
 		relation = { who = ITA value = -50 }
+		
 		USA = { country_event = 8020309 }
-		ai_chance = { factor = 0.1 }
+		
+		any_owned = { limit = { is_core = TRE } add_province_modifier = { name = occupied_province duration = -1 } }
+		
+		ai_chance = { factor = 0.05 }
 	}
 	
 }
 
-#Free Territory of Trieste
+#Free Territory of Trieste - USA
 country_event = {
 	id = 8020309
 	title = "The Yugoslavs don't respect the treaties"
@@ -96,11 +122,16 @@ country_event = {
 	is_triggered_only = yes 
 
 	option = {
-		name = "Return Zone A to Italy" 
-		inherit = TRE
-		736 = { secede_province = ITA } 
-		relation = { who = ITA value = 50 } 
-		relation = { who = YUG value = -50 } 
+		name = "Return Zone A to Italy"
+		
+		ITA = { inherit = TRE }
+		
+		relation = { who = ITA value = 50 }
+		diplomatic_influence = { who = ITA value = 50 }
+		
+		relation = { who = YUG value = -50 }
+		diplomatic_influence = { who = YUG value = -50 }
+		
 		ai_chance = { factor = 0.8 }
 	}
   
@@ -108,21 +139,30 @@ country_event = {
 		name = "Yugoslavia ought to respect the treaties" 
 		badboy = 5
 		relation = { who = YUG value = -100 } 
+		diplomatic_influence = { who = YUG value = -100 }
+		
 		relation = { who = ITA value = 50 }
+		diplomatic_influence = { who = ITA value = 50 }
+		
 		war = { 
 			target = YUG
 			attacker_goal = { casus_belli = free_allied_cores }
 			defender_goal = { casus_belli = territorial_dispute }
 			call_ally = yes
 		}
+		
 		set_global_flag = TRE_failed_agreement
+		
 		ai_chance = { factor = 0.1 }
 	}
 	
 	option = {
 		name = "We cannot do anything" 
 		prestige = -25
-		relation = { who = ITA value = -100 } 
+		
+		relation = { who = ITA value = -100 }
+		diplomatic_influence = { who = ITA value = -50 }
+		
 		relation = { who = TRE value = -50 }
 		ai_chance = { factor = 0.1 }
 	}
@@ -143,17 +183,33 @@ country_event = {
 		year = 1953 
 		NOT = { year = 1990 }
 		
-		NOT = { ITA = { owns = 3345 } } 
-		NOT = { ITA = { owns = 3378 } } 
+		government = sar_government
+		vassal_of = USA
+		war = no
 		
 		#ITA exists
-		exists = ITA
+		ITA = {
+			exists = yes
+			is_vassal = no
+			war = no
+			
+			NOT = { owns = 3345 }
+			NOT = { owns = 3378 } 
+		}
 		
 		#YUG exists
-		exists = YUG
+		YUG = {
+			exists = yes
+			is_vassal = no
+			war = no
+		}
 		
-		#USA owns any part of Trieste
-		USA = { is_our_vassal = TRE }
+		#USA
+		USA = {
+			exists = yes
+			is_vassal = no
+			war = no
+		}
 		
 		NOT = { has_global_flag = TRE_failed_agreement }
 	}
@@ -164,10 +220,11 @@ country_event = {
 		name = "This does not bode well"
 		relation = { who = ITA value = 100 } 
 		
-		any_pop  = { limit = { culture = italian } 
-		             militancy = 9 
-					 ideology = { factor = 0.1 value = nationalist }
-		}  
+		any_pop  = { 
+			limit = { culture = italian } 
+			militancy = 9 
+			ideology = { factor = 0.1 value = nationalist }
+		}
 					 
 		set_global_flag = TRE_1953_Revolt			 	
 	}
@@ -187,16 +244,31 @@ country_event = {
 		year = 1954 
 		NOT = { year = 1990 }
 		
+		government = democracy
+		is_vassal = no
+		war = no
+			
 		#TRE exists
-		TRE = { exists = yes }
+		TRE = { 
+			exists = yes
+			government = sar_government
+			vassal_of = USA
+			war = no
+		}
 		
 		#ITA exists
-		ITA = { exists = yes }
+		ITA = {
+			exists = yes
+			is_vassal = no
+			war = no
+		}
 		
 		#YUG exists
-		YUG = { exists = yes }
-		
-		is_our_vassal = TRE 
+		YUG = {
+			exists = yes
+			is_vassal = no
+			war = no
+		}
 		
 		has_global_flag = TRE_1953_Revolt 
 	}
@@ -208,13 +280,13 @@ country_event = {
 		badboy = -3 
 		
 		random_country = {
-                       limit = { tag = ITA is_vassal = no }
-                       relation = { who = THIS value = 100 }
-        } 
+			limit = { tag = ITA is_vassal = no }
+			relation = { who = THIS value = 100 }
+		}
 		random_country = {
-                       limit = { tag = ENG government = hms_government is_vassal = no }
-                       relation = { who = THIS value = 25 }
-        }
+			limit = { tag = ENG government = hms_government is_vassal = no }
+			relation = { who = THIS value = 25 }
+		}
 		
 		ITA = { country_event = 8020303 } 
 		ai_chance = { factor = 0.8 }
@@ -225,13 +297,13 @@ country_event = {
 		badboy = 2 
 		
 		random_country = {
-                       limit = { tag = ITA is_vassal = no }
-                       relation = { who = THIS value = 150 }
-        } 
+			limit = { tag = ITA is_vassal = no }
+			relation = { who = THIS value = 150 }
+		}
 		random_country = {
-                       limit = { tag = YUG is_vassal = no }
-                       relation = { who = THIS value = -100 }
-        } 
+			limit = { tag = YUG is_vassal = no }
+			relation = { who = THIS value = -100 }
+		} 
 		
 		YUG = { country_event = 8020307 }
 		ai_chance = { factor = 0.1 }
@@ -243,19 +315,20 @@ country_event = {
 		TRE = { prestige = 25 }
 		
 		random_country = {
-                       limit = { tag = ITA is_vassal = no }
-                       relation = { who = THIS value = -50 }
-        }
+			limit = { tag = ITA is_vassal = no }
+			relation = { who = THIS value = -50 }
+		}
 		random_country = {
-                       limit = { tag = YUG is_vassal = no }
-                       relation = { who = THIS value = -50 }
-        }
+			limit = { tag = YUG is_vassal = no }
+			relation = { who = THIS value = -50 }
+		}
 		random_country = {
-                       limit = { tag = ITA is_vassal = yes }
-                       relation = { who = THIS value = 150 }
-        } 
+			limit = { tag = ITA is_vassal = no }
+			relation = { who = THIS value = 150 }
+		} 
 		ai_chance = { factor = 0.1 }
 	}
+	
 }
 
 #London Memorandum ITA
@@ -273,6 +346,7 @@ country_event = {
 		prestige = 10
 		
 		YUG = { country_event = 8020304 }
+		
 		ai_chance = { factor = 0.9 }	
 	}
 	
@@ -281,6 +355,7 @@ country_event = {
 		badboy = 5
 		
 		YUG = { country_event = 8020306 }
+		
 		ai_chance = { factor = 0.07 }
 	}
 
@@ -288,14 +363,18 @@ country_event = {
 		name = "Don't sign the Memorandum"
 		prestige = -10
 		
-		any_pop = { limit = { is_primary_culture = yes }	
-                scaled_militancy = { factor = 4 ideology = nationalist }
-		}		
-        any_pop = { limit = { is_primary_culture = yes }
-                scaled_consciousness = { factor = 5 ideology = nationalist }
-		}	
+		any_pop = { 
+			limit = { is_primary_culture = yes }
+			scaled_militancy = { factor = 4 ideology = nationalist }
+		}
+		any_pop = { 
+			limit = { is_primary_culture = yes }
+                	scaled_consciousness = { factor = 5 ideology = nationalist }
+		}
+		
 		ai_chance = { factor = 0.03 }
 	}
+	
 }
 
 #London Memorandum YUG
@@ -309,7 +388,7 @@ country_event = {
 
 	option = {
 		name = "Respect the Memorandum"
-        badboy = -1
+		badboy = -1
 		
 		inherit = TRE
 		
@@ -323,7 +402,6 @@ country_event = {
 		}
 		
 		release_vassal = TRB
-		
 		TRB = { 
 			government = sar_government 
 			country_event = 800054 
@@ -341,11 +419,12 @@ country_event = {
 		badboy = 3
 		
 		random_country = {
-                       limit = { tag = ITA is_vassal = no }
-                       relation = { who = THIS value = -75 }
-        }
+			limit = { tag = ITA is_vassal = no }
+			relation = { who = THIS value = -75 }
+		}
 		
 		USA = { country_event = 8020306 }	
+		
 		ai_chance = { factor = 0.1 }
 	}
 	
@@ -367,7 +446,8 @@ country_event = {
 		inherit = TRE
 		
 		736 = { change_province_name = "Trst" }
-	}	
+	}
+	
 }
 
 #Negotiations breakdown (USA)
@@ -416,17 +496,18 @@ country_event = {
 		TRE = { prestige = 25 }
 		
 		random_country = {
-                       limit = { tag = ITA is_vassal = no }
-                       relation = { who = THIS value = -50 }
-        }
+                       	limit = { tag = ITA is_vassal = no }
+                       	relation = { who = THIS value = -50 }
+        	}
 		random_country = {
-                       limit = { tag = YUG is_vassal = no }
-                       relation = { who = THIS value = -50 }
-        }
+                       	limit = { tag = YUG is_vassal = no }
+                       	relation = { who = THIS value = -50 }
+        	}
 		random_country = {
-                       limit = { tag = ITA is_vassal = yes }
-                       relation = { who = THIS value = 150 }
-        }
+                       	limit = { tag = ITA is_vassal = yes }
+                       	relation = { who = THIS value = 150 }
+        	}
+		
 		ai_chance = { factor = 0.2 }
 	}
 
@@ -435,15 +516,16 @@ country_event = {
 		badboy = 1 
 		
 		random_country = {
-                       limit = { tag = ITA is_vassal = no }
-                       relation = { who = THIS value = 75 }
-        }
+                       	limit = { tag = ITA is_vassal = no }
+                       	relation = { who = THIS value = 75 }
+        	}
 		random_country = {
-                       limit = { tag = YUG is_vassal = no }
-                       relation = { who = THIS value = -50 }
-        }
+                       	limit = { tag = YUG is_vassal = no }
+                       	relation = { who = THIS value = -50 }
+        	}
 		
 		YUG = { country_event = 8020307 }
+		
 		ai_chance = { factor = 0.1 }
 	}
 	
@@ -452,17 +534,19 @@ country_event = {
 		badboy = 1 
 		
 		random_country = {
-                       limit = { tag = ITA is_vassal = no }
-                       relation = { who = THIS value = -50 }
-        }
+                       	limit = { tag = ITA is_vassal = no }
+                       	relation = { who = THIS value = -50 }
+        	}
 		random_country = {
-                       limit = { tag = YUG is_vassal = no }
-                       relation = { who = THIS value = 75 }
-        }
+                       	limit = { tag = YUG is_vassal = no }
+                       	relation = { who = THIS value = 75 }
+        	}
 		
 		ITA = { country_event = 8020310 }
+		
 		ai_chance = { factor = 0.1 }
 	}
+	
 }
 
 #Italians push the Koper issue
@@ -479,13 +563,13 @@ country_event = {
 		badboy = 5
 		
 		random_country = {
-                       limit = { tag = USA is_vassal = no }
-                       relation = { who = THIS value = -25 }
-        }
+                       	limit = { tag = USA is_vassal = no }
+                       	relation = { who = THIS value = -25 }
+        	}
 		random_country = {
-                       limit = { tag = ITA is_vassal = no }
-                       relation = { who = THIS value = -100 }
-        }
+                       	limit = { tag = ITA is_vassal = no }
+                       	relation = { who = THIS value = -100 }
+        	}
 		
 		3345 = { secede_province = YUG }
 		3378 = { secede_province = YUG }
@@ -499,17 +583,19 @@ country_event = {
 		badboy = -5
 		
 		random_country = {
-                       limit = { tag = USA is_vassal = no }
-                       relation = { who = THIS value = 50 }
-        }
+                       	limit = { tag = USA is_vassal = no }
+                       	relation = { who = THIS value = 50 }
+        	}
 		random_country = {
-                       limit = { tag = ITA is_vassal = no }
-                       relation = { who = THIS value = 75 }
-        }
+                       	limit = { tag = ITA is_vassal = no }
+                       	relation = { who = THIS value = 75 }
+        	}
 		
 		ITA = { country_event = 8020308 }
+		
 		ai_chance = { factor = 0.2 }
 	}
+	
 }
 
 #Yugoslavs push the Trieste issue
@@ -526,17 +612,18 @@ country_event = {
 		badboy = 5
 		
 		random_country = {
-                       limit = { tag = USA is_vassal = no }
-                       relation = { who = THIS value = -25 }
-        }
+                       	limit = { tag = USA is_vassal = no }
+                       	relation = { who = THIS value = -25 }
+        	}
 		random_country = {
-                       limit = { tag = YUG is_vassal = no }
-                       relation = { who = THIS value = -100 }
-        }
+                       	limit = { tag = YUG is_vassal = no }
+                       	relation = { who = THIS value = -100 }
+        	}
 		
 		736 = { secede_province = ITA }
 		
 		YUG = { inherit = TRE }
+		
 		ai_chance = { factor = 0.8 }
 	}
   
@@ -545,17 +632,19 @@ country_event = {
 		badboy = -5
 		
 		random_country = {
-                       limit = { tag = USA is_vassal = no }
-                       relation = { who = THIS value = 50 }
-        }
+                       	limit = { tag = USA is_vassal = no }
+                       	relation = { who = THIS value = 50 }
+        	}
 		random_country = {
-                       limit = { tag = YUG is_vassal = no }
-                       relation = { who = THIS value = 75 }
-        }
+                       	limit = { tag = YUG is_vassal = no }
+                       	relation = { who = THIS value = 75 }
+        	}
 		
 		ITA = { country_event = 8020305 }
+		
 		ai_chance = { factor = 0.2 }
 	}
+	
 }
 
 #Capodistria is ours
@@ -572,15 +661,17 @@ country_event = {
 		prestige = 25
 		
 		random_country = {
-                       limit = { tag = USA is_vassal = no is_greater_power = yes }
-                       relation = { who = THIS value = 100 }
-					   diplomatic_influence  = { who = THIS value = 50 }
-        }
+                       	limit = { tag = USA is_greater_power = yes }
+                       	relation = { who = THIS value = 100 }
+			diplomatic_influence = { who = THIS value = 50 }
+        	}
 		
 		inherit = TRE
+		
 		3345 = { change_province_name = "Capodistria" }
 		3378 = { change_province_name = "Umago" }
-	}	
+	}
+	
 }
 
 #Trieste is ours
@@ -602,13 +693,14 @@ country_event = {
 		}
 		
 		random_country = {
-                       limit = { tag = TRE is_vassal = yes }
-                       relation = { who = THIS value = 200 }
-        }
+                       	limit = { tag = TRE is_vassal = yes }
+                       	relation = { who = THIS value = 200 }
+        	}
 		
 		TRE = { 
 			remove_accepted_culture = slovene 
 			remove_accepted_culture = croat
 		}
-	}	
+	}
+	
 }
