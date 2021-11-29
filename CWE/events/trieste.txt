@@ -717,18 +717,36 @@ country_event = {
 	trigger = {
 		tag = ITA
 		year = 1975
-		
 		has_global_flag = 1954_London_Memorandum
 		has_global_flag = tito_stalin_split
 		NOT = { has_global_flag = 1992_start_date_flag }
 		
+		OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
 		is_vassal = no
 		war = no
 		
-		TRE = { exists = yes is_vassal = yes war = no } 
-		TRB = { exists = yes is_vassal = yes war = no }		
-		TRE = { owns = 736 }
+		#Trieste is divided
+		TRE = { 
+			exists = yes 
+			vassal_of = ITA 
+			war = no 
+			
+			owns = 736
+		} 
+		TRB = { 
+			exists = yes 
+			vassal_of = YUG 
+			war = no 
+		}
 		736 = { is_core = YUG }
+		
+		#Yugoslavia is independent and communist (since that was what it was historically)
+		YUG = {
+			exists = yes 
+			OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+			is_vassal = no
+			war = no
+		}
 	}
 
 	mean_time_to_happen = { 
@@ -738,7 +756,9 @@ country_event = {
 	option = {
 		name = "Sign the treaty"
 		badboy = -3
+		
 		prestige = 50
+		YUG = { prestige = 50 }
 		
 		inherit = TRE
 		YUG = { inherit = TRB }
@@ -747,39 +767,45 @@ country_event = {
 			limit = { is_primary_culture = yes }
 			scaled_consciousness = { factor = 4 ideology = nationalist }
 		}
-		TRE_736 = { 
-		    any_pop = { 
-			    limit = { is_primary_culture = yes }
-		        ideology = { factor = 0.08 value = nationalist }  
+		TRE_736 = {
+			any_pop = {
+		    		limit = { is_primary_culture = yes }
+		        	ideology = { factor = 0.08 value = nationalist }
 				consciousness = 4
 				militancy = 1
-		    }
+			}
 		}
 		
 		random_country = {
-                    limit = { tag = YUG is_vassal = no }
-                    relation = { who = THIS value = 75 }
-        }
+			limit = { tag = YUG is_vassal = no }
+			relation = { who = THIS value = 75 }
+		}
 		random_country = {
-                    limit = { tag = YUG is_vassal = no }
-                    relation = { who = USA value = 50 }
-        }
+			limit = { tag = YUG is_vassal = no }
+			relation = { who = USA value = 50 }
+		}
 		random_country = {
-                    limit = { tag = YUG is_vassal = no }
-                    relation = { who = ENG value = 50 }
-        }
+			limit = { tag = YUG is_vassal = no }
+			relation = { who = ENG value = 50 }
+		}
 		random_country = {
-                    limit = { tag = YUG is_vassal = no }
-                    relation = { who = FRA value = 50 }
-        }
+			limit = { tag = YUG is_vassal = no }
+			relation = { who = FRA value = 50 }
+		}
 		
-		any_owned = { limit = { is_core = YUG } remove_core = YUG } 
-		YUG = { any_owned = { limit = { is_core = ITA } remove_core = ITA } }
+		#Remove all Italian cores over YUG
+		all_core = { limit = { is_core = YUG } remove_core = YUG } 
+		#Remove all Yugoslavian cores over ITA
+		YUG = { all_core = { limit = { is_core = ITA } remove_core = ITA } }
+		
+		#Remove Zone B cores
+		TRB = { all_core = { remove_core = TRB } }
+		
 		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
-		name = "Maintain our claims over Istria and the TLT"
+		name = "Maintain our claims over Istria and the TFT"
 		badboy = 1
 		prestige = -25
 		
@@ -789,9 +815,10 @@ country_event = {
 		}
 		
 		random_country = {
-                    limit = { tag = YUG is_vassal = no }
-                    relation = { who = THIS value = -50 }
-        }
+			limit = { tag = YUG is_vassal = no }
+			relation = { who = THIS value = -50 }
+		}
+		
 		ai_chance = { factor = 0.1 }
 	}
 
