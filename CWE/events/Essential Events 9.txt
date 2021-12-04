@@ -8,9 +8,11 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		owns = 425
-		year = 2019
 		tag = FRA
+		year = 2019
+		
+		#Paris
+		owns = 425
 	}
 
 	mean_time_to_happen = { 
@@ -9105,6 +9107,56 @@ country_event = {
 			limit = { exists = yes NOT = { has_country_modifier = juche } }
 			add_country_modifier = { name = constricted_international_trade duration = 30 }
 		}
+	}
+
+}
+
+#Clean up independent TRB tag
+country_event = {
+	id = 1610147
+	title = "The Future of South Trieste"
+	desc = EVTDESC1610147
+	picture = "nwo2_free_city_of_trieste"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = TRB
+		
+		is_vassal = no
+		war = no
+		
+		#Have someone to join
+		OR = {
+			TRE = { exists = yes }
+			YUG = { exists = yes }
+			SLO = { exists = yes }
+			ITA = { exists = yes }
+		}
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "Get annexed"
+		
+		#Inherit in order of priority
+		random_owned = { limit = { owner = { TRE = { exists = yes } } } owner = { TRE = { prestige = 50 inherit = TRB } } }
+		random_owned = { limit = { owner = { TRE = { exists = no } YUG = { exists = yes } } } owner = { YUG = { prestige = 50 inherit = TRB } } }
+		random_owned = { limit = { owner = { TRE = { exists = no } YUG = { exists = no } SLO = { exists = yes } } } owner = { SLO = { prestige = 50 inherit = TRB } } }
+		random_owned = { limit = { owner = { TRE = { exists = no } YUG = { exists = no } SLO = { exists = no } ITA = { exists = yes } } } owner = { ITA = { prestige = 50 inherit = TRB } } }
+		
+		TRB = { all_core = { remove_core = TRB } }
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Remain independent!"
+		money = -25000
+		ai_chance = { factor = 0.1 }
 	}
 
 }
