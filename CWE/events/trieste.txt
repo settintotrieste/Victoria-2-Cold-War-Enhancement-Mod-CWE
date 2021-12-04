@@ -12,13 +12,29 @@ country_event = {
 		year = 1947
 		NOT = { year = 1990 }
 		
-		NOT = { YUG = { war_with = ITA } }
-		
 		is_vassal = no
 		war = no
 		
-		has_global_flag = paris_peace_treaty_1947
+		#Can form TRE as a puppet
+		is_possible_vassal = TRE
 		owns = 736 # Trieste
+		
+		#ITA & YUG are independent and not at war
+		YUG = {
+			exists = yes
+			is_vassal = no
+			war = no
+			
+			owns = 3345
+			owns = 3378
+		}
+		ITA = {
+			exists = yes
+			is_vassal = no
+			war = no
+		}
+		
+		has_global_flag = paris_peace_treaty_1947
 	}
 
 	mean_time_to_happen = { months = 2 }
@@ -42,22 +58,28 @@ country_event = {
 		relation = { who = TRE value = 200 }
 		diplomatic_influence = { who = TRE value = 200 }
 		
-		relation = { who = RUS value = 25 }
+		random_country = {
+			limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = 25 }
+		}
 		
-		ai_chance = { factor = 1 }
+		ai_chance = { factor = 0.95 }
 	}
 
 	option = {
 		name = EVT_8020300_B #Prevent its formation at all cost.
 		badboy = 10 
 		relation = { who = YUG value = -150 } 
-		relation = { who = RUS value = -50 } 
-		ai_chance = { factor = 0 }
+		relation = { who = RUS value = -50 }
+		
+		TRE = { all_core = { add_province_modifier = { name = occupied_province duration = -1 } } }
+		
+		ai_chance = { factor = 0.05 }
 	}
 	
 }
 
-#Free Territory of Trieste
+#Free Territory of Trieste - YUG
 country_event = {
 	id = 8020301
 	title = EVT_8020301_NAME
@@ -72,7 +94,7 @@ country_event = {
 		3378 = { secede_province = TRE } 
 		relation = { who = USA value = 50 } 
 		relation = { who = ITA value = 25 } 
-		ai_chance = { factor = 0.9 }
+		ai_chance = { factor = 0.95 }
 	}
   
 	option = {
@@ -80,13 +102,17 @@ country_event = {
 		badboy = 5
 		relation = { who = USA value = -100 } 
 		relation = { who = ITA value = -50 }
+		
 		USA = { country_event = 8020309 }
-		ai_chance = { factor = 0.1 }
+		
+		any_owned = { limit = { is_core = TRE } add_province_modifier = { name = occupied_province duration = -1 } }
+		
+		ai_chance = { factor = 0.05 }
 	}
 	
 }
 
-#Free Territory of Trieste
+#Free Territory of Trieste - USA
 country_event = {
 	id = 8020309
 	title = "The Yugoslavs don't respect the treaties"
@@ -96,11 +122,16 @@ country_event = {
 	is_triggered_only = yes 
 
 	option = {
-		name = "Return Zone A to Italy" 
-		inherit = TRE
-		736 = { secede_province = ITA } 
-		relation = { who = ITA value = 50 } 
-		relation = { who = YUG value = -50 } 
+		name = "Return Zone A to Italy"
+		
+		ITA = { inherit = TRE }
+		
+		relation = { who = ITA value = 50 }
+		diplomatic_influence = { who = ITA value = 50 }
+		
+		relation = { who = YUG value = -50 }
+		diplomatic_influence = { who = YUG value = -50 }
+		
 		ai_chance = { factor = 0.8 }
 	}
   
@@ -108,139 +139,293 @@ country_event = {
 		name = "Yugoslavia ought to respect the treaties" 
 		badboy = 5
 		relation = { who = YUG value = -100 } 
+		diplomatic_influence = { who = YUG value = -100 }
+		
 		relation = { who = ITA value = 50 }
+		diplomatic_influence = { who = ITA value = 50 }
+		
 		war = { 
 			target = YUG
 			attacker_goal = { casus_belli = free_allied_cores }
 			defender_goal = { casus_belli = territorial_dispute }
 			call_ally = yes
 		}
+		
 		set_global_flag = TRE_failed_agreement
+		
 		ai_chance = { factor = 0.1 }
 	}
 	
 	option = {
 		name = "We cannot do anything" 
 		prestige = -25
-		relation = { who = ITA value = -100 } 
+		
+		relation = { who = ITA value = -100 }
+		diplomatic_influence = { who = ITA value = -50 }
+		
 		relation = { who = TRE value = -50 }
 		ai_chance = { factor = 0.1 }
 	}
 	
 }
 
-#Fate of the Free Territory of Trieste
+#1953 Trieste Revolt
+country_event = {
+	id = 8020311
+	title = "Triest Revolt of 1953"
+	desc = EVT_8020302_DESC
+	picture = "ITA_nationalist_protest"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = TRE
+		year = 1953 
+		NOT = { year = 1990 }
+		
+		government = sar_government
+		vassal_of = USA
+		war = no
+		
+		#ITA exists
+		ITA = {
+			exists = yes
+			is_vassal = no
+			war = no
+			
+			NOT = { owns = 3345 }
+			NOT = { owns = 3378 } 
+		}
+		
+		#YUG exists
+		YUG = {
+			exists = yes
+			is_vassal = no
+			war = no
+		}
+		
+		#USA
+		USA = {
+			exists = yes
+			is_vassal = no
+			war = no
+		}
+		
+		NOT = { has_global_flag = TRE_failed_agreement }
+	}
+
+	mean_time_to_happen = { months = 10 }
+
+	option = {
+		name = "This does not bode well"
+		relation = { who = ITA value = 100 } 
+		
+		any_pop  = { 
+			limit = { culture = italian } 
+			militancy = 9 
+			ideology = { factor = 0.1 value = nationalist }
+		}
+					 
+		set_global_flag = TRE_1953_Revolt			 	
+	}
+}
+
+#Fate of the Free Territory of Trieste (USA)
 country_event = {
 	id = 8020302
-	title = EVT_8020302_NAME
+	title = "Memorandum of Understanding of London"
 	desc = EVT_8020302_DESC
 	picture = "nwo2_free_city_of_trieste"
   
 	fire_only_once = yes
 
 	trigger = {
-		#YUG
-		capital_scope = { is_core = YUG }
+		tag = USA
 		year = 1954 
 		NOT = { year = 1990 }
 		
-		NOT = { war_with = ITA }
-		
+		government = democracy
+		is_vassal = no
+		war = no
+			
 		#TRE exists
-		exists = TRE
-		TRE = { owns = 3345 } #Koper
+		TRE = { 
+			exists = yes
+			government = sar_government
+			vassal_of = USA
+			war = no
+		}
 		
 		#ITA exists
-		exists = ITA
+		ITA = {
+			exists = yes
+			is_vassal = no
+			war = no
+		}
 		
-		#USA owns any part of Trieste
-		USA = { is_our_vassal = TRE }
+		#YUG exists
+		YUG = {
+			exists = yes
+			is_vassal = no
+			war = no
+		}
 		
-		NOT = { has_global_flag = TRE_failed_agreement }
+		has_global_flag = TRE_1953_Revolt 
 	}
 
 	mean_time_to_happen = { months = 9 }
 
 	option = {
-		name = EVT_8020302_A #Let's divide the territory.
-		USA = { country_event = 8020303 } 
-		badboy = -5 
-		relation = { who = ITA value = 100 } 
-		relation = { who = USA value = 25 } 
-		ai_chance = { factor = 0.9 }
+		name = "Assign Zone A and B to the respective Nations"
+		badboy = -3 
+		
+		random_country = {
+			limit = { tag = ITA is_vassal = no }
+			relation = { who = THIS value = 100 }
+		}
+		random_country = {
+			limit = { tag = ENG government = hms_government is_vassal = no }
+			relation = { who = THIS value = 25 }
+		}
+		
+		ITA = { country_event = 8020303 } 
+		ai_chance = { factor = 0.8 }
 	}
 
 	option = {
-		name = EVT_8020302_B #We want Trst for ourselves!
-		USA = { country_event = 8020304 }
-		badboy = 5 
-		relation = { who = ITA value = -150 } 
-		relation = { who = USA value = -50 } 
+		name = "Award Zone B to Italy"
+		badboy = 2 
+		
+		random_country = {
+			limit = { tag = ITA is_vassal = no }
+			relation = { who = THIS value = 150 }
+		}
+		random_country = {
+			limit = { tag = YUG is_vassal = no }
+			relation = { who = THIS value = -100 }
+		} 
+		
+		YUG = { country_event = 8020307 }
 		ai_chance = { factor = 0.1 }
 	}
+	
+	option = {
+		name = "Respect the Territorial Integrity of the TFT"
+		badboy = -3
+		TRE = { prestige = 25 }
+		
+		random_country = {
+			limit = { tag = ITA is_vassal = no }
+			relation = { who = THIS value = -50 }
+		}
+		random_country = {
+			limit = { tag = YUG is_vassal = no }
+			relation = { who = THIS value = -50 }
+		}
+		random_country = {
+			limit = { tag = ITA is_vassal = no }
+			relation = { who = THIS value = 150 }
+		} 
+		ai_chance = { factor = 0.1 }
+	}
+	
 }
 
-#Annexation of Free Territory of Trieste
+#London Memorandum ITA
 country_event = {
 	id = 8020303
-	title = EVT_8020303_NAME
+	title = "Memorandum of Understanding of London"
 	desc = EVT_8020303_DESC
 	picture = "nwo2_free_city_of_trieste"
 
-	is_triggered_only = yes # USA
+	is_triggered_only = yes # ITA
 
 	option = {
-		name = EVT_8020303_A #That's the best outcome.
+		name = "Respect the Memorandum"
+		badboy = -1
+		prestige = 10
+		
+		YUG = { country_event = 8020304 }
+		
+		ai_chance = { factor = 0.9 }	
+	}
+	
+	option = {
+		name = "Pressure for control over Zone B"
+		badboy = 5
+		
+		YUG = { country_event = 8020306 }
+		
+		ai_chance = { factor = 0.07 }
+	}
+
+	option = {
+		name = "Don't sign the Memorandum"
+		prestige = -10
+		
+		any_pop = { 
+			limit = { is_primary_culture = yes }
+			scaled_militancy = { factor = 4 ideology = nationalist }
+		}
+		any_pop = { 
+			limit = { is_primary_culture = yes }
+                	scaled_consciousness = { factor = 5 ideology = nationalist }
+		}
+		
+		ai_chance = { factor = 0.03 }
+	}
+	
+}
+
+#London Memorandum YUG
+country_event = {
+	id = 8020304
+	title = "Memorandum of Understanding of London"
+	desc = EVT_8020304_DESC
+	picture = "nwo2_free_city_of_trieste"
+
+	is_triggered_only = yes # YUG
+
+	option = {
+		name = "Respect the Memorandum"
+		badboy = -1
 		
 		inherit = TRE
 		
-		#Split Zones A and B to the two countries
 		736 = { secede_province = ITA }
-		3345 = { secede_province = YUG }
-		3378 = { secede_province = YUG }
+
+		ITA = { release_vassal = TRE }
+		TRE = { 
+			government = sar_government 
+			country_event = 800054 
+			ruling_party_ideology = conservative 
+		}
 		
-		ITA = { country_event = 8020306 }
-		relation = { who = ITA value = 100 }
+		release_vassal = TRB
+		TRB = { 
+			government = sar_government 
+			country_event = 800054 
+			ruling_party_ideology = communist_social 
+		}
+		
+		ITA = { country_event = 8020315 }
+		
+		set_global_flag = 1954_London_Memorandum
 		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
-		name = EVT_8020303_B #Keep the status quo.
-		relation = { who = ITA value = -100 } 
-		ai_chance = { factor = 0.05 }
-	}
-  
-	option = {
-		name = EVT_8020303_C #Pressure Yugoslavia to cede Koper too.
-		YUG = { country_event = 8020307 }
-		ai_chance = { factor = 0.05 }
-	}
-}
-
-#Yugoslavs push the Trieste issue
-country_event = {
-	id = 8020304
-	title = EVT_8020304_NAME
-	desc = EVT_8020304_DESC
-	picture = "nwo2_free_city_of_trieste"
-
-	is_triggered_only = yes # USA
-
-	option = {
-		name = EVT_8020304_A #We will stay in Trieste.
-		relation = { who = FROM value = -200 } 
-		ai_chance = { factor = 0.5 }
-	}
-
-	option = {
-		name = EVT_8020304_B #We'll transfer the city to Yugoslavia.
-		FROM = { country_event = 8020305 }
-	
-		relation = { who = FROM value = 100 } 
-		relation = { who = ITA value = -100 } 
-		relation = { who = RUS value = 25 }
+		name = "Pressure for control over Zone A"
+		badboy = 3
 		
-		ai_chance = { factor = 0.5 }
+		random_country = {
+			limit = { tag = ITA is_vassal = no }
+			relation = { who = THIS value = -75 }
+		}
+		
+		USA = { country_event = 8020306 }	
+		
+		ai_chance = { factor = 0.1 }
 	}
 	
 }
@@ -248,14 +433,14 @@ country_event = {
 #Trst is ours!
 country_event = {
 	id = 8020305
-	title = EVT_8020305_NAME
+	title = "The Unification of Trst to Yugoslavia"
 	desc = EVT_8020305_DESC
-	picture = "nwo2_free_city_of_trieste"
+	picture = "yugoslav_partisans"
 
 	is_triggered_only = yes # YUG
 
 	option = {
-		name = EVT_8020305_A #Great!
+		name = "Trst je nas!"
 		prestige = 10
 		
 		inherit = TRE
@@ -265,71 +450,376 @@ country_event = {
 	
 }
 
-#Annexation of Free Territory of Trieste
+#Negotiations breakdown (USA)
 country_event = {
 	id = 8020306
-	title = EVT_8020303_NAME
+	title = "Negotiations over the TFT breakdown"
 	desc = EVT_8020303_DESC
 	picture = "nwo2_free_city_of_trieste"
 
-	is_triggered_only = yes # ITA
+	is_triggered_only = yes # USA
 
 	option = {
-		name = EVT_8020303_A #That's the best outcome.
+		name = "Enforce the London Memorandum"
+		badboy = -2 
+		
 		inherit = TRE
-		prestige = 10
+		
+		#Split Zones A and B to the two countries
+		736 = { secede_province = ITA }
+		3345 = { secede_province = YUG }
+		3378 = { secede_province = YUG }
+		
+		ITA = { release_vassal = TRE }
+		
+		TRE = { 
+			government = sar_government 
+			country_event = 800054 
+			ruling_party_ideology = conservative 
+		}
+		
+		YUG = { release_vassal = TRB }
+		
+		TRB = { 
+			government = sar_government 
+			country_event = 800054 
+			ruling_party_ideology = communist_social 
+		}
+		
+		set_global_flag = 1954_London_Memorandum
+		ai_chance = { factor = 0.6 }
 	}
+	
+	option = {
+		name = "Maintain the Territorial Integrity of the TFT"
+		badboy = -3 
+		TRE = { prestige = 25 }
+		
+		random_country = {
+                       	limit = { tag = ITA is_vassal = no }
+                       	relation = { who = THIS value = -50 }
+        	}
+		random_country = {
+                       	limit = { tag = YUG is_vassal = no }
+                       	relation = { who = THIS value = -50 }
+        	}
+		random_country = {
+                       	limit = { tag = ITA is_vassal = yes }
+                       	relation = { who = THIS value = 150 }
+        	}
+		
+		ai_chance = { factor = 0.2 }
+	}
+
+	option = {
+		name = "Award Zone B to Italy"
+		badboy = 1 
+		
+		random_country = {
+                       	limit = { tag = ITA is_vassal = no }
+                       	relation = { who = THIS value = 75 }
+        	}
+		random_country = {
+                       	limit = { tag = YUG is_vassal = no }
+                       	relation = { who = THIS value = -50 }
+        	}
+		
+		YUG = { country_event = 8020307 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+	option = {
+		name = "Award Zone A to Yugoslavia"
+		badboy = 1 
+		
+		random_country = {
+                       	limit = { tag = ITA is_vassal = no }
+                       	relation = { who = THIS value = -50 }
+        	}
+		random_country = {
+                       	limit = { tag = YUG is_vassal = no }
+                       	relation = { who = THIS value = 75 }
+        	}
+		
+		ITA = { country_event = 8020310 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
 }
 
-#Americans push the Koper issue
+#Italians push the Koper issue
 country_event = {
 	id = 8020307
-	title = EVT_8020307_NAME
+	title = "Zone B awarded to Italy"
 	desc = EVT_8020307_DESC
 	picture = "nwo2_free_city_of_trieste"
 
 	is_triggered_only = yes # YUG
 
 	option = {
-		name = EVT_8020307_A #Koper is righful Yugoslavian land!
+		name = "Smrt Fasizmu! Occupy Koper!"
+		badboy = 5
+		
+		random_country = {
+                       	limit = { tag = USA is_vassal = no }
+                       	relation = { who = THIS value = -25 }
+        	}
+		random_country = {
+                       	limit = { tag = ITA is_vassal = no }
+                       	relation = { who = THIS value = -100 }
+        	}
+		
 		3345 = { secede_province = YUG }
-		ITA = { country_event = 8020306 }
-		relation = { who = USA value = -25 }
-		relation = { who = ITA value = -50 }
-
-		ai_chance = { factor = 0.9 }
+		3378 = { secede_province = YUG }
+		
+		ITA = { inherit = TRE }
+		ai_chance = { factor = 0.8 }
 	}
   
 	option = {
-		name = EVT_8020307_B #We'll transfer the city to Italy
+		name = "Sign the Memorandum and give up Zone B"
+		badboy = -5
+		
+		random_country = {
+                       	limit = { tag = USA is_vassal = no }
+                       	relation = { who = THIS value = 50 }
+        	}
+		random_country = {
+                       	limit = { tag = ITA is_vassal = no }
+                       	relation = { who = THIS value = 75 }
+        	}
+		
 		ITA = { country_event = 8020308 }
-		relation = { who = USA value = 25 }
-		relation = { who = ITA value = 50 }
-		badboy = -2
-
-		ai_chance = { factor = 0.1 }
+		
+		ai_chance = { factor = 0.2 }
 	}
+	
 }
 
-#Annexation of Free Territory of Trieste
+#Yugoslavs push the Trieste issue
 country_event = {
-	id = 8020308
-	title = EVT_8020303_NAME
-	desc = EVT_8020303_DESC
+	id = 8020310
+	title = "Zone A awarded to Italy"
+	desc = EVT_8020307_DESC
 	picture = "nwo2_free_city_of_trieste"
 
 	is_triggered_only = yes # ITA
 
 	option = {
-		name = EVT_8020303_A #That's the best outcome.
-		prestige = 25
+		name = "Proceed with the Military Occupation of Trieste"
+		badboy = 5
 		
-		inherit = TRE
-		3345 = { add_core = ITA }
-		3345 = { change_province_name = "Capodistria" }
+		random_country = {
+                       	limit = { tag = USA is_vassal = no }
+                       	relation = { who = THIS value = -25 }
+        	}
+		random_country = {
+                       	limit = { tag = YUG is_vassal = no }
+                       	relation = { who = THIS value = -100 }
+        	}
 		
-		relation = { who = USA value = 100 }
-		USA = { diplomatic_influence = { who = ITA value = 50 } }
+		736 = { secede_province = ITA }
+		
+		YUG = { inherit = TRE }
+		
+		ai_chance = { factor = 0.8 }
+	}
+  
+	option = {
+		name = "Sign the Memorandum and give up Zone A"
+		badboy = -5
+		
+		random_country = {
+                       	limit = { tag = USA is_vassal = no }
+                       	relation = { who = THIS value = 50 }
+        	}
+		random_country = {
+                       	limit = { tag = YUG is_vassal = no }
+                       	relation = { who = THIS value = 75 }
+        	}
+		
+		ITA = { country_event = 8020305 }
+		
+		ai_chance = { factor = 0.2 }
 	}
 	
+}
+
+#Capodistria is ours
+country_event = {
+	id = 8020308
+	title = "The Re-Unification of Capodistria with Italy"
+	desc = EVT_8020303_DESC
+	picture = "ITA_Trieste_Unification"
+
+	is_triggered_only = yes # ITA
+
+	option = {
+		name = "Istria, Fiume e Dalmazia! Ne Slovenia, ne Croazia!"
+		prestige = 25
+		
+		random_country = {
+                       	limit = { tag = USA is_greater_power = yes }
+                       	relation = { who = THIS value = 100 }
+			diplomatic_influence = { who = THIS value = 50 }
+        	}
+		
+		inherit = TRE
+		
+		3345 = { change_province_name = "Capodistria" }
+		3378 = { change_province_name = "Umago" }
+	}
+	
+}
+
+#Trieste is ours
+country_event = {
+	id = 8020315
+	title = "The Re-Unification of Trieste with Italy"
+	desc = EVT_8020315_DESC
+	picture = "ITA_Trieste_Unification"
+
+	is_triggered_only = yes # ITA
+
+	option = {
+		name = "Evviva!"
+		prestige = 15
+		
+		any_pop = { 
+			limit = { is_primary_culture = yes OR = { strata = rich strata = middle } }
+			ideology = { factor = 0.03 value = nationalist } 
+		}
+		
+		random_country = {
+                       	limit = { tag = TRE is_vassal = yes }
+                       	relation = { who = THIS value = 200 }
+        	}
+		
+		TRE = { 
+			remove_accepted_culture = slovene 
+			remove_accepted_culture = croat
+		}
+
+	}	
+}
+
+#Treaty of Osimo
+country_event = {
+	id = 1512159
+	title = "Treaty of Osimo"
+	desc = EVTDESC1512159
+	picture = "osimo_treaty"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = ITA
+		year = 1975
+		has_global_flag = 1954_London_Memorandum
+		has_global_flag = tito_stalin_split
+		NOT = { has_global_flag = 1992_start_date_flag }
+		
+		OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+		is_vassal = no
+		war = no
+		
+		#Trieste is divided
+		TRE = { 
+			exists = yes 
+			vassal_of = ITA 
+			war = no 
+			
+			owns = 736
+		} 
+		TRB = { 
+			exists = yes 
+			vassal_of = YUG 
+			war = no 
+		}
+		736 = { is_core = YUG }
+		
+		#Yugoslavia is independent and communist (since that was what it was historically)
+		YUG = {
+			exists = yes 
+			OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+			is_vassal = no
+			war = no
+		}
+	}
+
+	mean_time_to_happen = { 
+		months = 11
+	}
+
+	option = {
+		name = "Sign the treaty"
+		badboy = -3
+		
+		prestige = 50
+		YUG = { prestige = 50 }
+		
+		inherit = TRE
+		YUG = { inherit = TRB }
+		
+		any_pop = { 
+			limit = { is_primary_culture = yes }
+			scaled_consciousness = { factor = 4 ideology = nationalist }
+		}
+		TRE_736 = {
+			any_pop = {
+		    		limit = { is_primary_culture = yes }
+		        	ideology = { factor = 0.08 value = nationalist }
+				consciousness = 4
+				militancy = 1
+			}
+		}
+		
+		random_country = {
+			limit = { tag = YUG is_vassal = no }
+			relation = { who = THIS value = 75 }
+		}
+		random_country = {
+			limit = { tag = YUG is_vassal = no }
+			relation = { who = USA value = 50 }
+		}
+		random_country = {
+			limit = { tag = YUG is_vassal = no }
+			relation = { who = ENG value = 50 }
+		}
+		random_country = {
+			limit = { tag = YUG is_vassal = no }
+			relation = { who = FRA value = 50 }
+		}
+		
+		#Remove all Italian cores over YUG
+		all_core = { limit = { is_core = YUG } remove_core = YUG } 
+		#Remove all Yugoslavian cores over ITA
+		YUG = { all_core = { limit = { is_core = ITA } remove_core = ITA } }
+		
+		#Remove Zone B cores
+		TRB = { all_core = { remove_core = TRB } }
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Maintain our claims over Istria and the TFT"
+		badboy = 1
+		prestige = -25
+		
+		any_pop = { 
+			limit = { is_primary_culture = yes }
+			ideology = { factor = 0.04 value = nationalist }
+		}
+		
+		random_country = {
+			limit = { tag = YUG is_vassal = no }
+			relation = { who = THIS value = -50 }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
 }
