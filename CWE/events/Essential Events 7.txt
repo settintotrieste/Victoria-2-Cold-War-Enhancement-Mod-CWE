@@ -1431,38 +1431,74 @@ remove_country_modifier = un_diplo_sanc
 #Add Soviet cores
 country_event = {
 	id = 1412179
-title = "Republics of the Soviet Union"
+	title = "Republics of the Soviet Union"
 	desc = EVTDESC1412179
 	picture = "ussr_cores"
 
-fire_only_once = yes
+	#fire_only_once = yes
 
-trigger = { 
-tag = RUS
-government = proletarian_dictatorship
+	trigger = { 
+		tag = RUS
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+		is_vassal = no
+		war = no
+		
+		#Does not currently have claims over a former SSR's land
+		OR = {
+			UKR = { any_core = { NOT = { is_core = RUS } NOT = { is_core = CRI } } }
+			BYE = { any_core = { NOT = { is_core = RUS } } }
+			GEO = { any_core = { NOT = { is_core = RUS } } }
+			AZB = { any_core = { NOT = { is_core = RUS } } }
+			ARM = { any_core = { NOT = { is_core = RUS } } }
+			TKR = { any_core = { NOT = { is_core = RUS } } }
+			MOL = { any_core = { NOT = { is_core = RUS } } }
+			UZB = { any_core = { NOT = { is_core = RUS } } }
+			KYR = { any_core = { NOT = { is_core = RUS } } }
+			TAJ = { any_core = { NOT = { is_core = RUS } } }
+			KAZ = { any_core = { NOT = { is_core = RUS } } }
+			LIT = { any_core = { NOT = { is_core = RUS } } }
+			LAT = { any_core = { NOT = { is_core = RUS } } }
+			EST = { any_core = { NOT = { is_core = RUS } } }
+		}
+	}
+	
+	mean_time_to_happen = { 
+		months = 1
 	}
 
-option = {
-name = "Great!"
-
-any_owned = { 
-limit = { OR = { 
-	is_core = UKR 
-	is_core = BYE 
-	is_core = GEO 
-	is_core = AZB 
-	is_core = ARM 
-	is_core = TKR
-	is_core = MOL
-	is_core = UZB 
-	is_core = KYR 
-	is_core = TAJ 
-	is_core = KAZ 
-} } 
-add_core = RUS
-}
-
+	option = {
+		name = "Great!"
+		
+		#Ex-Soviet Republics will hate Russia
+		any_country = { 
+			limit = { 
+				exists = yes 
+				any_core = { is_core = RUS } 
+			}
+			relation = { who = THIS value = -100 }
 		}
+		
+		#Add USSR cores over former SSR lands
+		UKR = { all_core = { limit = { NOT = { is_core = RUS } NOT = { is_core = CRI } } add_core = RUS } }
+		BYE = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		GEO = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		AZB = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		ARM = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		TKR = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		MOL = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		UZB = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		KYR = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		TAJ = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		KAZ = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		LIT = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		LAT = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		EST = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		
+		#Reset THIS's option to keep USSR cores
+		clr_country_flag = USSR_cores_remain_option
+
+	}
+	
 }
 
 #Soviet States Recognition
@@ -1472,13 +1508,41 @@ country_event = {
 	desc = EVTDESC14121799
 	picture = "relinquish_ussr_cores"
 
-	fire_only_once = yes
+	#fire_only_once = yes
 
 	trigger = { 
 		tag = RUS 
+		
+		#RUS is no longer the USSR or USS
 		NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } }
 		is_vassal = no
-		NOT = { has_global_flag = 1992_start_date_flag }
+		war = no
+		
+		#Currently have claims over a former SSR's land
+		OR = {
+			UKR = { any_core = { is_core = RUS NOT = { is_core = CRI } } }
+			BYE = { any_core = { is_core = RUS } }
+			GEO = { any_core = { is_core = RUS } }
+			AZB = { any_core = { is_core = RUS } }
+			ARM = { any_core = { is_core = RUS } }
+			TKR = { any_core = { is_core = RUS } }
+			MOL = { any_core = { is_core = RUS } }
+			UZB = { any_core = { is_core = RUS } }
+			KYR = { any_core = { is_core = RUS } }
+			TAJ = { any_core = { is_core = RUS } }
+			KAZ = { any_core = { is_core = RUS } }
+			LIT = { any_core = { is_core = RUS } }
+			LAT = { any_core = { is_core = RUS } }
+			EST = { any_core = { is_core = RUS } }
+		}
+		
+		#THIS did not previously choose to retain the USSR cores
+		NOT = { has_country_flag = USSR_cores_remain_option }
+		
+	}
+	
+	mean_time_to_happen = { 
+		months = 1
 	}
 
 	option = {
@@ -1488,7 +1552,10 @@ country_event = {
 
 		#Ex-Soviet Republics will like Russia
 		any_country = { 
-			limit = { any_core = { is_core = RUS } }
+			limit = { 
+				exists = yes 
+				any_core = { is_core = RUS } 
+			}
 			relation = { who = THIS value = 50 }
 		}
 
@@ -1515,7 +1582,7 @@ country_event = {
 			remove_core = RUS
 		}
 
-		ai_chance = { factor = 0.9 }
+		ai_chance = { factor = 0.95 }
 
 	}
 
@@ -1533,8 +1600,10 @@ country_event = {
 			limit = { any_core = { is_core = RUS } }
 			relation = { who = THIS value = -200 }
 		}
+		
+		set_country_flag = USSR_cores_remain_option
 
-		ai_chance = { factor = 0.1 }
+		ai_chance = { factor = 0.05 }
 	}
 
 }
