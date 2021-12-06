@@ -403,10 +403,10 @@ country_event = {
 
 }
 
-# South Tyrol Autonomy 1972
+# Sudtirol-Paket
 country_event = {
 	id = 82030031
-	title = "South Tyrolean Autonomous Region"
+	title = "Sudtirol-Paket"
 	desc = EVTDESC82030031
 	picture = "nwo2_austrian_tyrol_1972"
 	
@@ -429,9 +429,13 @@ country_event = {
 		
 		#Signed the agreement
 		has_country_flag = austrian_tyrol_autonomy
+		has_country_flag = ITA_1961_Feuernacht
 		
 		#Austria is independent 
-		AUS = { exists = yes is_vassal = no }
+		OR = { 
+			AUS = { exists = yes is_vassal = no war = no } 
+			ROA = { exists = yes is_vassal = no war = no } 
+		}
 		
 		#Owns South Tyrol
 		is_possible_vassal = SUT
@@ -441,31 +445,43 @@ country_event = {
 	mean_time_to_happen = { months = 6 }
 
 	option = {
-		name = "Give South Tyrol a high degree of autonomy"
-		prestige = 50
+		name = "The 'Paket' passes"
+		prestige = 15
 		
-		relation = { who = AUS value = 50 }
+		random_country = {
+			limit = { tag = AUS is_vassal = no ROA = { exists = no } }
+			relation = { who = THIS value = 50 }
+        }
+		random_country = {
+			limit = { tag = ROA is_vassal = no }
+			relation = { who = THIS value = 50 }
+        }
 		
-		#Release South Tyrol SAR
-		release_vassal = SUT
-		SUT = { 
-			government = sar_government
-			country_event = 800054
-			ruling_party_ideology = conservative
+		any_pop = {
+			limit = { culture = german }
+			militancy = -7
+			consciousness = -7
+			ideology = { factor = 0.08 value = conservative }
+			ideology = { factor = 0.06 value = big_tent }
 		}
-		735 = { add_core = AUS }
 		
-		diplomatic_influence = { who = SUT value = 200 }
-		sphere_owner = { diplomatic_influence = { who = SUT value = 200 } }
-		
+		735 = { add_province_modifier = { name = rgo_boom  duration = 3600 } }
 		ai_chance = { factor = 0.9 }
 	}
 	
 	option = {
-		name = "We don't want to give any autonomy"
-		badboy = 5
+		name = "The 'Paket' fails"
+		badboy = 1
+		prestige = -5
 		
-		relation = { who = AUS value = -100 }
+		random_country = {
+			limit = { tag = AUS is_vassal = no ROA = { exists = no } }
+			relation = { who = THIS value = -50 }
+        }
+		random_country = {
+			limit = { tag = ROA is_vassal = no }
+			relation = { who = THIS value = -50 }
+        }
 		
 		any_pop = {
 			limit = { culture = german }
