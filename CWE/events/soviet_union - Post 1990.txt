@@ -976,3 +976,296 @@ country_event = { # Spreading socialism?
 	}
 	
 }
+
+country_event = { # The right and the wrong nationalism...
+	id = 9001427
+	title = "The right and the wrong nationalism..."
+	desc = EVT_9001427_DESC
+	picture = "ussr_russian_nationalism"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		year = 1995
+		
+		government = socialist_democracy
+		
+		ruling_party_ideology = populist
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "Actively propagating Russian nationalism."
+		
+		political_reform = minorities_oppression
+		
+		any_pop = {
+			limit = {
+				is_culture_group = russian_culture
+			}
+			consciousness = 2 militancy = 2
+			ideology = { factor = 0.25 value = nationalist }
+		}
+		any_pop = {
+			limit = {
+				NOT = {
+					is_culture_group = russian_culture
+				}
+			}
+			consciousness = 7 militancy = 9
+			ideology = { factor = 0.1 value = traditionalist }
+		}
+		any_pop = {
+			scaled_consciousness = {
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+		}
+		
+		ai_chance = { factor = 0.7 }
+	}
+	
+	option = {
+		name = "Do nothing."
+		
+		any_pop = {
+			consciousness = -2 militancy = -2
+		}
+		
+		upper_house = {
+			ideology = populist
+			value = -0.15
+		}
+		
+		ai_chance = { factor = 0.3 }
+	}
+	
+}
+
+country_event = { # The Alaska Purchase
+	id = 9001459
+	title = "The Alaska Purchase"
+	desc = EVT_9001459_DESC
+	picture = "diplo_mission"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		year = 1997
+		
+		government = socialist_democracy
+		is_vassal = no
+		war = no
+		
+		ruling_party_ideology = populist
+		
+		
+		money = 2000000
+		
+		USA = {
+			exists = yes
+			
+			is_vassal = no
+			war = no
+			
+			#Owns Alaska
+			is_possible_vassal = LSK
+		}
+		
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "Propose the buyout."
+		
+		USA = { country_event = 9001460 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Do nothing."
+		
+		any_pop = {
+			scaled_consciousness = {
+				factor = 6
+				ideology = populist
+			}
+			scaled_militancy = {
+				factor = 6
+				ideology = populist
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+country_event = { # The Alaska Purchase - USA
+	id = 9001460
+	title = "The Alaska Purchase"
+	desc = EVT_9001460_DESC
+	picture = "diplo_mission"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Uh... is this a joke? NO!"
+		
+		relation = { who = RUS value = -150 }
+		
+		ai_chance = { factor = 0.99 }
+	}
+	
+	option = {
+		name = "Okay, no problem!"
+		
+		RUS = { money = -2000000 }
+		
+		money = 2000000
+		
+		any_owned = { limit = { is_core = LSK } secede_province = RUS }
+		
+		ai_chance = { factor = 0.01 }
+	}
+	
+}
+
+country_event = { # Washing the boots of our soldiers
+	id = 9001461
+	title = "Washing the boots of our soldiers"
+	desc = EVT_9001461_DESC
+	picture = "militarisation_of_nation"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		year = 1998
+		
+		government = socialist_democracy
+		is_vassal = no
+		war = no
+		
+		ruling_party_ideology = populist
+		
+		PER = {
+			exists = yes
+			is_vassal = no
+			war = no
+			
+			NOT = {
+				OR = {
+					government = proletarian_dictatorship
+					government = proletarian_dictatorship1
+					ruling_party_ideology = communist
+					ruling_party_ideology = communist_social
+				}
+			}
+		}
+	}
+
+	mean_time_to_happen = { months = 4 }
+
+	option = {
+		name = "We demand the northern part of the country! (War if refuse)"
+		
+		PER = { country_event = 9001462 }
+		
+		ai_chance = { factor = 0.8 }
+	}
+	
+	option = {
+		name = "We demand that Iran submit to us!"
+		
+		war = {
+			target = PER
+			attacker_goal = { casus_belli = make_puppet }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = no
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+	option = {
+		name = "Do nothing."
+		
+		any_pop = {
+			scaled_consciousness = {
+				factor = 7
+				ideology = populist
+			}
+			scaled_militancy = {
+				factor = 7
+				ideology = populist
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+country_event = { # The crazy claim of the Russians
+	id = 9001462
+	title = "The crazy claim of the Russians"
+	desc = EVT_9001462_DESC
+	picture = "militarisation_of_nation"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Uh... is this a joke? NO!"
+		
+		FROM = {
+			war = {
+				target = PER
+				attacker_goal = { casus_belli = make_puppet }
+				defender_goal = { casus_belli = status_quo }
+				call_ally = no
+			}
+		}
+		
+		ai_chance = { factor = 0.95 }
+	}
+	
+	option = {
+		name = "Okay, no problem!"
+		
+		prestige = -250
+		
+		any_owned = {
+			limit = {
+				OR = {
+					province_id = 1108
+					province_id = 1112
+					province_id = 1113
+					province_id = 1114
+					province_id = 1115
+					province_id = 1116
+					province_id = 1121
+					province_id = 1123
+					province_id = 1124
+					province_id = 1126
+					province_id = 1147
+					province_id = 1149
+					province_id = 1150
+				}
+			}
+			secede_province = RUS
+		}
+		
+		ai_chance = { factor = 0.05 }
+	}
+	
+}
