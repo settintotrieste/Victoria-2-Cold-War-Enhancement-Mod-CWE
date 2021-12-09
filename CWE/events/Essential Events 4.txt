@@ -1444,29 +1444,53 @@ country_event = {
 	option = {
 		name = "A disaster!"
 		prestige_factor = -0.05
+		any_pop = { limit = { is_state_capital = yes } reduce_pop = 0.99 }
 		add_country_modifier = { name = biological_attack duration = 3650 }
-		random = {
-			chance = 25
-			FROM = { prestige_factor = -0.05 }
-			badboy = 5
-			country_event = 1412063
-		}					
 	}
 	
 }
 
-#Biological weapons Epidemic
+#Biological weapons - Epidemic
 country_event = {
 	id = 1412063
 	title = "Biological Weapons Especially Infectious"
-	desc = "The biological weapon that was unleashed on our nation was especially infectious has has caused an epidemic in our nation. This will allow the weapons to spread to other nations."
+	desc = EVTDESC1412063
 	picture = "biological_weapons_attack"
 	
-	major = yes
 	is_triggered_only = yes
 
 	option = {
 		name = "This can spread!"
+		
+		any_country = {
+			limit = { exists = yes is_vassal = no }
+			relation = { who = FROM value = -100 }
+		}
+		
+		#Spawn virus in a country at with FROM
+		random_country = {
+			limit = { NOT = { tag = REB } war_with = FROM }
+			country_event = 14120631
+		}
+	}
+
+}
+
+#Biological weapons - Epidemic
+country_event = {
+	id = 14120631
+	title = "Biological Weapon Induced Epidemic"
+	desc = EVTDESC1412063
+	picture = "biological_weapons_attack"
+	
+	major = yes
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "This can spread!"
+		prestige_factor = -0.025
+		
 		poor_strata = {
 			consciousness = 1
 			militancy = 1
@@ -1501,6 +1525,7 @@ country_event = {
 			}
 			add_province_modifier = { name = virus_outbreak_deadly duration = 730 }
 		}
+		
 	}
 
 }
