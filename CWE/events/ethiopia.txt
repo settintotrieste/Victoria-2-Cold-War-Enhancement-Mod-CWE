@@ -835,3 +835,154 @@ country_event = {
 	}
 
 }
+
+#The Tigray War of 2021
+country_event = {
+	id = 8005311
+	title = "The Tigray War"
+	desc = EVTDESC8005311
+	picture = "ETH_2021_tigray_war"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = ETH
+		year = 2021
+		NOT = { year = 2031 }
+		
+		OR = { government = democracy government = democracy1 }
+		is_vassal = no
+		war = no
+		
+		election = no
+		
+		#EPRDF
+		ruling_party_ideology = socialist
+		
+		#Owns Eritrea and Oromia
+		is_possible_vassal = ERI
+		is_possible_vassal = ORM
+		
+		#Caused in part by COVID
+		has_global_flag = covid19_virus_happened
+		
+		#ETH is a federal state
+		has_country_flag = parliamentary_system_republic
+	}
+
+	mean_time_to_happen = {
+		months = 11
+	}
+
+	option = {
+		name = "Fight the Tigray to end ethnic federalism!"
+		prestige = 50
+		badboy = 5
+		
+		#Change to Prosperity Party
+		ruling_party_ideology = conservative
+		
+		#Internal unrest
+		remove_accepted_culture = oromo
+		remove_accepted_culture = tigray
+		
+		#Increase Ethiopian support for conservative
+		any_pop = {
+			limit = { strata = rich NOT = { OR = { culture = tigray culture = oromo } } }
+			consciousness = 2.5
+			ideology  = { factor = 0.15 value = conservative }
+		}
+		any_pop = {
+			limit = { strata = middle NOT = { OR = { culture = tigray culture = oromo } } }
+			consciousness = 5
+			ideology  = { factor = 0.10 value = conservative }
+		}
+		any_pop = {
+			limit = { strata = poor NOT = { OR = { culture = tigray culture = oromo } } }
+			consciousness = 10
+			ideology  = { factor = 0.05 value = conservative }
+		}
+		
+		#Tigray and Oromo are pissed
+		any_pop = {
+			limit = { culture = tigray culture = oromo }
+			consciousness = 10
+			militancy = 10
+			ideology  = { factor = 0.25 value = nationalist }
+		}
+		
+		#Begin the war!
+		release = ERI
+		ERI = {
+			government = nationalist_dictatorship
+			country_event = 800050
+			ruling_party_ideology = nationalist
+			
+			money = 50000
+			small_arms = 500
+			weaponry = 500
+			aeroplanes = 500
+			ammunition = 500
+			automobiles = 500
+			
+			war = {
+				target = ETH
+				attacker_goal = { casus_belli = become_independent }
+				defender_goal = {  }
+				call_ally = no
+			}
+		}
+		any_owned = { 
+			limit = { 
+				is_capital = no 
+				is_core = ORM 
+			} 
+			secede_province = ORM 
+		}
+		ORM = {
+			government = nationalist_dictatorship
+			country_event = 800050
+			ruling_party_ideology = nationalist
+			
+			money = 50000
+			small_arms = 500
+			weaponry = 500
+			aeroplanes = 500
+			ammunition = 500
+			automobiles = 500
+			
+			war = {
+				target = ETH
+				attacker_goal = { casus_belli = become_independent }
+				defender_goal = {  }
+				call_ally = no
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Keep the status quo"
+		
+		#Increase Ethiopian support for nationalist
+		any_pop = {
+			limit = { strata = rich }
+			consciousness = 10
+			ideology = { factor = 0.05 value = nationalist }
+		}
+		any_pop = {
+			limit = { strata = middle }
+			consciousness = 5
+			ideology = { factor = 0.10 value = nationalist }
+		}
+		any_pop = {
+			limit = { strata = poor }
+			consciousness = 2.5
+			ideology = { factor = 0.15 value = nationalist }
+		}
+
+		ai_chance = { factor = 0.1 }
+	}
+
+}
