@@ -256,7 +256,7 @@ country_event = {
 	}
 	
 	option = {
-		name = "Strive for a different constitution! (Disables Elections Events)"
+		name = "Strive for a different constitution! (Disables historical events)"
 		prestige = -15
 		
 		any_pop = {
@@ -542,7 +542,7 @@ country_event = {
 	}
 
 	option = {
-		name = "Democratic Centre (DC-PSDI-PLI-PRI) (Disables Election Events)"
+		name = "Democratic Centre (DC-PSDI-PLI-PRI) (Disables historical events)"
 		ruling_party_ideology = conservative
 		any_pop = { 
 			ideology = { factor = 0.1 value = conservative }
@@ -1985,23 +1985,35 @@ country_event = {
 
 #Death of Enrico Mattei (USA)
 country_event = {
-  id = 8020382
-  title = "The Italian Issue"
-  desc = EVTDESC8020382
-  picture = "enrico_mattei"
-  
-  fire_only_once = yes
+	id = 8020382
+	title = "The Italian Issue"
+	desc = EVTDESC8020382
+	picture = "enrico_mattei"
+	
+	fire_only_once = yes
 
 	trigger = {
 		tag = USA
 		year = 1962
 		NOT = { year = 1990 }
 		
+		#Non socialist government type
 		NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } } 
+		is_greater_power = yes
 		
+		#Non left wing ruling party
 		NOT = { OR = { ruling_party_ideology = socialist ruling_party_ideology = progressive ruling_party_ideology = communist ruling_party_ideology = communist_social } }
 		
-		ITA = { has_country_flag = ITA_Enrico_Mattei }
+		#Italy is normal and exists
+		ITA = { 
+			exists = yes
+			
+			OR = { government = democracy government = democracy1 }
+			is_vassal = no
+			war = no
+			
+			has_country_flag = ITA_Enrico_Mattei 
+		}
 	}
 
 	mean_time_to_happen = { months = 10 }
@@ -2014,6 +2026,7 @@ country_event = {
 			90 = { ITA = { country_event = 8020329 } } #Mattei dies
 			10 = { } #Mattei lives
 		}
+		
 		ai_chance = { factor = 0.95 }
 	}
 	
@@ -2028,12 +2041,12 @@ country_event = {
 
 #Death of Enrico Mattei
 country_event = {
-  id = 8020329
-  title = "The Death of Enrico Mattei"
-  desc = EVTDESC8020329
-  picture = "enrico_mattei"
-  
-  is_triggered_only = yes
+	id = 8020329
+	title = "The Death of Enrico Mattei"
+	desc = EVTDESC8020329
+	picture = "enrico_mattei"
+	
+	is_triggered_only = yes
 
 	option = {
 		name = "Suspicious..."
@@ -2226,33 +2239,40 @@ country_event = {
 
 #NATO Withdrawal
 country_event = {
-  id = 8020383
-  title = "The Case for NATO Withdrawal"
-  desc = EVTDESC8020383
-  picture = "nato_foundation"
-  
-  fire_only_once = yes
+	id = 8020383
+	title = "The Case for NATO Withdrawal"
+	desc = EVTDESC8020383
+	picture = "nato_foundation"
+	
+	fire_only_once = yes
 
 	trigger = {
 		tag = ITA
 		year = 1967
 		NOT = { year = 1972 }
 		
+		OR = { government = democracy government = democracy1 }
+		is_vassal = no
+		war = no
+		
+		#Italy is in NATO
+		has_country_modifier = alliance_nato
+		
+		#Arab-Israeli War
 		ISR = { 
-		    exists = yes
+			exists = yes
+			
 			is_vassal = no
-			war = yes
+			war_with = EGY
 		}
 		
 		EGY = { 
-		    exists = yes
-			is_vassal = no
-			war = yes
+			exists = yes
 			
 			OR = { government = presidential_dictatorship government = populist_dictatorship }
+			is_vassal = no
+			war_with = ISR
 		}
-		
-		has_country_modifier = alliance_nato 
 		
 		has_country_flag = ITA_Enrico_Mattei 
 		has_country_flag = 1963_ITA_Organic_Centre_Left
@@ -2263,54 +2283,32 @@ country_event = {
 
 	option = {
 		name = "Leave the Atlantic Pact"
-		badboy = 1
-		prestige = -5
+		prestige = -50
 		
-		random_owned = {
-			limit = { owner = { has_country_modifier = alliance_nato } }
-			owner = {
-				remove_country_modifier = alliance_nato
+		badboy = 1
+		
+			
+		#THIS Leaves NATO
+		remove_country_modifier = alliance_nato
+		add_country_modifier = { name = leave_alliance_nato duration = 1825 }
+		any_country = {
+			limit = { has_country_modifier = alliance_nato } 
+			relation = { who = THIS value = -15 } 
+			leave_alliance = THIS 
+		}
 				
-				add_country_modifier = { name = leave_alliance_nato duration = 1825 }
-				any_country = { 
-				    limit = { 
-					    has_country_modifier = alliance_nato 
-					} 
-					relation = { who = THIS value = -15 } 
-					leave_alliance = THIS 
-				}
-				any_country = { 
-				    limit = { 
-					    OR = { 
-						    AND = { 
-							    primary_culture = arab
- 									OR = { 
-										government = presidential_dictatorship 
-										government = nationalist_dictatorship 
-										government = populist_dictatorship 
-									} 
-								is_vassal = no 
-							}
-							AND = { 
-							    tag = JOR
- 									OR = { 
-										government = hms_government 
-										government = hms_government1 
-										government = absolute_monarchy 
-									} 
-								is_vassal = no 
-							}
-							AND = { 
-							    tag = LEB
-								primary_culture = arab 
-								is_vassal = no 
-							}
-                        }
-                    }								
-					relation = { who = THIS value = 25 } 
-					diplomatic_influence = { who = THIS value = 10 } 
+		#Gain relations with Arabs
+		any_country = {
+			limit = {
+				exists = yes
+				OR = { 
+					AND = { primary_culture = arab OR = { government = presidential_dictatorship government = nationalist_dictatorship government = populist_dictatorship } is_vassal = no }
+					AND = { tag = JOR OR = { government = hms_government government = hms_government1 government = absolute_monarchy } is_vassal = no }
+					AND = { tag = LEB is_vassal = no primary_culture = arab }
 				}
 			}
+			relation = { who = THIS value = 25 } 
+			diplomatic_influence = { who = THIS value = 25 } 
 		}
 		
 		ai_chance = { factor = 0.6 }
@@ -2320,37 +2318,19 @@ country_event = {
 		name = "Honour our duties"
 		prestige = 5
 		
-		any_country = { 
-				    limit = { 
-					    OR = { 
-						    AND = { 
-							    primary_culture = arab
- 									OR = { 
-										government = presidential_dictatorship 
-										government = nationalist_dictatorship 
-										government = populist_dictatorship 
-									} 
-								is_vassal = no 
-							}
-							AND = { 
-							    tag = JOR
- 									OR = { 
-										government = hms_government 
-										government = hms_government1 
-										government = absolute_monarchy 
-									} 
-								is_vassal = no 
-							}
-							AND = { 
-							    tag = LEB
-								primary_culture = arab 
-								is_vassal = no 
-							}
-                        }
-                    }								
-					relation = { who = THIS value = -10 } 
-					diplomatic_influence = { who = THIS value = -5 } 
+		#Lose relations with Arabs
+		any_country = {
+			limit = {
+				exists = yes
+				OR = { 
+					AND = { primary_culture = arab OR = { government = presidential_dictatorship government = nationalist_dictatorship government = populist_dictatorship } is_vassal = no }
+					AND = { tag = JOR OR = { government = hms_government government = hms_government1 government = absolute_monarchy } is_vassal = no }
+					AND = { tag = LEB is_vassal = no primary_culture = arab }
 				}
+			}
+			relation = { who = THIS value = -25 } 
+			diplomatic_influence = { who = THIS value = -25 } 
+		}
 	
 		ai_chance = { factor = 0.4 }
 	}
@@ -2458,9 +2438,8 @@ country_event = {
 		NOT = { year = 1973 }
 		
 		OR = { government = democracy government = democracy1 }
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		election = no
 		
@@ -2645,9 +2624,8 @@ country_event = {
 		NOT = { year = 1973 }
 		
 		OR = { government = democracy government = democracy1 }
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		election = no
 		
@@ -3860,7 +3838,7 @@ country_event = {
   	title = "The Fall of Andreotti-Malagodi"
   	desc = EVT_8020347_DESC
   	picture = "giulio_andreotti"
-  
+	
   	fire_only_once = yes
 
 	trigger = {
@@ -3869,9 +3847,8 @@ country_event = {
 		NOT = { year = 1978 }
 		
 		OR = { government = democracy government = democracy1 }
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		election = no
 		
@@ -4030,9 +4007,8 @@ country_event = {
 		NOT = { year = 1978 }
 		
 		OR = { government = democracy government = democracy1 }
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		election = no
 		
@@ -4782,9 +4758,8 @@ country_event = {
 		NOT = { year = 1981 }
 		
 		OR = { government = democracy government = democracy1 }
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		election = no
 		
@@ -5005,8 +4980,9 @@ country_event = {
 		TRI = { 
 			exists = yes 
 			government = populist_dictatorship 
-			ruling_party_ideology = socialist 
 			is_vassal = no
+			war = no
+			ruling_party_ideology = socialist 
 		}
 		USA = { 
 			exists = yes 
@@ -5105,7 +5081,7 @@ country_event = {
   	id = 8020362
   	title = "The March of the 40.000"
   	desc = EVT_8007762_DESC
-  	picture = "40k_march"
+	picture = "40k_march"
 	
   	fire_only_once = yes
 
@@ -5163,9 +5139,8 @@ country_event = {
 		NOT = { year = 1984 }
 		
 		OR = { government = democracy government = democracy1 }
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		election = no
 		
@@ -5254,11 +5229,11 @@ country_event = {
 		
 		any_pop = { 
 			ideology = { factor = 0.02 value = conservative } 
-		    ideology = { factor = 0.02 value = big_tent } 
+			ideology = { factor = 0.02 value = big_tent } 
 			scaled_consciousness = { factor = 1 ideology = progressive }
 			scaled_consciousness = { factor = 1 ideology = communist }
 			scaled_consciousness = { factor = 1 ideology = communist_social }
-		}			
+		}
 		
 		ai_chance = { factor = 0.1 }
 	}
@@ -5268,7 +5243,7 @@ country_event = {
 #Forlani and P2
 country_event = {
   	id = 8020364
-  	title = "The P2 Scandal and the Resignation of Forlani"
+  	title = "The P2 Scandal and Forlani's Resignation"
   	desc = EVT_8020364_DESC
   	picture = "ITA_P2"
   
@@ -5280,9 +5255,8 @@ country_event = {
 		NOT = { year = 1984 }
 		
 		OR = { government = democracy government = democracy1 }
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		election = no
 		
@@ -5393,9 +5367,8 @@ country_event = {
 		NOT = { year = 1984 }
 		
 		OR = { government = democracy government = democracy1 }
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		election = no
 		
@@ -5479,7 +5452,7 @@ country_event = {
 		
 		any_pop = { 
 			ideology = { factor = 0.02 value = big_tent } 
-		    ideology = { factor = 0.01 value = liberal } 
+			ideology = { factor = 0.01 value = liberal } 
 			scaled_consciousness = { factor = 2 ideology = socialist }
 		}			
 		ai_chance = { factor = 0.1 }
@@ -5490,7 +5463,7 @@ country_event = {
 #Craxi's move
 country_event = {
   	id = 8020366
-  	title = "Craxi's move"
+  	title = "Craxi's Move"
   	desc = EVT_8020366_DESC
   	picture = "ITA_bettino_craxi"
   
@@ -5502,9 +5475,8 @@ country_event = {
 		NOT = { year = 1985 }
 		
 		OR = { government = democracy government = democracy1 }
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		election = no
 		
@@ -5519,12 +5491,13 @@ country_event = {
 	mean_time_to_happen = { months = 8 }
 
 	option = {
-		name = "Early elections"
+		name = "Call early elections"
+		
 		any_pop = { 
 			limit = { strata = rich }
 			ideology = { factor = 0.02 value = conservative } 
 			ideology = { factor = 0.01 value = liberal }
-            ideology = { factor = 0.02 value = socialist }			
+			ideology = { factor = 0.02 value = socialist }			
 		}
 		any_pop = { 
 			limit = { strata = middle }
@@ -5541,6 +5514,7 @@ country_event = {
 		
 		#1983 Early Elections
 		country_event = 8020367
+		
 		ai_chance = { factor = 0.9 }
 	}
 	
@@ -5576,12 +5550,13 @@ country_event = {
 		
 		any_pop = { 
 			ideology = { factor = 0.01 value = conservative } 
-		    ideology = { factor = 0.02 value = big_tent } 
+			ideology = { factor = 0.02 value = big_tent } 
 			ideology = { factor = 0.03 value = communist_social }
 			scaled_consciousness = { factor = 4 ideology = socialist }
 		}
-
-        set_country_flag = 1979_Historic_Compromise		
+		
+		set_country_flag = 1979_Historic_Compromise
+		
 		ai_chance = { factor = 0.1 }
 	}
 	
@@ -5643,9 +5618,9 @@ country_event = {
 	trigger = {
 		tag = ITA
 		OR = { 
-		    year = 1983 
+			year = 1983 
 			AND = { year = 1982 has_country_flag = ITA_1972_73_early_elections } 
-		    AND = { year = 1984 has_country_flag = 1979_ITA_early_elections }
+			AND = { year = 1984 has_country_flag = 1979_ITA_early_elections }
 		}
 		NOT = { year = 1988 }
 		
@@ -5721,7 +5696,7 @@ country_event = {
 	trigger = {
 		tag = ITA
 		OR = { 
-		    year = 1981 
+			year = 1981 
 			AND = { year = 1980 has_country_flag = 1975_ITA_Elections } 
 		}
 		NOT = { year = 1986 }
@@ -5751,7 +5726,7 @@ country_event = {
 		
 		has_country_flag = parliamentary_system_republic
 		OR = { 
-		    AND = { has_country_flag = 1976_ITA_National_Solidarity has_country_flag = ITA_Aldo_Moro_dead has_country_flag = 1979_Historic_Compromise_Respected } 
+			AND = { has_country_flag = 1976_ITA_National_Solidarity has_country_flag = ITA_Aldo_Moro_dead has_country_flag = 1979_Historic_Compromise_Respected } 
 			AND = { has_country_flag = 1976_ITA_National_Solidarity has_country_flag = ITA_Aldo_Moro_lives } 
 		}
 	}
@@ -5806,7 +5781,7 @@ country_event = {
 	trigger = {
 		tag = ITA
 		OR = { 
-		    year = 1981 
+			year = 1981 
 			AND = { year = 1980 has_country_flag = 1975_ITA_Elections } 
 		}
 		NOT = { year = 1986 }
@@ -5860,6 +5835,7 @@ country_event = {
 		set_country_flag = 1981_ITA_Organic_Centre_Left
 		ai_chance = { factor = 0.2 }
 	}
+	
 }
 
 #1984 Elections (Ahistorical)
@@ -5902,7 +5878,7 @@ country_event = {
 		
 		has_country_flag = parliamentary_system_republic
 		OR = { 
-		    has_country_flag = 1979_Historic_Compromise
+			has_country_flag = 1979_Historic_Compromise
 			AND = { has_country_flag = 1979_ITA_Pentapartito NOT = { has_country_flag = 1979_ITA_DC_Crisis_v2 } } 
 			AND = { has_country_flag = 1979_ITA_Organic_Centre_Left NOT = { OR = { has_country_flag = 1979_ITA_DC_Crisis_v2 has_country_flag = 1979_ITA_Pentapartito } } }
 		}
@@ -5951,7 +5927,7 @@ country_event = {
 #End of the years of lead
 country_event = {
   	id = 8007765
-  	title = "The Dozier Kidnapping and the end of the BR"
+  	title = "The Dozier Kidnapping the BR's End"
   	desc = EVT_8007765_DESC
  	picture = "red_brigades"
 	
@@ -5959,7 +5935,6 @@ country_event = {
 
 	trigger = {
 		tag = ITA
-		
 		year = 1982
 		NOT = { year = 1992 }
 		
@@ -5981,6 +5956,7 @@ country_event = {
 			has_country_modifier = years_of_lead 
 			has_country_flag = ITA_years_of_lead 
 		}
+		
 	}
 
 	mean_time_to_happen = { months = 1 }
@@ -6023,8 +5999,12 @@ country_event = {
 		#PSI is the ruling party
 		ruling_party_ideology = socialist 
 		
+		#Reform has not already been enacted
+		NOT = { wage_and_work_hours = paid_sick_leave_hours }
+		NOT = { wage_and_work_hours = six_hours }
+		
 		has_country_flag = parliamentary_system_republic
-        has_country_flag = 1983_ITA_Pentapartito
+		has_country_flag = 1983_ITA_Pentapartito
 		has_country_flag = ITA_Tradeunions_Federation
 	}
 
@@ -6032,12 +6012,12 @@ country_event = {
 
 	option = {
 		name = "The Law-Decree passes"
-		prestige = 5
+		prestige = 50
 		
 		political_reform = paid_sick_leave_hours 
 		
 		any_pop = { 
-		    scaled_militancy = { factor = 2 ideology = progressive }
+			scaled_militancy = { factor = 2 ideology = progressive }
 			scaled_consciousness = { factor = 4 ideology = progressive }
 			scaled_militancy = { factor = 2 ideology = communist }
 			scaled_consciousness = { factor = 4 ideology = communist }
@@ -6049,6 +6029,7 @@ country_event = {
 			ideology = { factor = 0.03 value = socialist }
 		}
 		
+		#Federation collapse
 		country_event = 8020372
 		
 		set_country_flag = ITA_1984_Saint_Valentine_Decree
@@ -6058,9 +6039,9 @@ country_event = {
 	option = {
 		name = "The Law-Decree fails"
 		any_pop = { 
-		    scaled_militancy = { factor = 2 ideology = socialist }
+			scaled_militancy = { factor = 2 ideology = socialist }
 			scaled_consciousness = { factor = 4 ideology = socialist }
-		    scaled_militancy = { factor = -2 ideology = progressive }
+			scaled_militancy = { factor = -2 ideology = progressive }
 			scaled_consciousness = { factor = -2 ideology = progressive }
 			scaled_militancy = { factor = -2 ideology = communist }
 			scaled_consciousness = { factor = -2 ideology = communist }
@@ -6081,7 +6062,7 @@ country_event = {
 #Federation collapse
 country_event = {
  	id = 8020372
-  	title = "The Collapse of the CGIL, CISL, UIL Federation"
+  	title = "The CGIL, CISL, UIL Federation Falls"
  	desc = EVT_8020372_DESC
   	picture = "italy_hot_autumn"
 	
@@ -6134,9 +6115,12 @@ country_event = {
 		
 		election = no
 		
+		#Reform has been enacted
+		OR = { wage_and_work_hours = paid_sick_leave_hours wage_and_work_hours = six_hours }
+		
 		has_country_flag = parliamentary_system_republic
 		NOT = { has_country_flag = ITA_Tradeunions_Federation }
-        has_country_flag = 1983_ITA_Pentapartito
+		has_country_flag = 1983_ITA_Pentapartito
 		has_country_flag = ITA_1984_Saint_Valentine_Decree
 	}
 
@@ -6144,10 +6128,10 @@ country_event = {
 	
 	option = {
 		name = "The Referendum fails, the Law-Decree stays"
-		prestige = 5
+		prestige = 50
 		
 		any_pop = { 
-		    scaled_militancy = { factor = 2 ideology = progressive }
+			scaled_militancy = { factor = 2 ideology = progressive }
 			scaled_consciousness = { factor = 2 ideology = progressive }
 			scaled_militancy = { factor = 2 ideology = communist }
 			scaled_consciousness = { factor = 2 ideology = communist }
@@ -6165,14 +6149,14 @@ country_event = {
 	
 	option = {
 		name = "The Referendum wins, the Law-Decree is rescinded"
-		prestige = -5
+		prestige = -50
 		
-		political_reform = six_hours  
+		political_reform = paid_vacation_hours  
 		
 		any_pop = { 
-	     	scaled_militancy = { factor = 1 ideology = socialist }
+			scaled_militancy = { factor = 1 ideology = socialist }
 			scaled_consciousness = { factor = 4 ideology = socialist }
-		    scaled_militancy = { factor = -4 ideology = progressive }
+			scaled_militancy = { factor = -4 ideology = progressive }
 			scaled_consciousness = { factor = -2 ideology = progressive }
 			scaled_militancy = { factor = -4 ideology = communist }
 			scaled_consciousness = { factor = -2 ideology = communist }
@@ -6189,6 +6173,7 @@ country_event = {
 		set_country_flag = ITA_1985_Referendum_PCI_Victory
 		ai_chance = { factor = 0.1 }
 	}
+	
 }
 
 #The Fall of Craxi (Ahistorical)
@@ -6206,9 +6191,8 @@ country_event = {
 		NOT = { year = 1988 }
 		
 		OR = { government = democracy government = democracy1 }
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		election = no
 		
@@ -6229,7 +6213,7 @@ country_event = {
 			limit = { strata = rich }
 			ideology = { factor = 0.01 value = conservative } 
 			ideology = { factor = 0.02 value = big_tent }
-            ideology = { factor = 0.01 value = liberal }			
+			ideology = { factor = 0.01 value = liberal }			
 		}
 		any_pop = { 
 			limit = { strata = middle }
@@ -6246,6 +6230,7 @@ country_event = {
 		
 		#1985 Early Elections
 		country_event = 8020375
+		
 		ai_chance = { factor = 0.8 }
 	}
 	
@@ -6281,12 +6266,13 @@ country_event = {
 		
 		any_pop = { 
 			ideology = { factor = 0.01 value = conservative } 
-		    ideology = { factor = 0.02 value = big_tent } 
+			ideology = { factor = 0.02 value = big_tent } 
 			ideology = { factor = 0.03 value = communist_social }
 			scaled_consciousness = { factor = 4 ideology = socialist }
 		}
-
-        set_country_flag = 1985_ITA_Historic_Compromise		
+		
+		set_country_flag = 1985_ITA_Historic_Compromise
+		
 		ai_chance = { factor = 0.2 }
 	}
 	
@@ -6336,6 +6322,7 @@ country_event = {
 		set_country_flag = 1987_ITA_Pentapartito
 		ai_chance = { factor = 0.3 }
 	}
+	
 }
 
 #Berlusconi Decree
@@ -6362,21 +6349,21 @@ country_event = {
 		ruling_party_ideology = socialist 
 		
 		has_country_flag = parliamentary_system_republic
-        has_country_flag = 1983_ITA_Pentapartito
+		has_country_flag = 1983_ITA_Pentapartito
 	}
 
 	mean_time_to_happen = { months = 10 }
 
 	option = {
 		name = "The Decree passes"
-		prestige = 5
+		prestige = 50
 		
 		any_pop = { 
-		    scaled_militancy = { factor = 2 ideology = conservative }
+			scaled_militancy = { factor = 2 ideology = conservative }
 			scaled_consciousness = { factor = 4 ideology = conservative }
 			scaled_militancy = { factor = 2 ideology = big_tent }
 			scaled_consciousness = { factor = 4 ideology = big_tent }
-		    scaled_militancy = { factor = 2 ideology = progressive }
+			scaled_militancy = { factor = 2 ideology = progressive }
 			scaled_consciousness = { factor = 4 ideology = progressive }
 			scaled_militancy = { factor = 2 ideology = communist }
 			scaled_consciousness = { factor = 4 ideology = communist }
@@ -6394,16 +6381,16 @@ country_event = {
 	
 	option = {
 		name = "The Decree fails"
-		prestige = -5
+		prestige = -50
 		
 		any_pop = { 
-		    scaled_militancy = { factor = 2 ideology = socialist }
+			scaled_militancy = { factor = 2 ideology = socialist }
 			scaled_consciousness = { factor = 4 ideology = socialist }
 			scaled_militancy = { factor = -2 ideology = conservative }
 			scaled_consciousness = { factor = -2 ideology = conservative }
 			scaled_militancy = { factor = -2 ideology = big_tent }
 			scaled_consciousness = { factor = -2 ideology = big_tent }
-		    scaled_militancy = { factor = -2 ideology = progressive }
+			scaled_militancy = { factor = -2 ideology = progressive }
 			scaled_consciousness = { factor = -2 ideology = progressive }
 			scaled_militancy = { factor = -2 ideology = communist }
 			scaled_consciousness = { factor = -2 ideology = communist }
@@ -6413,6 +6400,7 @@ country_event = {
 		
 		ai_chance = { factor = 0.1 }
 	}
+	
 }
 
 #Death of Berlinguer
@@ -6448,10 +6436,11 @@ country_event = {
 			ideology = { factor = 0.02 value = communist_social } 
 		}
 		any_pop = { 
-            scaled_consciousness = { factor = 1 ideology = communist }
+			scaled_consciousness = { factor = 1 ideology = communist }
 			scaled_consciousness = { factor = 1 ideology = communist_social }
 		}
 	}
+	
 }
 
 #The Fall of Craxi
@@ -6469,9 +6458,8 @@ country_event = {
 		NOT = { year = 1988 }
 		
 		OR = { government = democracy government = democracy1 }
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		election = no
 		
@@ -6517,12 +6505,11 @@ country_event = {
 		
 		any_pop = { 
 			ideology = { factor = 0.02 value = conservative } 
-		    ideology = { factor = 0.01 value = big_tent } 
+			ideology = { factor = 0.01 value = big_tent } 
 			ideology = { factor = 0.01 value = socialist }
 			scaled_consciousness = { factor = 2 ideology = big_tent }
 		}
-
-        set_country_flag = 1986_ITA_Craxi_Bis	
+		set_country_flag = 1986_ITA_Craxi_Bis	
 		ai_chance = { factor = 0.9 }
 	}
 	
@@ -6558,14 +6545,13 @@ country_event = {
 		
 		any_pop = { 
 			ideology = { factor = 0.01 value = conservative } 
-		    ideology = { factor = 0.02 value = big_tent } 
+			ideology = { factor = 0.02 value = big_tent } 
 			scaled_consciousness = { factor = 2 ideology = socialist }
 		}
-
-        set_country_flag = 1986_ITA_Staffetta		
+		set_country_flag = 1986_ITA_Staffetta		
 		ai_chance = { factor = 0.1 }
 	}
-	
+
 }
 
 #The Fall of Craxi II
@@ -6583,9 +6569,8 @@ country_event = {
 		NOT = { year = 1988 }
 		
 		OR = { government = democracy government = democracy1 }
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		election = no
 		
@@ -6634,7 +6619,7 @@ country_event = {
 			limit = { strata = rich }
 			ideology = { factor = 0.01 value = conservative } 
 			ideology = { factor = 0.02 value = big_tent }
-            ideology = { factor = 0.01 value = liberal }			
+			ideology = { factor = 0.01 value = liberal }			
 		}
 		any_pop = { 
 			limit = { strata = middle }
@@ -6651,6 +6636,7 @@ country_event = {
 		
 		#1987 Early Elections
 		country_event = 8020380
+		
 		ai_chance = { factor = 0.9 }
 	}
 	
@@ -6686,11 +6672,10 @@ country_event = {
 		
 		any_pop = { 
 			ideology = { factor = 0.02 value = conservative } 
-		    ideology = { factor = 0.03 value = big_tent } 
+			ideology = { factor = 0.03 value = big_tent } 
 			ideology = { factor = 0.03 value = socialist }
 		}
-
-        set_country_flag = 1986_ITA_Staffetta		
+		set_country_flag = 1986_ITA_Staffetta		
 		ai_chance = { factor = 0.1 }
 	}
 	
@@ -6752,9 +6737,8 @@ country_event = {
 		NOT = { year = 1992 }
 		
 		OR = { government = democracy government = democracy1 }
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		election = no
 		
@@ -6801,9 +6785,9 @@ country_event = {
 		any_pop = { 
 			ideology = { factor = 0.03 value = conservative } 
 			ideology = { factor = 0.02 value = socialist }
-            ideology = { factor = 0.01 value = liberal }	
-            scaled_consciousness = { factor = 2 ideology = big_tent }	
-            scaled_consciousness = { factor = 2 ideology = communist_social }		
+			ideology = { factor = 0.01 value = liberal }
+			scaled_consciousness = { factor = 2 ideology = big_tent }
+			scaled_consciousness = { factor = 2 ideology = communist_social }		
 		}
 		
 		clr_country_flag = 1987_ITA_Pentapartito
@@ -6843,7 +6827,7 @@ country_event = {
 		
 		any_pop = { 
 			ideology = { factor = 0.02 value = big_tent } 
-		    ideology = { factor = 0.01 value = socialist } 
+			ideology = { factor = 0.01 value = socialist } 
 			ideology = { factor = 0.02 value = communist_social }
 			ideology = { factor = 0.03 value = populist }
 			ideology = { factor = 0.03 value = nationalist }
@@ -6854,14 +6838,12 @@ country_event = {
 			scaled_consciousness = { factor = 4 ideology = progressive }
 			scaled_consciousness = { factor = 4 ideology = communist }
 		}
-
-        set_country_flag = 1987_ITA_National_Unity	
+		
+		set_country_flag = 1987_ITA_National_Unity	
 		ai_chance = { factor = 0.1 }
 	}
-	
+
 }
-
-
 
 #1988 Elections (Ahistorical)
 country_event = {
@@ -6875,6 +6857,7 @@ country_event = {
 	trigger = {
 		tag = ITA
 		year = 1988 
+		NOT = { has_global_flag = 1992_start_date_flag }
 		NOT = { year = 1993 }
 		
 		OR = { government = democracy government = democracy1 }
@@ -6951,9 +6934,9 @@ country_event = {
 
 	trigger = {
 		tag = ITA
-		year = 1990
-		NOT = { year = 1993 }		
+		year = 1990	
 		NOT = { has_global_flag = 1992_start_date_flag }
+		NOT = { year = 1993 }
 		
 		OR = { government = democracy government = democracy1 }
 		is_vassal = no
@@ -6995,7 +6978,7 @@ country_event = {
 			ideology = { factor = 0.01 value = socialist }
 		}
 		
-        set_country_flag = 1987_ITA_Andreotti
+		set_country_flag = 1987_ITA_Andreotti
 		ai_chance = { factor = 0.2 }
 	}
 
@@ -7012,7 +6995,10 @@ country_event = {
 
 	trigger = {
 		tag = ITA
-		OR = { year = 1989 AND = { year = 1989 has_country_flag = 1983_ITA_Pentapartito } }
+		OR = { 
+			year = 1989 
+			AND = { year = 1989 has_country_flag = 1983_ITA_Pentapartito } 
+		}
 		NOT = { year = 1995 }
 		
 		OR = { government = democracy government = democracy1 }
@@ -7076,9 +7062,9 @@ country_event = {
 	trigger = {
 		tag = ITA
 		OR = { 
-		    year = 1987
+			year = 1987
 			AND = { year = 1988 has_country_flag = ITA_1972_73_early_elections } 
-		    AND = { year = 1989 has_country_flag = 1979_ITA_early_elections }
+			AND = { year = 1989 has_country_flag = 1979_ITA_early_elections }
 			AND = { year = 1989 has_country_flag = 1979_ITA_Pentapartito NOT = { has_country_flag = 1979_ITA_DC_Crisis_v2 } } 
 			AND = { year = 1989 has_country_flag = 1979_ITA_Organic_Centre_Left NOT = { OR = { has_country_flag = 1979_ITA_DC_Crisis_v2 has_country_flag = 1979_ITA_Pentapartito } } }
 		}
@@ -7104,7 +7090,7 @@ country_event = {
 		ruling_party_ideology = big_tent
 		
 		any_pop = { 
-		    ideology = { factor = 0.02 value = conservative }
+			ideology = { factor = 0.02 value = conservative }
 			ideology = { factor = 0.02 value = big_tent }
 			ideology = { factor = 0.01 value = liberal }
 		}
@@ -7123,7 +7109,7 @@ country_event = {
 		ruling_party_ideology = nationalist
 		
 		any_pop = { 
-		    limit = { is_primary_culture = yes }
+			limit = { is_primary_culture = yes }
 			ideology = { factor = 0.02 value = nationalist }
 		}
 		any_pop = { 
@@ -7159,7 +7145,6 @@ country_event = {
 		NOT = { year = 1992 }
 		
 		OR = { government = democracy government = democracy1 }
-		
 		is_greater_power = yes
 		
 		has_country_flag = parliamentary_system_republic
@@ -7185,6 +7170,7 @@ country_event = {
 		add_country_modifier = { name = economic_boom duration = 3650 }
 		set_country_flag = ITA_Sorpasso
 	}
+	
 }
 
 #Bolognina's Turn
@@ -7205,24 +7191,28 @@ country_event = {
 		
 		#PCI is a relevant party
 		OR = {
+			ruling_party_ideology = socialist
 			communist_social = 20
 			communist = 20
 		}
 		
 		#The USSR is about to fall or has already fallen
 		OR = {
-		    RUS = { 
-			    exists = yes 
-		    	OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
-			    ruling_party_ideology = communist_social
-			    is_greater_power = yes 
-			    war = no
-		    }
 			RUS = { 
-			    exists = yes 
-		    	OR = { government = democracy1 government = democracy government = presidential_dictatorship government = nationalist_dictatorship government = populist_dictatorship }
+				exists = yes 
+				OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+				is_greater_power = yes 
+				war = no
+				
+				#Gorbachev
+				ruling_party_ideology = communist_social
+				has_country_flag = mikhail_gorbachev
+			}
+			RUS = { 
+			    exists = yes
+			    NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
 			    war = no
-		    }
+			}
 		}
 		
 		#Berlin wall fell
@@ -7234,6 +7224,7 @@ country_event = {
 		}
 		
 		has_country_flag = parliamentary_system_republic
+		
 		has_global_flag = autumn_of_nations
 	}
 
@@ -7241,8 +7232,9 @@ country_event = {
 
 	option = {
 		name = "Goodbye East, welcome West"
+		
 		any_pop = { 
-		    ideology = { factor = 0.07 value = populist }
+			ideology = { factor = 0.07 value = populist }
 			ideology = { factor = 0.05 value = nationalist }
 			ideology = { factor = 0.1 value = conservative }
 			ideology = { factor = 0.03 value = big_tent }
@@ -7253,12 +7245,13 @@ country_event = {
 		
 		set_country_flag = ITA_Bolognina
 	}
+	
 }
 
 #Tangentopoli
 country_event = {
 	id = 8020396
-	title = "Mario Chiesa Arrest and the 'Mani Pulite' Pool"
+	title = "Mario Chiesa's Arrest & the 'Mani Pulite' Pool"
 	desc = EVTDESC8020396
 	picture = "tangentopoli"
 	
@@ -7277,9 +7270,10 @@ country_event = {
 	mean_time_to_happen = { months = 1 }
 
 	option = {
-		name = "Everything under heaven is in utter chaos; the situation is excellent"
+		name = "Everything under heaven is in utter chaos, the situation is excellent"
+		
 		any_pop = { 
-		    ideology = { factor = 0.02 value = populist }
+			ideology = { factor = 0.02 value = populist }
 			ideology = { factor = 0.01 value = nationalist }
 			ideology = { factor = 0.02 value = progressive }
 			ideology = { factor = 0.04 value = communist }
@@ -7290,6 +7284,7 @@ country_event = {
 		
 		set_country_flag = ITA_Tangentopoli
 	}
+	
 }
 
 #1992 Elections 
@@ -7326,7 +7321,7 @@ country_event = {
 		ruling_party_ideology = socialist
 		
 		any_pop = { 
-		    ideology = { factor = 0.01 value = conservative }
+			ideology = { factor = 0.01 value = conservative }
 			ideology = { factor = 0.01 value = big_tent }
 			ideology = { factor = 0.01 value = progressive }
 			ideology = { factor = 0.04 value = socialist }
@@ -7342,7 +7337,7 @@ country_event = {
 		ruling_party_ideology = big_tent
 		
 		any_pop = { 
-		    ideology = { factor = 0.02 value = conservative }
+			ideology = { factor = 0.02 value = conservative }
 			ideology = { factor = 0.03 value = big_tent }
 			ideology = { factor = 0.01 value = progressive }
 			ideology = { factor = 0.02 value = populist }
@@ -7369,9 +7364,8 @@ country_event = {
 		NOT = { year = 1997 }
 		
 		OR = { government = democracy government = democracy1 }
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		election = no
 		
@@ -7418,9 +7412,9 @@ country_event = {
 		any_pop = { 
 			ideology = { factor = 0.03 value = conservative } 
 			ideology = { factor = 0.02 value = socialist }
-            ideology = { factor = 0.01 value = liberal }	
-            scaled_consciousness = { factor = 2 ideology = big_tent }	
-            scaled_consciousness = { factor = 2 ideology = communist_social }		
+			ideology = { factor = 0.01 value = liberal }
+			scaled_consciousness = { factor = 2 ideology = big_tent }
+			scaled_consciousness = { factor = 2 ideology = communist_social }		
 		}
 		
 		#PDS and FdV withdraw
@@ -7460,7 +7454,7 @@ country_event = {
 		
 		any_pop = { 
 			ideology = { factor = 0.02 value = big_tent } 
-		    ideology = { factor = 0.01 value = socialist } 
+			ideology = { factor = 0.01 value = socialist } 
 			ideology = { factor = 0.02 value = communist_social }
 			ideology = { factor = 0.03 value = populist }
 			ideology = { factor = 0.03 value = nationalist }
@@ -7471,11 +7465,11 @@ country_event = {
 			scaled_consciousness = { factor = 4 ideology = progressive }
 			scaled_consciousness = { factor = 4 ideology = communist }
 		}
-
-        set_country_flag = 1992_ITA_Craxi_strikes_back	
+		
+		set_country_flag = 1992_ITA_Craxi_strikes_back	
 		ai_chance = { factor = 0.1 }
 	}
-	
+
 }
 
 #The Craxi Process
@@ -7488,13 +7482,14 @@ country_event = {
   	is_triggered_only = yes
 
 	option = {
-		name = "Don't authorize"		
+		name = "Don't authorize"
+		
 		any_pop = { 
 			ideology = { factor = 0.02 value = conservative } 
 			ideology = { factor = 0.02 value = big_tent }
-            ideology = { factor = 0.01 value = populist }	
-            scaled_consciousness = { factor = 2 ideology = socialist }	
-            scaled_consciousness = { factor = 2 ideology = progressive }		
+			ideology = { factor = 0.01 value = populist }
+			scaled_consciousness = { factor = 2 ideology = socialist }
+			scaled_consciousness = { factor = 2 ideology = progressive }		
 		}
 		
 		ai_chance = { factor = 0.9 }
@@ -7502,9 +7497,9 @@ country_event = {
 	
 	option = {
 		name = "Authorize"
-		any_pop = {  
-		    ideology = { factor = 0.01 value = progressive }
-		    ideology = { factor = 0.03 value = socialist } 
+		any_pop = { 
+			ideology = { factor = 0.01 value = progressive }
+			ideology = { factor = 0.03 value = socialist } 
 			ideology = { factor = 0.01 value = communist }
 			ideology = { factor = 0.02 value = populist }
 			scaled_consciousness = { factor = -2 ideology = populist }
@@ -7513,8 +7508,8 @@ country_event = {
 			scaled_consciousness = { factor = -2 ideology = socialist }
 			scaled_consciousness = { factor = -1 ideology = communist }
 		}
-
-        set_country_flag = 1992_ITA_Craxi_arrest
+		
+		set_country_flag = 1992_ITA_Craxi_arrest
 		ai_chance = { factor = 0.1 }
 	}
 	
@@ -7535,13 +7530,13 @@ country_event = {
 		NOT = { year = 1997 }
 		
 		OR = { government = democracy government = democracy1 }
-		
-		NOT = { political_reform = jefferson_method }
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		election = no
+		
+		#Reform has not already been enacted
+		NOT = { voting_system = jefferson_method }
 		
 		has_country_flag = parliamentary_system_republic	
 		OR = { has_country_flag = 1992_ITA_Quadripartito has_country_flag = 1992_ITA_Mariotto_Segni }
@@ -7556,23 +7551,24 @@ country_event = {
 		political_reform = jefferson_method
 		
 		any_pop = { 
-		    ideology = { factor = 0.01 value = populist } 
+			ideology = { factor = 0.01 value = populist } 
 			ideology = { factor = 0.01 value = conservative } 
 			ideology = { factor = 0.02 value = big_tent }
-            ideology = { factor = 0.01 value = progressive }
-            scaled_consciousness = { factor = 1 ideology = nationalist }			
-            scaled_consciousness = { factor = 1 ideology = socialist }	
-            scaled_consciousness = { factor = 2 ideology = communist }		
+			ideology = { factor = 0.01 value = progressive }
+			scaled_consciousness = { factor = 1 ideology = nationalist }
+			scaled_consciousness = { factor = 1 ideology = socialist }
+			scaled_consciousness = { factor = 2 ideology = communist }		
 		}
 		
 		ai_chance = { factor = 0.9 }
 	}
 	
 	option = {
-		name = "The Mattarellum fails"		
+		name = "The Mattarellum fails"
+		
 		any_pop = { 
 			ideology = { factor = 0.03 value = socialist } 
-		    ideology = { factor = 0.02 value = communist } 
+			ideology = { factor = 0.02 value = communist } 
 			ideology = { factor = 0.01 value = communist_social }
 			ideology = { factor = 0.01 value = nationalist }
 			scaled_consciousness = { factor = 4 ideology = populist }
@@ -7581,8 +7577,8 @@ country_event = {
 			scaled_consciousness = { factor = 2 ideology = liberal }
 			scaled_consciousness = { factor = 4 ideology = progressive }
 		}
-
-        set_country_flag = ITA_Mattarellum_fail	
+		
+		set_country_flag = ITA_Mattarellum_fail	
 		ai_chance = { factor = 0.1 }
 	}
 	
@@ -7603,9 +7599,8 @@ country_event = {
 		NOT = { year = 1997 }
 		
 		OR = { government = democracy government = democracy1 }
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		election = no
 		
@@ -7652,7 +7647,7 @@ country_event = {
 		any_pop = { 
 			ideology = { factor = 0.01 value = conservative } 
 			ideology = { factor = 0.02 value = big_tent }
-            ideology = { factor = 0.01 value = socialist }		
+			ideology = { factor = 0.01 value = socialist }		
 		}
 
 		ai_chance = { factor = 0.9 }
@@ -7689,8 +7684,8 @@ country_event = {
 		add_country_modifier = { name = great_statesman duration = -1 }
 		
 		any_pop = { 
-			ideology = { factor = 0.02 value = big_tent } 
-		    ideology = { factor = 0.01 value = socialist } 
+			ideology = { factor = 0.02 value = big_tent }
+			ideology = { factor = 0.01 value = socialist } 
 			ideology = { factor = 0.02 value = communist_social }
 			ideology = { factor = 0.03 value = populist }
 			ideology = { factor = 0.03 value = nationalist }
@@ -7701,8 +7696,8 @@ country_event = {
 			scaled_consciousness = { factor = 4 ideology = progressive }
 			scaled_consciousness = { factor = 4 ideology = communist }
 		}
-
-        set_country_flag = 1992_ITA_Craxi_strikes_back	
+		
+		set_country_flag = 1992_ITA_Craxi_strikes_back	
 		ai_chance = { factor = 0.1 }
 	}
 	
@@ -7751,5 +7746,3 @@ country_event = {
 	}
 
 }
-
-
