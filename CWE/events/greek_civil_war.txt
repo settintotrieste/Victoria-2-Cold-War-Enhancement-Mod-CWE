@@ -430,7 +430,7 @@ country_event = {
 #Continue the fight?
 country_event = {
 	id = 90015011
-	title = "Greece wants to retreat to Cyprus!"
+	title = "Greece wants to use Cyprus!"
 	desc = EVT_9001501_DESC
 	picture = "nwo2_greek_civil_war"
   
@@ -438,7 +438,6 @@ country_event = {
 
 	option = {
 		name = "Let them fight from Cyprus"
-		set_global_flag = greek_communist_wins
 		
 		#Lose relations with UGR and USSR
 		relation = { who = UGR value = -200 }
@@ -451,22 +450,10 @@ country_event = {
 		
 		relation = { who = GRE value = 200 }
 		diplomatic_influence = { who = GRE value = 200 }
-		
-		#Cede Cyprus to Greece
-		release = CYP #So that the provinces would be states
-		GRE = { inherit = CYP }
-		
-		#Greek provinces on the mainland fall into UGR hands
-		GRE = {
-			prestige_factor = -0.5
-			any_owned = {
-				limit = { NOT = { is_core = CYP } }
-				secede_province = UGR
-			}
-		}
-		
-		#Greek Civil War ends
-		end_war = UGR
+
+		#Execute the territorial transfer
+		ENG = { release = CYP } #So that the provinces would be states
+		GRE = { country_event = 90015012 }
 		
 		ai_chance = { factor = 0.8 }
 	}
@@ -490,6 +477,39 @@ country_event = {
 		}
 		
 		ai_chance = { factor = 0.2 }
+	}
+
+}
+
+#Greek Government Flees to Cyprus!
+country_event = {
+	id = 90015012
+	title = "The Greek Government Flees to Cyprus!"
+	desc = "Fearing imminent defeat at the hands of the communist forces of Northern Greece, the democratic Greek Government has decided to flee to Colony of Cpyrus to continue the fight from there, as allowed by the British."
+	picture = "nwo2_greek_civil_war"
+  
+	is_triggered_only = yes
+	
+	major = yes
+
+	option = {
+		name = "Let them fight from Cyprus"
+		set_global_flag = greek_communist_wins
+		
+		prestige_factor = -0.5
+		
+		#Cede Cyprus to Greece
+		GRE = { inherit = CYP }
+		GRE = { capital = 855 }
+		
+		#Greek provinces on the mainland fall into UGR hands
+		any_owned = {
+			limit = { is_core = GRE NOT = { is_core = CYP } }
+			secede_province = UGR
+		}
+		
+		#Greek Civil War ends
+		end_war = UGR
 	}
 
 }
