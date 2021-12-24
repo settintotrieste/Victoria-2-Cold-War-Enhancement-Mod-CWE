@@ -355,3 +355,141 @@ country_event = {
 	}
 
 }
+
+#Continue the fight?
+country_event = {
+	id = 9001501
+	title = "Should we continue the fight?"
+	desc = EVT_9001501_DESC
+	picture = "nwo2_greek_civil_war"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = GRE
+		year = 1946
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		government = hms_government
+		is_vassal = no
+		war = yes
+		
+		#War is underway
+		war_with = UGR
+		
+		#War is going badly
+		national_provinces_occupied = 0.65
+		
+		#UK exists
+		ENG = {
+			exists = yes
+			
+			government = hms_government
+			is_vassal = no
+			war = no
+			
+			#Owns Cyprus
+			is_possible_vassal = CYP
+		}
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "Maybe we shall fight from Cyprus? (80% chance)"
+		
+		#Option to allow Greece to use Cyprus
+		ENG = { country_event = 90015011 }
+		
+		ai_chance = { factor = 0.85 }
+	}
+	
+	option = {
+		name = "We shall die trying!"
+		
+		any_pop = {
+			scaled_consciousness = {
+				factor = 8
+				ideology = communist
+			}
+			scaled_militancy = {
+				factor = 8
+				ideology = communist
+			}
+		}
+		
+		ai_chance = { factor = 0.15 }
+	}
+
+}
+
+#Continue the fight?
+country_event = {
+	id = 90015011
+	title = "Greece wants to retreat to Cyprus!"
+	desc = EVT_9001501_DESC
+	picture = "nwo2_greek_civil_war"
+  
+	is_triggered_only = yes
+
+	option = {
+		name = "Let them fight from Cyprus"
+		set_global_flag = greek_communist_wins
+		
+		#Lose relations with UGR and USSR
+		relation = { who = UGR value = -200 }
+		diplomatic_influence = { who = UGR value = -200 }
+		
+		relation = { who = RUS value = -100 }
+		
+		#Gain relations with USA & Greece
+		relation = { who = USA value = 100 }
+		
+		relation = { who = GRE value = 200 }
+		diplomatic_influence = { who = GRE value = 200 }
+		
+		#Cede Cyprus to Greece
+		release = CYP #So that the provinces would be states
+		GRE = { inherit = CYP }
+		
+		#Greek provinces on the mainland fall into UGR hands
+		GRE = {
+			prestige_factor = -0.5
+			any_owned = {
+				limit = { NOT = { is_core = CYP } }
+				secede_province = UGR
+			}
+		}
+		
+		#Greek Civil War ends
+		end_war = UGR
+		
+		ai_chance = { factor = 0.8 }
+	}
+	
+	option = {
+		name = "Cyprus is too important so they shall die trying!"
+		
+		#Lose relations with GRE
+		relation = { who = GRE value = -100 }
+		diplomatic_influence = { who = GRE value = -100 }
+		
+		any_pop = {
+			scaled_consciousness = {
+				factor = 2
+				ideology = conservative
+			}
+			scaled_militancy = {
+				factor = 2
+				ideology = conservative
+			}
+		}
+		
+		ai_chance = { factor = 0.2 }
+	}
+
+}
