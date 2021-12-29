@@ -403,36 +403,34 @@ country_event = {
 
 }
 
-# South Tyrol Autonomy 1972
+# Sudtirol-Paket
 country_event = {
 	id = 82030031
-	title = "South Tyrolean Autonomous Region"
+	title = "Sudtirol-Paket"
 	desc = EVTDESC82030031
 	picture = "nwo2_austrian_tyrol_1972"
-	
+
 	fire_only_once = yes
 
 	trigger = {
 		tag = ITA
 		year = 1972
 		NOT = { year = 1990 }
-		
-		OR = { 
-			government = democracy 
-			government = democracy1 
-			government = hms_government 
-			government = hms_government1 
-		}
-		
+
+		OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
 		is_vassal = no
 		war = no
-		
+
 		#Signed the agreement
 		has_country_flag = austrian_tyrol_autonomy
-		
+		has_country_flag = ITA_1961_Feuernacht
+
 		#Austria is independent 
-		AUS = { exists = yes is_vassal = no }
-		
+		OR = { 
+			AUS = { exists = yes is_vassal = no war = no } 
+			ROA = { exists = yes is_vassal = no war = no } 
+		}
+
 		#Owns South Tyrol
 		is_possible_vassal = SUT
 		owns = 735
@@ -441,12 +439,27 @@ country_event = {
 	mean_time_to_happen = { months = 6 }
 
 	option = {
-		name = "Give South Tyrol a high degree of autonomy"
+		name = "The 'Paket' passes"
 		prestige = 50
-		
-		relation = { who = AUS value = 50 }
-		
-		#Release South Tyrol SAR
+
+		random_country = {
+			limit = { tag = AUS is_vassal = no }
+			relation = { who = THIS value = 50 }
+		}
+		random_country = {
+			limit = { tag = ROA is_vassal = no }
+			relation = { who = THIS value = 50 }
+		}
+
+		any_pop = {
+			limit = { culture = german }
+			militancy = -7
+			consciousness = -7
+			ideology = { factor = 0.08 value = conservative }
+			ideology = { factor = 0.06 value = big_tent }
+		}
+
+		#Release South Tyrol SAR - 1972 agreement gave SUT a high degree of self autonomy
 		release_vassal = SUT
 		SUT = { 
 			government = sar_government
@@ -454,19 +467,26 @@ country_event = {
 			ruling_party_ideology = conservative
 		}
 		735 = { add_core = AUS }
-		
 		diplomatic_influence = { who = SUT value = 200 }
 		sphere_owner = { diplomatic_influence = { who = SUT value = 200 } }
-		
+
+		735 = { add_province_modifier = { name = rgo_boom  duration = 3650 } }
 		ai_chance = { factor = 0.9 }
 	}
-	
+
 	option = {
-		name = "We don't want to give any autonomy"
+		name = "The 'Paket' fails"
 		badboy = 5
-		
-		relation = { who = AUS value = -100 }
-		
+
+		random_country = {
+			limit = { tag = AUS is_vassal = no }
+			relation = { who = THIS value = -50 }
+		}
+		random_country = {
+			limit = { tag = ROA is_vassal = no }
+			relation = { who = THIS value = -50 }
+		}
+
 		any_pop = {
 			limit = { culture = german }
 			militancy = 10
@@ -476,7 +496,7 @@ country_event = {
 				value = nationalist
 			}
 		}
-		
+
 		SUT = { all_core = { add_province_modifier = { name = nationalist_agitation duration = 3650 } } }
 		735 = { add_core = AUS }
 
