@@ -3,95 +3,204 @@ formtheadb = {
 	picture = "jointheadb"
 		potential = {
 			tag = JAP
-	is_greater_power = yes
-	NOT = { has_country_modifier = adb_member }
-	year = 1966
+			year = 1966
+			
+			is_greater_power = yes
+			
+			NOT = { has_country_modifier = adb_member }
+			
+			NOT = { has_global_flag = adbformed }
 		}
 		allow = {
+		
+			#Not LF or FPE
+			OR = {
+				economic_policy = planned_economy1
+				economic_policy = state_capitalism
+				economic_policy = interventionism
+			}
+			
+			#At peace
 			war = no
-		NOT = { government = theocracy }
-		NOT = { government = proletarian_dictatorship }
-		NOT = { government = nationalist_dictatorship }
-		NOT = { government = populist_dictatorship }
+			NOT = { is_disarmed = yes }
+			NOT = { has_recently_lost_war = yes }
+			NOT = { badboy = 0.5 }
+			
+			election = no
+			
+			#1960+
+			bank_for_international_settlements = 1
+			
 		}
 		effect = {
-		prestige = 25
-		set_global_flag = adbformed
-add_country_modifier = { name = adb_member duration = -1 }add_country_modifier = { name = adb_chairmanship duration = -1 }
+			prestige = 100
+			set_global_flag = adbformed
+			add_country_modifier = { name = adb_member duration = -1 }
+			add_country_modifier = { name = adb_chairmanship duration = -1 }
 		}
 		ai_will_do = { 
-			factor = 100 
-			}
+			factor = 1
+		}
 	}
-jointheadb = {
+	jointheadb = {
 		picture = "jointheadb"
 		potential = {
-		NOT = { government = proletarian_dictatorship }
-		NOT = { has_country_modifier = adb_member }
-		has_global_flag = adbformed
-OR = { capital_scope = { continent = asia } capital_scope = { continent = oceania } }
-		}
-		allow = {
-OR = { capital_scope = { continent = asia } capital_scope = { continent = oceania } }
-			war = no
-				}
-		effect = {
-			prestige = 10
-add_country_modifier = { name = adb_member duration = -1 }
-		}
-		ai_will_do = { 
-			factor = 1 
+			OR = { 
+				capital_scope = { continent = asia } 
+				capital_scope = { continent = oceania } 
 			}
-	}
-leavetheadb = {
-		picture = "jointheadb"
-		potential = {
-			government = proletarian_dictatorship
-			has_country_modifier = adb_member
+			
+			#China is not allowed due to hostility
+			NOT = { AND = { tag = CHI NOT = { OR = { has_global_flag = reconciled_comfort has_global_flag = reconciled_comfort has_global_flag = reconciled_nanking } } } }
+			
+			NOT = { has_country_modifier = adb_member }
+			
 			has_global_flag = adbformed
 		}
 		allow = {
+			is_vassal = no
 			war = no
-				}
+			NOT = { is_disarmed = yes }
+			NOT = { has_recently_lost_war = yes }
+			NOT = { badboy = 0.5 }
+		
+			#Not LF or FPE
+			OR = {
+				economic_policy = planned_economy1
+				economic_policy = state_capitalism
+				economic_policy = interventionism
+			}
+			
+			#Good relations with ADB Chairman
+			any_greater_power = { 
+				has_country_modifier = adb_chairmanship
+				relation = { who = THIS value = 0 }
+			}
+		}
 		effect = {
-			prestige = -20
-	remove_country_modifier = adb_member
-	remove_country_modifier = adbhigh
+			prestige = 25
+			add_country_modifier = { name = adb_member duration = -1 }
+			
+			#ADB Chairman gains influence in THIS
+			random_country = {
+				limit = { has_country_modifier = adb_chairmanship }
+				relation = { who = THIS value = 50 }
+				diplomatic_influence = { who = THIS value = 50 }
+			}
+			
+			#Gain relations with fellow members
+			any_country = {
+				limit = { 
+					exists = yes 
+					is_vassal = no
+					has_country_modifier = adb_member
+				}
+				relation = { who = THIS value = 25 }
+			}
+			
+		}
+		ai_will_do = { 
+			factor = 1 
+		}
+	}
+	
+	leavetheadb = {
+		picture = "jointheadb"
+		potential = {
+			has_global_flag = adbformed
+			has_country_modifier = adb_member
+		}
+		allow = {
+			OR = {
+			
+				#Vassals always leave
+				is_vassal = yes
+				
+				#Can only leave if not at war
+				war = no
+			}
+		
+			#Leave if LF or FPE
+			NOT = {
+				OR = {
+					economic_policy = planned_economy1
+					economic_policy = state_capitalism
+					economic_policy = interventionism
+				}
+			}
+			
+			#Leave if bad relations with ADB Chairman
+			any_greater_power = { 
+				has_country_modifier = adb_chairmanship 
+				NOT = { relation = { who = THIS value = -100 } }
+			}
+		}
+		effect = {
+			prestige = -50
+			
+			remove_country_modifier = adb_chairmanship
+			remove_country_modifier = adb_member
+			remove_country_modifier = adbhigh
 			remove_country_modifier = adbmedium
 			remove_country_modifier = adblow
 			clr_country_flag = adbhigh
 			clr_country_flag = adbmedium
 			clr_country_flag = adblow
+			
+			#ADB Chairman loses influence in THIS
+			random_country = {
+				limit = { has_country_modifier = adb_chairmanship }
+				relation = { who = THIS value = -50 }
+				diplomatic_influence = { who = THIS value = -50 }
+			}
+			
+			#Lose relations with fellow members
+			any_country = {
+				limit = { 
+					exists = yes 
+					is_vassal = no
+					has_country_modifier = adb_member
+				}
+				relation = { who = THIS value = -25 }
+			}
+			
+			#Appoint new chairman if none exists
+			random_owned = {
+				limit = { owner = { NOT = { any_greater_power = { has_country_modifier = adb_chairmanship } } } }
+				owner = { 
+					any_country = { remove_country_modifier = adb_chairmanship }
+					random_country = {
+						limit = { is_greater_power = yes has_country_modifier = adb_member }
+						prestige = 100
+						add_country_modifier = { name = adb_chairmanship duration = -1 }
+					}
+				}
+			}
 		}
 		ai_will_do = { 
 			factor = 1 
-			}
+		}
 	}
 
-
-
-
-changeadb = {
+	changeadb = {
 		picture = "jointheadb"
 		potential = {
 			has_country_modifier = adb_chairmanship
-	OR = { has_country_modifier = adbhigh_gp
-			has_country_modifier = adbmedium_gp
-			has_country_modifier = adblow_gp }
+			OR = { 
+				has_country_modifier = adbhigh_gp
+				has_country_modifier = adbmedium_gp
+				has_country_modifier = adblow_gp 
 			}
-alert = no
+		}
+		alert = no
 		allow = {
 			war = no
-OR = { ai = no AND = { ai = yes OR = { 
-
-AND = { has_global_flag = adbhigh NOT = { OR = { economic_policy = state_capitalism economic_policy = planned_economy } } } 
-
-AND = { has_global_flag = adbmedium NOT = { economic_policy = interventionism } } 
-
-AND = { has_global_flag = adblow NOT = { economic_policy = laissez_faire } } 
-
-} } } 
-				}
+			OR = { 
+				AND = { has_global_flag = adbhigh NOT = { OR = { economic_policy = state_capitalism economic_policy = planned_economy1 economic_policy = planned_economy } } } 
+				AND = { has_global_flag = adbmedium NOT = { economic_policy = interventionism } } 
+				AND = { has_global_flag = adblow NOT = { economic_policy = laissez_faire } } 
+			}
+		}
 		effect = {
 			remove_country_modifier = adbhigh_gp
 			remove_country_modifier = adbmedium_gp
@@ -102,101 +211,127 @@ AND = { has_global_flag = adblow NOT = { economic_policy = laissez_faire } }
 			clr_global_flag = adbhigh
 			clr_global_flag = adbmedium
 			clr_global_flag = adblow
-any_country = { limit = { has_country_modifier = adb_member } 
-			remove_country_modifier = adbhigh
-			remove_country_modifier = adbmedium
-			remove_country_modifier = adblow
-			clr_country_flag = adbhigh
-			clr_country_flag = adbmedium
-			clr_country_flag = adblow
-}
-		}
-		ai_will_do = { 
-			factor = 100 
+			
+			any_country = { 
+				limit = { has_country_modifier = adb_member } 
+				remove_country_modifier = adbhigh
+				remove_country_modifier = adbmedium
+				remove_country_modifier = adblow
+				clr_country_flag = adbhigh
+				clr_country_flag = adbmedium
+				clr_country_flag = adblow
 			}
+		}
+		ai_will_do = {
+			factor = 1
+		}
 	}
 
-adbhigh = {
+	adbhigh = {
 		picture = "jointheadb"
-
 		potential = {
 			has_country_modifier = adb_chairmanship
-			NOT = { OR = { has_country_modifier = adbhigh_gp
-			has_country_modifier = adbmedium_gp
-			has_country_modifier = adblow_gp } }
+			OR = { 
+				has_country_modifier = adbhigh_gp
+				has_country_modifier = adbmedium_gp
+				has_country_modifier = adblow_gp 
 			}
+		}
 		allow = {
 			war = no
-			NOT = { AND = { has_country_modifier = adbhigh_gp
-			has_country_modifier = adbmedium_gp
-			has_country_modifier = adblow_gp } }
-	OR = { ai = no AND = { ai = yes economic_policy = state_capitalism } AND = { ai = yes economic_policy = planned_economy } }
-				}
+			OR = { 
+				economic_policy = state_capitalism
+				economic_policy = planned_economy1
+				economic_policy = planned_economy
+			}
+		}
 		effect = {
-add_country_modifier = { name = adbhigh_gp duration = -1 }
-any_country = { limit = { has_country_modifier = adb_member } add_country_modifier = { name = adbhigh duration = -1 } }
+			add_country_modifier = { name = adbhigh_gp duration = -1 }
+			
+			any_country = { 
+				limit = { has_country_modifier = adb_member } 
+				add_country_modifier = { name = adbhigh duration = -1 } 
+			}
 
-any_country = { limit = { has_country_modifier = adb_member OR = { is_greater_power = no is_secondary_power = no } } relation = { who = THIS value = 50 } }
+			any_country = { 
+				limit = { 
+					has_country_modifier = adb_member 
+					OR = { is_greater_power = no is_secondary_power = no } 
+				} 
+				relation = { who = THIS value = 50 } 
+			}
+			
 			set_global_flag = adbhigh
 		}
 		ai_will_do = { 
 			factor = 1 
-			}
+		}
 	}
-adbmedium = {
+	
+	adbmedium = {
 		picture = "jointheadb"
-
 		potential = {
 			has_country_modifier = adb_chairmanship
-			NOT = { OR = { has_country_modifier = adbhigh_gp
-			has_country_modifier = adbmedium_gp
-			has_country_modifier = adblow_gp } }
+			OR = { 
+				has_country_modifier = adbhigh_gp
+				has_country_modifier = adbmedium_gp
+				has_country_modifier = adblow_gp 
 			}
+		}
 		allow = {
 			war = no
-			NOT = { AND = { has_country_modifier = adbhigh_gp
-			has_country_modifier = adbmedium_gp
-			has_country_modifier = adblow_gp } }
-OR = { ai = no AND = { ai = yes economic_policy = interventionism } }
-				}
+			economic_policy = interventionism
+		}
 		effect = {
-add_country_modifier = { name = adbmedium_gp duration = -1 }
-any_country = { limit = { has_country_modifier = adb_member } add_country_modifier = { name = adbmedium duration = -1 } }
+			add_country_modifier = { name = adbmedium_gp duration = -1 }
+			
+			any_country = { 
+				limit = { has_country_modifier = adb_member } 
+				add_country_modifier = { name = adbmedium duration = -1 } 
+			}
+			
 			set_global_flag = adbmedium
 		}
 		ai_will_do = { 
 			factor = 1 
-			}
+		}
 	}
-adblow = {
+	
+	adblow = {
 		picture = "jointheadb"
-
 		potential = {
 			has_country_modifier = adb_chairmanship
-			NOT = { OR = { has_country_modifier = adbhigh_gp
-			has_country_modifier = adbmedium_gp
-			has_country_modifier = adblow_gp } }
+			OR = { 
+				has_country_modifier = adbhigh_gp
+				has_country_modifier = adbmedium_gp
+				has_country_modifier = adblow_gp 
 			}
+		}
 		allow = {
 			war = no
-			NOT = { AND = { has_country_modifier = adbhigh_gp
-			has_country_modifier = adbmedium_gp
-			has_country_modifier = adblow_gp } }
-OR = { ai = no AND = { ai = yes economic_policy = laissez_faire } }
-
-				}
+			economic_policy = laissez_faire
+		}
 		effect = {
-add_country_modifier = { name = adblow_gp duration = -1 }
-any_country = { limit = { has_country_modifier = adb_member } add_country_modifier = { name = adblow duration = -1 } }
+			add_country_modifier = { name = adblow_gp duration = -1 }
+			
+			any_country = { 
+				limit = { has_country_modifier = adb_member } 
+				add_country_modifier = { name = adblow duration = -1 } 
+			}
 
-any_country = { limit = { has_country_modifier = adb_member OR = { is_greater_power = no is_secondary_power = no } } relation = { who = THIS value = -50 } }
+			any_country = { 
+				limit = { 
+					has_country_modifier = adb_member 
+					OR = { is_greater_power = no is_secondary_power = no } 
+				} 
+				relation = { who = THIS value = -50 } 
+			}
+			
 			set_global_flag = adblow
 		}
 		ai_will_do = { 
 			factor = 1 
-			}
+		}
 	}
-
-
-
+	
 }

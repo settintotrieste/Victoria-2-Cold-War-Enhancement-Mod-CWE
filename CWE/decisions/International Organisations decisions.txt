@@ -1,13 +1,20 @@
 political_decisions = {
+
 	jointheimf = {
 		picture = "jointheimf"
 		potential = {
-			NOT = { ruling_party_ideology = communist }
 			NOT = { has_country_modifier = imf_member }
-			NOT = { badboy = 1 }
 		}
 		allow = {
+			is_vassal = no
 			war = no
+			
+			NOT = { ruling_party_ideology = communist }
+			
+			NOT = { badboy = 0.5 }
+			
+			#1946+
+			international_financial_institutions = 1
 		}
 		effect = {
 			prestige = 10
@@ -17,21 +24,30 @@ political_decisions = {
 			factor = 1 
 		}
 	}
+	
 	jointhewto = {
 		picture = "jointhewto"
 		potential = {
-			NOT = { ruling_party_ideology = communist }
-			NOT = { has_country_modifier = wto_member }
 			year = 1995
-			NOT = { badboy = 1 }
+			NOT = { has_country_modifier = wto_member }
 		}
 		allow = {
+			is_vassal = no
 			war = no
+			
+			NOT = { trade_policy = protectionism }
+			
+			NOT = { ruling_party_ideology = communist }
+			
+			NOT = { badboy = 0.5 }
+			
+			#1990+
+			new_keynesian = 1
 		}
 		effect = {
 			prestige = 10
-			set_country_flag = wto_member_flag
 			add_country_modifier = { name = wto_member duration = -1 }
+			set_country_flag = wto_member_flag
 		}
 		ai_will_do = { 
 			factor = 1 
@@ -41,7 +57,10 @@ political_decisions = {
 	leavetheimf = {
 		picture = "jointheimf"
 		potential = {
-			ruling_party_ideology = communist
+			OR = { 
+				ruling_party_ideology = communist 
+				is_vassal = yes 
+			}
 			has_country_modifier = imf_member
 		}
 		allow = {
@@ -49,6 +68,7 @@ political_decisions = {
 		}
 		effect = {
 			prestige = -20
+			remove_country_modifier = imf_chairmanship
 			remove_country_modifier = imf_member
 			remove_country_modifier = imfhigh
 			remove_country_modifier = imfmedium
@@ -56,15 +76,33 @@ political_decisions = {
 			clr_global_flag = imfhigh
 			clr_global_flag = imfmedium
 			clr_global_flag = imflow
+			
+			#Appoint new chairman if none exists
+			random_owned = {
+				limit = { owner = { NOT = { any_greater_power = { has_country_modifier = imf_chairmanship } } } }
+				owner = { 
+					any_country = { remove_country_modifier = imf_chairmanship }
+					random_country = {
+						limit = { is_greater_power = yes has_country_modifier = imf_member }
+						prestige = 100
+						add_country_modifier = { name = imf_chairmanship duration = -1 }
+					}
+				}
+			}
+			
 		}
 		ai_will_do = { 
 			factor = 1 
 		}
 	}
+	
 	leavethewto = {
 		picture = "jointhewto"
 		potential = {
-			ruling_party_ideology = communist
+			OR = { 
+				ruling_party_ideology = communist 
+				is_vassal = yes 
+			}
 			has_country_modifier = wto_member
 		}
 		allow = {
@@ -73,6 +111,7 @@ political_decisions = {
 		effect = {
 			prestige = -20
 			clr_country_flag = wto_member_flag
+			remove_country_modifier = wto_chairmanship
 			remove_country_modifier = wto_member
 			remove_country_modifier = wtohigh
 			remove_country_modifier = wtomedium
@@ -80,6 +119,20 @@ political_decisions = {
 			clr_global_flag = wtohigh
 			clr_global_flag = wtomedium
 			clr_global_flag = wtolow
+			
+			#Appoint new chairman if none exists
+			random_owned = {
+				limit = { owner = { NOT = { any_greater_power = { has_country_modifier = wto_chairmanship } } } }
+				owner = { 
+					any_country = { remove_country_modifier = wto_chairmanship }
+					random_country = {
+						limit = { is_greater_power = yes has_country_modifier = wto_member }
+						prestige = 100
+						add_country_modifier = { name = wto_chairmanship duration = -1 }
+					}
+				}
+			}
+			
 		}
 		ai_will_do = { 
 			factor = 1 
@@ -90,22 +143,20 @@ political_decisions = {
 		picture = "changewto"
 		potential = {
 			has_country_modifier = wto_chairmanship
-			OR = { has_country_modifier = wtohigh
+			OR = { 
+				has_country_modifier = wtohigh
 				has_country_modifier = wtomedium
-				has_country_modifier = wtolow }
+				has_country_modifier = wtolow 
+			}
 		}
 		alert = no
 		allow = {
 			war = no
-			OR = { ai = no AND = { ai = yes OR = { 
-
-						AND = { has_global_flag = wtohigh NOT = { trade_policy = protectionism } } 
-
-						AND = { has_global_flag = wtomedium NOT = { trade_policy = free_trade } } 
-
-						AND = { has_global_flag = wtolow NOT = { trade_policy = free_trade } } 
-
-					} } } 
+			OR = { 
+				AND = { has_global_flag = wtohigh NOT = { trade_policy = protectionism } } 
+				AND = { has_global_flag = wtomedium NOT = { trade_policy = free_trade } } 
+				AND = { has_global_flag = wtolow NOT = { trade_policy = free_trade } } 
+			} 
 		}
 		effect = {
 			remove_country_modifier = wtohigh
@@ -114,6 +165,7 @@ political_decisions = {
 			clr_global_flag = wtohigh
 			clr_global_flag = wtomedium
 			clr_global_flag = wtolow
+			
 			any_country = {
 				remove_country_modifier = wtohigh
 				remove_country_modifier = wtomedium
@@ -131,22 +183,22 @@ political_decisions = {
 		picture = "changeimf"
 		potential = {
 			has_country_modifier = imf_chairmanship
-			OR = { has_country_modifier = imfhigh
+			OR = { 
+				has_country_modifier = imfhigh
 				has_country_modifier = imfmedium
-				has_country_modifier = imflow }
+				has_country_modifier = imflow 
+			}
 		}
+		
 		alert = no
+		
 		allow = {
 			war = no
-			OR = { ai = no AND = { ai = yes OR = { 
-
-						AND = { has_global_flag = imfhigh NOT = { OR = { economic_policy = state_capitalism economic_policy = planned_economy } } } 
-
-						AND = { has_global_flag = imfmedium NOT = { economic_policy = interventionism } } 
-
-						AND = { has_global_flag = imflow NOT = { economic_policy = laissez_faire } } 
-
-					} } } 
+			OR = { 
+				AND = { has_global_flag = imfhigh NOT = { OR = { economic_policy = state_capitalism economic_policy = planned_economy1 economic_policy = planned_economy } } } 
+				AND = { has_global_flag = imfmedium NOT = { economic_policy = interventionism } } 
+				AND = { has_global_flag = imflow NOT = { economic_policy = laissez_faire } }
+			}
 		}
 		effect = {
 			remove_country_modifier = imfhigh
@@ -155,6 +207,7 @@ political_decisions = {
 			clr_global_flag = imfhigh
 			clr_global_flag = imfmedium
 			clr_global_flag = imflow
+			
 			any_country = {
 				remove_country_modifier = imfhigh
 				remove_country_modifier = imfmedium
@@ -165,7 +218,7 @@ political_decisions = {
 			}
 		}
 		ai_will_do = { 
-			factor = 100 
+			factor = 1
 		}
 	}
 
@@ -180,28 +233,36 @@ political_decisions = {
 
 		potential = {
 			has_country_modifier = imf_chairmanship
-			NOT = { OR = { has_country_modifier = imfhigh
+			NOT = { 
+				OR = { 
+					has_country_modifier = imfhigh
 					has_country_modifier = imfmedium
-					has_country_modifier = imflow } }
+					has_country_modifier = imflow 
+				} 
+			}
 		}
 		allow = {
 			war = no
-			NOT = { AND = { has_country_modifier = imfhigh
-					has_country_modifier = imfmedium
-					has_country_modifier = imflow } }
-			OR = { ai = no AND = { ai = yes economic_policy = state_capitalism } AND = { ai = yes economic_policy = planned_economy } }
+			OR = { 
+				economic_policy = state_capitalism 
+				economic_policy = planned_economy1 
+				economic_policy = planned_economy 
+			}
 		}
 		effect = {
 			add_country_modifier = { name = imfhigh duration = -1 }
+			
 			any_country = { limit = { has_country_modifier = imf_member } add_country_modifier = { name = imfhigh duration = -1 } }
 
 			any_country = { limit = { has_country_modifier = imf_member OR = { is_greater_power = no is_secondary_power = no } } relation = { who = THIS value = -50 } }
+			
 			set_global_flag = imfhigh
 		}
 		ai_will_do = { 
 			factor = 1 
 		}
 	}
+	
 	imfmedium = {
 		picture = "imfmedium"
 		news_picture = "internationalorg"
@@ -213,26 +274,30 @@ political_decisions = {
 
 		potential = {
 			has_country_modifier = imf_chairmanship
-			NOT = { OR = { has_country_modifier = imfhigh
+			NOT = { 
+				OR = { 
+					has_country_modifier = imfhigh
 					has_country_modifier = imfmedium
-					has_country_modifier = imflow } }
+					has_country_modifier = imflow 
+				} 
+			}
 		}
 		allow = {
 			war = no
-			NOT = { AND = { has_country_modifier = imfhigh
-					has_country_modifier = imfmedium
-					has_country_modifier = imflow } }
-			OR = { ai = no AND = { ai = yes economic_policy = interventionism } }
+			economic_policy = interventionism
 		}
 		effect = {
 			add_country_modifier = { name = imfmedium duration = -1 }
+			
 			any_country = { limit = { has_country_modifier = imf_member } add_country_modifier = { name = imfmedium duration = -1 } }
+			
 			set_global_flag = imfmedium
 		}
 		ai_will_do = { 
 			factor = 1 
 		}
 	}
+	
 	imflow = {
 		picture = "imflow"
 		news_picture = "internationalorg"
@@ -244,23 +309,25 @@ political_decisions = {
 
 		potential = {
 			has_country_modifier = imf_chairmanship
-			NOT = { OR = { has_country_modifier = imfhigh
+			NOT = { 
+				OR = { 
+					has_country_modifier = imfhigh
 					has_country_modifier = imfmedium
-					has_country_modifier = imflow } }
+					has_country_modifier = imflow 
+				} 
+			}
 		}
 		allow = {
 			war = no
-			NOT = { AND = { has_country_modifier = imfhigh
-					has_country_modifier = imfmedium
-					has_country_modifier = imflow } }
-			OR = { ai = no AND = { ai = yes economic_policy = laissez_faire } }
-
+			economic_policy = laissez_faire
 		}
 		effect = {
 			add_country_modifier = { name = imflow duration = -1 }
+			
 			any_country = { limit = { has_country_modifier = imf_member } add_country_modifier = { name = imflow duration = -1 } }
 
 			any_country = { limit = { has_country_modifier = imf_member OR = { is_greater_power = no is_secondary_power = no } } relation = { who = THIS value = 50 } }
+			
 			set_global_flag = imflow
 		}
 		ai_will_do = { 
@@ -279,23 +346,25 @@ political_decisions = {
 
 		potential = {
 			has_country_modifier = wto_chairmanship
-			NOT = { OR = { has_country_modifier = wtohigh
+			NOT = { 
+				OR = { 
+					has_country_modifier = wtohigh
 					has_country_modifier = wtomedium
-					has_country_modifier = wtolow } }
+					has_country_modifier = wtolow 
+				} 
+			}
 		}
 		allow = {
 			war = no
-			NOT = { AND = { has_country_modifier = wtohigh
-					has_country_modifier = wtomedium
-					has_country_modifier = wtolow } }
-			OR = { ai = no AND = { ai = yes trade_policy = protectionism } }
-
+			trade_policy = protectionism
 		}
 		effect = {
 			add_country_modifier = { name = wtohigh duration = -1 }
+			
 			any_country = { limit = { has_country_modifier = wto_member } add_country_modifier = { name = wtohigh duration = -1 } }
 
 			any_country = { limit = { has_country_modifier = wto_member OR = { is_greater_power = no is_secondary_power = no } } relation = { who = THIS value = -50 } }
+			
 			set_global_flag = wtohigh
 		}
 		ai_will_do = { 
@@ -313,16 +382,18 @@ political_decisions = {
 
 		potential = {
 			has_country_modifier = wto_chairmanship
-			NOT = { OR = { has_country_modifier = wtohigh
+			NOT = { 
+				OR = { 
+					has_country_modifier = wtohigh
 					has_country_modifier = wtomedium
-					has_country_modifier = wtolow } }
+					has_country_modifier = wtolow 
+				} 
+			}
 		}
 		allow = {
 			war = no
-			NOT = { AND = { has_country_modifier = wtohigh
-					has_country_modifier = wtomedium
-					has_country_modifier = wtolow } }
-			OR = { ai = no AND = { ai = yes trade_policy = free_trade  NOT = { OR = { pop_majority_ideology = liberal pop_majority_ideology = progressive } } } }
+			trade_policy = free_trade
+			NOT = { economic_policy = laissez_faire }
 		}
 		effect = {
 			add_country_modifier = { name = wtomedium duration = -1 }
@@ -344,24 +415,28 @@ political_decisions = {
 
 		potential = {
 			has_country_modifier = wto_chairmanship
-			NOT = { OR = { has_country_modifier = wtohigh
+			NOT = { 
+				OR = { 
+					has_country_modifier = wtohigh
 					has_country_modifier = wtomedium
-					has_country_modifier = wtolow } }
+					has_country_modifier = wtolow 
+				} 
+			}
 		}
 		allow = {
 			war = no
-			NOT = { AND = { has_country_modifier = wtohigh
-					has_country_modifier = wtomedium
-					has_country_modifier = wtolow } }
-			OR = { ai = no AND = { ai = yes trade_policy = free_trade OR = { pop_majority_ideology = liberal pop_majority_ideology = progressive } } }
+			trade_policy = free_trade
+			economic_policy = laissez_faire
 		}
 		effect = {
 			add_country_modifier = { name = wtolow duration = -1 } 
+			
 			any_country = { limit = { has_country_modifier = wto_member } add_country_modifier = { name = wtolow duration = -1 } }
 
 			any_country = { limit = { OR = { has_country_modifier = wto_member is_greater_power = yes is_secondary_power = yes } } relation = { who = THIS value = -25 } }
 
 			any_country = { limit = { OR = { has_country_modifier = wto_member is_greater_power = no is_secondary_power = no } } relation = { who = THIS value = 50 } }
+			
 			set_global_flag = wtolow
 		}
 		ai_will_do = { 
@@ -369,19 +444,25 @@ political_decisions = {
 		}
 	}
 
-jointheibrd = {
+	jointheibrd = {
 		picture = "jointheibrd"
 		potential = {
-			NOT = { ruling_party_ideology = communist }
-			NOT = { has_country_modifier = ibrd_member }
 			year = 1947
-			NOT = { badboy = 1 }
+			NOT = { has_country_modifier = ibrd_member }
 		}
 		allow = {
+			is_vassal = no
 			war = no
+			
+			NOT = { ruling_party_ideology = communist }
+			
+			NOT = { badboy = 0.5 }
+			
+			#1946+
+			international_financial_institutions = 1
 		}
 		effect = {
-			prestige = 10
+			prestige = 20
 			set_global_flag = idaformed
 			add_country_modifier = { name = ibrd_member duration = -1 }
 		}
@@ -393,7 +474,10 @@ jointheibrd = {
 	leavetheibrd = {
 		picture = "jointheibrd"
 		potential = {
-			ruling_party_ideology = communist
+			OR = { 
+				ruling_party_ideology = communist 
+				is_vassal = yes 
+			}
 			has_country_modifier = ibrd_member
 		}
 		allow = {
@@ -401,6 +485,7 @@ jointheibrd = {
 		}
 		effect = {
 			prestige = -20
+			remove_country_modifier = ibrd_chairmanship
 			remove_country_modifier = ibrd_member
 			remove_country_modifier = ibrd_member_gp
 			remove_country_modifier = ibrdhigh_gp
@@ -412,39 +497,43 @@ jointheibrd = {
 			clr_global_flag = ibrdhigh
 			clr_global_flag = ibrdmedium
 			clr_global_flag = ibrdlow
+			
+			#Appoint new chairman if none exists
+			random_owned = {
+				limit = { owner = { NOT = { any_greater_power = { has_country_modifier = ibrd_chairmanship } } } }
+				owner = { 
+					any_country = { remove_country_modifier = ibrd_chairmanship }
+					random_country = {
+						limit = { is_greater_power = yes has_country_modifier = ibrd_member }
+						prestige = 100
+						add_country_modifier = { name = ibrd_chairmanship duration = -1 }
+					}
+				}
+			}
 		}
 		ai_will_do = { 
 			factor = 1
 		}
 	}
 
-changeibrd = {
+	changeibrd = {
 		picture = "changeibrd"
 		potential = {
 			has_country_modifier = ibrd_chairmanship
-			OR = { has_country_modifier = ibrdhigh_gp
+			OR = { 
+				has_country_modifier = ibrdhigh_gp
 				has_country_modifier = ibrdmedium_gp
-				has_country_modifier = ibrdlow_gp }
+				has_country_modifier = ibrdlow_gp 
+			}
 		}
 		alert = no
 		allow = {
 			war = no
 			OR = { 
-
-ai = no
-
-AND = { 
-has_country_modifier = ibrdhigh_gp 
-NOT = { economic_policy = state_capitalism } 
-NOT = { economic_policy = planned_economy } 
-NOT = { economic_policy = planned_economy1 } 
-} 
-
-AND = { has_country_modifier = ibrdmedium_gp NOT = { economic_policy = interventionism } } 
-
-AND = { has_country_modifier = ibrdlow_gp NOT = { economic_policy = laissez_faire } } 
-
-					}
+				AND = { has_country_modifier = ibrdhigh_gp NOT = { OR = { economic_policy = state_capitalism economic_policy = planned_economy1 economic_policy = planned_economy } } }
+				AND = { has_country_modifier = ibrdmedium_gp NOT = { economic_policy = interventionism } } 
+				AND = { has_country_modifier = ibrdlow_gp NOT = { economic_policy = laissez_faire } }
+			}
 		}
 		effect = {
 			remove_country_modifier = ibrdhigh_gp
@@ -453,6 +542,7 @@ AND = { has_country_modifier = ibrdlow_gp NOT = { economic_policy = laissez_fair
 			clr_global_flag = ibrdhigh_gp
 			clr_global_flag = ibrdmedium_gp
 			clr_global_flag = ibrdlow_gp
+			
 			any_country = {
 				remove_country_modifier = ibrdhigh
 				remove_country_modifier = ibrdmedium
@@ -473,7 +563,7 @@ AND = { has_country_modifier = ibrdlow_gp NOT = { economic_policy = laissez_fair
 		}
 	}
 
-ibrdhigh = {
+	ibrdhigh = {
 		picture = "ibrdhigh"
 		news_picture = "internationalorg"
 		news = yes
@@ -484,20 +574,23 @@ ibrdhigh = {
 
 		potential = {
 			has_country_modifier = ibrd_chairmanship
-		NOT = { OR = { has_country_modifier = ibrdhigh_gp
+			NOT = { 
+				OR = { 
+					has_country_modifier = ibrdhigh_gp
 					has_country_modifier = ibrdmedium_gp
-					has_country_modifier = ibrdlow_gp } }
+					has_country_modifier = ibrdlow_gp 
+				} 
+			}
 		}
 
 		allow = {
 			war = no
-
-OR = { ai = no economic_policy = state_capitalism economic_policy = planned_economy economic_policy = planned_economy1 }
-
-					}
+			OR = { economic_policy = state_capitalism economic_policy = planned_economy1 economic_policy = planned_economy }
+		}
 
 		effect = {
 			add_country_modifier = { name = ibrdhigh_gp duration = -1 } 
+			
 			any_country = { limit = { is_greater_power = no is_secondary_power = no has_country_modifier = ibrd_member } add_country_modifier = { name = ibrdhigh duration = -1 } }
 
 			any_country = { limit = { OR = { is_greater_power = yes is_secondary_power = yes } has_country_modifier = ibrd_member } add_country_modifier = { name = ibrdhigh_gp duration = -1 } }
@@ -512,6 +605,7 @@ OR = { ai = no economic_policy = state_capitalism economic_policy = planned_econ
 			factor = 1 
 		}
 	}
+	
 	ibrdmedium = {
 		picture = "ibrdmedium"
 		news_picture = "internationalorg"
@@ -523,31 +617,32 @@ OR = { ai = no economic_policy = state_capitalism economic_policy = planned_econ
 
 		potential = {
 			has_country_modifier = ibrd_chairmanship
-			NOT = { OR = { 
+			NOT = { 
+				OR = { 
 					has_country_modifier = ibrdhigh_gp
 					has_country_modifier = ibrdmedium_gp
 					has_country_modifier = ibrdlow_gp 
-				} }
+				} 
+			}
 		}
-
 		allow = {
 			war = no
-
-OR = { ai = no economic_policy = interventionism }
-
+			economic_policy = interventionism
 		}
-
 		effect = {
 			add_country_modifier = { name = ibrdmedium_gp duration = -1 }
+			
 			any_country = { limit = { OR = { is_greater_power = yes is_secondary_power = yes } has_country_modifier = ibrd_member } add_country_modifier = { name = ibrdmedium_gp duration = -1 } }
 
 			any_country = { limit = { is_greater_power = no is_secondary_power = no has_country_modifier = ibrd_member } add_country_modifier = { name = ibrdmedium duration = -1 } }
+			
 			set_global_flag = ibrdmedium_gp
 		}
 		ai_will_do = { 
 			factor = 1 
 		}
 	}
+	
 	ibrdlow = {
 		picture = "ibrdlow"
 		news_picture = "internationalorg"
@@ -559,27 +654,27 @@ OR = { ai = no economic_policy = interventionism }
 
 		potential = {
 			has_country_modifier = ibrd_chairmanship
-			NOT = { OR = { 
+			NOT = { 
+				OR = { 
 					has_country_modifier = ibrdhigh_gp
 					has_country_modifier = ibrdmedium_gp
-					has_country_modifier = ibrdlow_gp
-
-				} }
+					has_country_modifier = ibrdlow_gp 
+				} 
+			}
 		}
-
 		allow = {
 			war = no
-
-			OR = { ai = no economic_policy = laissez_faire }
-
-				}
-
+			economic_policy = laissez_faire
+		}
 		effect = {
 			add_country_modifier = { name = ibrdlow_gp duration = -1 } 
+			
 			any_country = { limit = { is_greater_power = no is_secondary_power = no has_country_modifier = ibrd_member } add_country_modifier = { name = ibrdlow duration = -1 } }
+			
 			any_country = { limit = { OR = { is_greater_power = yes is_secondary_power = yes } has_country_modifier = ibrd_member } add_country_modifier = { name = ibrdlow_gp duration = -1 } }
 
 			any_country = { limit = { has_country_modifier = ibrd_member AND = { is_greater_power = no is_secondary_power = no } } relation = { who = THIS value = -50 } }
+			
 			any_country = { limit = { has_country_modifier = ibrd_member OR = { is_greater_power = yes is_secondary_power = yes } } relation = { who = THIS value = 25 } }
 
 			set_global_flag = ibrdlow_gp
