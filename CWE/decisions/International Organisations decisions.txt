@@ -29,17 +29,30 @@ political_decisions = {
 		picture = "jointhewto"
 		potential = {
 			year = 1995
+			
+			OR = { 
+			
+				#THIS is a GP with Free Trade
+				AND = { is_greater_power = yes trade_policy = free_trade war = no }
+				
+				#A GP already is a member of the WTO
+				any_greater_power = { has_country_modifier = wto_member war = no }
+				
+			}
+			
 			NOT = { has_country_modifier = wto_member }
 		}
 		allow = {
 			is_vassal = no
 			war = no
 			
-			NOT = { trade_policy = protectionism }
+			trade_policy = free_trade
 			
 			NOT = { ruling_party_ideology = communist }
 			
 			NOT = { badboy = 0.5 }
+			
+			election = no
 			
 			#1990+
 			new_keynesian = 1
@@ -48,6 +61,21 @@ political_decisions = {
 			prestige = 10
 			add_country_modifier = { name = wto_member duration = -1 }
 			set_country_flag = wto_member_flag
+			
+			#THIS becomes chairman if no other GP is a chairman
+			random_owned = {
+				limit = { 
+					owner = { 
+						is_greater_power = yes 
+						NOT = { any_greater_power = { has_country_modifier = wto_chairmanship } } 
+					} 
+				}
+				owner = { 
+					any_country = { remove_country_modifier = wto_chairmanship }
+					THIS = { add_country_modifier = { name = wto_chairmanship duration = -1 } }
+				}
+			}
+			
 		}
 		ai_will_do = { 
 			factor = 1 
