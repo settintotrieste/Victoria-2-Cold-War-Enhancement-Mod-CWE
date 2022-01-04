@@ -529,52 +529,96 @@ NKO = { add_country_modifier = { name = space_agency duration = -1 } }
 SKO = { add_country_modifier = { name = space_agency duration = -1 } }
 
 #Space Race - Space agencies with launched rockets
-USA = { add_country_modifier = { name = space_rocket duration = -1 } }
-RUS = { add_country_modifier = { name = space_rocket duration = -1 } }
-FRA = { add_country_modifier = { name = space_rocket duration = -1 } }
-GER = { add_country_modifier = { name = space_rocket duration = -1 } }
-ENG = { add_country_modifier = { name = space_rocket duration = -1 } }
-HND = { add_country_modifier = { name = space_rocket duration = -1 } }
-ISR = { add_country_modifier = { name = space_rocket duration = -1 } }
+USA = { set_country_flag = space_rocket }
+RUS = { set_country_flag = space_rocket }
+FRA = { set_country_flag = space_rocket }
+GER = { set_country_flag = space_rocket }
+ENG = { set_country_flag = space_rocket }
+HND = { set_country_flag = space_rocket }
+ISR = { set_country_flag = space_rocket }
 
 #Space Race - Space agencies with launched satellites
-USA = { add_country_modifier = { name = space_satellite duration = -1 } }
-RUS = { add_country_modifier = { name = space_satellite duration = -1 } }
-FRA = { add_country_modifier = { name = space_satellite duration = -1 } }
-GER = { add_country_modifier = { name = space_satellite duration = -1 } }
-ENG = { add_country_modifier = { name = space_satellite duration = -1 } }
-HND = { add_country_modifier = { name = space_satellite duration = -1 } }
-ISR = { add_country_modifier = { name = space_satellite duration = -1 } }
+USA = { set_country_flag = space_satellite }
+RUS = { set_country_flag = space_satellite }
+FRA = { set_country_flag = space_satellite }
+GER = { set_country_flag = space_satellite }
+ENG = { set_country_flag = space_satellite }
+HND = { set_country_flag = space_satellite }
+ISR = { set_country_flag = space_satellite }
 
 #Space Race - Space agencies with space man capability
-USA = { add_country_modifier = { name = space_man duration = -1 } }
-RUS = { add_country_modifier = { name = space_man duration = -1 } }
+USA = { set_country_flag = space_man }
+RUS = { set_country_flag = space_man }
 
 #Space Race - Space agencies with space station capability
-USA = { add_country_modifier = { name = space_station duration = -1 } }
-RUS = { add_country_modifier = { name = space_station duration = -1 } }
+USA = { set_country_flag = space_station }
+RUS = { set_country_flag = space_station }
 
 #Space Race - Space agencies with space probe
-USA = { add_country_modifier = { name = space_probe duration = -1 } }
-RUS = { add_country_modifier = { name = space_probe duration = -1 } }
+USA = { set_country_flag = space_probe }
+RUS = { set_country_flag = space_probe }
 
 #Space Race - Moon
 USA = { set_country_flag = space_moon }
 
 #OPEC
-add_country_modifier = { name = opecmember duration = -1 }
-
 any_country = { 
-limit = { exists = yes any_owned_province = { trade_goods = petroleum } NOT = { government = proletarian_dictatorship } }
-add_country_modifier = { name = opecmember duration = -1 }
+	limit = { 
+		exists = yes 
+		is_greater_power = no 
+		any_owned_province = { trade_goods = petroleum } 
+		NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = theocracy } } 
+	}
+	add_country_modifier = { name = opecmember duration = -1 }
+	
+	random_owned = { limit = { owner = { has_country_modifier = opecmember OR = { ruling_party_ideology = populist ruling_party_ideology = communist ruling_party_ideology = socialist } } } owner = { set_country_flag = oil_high any_owned = { limit = { trade_goods = petroleum } add_province_modifier = { name = oil_high duration = -1 } } } }
+	random_owned = { limit = { owner = { has_country_modifier = opecmember OR = { ruling_party_ideology = conservative  ruling_party_ideology = big_tent ruling_party_ideology = liberal ruling_party_ideology = progressive ruling_party_ideology = communist_social } } } owner = { set_country_flag = oil_medium any_owned = { limit = { trade_goods = petroleum } add_province_modifier = { name = oil_medium duration = -1 } } } }
+	random_owned = { limit = { owner = { has_country_modifier = opecmember OR = { ruling_party_ideology = nationalist ruling_party_ideology = traditionalist } } } owner = { set_country_flag = oil_low any_owned = { limit = { trade_goods = petroleum } add_province_modifier = { name = oil_low duration = -1 } } } }
 }
 
 #Spy Agencies
 add_country_modifier = { name = spy_agency duration = -1 }
-
 any_country = { 
-limit = { exists = yes OR = { is_greater_power = yes is_secondary_power = yes } }
-add_country_modifier = { name = spy_agency duration = -1 }
+	limit = { exists = yes OR = { is_greater_power = yes is_secondary_power = yes } }
+	add_country_modifier = { name = spy_agency duration = -1 }
+	add_country_modifier = { name = spy_low duration = -1 }
+}
+
+#OIC
+any_country = {
+	limit = { 
+		exists = yes 
+		OR = { pop_majority_religion = sunni pop_majority_religion = ibad pop_majority_religion = shiite has_country_flag = muslim } 
+		NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
+		NOT = { is_culture_group = jewish_cultures }
+		NOT = { religious_policy = pro_atheism }
+	}
+	add_country_modifier = { name = oic_member duration = -1 }
+}
+
+#IAB
+USA = {
+	set_global_flag = iabformed
+	add_country_modifier = { name = iab_member duration = -1 }
+	add_country_modifier = { name = iab_chairmanship duration = -1 }
+}
+any_country = {
+	limit = { 
+		exists = yes 
+		OR = { tag = USA tag = MEX capital_scope = { continent = south_america } }
+		
+		is_vassal = no
+		
+		#Not LF or FPE
+		OR = {
+			economic_policy = planned_economy1
+			economic_policy = state_capitalism
+			economic_policy = interventionism
+		}
+		
+		trade_policy = free_trade
+	}
+	add_country_modifier = { name = iab_member duration = -1 }
 }
 
 #OECD
