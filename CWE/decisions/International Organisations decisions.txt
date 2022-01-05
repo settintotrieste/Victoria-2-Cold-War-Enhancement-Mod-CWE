@@ -19,21 +19,6 @@ political_decisions = {
 		effect = {
 			prestige = 10
 			add_country_modifier = { name = imf_member duration = -1 }
-			
-			#THIS becomes chairman if no other GP is a chairman
-			random_owned = {
-				limit = { 
-					owner = { 
-						is_greater_power = yes 
-						NOT = { any_greater_power = { has_country_modifier = imf_chairmanship } } 
-					} 
-				}
-				owner = { 
-					any_country = { remove_country_modifier = imf_chairmanship }
-					THIS = { country_event = 1300023 }
-				}
-			}
-			
 		}
 		ai_will_do = { 
 			factor = 1 
@@ -76,21 +61,33 @@ political_decisions = {
 			prestige = 10
 			add_country_modifier = { name = wto_member duration = -1 }
 			set_country_flag = wto_member_flag
+		}
+		ai_will_do = { 
+			factor = 1 
+		}
+	}
+	
+	jointheibrd = {
+		picture = "jointheibrd"
+		potential = {
+			year = 1947
+			NOT = { has_country_modifier = ibrd_member }
+		}
+		allow = {
+			is_vassal = no
+			war = no
 			
-			#THIS becomes chairman if no other GP is a chairman
-			random_owned = {
-				limit = { 
-					owner = { 
-						is_greater_power = yes 
-						NOT = { any_greater_power = { has_country_modifier = wto_chairmanship } } 
-					} 
-				}
-				owner = { 
-					any_country = { remove_country_modifier = wto_chairmanship }
-					THIS = { country_event = 1300024 }
-				}
-			}
+			NOT = { ruling_party_ideology = communist }
 			
+			NOT = { badboy = 0.5 }
+			
+			#1946+
+			international_financial_institutions = 1
+		}
+		effect = {
+			prestige = 20
+			set_global_flag = idaformed
+			add_country_modifier = { name = ibrd_member duration = -1 }
 		}
 		ai_will_do = { 
 			factor = 1 
@@ -119,22 +116,8 @@ political_decisions = {
 			clr_global_flag = imfhigh
 			clr_global_flag = imfmedium
 			clr_global_flag = imflow
-			
-			#Appoint new chairman if none exists
-			random_owned = {
-				limit = { owner = { NOT = { any_greater_power = { has_country_modifier = imf_chairmanship } } } }
-				owner = { 
-					any_country = { remove_country_modifier = imf_chairmanship }
-					random_country = {
-						limit = { is_greater_power = yes has_country_modifier = imf_member }
-						prestige = 100
-						add_country_modifier = { name = imf_chairmanship duration = -1 }
-					}
-				}
-			}
-			
 		}
-		ai_will_do = { 
+		ai_will_do = {
 			factor = 1 
 		}
 	}
@@ -162,23 +145,41 @@ political_decisions = {
 			clr_global_flag = wtohigh
 			clr_global_flag = wtomedium
 			clr_global_flag = wtolow
-			
-			#Appoint new chairman if none exists
-			random_owned = {
-				limit = { owner = { NOT = { any_greater_power = { has_country_modifier = wto_chairmanship } } } }
-				owner = { 
-					any_country = { remove_country_modifier = wto_chairmanship }
-					random_country = {
-						limit = { is_greater_power = yes has_country_modifier = wto_member }
-						prestige = 100
-						add_country_modifier = { name = wto_chairmanship duration = -1 }
-					}
-				}
-			}
-			
 		}
 		ai_will_do = { 
 			factor = 1 
+		}
+	}
+	
+	leavetheibrd = {
+		picture = "jointheibrd"
+		potential = {
+			OR = { 
+				ruling_party_ideology = communist 
+				is_vassal = yes 
+			}
+			has_country_modifier = ibrd_member
+		}
+		allow = {
+			war = no
+		}
+		effect = {
+			prestige = -20
+			remove_country_modifier = ibrd_chairmanship
+			remove_country_modifier = ibrd_member
+			remove_country_modifier = ibrd_member_gp
+			remove_country_modifier = ibrdhigh_gp
+			remove_country_modifier = ibrdmedium_gp
+			remove_country_modifier = ibrdlow_gp
+			remove_country_modifier = ibrdhigh
+			remove_country_modifier = ibrdmedium
+			remove_country_modifier = ibrdlow
+			clr_global_flag = ibrdhigh
+			clr_global_flag = ibrdmedium
+			clr_global_flag = ibrdlow
+		}
+		ai_will_do = { 
+			factor = 1
 		}
 	}
 
@@ -492,93 +493,6 @@ political_decisions = {
 		}
 		ai_will_do = { 
 			factor = 1 
-		}
-	}
-
-	jointheibrd = {
-		picture = "jointheibrd"
-		potential = {
-			year = 1947
-			NOT = { has_country_modifier = ibrd_member }
-		}
-		allow = {
-			is_vassal = no
-			war = no
-			
-			NOT = { ruling_party_ideology = communist }
-			
-			NOT = { badboy = 0.5 }
-			
-			#1946+
-			international_financial_institutions = 1
-		}
-		effect = {
-			prestige = 20
-			set_global_flag = idaformed
-			add_country_modifier = { name = ibrd_member duration = -1 }
-			
-			#THIS becomes chairman if no other GP is a chairman
-			random_owned = {
-				limit = { 
-					owner = { 
-						is_greater_power = yes 
-						NOT = { any_greater_power = { has_country_modifier = ibrd_chairmanship } } 
-					} 
-				}
-				owner = { 
-					any_country = { remove_country_modifier = ibrd_chairmanship }
-					THIS = { country_event = 1300025 }
-				}
-			}
-			
-		}
-		ai_will_do = { 
-			factor = 1 
-		}
-	}
-
-	leavetheibrd = {
-		picture = "jointheibrd"
-		potential = {
-			OR = { 
-				ruling_party_ideology = communist 
-				is_vassal = yes 
-			}
-			has_country_modifier = ibrd_member
-		}
-		allow = {
-			war = no
-		}
-		effect = {
-			prestige = -20
-			remove_country_modifier = ibrd_chairmanship
-			remove_country_modifier = ibrd_member
-			remove_country_modifier = ibrd_member_gp
-			remove_country_modifier = ibrdhigh_gp
-			remove_country_modifier = ibrdmedium_gp
-			remove_country_modifier = ibrdlow_gp
-			remove_country_modifier = ibrdhigh
-			remove_country_modifier = ibrdmedium
-			remove_country_modifier = ibrdlow
-			clr_global_flag = ibrdhigh
-			clr_global_flag = ibrdmedium
-			clr_global_flag = ibrdlow
-			
-			#Appoint new chairman if none exists
-			random_owned = {
-				limit = { owner = { NOT = { any_greater_power = { has_country_modifier = ibrd_chairmanship } } } }
-				owner = { 
-					any_country = { remove_country_modifier = ibrd_chairmanship }
-					random_country = {
-						limit = { is_greater_power = yes has_country_modifier = ibrd_member }
-						prestige = 100
-						add_country_modifier = { name = ibrd_chairmanship duration = -1 }
-					}
-				}
-			}
-		}
-		ai_will_do = { 
-			factor = 1
 		}
 	}
 
