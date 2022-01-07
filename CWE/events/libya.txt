@@ -1,7 +1,7 @@
 #Preparation for Libyan independence - ENG
 country_event = {
 	id = 1008600
-	title = "Preparation for Libyan Independence"
+	title = "Preparation for Libyan Independence?"
 	desc = EVT_1008601_DESC
 	picture = "king_idris_of_libya"
 	
@@ -9,7 +9,7 @@ country_event = {
 
 	trigger = {
 		tag = ENG
-		year = 1946 
+		year = 1947
 		NOT = { has_global_flag = 1950_start_date_flag }
 		NOT = { year = 1990 }
 		
@@ -18,7 +18,7 @@ country_event = {
 		war = no
 		
 		#Owns Libya
-		is_possible_vassal = TRI
+		is_possible_vassal = LBY
 	}
 
 	mean_time_to_happen = {
@@ -28,7 +28,7 @@ country_event = {
 	option = {
 		name = "Libya shall be an independent kingdom!"
 		prestige = 25
-		badboy = -2
+		badboy = -2.5
 		
 		#Arab monarchies welcome this move
 		any_country = {
@@ -53,7 +53,7 @@ country_event = {
 		any_pop = {
 			limit = {
 				OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 }
-				location = { is_core = TRI }
+				location = { is_core = LBY }
 			}
 			scaled_consciousness = { 
 				factor = 5 
@@ -90,14 +90,14 @@ country_event = {
 	}
 
 	option = {
-		name = "Libya shall be a British protectorate!"
-		badboy = 10
+		name = "We have other plans for Libya!"
+		badboy = 5
 		
 		#Arab pops are not happy
 		any_pop = {
 			limit = {
 				OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 }
-				location = { is_core = TRI }
+				location = { is_core = LBY }
 			}
 			
 			add_province_modifier = { name = occupied_province duration = -1 }
@@ -117,7 +117,101 @@ country_event = {
 			relation = { who = THIS value = -100 }
 		}
 		
+		set_country_flag = colonial_libya_flag
+		
 		ai_chance = { factor = 0.05 }
+	}
+
+}
+
+#Tripoli goes to Italy
+country_event = {
+	id = 10086001
+	title = "The Future of Occupied Libya"
+	desc = EVT_10086001_DESC
+	picture = "TRI_tripoli_mandate"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = ENG
+		year = 1948
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		government = hms_government
+		is_vassal = no
+		war = no
+		
+		#Owns Libya
+		is_possible_vassal = LBY
+		is_possible_vassal = TRI
+		
+		#Italy exists and is a democracy
+		ITA = {
+			exists = yes
+			
+			OR = { government = hms_government government = democracy }
+			is_vassal = no
+			war = no
+		}
+		
+		#AH selected
+		has_country_flag = colonial_libya_flag
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+	
+	option = {
+		name = "Libya shall be mandated to Italy!"
+		prestige = 50
+
+		#Form the Mandate of Tripoli
+		any_owned = { limit = { is_core = TRI } secede_province = ITA }
+		ITA = { release_vassal = TRI }
+		TRI = {
+			government = mandate_government
+			country_event = 800054
+			ruling_party_ideology = big_tent
+		}
+		
+		#TRI is in the British sphere
+		diplomatic_influence = { who = TRI value = 200 }
+		
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "Libya shall be a British protectorate!"
+		badboy = 5
+		
+		#Arab pops are not happy
+		any_pop = {
+			limit = {
+				OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 }
+				location = { is_core = LBY }
+			}
+			
+			add_province_modifier = { name = occupied_province duration = -1 }
+			
+			militancy = 10
+			consciousness = 10
+			
+			ideology  = { factor = 0.10 value = nationalist }
+		}
+
+		#Arab countries hate this move
+		any_country = {
+			limit = { 
+				exists = yes
+				OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 }
+			}
+			relation = { who = THIS value = -100 }
+		}
+		
+		ai_chance = { factor = 0.2 }
 	}
 	
 }
@@ -221,7 +315,7 @@ country_event = {
 		any_pop = {
 			limit = {
 				OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 }
-				location = { is_core = TRI }
+				location = { is_core = LBY }
 			}
 			
 			add_province_modifier = { name = occupied_province duration = -1 }
@@ -269,7 +363,7 @@ country_event = {
 		is_possible_vassal = CYR
 		
 		#Libya is still occupied
-		TRI = { exists = no }
+		LBY = { exists = no }
 		
 		#UK opted to make a monarchist Libya
 		has_country_flag = king_idris_of_libya
@@ -395,7 +489,7 @@ country_event = {
 		war = no
 		
 		#Owns Libya
-		is_possible_vassal = TRI
+		is_possible_vassal = LBY
 		
 		
 		#UK opted to make Libya independent
@@ -414,32 +508,32 @@ country_event = {
 		prestige = 50
 		
 		#Release Libya
-		release = TRI
+		release = LBY
 		random_owned = {
 			limit = { owner = { has_country_flag = king_idris_of_libya } }
 			owner = {
-				TRI = { 
+				LBY = { 
 					government = hms_government
 					country_event = 800054
 					ruling_party_ideology = traditionalist
 				} 
 				THIS = {
-					relation = { who = TRI value = 200 }
-					diplomatic_influence = { who = TRI value = 200 }
+					relation = { who = LBY value = 200 }
+					diplomatic_influence = { who = LBY value = 200 }
 				}
 			}
 		}
 		random_owned = {
 			limit = { owner = { has_country_flag = republican_libya_flag } }
 			owner = {
-				TRI = { 
+				LBY = { 
 					government = democracy
 					country_event = 800054
 					ruling_party_ideology = conservative
 				} 
 				THIS = {
-					relation = { who = TRI value = 200 }
-					diplomatic_influence = { who = TRI value = 200 }
+					relation = { who = LBY value = 200 }
+					diplomatic_influence = { who = LBY value = 200 }
 				}
 			}
 		}
@@ -453,7 +547,7 @@ country_event = {
 				has_country_flag = FRA_indepedent_libya_agree_flag
 			}
 			release = FEZ
-			TRI = { inherit = FEZ }
+			LBY = { inherit = FEZ }
 		}
 		random_country = {
 			limit = { 
@@ -462,7 +556,7 @@ country_event = {
 				war = no
 				in_sphere = ENG
 			}
-			TRI = { 
+			LBY = { 
 				inherit = CYR 
 				release_vassal = CYR
 			}
@@ -506,32 +600,32 @@ country_event = {
 		badboy = 5
 
 		#Release Libya as a vassal
-		release_vassal = TRI
+		release_vassal = LBY
 		random_owned = {
 			limit = { owner = { has_country_flag = king_idris_of_libya } }
 			owner = {
-				TRI = { 
+				LBY = { 
 					government = hms_government
 					country_event = 800054
 					ruling_party_ideology = traditionalist
 				} 
 				THIS = {
-					relation = { who = TRI value = 200 }
-					diplomatic_influence = { who = TRI value = 200 }
+					relation = { who = LBY value = 200 }
+					diplomatic_influence = { who = LBY value = 200 }
 				}
 			}
 		}
 		random_owned = {
 			limit = { owner = { has_country_flag = republican_libya_flag } }
 			owner = {
-				TRI = { 
+				LBY = { 
 					government = democracy
 					country_event = 800054
 					ruling_party_ideology = nationalist
 				} 
 				THIS = {
-					relation = { who = TRI value = 200 }
-					diplomatic_influence = { who = TRI value = 200 }
+					relation = { who = LBY value = 200 }
+					diplomatic_influence = { who = LBY value = 200 }
 				}
 			}
 		}
@@ -545,7 +639,7 @@ country_event = {
 				has_country_flag = FRA_indepedent_libya_agree_flag
 			}
 			release = FEZ
-			TRI = { inherit = FEZ }
+			LBY = { inherit = FEZ }
 		}
 		random_country = {
 			limit = { 
@@ -554,14 +648,14 @@ country_event = {
 				war = no
 				in_sphere = ENG
 			}
-			TRI = { 
+			LBY = { 
 				inherit = CYR 
 				release_vassal = CYR
 			}
 		}
 		
 		#Libyans become very nationalistic
-		TRI = {
+		LBY = {
 			any_pop = {
 				limit = { OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 } }
 				militancy = 10
@@ -594,7 +688,7 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = { 
-		tag = TRI
+		tag = LBY
 		year = 1951
 		NOT = { year = 1990 }
 		
@@ -696,7 +790,7 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		tag = TRI
+		tag = LBY
 		year = 1963
 		NOT = { year = 1990 }
 		
@@ -724,11 +818,11 @@ country_event = {
 		
 		#Annex federal entities
 		random_country = {
-			limit = { tag = CYR vassal_of = TRI }
+			limit = { tag = CYR vassal_of = LBY }
 			annex_to = THIS
 		}
 		random_country = {
-			limit = { tag = FEZ vassal_of = TRI }
+			limit = { tag = FEZ vassal_of = LBY }
 			annex_to = THIS
 		}
 		
@@ -767,7 +861,7 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		tag = TRI
+		tag = LBY
 		year = 1969 
 		NOT = { year = 1990 }
 		
@@ -794,8 +888,8 @@ country_event = {
 		ruling_party_ideology = nationalist
 		
 		sphere_owner = { 
-			relation = { who = TRI value = -200 } 
-			diplomatic_influence = { who = TRI value = -200 } 
+			relation = { who = LBY value = -200 } 
+			diplomatic_influence = { who = LBY value = -200 } 
 		}
 		
 		ai_chance = { factor = 0.9 }
@@ -844,7 +938,7 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		tag = TRI
+		tag = LBY
 		year = 1977 
 		NOT = { year = 1990 }
 		
@@ -892,8 +986,8 @@ country_event = {
 				government = proletarian_dictatorship 
 				is_greater_power = yes 
 			} 
-			relation = { who = TRI value = 200 } 
-			diplomatic_influence = { who = TRI value = 200 } 
+			relation = { who = LBY value = 200 } 
+			diplomatic_influence = { who = LBY value = 200 } 
 		}
 		
 		ai_chance = { factor = 0.9 }
@@ -937,7 +1031,7 @@ country_event = {
 	fire_only_once = yes
 	
 	trigger = {
-		tag = TRI
+		tag = LBY
 		year = 2011
 		NOT = { year = 2021 }
 		
@@ -1034,7 +1128,7 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		tag = TRI
+		tag = LBY
 		has_country_flag = libya_civil_war_flag
 		
 		OR = { government = democracy government = democracy1 }
