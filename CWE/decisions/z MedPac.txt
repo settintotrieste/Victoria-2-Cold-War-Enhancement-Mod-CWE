@@ -1,39 +1,34 @@
 political_decisions = {
-
-    form_MedPac = {
+	form_MedPac = {
 		picture = "MedPac"
 		potential = {
-            tag = ITA
-			
+			tag = ITA
 			year = 1970
 			NOT = { has_global_flag = 1992_start_date_flag }
 			
-            has_country_modifier = alliance_nato 
-			has_global_flag = ITA_Operation_Tora_Tora	
-			NOT = { has_global_modifier = form_MedPac }
+			#Italy is right wing dictatorship and is either an SP or GP
+			OR = { government = populist_dictatorship government = nationalist_dictatorship government = presidential_dictatorship }
+			
+			#Italy is in NATO
+			has_country_modifier = alliance_nato
+			
+			#ITA conditions
+			has_global_flag = ITA_Operation_Tora_Tora
+			
+			#One time only decision
+			NOT = { has_global_flag = form_MedPac }
 		}
 		allow = {
+			OR = { is_greater_power = yes is_secondary_power = yes }
 			war = no
 
-			is_vassal = no
-
 			money = 200000
-			
-			OR = {
-			ITA = { exists = yes OR = { government = populist_dictatorship government = nationalist_dictatorship government = presidential_dictatorship } is_vassal = no } 
-			POR = { exists = yes OR = { government = populist_dictatorship government = nationalist_dictatorship } is_vassal = no } 
-			SPA = { exists = yes OR = { government = populist_dictatorship government = nationalist_dictatorship government = absolute_monarchy } is_vassal = no }
-			FAG = { exists = yes OR = { government = populist_dictatorship government = nationalist_dictatorship } is_vassal = no } 
-			GRE = { exists = yes OR = { government = populist_dictatorship government = nationalist_dictatorship government = absolute_monarchy } is_vassal = no } 
-			ALB = { exists = yes OR = { government = hms_government government = hms_government1 government = absolute_monarchy } is_vassal = no } 
-			CYP = { exists = yes government = populist_dictatorship is_vassal = no } 
-			}
 		}
 		effect = {
-		prestige = 100
-		money = -100000
-        set_global_flag = form_MedPac
-        add_country_modifier = { name = alliance_MedPac duration = 1825 }
+			set_global_flag = form_MedPac
+			prestige = 100
+			money = -100000
+        		add_country_modifier = { name = alliance_MedPac duration = 1825 }
 		}
 		ai_will_do = { 
 			factor = 1 
@@ -43,40 +38,67 @@ political_decisions = {
 	join_MedPac = {
 		picture = "MedPac"
 		potential = {
+			has_global_flag = form_MedPac
+		
+			#Potential members
+			OR = { 
+				tag = ITA 
+				tag = POR 
+				tag = SPA
+				tag = FRA
+				tag = FAG
+				tag = CRO
+				tag = GRE
+				tag = ALB
+				tag = CYP
+			}
+			
+			#Dictatorships or Right Wing governments only
+			OR = { 
+				government = populist_dictatorship 
+				government = nationalist_dictatorship 
+				government = presidential_dictatorship 
+				government = absolute_monarchy 
+				
+				ruling_party_ideology = nationalist
+				ruling_party_ideology = populist
+			}
 
-            OR = {
-			    ITA = { exists = yes OR = { government = populist_dictatorship government = nationalist_dictatorship government = presidential_dictatorship } is_vassal = no } 
-			    POR = { exists = yes OR = { government = populist_dictatorship government = nationalist_dictatorship } is_vassal = no } 
-			    SPA = { exists = yes OR = { government = populist_dictatorship government = nationalist_dictatorship government = absolute_monarchy } is_vassal = no }
-				FRA = { exists = yes OR = { government = populist_dictatorship government = nationalist_dictatorship } is_vassal = no } 
-			    FAG = { exists = yes OR = { government = populist_dictatorship government = nationalist_dictatorship } is_vassal = no } 
-				CRO = { exists = yes OR = { government = populist_dictatorship government = nationalist_dictatorship } is_vassal = no } 
-			    GRE = { exists = yes OR = { government = populist_dictatorship government = nationalist_dictatorship government = absolute_monarchy } is_vassal = no } 
-			    ALB = { exists = yes OR = { government = hms_government government = hms_government1 government = absolute_monarchy } is_vassal = no } 
-				CYP = { exists = yes government = populist_dictatorship is_vassal = no } 
-		    }
-
+			#Not already in MedPac or has recently left
 			NOT = { has_country_modifier = alliance_MedPac }
+			NOT = { has_country_modifier = leave_alliance_MedPac }
+			
+			#Not in another alliance
 			NOT = { has_country_modifier = warsaw_pact }
 			NOT = { has_country_modifier = csto_alliance }
 			NOT = { has_country_modifier = alliance_sato }
 			NOT = { has_country_modifier = rio_pact }
 			
-		    NOT = { has_country_modifier = leave_alliance_MedPac }
-			has_global_flag = form_MedPac
+			#MedPac collapses if Italy does not exist OR is no longer a GP or SP OR is no longer rightwing
+			ITA = { 
+				OR = { 
+					exists = no
+					is_greater_power = no 
+					is_secondary_power = no
+					NOT = { OR = { government = populist_dictatorship government = nationalist_dictatorship government = presidential_dictatorship } }
+				} 
+			}
 		}
 		allow = {
-			war = no
 			is_vassal = no
+			war = no
+			
+			#THIS must not be neutral
+			NOT = { has_country_flag = neutrality }
+			NOT = { has_country_modifier = neutrality }
 		}
 		effect = {
-            any_country = {
-                limit = { has_country_modifier = alliance_MedPac }
-                relation = { who = THIS value = 100 }
-                create_alliance = THIS
-            }
-
-            add_country_modifier = { name = alliance_MedPac duration = 1825 }
+			any_country = {
+				limit = { has_country_modifier = alliance_MedPac }
+				relation = { who = THIS value = 100 }
+				create_alliance = THIS
+			}
+			add_country_modifier = { name = alliance_MedPac duration = 1825 }
 		}
 		ai_will_do = { 
 			factor = 1 
@@ -89,34 +111,44 @@ political_decisions = {
 			has_country_modifier = alliance_MedPac
 		}
 		allow = {
+			#Members can only leave when at peace
 			war = no
             
+	    		#Conditions for leaving
 			OR = { 
-			ai = no 
-			is_vassal = yes 
+				#Player can decide when to leave
+				ai = no 
+				
+				#Vassals always leave
+				is_vassal = yes
+				
+				#Member states that are NOT dictatorships or Right Wing governments leave
+				NOT = {
+					OR = { 
+						government = populist_dictatorship 
+						government = nationalist_dictatorship 
+						government = presidential_dictatorship 
+						government = absolute_monarchy 
+				
+						ruling_party_ideology = nationalist
+						ruling_party_ideology = populist
+					}
+				}
 			
-			AND = { NOT = { tag = ITA } ruling_party_ideology = conservative }
-			ruling_party_ideology = big_tent
-			ruling_party_ideology = liberal
-			ruling_party_ideology = progressive
-			ruling_party_ideology = socialist
-			ruling_party_ideology = communist 
-			ruling_party_ideology = communist_social   
-			
-			has_country_flag = neutrality 
-			has_country_modifier = neutrality 
+				#Neutral nations always leave
+				has_country_flag = neutrality 
+				has_country_modifier = neutrality 
 			}
+			
 		}
 		effect = {
-            any_country = {
-                limit = { has_country_modifier = alliance_MedPac }
-                relation = { who = THIS value = -100 }
-                leave_alliance = THIS
-            }
-
-            add_country_modifier = { name = leave_alliance_MedPac duration = 1825 }
-
-            remove_country_modifier = alliance_MedPac
+			any_country = {
+				limit = { has_country_modifier = alliance_MedPac }
+				relation = { who = THIS value = -100 }
+				leave_alliance = THIS
+			}
+			add_country_modifier = { name = leave_alliance_MedPac duration = 1825 }
+			remove_country_modifier = alliance_MedPac
 		}
 		ai_will_do = { 
 			factor = 1 
