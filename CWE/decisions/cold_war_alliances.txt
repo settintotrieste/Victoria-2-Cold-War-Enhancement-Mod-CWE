@@ -363,39 +363,110 @@ political_decisions = {
 	alliance_nato = {
 		picture = "alliance_nato"
 		potential = {
+			#NATO has been formed
 			has_global_flag = form_nato
 			NOT = { has_global_flag = nato_abolish }
-			is_vassal = no
-			NOT = { tag = RUS }
-			NOT = { has_country_modifier = alliance_sato }			
-			NOT = { has_country_modifier = csto_alliance }
-			OR = {
-				capital_scope = { is_core = USA } 
-				NOT = { has_country_modifier = rio_pact } 
-			}
-			NOT = { has_country_modifier = alliance_nato }
-			NOT = { has_country_modifier = leave_alliance_nato }
-
+			
+			#Country is located in North America, Europe or Turkey
 			OR = {
 				capital_scope = { OR = { is_core = USA is_core = CAN continent = europe } }
 				tag = TUR
 			}
+			
+			#Government Type restrictions
+			OR = { 
+				#Socialist Democracies cannot join during the Cold War unless it is Italy which is an exception
+				AND = { 
+					government = socialist_democracy 
+					
+					#Eurocommunist Italy is pro-NATO
+					OR = { 
+						NOT = { has_global_flag = blocsenabled } 
+						tag = ITA 
+					} 
+				}
+				
+				#Democracies can always join
+				government = democracy 
+				government = democracy1 
+				government = hms_government 
+				government = hms_government1
+				
+				#Right Wing dictatorships can only join during the Cold War IF USA is right wing
+				AND = {
+					has_global_flag = blocsenabled
+					USA = { 
+						exists = yes
+						is_greater_power = yes
+						has_country_modifier = nato_leader 
+						OR = { 
+							ruling_party_ideology = traditionalist 
+							ruling_party_ideology = conservative 
+							ruling_party_ideology = big_tent 
+							ruling_party_ideology = nationalist 
+							ruling_party_ideology = populist 
+						} 
+					}
+					OR = {
+						government = presidential_dictatorship
+						government = populist_dictatorship
+						government = nationalist_dictatorship
+						government = absolute_monarchy
+					}
+					OR = { 
+						ruling_party_ideology = traditionalist 
+						ruling_party_ideology = conservative 
+						ruling_party_ideology = nationalist 
+						ruling_party_ideology = populist 
+					}
+				}
+				
+			}
+			
+			#THIS is independent
+			is_vassal = no
+			
+			#Russia and its allies is always excluded for political reasons
+			NOT = { tag = RUS }
+			NOT = { has_country_modifier = alliance_sato }			
+			NOT = { has_country_modifier = csto_alliance }
+			
+			#Rio Pact does not join NATO
+			OR = {
+				capital_scope = { is_core = USA } 
+				NOT = { has_country_modifier = rio_pact } 
+			}
+			
+			#Not already in or left NATO
+			NOT = { has_country_modifier = alliance_nato }
+			NOT = { has_country_modifier = leave_alliance_nato }
 		}
 
 		allow = {
-
+			war = no
+			
+			election = no
+			
+			#Infamy must not be high
 			NOT = { badboy = 0.6 }
-
+			
+			#Full communists are never allowed
 			NOT = { ruling_party_ideology = communist }
-			OR = { NOT = { ruling_party_ideology = communist_social } AND = { tag = ITA ruling_party_ideology = communist_social } } #Eurocommunist Italy is pro-NATO
-
+			
+			#Market Socialists are not allowed, with the exception of Italy
+			OR = { 
+				NOT = { ruling_party_ideology = communist_social } 
+				AND = { tag = ITA ruling_party_ideology = communist_social } #Eurocommunist Italy is pro-NATO
+			}
+			
+			#Members cannot be in the Sphere of Russia
 			NOT = { in_sphere = RUS }
-
+			
+			#THIS is not neutral
 			NOT = { has_country_flag = neutrality }
 			NOT = { has_country_modifier = neutrality }
-
-			war = no
-
+			
+			#THIS must have good relations with NATO leader
 			OR = { 
 				has_country_modifier = nato_leader
 				sphere_owner = { has_country_modifier = alliance_nato } 
@@ -403,40 +474,6 @@ political_decisions = {
 					has_country_modifier = nato_leader 
 					relation = { who = THIS value = 100 }
 				} 
-			}
-
-			OR = { 
-			
-				AND = { government = socialist_democracy OR = { NOT = { has_global_flag = blocsenabled } tag = ITA } } #Eurocommunist Italy is pro-NATO
-				
-				government = democracy 
-				government = democracy1 
-				government = hms_government 
-				government = hms_government1 
-				
-				#Nixon dictatorship in USA leads to friendliness with right-wing dictatorships and monarchies in NATO scope
-				AND = {
-					USA = { exists = yes government = presidential_dictatorship has_country_flag = nixon_entrenched has_country_modifier = nato_leader OR = { ruling_party_ideology = traditionalist ruling_party_ideology = conservative ruling_party_ideology = big_tent ruling_party_ideology = nationalist ruling_party_ideology = populist } }
-					OR = {
-						government = presidential_dictatorship
-						government = populist_dictatorship
-						government = nationalist_dictatorship
-						government = absolute_monarchy
-					}
-					OR = { ruling_party_ideology = traditionalist ruling_party_ideology = conservative ruling_party_ideology = nationalist ruling_party_ideology = populist }
-				}
-				
-				#Allows MedPact
-				AND = {
-					OR = {
-						government = presidential_dictatorship
-						government = populist_dictatorship
-						government = nationalist_dictatorship
-						government = absolute_monarchy
-					}
-					OR = { ruling_party_ideology = traditionalist ruling_party_ideology = conservative ruling_party_ideology = nationalist ruling_party_ideology = populist }
-					has_global_flag = ITA_Operation_Tora_Tora
-				}
 			}
 
 		}
@@ -488,35 +525,52 @@ political_decisions = {
 				is_vassal = yes
 
 				has_country_modifier = neutrality
-
 				has_country_flag = neutrality
+				
+				ruling_party_ideology = communist
+				
+				AND = { ruling_party_ideology = communist_social NOT = { tag = ITA } }
+				
+				NOT = { government = socialist_democracy OR = { NOT = { has_global_flag = blocsenabled } tag = ITA } }
 
 				NOT = { 
 					OR = { 
-						AND = { government = socialist_democracy NOT = { has_global_flag = blocsenabled } } 
-						
 						government = democracy 
 						government = democracy1 
 						government = hms_government 
 						government = hms_government1 
 					} 
 				}
-
-				any_greater_power = { has_country_modifier = nato_leader relation = { who = THIS value = -100 } }
-			}
-			
-			#Nixon dictatorship in USA leads to friendliness with right-wing dictatorships and monarchies in NATO scope
-			NOT = {
-				AND = {
-					USA = { exists = yes government = presidential_dictatorship has_country_flag = nixon_entrenched has_country_modifier = nato_leader OR = { ruling_party_ideology = traditionalist ruling_party_ideology = conservative ruling_party_ideology = big_tent ruling_party_ideology = nationalist ruling_party_ideology = populist } }
+				
+				NOT = {
+					has_global_flag = blocsenabled
+					USA = { 
+						exists = yes
+						is_greater_power = yes
+						has_country_modifier = nato_leader 
+						OR = { 
+							ruling_party_ideology = traditionalist 
+							ruling_party_ideology = conservative 
+							ruling_party_ideology = big_tent 
+							ruling_party_ideology = nationalist 
+							ruling_party_ideology = populist 
+						} 
+					}
 					OR = {
 						government = presidential_dictatorship
 						government = populist_dictatorship
 						government = nationalist_dictatorship
 						government = absolute_monarchy
 					}
-					OR = { ruling_party_ideology = traditionalist ruling_party_ideology = conservative ruling_party_ideology = nationalist ruling_party_ideology = populist }
+					OR = { 
+						ruling_party_ideology = traditionalist 
+						ruling_party_ideology = conservative 
+						ruling_party_ideology = nationalist 
+						ruling_party_ideology = populist 
+					}
 				}
+
+				any_greater_power = { has_country_modifier = nato_leader relation = { who = THIS value = -100 } }
 			}
 
 		}
