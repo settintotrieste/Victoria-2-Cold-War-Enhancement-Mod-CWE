@@ -1,3 +1,9 @@
+### What are needed for CWE to run ###
+
+Both the Heart of Darkness + A House Divided DLCs
+
+The 3.04 beta patch for Victoria 2
+
 ### How to install the Github version of CWE ###
 
 Where to download the file: https://github.com/settintotrieste/Victoria-2-Cold-War-Enhancement-Mod-CWE
