@@ -1,15 +1,21 @@
-#Support for the Greek Civil War - US and UK
+#British Intervention in Greece?
 country_event = {
 	id = 8940010
-	title = "Greek Civil War"
+	title = "British Intervention in Greece?"
 	desc = EVTDESC1512247
 	picture = "greek_civil_war"
+	
+	fire_only_once = yes
 
 	trigger = {
-		OR = { tag = USA tag = ENG }
+		tag = ENG
 		year = 1946
 		NOT = { has_global_flag = 1950_start_date_flag }
 		NOT = { year = 1990 }
+		
+		government = hms_government
+		is_greater_power = yes
+		war = no
 		
 		#Parties to the war
 		GRE = { government = hms_government }
@@ -17,6 +23,9 @@ country_event = {
 		
 		#War is underway
 		GRE = { war_with = UGR }
+		
+		#THIS has enough money
+		money = 600000
     
 		#Cold War ongoing
 		has_global_flag = blocsenabled
@@ -34,9 +43,6 @@ country_event = {
 		prestige = 50
 		
 		set_country_flag = support_greek_gov
-		
-		#Mark for the USA
-		set_country_flag = support_greek_gov_usa
 		
 		#Gain influence in Greece
 		relation = { who = GRE value = 100 }
@@ -57,16 +63,33 @@ country_event = {
 		#Material support to Greece
 		money = -500000
 		GRE = { 
-			money = 250000 
-			
-			small_arms = 75 
-			weaponry = 75 
-			aeroplanes = 75
-			ammunition = 75
-			automobiles = 75
-			add_country_modifier = { name = support_government duration = 730 } 
+			country_event = 8941022
 		}
-		ai_chance = { factor = 0.9 }
+		ai_chance = { factor = 0.8 }
+	}
+	
+	option = {
+		name = "Send in the troops!"
+		
+		#War with DSE Greece
+		war = {
+			target = UGR 
+			attacker_goal = { casus_belli = install_democracy } 
+			defender_goal = { casus_belli = status_quo } 
+			call_ally = yes
+		}
+		
+		#USA is happy
+		random_country = {
+			limit = { tag = USA government = democracy is_vassal = no }
+			relation = { who = THIS value = 50 }
+		}
+		
+		#Gain influence in Greece
+		relation = { who = GRE value = 50 }
+		diplomatic_influence = { who = GRE value = 50 }
+		
+		ai_chance = { factor = 0.1 }
 	}
 
 	option = {
@@ -83,12 +106,12 @@ country_event = {
 
 }
 
-#US military intervention in the Greek Civil War
+#US Intervention in Greece?
 country_event = {
-  id = 8940011
-  title = "US Intervention in Greece?"
-  desc = EVTDESC8940010
-  picture = "nwo2_greek_civil_war"
+	id = 8940011
+	title = "US Intervention in Greece?"
+	desc = EVTDESC8940010
+	picture = "nwo2_greek_civil_war"
   
 	fire_only_once = yes
 
@@ -98,6 +121,10 @@ country_event = {
 		NOT = { has_global_flag = 1950_start_date_flag }
 		NOT = { year = 1990 }
 		
+		government = democracy
+		is_greater_power = yes
+		war = no
+		
 		#Parties to the war
 		GRE = { government = hms_government }
 		UGR = { government = proletarian_dictatorship }
@@ -105,30 +132,46 @@ country_event = {
 		#War is underway
 		GRE = { war_with = UGR }
 		
-		#USA supported GRE with military supplies
-		has_country_flag = support_greek_gov_usa
+		#THIS has enough money
+		money = 600000
+		
+		#UK supported GRE with military supplies
+		ENG = { has_country_flag = support_greek_gov_usa }
     
 		#Cold War ongoing
 		has_global_flag = blocsenabled
 	}
 
 	mean_time_to_happen = { months = 6 }
-
+	
 	option = {
-		name = "Stay away from a military conflict!"
-		prestige = -50
+		name = "Support the Greek Government!"
+		prestige = 50
 		
-		#UK is not happy
-		random_country = {
-			limit = { tag = ENG government = hms_government is_vassal = no }
+		set_country_flag = support_greek_gov
+		
+		#Gain influence in Greece
+		relation = { who = GRE value = 100 }
+		diplomatic_influence = { who = GRE value = 50 }
+		
+		#European Communists are angry
+		any_country = {
+			limit = { 
+				capital_scope = { continent = europe } 
+				OR = {
+					ruling_party_ideology = communist
+					ruling_party_ideology = communist_social
+				}
+			}
 			relation = { who = THIS value = -50 }
 		}
 		
-		#Lose influence in Greece
-		relation = { who = GRE value = -50 }
-		diplomatic_influence = { who = GRE value = -50 }
-		
-		ai_chance = { factor = 0.9 }
+		#Material support to Greece
+		money = -500000
+		GRE = { 
+			country_event = 8941023
+		}
+		ai_chance = { factor = 0.8 }
 	}
 	
 	option = {
@@ -154,14 +197,32 @@ country_event = {
 		
 		ai_chance = { factor = 0.1 }
 	}
+	
+	option = {
+		name = "Stay away from a military conflict!"
+		prestige = -50
+		
+		#UK is not happy
+		random_country = {
+			limit = { tag = ENG government = hms_government is_vassal = no }
+			relation = { who = THIS value = -50 }
+		}
+		
+		#Lose influence in Greece
+		relation = { who = GRE value = -50 }
+		diplomatic_influence = { who = GRE value = -50 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
 }
 
 #Soviet military intervention in the Greek Civil War
 country_event = {
-  id = 8940012
-  title = "Soviet Intervention in Greece?"
-  desc = EVTDESC8940011
-  picture = "nwo2_greek_civil_war"
+	id = 8940012
+	title = "Soviet Intervention in Greece?"
+	desc = EVTDESC8940011
+	picture = "nwo2_greek_civil_war"
   
 	fire_only_once = yes
 
@@ -170,6 +231,10 @@ country_event = {
 		year = 1946 
 		NOT = { has_global_flag = 1950_start_date_flag }
 		NOT = { year = 1990 }
+		
+		government = proletarian_dictatorship
+		is_greater_power = yes
+		war = no
 		
 		#Parties to the war
 		GRE = { government = hms_government }
@@ -185,6 +250,35 @@ country_event = {
 	mean_time_to_happen = { months = 6 }
 	
 	option = {
+		name = "We will honor the agreements already in place."
+		badboy = -5
+		
+		#YUG is not happy
+		random_country = {
+			limit = { tag = YUG government = proletarian_dictatorship is_vassal = no }
+			relation = { who = THIS value = -50 }
+		}
+		
+		#European Communists are angry
+		any_country = {
+			limit = { 
+				capital_scope = { continent = europe } 
+				OR = {
+					ruling_party_ideology = communist
+					ruling_party_ideology = communist_social
+				}
+			}
+			relation = { who = THIS value = -10 }
+		}
+		
+		#Lose influence in UGR
+		relation = { who = UGR value = -50 }
+		diplomatic_influence = { who = UGR value = -100 }
+		
+		ai_chance = { factor = 0.8 }
+	}
+	
+	option = {
 		name = "Give only material support"
 		prestige = 50
 		
@@ -197,21 +291,14 @@ country_event = {
 		#Material support to UGR
 		money = -500000
 		UGR = { 
-			money = 250000 
-			
-			small_arms = 75 
-			weaponry = 75 
-			aeroplanes = 75
-			ammunition = 75
-			automobiles = 75
-			add_country_modifier = { name = support_government duration = 730 } 
+			country_event = 8940034
 		}
 		
 		#Gain influence in UGR
 		relation = { who = UGR value = 50 }
 		diplomatic_influence = { who = UGR value = 50 }
 		
-		ai_chance = { factor = 0.8 }
+		ai_chance = { factor = 0.1 }
 	}
 	
 	option = {
@@ -244,43 +331,16 @@ country_event = {
 		ai_chance = { factor = 0.1 }
 	}
 	
-	option = {
-		name = "Stay away from a military conflict!"
-		prestige = -50
-		
-		#YUG is not happy
-		random_country = {
-			limit = { tag = YUG government = proletarian_dictatorship is_vassal = no }
-			relation = { who = THIS value = -50 }
-		}
-		
-		#European Communists are angry
-		any_country = {
-			limit = { 
-				capital_scope = { continent = europe } 
-				OR = {
-					ruling_party_ideology = communist
-					ruling_party_ideology = communist_social
-				}
-			}
-			relation = { who = THIS value = -50 }
-		}
-		
-		#Lose influence in UGR
-		relation = { who = UGR value = -100 }
-		diplomatic_influence = { who = UGR value = -100 }
-		
-		ai_chance = { factor = 0.1 }
-	}
-	
 }
 
 #Clean up tags if there are 2 similar Greece
 country_event = {
-  id = 8940013
-  title = "End of the Greek Civil War"
-  desc = EVT_8500541_DESC
-  picture = "nwo2_kke_victory"
+	id = 8940013
+	title = "Reunification of Greece"
+	desc = EVT_8500541_DESC
+	picture = "nwo2_kke_victory"
+	
+	major = yes
   
   	fire_only_once = yes
 
@@ -359,7 +419,7 @@ country_event = {
 #Continue the fight?
 country_event = {
 	id = 9001501
-	title = "Should we continue the fight?"
+	title = "Retreat To Cyprus?"
 	desc = EVT_9001501_DESC
 	picture = "nwo2_greek_civil_war"
   
@@ -400,7 +460,7 @@ country_event = {
 	mean_time_to_happen = { months = 1 }
 
 	option = {
-		name = "Maybe we shall fight from Cyprus? (80% chance)"
+		name = "Send a request to the United Kingdom to rebase in Cyprus."
 		
 		#Option to allow Greece to use Cyprus
 		ENG = { country_event = 90015011 }
@@ -409,7 +469,12 @@ country_event = {
 	}
 	
 	option = {
-		name = "We shall die trying!"
+		name = "Die trying to kill the traitors!"
+		
+		any_pop = {
+			limit = { strata = poor }
+			ideology = { factor = 0.02 value = communist }
+		}
 		
 		any_pop = {
 			scaled_consciousness = {
@@ -437,7 +502,7 @@ country_event = {
 	is_triggered_only = yes
 
 	option = {
-		name = "Let them fight from Cyprus"
+		name = "Let them fight from Cyprus."
 		
 		#Lose relations with UGR and USSR
 		relation = { who = UGR value = -200 }
@@ -455,25 +520,81 @@ country_event = {
 		ENG = { release = CYP } #So that the provinces would be states
 		GRE = { country_event = 90015012 }
 		
+		#Domestic reaction
+		any_pop = {
+			limit = { is_culture_group = british_cultures strata = poor }
+			ideology = { factor = 0.01 value = communist }
+			militancy = 2
+			consciousness = 2
+		}
+		any_pop = {
+			limit = { is_culture_group = british_cultures strata = middle }
+			ideology = { factor = 0.01 value = socialist }
+			militancy = 2
+			consciousness = 2
+		}
+		any_pop = {
+			limit = { is_culture_group = british_cultures strata = rich }
+			ideology = { factor = 0.01 value = nationalist }
+			militancy = 2
+			consciousness = 2
+		}
+		any_pop = {
+			limit = { culture = greek }
+			ideology = { factor = 0.02 value = nationalist }
+			militancy = -2
+			consciousness = -2
+		}
+		any_pop = {
+			limit = { culture = turkish }
+			ideology = { factor = 0.02 value = nationalist }
+			militancy = 6
+			consciousness = 6
+		}
+		
 		ai_chance = { factor = 0.8 }
 	}
 	
 	option = {
-		name = "Cyprus is too important so they shall die trying!"
+		name = "Our holdings in Cyprus are more important than defending Greece."
+		
+		#Inform Greece of refusal
+		GRE = { country_event = 8941027 }
 		
 		#Lose relations with GRE
 		relation = { who = GRE value = -100 }
 		diplomatic_influence = { who = GRE value = -100 }
 		
+		#Domestic reaction
 		any_pop = {
-			scaled_consciousness = {
-				factor = 2
-				ideology = conservative
-			}
-			scaled_militancy = {
-				factor = 2
-				ideology = conservative
-			}
+			limit = { is_culture_group = british_cultures strata = poor }
+			ideology = { factor = 0.02 value = socialist }
+			militancy = 2
+			consciousness = 2
+		}
+		any_pop = {
+			limit = { is_culture_group = british_cultures strata = middle }
+			ideology = { factor = 0.02 value = socialist }
+			militancy = 2
+			consciousness = 2
+		}
+		any_pop = {
+			limit = { is_culture_group = british_cultures strata = rich }
+			ideology = { factor = 0.02 value = conservative }
+			militancy = -2
+			consciousness = -2
+		}
+		any_pop = {
+			limit = { culture = greek }
+			ideology = { factor = 0.08 value = nationalist }
+			militancy = 10
+			consciousness = 10
+		}
+		any_pop = {
+			limit = { culture = turkish }
+			ideology = { factor = 0.02 value = liberal }
+			militancy = -6
+			consciousness = -6
 		}
 		
 		ai_chance = { factor = 0.2 }
@@ -493,7 +614,7 @@ country_event = {
 	major = yes
 
 	option = {
-		name = "Let them fight from Cyprus"
+		name = "Cyprus will be a stronghold against communism."
 		set_global_flag = greek_communist_wins
 		
 		prestige_factor = -0.5
@@ -506,10 +627,39 @@ country_event = {
 		any_owned = {
 			limit = { is_core = GRE NOT = { is_core = CYP } }
 			secede_province = UGR
+			change_controller = REB
 		}
 		
 		#Greek Civil War ends
 		end_war = UGR
+		
+		#Inform UGR
+		UGR = { country_event = 8940044 }
+	}
+
+}
+
+#UK Refuses
+country_event = {
+	id = 8941027
+	title = "The British Betrayal"
+	desc = EVTDESC8941027
+	picture = "nwo2_greek_civil_war"
+  
+	is_triggered_only = yes
+
+	option = {
+		name = "All is lost."
+		prestige = -30
+		
+		war_exhaustion = 25
+
+		any_pop = {
+			limit = { culture = greek }
+			ideology = { factor = 0.07 value = communist }
+			consciousness = 5
+		}
+
 	}
 
 }
