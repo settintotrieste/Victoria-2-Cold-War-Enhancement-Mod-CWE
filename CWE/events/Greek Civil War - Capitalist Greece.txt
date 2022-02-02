@@ -592,6 +592,9 @@ country_event = {
 			consciousness = 6
 		}
 		
+		#UGR choice to declare war
+		UGR = { set_country_flag = kke_election_boycott }
+		
 		ai_chance = { 
 			factor = 0.1
 			modifier = {
@@ -643,17 +646,14 @@ country_event = {
 
 	option = {
 		name = "War is all but assured..."
+		
 		any_pop = {
 			limit = { culture = greek }
 			consciousness = 3
 		}
 		
-		war = {
-			target = FROM
-			attacker_goal = { casus_belli = civil_war }
-			defender_goal = { casus_belli = civil_war }
-			call_ally = no
-		}
+		#UGR choice to declare war
+		UGR = { set_country_flag = kke_election_boycott }
 	}
 	
 }
@@ -937,7 +937,7 @@ country_event = {
 }
 
 
-#A Path to Peace
+#A Path to Peace - Triggered by Greece becoming socialist and overthrowing the monarchy
 country_event = {
 	id = 8941037
 	title = "A Path to Peace"
@@ -948,20 +948,23 @@ country_event = {
 
 	trigger = {
 		tag = GRE
-		year = 1947
+		year = 1946
+		NOT = { year = 1990 }
 		
-		government = hms_government
+		government = democracy1
 		is_vassal = no
-		war = no
 		
-		OR = { ruling_party_ideology = conservative ruling_party_ideology = liberal }
+		
+		election = no
+		
+		OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social }
 		
 		UGR = {
 			exists = yes
 			
 			government = proletarian_dictatorship
 			is_vassal = no
-			war = no
+			
 		}
 	}
 
@@ -999,8 +1002,23 @@ country_event = {
 
 	option = {
 		name = "We will not compromise with the radicals."
+		badboy = 5
 		
 		add_country_modifier = { name = revolution_chaos duration = 365 }
+		
+		#War to annex UGR if GRE is currently not at war
+		random_country = {
+			limit = { 
+				tag = UGR 
+				NOT = { war_with = THIS } 
+			}
+			war = {
+				target = THIS
+				attacker_goal = { casus_belli = civil_war }
+				defender_goal = { casus_belli = civil_war }
+				call_ally = no
+			}
+		}
 		
 		any_pop = {
 			limit = { culture = greek strata = middle }
@@ -1024,6 +1042,7 @@ country_event = {
 			}
 		}
 	}
+	
 }
 
 
@@ -1040,15 +1059,7 @@ country_event = {
 		name = "We wholly accept the offer to create a People's Democracy!"
 		badboy = -2
 		
-		inherit = GRE
-		
-		government = socialist_democracy
-		country_event = 800054
-		ruling_party_ideology = socialist
-		
-		set_country_flag = ugr_eam_coalition
-		
-		capital = 834
+		end_war = FROM
 		
 		any_owned = {
 			limit = { is_core = GRE }
@@ -1056,7 +1067,71 @@ country_event = {
 			remove_core = GRE
 		}
 		
-		country_event = 8941039
+		#Player is GRE
+		random_owned = {
+			limit = { 
+				owner = { GRE = { ai = no } } 
+			}
+			owner = { 
+				GRE = { 
+					government = socialist_democracy
+					country_event = 800054
+					ruling_party_ideology = socialist
+					
+					capital = 834
+					
+					set_country_flag = ugr_eam_coalition
+					
+					inherit = UGR 
+				} 
+			}
+		}
+		
+		#Player is UGR
+		random_owned = {
+			limit = { 
+				owner = { UGR = { ai = no } } 
+			}
+			owner = { 
+				UGR = { 
+					government = socialist_democracy
+					country_event = 800054
+					ruling_party_ideology = socialist
+					
+					capital = 834
+					
+					set_country_flag = ugr_eam_coalition
+					
+					inherit = GRE
+					
+					change_tag = GRE
+				}
+			}
+		}
+		
+		#Both are AI - GRE
+		random_owned = {
+			limit = { 
+				owner = { 
+					GRE = { ai = yes } 
+					UGR = { ai = yes } 
+				} 
+			}
+			owner = { 
+				GRE = { 
+					government = socialist_democracy
+					country_event = 800054
+					ruling_party_ideology = socialist
+					
+					capital = 834
+					
+					set_country_flag = ugr_eam_coalition
+					
+					inherit = UGR
+				}
+			}
+		}
+		
 	}
 
 }
@@ -1069,7 +1144,25 @@ country_event = {
 	desc = EVTDESC8941039
 	picture = "gre_election_46"
 
-	is_triggered_only = yes
+	fire_only_once = yes
+
+	trigger = {
+		tag = GRE
+		year = 1946
+		NOT = { year = 1990 }
+		
+		government = socialist_democracy
+		
+		war = no
+		
+		election = no
+		
+		ruling_party_ideology = socialist
+		
+		has_country_flag = ugr_eam_coalition
+	}
+
+	mean_time_to_happen = { months = 1 }
 
 	option = {
 		name = "The Left-Coalition retains its power."
@@ -1095,7 +1188,7 @@ country_event = {
 		random_country = { limit = { tag = YUG government = proletarian_dictatorship is_vassal = no } relation = { who = THIS value = 25 } }
 
 		ai_chance = {
-			factor = 0.3
+			factor = 0.2
 		}
 	}
 
@@ -1110,7 +1203,7 @@ country_event = {
 		random_country = { limit = { tag = YUG government = proletarian_dictatorship is_vassal = no } relation = { who = THIS value = -25 } }
 
 		ai_chance = {
-			factor = 0.3
+			factor = 0.1
 		}
 	}
 	
