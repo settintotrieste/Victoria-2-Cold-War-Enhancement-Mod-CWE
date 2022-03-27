@@ -18,8 +18,6 @@ country_event = {
 		
 		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
 		is_vassal = no
-		
-		war = yes
 		war_with = ITA
 		
 		has_global_flag = italian_civil_war
@@ -33,20 +31,20 @@ country_event = {
 		
 		#Boosts opinion with Communist Countries
 		any_country = {
-			limit = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } }
+			limit = { exists = yes is_vassal = no OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } }
 			relation = { who = THIS value = 150 }
 		}
 		
 		#Worse relations with the West
-		any_country = {
+		random_country = {
 			limit = { tag = USA OR = { government = democracy government = democracy1 } is_greater_power = yes }
 			relation = { who = THIS value = -100 }
 		}
-		any_country = {
+		random_country = {
 			limit = { tag = FRA OR = { government = democracy government = democracy1 } is_greater_power = yes }
 			relation = { who = THIS value = -100 }
 		}
-		any_country = {
+		random_country = {
 			limit = { tag = ENG OR = { government = hms_government government = hms_government1 } is_greater_power = yes }
 			relation = { who = THIS value = -100 }
 		}
@@ -63,7 +61,7 @@ country_event = {
 			reduce_pop = 1.50
 		}
 		
-		any_owned = {
+		random_owned = {
 			limit = { province_id = 743 NOT = { has_province_modifier = san_marino } }
 			add_province_modifier = { name = san_marino duration = -1 }
 		}
@@ -75,7 +73,7 @@ country_event = {
 #Soviet aid
 country_event = {
 	id = 8020486
-	title = "Soviet in the Italian Civil War?"
+	title = "Soviet intervention in the Italian Civil War?"
 	desc = EVT_8020486_DESC
 	picture = "PCI_1970s"
 	
@@ -153,15 +151,15 @@ country_event = {
 		}
 		
 		#Worse relations with the West
-		any_country = {
+		random_country = {
 			limit = { tag = USA OR = { government = democracy government = democracy1 } is_greater_power = yes }
 			relation = { who = THIS value = -100 }
 		}
-		any_country = {
+		random_country = {
 			limit = { tag = FRA OR = { government = democracy government = democracy1 } is_greater_power = yes }
 			relation = { who = THIS value = -100 }
 		}
-		any_country = {
+		random_country = {
 			limit = { tag = ENG OR = { government = hms_government government = hms_government1 } is_greater_power = yes }
 			relation = { who = THIS value = -100 }
 		}
@@ -199,8 +197,6 @@ country_event = {
 		
 		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
 		is_vassal = no
-		
-		war = yes
 		war_with = ITA
 		
 		YUG = {
@@ -312,7 +308,7 @@ country_event = {
 		is_vassal = no
 		
 		RIT = { 
-		    war = yes
+		    is_vassal = no
 		    war_with = ITA 
 		}	
 		
@@ -399,7 +395,10 @@ country_event = {
 			limit = { province_id = 736 }
 			secede_province = YUG
 		}
-		YUG = { inherit = TRE }
+		random_country = {
+			limit = { tag = USA is_our_vassal = TRE }
+			YUG = { inherit = TRE }
+		}
 
 		ai_chance = { factor = 0.8 }
 	}
@@ -434,46 +433,122 @@ country_event = {
 	
 }
 
-#The End of the ICW
+#The End of the ICW - Catch all clean up event for RIT tag
 country_event = {
 	id = 8020487
-	title = "The End of the Civil War"
+	title = "The End of the Italian Civil War"
 	desc = EVTDESC8020487
 	picture = "ITA_Communist_Victory"
+	
+	major = yes
 	
 	fire_only_once = yes
 	
 	trigger = {
-		tag = RIT
-		year = 1946
-		NOT = { year = 1990 }
+		OR = { tag = ITA tag = RIT }
 		
-		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
-		is_vassal = no
-		war = no
+		#Must not be a vassal
+		ITA = { is_vassal = no }
+		RIT = { is_vassal = no }
 		
-		ITA = { exists = no }
-		
-		has_global_flag = italian_civil_war
-	}
-	
-	mean_time_to_happen = { days = 1 }
-	
-	option = {
-		name = "Proletarians of all Countries, unite!"
-		prestige = 250
-		
-		war_exhaustion = -75
-		
-		any_pop = {
-		    ideology = { factor = 0.1 value = socialist }
-			ideology = { factor = 0.3 value = communist }
-			militancy = -9
-			consciousness = -9
+		OR = { 
+			AND = { 
+				tag = ITA 
+				RIT = { exists = no } 
+			}
+			AND = { 
+				tag = RIT
+				ITA = { exists = no }
+			}
+			AND = { 
+				RIT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
+				ITA = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } 
+			}
+			AND = { 
+				RIT = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } }
+				ITA = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } 
+			}
+			AND = { 
+				RIT = { OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 government = socialist_democracy } }
+				ITA = { OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 government = socialist_democracy } } 
+			}
+			is_our_vassal = ITA
+			is_our_vassal = RIT
 		}
 		
-		clr_global_flag = italian_civil_war
-		set_country_flag = italian_civil_war
+	}
+
+	mean_time_to_happen = { months = 0.1 }
+
+	option = {
+		name = "We are a united nation once again!"
+		
+		#If Unifier is THIS and communist
+		random_owned = {
+			limit = { owner = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } } }
+			owner = {
+				prestige = 250
+				war_exhaustion = -75
+				any_pop = {
+					ideology = { factor = 0.1 value = socialist }
+					ideology = { factor = 0.3 value = communist }
+					militancy = -9
+					consciousness = -9
+				}
+				clr_global_flag = italian_civil_war
+				set_country_flag = italian_civil_war
+			}
+		}
+		
+		#If Unifier is the other Italy
+		random_country = {
+			limit = { 
+				OR = { tag = ITA tag = RIT }
+				OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } 
+			}
+			prestige = 250
+			war_exhaustion = -75
+			any_pop = {
+				ideology = { factor = 0.1 value = socialist }
+				ideology = { factor = 0.3 value = communist }
+				militancy = -9
+				consciousness = -9
+			}
+			clr_global_flag = italian_civil_war
+			set_country_flag = italian_civil_war
+		}
+		
+		#Player is ITA
+		random_owned = {
+			limit = { 
+				owner = { ITA = { ai = no } } 
+			}
+			owner = { inherit = RIT }
+		}
+		
+		#Player is RIT
+		random_owned = {
+			limit = { 
+				owner = { RIT = { ai = no } } 
+			}
+			owner = { 
+				inherit = ITA
+				change_tag = ITA 
+			}
+		}
+		
+		#Both are AI - ITA
+		random_owned = {
+			limit = { 
+				owner = { 
+					tag = ITA
+					ITA = { ai = yes } 
+					RIT = { ai = yes } 
+				} 
+			}
+			owner = { inherit = RIT }
+		}
+
 	}
 
 }
@@ -488,13 +563,12 @@ country_event = {
   	fire_only_once = yes
 
 	trigger = {
-		tag = RIT 
+		OR = { tag = RIT tag = ITA }
 		NOT = { year = 1990 }
 		
 		government = socialist_democracy
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		election = no
 		
@@ -530,13 +604,12 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		tag = RIT 
+		OR = { tag = RIT tag = ITA }
 		NOT = { year = 1990 }
 		
 		government = socialist_democracy
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		election = no
 		
@@ -575,8 +648,6 @@ country_event = {
 		name = "Opposition (Disables events)"
 		ruling_party_ideology = liberal
 		
-		change_tag = ITA
-		
 		any_pop = { 
 		    ideology = { factor = 0.1 value = conservative }
 			ideology = { factor = 0.1 value = big_tent }		
@@ -601,14 +672,13 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		tag = RIT 
+		OR = { tag = RIT tag = ITA }
 		year = 1948
 		NOT = { year = 1954 }
 		
 		government = socialist_democracy
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		election = no
 		
@@ -667,15 +737,14 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		tag = RIT
+		OR = { tag = RIT tag = ITA }
 		year = 1950
 		month = 1
 		NOT = { year = 1990 }
 		
 		government = socialist_democracy 
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		election = no
 		
@@ -692,18 +761,16 @@ country_event = {
 		name = "Adopt the new Constitution!"
 		prestige = 75
 		
-		change_tag = ITA
-		
 		government = proletarian_dictatorship
 		
 		political_reform = ruling_party_opinion
-        political_reform = nobody_gets_out
-        political_reform = politicised_service
-        political_reform = parties_not_allowed
-        political_reform = censored_publishing
-        political_reform = state_controlled_unions
-        political_reform = none_voting
-        political_reform = no_meetings 
+		political_reform = nobody_gets_out
+		political_reform = politicised_service
+		political_reform = parties_not_allowed
+		political_reform = censored_publishing
+		political_reform = state_controlled_unions
+		political_reform = none_voting
+		political_reform = no_meetings 
 		
 		#Leadership
 		remove_country_modifier = expert_diplomat
@@ -755,8 +822,6 @@ country_event = {
 		name = "Keep stuff as it is"
 		prestige = -50
 		
-		change_tag = ITA
-		
 		random_country = {
 			limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes }
 			relation = { who = THIS value = -400 }
@@ -769,9 +834,9 @@ country_event = {
 		}
       
 		add_country_modifier = { name = political_strife duration = 1825 }
-
-        clr_country_flag = umberto_II
-        clr_country_flag = italian_civil_war
+		
+		clr_country_flag = umberto_II
+		clr_country_flag = italian_civil_war
 		set_country_flag = ITA_1948_republic_flag  
 		set_country_flag = 1953_ITA_FDP
 		ai_chance = { factor = 0.01 }
@@ -795,9 +860,8 @@ country_event = {
 		NOT = { year = 1954 }
 		
 		government = proletarian_dictatorship
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		ruling_party_ideology = communist
 		
@@ -806,6 +870,8 @@ country_event = {
 			government = proletarian_dictatorship 
 			is_greater_power = yes 
 			war = no
+			
+			ruling_party_ideology = communist
 		}
 		
 		has_country_flag = ITA_Togliatti
@@ -886,17 +952,18 @@ country_event = {
 		NOT = { year = 1964 }
 		
 		government = proletarian_dictatorship
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		ruling_party_ideology = communist
 		
 		RUS = { 
 			exists = yes 
+			
 			government = proletarian_dictatorship 
 			is_greater_power = yes 
 			war = no
+			
 			has_country_flag = death_of_stalin_flag
 		}
 		
@@ -929,8 +996,7 @@ country_event = {
 			relation = { who = THIS value = -10 }
 			diplomatic_influence = { who = THIS value = -10 }
 		}
-		
-        any_pop = {
+		any_pop = {
 			consciousness = 2
 		}
 		
@@ -954,9 +1020,8 @@ country_event = {
 		NOT = { year = 1964 }
 		
 		government = proletarian_dictatorship
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		ruling_party_ideology = communist
 		
@@ -984,8 +1049,7 @@ country_event = {
 			ideology = { factor = 0.1 value = communist_social }
 			consciousness = 1
 		}
-	
-	    set_country_flag = ITA_de_stalinization
+		set_country_flag = ITA_de_stalinization
 		ai_chance = { factor = 0.9 }
 	}
 
@@ -997,8 +1061,7 @@ country_event = {
 			relation = { who = THIS value = -25 }
 			diplomatic_influence = { who = THIS value = -10 }
 		}
-		
-        any_pop = {
+		any_pop = {
 			ideology = { factor = 0.07 value = communist }
 		}
 		
@@ -1023,9 +1086,8 @@ country_event = {
 		NOT = { year = 1964 }
 		
 		government = proletarian_dictatorship
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		ruling_party_ideology = communist
 		
@@ -1082,9 +1144,9 @@ country_event = {
 			scaled_consciousness = { factor = 2 ideology = communist_social }
 			scaled_militancy = { factor = 2 ideology = communist_social }
 		}
-	
-	    clr_country_flag = ITA_Togliatti
-	    set_country_flag = ITA_Secchia
+		
+		clr_country_flag = ITA_Togliatti
+		set_country_flag = ITA_Secchia
 		ai_chance = { factor = 0.7 }
 	}
 
@@ -1143,8 +1205,8 @@ country_event = {
 			consciousness = 2
 		}
 		
-		add_country_modifier = { name = purge_ongoing duration = 30 }		
-        ai_chance = { factor = 0.9 }
+		add_country_modifier = { name = purge_ongoing duration = 30 }
+		ai_chance = { factor = 0.9 }
 	}
 	
 	option = {
@@ -1161,17 +1223,17 @@ country_event = {
 		}
 		
 		add_country_modifier = { name = purge_ongoing duration = 90 }
-        ai_chance = { factor = 0.1 }
+		ai_chance = { factor = 0.1 }
 	}
 	
 }
 
 #1960 International Meeting of Communist and Workers Parties
 country_event = {
-  id = 8020508
-  title = "$YEAR$ International Meeting of Communist and Workers Parties"
-  desc = EVT_8020508_DESC
-  picture = "end_of_nikita_khrushchev"
+  	id = 8020508
+  	title = "$YEAR$ International Meeting of Communist & Workers Parties"
+  	desc = EVT_8020508_DESC
+  	picture = "end_of_nikita_khrushchev"
   
 	fire_only_once = yes
 
@@ -1198,6 +1260,8 @@ country_event = {
 		
 		has_country_flag = ITA_Togliatti
 		has_country_flag = ITA_Peoples_Republic
+		
+		#Cold War ongoing
 		has_global_flag = blocsenabled
 	}
 
@@ -1288,6 +1352,7 @@ country_event = {
 		
 		ai_chance = { factor = 0.1 }
 	}
+	
 }
 
 #Our Position in the International Communist Movement
@@ -1388,7 +1453,7 @@ country_event = {
 		
 		ruling_party_ideology = communist
 		
-		749 = { owner = ITA NOT = { has_province_modifier = vatican_city } } #Rome
+		749 = { owned_by = THIS NOT = { has_province_modifier = vatican_city } } #Rome
 		
 		has_global_flag = papal_exile
 		has_country_flag = ITA_Peoples_Republic
@@ -1457,7 +1522,7 @@ country_event = {
 		
 		ruling_party_ideology = communist
 		
-		749 = { owner = ITA NOT = { has_province_modifier = vatican_city } } #Rome
+		749 = { owned_by = THIS NOT = { has_province_modifier = vatican_city } } #Rome
 		
 		has_country_flag = PCI_Pope_deal
 		has_country_flag = ITA_Peoples_Republic
@@ -1492,6 +1557,7 @@ country_event = {
 		
 		clr_country_flag = PCI_Pope_deal
 		clr_global_flag = papal_exile
+		clr_global_flag = vatican_city_annexed_flag
 	}
 
 }
@@ -1519,7 +1585,7 @@ country_event = {
 		
 		ruling_party_ideology = communist
 		
-		749 = { owner = ITA NOT = { has_province_modifier = vatican_city } } 
+		749 = { owned_by = THIS NOT = { has_province_modifier = vatican_city } } 
 		
 		has_country_flag = ITA_Peoples_Republic
 	}
@@ -1595,6 +1661,8 @@ country_event = {
 		}
 		
 		749 = { add_province_modifier = { name = vatican_city duration = -1 } } #Rome
+		
+		clr_global_flag = vatican_city_annexed_flag
 		
 	}
 
@@ -1717,7 +1785,7 @@ country_event = {
 		any_pop = { 
 			ideology = { factor = 0.04 value = communist } 
 			ideology = { factor = 0.02 value = communist_social }
-            consciousness = 2		
+			consciousness = 2		
 		}
 		
 		clr_country_flag = ITA_Togliatti
@@ -1877,10 +1945,11 @@ country_event = {
 			scaled_consciousness = { factor = -4 ideology = communist }
 			scaled_militancy = { factor = -4 ideology = communist }
 		}
-	
-	    set_country_flag = ITA_Ingrao
+		
+		set_country_flag = ITA_Ingrao
 		ai_chance = { factor = 0.2 }
 	}
+	
 }
 
 #Successor of Togliatti 2
@@ -1947,8 +2016,8 @@ country_event = {
 			scaled_consciousness = { factor = -4 ideology = communist }
 			scaled_militancy = { factor = -4 ideology = communist }
 		}
-	
-	    set_country_flag = ITA_Iotti
+		
+		set_country_flag = ITA_Iotti
 		ai_chance = { factor = 0.7 }
 	}
 	
@@ -1992,8 +2061,8 @@ country_event = {
 			scaled_consciousness = { factor = -2 ideology = communist_social }
 			scaled_militancy = { factor = -2 ideology = communist_social }
 		}
-	
-	    set_country_flag = ITA_Longo
+		
+		set_country_flag = ITA_Longo
 		ai_chance = { factor = 0.3 }
 	}
 	
@@ -2063,8 +2132,8 @@ country_event = {
 			scaled_consciousness = { factor = -4 ideology = communist }
 			scaled_militancy = { factor = -4 ideology = communist }
 		}
-	
-	    set_country_flag = ITA_Iotti
+		
+		set_country_flag = ITA_Iotti
 		ai_chance = { factor = 0.6 }
 	}
 	
@@ -2105,8 +2174,8 @@ country_event = {
 			scaled_consciousness = { factor = -4 ideology = communist }
 			scaled_militancy = { factor = -4 ideology = communist }
 		}
-	
-	    set_country_flag = ITA_Secchia
+		
+		set_country_flag = ITA_Secchia
 		ai_chance = { factor = 0.4 }
 	}
 	
@@ -2130,9 +2199,8 @@ country_event = {
 		NOT = { year = 1957 }
 		
 		government = proletarian_dictatorship
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		ruling_party_ideology = communist
 		
@@ -2242,7 +2310,7 @@ country_event = {
 	    
 		clr_country_flag = ITA_Secchia
 		clr_country_flag = ITA_Togliatti_power_struggle
-	    set_country_flag = ITA_Togliatti
+		set_country_flag = ITA_Togliatti
 		set_country_flag = ITA_de_stalinization
 		ai_chance = { factor = 0.1 }
 	}
@@ -2263,9 +2331,8 @@ country_event = {
 		NOT = { year = 1964 }
 		
 		government = proletarian_dictatorship
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		ruling_party_ideology = communist
 		
@@ -2333,7 +2400,7 @@ country_event = {
 		add_country_modifier = { name = purge_ongoing duration = 30 }
 	    
 		clr_country_flag = ITA_Secchia
-	    set_country_flag = ITA_Togliatti
+		set_country_flag = ITA_Togliatti
 		set_country_flag = ITA_de_stalinization
 		ai_chance = { factor = 0.4 }
 	}
@@ -2356,11 +2423,10 @@ country_event = {
 		NOT = { year = 1961 }
 		
 		government = proletarian_dictatorship
-		
-		money = -500000
-		
-		war = no
 		is_vassal = no
+		war = no
+		
+		money = 600000
 		
 		ruling_party_ideology = communist
 		
@@ -2423,11 +2489,11 @@ country_event = {
 		month = 11
 		NOT = { year = 1973 }
 		
-		money = 200000
-		
 		government = proletarian_dictatorship 
 		is_vassal = no
 		war = no
+		
+		money = 200000
 		
 		ruling_party_ideology = communist
 		
@@ -2445,10 +2511,18 @@ country_event = {
 		
 		#Relations with Third World Countries
 		any_country = { 
-            limit = { is_vassal = no NOT = { has_country_modifier = democratic_bloc } OR = { capital_scope = { continent = mena } capital_scope = { continent = asia } capital_scope = { continent = africa } } } 
-            relation = { who = THIS value = 10 }
-
-        }
+			limit = { 
+				OR = { 
+					capital_scope = { continent = mena } 
+					capital_scope = { continent = asia } 
+					capital_scope = { continent = africa } 
+				}
+				is_vassal = no 
+				
+				NOT = { has_country_modifier = democratic_bloc } 
+			} 
+			relation = { who = THIS value = 10 }
+		}
 		
 		set_country_flag = ITA_Secchia_tour
 		ai_chance = { factor = 0.9 }
@@ -2503,97 +2577,48 @@ country_event = {
 		
 		#Relations with MENA Countries
 		any_country = { 
-            limit = { is_vassal = no NOT = { has_country_modifier = democratic_bloc } capital_scope = { continent = mena } } 
-            relation = { who = THIS value = 10 }
+			limit = { 
+				capital_scope = { continent = mena }
+				is_vassal = no 
+				
+				NOT = { has_country_modifier = democratic_bloc } 
+			} 
+			relation = { who = THIS value = 10 }
 			diplomatic_influence = { who = THIS value = 5 }
-        }
+		}
 		
 		#Relations with Syria, Egypt, Libya and Algeria in particular
-		random_country = { 
-            limit = { tag = UAR primary_culture = arab OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship } OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social } is_vassal = no } 
-            relation = { who = THIS value = 50 }
+		any_country = { 
+			limit = { 
+				exists = yes
+			
+				OR = { tag = UAR tag = EGY tag = SYR tag = LBY tag = ALG }
+				
+				primary_culture = arab 
+				
+				OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship } 
+				is_vassal = no
+				
+				OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social } 
+			} 
+			
+			relation = { who = THIS value = 50 }
 			diplomatic_influence = { who = THIS value = 10 }
+			
 			money = 10000
 			small_arms = 100
 			weaponry = 100
 			aeroplanes = 100
 			ammunition = 100
 			automobiles = 100
+			
 			any_pop = {  
 			    ideology = { factor = 0.03 value = socialist }
 			    ideology = { factor = 0.01 value = communist }
 			    scaled_militancy = { factor = -2 ideology = communist }
 			    scaled_consciousness = { factor = -2 ideology = communist }
-		    }
-        }
-		random_country = { 
-            limit = { tag = EGY primary_culture = arab OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship } OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social } is_vassal = no } 
-            relation = { who = THIS value = 50 }
-			diplomatic_influence = { who = THIS value = 10 }
-			money = 10000
-			small_arms = 100
-			weaponry = 100
-			aeroplanes = 100
-			ammunition = 100
-			automobiles = 100
-			any_pop = {  
-			    ideology = { factor = 0.03 value = socialist }
-			    ideology = { factor = 0.01 value = communist }
-			    scaled_militancy = { factor = -2 ideology = communist }
-			    scaled_consciousness = { factor = -2 ideology = communist }
-		    }
-        }
-		random_country = { 
-            limit = { tag = SYR primary_culture = arab OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship } OR = { ruling_party_ideology = nationalist ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social } is_vassal = no } 
-            relation = { who = THIS value = 50 }
-			diplomatic_influence = { who = THIS value = 10 }
-			money = 10000
-			small_arms = 100
-			weaponry = 100
-			aeroplanes = 100
-			ammunition = 100
-			automobiles = 100
-			any_pop = {  
-			    ideology = { factor = 0.03 value = socialist }
-			    ideology = { factor = 0.01 value = communist }
-			    scaled_militancy = { factor = -2 ideology = communist }
-			    scaled_consciousness = { factor = -2 ideology = communist }
-		    }
-        }
-		random_country = { 
-            limit = { tag = LYB primary_culture = arab OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship } OR = { ruling_party_ideology = nationalist ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social } is_vassal = no } 
-            relation = { who = THIS value = 50 }
-			diplomatic_influence = { who = THIS value = 10 }
-			money = 10000
-			small_arms = 100
-			weaponry = 100
-			aeroplanes = 100
-			ammunition = 100
-			automobiles = 100
-			any_pop = {  
-			    ideology = { factor = 0.03 value = socialist }
-			    ideology = { factor = 0.01 value = communist }
-			    scaled_militancy = { factor = -2 ideology = communist }
-			    scaled_consciousness = { factor = -2 ideology = communist }
-		    }
-        }
-		random_country = { 
-            limit = { tag = ALG primary_culture = arab OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = presidential_dictatorship } OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social } is_vassal = no } 
-            relation = { who = THIS value = 50 }
-			diplomatic_influence = { who = THIS value = 10 }
-			money = 10000
-			small_arms = 100
-			weaponry = 100
-			aeroplanes = 100
-			ammunition = 100
-			automobiles = 100
-			any_pop = {  
-			    ideology = { factor = 0.03 value = socialist }
-			    ideology = { factor = 0.01 value = communist }
-			    scaled_militancy = { factor = -2 ideology = communist }
-			    scaled_consciousness = { factor = -2 ideology = communist }
-		    }
-        }
+			}
+		}
 		
 	}
 
@@ -2634,17 +2659,19 @@ country_event = {
 		prestige = 25
 		
 		#Relations with Israel
-		any_country = { 
-            limit = { tag = ISR primary_culture = jewish is_vassal = no } 
-            relation = { who = THIS value = -50 }
+		random_country = { 
+			limit = { tag = ISR primary_culture = jewish is_vassal = no } 
+			relation = { who = THIS value = -50 }
 			diplomatic_influence = { who = THIS value = -100 }
-        }
+		}
 		
 		#Relations with countries that had war with Israel
 		any_country = { 
-            limit = { truce_with = ISR is_vassal = no capital_scope = { continent = mena } } 
-            relation = { who = THIS value = 25 }
+			limit = { capital_scope = { continent = mena } is_vassal = no truce_with = ISR } 
+			
+			relation = { who = THIS value = 25 }
 			diplomatic_influence = { who = THIS value = 10 }
+			
 			money = 10000
 			small_arms = 100
 			weaponry = 100
@@ -2656,8 +2683,8 @@ country_event = {
 			    ideology = { factor = 0.01 value = communist }
 			    scaled_militancy = { factor = -2 ideology = communist }
 			    scaled_consciousness = { factor = -2 ideology = communist }
-		    }
-        }
+		    	}
+        	}
 		
 	}
 
@@ -2697,61 +2724,38 @@ country_event = {
 		
 		#Relations with African Countries
 		any_country = { 
-            limit = { is_vassal = no has_country_modifier = communist_bloc capital_scope = { continent = africa } } 
-            relation = { who = THIS value = 10 }
+			limit = { capital_scope = { continent = africa } is_vassal = no has_country_modifier = communist_bloc } 
+			relation = { who = THIS value = 10 }
 			diplomatic_influence = { who = THIS value = 5 }
-        }
+		}
 		
 		#Relations with Sudan, Somalia and Ethiopia in particular
-		random_country = { 
-            limit = { tag = ETH OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = populist_dictatorship government = nationalist_dictatorship } OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } is_vassal = no } 
-            relation = { who = THIS value = 50 }
+		any_country = { 
+			limit = { 
+				OR = { tag = ETH tag = SOM tag = SUD }
+				
+				OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = populist_dictatorship government = nationalist_dictatorship } 
+				is_vassal = no 
+				
+				OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } 
+			} 
+			
+			relation = { who = THIS value = 50 }
 			diplomatic_influence = { who = THIS value = 10 }
+			
 			money = 10000
 			small_arms = 100
 			weaponry = 100
 			aeroplanes = 100
 			ammunition = 100
 			automobiles = 100
+			
 			any_pop = {  
 			    ideology = { factor = 0.03 value = communist }
 			    scaled_militancy = { factor = -2 ideology = communist }
 			    scaled_consciousness = { factor = -2 ideology = communist }
-		    }
-        }
-		random_country = { 
-            limit = { tag = SOM OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } is_vassal = no } 
-            relation = { who = THIS value = 50 }
-			diplomatic_influence = { who = THIS value = 10 }
-			money = 10000
-			small_arms = 100
-			weaponry = 100
-			aeroplanes = 100
-			ammunition = 100
-			automobiles = 100
-			any_pop = {  
-			    ideology = { factor = 0.03 value = communist }
-			    scaled_militancy = { factor = -2 ideology = communist }
-			    scaled_consciousness = { factor = -2 ideology = communist }
-		    }
-        }
-		random_country = { 
-            limit = { tag = SUD primary_culture = arab OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship } OR = { ruling_party_ideology = nationalist ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social } is_vassal = no } 
-            relation = { who = THIS value = 50 }
-			diplomatic_influence = { who = THIS value = 10 }
-			money = 10000
-			small_arms = 100
-			weaponry = 100
-			aeroplanes = 100
-			ammunition = 100
-			automobiles = 100
-			any_pop = {  
-			    ideology = { factor = 0.03 value = socialist }
-			    ideology = { factor = 0.01 value = communist }
-			    scaled_militancy = { factor = -2 ideology = communist }
-			    scaled_consciousness = { factor = -2 ideology = communist }
-		    }
-        }
+			}
+        	}
 		
 	}
 
@@ -2785,7 +2789,7 @@ country_event = {
 		name = "Launch the campaign!"
 		badboy = 5
 		
-        any_pop = { 
+		any_pop = { 
 		    limit = { type = bureaucrats has_pop_religion = catholic } 
 			pop_type = craftsmen 
 		}
@@ -2793,7 +2797,7 @@ country_event = {
 		    limit = { type = officers has_pop_religion = catholic } 
 			pop_type = soldiers 
 		}
-        any_pop = { 
+		any_pop = { 
 		    limit = { type = aristocrats } 
 			pop_type = clerks 
 		}
@@ -2842,8 +2846,8 @@ country_event = {
 		NOT = { year = 1973 }
 		
 		government = proletarian_dictatorship
-		war = no
 		is_vassal = no
+		war = no
 		
 		CHI = { exists = yes government = proletarian_dictatorship is_greater_power = yes }
 		
@@ -2906,6 +2910,7 @@ country_event = {
 		
 		ai_chance = { factor = 0.1 }
 	}
+	
 }
 
 #Successor of Secchia
@@ -2924,7 +2929,7 @@ country_event = {
 		NOT = { year = 1990 }
 		
 		government = proletarian_dictatorship
-		is_vassal = no
+		
 		war = no
 		
 		has_country_flag = ITA_Secchia
@@ -2973,8 +2978,8 @@ country_event = {
 			scaled_consciousness = { factor = -4 ideology = communist }
 			scaled_militancy = { factor = -4 ideology = communist }
 		}
-	
-	    set_country_flag = ITA_Ingrao
+		
+		set_country_flag = ITA_Ingrao
 		set_country_flag = ITA_Ingrao_Secchia
 		ai_chance = { factor = 0.7 }
 	}
@@ -3019,11 +3024,11 @@ country_event = {
 			scaled_consciousness = { factor = -4 ideology = communist_social }
 			scaled_militancy = { factor = -4 ideology = communist_social }
 		}
-	
-	    set_country_flag = ITA_Boldrini
+		
+		set_country_flag = ITA_Boldrini
 		ai_chance = { factor = 0.3 }
 	}
-	
+
 }
 
 ### Luigi Longo ###
@@ -3031,7 +3036,7 @@ country_event = {
 #USSR friend again
 country_event = { 
 	id = 8020532
-	title = "Our Position in the International Communist Movement Revalued"
+	title = "Our Position in the Communist World Revalued"
 	desc = EVT_8020532_DESC
 	picture = "ITA_PCI_Longo_Soviet"
 
@@ -3044,8 +3049,10 @@ country_event = {
 		NOT = { year = 1972 }
 		
 		government = proletarian_dictatorship
-		war = no
 		is_vassal = no
+		war = no
+		
+		RUS = { exists = yes government = proletarian_dictatorship is_greater_power = yes }
 		
 		has_country_flag = ITA_China
 		has_country_flag = ITA_Longo		
@@ -3222,7 +3229,7 @@ country_event = {
 			limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes }
 			relation = { who = THIS value = -25 }
 			diplomatic_influence = { who = THIS value = -10 }
-        }
+		}
 		
 		any_pop = {
 		    ideology = { factor = 0.01 value = communist }
@@ -3247,7 +3254,7 @@ country_event = {
 			limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes }
 			relation = { who = THIS value = 25 }
 			diplomatic_influence = { who = THIS value = 10 }
-        }
+		}
 		
 		any_pop = {
 		    ideology = { factor = 0.05 value = communist }
@@ -3276,8 +3283,8 @@ country_event = {
 		NOT = { year = 1980 }
 		
 		government = proletarian_dictatorship
-		war = no
 		is_vassal = no
+		war = no
 		
 		CZH = { exists = yes government = socialist_democracy }
 		
@@ -3360,13 +3367,16 @@ country_event = {
 		NOT = { year = 1980 }
 		
 		government = proletarian_dictatorship
-		war = no
 		is_vassal = no
+		war = no
 		
 		OR = { has_country_flag = ITA_Polycentrism_1 has_country_flag = ITA_Polycentrism_2 }
 		has_country_flag = ITA_Longo		
 		has_country_flag = ITA_Peoples_Republic
 		has_global_flag = CZH_prague_spring_USSR_flag
+		
+		#CW ongoing so that means USSR exists
+		has_global_flag = blocsenabled
 	}
 	
 	mean_time_to_happen = { days = 1 }
@@ -3439,15 +3449,18 @@ country_event = {
 		random_country = {
 			limit = { tag = ITA OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } is_vassal = no }
 			relation = { who = THIS value = -5 }
-        }
+		}
 	
 		#Warsaw pact
 		any_country = {
 			limit = {
 				exists = yes
-				OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
-				ruling_party_ideology = communist
+				
 				capital_scope = { continent = europe }
+				
+				OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+				
+				ruling_party_ideology = communist
 			}
 			any_pop = {
 				consciousness = 1
@@ -3463,6 +3476,7 @@ country_event = {
 				ITA = { has_country_flag = ITA_Polycentrism_1 }
 			}
 		}
+		
 	}
 	
 	option = {
@@ -3475,7 +3489,7 @@ country_event = {
 			limit = { tag = ITA OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } is_vassal = no }
 			relation = { who = THIS value = -25 }
 			country_event = 8020539
-        }
+		}
 		
 		ai_chance = { factor = 0.3 }
 	}
@@ -3572,8 +3586,8 @@ country_event = {
 		NOT = { year = 1980 }
 		
 		government = proletarian_dictatorship
-		war = no
 		is_vassal = no
+		war = no
 		
 		has_country_flag = ITA_Longo
 		OR = { has_country_flag = ITA_Polycentrism_1 has_country_flag = ITA_Polycentrism_2 }
@@ -3624,8 +3638,8 @@ country_event = {
 			scaled_consciousness = { factor = -2 ideology = communist_social }
 			scaled_militancy = { factor = -2 ideology = communist_social }
 		}
-	
-	    set_country_flag = ITA_Berlinguer
+		
+		set_country_flag = ITA_Berlinguer
 		ai_chance = { factor = 0.9 }
 	}
 	
@@ -3667,8 +3681,8 @@ country_event = {
 			scaled_consciousness = { factor = -4 ideology = communist_social }
 			scaled_militancy = { factor = -4 ideology = communist_social }
 		}
-	
-	    set_country_flag = ITA_Napolitano
+		
+		set_country_flag = ITA_Napolitano
 		ai_chance = { factor = 0.3 }
 	}
 	
@@ -3690,8 +3704,8 @@ country_event = {
 		NOT = { year = 1990 }
 		
 		government = proletarian_dictatorship
-		war = no
 		is_vassal = no
+		war = no
 		
 		has_country_flag = ITA_Longo
 		OR = { has_country_flag = ITA_Polycentrism_1 has_country_flag = ITA_Polycentrism_2 }
@@ -3742,8 +3756,8 @@ country_event = {
 			scaled_consciousness = { factor = -2 ideology = communist_social }
 			scaled_militancy = { factor = -2 ideology = communist_social }
 		}
-	
-	    set_country_flag = ITA_Pajetta
+		
+		set_country_flag = ITA_Pajetta
 		ai_chance = { factor = 0.6 }
 	}
 	
@@ -3785,8 +3799,8 @@ country_event = {
 			scaled_consciousness = { factor = -4 ideology = communist_social }
 			scaled_militancy = { factor = -4 ideology = communist_social }
 		}
-	
-	    set_country_flag = ITA_Napolitano
+		
+		set_country_flag = ITA_Napolitano
 		ai_chance = { factor = 0.2 }
 	}
 	
@@ -3919,13 +3933,13 @@ country_event = {
 		month = 6
 		NOT = { year = 1980 }
 		
-		money = 150000
-		
 		government = proletarian_dictatorship
 		is_vassal = no
 		war = no
 		
 		ruling_party_ideology = communist_social
+		
+		money = 150000
 		
 		has_country_flag = ITA_Amendola
 		has_country_flag = ITA_Peoples_Republic
@@ -3947,86 +3961,36 @@ country_event = {
 		}
 		
 		#Relations with Reformist Communists if they exist
-		random_country = {   
-			limit = { tag = SPA OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } ruling_party_ideology = communist_social is_vassal = no }
-			diplomatic_influence = { who = THIS value = 50 } 
-			relation = { who = THIS value = 50 }
-		}
-		random_country = {   
-			limit = { tag = POR OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } ruling_party_ideology = communist_social is_vassal = no }
-			diplomatic_influence = { who = THIS value = 50 } 
-			relation = { who = THIS value = 50 }
-		}
-		random_country = {   
-			limit = { tag = FRA OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } ruling_party_ideology = communist_social is_vassal = no }
-			diplomatic_influence = { who = THIS value = 50 } 
-			relation = { who = THIS value = 50 }
-		}
-		random_country = {   
-			limit = { tag = GRE OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } ruling_party_ideology = communist_social is_vassal = no }
-			diplomatic_influence = { who = THIS value = 50 } 
-			relation = { who = THIS value = 50 }
-		}
-		random_country = {   
-			limit = { tag = YUG OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } ruling_party_ideology = communist_social is_vassal = no }
-			diplomatic_influence = { who = THIS value = 50 } 
-			relation = { who = THIS value = 50 }
-		}
-		random_country = {   
-			limit = { tag = HUN OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } ruling_party_ideology = communist_social is_vassal = no }
-			diplomatic_influence = { who = THIS value = 50 } 
-			relation = { who = THIS value = 50 }
-		}
-		random_country = {   
-			limit = { tag = ROM OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } ruling_party_ideology = communist_social is_vassal = no }
-			diplomatic_influence = { who = THIS value = 50 } 
-			relation = { who = THIS value = 50 }
-		}
-		random_country = {   
-			limit = { tag = BUL OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } ruling_party_ideology = communist_social is_vassal = no }
-			diplomatic_influence = { who = THIS value = 50 } 
-			relation = { who = THIS value = 50 }
-		}
-		random_country = {   
-			limit = { tag = CZE OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } ruling_party_ideology = communist_social is_vassal = no }
+		any_country = {
+			limit = { 
+				exists = yes
+			
+				OR = { tag = SPA tag = POR tag = FRA tag = GRE tag = YUG tag = HUN tag = ROM tag = BUL tag = CZH }
+				
+				OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+				is_vassal = no 
+				
+				ruling_party_ideology = communist_social 
+			}
+			
 			diplomatic_influence = { who = THIS value = 50 } 
 			relation = { who = THIS value = 50 }
 		}
 		
 		#Boost to European Communists and Eurocommunists
-		random_country = {   
-			limit = { tag = SPA OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } is_vassal = no }
+		any_country = {
+			limit = { 
+				exists = yes
+				
+				OR = { tag = SPA tag = POR tag = FRA tag = GRE tag = DEN }
+				
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+				is_vassal = no 
+			}
 			any_pop = { 
 			    ideology = { factor = 0.03 value = communist }
 			    ideology = { factor = 0.06 value = communist_social }
-		    }
-		}
-		random_country = {   
-			limit = { tag = POR OR = { government = democracy government = democracy1 } is_vassal = no }
-			any_pop = { 
-			    ideology = { factor = 0.04 value = communist }
-			    ideology = { factor = 0.05 value = communist_social }
-		    }
-		}
-		random_country = {   
-			limit = { tag = FRA OR = { government = democracy government = democracy1 } is_vassal = no }
-			any_pop = { 
-			    ideology = { factor = 0.03 value = communist }
-			    ideology = { factor = 0.06 value = communist_social }
-		    }
-		}
-		random_country = {   
-			limit = { tag = GRE OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } is_vassal = no }
-			any_pop = { 
-			    ideology = { factor = 0.01 value = communist }
-			    ideology = { factor = 0.08 value = communist_social }
-		    }
-		}
-		random_country = {   
-			limit = { tag = DEN OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } is_vassal = no }
-			any_pop = { 
-			    ideology = { factor = 0.09 value = communist_social }
-		    }
+			}
 		}
 		
 		set_country_flag = Amendola_Eurocommunism
@@ -4075,6 +4039,7 @@ country_event = {
 		
 		RUS = { 
 			exists = yes 
+			
 			government = proletarian_dictatorship 
 			is_greater_power = yes 
 			war = no
@@ -4104,132 +4069,34 @@ country_event = {
 		}
 		
 		#Relations with Independent and Neutral Communists
-		random_country = {   
-			limit = { tag = SPA OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } ruling_party_ideology = communist_social is_vassal = no }
-			diplomatic_influence = { who = THIS value = 50 } 
-			relation = { who = THIS value = 50 }
-		}
-		random_country = {   
-			limit = { tag = POR OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } ruling_party_ideology = communist_social is_vassal = no }
-			diplomatic_influence = { who = THIS value = 50 } 
-			relation = { who = THIS value = 50 }
-		}
-		random_country = {   
-			limit = { tag = FRA OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } ruling_party_ideology = communist_social is_vassal = no }
-			diplomatic_influence = { who = THIS value = 50 } 
-			relation = { who = THIS value = 50 }
-		}
-		random_country = {   
-			limit = { tag = GRE OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } ruling_party_ideology = communist_social is_vassal = no }
-			diplomatic_influence = { who = THIS value = 50 } 
-			relation = { who = THIS value = 50 }
-		}
-		random_country = {   
-			limit = { tag = CYP OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } ruling_party_ideology = communist_social is_vassal = no }
-			diplomatic_influence = { who = THIS value = 50 } 
-			relation = { who = THIS value = 50 }
-		}
-		random_country = {   
-			limit = { tag = SWE OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } ruling_party_ideology = communist_social is_vassal = no }
-			diplomatic_influence = { who = THIS value = 50 } 
-			relation = { who = THIS value = 50 }
-		}
-		random_country = {   
-			limit = { tag = FIN OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } ruling_party_ideology = communist_social is_vassal = no }
-			diplomatic_influence = { who = THIS value = 50 } 
-			relation = { who = THIS value = 50 }
-		}
-		random_country = {   
-			limit = { tag = ENG OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } ruling_party_ideology = communist_social is_vassal = no }
-			diplomatic_influence = { who = THIS value = 50 } 
-			relation = { who = THIS value = 50 }
-		}
-		random_country = {   
-			limit = { tag = YUG OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } ruling_party_ideology = communist_social is_vassal = no }
-			diplomatic_influence = { who = THIS value = 50 } 
-			relation = { who = THIS value = 50 }
-		}
-		random_country = {   
-			limit = { tag = HUN OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } ruling_party_ideology = communist_social is_vassal = no }
-			diplomatic_influence = { who = THIS value = 50 } 
-			relation = { who = THIS value = 50 }
-		}
-		random_country = {   
-			limit = { tag = ROM OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } OR = { ruling_party_ideology = communist_social has_country_flag = nicolae_ceausescu_flag } is_vassal = no }
-			diplomatic_influence = { who = THIS value = 50 } 
-			relation = { who = THIS value = 50 }
-		}
-		random_country = {   
-			limit = { tag = BUL OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } ruling_party_ideology = communist_social is_vassal = no }
-			diplomatic_influence = { who = THIS value = 50 } 
-			relation = { who = THIS value = 50 }
-		}
-		random_country = {   
-			limit = { tag = CZE OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } ruling_party_ideology = communist_social is_vassal = no }
+		any_country = {   
+			limit = { 
+				exists = yes
+				
+				OR = { tag = SPA tag = POR tag = FRA tag = GRE tag = CYP tag = SWE tag = FIN tag = ENG tag = YUG tag = HUN tag = ROM tag = BUL tag = CZH }
+				
+				OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } 
+				is_vassal = no 
+				
+				ruling_party_ideology = communist_social 
+			}
 			diplomatic_influence = { who = THIS value = 50 } 
 			relation = { who = THIS value = 50 }
 		}
 		
 		#Boost to European Eurocommunists
-		random_country = {   
-			limit = { tag = SPA OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } is_vassal = no }
+		any_country = {
+			limit = { 
+				exists = yes
+				
+				OR = { tag = SPA tag = FRA tag = ENG tag = SWE tag = FIN tag = SWI tag = CYP tag = IRE tag = NET tag = BEL }
+				
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+				is_vassal = no 
+			}
 			any_pop = { 
-			    ideology = { factor = 0.03 value = communist_social }
-		    }
-		}
-		random_country = {   
-			limit = { tag = FRA OR = { government = democracy government = democracy1 } is_vassal = no }
-			any_pop = { 
-			    ideology = { factor = 0.03 value = communist_social }
-		    }
-		}
-		random_country = {   
-			limit = { tag = ENG OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } is_vassal = no }
-			any_pop = { 
-			    ideology = { factor = 0.06 value = communist_social }
-		    }
-		}
-		random_country = {   
-			limit = { tag = SWE OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } is_vassal = no }
-			any_pop = { 
-			    ideology = { factor = 0.06 value = communist_social }
-		    }
-		}
-		random_country = {   
-			limit = { tag = FIN OR = { government = democracy government = democracy1 } is_vassal = no }
-			any_pop = { 
-			    ideology = { factor = 0.06 value = communist_social }
-		    }
-		}
-		random_country = {   
-			limit = { tag = SWI OR = { government = democracy government = democracy1 } is_vassal = no }
-			any_pop = { 
-			    ideology = { factor = 0.03 value = communist_social }
-		    }
-		}
-		random_country = {   
-			limit = { tag = CYP OR = { government = democracy government = democracy1 } is_vassal = no }
-			any_pop = { 
-			    ideology = { factor = 0.03 value = communist_social }
-		    }
-		}
-		random_country = {   
-			limit = { tag = IRE OR = { government = democracy government = democracy1 } is_vassal = no }
-			any_pop = { 
-			    ideology = { factor = 0.03 value = communist_social }
-		    }
-		}
-		random_country = {   
-			limit = { tag = NET OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } is_vassal = no }
-			any_pop = { 
-			    ideology = { factor = 0.03 value = communist_social }
-		    }
-		}
-		random_country = {   
-			limit = { tag = BEL OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } is_vassal = no }
-			any_pop = { 
-			    ideology = { factor = 0.06 value = communist_social }
-		    }
+			    ideology = { factor = 0.05 value = communist_social }
+			}
 		}
 		
 		set_country_flag = Amendola_Eurocommunism
@@ -4275,7 +4142,7 @@ country_event = {
 		random_country = {
 			limit = { tag = ITA OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } is_vassal = no }
 			relation = { who = THIS value = -15 }
-        }
+		}
 		
 		ai_chance = { factor = 0.7 }
 	}
@@ -4290,7 +4157,7 @@ country_event = {
 			limit = { tag = ITA OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } is_vassal = no }
 			relation = { who = THIS value = -25 }
 			country_event = 8020545
-        }
+		}
 		
 		ai_chance = { factor = 0.2 }
 	}
@@ -4300,7 +4167,7 @@ country_event = {
 		badboy = 5
 
 		war = {
-			target = ITA
+			target = FROM
 			attacker_goal = {
 				casus_belli = make_puppet
 			}
@@ -4474,8 +4341,8 @@ country_event = {
 		add_country_modifier = { name = collective_leadership duration = 1725 }
 		
 		add_country_modifier = { name = purge_ongoing duration = 30 }
-	
-	    clr_country_flag = ITA_Amendola
+		
+		clr_country_flag = ITA_Amendola
 		set_country_flag = ITA_Collective_Leadership
 		ai_chance = { factor = 0.9 }
 	}
@@ -4496,9 +4363,8 @@ country_event = {
 		year = 1976 
 		
 		government = proletarian_dictatorship
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		ruling_party_ideology = communist
 		
@@ -4556,8 +4422,8 @@ country_event = {
 		
 		remove_country_modifier = collective_leadership 
 		add_country_modifier = { name = purge_ongoing duration = 30 }
-	
-	    set_country_flag = ITA_Berlinguer
+		
+		set_country_flag = ITA_Berlinguer
 		set_country_flag = Occhetto_purged
 		ai_chance = { factor = 0.9 }
 	}
@@ -4604,8 +4470,8 @@ country_event = {
 		
 		remove_country_modifier = collective_leadership 
 		add_country_modifier = { name = purge_ongoing duration = 30 }
-	    
-	    set_country_flag = ITA_Occhetto
+		
+		set_country_flag = ITA_Occhetto
 		ai_chance = { factor = 0.4 }
 	}
 
@@ -4643,10 +4509,10 @@ country_event = {
 		prestige = 25
 		
 		political_reform = regulated_opinion
-        political_reform = elitist_service
-        political_reform = gender_neutrallity
-        political_reform = firewall_publishing
-        political_reform = limited_meetings 
+		political_reform = elitist_service
+		political_reform = gender_neutrallity
+		political_reform = firewall_publishing
+		political_reform = limited_meetings 
 		
 		any_pop = { 
 			consciousness = -4 
@@ -4675,8 +4541,8 @@ country_event = {
 		NOT = { year = 1990 }
 		
 		government = proletarian_dictatorship
-		war = no
 		is_vassal = no
+		war = no
 		
 		has_country_flag = ITA_Amendola
 		has_country_flag = ITA_Peoples_Republic
@@ -4724,8 +4590,8 @@ country_event = {
 			scaled_consciousness = { factor = -4 ideology = communist_social }
 			scaled_militancy = { factor = -4 ideology = communist_social }
 		}
-	
-	    set_country_flag = ITA_Napolitano
+		
+		set_country_flag = ITA_Napolitano
 		ai_chance = { factor = 0.7 }
 	}
 	
@@ -4811,8 +4677,8 @@ country_event = {
 			scaled_consciousness = { factor = -2 ideology = communist_social }
 			scaled_militancy = { factor = -2 ideology = communist_social }
 		}
-	
-	    set_country_flag = ITA_Pajetta
+		
+		set_country_flag = ITA_Pajetta
 		ai_chance = { factor = 0.1 }
 	}
 	
@@ -4835,13 +4701,12 @@ country_event = {
 		NOT = { year = 2015 }
 		
 		government = proletarian_dictatorship 
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		ruling_party_ideology = communist
-
-        has_country_flag = ITA_Ingrao
+		
+		has_country_flag = ITA_Ingrao
 		has_country_flag = ITA_Peoples_Republic
 	}
 
@@ -4874,9 +4739,9 @@ country_event = {
 		add_country_modifier = { name = collective_leadership duration = 7300 }
 		
 		add_country_modifier = { name = purge_ongoing duration = 90 }
-	
-	    clr_country_flag = ITA_Ingrao_Secchia
-	    clr_country_flag = ITA_Ingrao
+		
+		clr_country_flag = ITA_Ingrao_Secchia
+		clr_country_flag = ITA_Ingrao
 		set_country_flag = ITA_Gang_of_four
 		ai_chance = { factor = 0.2 }
 	}
@@ -4898,13 +4763,12 @@ country_event = {
 		NOT = { year = 2015 }
 		
 		government = proletarian_dictatorship 
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		ruling_party_ideology = communist
-
-        has_country_flag = ITA_Ingrao
+		
+		has_country_flag = ITA_Ingrao
 		has_country_flag = ITA_Ingrao_Secchia
 		has_country_flag = ITA_Peoples_Republic
 	}
@@ -4970,9 +4834,9 @@ country_event = {
 		add_country_modifier = { name = collective_leadership duration = 7300 }
 		
 		add_country_modifier = { name = purge_ongoing duration = 90 }
-	
-	    clr_country_flag = ITA_Ingrao_Secchia
-	    clr_country_flag = ITA_Ingrao
+		
+		clr_country_flag = ITA_Ingrao_Secchia
+		clr_country_flag = ITA_Ingrao
 		set_country_flag = ITA_Gang_of_four
 	}
 
@@ -4994,14 +4858,13 @@ country_event = {
 		NOT = { year = 2015 }
 		
 		government = proletarian_dictatorship 
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		ruling_party_ideology = communist
-
-        has_country_flag = SovIta_Split
-        has_country_flag = ITA_Ingrao
+		
+		has_country_flag = SovIta_Split
+		has_country_flag = ITA_Ingrao
 		has_country_flag = ITA_Ingrao_Secchia
 		has_country_flag = ITA_Peoples_Republic
 	}
@@ -5148,7 +5011,7 @@ country_event = {
 		ruling_party_ideology = communist
 		
 		OR = {
-		    AND = { HUN = { exists = yes ruling_party_ideology = communist } has_global_flag = hungarian_revolution_1956 }
+			AND = { HUN = { exists = yes ruling_party_ideology = communist } has_global_flag = hungarian_revolution_1956 }
 			AND = { CZH = { exists = yes ruling_party_ideology = communist } has_global_flag = CZH_prague_spring_USSR_flag }
 			AND = { CZH = { exists = yes ruling_party_ideology = communist_social } NOT = { has_global_flag = CZH_prague_spring_USSR_flag } }
 			AND = { RUS = { exists = yes government = proletarian_dictatorship is_greater_power = yes NOT = { OR = { has_country_flag = leonid_brezhnev has_country_flag = georgy_malenkov has_country_flag = vyacheslav_molotov has_country_flag = alexender_shelepin } } } }
@@ -5183,7 +5046,6 @@ country_event = {
 		bureaucrats = { money = 5 }
 		aristocrats = { money = 10 }
 		capitalists = { money = 15 }
-		 
 		
 		any_pop = { 
 			consciousness = -4
@@ -5338,8 +5200,8 @@ country_event = {
 	}
 	
 	option = {
-	    name = "Abandon the NEM"
-	    money = 100000
+	    	name = "Abandon the NEM"
+	    	money = 100000
 
 		random_country = {   
 			limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes }
@@ -5400,7 +5262,7 @@ country_event = {
 		random_country = {
 			limit = { tag = ITA OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } is_vassal = no }
 			relation = { who = THIS value = -15 }
-        }
+		}
 		
 		ai_chance = { factor = 0.5 }
 	}
@@ -5415,7 +5277,7 @@ country_event = {
 			limit = { tag = ITA OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } is_vassal = no }
 			relation = { who = THIS value = -25 }
 			country_event = 8020556
-        }
+		}
 		
 		ai_chance = { factor = 0.5 }
 	}
@@ -5606,8 +5468,8 @@ country_event = {
 		add_country_modifier = { name = collective_leadership duration = 3650 }	
 		add_country_modifier = { name = soviet_stagnation_2 duration = 1825 }
 		add_country_modifier = { name = purge_ongoing duration = 30 }
-	
-	    clr_country_flag = ITA_Ingrao
+		
+		clr_country_flag = ITA_Ingrao
 		set_country_flag = ITA_Pajetta
 		ai_chance = { factor = 0.9 }
 	}
@@ -5717,13 +5579,13 @@ country_event = {
 				location = { is_core = ITA } 
 			}
 			dominant_issue = {
-	            value = pro_atheism 
-	            factor = 0.2
-            }
+				value = pro_atheism 
+				factor = 0.2
+			}
 			militancy = 2
 			consciousness = 6
 			ideology = { factor = 0.01 value = communist }
-		}		
+		}
 		any_pop = {
 			limit = { 
 				has_pop_religion = secularism 
@@ -5754,6 +5616,7 @@ country_event = {
 		
 		ai_chance = { factor = 0.2 }
 	}
+	
 }
 
 #Ingrao Constitution
@@ -5772,13 +5635,12 @@ country_event = {
 		NOT = { year = 2015 }
 		
 		government = proletarian_dictatorship 
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		ruling_party_ideology = communist
-
-        has_country_flag = ITA_Ingrao
+		
+		has_country_flag = ITA_Ingrao
 		has_country_flag = ITA_Peoples_Republic
 	}
 
@@ -5789,9 +5651,9 @@ country_event = {
 		prestige = 100
 		
 		political_reform = regulated_opinion
-        political_reform = firewall_publishing
-        political_reform = state_controlled_unions
-        political_reform = limited_meetings
+		political_reform = firewall_publishing
+		political_reform = state_controlled_unions
+		political_reform = limited_meetings
 		
 		craftsmen = { money = 5 }
 		farmers = { money = 5 }
@@ -5831,13 +5693,12 @@ country_event = {
 		NOT = { year = 2015 }
 		
 		government = proletarian_dictatorship 
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		ruling_party_ideology = communist
-
-        has_country_flag = ITA_Ingrao
+		
+		has_country_flag = ITA_Ingrao
 		NOT = { has_country_flag = ITA_Ingrao_Secchia }
 		has_country_flag = ITA_Peoples_Republic
 	}
@@ -5873,13 +5734,12 @@ country_event = {
 		NOT = { year = 2015 }
 		
 		government = proletarian_dictatorship 
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		ruling_party_ideology = communist
-
-        has_country_flag = ITA_Ingrao
+		
+		has_country_flag = ITA_Ingrao
 		has_country_flag = ITA_Peoples_Republic
 	}
 
@@ -5888,7 +5748,7 @@ country_event = {
 	option = {
 		name = "Promote the works of these young reformers"
 		
-        any_pop = {
+		any_pop = {
 			ideology = { factor = 0.07 value = communist_social }
 			scaled_consciousness = { factor = 4 ideology = communist }
 			scaled_militancy = { factor = -4 ideology = communist_social }
@@ -5902,7 +5762,7 @@ country_event = {
 	option = {
 		name = "Don't intervene in the Party's business"
 		
-        any_pop = {
+		any_pop = {
 			ideology = { factor = 0.03 value = communist_social }
 			scaled_militancy = { factor = 1 ideology = communist_social }
 			scaled_consciousness = { factor = -4 ideology = communist }
@@ -5953,13 +5813,12 @@ country_event = {
 		NOT = { year = 2015 }
 		
 		government = proletarian_dictatorship 
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		ruling_party_ideology = communist
-
-        has_country_flag = ITA_Ingrao
+		
+		has_country_flag = ITA_Ingrao
 		has_country_flag = ITA_Peoples_Republic
 	}
 
@@ -5970,7 +5829,7 @@ country_event = {
 	option = {
 		name = "Approach Cossutta"
 		
-        any_pop = {
+		any_pop = {
 			ideology = { factor = 0.04 value = communist }
 			scaled_militancy = { factor = -4 ideology = communist_social }
 			scaled_consciousness = { factor = -4 ideology = communist }
@@ -5985,7 +5844,7 @@ country_event = {
 	option = {
 		name = "Do nothing"
 		
-        any_pop = {
+		any_pop = {
 			ideology = { factor = 0.01 value = communist_social }
 			scaled_militancy = { factor = 1 ideology = communist }
 			scaled_consciousness = { factor = 1 ideology = communist }
@@ -6020,13 +5879,12 @@ country_event = {
 		NOT = { year = 2015 }
 		
 		government = proletarian_dictatorship 
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		ruling_party_ideology = communist
-
-        has_country_flag = ITA_Ingrao
+		
+		has_country_flag = ITA_Ingrao
 		has_country_flag = ITA_Peoples_Republic
 	}
 
@@ -6056,7 +5914,7 @@ country_event = {
 	option = {
 		name = "No comrade should be left behind"
 		
-        any_pop = {
+		any_pop = {
 			ideology = { factor = 0.01 value = communist_social }
 			scaled_militancy = { factor = -1 ideology = communist }
 			scaled_consciousness = { factor = -1 ideology = communist }
@@ -6085,15 +5943,14 @@ country_event = {
 		NOT = { year = 2015 }
 		
 		government = proletarian_dictatorship 
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		ruling_party_ideology = communist
-
-        has_country_flag = ITA_Young_Miglioristi  
+		
+		has_country_flag = ITA_Young_Miglioristi  
 		NOT = { has_country_flag = ITA_Ingrao_alone }
-        has_country_flag = ITA_Ingrao
+		has_country_flag = ITA_Ingrao
 		has_country_flag = ITA_Peoples_Republic
 	}
 
@@ -6125,7 +5982,7 @@ country_event = {
 	option = {
 		name = "Halt the reformists' rise"
 		
-        any_pop = {
+		any_pop = {
 			ideology = { factor = 0.04 value = communist }
 			scaled_militancy = { factor = -2 ideology = communist }
 			scaled_consciousness = { factor = -2 ideology = communist }
@@ -6156,20 +6013,20 @@ country_event = {
 		NOT = { year = 2015 }
 		
 		government = proletarian_dictatorship 
-		
-		war = no
 		is_vassal = no
+		war = no
 		
 		ruling_party_ideology = communist
 		
 		NOT = { has_country_modifier = political_strife }
-
-        has_country_flag = ITA_Young_Miglioristi  
+		
+		has_country_flag = ITA_Young_Miglioristi  
 		OR = { 
 		    has_country_flag = ITA_PCI_Coup_in_Progress
 			AND = { has_country_flag = ITA_Ingrao_alone NOT = { has_country_flag = ITA_Young_Miglioristi } }
 		}
-        has_country_flag = ITA_Ingrao
+		
+		has_country_flag = ITA_Ingrao
 		has_country_flag = ITA_Peoples_Republic
 	}
 
@@ -6183,7 +6040,11 @@ country_event = {
 		
 		#Democratic nations are appalled
 		any_country = { 
-			limit = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } }
+			limit = { 
+				exists = yes 
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+				is_vassal = no 
+			}
 			relation = { who = THIS value = -25 }
 		}
 		
@@ -6196,7 +6057,7 @@ country_event = {
 			scaled_consciousness = { factor = 6 ideology = progressive }
 			scaled_consciousness = { factor = 6 ideology = socialist }
 			scaled_consciousness = { factor = 6 ideology = communist_social }
-            scaled_militancy = { factor = -4 ideology = communist_social }			
+			scaled_militancy = { factor = -4 ideology = communist_social }			
 			scaled_militancy = { factor = 3 ideology = big_tent }
 			scaled_militancy = { factor = 3 ideology = liberal }
 			scaled_militancy = { factor = 6 ideology = progressive }
@@ -6258,12 +6119,11 @@ country_event = {
 		add_country_modifier = { name = collective_leadership duration = 1725 }
 		
 		add_country_modifier = { name = purge_ongoing duration = 30 }
-	
-	    clr_country_flag = ITA_Young_Miglioristi
-	    clr_country_flag = ITA_Ingrao
+		
+		clr_country_flag = ITA_Young_Miglioristi
+		clr_country_flag = ITA_Ingrao
 		set_country_flag = ITA_Occhetto
 		ai_chance = { factor = 0.2 }
 	}
 
 }
-
