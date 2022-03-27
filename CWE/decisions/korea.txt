@@ -16,8 +16,8 @@ political_decisions = {
 		}
 		allow = {
 			war = no
-			NKO = { war = no OR = { exists = no in_sphere = THIS vassal_of = THIS } }
-			SKO = { war = no OR = { exists = no in_sphere = THIS vassal_of = THIS } }
+			NKO = { war = no OR = { in_sphere = THIS vassal_of = THIS } }
+			SKO = { war = no OR = { in_sphere = THIS vassal_of = THIS } }
 		}
 		effect = {
 			set_country_flag = allow_form_korea
@@ -28,9 +28,8 @@ political_decisions = {
 				limit = { owner = { AND = { is_our_vassal = SKO is_our_vassal = NKO } } }
 				owner = { 
 					SKO = { change_tag = KOR }
-					SKO = { all_core = { add_core = KOR } }
-					NKO = { all_core = { add_core = KOR } }
-					KOR = { inherit = SKO }
+					SKO = { all_core = { add_core = KOR remove_core = SKO } }
+					NKO = { all_core = { add_core = KOR remove_core = NKO } }
 					KOR = { inherit = NKO }
 					diplomatic_influence = { who = SKO value = 200 }
 				}
@@ -67,8 +66,8 @@ political_decisions = {
 		effect = {
 			prestige = 100
 			
-			SKO = { all_core = { add_core = KOR } }
-			NKO = { all_core = { add_core = KOR } }
+			SKO = { all_core = { add_core = KOR remove_core = SKO } }
+			NKO = { all_core = { add_core = KOR remove_core = NKO } }
 			
 			change_tag = KOR
 		}
@@ -152,15 +151,27 @@ political_decisions = {
 		}
 		effect = {
 			prestige = 50
-			SKO = {
-				all_core = { add_core = KOR }
+			
+			#Remove North & South Korea cores
+			SKO = { all_core = { add_core = KOR remove_core = SKO } }
+			NKO = { all_core = { add_core = KOR remove_core = NKO } }
+			
+			#THIS inherits the other Korea and tag switches to KOR
+			random_owned = { 
+				limit = { owner = { tag = SKO } }
+				owner = { 
+					inherit = NKO 
+					change_tag = KOR
+				}
 			}
-			NKO = {
-				all_core = { add_core = KOR }
+
+			random_owned = { 
+				limit = { owner = { tag = NKO } }
+				owner = { 
+					inherit = SKO
+					change_tag = KOR
+				}
 			}
-			inherit = SKO
-			inherit = NKO
-			change_tag = KOR
 		}
 		ai_will_do = {
 			factor = 1
