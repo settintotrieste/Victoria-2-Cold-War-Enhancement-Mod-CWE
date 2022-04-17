@@ -25,11 +25,20 @@ political_decisions = {
 				relation = { who = THIS value = 150 }
 			}
 			
-			#Has the right ideology
-			OR = {
-				ruling_party_ideology = socialist
-				ruling_party_ideology = communist
-				ruling_party_ideology = communist_social
+			#Have not good relations with the other bloc leader
+			any_greater_power = { 
+				has_country_modifier = democratic_bloc_leader
+				NOT = { relation = { who = THIS value = 150 } }
+			}
+			
+			#Has the right ideology (non liberal and theocratic)
+			NOT = {
+				OR = {
+					ruling_party_ideology = progressive
+					ruling_party_ideology = big_tent
+					ruling_party_ideology = liberal
+					ruling_party_ideology = traditionalist
+				}
 			}
 
 		}
@@ -38,6 +47,14 @@ political_decisions = {
 			#Leave the democratic bloc
 			clr_country_flag = joindemo
 			remove_country_modifier = democratic_bloc
+			
+			remove_country_modifier = demohigh_gp
+			remove_country_modifier = demomedium_gp
+			remove_country_modifier = demolow_gp
+			
+			remove_country_modifier = demohigh
+			remove_country_modifier = demomedium
+			remove_country_modifier = demolow
 		
 			#Leave the NAM
 			clr_country_flag = joinnam
@@ -117,12 +134,19 @@ political_decisions = {
 				relation = { who = THIS value = 150 }
 			}
 			
-			#Has the right ideology
-			OR = {
-				ruling_party_ideology = conservative
-				ruling_party_ideology = liberal
-				ruling_party_ideology = progressive
-				ruling_party_ideology = populist
+			#Have not good relations with the other bloc leader
+			any_greater_power = { 
+				has_country_modifier = communist_bloc_leader
+				NOT = { relation = { who = THIS value = 150 } }
+			}
+			
+			#Has the right ideology (non communist or theocratic)
+			NOT = {
+				OR = {
+					ruling_party_ideology = communist
+					ruling_party_ideology = communist_social
+					ruling_party_ideology = traditionalist
+				}
 			}
 
 		}
@@ -131,6 +155,14 @@ political_decisions = {
 			#Leave the Communist bloc
 			clr_country_flag = joincomm
 			remove_country_modifier = communist_bloc
+			
+			remove_country_modifier = commhigh_gp
+			remove_country_modifier = commmedium_gp
+			remove_country_modifier = commlow_gp
+			
+			remove_country_modifier = commhigh
+			remove_country_modifier = commmedium
+			remove_country_modifier = commlow
 		
 			#Leave the NAM
 			clr_country_flag = joinnam
@@ -209,8 +241,24 @@ political_decisions = {
 
 			is_vassal = no
 			
-			#Have bad relations with the bloc leader and not in their Sphere
+			
 			OR = { 
+			
+				#Have good relations with both blocs and is not in a sphere of influence of a bloc leader
+				AND = {
+					any_greater_power = { 
+						has_country_modifier = democratic_bloc_leader
+						relation = { who = THIS value = 175 }
+						NOT = { is_sphere_leader_of = THIS }
+					}
+					any_greater_power = { 
+						has_country_modifier = communist_bloc_leader
+						relation = { who = THIS value = 175 }
+						NOT = { is_sphere_leader_of = THIS }
+					}
+				}
+			
+				#Have bad relations with the bloc leader and not in their Sphere
 				AND = {
 					has_country_flag = joindemo
 					#Demo bloc
@@ -229,15 +277,10 @@ political_decisions = {
 						NOT = { relation = { who = THIS value = 0 } }
 					}
 				}
+				
 			}
 			
-			#Has the right ideology
-			OR = {
-				ruling_party_ideology = socialist
-				ruling_party_ideology = nationalist
-				ruling_party_ideology = big_tent
-				ruling_party_ideology = traditionalist
-			}
+			#No ideology restriction
 
 		}
 		effect = {
@@ -245,6 +288,14 @@ political_decisions = {
 			#Leave the Communist bloc
 			clr_country_flag = joincomm
 			remove_country_modifier = communist_bloc
+			
+			remove_country_modifier = commhigh_gp
+			remove_country_modifier = commmedium_gp
+			remove_country_modifier = commlow_gp
+			
+			remove_country_modifier = commhigh
+			remove_country_modifier = commmedium
+			remove_country_modifier = commlow
 		
 			#Join the NAM
 			set_country_flag = joinnam
@@ -253,6 +304,14 @@ political_decisions = {
 			#Leave the democratic Bloc
 			clr_country_flag = joindemo
 			remove_country_modifier = democratic_bloc
+			
+			remove_country_modifier = demohigh_gp
+			remove_country_modifier = demomedium_gp
+			remove_country_modifier = demolow_gp
+			
+			remove_country_modifier = demohigh
+			remove_country_modifier = demomedium
+			remove_country_modifier = demolow
 
 			#Communist Bloc leader loses influence
 			random_country = {
@@ -304,39 +363,110 @@ political_decisions = {
 	alliance_nato = {
 		picture = "alliance_nato"
 		potential = {
+			#NATO has been formed
 			has_global_flag = form_nato
 			NOT = { has_global_flag = nato_abolish }
-			is_vassal = no
-			NOT = { tag = RUS }
-			NOT = { has_country_modifier = alliance_sato }			
-			NOT = { has_country_modifier = csto_alliance }
-			OR = {
-				capital_scope = { is_core = USA } 
-				NOT = { has_country_modifier = rio_pact } 
-			}
-			NOT = { has_country_modifier = alliance_nato }
-			NOT = { has_country_modifier = leave_alliance_nato }
-
+			
+			#Country is located in North America, Europe or Turkey
 			OR = {
 				capital_scope = { OR = { is_core = USA is_core = CAN continent = europe } }
 				tag = TUR
 			}
+			
+			#Government Type restrictions
+			OR = { 
+				#Socialist Democracies cannot join during the Cold War unless it is Italy which is an exception
+				AND = { 
+					government = socialist_democracy 
+					
+					#Eurocommunist Italy is pro-NATO
+					OR = { 
+						NOT = { has_global_flag = blocsenabled } 
+						tag = ITA 
+					} 
+				}
+				
+				#Democracies can always join
+				government = democracy 
+				government = democracy1 
+				government = hms_government 
+				government = hms_government1
+				
+				#Right Wing dictatorships can only join during the Cold War IF USA is right wing
+				AND = {
+					has_global_flag = blocsenabled
+					USA = { 
+						exists = yes
+						is_greater_power = yes
+						has_country_modifier = nato_leader 
+						OR = { 
+							ruling_party_ideology = traditionalist 
+							ruling_party_ideology = conservative 
+							ruling_party_ideology = big_tent 
+							ruling_party_ideology = nationalist 
+							ruling_party_ideology = populist 
+						} 
+					}
+					OR = {
+						government = presidential_dictatorship
+						government = populist_dictatorship
+						government = nationalist_dictatorship
+						government = absolute_monarchy
+					}
+					OR = { 
+						ruling_party_ideology = traditionalist 
+						ruling_party_ideology = conservative 
+						ruling_party_ideology = nationalist 
+						ruling_party_ideology = populist 
+					}
+				}
+				
+			}
+			
+			#THIS is independent
+			is_vassal = no
+			
+			#Russia and its allies is always excluded for political reasons
+			NOT = { tag = RUS }
+			NOT = { has_country_modifier = alliance_sato }			
+			NOT = { has_country_modifier = csto_alliance }
+			
+			#Rio Pact does not join NATO
+			OR = {
+				capital_scope = { is_core = USA } 
+				NOT = { has_country_modifier = rio_pact } 
+			}
+			
+			#Not already in or left NATO
+			NOT = { has_country_modifier = alliance_nato }
+			NOT = { has_country_modifier = leave_alliance_nato }
 		}
 
 		allow = {
-
+			war = no
+			
+			election = no
+			
+			#Infamy must not be high
 			NOT = { badboy = 0.6 }
-
+			
+			#Full communists are never allowed
 			NOT = { ruling_party_ideology = communist }
-			NOT = { ruling_party_ideology = communist_social }
-
+			
+			#Market Socialists are not allowed, with the exception of Italy
+			OR = { 
+				NOT = { ruling_party_ideology = communist_social } 
+				AND = { tag = ITA ruling_party_ideology = communist_social } #Eurocommunist Italy is pro-NATO
+			}
+			
+			#Members cannot be in the Sphere of Russia
 			NOT = { in_sphere = RUS }
-
+			
+			#THIS is not neutral
 			NOT = { has_country_flag = neutrality }
 			NOT = { has_country_modifier = neutrality }
-
-			war = no
-
+			
+			#THIS must have good relations with NATO leader
 			OR = { 
 				has_country_modifier = nato_leader
 				sphere_owner = { has_country_modifier = alliance_nato } 
@@ -344,14 +474,6 @@ political_decisions = {
 					has_country_modifier = nato_leader 
 					relation = { who = THIS value = 100 }
 				} 
-			}
-
-			OR = { 
-				AND = { government = socialist_democracy NOT = { has_global_flag = blocsenabled } }
-				government = democracy 
-				government = democracy1 
-				government = hms_government 
-				government = hms_government1 
 			}
 
 		}
@@ -403,10 +525,50 @@ political_decisions = {
 				is_vassal = yes
 
 				has_country_modifier = neutrality
-
 				has_country_flag = neutrality
+				
+				ruling_party_ideology = communist
+				
+				AND = { ruling_party_ideology = communist_social NOT = { tag = ITA } }
+				
+				NOT = { government = socialist_democracy OR = { NOT = { has_global_flag = blocsenabled } tag = ITA } }
 
-				NOT = { OR = { government = socialist_democracy government = democracy government = democracy1 government = hms_government government = hms_government1 } }
+				NOT = { 
+					OR = { 
+						government = democracy 
+						government = democracy1 
+						government = hms_government 
+						government = hms_government1 
+					} 
+				}
+				
+				NOT = {
+					has_global_flag = blocsenabled
+					USA = { 
+						exists = yes
+						is_greater_power = yes
+						has_country_modifier = nato_leader 
+						OR = { 
+							ruling_party_ideology = traditionalist 
+							ruling_party_ideology = conservative 
+							ruling_party_ideology = big_tent 
+							ruling_party_ideology = nationalist 
+							ruling_party_ideology = populist 
+						} 
+					}
+					OR = {
+						government = presidential_dictatorship
+						government = populist_dictatorship
+						government = nationalist_dictatorship
+						government = absolute_monarchy
+					}
+					OR = { 
+						ruling_party_ideology = traditionalist 
+						ruling_party_ideology = conservative 
+						ruling_party_ideology = nationalist 
+						ruling_party_ideology = populist 
+					}
+				}
 
 				any_greater_power = { has_country_modifier = nato_leader relation = { who = THIS value = -100 } }
 			}
@@ -447,20 +609,20 @@ political_decisions = {
 			potential = {
 				year = 1947
 				is_vassal = no
-	USA = { government = democracy is_greater_power = yes }
-			NOT = { has_country_modifier = rio_pact }
-			NOT = { has_country_modifier = alliance_sato }
-OR = { tag = USA NOT = { has_country_modifier = alliance_nato } }
-			NOT = { has_country_modifier = leave_rio_pact }
+				USA = { government = democracy is_greater_power = yes }
+				NOT = { has_country_modifier = rio_pact }
+				NOT = { has_country_modifier = alliance_sato }
+				OR = { tag = USA NOT = { has_country_modifier = alliance_nato } }
+				NOT = { has_country_modifier = leave_rio_pact }
 				NOT = { tag = CAN }
 				OR = {
 					tag = USA
-			capital_scope = { continent = north_america }
-			capital_scope = { continent = south_america }
+					capital_scope = { continent = north_america }
+					capital_scope = { continent = south_america }
 				}
 				OR = {
-				USA = { has_country_modifier = rio_pact }
-				tag = USA
+					USA = { has_country_modifier = rio_pact }
+					tag = USA
 				}
 			}
 
@@ -533,7 +695,7 @@ OR = { is_vassal = yes has_country_modifier = neutrality has_country_flag = neut
 			effect = {
 				remove_country_modifier = rio_pact
 				any_country = { 
-			limit = { has_country_modifier = rio_pact }
+					limit = { has_country_modifier = rio_pact }
 					relation = { who = THIS value = -50 }
 					leave_alliance = THIS
 				}
@@ -549,97 +711,103 @@ OR = { is_vassal = yes has_country_modifier = neutrality has_country_flag = neut
 
 	#Warsaw Pact
 	warsaw_pact = {
-			picture = "warsaw_pact"
-			potential = {
+		picture = "warsaw_pact"
+		potential = {
 
-has_global_flag = form_nato
+			has_global_flag = form_nato
 
-has_global_flag = warsaw_pact_active
+			has_global_flag = warsaw_pact_active
 
-has_global_flag = blocsenabled
+			has_global_flag = blocsenabled
 
-NOT = { has_global_flag = dissolve_warsaw_pact }
-NOT = { has_country_modifier = warsaw_pact }
-NOT = { has_country_modifier = leave_warsaw_pact }
+			NOT = { has_global_flag = dissolve_warsaw_pact }
+			NOT = { has_country_modifier = warsaw_pact }
+			NOT = { has_country_modifier = leave_warsaw_pact }
 
-NOT = { has_country_modifier = alliance_sato }
-				
-OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+			NOT = { has_country_modifier = alliance_sato }
+			
+			OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
 
-			}
+		}
 
-			allow = {
+		allow = {
 	
-war = no
+			NOT = { badboy = 1 }
+			
+			war = no
 
-OR = { tag = RUS sphere_owner = { has_country_modifier = warsaw_pact } ai = no }
+			OR = { tag = RUS sphere_owner = { has_country_modifier = warsaw_pact } ai = no }
 
-OR = { is_vassal = no overlord = { has_country_modifier = warsaw_pact } }
+			OR = { is_vassal = no overlord = { has_country_modifier = warsaw_pact } }
 
-NOT = { has_country_flag = neutrality }
-NOT =  { has_country_modifier = neutrality }
+			NOT = { has_country_flag = neutrality }
+			NOT =  { has_country_modifier = neutrality }
 
-OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+			OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
 
-relation = { who = RUS value = 50 }
+			relation = { who = RUS value = 50 }
 
-			}
+		}
 
-			effect = {
-				random_country = {
-					limit = {
-						tag = THIS
-						NOT = { tag = RUS }
-					}
-					create_alliance = RUS
+		effect = {
+			random_country = {
+				limit = {
+					tag = THIS
+					NOT = { tag = RUS }
 				}
-				add_country_modifier = {
-					name = warsaw_pact
-					duration = 3650
-				}
+				create_alliance = RUS
 			}
+			add_country_modifier = {
+				name = warsaw_pact
+				duration = 3650
+			}
+		}
 		ai_will_do = {
 			factor = 1
 		}		
 	}
 
 	leave_warsaw_pact = {
-			picture = "warsaw_pact"
-			potential = {
-				has_global_flag = blocsenabled
-				has_country_modifier = warsaw_pact
-				NOT = { tag = RUS }
-			}
+		picture = "warsaw_pact"
+		potential = {
+			has_global_flag = blocsenabled
+			has_country_modifier = warsaw_pact
+			NOT = { tag = RUS }
+		}
 
-			allow = {
-				has_country_modifier = warsaw_pact
-				NOT = { vassal_of = RUS }
-				NOT = { 
-					OR = {
+		allow = {
+			has_country_modifier = warsaw_pact
+			NOT = { vassal_of = RUS }
+			NOT = { 
+				OR = {
 					alliance_with = RUS
-		sphere_owner = { has_country_modifier = warsaw_pact }
-		overlord = { has_country_modifier = warsaw_pact }
-					}
-				}
-				OR = { 
-
-has_country_modifier = neutrality 
-has_country_flag = neutrality
-
-NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
-
-AND = { is_vassal = no NOT = { relation = { who = RUS value = 0 } } }
+					sphere_owner = { has_country_modifier = warsaw_pact }
+					overlord = { has_country_modifier = warsaw_pact }
 				}
 			}
+			OR = { 
+				has_country_modifier = neutrality 
+				has_country_flag = neutrality
 
-			effect = {
-				remove_country_modifier = warsaw_pact
-				leave_alliance = RUS
-				add_country_modifier = {
-					name = leave_warsaw_pact
-					duration = 3650
-				}
+				NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
+
+				AND = { is_vassal = no NOT = { relation = { who = RUS value = 0 } } }
 			}
+		}
+
+		effect = {
+			remove_country_modifier = warsaw_pact
+			leave_alliance = RUS
+			any_country = { 
+				limit = { has_country_modifier = warsaw_pact }
+				relation = { who = THIS value = -50 }
+				leave_alliance = THIS
+			}
+			add_country_modifier = {
+				name = leave_warsaw_pact
+				duration = 3650
+			}
+		}
 		ai_will_do = {
 			factor = 1
 		}		

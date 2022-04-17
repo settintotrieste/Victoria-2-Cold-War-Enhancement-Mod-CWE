@@ -583,6 +583,9 @@ country_event = {
 			}
 		}
 		
+		#THIS has not already created a vaccine
+		NOT = { has_country_modifier = vaccine_created }
+		
 		#Has global virus flag
 		has_global_flag = epidemic_start
 
@@ -1042,6 +1045,83 @@ country_event = {
 		remove_country_modifier = biological_attack
 		add_country_modifier = { name = vaccine_created duration = 1825 }
 		clr_global_flag = biological_weapon_induced_epidemic
+	}
+
+}
+
+#National Leader gets the Virus
+country_event = {
+	id = 14120651
+	title = "The $MONARCHTITLE$ is Infected"
+	desc = "EVTDESC14120651"
+	picture = "virus_president_infected"
+
+	trigger = {
+		
+		#Has virus controls
+		has_country_flag = enable_virus_controls
+		
+		#Only democracies are affected, dictators don't have to mingle with the masses
+		OR = { 
+			government = socialist_democracy 
+			government = democracy 
+			government = democracy1 
+			government = hms_government 
+			government = hms_government1 
+			government = sar_government 
+		}
+	
+		#Has virus in country
+		any_owned_province = {
+			OR = { 
+				has_province_modifier = virus_outbreak 
+				has_province_modifier = virus_outbreak_deadly 
+			}
+		}
+		
+		OR = {
+			#Do not have strong virus controls
+			NOT = {
+				OR = {
+					has_country_modifier = virusmedium
+					has_country_modifier = virushigh
+				}
+			}
+			
+			#Full blown epidemic and minimal virus controls
+			AND = {
+				has_country_flag = virusno
+				has_country_flag = full_blown_epidemic
+			}
+		}
+		
+		has_global_flag = epidemic_start
+		
+		#Has a leader
+		NOT = { has_country_modifier = headless_chicken }
+		NOT = { has_country_modifier = leader_cooldown }
+		NOT = { has_country_modifier = power_vacuum }
+		NOT = { has_country_flag = leadership_election }
+		
+	}
+	
+	mean_time_to_happen = {
+		months = 10
+	}
+
+	option = {
+		name = "He's a big strong guy so he'll be fine?"
+		
+		any_pop = { 
+			militancy = 2 
+			consciousness = 5 
+		}
+		
+		#Chance of leader dying
+		random_list = {
+			90 = { add_country_modifier = { name = power_vacuum duration = 30 } }
+			10 = { country_event = 111222 } #New leader
+		}
 	}
 
 }

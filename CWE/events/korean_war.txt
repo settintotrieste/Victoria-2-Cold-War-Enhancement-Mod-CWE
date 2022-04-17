@@ -25,24 +25,46 @@ country_event = {
 		
 		#Communist China
 		exists = CHI
-		CHI = { government = proletarian_dictatorship }
-		CHI = { war = no }
+		CHI = { government = proletarian_dictatorship is_vassal = no }
 	}
 
-	mean_time_to_happen = { months = 6 }
+	mean_time_to_happen = { 
+		months = 6 
+		modifier = { factor = 0.1 has_global_flag = 1950_start_date_flag }
+	}
 
 	option = {
-		name = EVT_8500824_A
+		name = "May the best Korea win!"
 		release_vassal = NKO
 		
-		NKO = { set_country_flag = NKO_korean_war_permisssion }
+		NKO = { 
+			set_country_flag = NKO_korean_war_permisssion 
+			
+			#Add soldiers to North Korea - RUS assistance
+			any_pop = { 
+				limit = { type = soldiers } 
+				reduce_pop = 1.25 
+			}
+			
+			#Add military goods
+			small_arms = 500
+			weaponry = 500
+			aeroplanes = 500
+			ammunition = 500
+			automobiles = 500
+			
+			#Bolster defences
+			any_owned = {
+				fort = 1
+			}
+			
+		}
 
-		any_pop = { consciousness = 2 }
 		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
-		name = EVT_8500824_B
+		name = "Korea shall remain divided"
 		prestige = -50
 		badboy = 5
 		ai_chance = { factor = 0.1 }
@@ -61,615 +83,356 @@ country_event = {
 
 	trigger = {
     	tag = NKO
-		OR = { has_country_flag = NKO_korean_war_permisssion has_global_flag = 1950_start_date_flag }
-		NOT = { year = 1960 }
+		OR = { 
+			has_country_flag = NKO_korean_war_permisssion 
+			has_global_flag = 1950_start_date_flag 
+		}
+		NOT = { year = 1990 }
 		
 		is_vassal = no
 		war = no
 		
 		#PRC civil war
 		exists = CHI
-		CHI = { owns = 2221 government = proletarian_dictatorship }
+		CHI = { owns = 2221 government = proletarian_dictatorship is_vassal = no }
 		
-		#SKO
+		#SKO is not a vassal
      	exists = SKO
 		SKO = { is_vassal = no }
 	}
 
-	mean_time_to_happen = { months = 6 }
+	mean_time_to_happen = { 
+		months = 6 
+		modifier = { factor = 0.1 has_global_flag = 1950_start_date_flag }
+	}
 
 	option = {
-		name = EVT_8500800_A
-		SKO = { country_event = 8500801 } 
+		name = "There will be one Korea"
+		
+		#USSR does not intervene
+		leave_alliance = RUS
+		
+		#South Korea gains relations with US
+		SKO = { relation = { who = USA value = 100 } } 
+		USA = { diplomatic_influence = { who = SKO value = 200 } }
+		
+		#Start the Korean War
+		war = { 
+			target = SKO 
+			attacker_goal = { casus_belli = civil_war } 
+			defender_goal = { casus_belli = civil_war } 
+			call_ally = no
+		}
+		
+		set_global_flag = korea_war
+		
 		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
-		name = EVT_8500800_B
+		name = "The peninsula will remain divided"
 		prestige = -50
 		any_pop = { militancy = 3.0 }
 		ai_chance = { factor = 0.1 }
 	}
 	
 }
-country_event = {
-  id = 8500801
-  title = EVT_8500801_NAME
-  desc = EVT_8500801_DESC
-  picture = "nwo2_syngman_rhee_sitting"
-  is_triggered_only = yes #SKO
 
-  option = {
-    name = EVT_8500801_A
-	relation = { who = USA value = 100 }
-	any_owned = { add_core = NKO }
-	NKO = { country_event = 8500802 } 
-  }
-}
-country_event = {
-  id = 8500802
-  title = EVT_8500802_NAME
-  desc = EVT_8500802_DESC
-  picture = "nwo2_korean_war"
-  is_triggered_only = yes #NKO
-
-  option = {
-    name = EVT_8500802_A
-	relation = { who = CHI value = 200 }
-	CHI = { diplomatic_influence = { who = NKO value = 200 } }
-	create_alliance  = CHI 
-	leave_alliance = RUS
-	all_core = { add_core = SKO }
-	# infamy unsanctioned
-	war = { target = SKO attacker_goal = { casus_belli = conquest } defender_goal = { casus_belli = conquest } call_ally = yes } # US will intervene to protect SOI nation
-	set_global_flag = korea_war
-  }
-}
+#United Nations intervention
 country_event = {
   id = 8500840
-  title = EVT_8500840_NAME
-  desc = EVT_8500840_DESC
+  title = "UN Security Council Resolution 82"
+  desc = EVTDESC8500840
   picture = "nwo2_united_nations_intervention"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = SKO
-	has_global_flag = korea_war
-	year = 1949 NOT = { year = 1960 }
-    SKO = { war_with = NKO }
-  }
+	trigger = {
+		tag = USA
+		year = 1949 
+		NOT = { year = 1960 }
+		
+		is_vassal = no
+		
+		#Not already at war with NKO
+		NOT = { war_with = NKO }
+		
+		#Soviet boycott
+		has_global_flag = blocsenabled
+		CHI = { government = proletarian_dictatorship NOT = { has_country_modifier = unsc_permanent_member } }
+		
+		#Korean War
+		has_global_flag = korea_war
+		SKO = { war_with = NKO }
+		
+		#SKO is losing
+		SKO = { 
+			OR = { in_sphere = USA alliance_with = SKO } 
+			national_provinces_occupied = 0.10 
+		}
+	}
 
-  mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8500840_A
-	prestige = 50
-	money = 100000
+	option = {
+		name = "We shall save Korea!"
+		prestige = 50
+		money = -250000
+		
+		relation = { who = RUS value = -100 }
+		relation = { who = CHI value = -100 }
+		
+		relation = { who = SKO value = 100 }
 
-any_country = { limit = { has_country_modifier = alliance_nato is_vassal = no } create_alliance = SKO }
+		#Create NATO coalition
+		any_country = { 
+			limit = { has_country_modifier = alliance_nato is_vassal = no } 
+			create_alliance = SKO 
+			relation = { who = SKO value = 200 }
+		}
 
-#To call UN allies into the war
-
-SKO = { war = { target = REB attacker_goal = {  } defender_goal = {  } call_ally = yes } }
-
-USA = { diplomatic_influence = { who = SKO value = 100 } }
-  }
+		#Give aid to SKO
+		SKO = {
+			#Add soldiers to South Korea - USA assistance
+			any_pop = { 
+				limit = { type = soldiers } 
+				reduce_pop = 1.25
+			}
+			
+			#Add military goods
+			small_arms = 500
+			weaponry = 500
+			aeroplanes = 500
+			ammunition = 500
+			automobiles = 500
+		}
+		
+		#Knock out NKO military so SKO can just annex NKO by themselves
+		NKO = {
+			war = { 
+				target = USA
+				attacker_goal = { casus_belli = humiliate } 
+				defender_goal = { casus_belli = cut_down_to_size } 
+				call_ally = no
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Only South Korea can save themselves"
+		prestige_factor = -0.05
+		
+		relation = { who = RUS value = 100 }
+		relation = { who = CHI value = 100 }
+		
+		relation = { who = SKO value = -100 }
+		
+		ai_chance = { factor = 0.1 }
+	}
 }
-country_event = {
-  id = 8500841
-  title = EVT_8500841_NAME
-  desc = EVT_8500841_DESC
-  picture = "nwo2_united_nations_intervention"
-  fire_only_once = yes
 
-  trigger = {
-    tag = SKO
-	year = 1949 NOT = { year = 1960 }
-    SKO = { war_with = NKO }
-	has_country_flag = is_disabled_for_now
-  }
-
-  mean_time_to_happen = { months = 4 }
-
-  option = {
-    name = EVT_8500841_A
-	USA = { diplomatic_influence = { who = SKO value = 100 } }
-  }
-}
-country_event = {
-  id = 8500842
-  title = EVT_8500842_NAME
-  desc = EVT_8500842_DESC
-  picture = "nwo2_united_nations_intervention"
-  fire_only_once = yes
-
-  trigger = {
-    tag = SKO
-	year = 1949 NOT = { year = 1961 }
-    SKO = { war_with = NKO }
-	has_country_flag = is_disabled_for_now
-  }
-
-  mean_time_to_happen = { months = 2  }
-
-  option = {
-    name = EVT_8500842_A
-	relation = { who = USA value = 100 }
-	create_alliance  = USA 
-  }
-}
-country_event = {
-  id = 8500803
-  title = EVT_8500803_NAME
-  desc = EVT_8500803_DESC
-  picture = "nwo2_american_intervention_in_korea"
-  fire_only_once = yes
-
-  trigger = {
-    tag = USA
-	year = 1951 NOT = { year = 1960 }
-    NKO = { NOT = { war_with = SKO } }
-	NOT = { war_with = NKO }
-	SKO = { NOT = { truce_with = NKO } }
-	exists = NKO
-	NOT = { exists = SKO }
-	NKO = { government = proletarian_dictatorship }
-	has_global_flag = un_korea_intervention
-
-	has_country_flag = is_disabled_for_now
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8500803_A
-any_pop = { dominant_issue = { value = jingoism factor = 0.1 } }
-	money = -15000
-	ai_chance = { factor = 0 }
-  }
-
-  option = {
-    name = EVT_8500803_B
-	diplomatic_influence = { who = SKO value = 100 }
-	casus_belli = { target = NKO type = install_democracy
-months = 12 }
-	set_global_flag = korea_war_second_phase
-	create_alliance = SKO
-	war = { target = NKO attacker_goal = { casus_belli = install_democracy } defender_goal = { casus_belli = status_quo } call_ally = yes }
-	military_access = SKO
-	SKO = { country_event = 8500804 }
-	RUS = { country_event =  { id = 8500805 days = 1 } }
-	ai_chance = { factor = 1 }
-  }
-
-}
-country_event = {
-  id = 8500804
-  title = EVT_8500804_NAME
-  desc = EVT_8500804_DESC
-  picture = "nwo2_american_intervention_in_korea"
-  is_triggered_only = yes # USA
-
-  option = {
-    name = EVT_8500804_A
-	# TODO join FROM (US) in war with any neighbour.
-	any_pop = { dominant_issue = { value = jingoism factor = 0.1 } }
-  }
-}
-country_event = {
-  id = 8500805
-  title = EVT_8500805_NAME
-  desc = EVT_8500805_DESC
-  picture = "nwo2_american_intervention_in_korea"
-  is_triggered_only = yes # RUS
-
-  option = {
-    name = EVT_8500805_A
-	any_pop = {  consciousness = 0.5 }
-	USA = { country_event = 8500806  }
-    ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8500805_B
-	any_pop = { consciousness = -0.5 }
-	country_event = 8500809 
-	money = -15000 
-    ai_chance = { factor = 0 }
-  }
-
-  option = {
-    name = EVT_8500805_C
-	any_pop = { militancy = 0.6 }
-	country_event = 8500808 
-    ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8500806
-  title = EVT_8500806_NAME
-  desc = EVT_8500806_DESC
-  picture = "nwo2_american_intervention_in_korea"
-  is_triggered_only = yes # USA
-
-  option = {
-    name = EVT_8500806_A
-	any_pop = { consciousness = 0.5 }
-	country_event = 8500804 
-	NKO = { country_event = 8500809 }
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8500806_B
-	any_pop = {  consciousness = 1 }
-	RUS = { country_event = 8500807 } 
-	SKO = { country_event = 8500808 } 
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8500807
-  title = EVT_8500807_NAME
-  desc = EVT_8500807_DESC
-  picture = "nwo2_american_intervention_in_korea"
-  is_triggered_only = yes # RUS
-
-  option = {
-    name = EVT_8500807_A
-	create_alliance = NKO
-	NKO = { country_event = 8500809 }
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8500807_B
-	any_pop = { militancy = 0.3 consciousness = 1 }
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8500808
-  title = EVT_8500808_NAME
-  desc = EVT_8500808_DESC
-  picture = "nwo2_american_intervention_in_korea"
-  is_triggered_only = yes # SKO
-
-  option = {
-    name = EVT_8500808_A
-	any_pop = { militancy = -2.5  consciousness = 2 }
-	create_alliance = USA 
-	country_event = 8500804 
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = EVT_8500808_B
-	any_pop = { militancy = 1.0  consciousness = 1 }
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8500809
-  title = EVT_8500809_NAME
-  desc = EVT_8500809_DESC
-  picture = "nwo2_soviet_intervention_in_korea"
-  is_triggered_only = yes # NKO
-
-  option = {
-    name = EVT_8500809_A
-	any_pop = {  consciousness = -1 militancy = -0.3 }
-  }
-}
+#Chinese intervention in North Korea - CHI
 country_event = {
   id = 8500810
-  title = EVT_8500810_NAME
-  desc = EVT_8500810_DESC
+  title = "The Korean War"
+  desc = EVTDESC8500810
   picture = "nwo2_chinese_intervention_in_korea"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
+	trigger = {
     	tag = CHI
-	war = no
-	year = 1949 NOT = { year = 1960 }
-	government = proletarian_dictatorship
-    	NKO = { war_with = SKO }
-	has_global_flag = korea_war_second_phase
-  }
+		year = 1949 
+		NOT = { year = 1970 }
+	
+		government = proletarian_dictatorship
+		is_vassal = no
+		
+		#Cold War
+		has_global_flag = blocsenabled
+		
+		#Korean War
+		NKO = { war_with = SKO }
+		has_global_flag = korea_war
+		
+		#NKO is losing
+		NKO = { national_provinces_occupied = 0.10 }
+	}
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8500810_A
-	NKO = { country_event = 8500811 } 
-	NKO = { military_access = THIS } 
-	prestige = 40
-	diplomatic_influence = { who = NKO value = 100 }
-	ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = "We must help North Korea!"
+		prestige = 100
+		
+		money = -250000
+		
+		relation = { who = USA value = -100 }
+		relation = { who = RUS value = 100 }
+		relation = { who = NKO value = 200 }
+		
+		#Send aid to North Korea
+		NKO = { 
+		
+			#Form alliance with China
+			country_event = 8500811
+			
+			#Add soldiers to North Korea - CHI assistance
+			any_pop = { 
+				limit = { type = soldiers } 
+				reduce_pop = 1.25 
+			}
+			
+			#Add military goods
+			small_arms = 500
+			weaponry = 500
+			aeroplanes = 500
+			ammunition = 500
+			automobiles = 500
+			
+		}
+		
+		#Knock out SKO military so NKO can just annex SKO by themselves
+		war = { 
+			target = SKO
+			attacker_goal = { casus_belli = cut_down_to_size } 
+			defender_goal = { casus_belli = humiliate } 
+			call_ally = no
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8500810_B
-	prestige = -20
-	ai_chance = { factor = 0.1 }
-	any_pop = {  consciousness = 2 }
-  }
+	option = {
+		name = "Korea is not that important to China"
+		prestige_factor = -0.05
+		
+		relation = { who = USA value = 50 }
+		relation = { who = SKO value = 50 }
+		
+		relation = { who = RUS value = -100 }
+		relation = { who = NKO value = -100 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
 }
+
+#Chinese intervention in North Korea - NKO
 country_event = {
   id = 8500811
-  title = EVT_8500811_NAME
-  desc = EVT_8500811_DESC
+  title = "Chinese Intervention in Korea"
+  desc = EVTDESC8500810
   picture = "nwo2_chinese_intervention_in_korea"
-  is_triggered_only = yes # NKO
+  
+	is_triggered_only = yes
 
-  option = {
-    name = EVT_8500811_A
-	relation = { who = CHI value = 100 }
-	create_alliance  = CHI
-	any_pop = { militancy = -4.0 consciousness = -1 }
-  }
+	option = {
+		name = "Excellent!"
+		
+		#Prevent China from exceeding the infamy limit
+		CHI = { badboy = -20 }
+		
+		#Do not involve the USSR
+		leave_alliance = RUS
+	
+		#Involve China
+		create_alliance = CHI
+		CHI = { diplomatic_influence = { who = NKO value = 200 } }
+	}
+
 }
-country_event = {
-  id = 8500820
-  title = EVT_8500820_NAME
-  desc = EVT_8500820_DESC
-  picture = "nwo2_kim_il_sung_triumphant"
-  fire_only_once = yes
 
-  trigger = {
-    	tag = NKO
-    	NOT = { exists = SKO }
-	has_global_flag = korea_war
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8500820_A
-	any_pop = { consciousness = 1 militancy = -1.0 }
-	RUS  = { country_event = 8225000 } 
-  }
-}
-country_event = {
-  id = 8500821
-  title = EVT_8500821_NAME
-  desc = EVT_8500821_DESC
-  picture = "nwo2_syngman_rhee_triumphant"
-  fire_only_once = yes
-
-  trigger = {
-    	tag = SKO	
-	NOT = { exists = NKO }
-	has_global_flag = korea_war
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8500821_A
-	prestige = 20
-	any_pop = { militancy = -1.0  consciousness = 1 }
-	RUS  = { country_event = 8225001 } 
-  }
-}
+#The Korean War Armistice - Start
 country_event = {
   id = 8500822
   title = "Korean Armistice Agreement?"
   desc = EVT_8500823_DESC
   picture = "nwo2_end_of_korean_war"
-
-  trigger = {
-    OR = { tag = SKO tag = NKO }
-	NOT = { year = 1990 }
-	OR = { war_with = SKO war_with = NKO }
-	has_global_flag = korea_war
-	OR = { year = 1953 national_provinces_occupied = 0.75 }
-	NOT = { has_country_flag = korean_war_armistice }
-  }
-
-mean_time_to_happen = { 
-months = 7 
-modifier = { factor = 0 national_provinces_occupied = 0.75 } 
-}
-
-  option = {
-    name = "Propose an Armistice"
-set_country_flag = korean_war_armistice
-badboy = -5	
-	random_country = { 
-limit = { war_with = THIS OR = { tag = SKO tag = NKO } }
-	country_event = 8500823 
+  
+	trigger = {
+		OR = { tag = SKO tag = NKO }
+		NOT = { year = 1990 }
+		
+		OR = { war_with = SKO war_with = NKO }
+		
+		has_global_flag = korea_war
+		
+		OR = { year = 1953 national_provinces_occupied = 0.70 }
+		
+		NOT = { has_country_flag = korean_war_armistice }
 	}
 
-    ai_chance = { factor = 0.9 }
-  }
+	mean_time_to_happen = { 
+		months = 7 
+		modifier = { factor = 0 national_provinces_occupied = 0.75 } 
+	}
 
-  option = {
-    name = "Continue the war"
-set_country_flag = korean_war_armistice
-	badboy = 5
-    ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Propose an Armistice"
+		set_country_flag = korean_war_armistice
+		
+		badboy = -5	
+		
+		#Send peace offer to the other Korea
+		random_country = { 
+			limit = { 
+				war_with = THIS 
+				OR = { tag = SKO tag = NKO } 
+			}
+			country_event = 8500823 
+		}
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Continue the war"
+		set_country_flag = korean_war_armistice
+		
+		badboy = 5
+		
+		ai_chance = { factor = 0.1 }
+	}
 
 }
+
+#The Korean War Armistice - End
 country_event = {
   id = 8500823
-  title = "$FROMCOUNTRY$ Proposes an Armistice?"
+  title = "The $FROMCOUNTRY$ Armistice?"
   desc = EVT_8500823_DESC
   picture = "nwo2_end_of_korean_war"
-  is_triggered_only = yes # NKO or SKO
+  
+	major = yes
+  
+	is_triggered_only = yes # NKO or SKO
 
-  option = {
-    name = "Accept the Armistice"
-	end_war = FROM
-	prestige = -25
-	ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = "Accept the Armistice"
+		prestige = -25
+		badboy = -5	
+		
+		FROM = { set_country_flag = korean_war_armistice }
+		
+		#End the Korean War
+		end_war = FROM
+		
+		#End UN intervention
+		USA = { end_war = NKO }
+		
+		#End China's intervention in Korea
+		CHI = { end_war = SKO }
+		
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = "Continue the war"
-	badboy = 5
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Continue the war!"
+		badboy = 5
+		ai_chance = { factor = 0.1 }
+	}
 
-}
-country_event = {
-  id = 8500830
-  title = EVT_8500830_NAME
-  desc = EVT_8500830_DESC
-  picture = "nwo2_korean_war"
-  fire_only_once = yes
-
-  trigger = {
-    tag = NKO
-	year = 1952 NOT = { year = 1960 }
-    war_with = SKO
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8500830_A
-	any_pop = { militancy = -2.5  consciousness = -1 }
-  }
-}
-country_event = {
-  id = 8500831
-  title = EVT_8500831_NAME
-  desc = EVT_8500831_DESC
-  picture = "nwo2_korean_war"
-  fire_only_once = yes
-
-  trigger = {
-    tag = SKO
-	year = 1952 NOT = { year = 1960 }
-    war_with = NKO
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8500831_A
-	any_pop = { militancy = 1  consciousness = 1 }
-  }
-}
-country_event = {
-  id = 8500832
-  title = EVT_8500832_NAME
-  desc = EVT_8500832_DESC
-  picture = "nwo2_korean_war"
-  fire_only_once = yes
-
-  trigger = {
-    tag = NKO
-	year = 1952 NOT = { year = 1960 }
-	war_with = SKO
-  }
-
-  mean_time_to_happen = { months = 6 }
-
-  option = {
-    name = EVT_8500832_A
-  }
-}
-country_event = {
-  id = 8500833
-  title = EVT_8500833_NAME
-  desc = EVT_8500833_DESC
-  picture = "nwo2_korean_war"
-  fire_only_once = yes
-
-  trigger = {
-    tag = SKO
-	year = 1952 NOT = { year = 1960 }
-	war_with = NKO
-  }
-
-  mean_time_to_happen = { months = 6 }
-
-  option = {
-    name = EVT_8500833_A
-	any_pop = { militancy = -5.0  consciousness = -1 }
-  }
-}
-country_event = {
-  id = 8500834
-  title = EVT_8500834_NAME
-  desc = EVT_8500834_DESC
-  picture = "nwo2_korean_war"
-  fire_only_once = yes
-
-  trigger = {
-    tag = NKO
-	year = 1952 NOT = { year = 1960 }
-    USA = { alliance_with = SKO }
-    war_with = SKO
-  }
-
-  mean_time_to_happen = { months = 10 }
-
-  option = {
-    name = EVT_8500834_A
-	any_pop = { militancy = 2.0  consciousness = 1 }
-  }
-}
-country_event = {
-  id = 8500835
-  title = EVT_8500835_NAME
-  desc = EVT_8500835_DESC
-  picture = "nwo2_korean_war"
-  fire_only_once = yes
-
-  trigger = {
-    tag = SKO
-	year = 1952 NOT = { year = 1960 }
-    USA = { alliance_with = SKO }
-    war_with = NKO
-  }
-
-  mean_time_to_happen = { months = 10 }
-
-  option = {
-    name = EVT_8500835_A
-	any_pop = { militancy = -1.0  consciousness = 1 }
-  }
-}
-country_event = {
-  id = 8500836
-  title = EVT_8500836_NAME
-  desc = EVT_8500836_DESC
-  picture = "nwo2_korean_war"
-  fire_only_once = yes
-
-  trigger = {
-    tag = NKO
-	year = 1952 NOT = { year = 1960 }
-	war_with = SKO
-  }
-
-  mean_time_to_happen = { months = 3 }
-
-  option = {
-    name = EVT_8500836_A
-	any_pop = { militancy = -2.5  consciousness = -1 }
-  }
-}
-country_event = {
-  id = 8500837
-  title = EVT_8500837_NAME
-  desc = EVT_8500837_DESC
-  picture = "nwo2_korean_war"
-  fire_only_once = yes
-
-  trigger = {
-    tag = SKO
-	year = 1952 NOT = { year = 1960 }
-	war_with = NKO
-  }
-
-  mean_time_to_happen = { months = 3 }
-
-  option = {
-    name = EVT_8500837_A
-  }
 }

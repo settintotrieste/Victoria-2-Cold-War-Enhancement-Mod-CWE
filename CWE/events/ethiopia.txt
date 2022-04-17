@@ -1,3 +1,78 @@
+#End the occupation of Ogaden
+country_event = {
+	id = 8005306
+	title = EVT_8005306_NAME
+	desc = EVTDESC1400030
+	picture = "ogaden"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		capital_scope = { continent = europe } # ENG or FBU
+		year = 1948
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		
+		#Owns Ogaden
+		any_owned_province = { is_core = ETH NOT = { is_core = ERI } }
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = EVT_8005306_A #End the occupation
+		prestige = 50
+		any_owned = { limit = { is_core = ETH NOT = { is_core = ERI } } secede_province = ETH }
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Grant self-determination to the Somali people instead"
+		badboy = 5
+		
+		#Change region name
+		1865 = { 
+			# Two scopes needed to change region name
+			state_scope = {
+				change_region_name = "Ogaden"
+				add_core = SML
+			} 
+		}
+		
+		#Relationship with ETH sours
+		relation = { who = ETH value = -200 }
+		diplomatic_influence = { who = ETH value = -200 }
+
+		#Ogaden politics
+		any_owned = { 
+			limit = { is_core = ETH NOT = { is_core = ERI } } 
+			add_province_modifier = { name = occupied_province duration = -1 } 
+			any_pop = {
+				ideology  = { factor = 0.10 value = nationalist }
+			}
+		}
+
+		# America is unhappy unless ETH is communist
+		random_country = { 
+			limit = { 
+				tag = USA 
+				is_greater_power = yes 
+				government = democracy 
+				ETH = { NOT = { government = proletarian_dictatorship } } 
+			}
+			relation = { who = THIS value = -50 }
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Eritrean Question
 country_event = {
 	id = 1005301
 	title = EVT_1005301_NAME
@@ -7,31 +82,31 @@ country_event = {
 
 	trigger = {
 		capital_scope = { continent = europe } # ENG or FBU
-		NOT = { exists = ERI }
-		exists = ETH
-		war = no
-		year = 1950
+		year = 1952
 		NOT = { year = 1990 }
-		owns = 1848 # Assmara
+		
+		is_vassal = no
+		war = no
+
+		#ETH exists
+		ETH = { 
+			OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+			war = no 
+			is_vassal = no 
+			exists = yes 
+		}
+		
+		#Owns Eritrea
+		is_possible_vassal = ERI
 	}
 
 	mean_time_to_happen = {
-		months = 24
-		modifier = {
-			factor = 0.1
-			any_owned_province = {
-				is_core = ERI
-				OR = {
-					has_province_modifier = nationalist_agitation
-					controlled_by_rebels = yes
-				}
-			}
-		}
+		months = 9
 	}
 
 	option = {
-		name = EVT_1005301_A
-		prestige = -2
+		name = EVT_1005301_A #Reward Ethiopia for WW2 support
+		prestige = 50
 		any_pop = {
 			limit = {
 				OR = { culture = tigre culture = afar }
@@ -39,76 +114,90 @@ country_event = {
 			consciousness = 2
 			militancy = 2
 		}
-		release = ERI
-		random_country = { limit = { tag = ETH OR = { government = absolute_monarchy government = hms_government government = hms_government1 } } ERI = { government = absolute_monarchy country_event = 800050 ruling_party_ideology = conservative } }
+		
+		#ETH relations
+		relation = { who = ETH value = 100 }
 		diplomatic_influence = { who = ETH value = 100 }
+		
+		#Transfer all ERI cores to ETH
+		any_owned = {
+			limit = { is_core = ERI }
+			secede_province = ETH
+		}
+		
+		#Ethiopia releases Eritrea
 		ETH = {
-			create_vassal = ERI
+			release_vassal = ERI
 			sphere_owner = { diplomatic_influence = { who = ERI value = 200 } }
 		}
+		
+		#Set Eritrean Government
+		ERI = {
+			government = hms_government
+			country_event = 800054
+			ruling_party_ideology = conservative
+		}
+		
 		ai_chance = {
 			factor = 0.9
-			modifier = {
-				factor = 0.1
-				ETH = { ruling_party_ideology = communist }
-			}
-			modifier = {
-				factor = 0.25
-				ruling_party_ideology = populist
-			}
 		}
 	}
 
 	option = {
-		name = EVT_1005301_B
+		name = EVT_1005301_B #Release Eritrea as protectorate.
+		badboy = 5
+		
+		#Relations with Ethiopia
 		relation = { who = ETH value = -100 }
 		diplomatic_influence = { who = ETH value = -100 }
+		
+		#Release ERI as a colony
 		release_vassal = ERI
+		ERI = {
+			government = colonial_government
+			country_event = 800054
+			ruling_party_ideology = conservative
+		}
+		
 		diplomatic_influence = { who = ERI value = 200 }
 		ai_chance = {
-			factor = 0.1
-			modifier = {
-				factor = 5
-				NOT = { relation = { who = ETH value = 0 } }
-			}
-			modifier = {
-				factor = 0.25
-				ruling_party_ideology = populist
-			}
+			factor = 0.05
 		}
 	}
 
 	option = {
-		name = EVT_1005301_C
-		any_pop = {
-			limit = {
-				OR = { culture = tigre culture = afar }
-			}
-			consciousness = 5
-			militancy = 8
-		}
+		name = EVT_1005301_C #Reject UN Resolution 390A(V)
 		badboy = 10
 		any_owned = {
 			limit = { is_core = ERI }
 			add_province_modifier = {
 				name = nationalist_agitation
-				duration = 1095
+				duration = 3650
+			}
+			add_province_modifier = {
+				name = occupied_province
+				duration = -1
+			}
+			any_pop = {
+				limit = {
+					OR = { culture = tigre culture = afar }
+				}
+				consciousness = 5
+				militancy = 8
+				ideology  = { factor = 0.10 value = nationalist }
 			}
 		}
 		ai_chance = {
-			factor = 0.01
-			modifier = {
-				factor = 0
-				badboy = 0.6
-			}
+			factor = 0.05
 		}
 	}
 
 }
 
+#The Integration of Eritrea?
 country_event = {
 	id = 1005302
-	title = EVT_1005302_NAME
+	title = "The Integration of Eritrea?"
 	desc = EVT_1005302_DESC
 	picture = "haile_selassie"
 
@@ -116,55 +205,84 @@ country_event = {
 
 	trigger = {
 		tag = ETH
-		exists = ERI
-		is_our_vassal = ERI
+		
+		government = absolute_monarchy
+		is_vassal = no
 		war = no
+		
+		#Federation of Ethiopia and Eritrea
+		is_our_vassal = ERI
 	}
 
 	mean_time_to_happen = {
-		months = 108 # TODO depend on ETH reforms
-		modifier = {
-			year = 1960
-			government = absolute_monarchy
-			factor = 0.15
-		}
+		months = 11
 	}
 
 	option = {
-		name = EVT_1005302_A
+		name = EVT_1005302_A #Annex Eritrea
+		prestige = 50
 		badboy = 5
+		
+		#Internal unrest
 		remove_accepted_culture = oromo
 		remove_accepted_culture = tigray
-		any_pop = {
-			limit = {
-				OR = { culture = tigre culture = tigray }
-			}
-			consciousness = 2
-			militancy = 8
-		}
+		
+		#ERI situation
+		inherit = ERI
 		ERI = {
-			annex_to = THIS
 			all_core = {
-				add_province_modifier = { name = nationalist_agitation duration = 1095 }
+				add_province_modifier = { name = nationalist_agitation duration = 3650 }
+				any_pop = {
+					limit = {
+						OR = { culture = tigre culture = tigray }
+					}
+					consciousness = 8
+					militancy = 8
+					ideology  = { factor = 0.25 value = nationalist }
+				}
 			}
 		}
 		ai_chance = {
-			factor = 1
+			factor = 0.9
 			modifier = {
 				factor = 0
-				badboy = 0.84
+				badboy = 0.8
 			}
 		}
 	}
 
 	option = {
-		name = EVT_1005302_B
+		name = EVT_1005302_B #Leave the current situation
+		
+		#Increase Ethiopian unrest
 		any_pop = {
-			limit = {
-				OR = { culture = tigre culture = tigray }
+			limit = { strata = rich }
+			consciousness = 5
+			ideology  = { factor = 0.05 value = liberal }
+		}
+		any_pop = {
+			limit = { strata = middle }
+			consciousness = 5
+			ideology  = { factor = 0.20 value = liberal }
+		}
+		any_pop = {
+			limit = { strata = poor }
+			consciousness = 2.5
+			ideology  = { factor = 0.10 value = liberal }
+		}
+		
+		#ERI situation
+		ERI = {
+			all_core = {
+				any_pop = {
+					limit = {
+						OR = { culture = tigre culture = tigray }
+					}
+					consciousness = 4
+					militancy = 4
+					ideology  = { factor = 0.05 value = nationalist }
+				}
 			}
-			consciousness = 2
-			militancy = 5
 		}
 		ai_chance = {
 			factor = 0.1
@@ -173,224 +291,25 @@ country_event = {
 
 }
 
-# Ethiopian government change - possibilities
-# 1. Reform into a constitutional monarchy
-# 2. Constitutional coup
-# 3. Communist coup
-# 4. Hold out until 1990
-
-country_event = {
-	id = 8005303
-	title = EVT_8005303_NAME
-	desc = EVT_8005303_DESC
-	picture = "nwo2_haile_selassie_old"
-	fire_only_once = yes
-
-	trigger = {
-		tag = ETH
-		year = 1960 NOT = { year = 1990 }
-		government = absolute_monarchy
-	}
-
-	mean_time_to_happen = {
-		months = 168
-		modifier = {
-			factor = 0.75
-			part_of_sphere = yes
-			sphere_owner = { government = democracy }
-		}
-		modifier = {
-			factor = 0.75
-			ruling_party_ideology = liberal
-		}
-		modifier = {
-			factor = 0.5
-			ruling_party_ideology = progressive
-		}
-		modifier = {
-			factor = 0.8
-			average_consciousness = 4
-		}
-		modifier = {
-			factor = 0.8
-			OR = {
-				pop_majority_ideology = liberal
-				pop_majority_ideology = progressive
-			}
-		}
-		modifier = {
-			factor = 0.9
-			capital_scope = {
-				OR = {
-					pop_majority_ideology = liberal
-					pop_majority_ideology = progressive
-				}
-			}
-		}
-	}
-
-	immediate = {
-		government = hms_government # Prevent simultaneous coup events
-	}
-
-	option = {
-		name = EVT_8005303_A
-		define_general = { name = "Amha Selassie" personality = energetic background = no_background }
-		country_event = 800044
-		any_pop = {
-			limit = {
-				type = soldiers
-				type = officers
-			}
-			militancy = 3
-			consciousness = 3
-		}
-		any_pop = {
-			scaled_militancy = {
-				ideology = traditionalist
-				factor = 4
-			}
-			scaled_consciousness = {
-				ideology = traditionalist
-				factor = 4
-			}
-			scaled_militancy = {
-				ideology = conservative
-				factor = 2
-			}
-			scaled_consciousness = {
-				ideology = conservative
-				factor = 2
-			}
-		}
-	}
-}
-country_event = {
-	id = 8005305
-	title = EVT_8005305_NAME
-	desc = EVT_8005305_DESC
-	picture = "nwo2_derg"
-	fire_only_once = yes
-
-	trigger = {
-		tag = ETH
-		year = 1960 NOT = { year = 1990 }
-		government = absolute_monarchy 
-		NOT = { has_country_flag = derg }
-	}
-
-	mean_time_to_happen = {
-		months = 168
-		modifier = {
-			factor = 0.75
-			part_of_sphere = yes
-	sphere_owner = { government = proletarian_dictatorship }
-		}
-		modifier = {
-			factor = 0.1
-			has_country_flag = hide_1973_famine
-		}
-		modifier = {
-			factor = 1.2
-			ruling_party_ideology = socialist
-		}
-		modifier = {
-			factor = 0.5
-			ruling_party_ideology = communist
-		}
-		modifier = {
-			factor = 0.75
-			ruling_party_ideology = communist_social
-		}
-		modifier = {
-			factor = 0.8
-			average_consciousness = 4
-		}
-		modifier = {
-			factor = 0.5
-			average_militancy = 1
-		}
-		modifier = {
-			factor = 0.8
-			OR = {
-				pop_majority_ideology = socialist
-				pop_majority_ideology = communist
-				pop_majority_ideology = communist_social
-			}
-		}
-		modifier = {
-			factor = 0.9
-			capital_scope = {
-				OR = {
-					pop_majority_ideology = socialist
-					pop_majority_ideology = communist
-					pop_majority_ideology = communist_social
-				}
-			}
-		}
-	}
-
-	immediate = {
-		government = proletarian_dictatorship
-	}
-
-	option = {
-		name = EVT_8005305_A
-		country_event = 800042
-		set_country_flag = derg
-		random_state = { any_pop = { dominant_issue = { value = planned_economy factor = 0.15 } } }
-	}
-
-}
-country_event = {
-	id = 8005309
-	title = EVT_8005309_NAME
-	desc = EVT_8005309_DESC
-	picture = "nwo2_fall_of_derg"
-	fire_only_once = yes
-
-	trigger = {
-		has_country_flag = derg # ETH
-		AND = {
-			NOT = { any_greater_power = { has_country_modifier = communist_bloc_leader } } # End of the Cold War
-			1008 = { owner = { NOT = { government = proletarian_dictatorship } } } # Moscow
-		}
-		government = proletarian_dictatorship
-		is_possible_vassal = ERI
-	}
-
-	mean_time_to_happen = { months = 1 }
-
-	immediate = {
-		clr_country_flag = derg
-	}
-
-	option = {
-		name = EVT_8005309_A
-		government = democracy 
-		country_event = 800054
-		random_state = { any_pop = { dominant_issue = { value = parties_allowed factor = 0.15 } } }
-		country_event = 1512124
-		ai_chance = { factor = 0.8 }
-	}
-
-	option = {
-		name = EVT_8005309_B
-		any_pop = { militancy = 5.0 }
-		country_event = 8023300 # communist_plebiscite.txt
-		ai_chance = { factor = 0.2 }
-	}
-}
+#Eritrean Liberation Movement
 country_event = {
 	id = 8005312
-	title = EVT_8005312_NAME
+	title = "Eritrean Liberation Movement"
 	desc = EVT_8005312_DESC
 	picture = "nwo2_eritrea"
+	
 	fire_only_once = yes
 
 	trigger = {
 		tag = ETH
-		year = 1961
+		year = 1962
+		NOT = { year = 1990 }
+		
+		government = absolute_monarchy
+		is_vassal = no
+		war = no
+		
+		#Owns ERI illegally
 		is_possible_vassal = ERI
 		NOT = { accepted_culture = tigre }
 	}
@@ -398,74 +317,30 @@ country_event = {
 	mean_time_to_happen = { months = 9 }
 
 	option = {
-		name = EVT_8005312_A
-		any_owned = {
-			limit = {
-				is_core = ERI
-				OR = {
-					is_primary_culture = ERI
-					is_accepted_culture = ERI
-					# All but Assab
-				}
+		name = "We shall crush them!"
+		ERI = {
+			all_core = { 
+				limit = { is_state_capital = no } 
+				change_controller = REB 
 			}
-			any_pop = {
-				militancy = 5
-				ideology = {
-					factor = 0.5
-					value = nationalist
+			all_core = {
+				any_pop = {
+					limit = {
+						OR = { culture = tigre culture = tigray }
+					}
+					consciousness = 10
+					militancy = 10
+					ideology  = { factor = 0.10 value = nationalist }
 				}
 			}
 		}
 	}
 }
 
-#End the occupation of Ogaden
-country_event = {
-	id = 8005306
-	title = EVT_8005306_NAME
-	desc = EVTDESC1400030
-	picture = "ogaden"
-	fire_only_once = yes
-
-	mean_time_to_happen = {
-		months = 24
-	}
-
-	trigger = {
-		capital_scope = { continent = europe } # ENG or FBU
-any_owned_province = { is_core = ETH NOT = { is_core = ERI } }
-		NOT = { war_with = ETH }
-		NOT = { year = 1990 }
-	}
-
-	option = {
-		name = EVT_8005306_A
-		prestige = 10
-any_owned = { limit = { is_core = ETH NOT = { is_core = ERI } } secede_province = ETH }
-		ai_chance = { factor = 0.9 }
-	}
-
-	option = {
-		name = EVT_8005306_B
-		badboy = 10
-		prestige = -100
-		1865 = { state_scope = { # Two scopes needed to change region name
-			change_region_name = "Ogaden"
-			add_core = SML
-		} }
-		diplomatic_influence = { who = ETH value = -200 }
-
-any_owned = { limit = { is_core = ETH } add_province_modifier = { name = occupied_province duration = -1 } }
-
-		random_country = { limit = { tag = ETH NOT = { government = proletarian_dictatorship } } USA = { relation = { who = THIS value = -50 } } } # America is unhappy unless ETH is communist
-		ai_chance = { factor = 0.1 }
-	}
-
-}
-
+#The Great Ethiopian Famine
 country_event = {
 	id = 8005316
-	title = "1973-1974 Ethiopian Famine"
+	title = "The Great Ethiopian Famine"
 	desc = EVT_8005316_DESC
 	picture = "ethiopian_1973_famine"
 
@@ -473,8 +348,18 @@ country_event = {
 
 	trigger = {
 		tag = ETH
-		year = 1973 NOT = { year = 1974 }
-		owns = 1861
+		year = 1973 
+		NOT = { year = 1990 }
+		
+		government = absolute_monarchy
+		is_vassal = no
+		war = no
+		
+		owns = 1856
+		owns = 1858
+		owns = 1863
+		
+		OR = { ruling_party_ideology = traditionalist ruling_party_ideology = conservative }
 	}
 
 	mean_time_to_happen = {
@@ -484,47 +369,620 @@ country_event = {
 	option = {
 		name = "Cover up the incident"
 
-		ai_chance = { factor = 0.7 }
-
-		badboy = 4
-
-1856 = { any_pop = { reduce_pop = 0.95 militancy = 2 } }
-
-1858 = { any_pop = { reduce_pop = 0.95 militancy = 2 } }
-
-1863 = { any_pop = { reduce_pop = 0.95 militancy = 2 } }
+		1856 = { any_pop = { limit = { strata = poor } reduce_pop = 0.90 militancy = 4 consciousness = 4 ideology = { factor = 0.20 value = communist } } any_pop = { limit = { strata = middle } reduce_pop = 0.95 militancy = 2 consciousness = 2 ideology = { factor = 0.20 value = progressive } } add_province_modifier = { name = severe_homeland_drought duration = 730 } }
+		1858 = { any_pop = { limit = { strata = poor } reduce_pop = 0.90 militancy = 4 consciousness = 4 ideology = { factor = 0.20 value = communist } } any_pop = { limit = { strata = middle } reduce_pop = 0.95 militancy = 2 consciousness = 2 ideology = { factor = 0.20 value = progressive } } add_province_modifier = { name = severe_homeland_drought duration = 730 } }
+		1863 = { any_pop = { limit = { strata = poor } reduce_pop = 0.90 militancy = 4 consciousness = 4 ideology = { factor = 0.20 value = communist } } any_pop = { limit = { strata = middle } reduce_pop = 0.95 militancy = 2 consciousness = 2 ideology = { factor = 0.20 value = progressive } } add_province_modifier = { name = severe_homeland_drought duration = 730 } }
 
 		set_country_flag = hide_1973_famine
+		
+		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
-		name = "Provide some aid to the starving"
+		name = "Do everything possible to stop the famine!"
+		prestige_factor = -0.1
+		money = -500000
 
-		ai_chance = { factor = 0.2 }
-
-		money = -200000
-		set_country_flag = alleviate_1973_famine
-
-1856 = { any_pop = { militancy = 1 reduce_pop = 0.98 } }
-
-1858 = { any_pop = { militancy = 1 reduce_pop = 0.98 } }
-		
-1863 = { any_pop = { militancy = 1 reduce_pop = 0.98 } }
-
-	}	
-
-	option = {
-		name = "Do everything possible to stop the famine"
+		1856 = { any_pop = { limit = { strata = poor } reduce_pop = 0.95 militancy = 2 consciousness = 2 ideology = { factor = 0.10 value = communist } } any_pop = { limit = { strata = middle } reduce_pop = 0.98 militancy = 2 consciousness = 2 ideology = { factor = 0.10 value = progressive } } add_province_modifier = { name = homeland_drought duration = 730 } }
+		1858 = { any_pop = { limit = { strata = poor } reduce_pop = 0.95 militancy = 2 consciousness = 2 ideology = { factor = 0.10 value = communist } } any_pop = { limit = { strata = middle } reduce_pop = 0.98 militancy = 2 consciousness = 2 ideology = { factor = 0.10 value = progressive } } add_province_modifier = { name = homeland_drought duration = 730 } }
+		1863 = { any_pop = { limit = { strata = poor } reduce_pop = 0.95 militancy = 2 consciousness = 2 ideology = { factor = 0.10 value = communist } } any_pop = { limit = { strata = middle } reduce_pop = 0.98 militancy = 2 consciousness = 2 ideology = { factor = 0.10 value = progressive } } add_province_modifier = { name = homeland_drought duration = 730 } }
 
 		ai_chance = { factor = 0.1 }
-
-		money = -400000
-
-1856 = { any_pop = { reduce_pop = 0.99 militancy = 0.1 } }
-
-1858 = { any_pop = { reduce_pop = 0.99 militancy = 0.1 } }
-
-1863 = { any_pop = { reduce_pop = 0.99 militancy = 0.1 } }
-
 	}		
+}
+
+#Ethiopian Revolution of $YEAR$
+country_event = {
+	id = 8005305
+	title = "The Ethiopian Revolution of $YEAR$"
+	desc = EVT_8005305_DESC
+	picture = "nwo2_derg"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = ETH
+		year = 1974
+		NOT = { year = 1990 }
+		
+		government = absolute_monarchy
+		is_vassal = no
+		war = no
+		
+		#Covered up the famine
+		has_country_flag = hide_1973_famine
+		
+		#Emperor's ideology is in charge
+		OR = { ruling_party_ideology = traditionalist ruling_party_ideology = conservative }
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "The Derg shall rule Ethiopia!"
+		
+		government = proletarian_dictatorship
+		country_event = 800052
+		ruling_party_ideology = communist
+		
+		set_country_flag = derg
+		
+		ai_chance = {
+			factor = 0.9
+		}
+	}
+	
+	option = {
+		name = "The Emperor strikes back!"
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = -5
+			consciousness = -5
+			ideology  = { factor = 0.10 value = traditionalist } 
+		} 
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = 5
+			consciousness = 5
+			ideology  = { factor = 0.10 value = liberal } 
+		} 
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = 10
+			consciousness = 10
+			ideology  = { factor = 0.10 value = communist } 
+		} 
+		
+		ai_chance = {
+			factor = 0.1
+		}
+	}
+
+}
+
+#Eritrean Civil War
+country_event = {
+	id = 1512124
+	title = "Eritrean War of Independence"
+	desc = EVTDESC1512124
+	picture = "eri_eth_civil_war"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = ETH
+		has_country_flag = derg
+		NOT = { has_global_flag = 1992_start_date_flag }
+	
+		government = proletarian_dictatorship
+		is_vassal = no
+		war = no
+	
+		#Owns ERI
+		is_possible_vassal = ERI
+	}
+
+	mean_time_to_happen = { months = 6 }
+	
+	option = {
+		name = "Eritrea is $COUNTRY_ADJ$!"
+		badboy = 5
+		
+		#Release Eritrea
+		release = ERI
+		ERI = { 
+			government = democracy 
+			country_event = 800054 
+			ruling_party_ideology = nationalist 
+			
+			war = {
+				target = ETH
+				attacker_goal = { casus_belli = become_independent }
+				defender_goal = {  }
+				call_ally = no
+			}
+		}
+
+		set_country_flag = eth_war_trigger
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Give in to the Eritrean demands"
+		prestige_factor = -0.1
+		
+		#Free Eritrea
+		release = ERI
+		ERI = { 
+			government = democracy 
+			country_event = 800054 
+			ruling_party_ideology = nationalist 
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#The Fall of the Derg
+country_event = {
+	id = 8005309
+	title = "The Fall of the Derg"
+	desc = EVT_8005309_DESC
+	picture = "nwo2_fall_of_derg"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = ETH
+		year = 1991
+		has_global_flag = autumn_of_nations
+		NOT = { has_global_flag = 1992_start_date_flag }
+	
+		government = proletarian_dictatorship
+		is_vassal = no
+		war = no
+	
+		has_country_flag = derg # ETH
+	}
+
+	mean_time_to_happen = { months = 5 }
+
+	option = {
+		name = "Bring down the regime!"
+		prestige = 50
+		
+		set_country_flag = fall_of_derg
+		
+		government = democracy1
+		country_event = 800054
+		ruling_party_ideology = conservative
+		
+		#Parliamentary system
+		clr_country_flag = presidential_system_republic
+		clr_country_flag = semi_presidential_system_republic
+		set_country_flag = parliamentary_system_republic
+		
+		#Socialists are angry
+		any_pop = {
+			scaled_militancy = { 
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = communist_social
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = socialist
+			}
+		}
+
+		ai_chance = { factor = 0.8 }
+	}
+	
+	option = {
+		name = "Go down the middle route!"
+		
+		set_country_flag = fall_of_derg
+
+		government = socialist_democracy
+		country_event = 800054
+		ruling_party_ideology = communist_social
+
+		#Conservatives are angry
+		any_pop = {
+			scaled_militancy = { 
+				factor = 10
+				ideology = traditionalist
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = conservative
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = liberal
+			}
+		}
+
+		ai_chance = { factor = 0.1 }
+	}
+
+	option = {
+		name = "We shall resist any attempts at reform!"
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		#Liberals are angry
+		any_pop = {
+			scaled_militancy = { 
+				factor = 10
+				ideology = traditionalist
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = conservative
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = liberal
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = progressive
+			}
+			scaled_militancy = { 
+				factor = 5
+				ideology = socialist
+			}
+			scaled_militancy = { 
+				factor = 5
+				ideology = big_tent
+			}
+		}
+		
+		#Begin rebellion
+		all_core = { 
+			limit = { is_state_capital = no } 
+			change_controller = REB 
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+#Eritrean independence referendum of 1993
+country_event = {
+	id = 1512125
+	title = "Eritrean Independence Referendum of $YEAR$"
+	desc = EVTDESC1512125
+	picture = "eri_indy_pic"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = ETH
+		year = 1993
+		has_country_flag = fall_of_derg
+		
+		OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+		is_vassal = no
+		war = no
+		
+		#Owns Eritrea
+		is_possible_vassal = ERI 
+	}
+
+	mean_time_to_happen = { 
+		months = 4
+	}
+
+	option = {
+		name = "Grant independence!"
+		prestige = 50
+		
+		#Clean up any rebellions
+		any_owned = {
+			limit = { is_core = ERI }
+			change_controller = ETH
+		}
+		
+		#Release Eritrea
+		release = ERI
+		ERI = { 
+			government = presidential_dictatorship 
+			country_event = 800050 
+			ruling_party_ideology = conservative 
+		}
+
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Eritrea is still $COUNTRY_ADJ$!"
+		
+		#Round three
+		release = ERI
+		ERI = { 
+			government = presidential_dictatorship 
+			country_event = 800050 
+			ruling_party_ideology = conservative 
+		}
+		
+		war = {
+			target = ERI
+			attacker_goal = { casus_belli = conquest }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = no
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#1995 Constitution of Ethiopia
+country_event = {
+	id = 8005310
+	title = "The $YEAR$ Constitution of Ethiopia"
+	desc = EVTDESC8005310
+	picture = "1995_ETH_constitution"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = ETH
+		has_country_flag = fall_of_derg
+		year = 1995
+		
+		government = democracy1
+		is_vassal = no
+		war = no
+		
+		OR = { ruling_party_ideology = socialist ruling_party_ideology = conservative } #one of the pro-western factions of the EPRDF
+
+	}
+
+	mean_time_to_happen = { 
+		months = 8
+	}
+	
+	option = {
+		name = "Preserve the role of a strong centralised state."
+		
+		badboy = -5
+		
+		#Weak democracy
+		government = democracy
+		political_reform = regulated_opinion
+		political_reform = registered_voting
+		political_reform = minorities_equal_rights
+		political_reform = elitist_service
+		political_reform = parties_only_nominated
+		political_reform = responsible_publishing
+		political_reform = free_trade_unions
+		political_reform = limited_meetings
+		political_reform = first_past_the_post
+		
+		#Parliamentary system
+		clr_country_flag = presidential_system_republic
+		clr_country_flag = semi_presidential_system_republic
+		set_country_flag = parliamentary_system_republic
+
+		any_pop = {
+			scaled_militancy = { 
+				factor = 6
+				ideology = communist
+			}
+			scaled_militancy = { 
+				factor = 6
+				ideology = communist_social
+			}
+			scaled_militancy = { 
+				factor = -5
+				ideology = socialist
+			}
+			scaled_militancy = { 
+				factor = -4
+				ideology = conservative
+			}
+		}
+		
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "Strengthen federalism."
+		prestige = 50
+		badboy = -10
+		
+		#Strong democracy
+		government = democracy
+		political_reform = universal_weighted_voting
+		political_reform = free_opinion
+		political_reform = minorities_equal_rights
+		political_reform = elitist_service
+		political_reform = parties_restrict_non_democratic
+		political_reform = responsible_publishing
+		political_reform = free_trade_unions
+		political_reform = free_meetings
+		political_reform = proportional_representation
+		
+		#Semi-Presidential system
+		clr_country_flag = presidential_system_republic
+		set_country_flag = semi_presidential_system_republic
+		clr_country_flag = parliamentary_system_republic
+
+		any_pop = {
+			scaled_militancy = { 
+				factor = 7
+				ideology = communist
+			}
+			scaled_militancy = { 
+				factor = 7
+				ideology = communist_social
+			}
+		}
+		
+		ai_chance = { factor = 0.2 }
+	}
+
+}
+
+#The Tigray War of 2021
+country_event = {
+	id = 8005311
+	title = "The Tigray War"
+	desc = EVTDESC8005311
+	picture = "ETH_2021_tigray_war"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = ETH
+		year = 2021
+		NOT = { year = 2031 }
+		
+		OR = { government = democracy government = democracy1 }
+		is_vassal = no
+		war = no
+		
+		election = no
+		
+		#EPRDF
+		ruling_party_ideology = socialist
+		
+		#Owns Aksum and Oromia
+		is_possible_vassal = TIG
+		is_possible_vassal = ORM
+		
+		#Caused in part by COVID
+		has_global_flag = covid19_virus_happened
+		
+		#ETH is a federal state
+		has_country_flag = parliamentary_system_republic
+	}
+
+	mean_time_to_happen = {
+		months = 11
+	}
+
+	option = {
+		name = "Fight the Tigray to end ethnic federalism!"
+		prestige = 50
+		badboy = 5
+		
+		#Change to Prosperity Party
+		ruling_party_ideology = conservative
+		
+		#Internal unrest
+		remove_accepted_culture = oromo
+		remove_accepted_culture = tigray
+		
+		#Increase Ethiopian support for conservative
+		any_pop = {
+			limit = { strata = rich NOT = { OR = { culture = tigray culture = oromo } } }
+			consciousness = 2.5
+			ideology  = { factor = 0.15 value = conservative }
+		}
+		any_pop = {
+			limit = { strata = middle NOT = { OR = { culture = tigray culture = oromo } } }
+			consciousness = 5
+			ideology  = { factor = 0.10 value = conservative }
+		}
+		any_pop = {
+			limit = { strata = poor NOT = { OR = { culture = tigray culture = oromo } } }
+			consciousness = 10
+			ideology  = { factor = 0.05 value = conservative }
+		}
+		
+		#Tigray and Oromo are pissed
+		any_pop = {
+			limit = { culture = tigray culture = oromo }
+			consciousness = 10
+			militancy = 10
+			ideology  = { factor = 0.25 value = nationalist }
+		}
+		
+		#Begin the war!
+		release = TIG
+		TIG = {
+			government = nationalist_dictatorship
+			country_event = 800050
+			ruling_party_ideology = socialist
+			
+			money = 50000
+			small_arms = 500
+			weaponry = 500
+			aeroplanes = 500
+			ammunition = 500
+			automobiles = 500
+			
+			war = {
+				target = ETH
+				attacker_goal = { casus_belli = become_independent }
+				defender_goal = {  }
+				call_ally = no
+			}
+		}
+		any_owned = { 
+			limit = { 
+				is_capital = no 
+				is_core = ORM 
+			} 
+			secede_province = ORM 
+		}
+		ORM = {
+			government = nationalist_dictatorship
+			country_event = 800050
+			ruling_party_ideology = nationalist
+			
+			money = 50000
+			small_arms = 500
+			weaponry = 500
+			aeroplanes = 500
+			ammunition = 500
+			automobiles = 500
+			
+			war = {
+				target = ETH
+				attacker_goal = { casus_belli = become_independent }
+				defender_goal = {  }
+				call_ally = no
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Keep the status quo"
+		
+		#Increase Ethiopian support for nationalist
+		any_pop = {
+			limit = { strata = rich }
+			consciousness = 10
+			ideology = { factor = 0.05 value = nationalist }
+		}
+		any_pop = {
+			limit = { strata = middle }
+			consciousness = 5
+			ideology = { factor = 0.10 value = nationalist }
+		}
+		any_pop = {
+			limit = { strata = poor }
+			consciousness = 2.5
+			ideology = { factor = 0.15 value = nationalist }
+		}
+
+		ai_chance = { factor = 0.1 }
+	}
+
 }

@@ -3,11 +3,18 @@ political_decisions = {
 	jointheoic = {
 		picture = "jointheoic"
 		potential = {
-NOT = { government = proletarian_dictatorship }
+		
+			#Must be a Muslim majority nation
 			OR = { pop_majority_religion = sunni pop_majority_religion = ibad pop_majority_religion = shiite has_country_flag = muslim } # flag from political_events.txt desecularization
-			NOT = { religious_policy = pro_atheism }
-			NOT = { has_country_modifier = oic_member }
+		
+			#Not a communist state
+			NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
+			
 			year = 1969
+
+			#Not already a member
+			NOT = { has_country_modifier = oic_member }
+
 			OR = {
 				NOT = { badboy = 1 }
 				AND = {
@@ -19,11 +26,18 @@ NOT = { government = proletarian_dictatorship }
 					overlord = { has_country_modifier = oic_chairmanship }
 				}
 			}
-			NOT = { is_vassal = yes overlord = { religious_policy = moralism NOT = { has_country_flag = muslim } } } # not vassal of a non-muslim moralist state
+			
+			#Not Israel
+			NOT = { is_culture_group = jewish_cultures }
+			
+			# not vassal of a non-muslim moralist state
+			NOT = { is_vassal = yes overlord = { religious_policy = moralism NOT = { has_country_flag = muslim } } }
 		}
 		allow = {
 			war = no
 			election = no
+			
+			NOT = { religious_policy = pro_atheism }
 		}
 		effect = {
 			prestige = 10
@@ -37,10 +51,17 @@ NOT = { government = proletarian_dictatorship }
 		picture = "jointheoic"
 		potential = {
 			OR = {
-government = proletarian_dictatorship
+				#Communist government
+				government = proletarian_dictatorship
+				government = proletarian_dictatorship1
+				
+				#Atheist government
 				religious_policy = pro_atheism
+				
+				#Not a Muslim majority state
 				NOT = { OR = { pop_majority_religion = sunni pop_majority_religion = ibad pop_majority_religion = shiite has_country_flag = muslim } }
 			}
+			
 			has_country_modifier = oic_member
 			NOT = { has_country_modifier = oic_chairmanship }
 		}
@@ -67,13 +88,20 @@ government = proletarian_dictatorship
 		picture = "jointheoic"
 		potential = {
 			has_country_modifier = oic_chairmanship
-			OR = { has_country_modifier = oichigh
+			OR = { 
+				has_country_modifier = oichigh
 				has_country_modifier = oicmedium
-				has_country_modifier = oiclow }
+				has_country_modifier = oiclow 
+			}
 		}
 		alert = no
 		allow = {
 			war = no
+			OR = {
+				AND = { has_global_flag = oichigh NOT = { OR = { economic_policy = state_capitalism economic_policy = planned_economy1 economic_policy = planned_economy } } }
+				AND = { has_global_flag = oicmedium NOT = { economic_policy = interventionism } }
+				AND = { has_global_flag = oiclow NOT = { economic_policy = laissez_faire } }
+			}
 		}
 		effect = {
 			clr_global_flag = oichigh
@@ -94,14 +122,6 @@ government = proletarian_dictatorship
 		}
 		ai_will_do = {
 			factor = 1
-			modifier = {
-				factor = 0
-				OR = {
-					AND = { has_global_flag = oichigh OR = { economic_policy = state_capitalism economic_policy = planned_economy } }
-					AND = { has_global_flag = oicmedium economic_policy = interventionism }
-					AND = { has_global_flag = oiclow economic_policy = laissez_faire }
-				}
-			}
 		}
 	}
 
@@ -110,12 +130,17 @@ government = proletarian_dictatorship
 
 		potential = {
 			has_country_modifier = oic_chairmanship
-			NOT = { OR = { has_country_modifier = oichigh
+			NOT = { 
+				OR = { 
+					has_country_modifier = oichigh
 					has_country_modifier = oicmedium
-					has_country_modifier = oiclow } }
+					has_country_modifier = oiclow 
+				} 
+			}
 		}
 		allow = {
 			war = no
+			OR = { economic_policy = state_capitalism economic_policy = planned_economy1 economic_policy = planned_economy }
 		}
 		effect = {
 			add_country_modifier = { name = oichigh duration = -1 }
@@ -124,10 +149,6 @@ government = proletarian_dictatorship
 		}
 		ai_will_do = {
 			factor = 1
-			modifier = {
-				factor = 0
-				NOT = { OR = { economic_policy = state_capitalism economic_policy = planned_economy } }
-			}
 		}
 	}
 	oicmedium = {
@@ -135,12 +156,17 @@ government = proletarian_dictatorship
 
 		potential = {
 			has_country_modifier = oic_chairmanship
-			NOT = { OR = { has_country_modifier = oichigh
+			NOT = { 
+				OR = { 
+					has_country_modifier = oichigh
 					has_country_modifier = oicmedium
-					has_country_modifier = oiclow } }
+					has_country_modifier = oiclow 
+				} 
+			}
 		}
 		allow = {
 			war = no
+			economic_policy = interventionism
 		}
 		effect = {
 			add_country_modifier = { name = oicmedium duration = -1 }
@@ -149,23 +175,23 @@ government = proletarian_dictatorship
 		}
 		ai_will_do = {
 			factor = 1
-			modifier = {
-				factor = 0
-				NOT = { economic_policy = interventionism }
-			}
 		}
 	}
 	oiclow = {
 		picture = "jointheoic"
-
 		potential = {
 			has_country_modifier = oic_chairmanship
-			NOT = { OR = { has_country_modifier = oichigh
+			NOT = { 
+				OR = { 
+					has_country_modifier = oichigh
 					has_country_modifier = oicmedium
-					has_country_modifier = oiclow } }
+					has_country_modifier = oiclow 
+				} 
+			}
 		}
 		allow = {
 			war = no
+			economic_policy = laissez_faire
 		}
 		effect = {
 			add_country_modifier = { name = oiclow duration = -1 }
@@ -174,13 +200,7 @@ government = proletarian_dictatorship
 		}
 		ai_will_do = {
 			factor = 1
-			modifier = {
-				factor = 0
-				NOT = { economic_policy = laissez_faire }
-			}
 		}
 	}
-
-
 
 }

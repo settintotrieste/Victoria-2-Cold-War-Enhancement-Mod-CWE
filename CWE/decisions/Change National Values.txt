@@ -1,102 +1,189 @@
 political_decisions = {
 
-changenvorder = {
-	picture = "changenvorder"
+	#Locks in current national values
+	entrench_national_values = {
+		picture = "entrench_national_values"
 		alert = no
 		potential = {
-
-has_country_flag = disabled_for_now
-
-NOT = { nationalvalue = nv_islamic }
-NOT = { nationalvalue = nv_order	}	
-OR = { pop_majority_ideology = conservative pop_majority_ideology = nationalist pop_majority_ideology = populist }
-				}
+			NOT = { has_country_flag = entrench_national_values_flag }
+			is_vassal = no
+		}
 		allow = {
 			election = no
-		OR = { pop_majority_ideology = conservative pop_majority_ideology = nationalist pop_majority_ideology = populist }
-
-		OR = { ruling_party_ideology = conservative ruling_party_ideology = nationalist ruling_party_ideology = populist }
-
+			war = no
+			
+			#Did not recently amend the constitution
+			NOT = { has_country_modifier = changecentral }
+			
+			OR = {
+				
+				#Order
+				AND = {
+					nationalvalue = nv_order
+					OR = { ruling_party_ideology = conservative ruling_party_ideology = nationalist ruling_party_ideology = populist }
+					OR = {
+						upper_house = { ideology = conservative value = 0.67 }
+						upper_house = { ideology = nationalist value = 0.67 }
+						upper_house = { ideology = populist value = 0.67 }
+					}
 				}
-		effect = {
-		nationalvalue = nv_order
-		}
-		ai_will_do = { 
-			factor = 100
+				
+				#Liberty
+				AND = {
+					nationalvalue = nv_liberty
+					ruling_party_ideology = liberal
+					upper_house = { ideology = liberal value = 0.67 }
+				}
+				
+				#Equality
+				AND = {
+					nationalvalue = nv_equality
+					OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social }
+					OR = {
+						upper_house = { ideology = socialist value = 0.67 }
+						upper_house = { ideology = communist value = 0.67 }
+						upper_house = { ideology = communist_social value = 0.67 }
+					}
+				}
+				
+				#Tradition
+				AND = {
+					nationalvalue = nv_islamic
+					ruling_party_ideology = traditionalist
+					upper_house = { ideology = traditionalist value = 0.67 }
+				}
+				
+				#Meritocracy
+				AND = {
+					nationalvalue = nv_meritocracy
+					ruling_party_ideology = big_tent
+					upper_house = { ideology = big_tent value = 0.67 }
+				}
+				
+				#Progressivism
+				AND = {
+					nationalvalue = nv_progressivism
+					ruling_party_ideology = progressive
+					upper_house = { ideology = progressive value = 0.67 }
+				}
+				
 			}
-	}
-changenvliberty = {
-	picture = "changenvliberty"
-		alert = no
-		potential = {
 
-has_country_flag = disabled_for_now
-
-NOT = { nationalvalue = nv_islamic }
-NOT = { nationalvalue = nv_liberty }
-OR = { pop_majority_ideology = liberal pop_majority_ideology = progressive }
-				}
-		allow = {
-			election = no
-OR = { pop_majority_ideology = liberal pop_majority_ideology = progressive }
-
-OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive }
-				}
+		}
 		effect = {
-		nationalvalue = nv_liberty
-		}
-		ai_will_do = { 
-			factor = 100
-			}
-	}
-changenvequality = {
-	picture = "changenvequality"
-		alert = no
-		potential = {
-
-has_country_flag = disabled_for_now
-
-NOT = { nationalvalue = nv_islamic }
-NOT = { nationalvalue = nv_equality }
-		OR = { pop_majority_ideology = socialist pop_majority_ideology = communist pop_majority_ideology = communist_social }				
-		}
-		allow = {
-			election = no
-OR = { pop_majority_ideology = socialist pop_majority_ideology = communist pop_majority_ideology = communist_social }	
-
-OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social }
-
-				}
-		effect = {
-		nationalvalue = nv_equality
-		}
-		ai_will_do = { 
-			factor = 100
-			}
-	}
-changenvmeritocracy = {
-	picture = "changenvmeritocracy"
-		alert = no
-		potential = {
-
-has_country_flag = disabled_for_now
-
-		NOT = { nationalvalue = nv_islamic }
-		NOT = { nationalvalue = nv_meritocracy }
-		pop_majority_ideology = big_tent		
-		}
-		allow = {
-			election = no
+			add_country_modifier = { name = changecentral duration = 365 }
 		
-		pop_majority_ideology = big_tent	
-		ruling_party_ideology = big_tent
-				}
-		effect = {
-		nationalvalue = nv_meritocracy
+			set_country_flag = entrench_national_values_flag
+			
+			#Increase militancy and consciousness amongst the opposition
+			random_owned = { limit = { owner = { NOT = { ruling_party_ideology = traditionalist } } } owner = { any_pop = { scaled_consciousness = { factor = 3 ideology = traditionalist } scaled_militancy = { factor = 3 ideology = traditionalist } } } }
+			random_owned = { limit = { owner = { NOT = { ruling_party_ideology = conservative } } } owner = { any_pop = { scaled_consciousness = { factor = 3 ideology = conservative } scaled_militancy = { factor = 3 ideology = conservative } } } }
+			random_owned = { limit = { owner = { NOT = { ruling_party_ideology = liberal } } } owner = { any_pop = { scaled_consciousness = { factor = 3 ideology = liberal } scaled_militancy = { factor = 3 ideology = liberal } } } }
+			random_owned = { limit = { owner = { NOT = { ruling_party_ideology = big_tent } } } owner = { any_pop = { scaled_consciousness = { factor = 3 ideology = big_tent } scaled_militancy = { factor = 3 ideology = big_tent } } } }
+			random_owned = { limit = { owner = { NOT = { ruling_party_ideology = progressive } } } owner = { any_pop = { scaled_consciousness = { factor = 3 ideology = progressive } scaled_militancy = { factor = 3 ideology = progressive } } } }
+			random_owned = { limit = { owner = { NOT = { ruling_party_ideology = socialist } } } owner = { any_pop = { scaled_consciousness = { factor = 3 ideology = socialist } scaled_militancy = { factor = 3 ideology = socialist } } } }
+			random_owned = { limit = { owner = { NOT = { ruling_party_ideology = communist } } } owner = { any_pop = { scaled_consciousness = { factor = 3 ideology = communist } scaled_militancy = { factor = 3 ideology = communist } } } }
+			random_owned = { limit = { owner = { NOT = { ruling_party_ideology = communist_social } } } owner = { any_pop = { scaled_consciousness = { factor = 3 ideology = communist_social } scaled_militancy = { factor = 3 ideology = communist_social } } } }
+			random_owned = { limit = { owner = { NOT = { ruling_party_ideology = nationalist } } } owner = { any_pop = { scaled_consciousness = { factor = 3 ideology = nationalist } scaled_militancy = { factor = 3 ideology = nationalist } } } }
+			random_owned = { limit = { owner = { NOT = { ruling_party_ideology = populist } } } owner = { any_pop = { scaled_consciousness = { factor = 3 ideology = populist } scaled_militancy = { factor = 3 ideology = populist } } } }
+			
 		}
 		ai_will_do = { 
-			factor = 100
+			factor = 1
+		}
+	}
+	
+	#Unlocks current national value so that it can change
+	untrench_national_values = {
+		picture = "untrench_national_values"
+		alert = no
+		potential = {
+			has_country_flag = entrench_national_values_flag
+		}
+		allow = {
+			election = no
+			war = no
+			
+			#Did not recently amend the constitution
+			NOT = { has_country_modifier = changecentral }
+			
+			OR = {
+				
+				#Order
+				AND = {
+					NOT = { nationalvalue = nv_order }
+					OR = { ruling_party_ideology = conservative ruling_party_ideology = nationalist ruling_party_ideology = populist }
+					OR = {
+						upper_house = { ideology = conservative value = 0.67 }
+						upper_house = { ideology = nationalist value = 0.67 }
+						upper_house = { ideology = populist value = 0.67 }
+					}
+				}
+				
+				#Liberty
+				AND = {
+					NOT = { nationalvalue = nv_liberty }
+					ruling_party_ideology = liberal
+					upper_house = { ideology = liberal value = 0.67 }
+				}
+				
+				#Equality
+				AND = {
+					NOT = { nationalvalue = nv_equality }
+					OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social }
+					OR = {
+						upper_house = { ideology = socialist value = 0.67 }
+						upper_house = { ideology = communist value = 0.67 }
+						upper_house = { ideology = communist_social value = 0.67 }
+					}
+				}
+				
+				#Tradition
+				AND = {
+					NOT = { nationalvalue = nv_islamic }
+					ruling_party_ideology = traditionalist
+					upper_house = { ideology = traditionalist value = 0.67 }
+				}
+				
+				#Meritocracy
+				AND = {
+					NOT = { nationalvalue = nv_meritocracy }
+					ruling_party_ideology = big_tent
+					upper_house = { ideology = big_tent value = 0.67 }
+				}
+				
+				#Progressivism
+				AND = {
+					NOT = { nationalvalue = nv_progressivism }
+					ruling_party_ideology = progressive
+					upper_house = { ideology = progressive value = 0.67 }
+				}
+				
 			}
+
+		}
+		effect = {
+			add_country_modifier = { name = changecentral duration = 365 }
+			add_country_modifier = { name = national_confusion duration = 730 }
+			
+			clr_country_flag = entrench_national_values_flag
+			
+			#Increase militancy and consciousness amongst the opposition
+			random_owned = { limit = { owner = { NOT = { ruling_party_ideology = traditionalist } } } owner = { any_pop = { scaled_consciousness = { factor = 3 ideology = traditionalist } scaled_militancy = { factor = 3 ideology = traditionalist } } } }
+			random_owned = { limit = { owner = { NOT = { ruling_party_ideology = conservative } } } owner = { any_pop = { scaled_consciousness = { factor = 3 ideology = conservative } scaled_militancy = { factor = 3 ideology = conservative } } } }
+			random_owned = { limit = { owner = { NOT = { ruling_party_ideology = liberal } } } owner = { any_pop = { scaled_consciousness = { factor = 3 ideology = liberal } scaled_militancy = { factor = 3 ideology = liberal } } } }
+			random_owned = { limit = { owner = { NOT = { ruling_party_ideology = big_tent } } } owner = { any_pop = { scaled_consciousness = { factor = 3 ideology = big_tent } scaled_militancy = { factor = 3 ideology = big_tent } } } }
+			random_owned = { limit = { owner = { NOT = { ruling_party_ideology = progressive } } } owner = { any_pop = { scaled_consciousness = { factor = 3 ideology = progressive } scaled_militancy = { factor = 3 ideology = progressive } } } }
+			random_owned = { limit = { owner = { NOT = { ruling_party_ideology = socialist } } } owner = { any_pop = { scaled_consciousness = { factor = 3 ideology = socialist } scaled_militancy = { factor = 3 ideology = socialist } } } }
+			random_owned = { limit = { owner = { NOT = { ruling_party_ideology = communist } } } owner = { any_pop = { scaled_consciousness = { factor = 3 ideology = communist } scaled_militancy = { factor = 3 ideology = communist } } } }
+			random_owned = { limit = { owner = { NOT = { ruling_party_ideology = communist_social } } } owner = { any_pop = { scaled_consciousness = { factor = 3 ideology = communist_social } scaled_militancy = { factor = 3 ideology = communist_social } } } }
+			random_owned = { limit = { owner = { NOT = { ruling_party_ideology = nationalist } } } owner = { any_pop = { scaled_consciousness = { factor = 3 ideology = nationalist } scaled_militancy = { factor = 3 ideology = nationalist } } } }
+			random_owned = { limit = { owner = { NOT = { ruling_party_ideology = populist } } } owner = { any_pop = { scaled_consciousness = { factor = 3 ideology = populist } scaled_militancy = { factor = 3 ideology = populist } } } }
+			
+		}
+		ai_will_do = { 
+			factor = 1
+		}
 	}
 
 }

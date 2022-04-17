@@ -15,55 +15,89 @@ country_event = {
   title = "EVT_8200000_NAME"
   desc = "EVT_8200000_DESC"
   picture = "nwo2_manchurian_offensive"
-  fire_only_once = yes
+  
+  	fire_only_once = yes
 
 	trigger = {
 		tag = RUS
 		year = 1946
 		NOT = { has_global_flag = 1950_start_date_flag }
-		war = no
+		NOT = { year = 1992 }
 		
-		RUS = { NOT = { war_with = CHI } }
+		war = no
 
 		NOT = { exists = MCK }
-
 		NOT = { exists = IMN }
 
-		exists = CHI
-
+		#Chinese Civil War ongoing
 		CHI = { 
-			war_with = KMT
+			exists = yes
+			#war_with = KMT
 			government = proletarian_dictatorship 
 		}
 		
-		any_owned_province = { is_core = CHI NOT = { is_core = RUS } }
+		#Owns Chinese provinces except Port Arthur
+		any_owned_province = { 
+			is_core = CHI 
+			NOT = { is_core = RUS } 
+			NOT = { province_id = 1481 }
+		}
 		
+		#Cold War
 		has_global_flag = blocsenabled
 	}
 
-	mean_time_to_happen = { months = 4 }
+	mean_time_to_happen = { 
+		months = 4 #Historical date of withdrawal was on 3 May 1946
+		
+		#Immediate return once China is not at war
+		modifier = { 
+			factor = 0 
+			CHI = { NOT = { war_with = KMT } } 
+		}
+	}
 
 	option = {
-		name = "Return the lands to the KMT (keep Port Arthur)"
+		name = "Return the lands to the KMT but keep Port Arthur"
+		prestige = 50
+		badboy = -5
 		
-		CHI = { country_event = 8200001 }
+		#Relations boost and loss
+		relation = { who = MGL value = 25 } 
+		relation = { who = CHI value = -100 }
+		relation = { who = USA value = 100 }
 		
+		#Inform of return
+		KMT = { country_event = 8200001 }
+		
+		#Add cores
+		CHI_1552 = { add_core = MCK }
+		RUS_2589 = { add_core = MCK }
+		CHI_1479 = { add_core = MCK }
+		RUS_1072 = { add_core = MCK }
+		1533 = { add_core = IMN }
+		1002 = { add_core = IMN }
+		
+		#Secede all CHI cores, except Port Arthur, to the KMT
 		any_owned = { 
 			limit = { 
 				is_core = CHI 
 				NOT = { is_core = RUS } 
 				NOT = { province_id = 1481 } 
 			} 
-			secede_province = MCK 
+			secede_province = KMT
 		}
-		KMT = { inherit = MCK }
-		prestige = 10
-		KMT = { country_event = 8200005 }
-		relation = { who = CHI value = -100 }
 		
-		relation = { who = USA value = 100 }
+		#Apply Civil War borders
+		2613 = { change_controller = KMT } 
+		1479 = { change_controller = KMT } 
+		45 = { change_controller = KMT } 
+		1555 = { change_controller = KMT }
 		
-		badboy = -5
+		1480 = { change_controller = CHI } 
+		44 = { change_controller = CHI } 
+		1554 = { change_controller = CHI } 
+		1553 = { change_controller = CHI }
 		
 		ai_chance = {
 			factor = 0.1
@@ -71,26 +105,47 @@ country_event = {
 	}
 
 	option = {
-		name = "Return the lands to the PRC  but keep Port Arthur"
-	
-		KMT = { country_event = 8200001 }
-	
+		name = "Return the lands to the PRC but keep Port Arthur"
+		
+		#Relations boost and loss
+		relation = { who = MGL value = 25 } 
+		relation = { who = KMT value = -100 }
+		relation = { who = USA value = -50 }
+		
+		#Assist the PRC government
+		CHI = { add_country_modifier = { name = support_government duration = 1825 } } 
+		
+		#Inform of return
+		CHI = { country_event = 8200001 }
+		
+		#Add cores
+		CHI_1552 = { add_core = MCK }
+		RUS_2589 = { add_core = MCK }
+		CHI_1479 = { add_core = MCK }
+		RUS_1072 = { add_core = MCK }
+		1533 = { add_core = IMN }
+		1002 = { add_core = IMN }
+		
+		#Secede all CHI cores, except Port Arthur, to the CHI
 		any_owned = { 
-			limit = {
+			limit = { 
 				is_core = CHI 
 				NOT = { is_core = RUS } 
 				NOT = { province_id = 1481 } 
-			}
-			secede_province = MCK 
+			} 
+			secede_province = CHI
 		}
-	
-		CHI = { inherit = MCK }
-		prestige = 10
-		CHI = { country_event = 8200005 } 
-		relation = { who = KMT value = -100 }
-		CHI = { add_country_modifier = { name = support_government duration = 1825 } } 
 		
-		relation = { who = USA value = -50 }
+		#Apply Civil War borders
+		2613 = { change_controller = KMT } 
+		1479 = { change_controller = KMT } 
+		45 = { change_controller = KMT } 
+		1555 = { change_controller = KMT }
+		
+		1480 = { change_controller = CHI } 
+		44 = { change_controller = CHI } 
+		1554 = { change_controller = CHI } 
+		1553 = { change_controller = CHI }
 		
 		ai_chance = {
 			factor = 0.8
@@ -99,20 +154,47 @@ country_event = {
 	}
   
 	option = {
-		name = "Release Manchuria as a Soviet SSR"
-		country_event = 8200001
-	
+		name = "Release Manchuria as a Soviet puppet"
+		prestige = -50
+		badboy = 5
+		
+		#Relations boost and loss
+		relation = { who = MGL value = -50 } 
+		relation = { who = CHI value = -100 }
+		relation = { who = KMT value = -100 }
+		relation = { who = USA value = -100 }
+		
+		#Add cores
+		CHI_1552 = { add_core = MCK }
+		RUS_2589 = { add_core = MCK }
+		CHI_1479 = { add_core = MCK }
+		RUS_1072 = { add_core = MCK }
+		1533 = { add_core = IMN }
+		1002 = { add_core = IMN }
+
+		#Create communist MCK puppet
 		release_vassal = MCK
+		MCK = { 
+			government = proletarian_dictatorship 
+			country_event = 800052 
+			ruling_party_ideology = communist 
+			
+			#Give back Port Arthur
+			1481 = { secede_province = RUS }
+		}
+		relation = { who = MCK value = 200 }
 		diplomatic_influence = { who = MCK value = 200 }
 		
-		MCK = { government = proletarian_dictatorship ruling_party_ideology = communist }
+		#Secede all remaining CHI cores, except Port Arthur, to the CHI
+		any_owned = { 
+			limit = { 
+				is_core = CHI 
+				NOT = { is_core = RUS } 
+				NOT = { province_id = 1481 } 
+			} 
+			secede_province = CHI
+		}
 		
-		1481 = { secede_province = RUS }
-		
-		relation = { who = CHI value = -80 } 
-		relation = { who = KMT value = -80 } 
-		badboy = 7.5
-		prestige = -40
 		ai_chance = {
 			factor = 0.1
 		}
@@ -120,12 +202,34 @@ country_event = {
 
 	option = {
 		name = "Manchuria shall remain under Soviet rule"
-		country_event = 8200001
-		relation = { who = CHI value = -100 } 
-		relation = { who = KMT value = -100 } 
+		prestige_factor = -0.04
 		badboy = 10
-		prestige_factor = -0.025
-		any_pop = { limit = { is_culture_group = east_asian } militancy = 10 consciousness = 10 }
+		
+		#Relations boost and loss
+		relation = { who = MGL value = -100 } 
+		relation = { who = CHI value = -200 }
+		relation = { who = KMT value = -200 }
+		relation = { who = USA value = -200 }
+		
+		#Add cores
+		CHI_1552 = { add_core = MCK }
+		RUS_2589 = { add_core = MCK }
+		CHI_1479 = { add_core = MCK }
+		RUS_1072 = { add_core = MCK }
+		1533 = { add_core = IMN }
+		1002 = { add_core = IMN }
+		
+		#Militancy rises in Chinese provinces
+		any_owned = {
+			limit = { is_core = CHI }
+			any_pop = { 
+				limit = { is_culture_group = east_asian } 
+				militancy = 10 
+				consciousness = 10 
+				ideology = { factor = 0.25 value = nationalist }
+			}
+			add_province_modifier = { name = nationalist_agitation duration = 3650 }
+		}
 		ai_chance = { factor = 0 }
 	}
   
@@ -137,21 +241,13 @@ country_event = {
   title = "EVT_8200001_NAME"
   desc = "EVT_8200001_DESC"
   picture = "nwo2_manchurian_offensive"
-  fire_only_once = yes
-  is_triggered_only = yes
 
-	immediate = {
-		CHI_1552 = { add_core = MCK }
-		RUS_2589 = { add_core = MCK }
-		CHI_1479 = { add_core = MCK }
-		RUS_1072 = { add_core = MCK }
-		1533 = { add_core = IMN }
-		1002 = { add_core = IMN }
-	}
+  	is_triggered_only = yes
   
 	option = {
-		name = "We love the Russians"
+		name = "We love the Russians!"
 		prestige = 100
+		relation = { who = FROM value = 50 }
 	}
 	
 }
@@ -174,50 +270,6 @@ country_event = {
 		relation = { who = RUS value = 50 } 
 		relation = { who = MGL value = 25 } 
 	}
-}
-
-#Chinese Civil War - KMT provinces flip to the PRC 
-province_event = {
-	id = 8200050
-	title = "EVT_8200050_NAME"
-	desc = "EVT_8200050_DESC"
-
-	trigger = {
-	
-		#Is the KMT
-		owner = {
-			tag = KMT
-			war = yes 
-			war_with = CHI 
-			
-			#Civil war
-			year = 1946 
-			NOT = { year = 1952 }
-			
-			NOT = { has_global_flag = CHI_won_civil_war }
-		}
-		
-		#Province is owned by the KMT
-		owned_by = KMT
-		controlled_by = KMT
-		
-		NOT = { country_units_in_province = KMT }
-		NOT = { region = SID_1578 } # no rebellion in Sichuan
-		NOT = { region = SID_1579 } # Chongqing
-		NOT = { region = SID_1065 } # Xikang
-		NOT = { region = SID_1485 } # not in Taiwan
-		NOT = { province_id = 1499 } # not on other islands
-		NOT = { province_id = 2576 } # not on other islands
-	}
-
-	mean_time_to_happen = { months = 45 }
-
-	option = {
-		name = "Traitors!"
-		change_controller = CHI
-		any_pop = { ideology = { factor = 0.02 value = communist } }
-	}
-
 }
 
 #The KMT flees to Taiwan - End the Chinese Civil War
@@ -247,6 +299,9 @@ country_event = {
 	
 	option = {
 		name = "We shall continue the fight from Taiwan!"
+		
+		#KMT loses huge prestige so they can't jump back to GP status later
+		prestige_factor = -0.5
 		
 		#End wars with East Turkestan and Tibet
 		end_war = ETS
@@ -301,7 +356,7 @@ country_event = {
 	option = {
 		name = "We shall die trying to kill the communists!"
 		
-		#Inherit Formosa to get a full reunification
+		#Inherit Formosa to get a full reunification if PRC wins
 		inherit = TAI
 		ai_chance = { factor = 0.05 }
 	}
@@ -331,13 +386,22 @@ country_event = {
 			}
 		}
 		
-		ai_chance = { factor = 1 }	
+		ai_chance = { factor = 0.9 }	
 	}
 
 	option = {				
-		name = "We satisfied with what we got"
+		name = "We are satisfied with what we got"
 		prestige_factor = -0.20
-		ai_chance = { factor = 0 }		
+		
+		#Communists are unhappy as they want full reunification
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }		
 	}
 
 }
@@ -365,7 +429,12 @@ country_event = {
 
 	option = {				
 		name = "Long Live the KMT!"
-		all_core = { remove_core = KMT }
+		
+		#KMT as China gets all claims it made previously and all KMT cores are removed.
+		all_core = { 
+			add_core = CHI 
+			remove_core = KMT
+		}
 		
 		war_exhaustion = 50
 		
@@ -373,9 +442,15 @@ country_event = {
 		capital = 2221 #Nanjing
 		set_global_flag = KMT_won_civil_war
 		
+		#Inherit Taiwan
+		random_owned = {
+			limit = { owner = { is_our_vassal = TAI } }
+			owner = { inherit = TAI }
+		}
+		
 		#Become China
 		change_tag = CHI
-		
+
 		#More KMT support
 		any_pop = { 
 			ideology = {
@@ -598,11 +673,19 @@ country_event = {
 
 	trigger = {
 		tag = USA
-		CHI = { exists = no }
-		KMT = { exists = yes }
-		KMT = { war = no }
-		KMT = { NOT = { government = proletarian_dictatorship } }
 		NOT = { year = 1990 }
+		
+		is_vassal = no
+		
+		#KMT won the civil war
+		KMT = { exists = no }
+		CHI = { 
+			exists = yes
+			NOT = { government = proletarian_dictatorship } 
+			is_vassal = no 
+			war = no
+		}
+		
 		owns = 1538
 	}
 
@@ -614,7 +697,7 @@ country_event = {
 		name = "Occupy Shanghai perpetuity in event of another communist insurgency"
 		prestige = -50
 		badboy = 5
-		relation = { who = KMT value = -50 }
+		relation = { who = CHI value = -50 }
 		ai_chance = { factor = 0.1 }
 	}
 
@@ -622,10 +705,14 @@ country_event = {
 		name = "Form an International Settlement to maintain US presence"
 		prestige = -25
 		badboy = 2.5
-		relation = { who = KMT value = -25 }
+		relation = { who = CHI value = -25 }
 		release_vassal = SHG
-		KMT = { diplomatic_influence = { who = SHG value = 200 } }
-		SHG = { government = mandate_government country_event = 800054 }
+		CHI = { diplomatic_influence = { who = SHG value = 200 } }
+		SHG = { 
+			government = mandate_government 
+			country_event = 800054 
+			ruling_party_ideology = conservative 
+		}
 		ai_chance = { factor = 0.6 }
 	}
 
@@ -633,8 +720,8 @@ country_event = {
 		name = "Return the City back to China"
 		prestige = 10
 		badboy = -1
-		relation = { who = KMT value = 100 }
-		1538 = { secede_province = KMT }
+		relation = { who = CHI value = 100 }
+		1538 = { secede_province = CHI }
 		ai_chance = { factor = 0.3 }
 	}
 
@@ -652,10 +739,18 @@ country_event = {
 	trigger = {
 		tag = USA
 		NOT = { has_global_flag = blocsenabled }
-		CHI = { exists = no }
-		KMT = { exists = yes }
-		KMT = { war = no }
-		KMT = { NOT = { government = proletarian_dictatorship } }
+		
+		is_vassal = no
+		
+		#KMT won the civil war
+		KMT = { exists = no }
+		CHI = { 
+			exists = yes
+			NOT = { government = proletarian_dictatorship } 
+			is_vassal = no 
+			war = no
+		}
+		
 		OR = { owns = 1538 is_our_vassal = SHG is_our_vassal = QGD is_our_vassal = WEI }
 	}
 
@@ -667,7 +762,7 @@ country_event = {
 		name = "Continue the occupation"
 		prestige_factor = -0.1
 		badboy = 10
-		relation = { who = KMT value = -200 }
+		relation = { who = CHI value = -200 }
 		ai_chance = { factor = 0.05 }
 	}
 
@@ -675,11 +770,32 @@ country_event = {
 		name = "Return Shanghai"
 		prestige = 10
 		badboy = -5
-		relation = { who = KMT value = 200 }
-		1538 = { secede_province = KMT }
-		KMT = { inherit = SHG }
-		KMT = { inherit = QGD }
-		KMT = { inherit = WEI }
+		relation = { who = CHI value = 200 }
+		
+		#Cede Shanghai
+		random_owned = {
+			limit = { owner = { owns = 1538 } }
+			owner = { 1538 = { secede_province = CHI } }
+		}
+		
+		#Inherit Shanghai
+		random_owned = {
+			limit = { owner = { is_our_vassal = SHG } }
+			owner = { CHI = { inherit = SHG } }
+		}
+		
+		#Inherit Qingdao
+		random_owned = {
+			limit = { owner = { is_our_vassal = QGD } }
+			owner = { CHI = { inherit = QGD } }
+		}
+		
+		#Inherit Weihaiwei
+		random_owned = {
+			limit = { owner = { is_our_vassal = WEI } }
+			owner = { CHI = { inherit = WEI } }
+		}
+		
 		ai_chance = { factor = 0.95 }
 	}
 
@@ -695,13 +811,22 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		tag = KMT
+		tag = CHI
 		has_global_flag = blocsenabled
-		CHI = { exists = no }
-		KMT = { exists = yes }
-		KMT = { war = no }
-		KMT = { NOT = { government = proletarian_dictatorship } }
+		
+		is_vassal = no
+		war = no
+		
+		#KMT won the civil war
+		KMT = { exists = no }
+		NOT = { government = proletarian_dictatorship } 
+		
+		#USA owns Shanghai
 		USA = { is_our_vassal = SHG }
+		
+		#Have the required provinces
+		is_possible_vassal = QGD 
+		is_possible_vassal = WEI
 	}
 
 	mean_time_to_happen = { 
@@ -713,22 +838,27 @@ country_event = {
 		prestige = -100
 		money = 1000000
 		add_country_modifier = { name = economic_boom duration = 1825 }
+		
 		release = QGD
 		release = WEI
 		USA = { 
 			create_vassal = QGD 
 			create_vassal = WEI 
 		}
-		WEI = { government = mandate_government country_event = 800054 }
-		QGD = { government = mandate_government country_event = 800054 }
-		KMT = { diplomatic_influence = { who = WEI value = 200 } }
-		KMT = { diplomatic_influence = { who = QGD value = 200 } }
+		WEI = { government = mandate_government country_event = 800054 ruling_party_ideology = conservative }
+		QGD = { government = mandate_government country_event = 800054 ruling_party_ideology = conservative }
+		
+		relation = { who = USA value = 200 }
+		CHI = { 
+			diplomatic_influence = { who = WEI value = 200 } 
+			diplomatic_influence = { who = QGD value = 200 } 
+		}
 		ai_chance = { factor = 0.5 }
 	}
 
 	option = {
 		name = "One settlement is already too many"
-		prestige = 10
+		prestige = 50
 		any_pop = { militancy = -5 }
 		ai_chance = { factor = 0.5 }
 	}

@@ -1,58 +1,318 @@
+#Collectivisation of Livestock
 country_event = {
   id = 8009807
-  title = EVT_8009807_NAME
+  title = "Collectivisation of Livestock"
   desc = EVT_8009807_DESC
   picture = "nwo2_mongolia"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = MGL
-    year = 1950 
-	government = proletarian_dictatorship
-	NOT = { year = 1963 }
-  }
-  mean_time_to_happen = { months = 33 }
+	trigger = {
+		tag = MGL
+		year = 1950 
+		NOT = { year = 1963 }
+		
+		government = proletarian_dictatorship
+		war = no
+	}
+	
+	mean_time_to_happen = { months = 6 }
 
-  option = {
-    name = EVT_8009807_A
-	any_pop = { militancy = 0.5 consciousness = 1.0  }
-	add_country_modifier = { name = five_year_plan duration = 1500 }
-  }
+	option = {
+		name = "Excellent!"
+		farmers = { money = 20 }
+		add_country_modifier = { name = five_year_plan duration = 1825 }
+	}
+	
 }
+
+#Mongolia in Sino-Soviet split
 country_event = {
   id = 8009808
-  title = EVT_8009808_NAME
+  title = "Mongolia in Sino-Soviet Split"
   desc = EVT_8009808_DESC
   picture = "nwo2_darkhan"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = MGL
-    year = 1960 
-	NOT = { year = 1963 }
-	government = proletarian_dictatorship
-	vassal_of = RUS
-    has_global_flag = sino_soviet_split
-  }
+	trigger = {
+		tag = MGL
+		has_global_flag = sino_soviet_split
+		NOT = { year = 1990 }
+		
+		government = proletarian_dictatorship
+		is_vassal = no
+		war = no
+		
+		#PRC exists
+		CHI = { 
+			is_greater_power = yes 
+			government = proletarian_dictatorship 
+		}
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
+	}
 
-  mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 3 }
 
-  option = {
-    name = EVT_8009808_A
-	relation = { who = RUS value = 100 } 
-	relation = { who = CHI value = -100 } 
-	RUS = { diplomatic_influence = { who = THIS value = 100 } }
-	create_alliance = RUS
-    ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = "Align with the USSR!"
+		
+		#MGL becomes a Soviet puppet
+		RUS = { create_vassal = MGL }
+		remove_country_modifier = development_aid_modifier #Chinese Aid Ceases
+		
+		RUS = { diplomatic_influence = { who = THIS value = 200 } }
+		relation = { who = RUS value = 200 }
+		
+		CHI = { diplomatic_influence = { who = THIS value = -200 } }
+		relation = { who = CHI value = -200 } 
+		
+		ai_chance = { factor = 0.8 }
+	}
 
-  option = {
-    name = EVT_8009808_B
-	relation = { who = CHI value = 200 }
-	relation = { who = RUS value = -400 }
-	RUS = { release_vassal = MGL } 
-	RUS = { diplomatic_influence = { who = MGL value = -100 } }
-	CHI = { diplomatic_influence = { who = MGL value = 100 } }
-    ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Align with Communist China!"
+		
+		#MGL becomes a PRC puppet
+		CHI = { create_vassal = MGL }
+		
+		RUS = { diplomatic_influence = { who = THIS value = -200 } }
+		relation = { who = RUS value = -200 }
+		
+		CHI = { diplomatic_influence = { who = THIS value = 200 } }
+		relation = { who = CHI value = 200 } 
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+	option = {
+		name = "Stay neutral"
+		prestige = 50
+		
+		RUS = { diplomatic_influence = { who = THIS value = -100 } }
+		relation = { who = RUS value = -100 }
+		
+		CHI = { diplomatic_influence = { who = THIS value = -100 } }
+		relation = { who = CHI value = -100 } 
+		
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+#1990 Mongolian Revolution
+country_event = {
+  id = 8009809
+  title = "The $YEAR$ Mongolian Revolution"
+  desc = EVTDESC8009809
+  picture = "nwo2_mongolia_1990"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = MGL
+		year = 1990
+		has_global_flag = autumn_of_nations
+		has_country_flag = mgl_batmonkh
+		
+		government = proletarian_dictatorship
+		#vassal_of = RUS #Soviet Withdraw Event now makes Mongolia independent
+		war = no
+		
+		#A stable player Afghanistan can send its state intel agency
+		NOT = { has_country_flag = khad_interference }
+	}
+	
+	mean_time_to_happen = { months = 7 }
+
+	option = {
+		name = "The government agrees to reform."
+		
+		#Becomes independent
+		overlord = { release_vassal = MGL }
+		
+		#Become a socialist democracy
+		government = socialist_democracy 
+		country_event = 800054
+		ruling_party_ideology = socialist
+		
+		any_pop = { 
+			limit = { strata = rich }
+			ideology = { factor = 0.30 value = conservative }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.15 value = socialist }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			ideology = { factor = 0.10 value = socialist }
+		}
+		
+		any_pop = { militancy = -5 consciousness = 5 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Defend socialism in Mongolia!"
+		badboy = 5
+		
+		any_pop = { militancy = 10 consciousness = 10 }
+		any_pop = { 
+			limit = { strata = rich }
+			ideology = { factor = 0.20 value = communist }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.20 value = liberal }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			ideology = { factor = 0.10 value = liberal }
+		}
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+#Mongolia's 1992 Constitution
+country_event = {
+	id = 8009810
+	title = "The $YEAR$ Fundamental Law"
+	desc = EVTDESC8009810
+	picture = "1992_MGL_constitution"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = MGL
+		year = 1992
+
+		government = socialist_democracy
+		war = no
+		is_vassal = no
+		
+		ruling_party_ideology = socialist
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "Enshrine a western-style constitution."
+		
+		government = democracy
+
+		#Enact the full demands of the protesters and establish a western-style democratic state.
+		political_reform = regulated_opinion
+		political_reform = minorities_equal_rights
+		political_reform = parties_restrict_non_democratic
+		political_reform = responsible_publishing
+		political_reform = free_trade_unions
+		political_reform = universal_weighted_voting
+		political_reform = free_meetings
+
+		any_pop = {
+			scaled_militancy = { 
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = communist_social
+			}
+			scaled_militancy = { 
+				factor = 5 
+				ideology = socialist
+			}
+		}
+		
+		ai_chance = { factor = 0.8 }
+	}
+	
+	option = {
+		name = "Try to preserve Socialism in Mongolia."
+		badboy = 5
+		
+		#Only Enact Minimal Changes, keep a commitment to socialism - upset pro-democracy elements.
+		political_reform = registered_voting
+		political_reform = regulated_opinion
+		political_reform = politicised_service
+		political_reform = state_controlled_unions
+		political_reform = parties_only_nominated
+		political_reform = free_meetings
+		
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
+
+		any_pop = {
+			scaled_militancy = { 
+				factor = 10
+				ideology = traditionalist
+			}
+			scaled_militancy = { 
+				factor = 5
+				ideology = conservative
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = liberal
+			}
+			scaled_militancy = { 
+				factor = 5
+				ideology = progressive
+			}
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
+	option = { 
+		name = "Abandon ideas of reform and restore the Mongolian People's Republic!"
+		badboy = 10
+		
+		government = proletarian_dictatorship
+		ruling_party_ideology = communist_social #The past is gone
+   
+		#Give into Ostalgia, face the wrath of a brand new world alone.
+		political_reform = ruling_party_opinion
+		political_reform = politicised_service #Politicized
+		political_reform = censored_publishing
+		political_reform = state_controlled_unions #State Unions
+		political_reform = parties_only_nominated
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+
+		any_pop = {
+			scaled_militancy = { 
+				factor = 10
+				ideology = traditionalist
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = conservative
+			}
+			scaled_militancy = { 
+				factor = 5
+				ideology = big_tent
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = liberal
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = progressive
+			}
+			scaled_militancy = { 
+				factor = 5
+				ideology = socialist
+			}
+		}
+		ai_chance = { factor = 0.1 }
+	}
 }

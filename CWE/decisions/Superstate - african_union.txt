@@ -1,0 +1,235 @@
+political_decisions = {
+
+#
+# Member Decisions: 	
+#
+	xau_ambition = {
+		picture = "xau_ambition"
+		potential = {
+			NOT = { has_country_flag = hide_superstate }
+			OR = { exists = XAU exists = XEC exists = XEW exists = XSA exists = XEF exists = AOF exists = AEF } capital_scope = { continent = africa }
+			NOT = { has_country_flag = xau_ambition } 
+		}
+		allow = {
+			has_country_flag = trade_block_ambition 
+			NOT = { has_country_modifier = in_bankrupcy } 
+			OR = {
+				part_of_sphere = no
+				sphere_owner = {
+					OR = {
+						has_country_flag = xau_ambition
+						NOT = { has_country_flag = deny_superstate }
+					}
+				}
+			}
+			OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+			bank_for_international_settlements = 1
+			war = no
+		}
+		effect = {
+			set_country_flag = xau_ambition
+			set_country_flag = in_trade_block
+			any_pop = {
+				scaled_militancy = {
+					issue = protectionism
+					factor = 3
+				}
+				scaled_consciousness = {
+					issue = protectionism
+					factor = 3
+				}
+			}
+			tech_school = XAU_tech_school			
+		}
+		ai_will_do = { factor = 1 }
+	}
+
+	end_xau_ambition = {
+		picture = "xau_parlament"
+		alert = no
+		potential = {
+			NOT = { has_country_flag = hide_superstate }
+			has_country_flag = xau_ambition
+			NOT = { tag = XAU }
+		}
+		allow = {
+			OR = { 
+				AND = {
+					part_of_sphere = yes
+					sphere_owner = {
+						NOT = { has_country_flag = xau_ambition }
+						has_country_flag = deny_superstate
+					}
+				}
+				NOT = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } }
+				has_country_modifier = in_bankrupcy
+			}
+			war = no
+		}
+		effect = {
+			clr_country_flag = xau_ambition
+			clr_country_flag = in_trade_block
+			all_core = { remove_core = XAU }
+			any_pop = {
+				scaled_militancy = {
+					issue = free_trade
+					factor = 3
+				}
+				scaled_consciousness = {
+					issue = free_trade
+					factor = 3
+				}
+			}
+			tech_school = traditional_academic
+			capital_scope = { 
+				remove_province_modifier = single_market			
+				remove_province_modifier = currency_union_province
+				remove_province_modifier = defence_union
+			}
+		}
+		ai_will_do = { factor = 1 }
+	}
+	
+	xau_single_market= {
+		picture = "single_market"
+		potential = {
+			NOT = { has_country_flag = hide_superstate }
+			NOT = { capital_scope = { has_province_modifier = single_market } }
+			OR = { exists = XEC exists = XEW exists = XSA exists = XEF exists = AOF exists = AEF } capital_scope = { continent = africa }
+		}
+		allow = {
+			has_country_flag = xau_ambition
+			OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+			capitalism = 1
+			war = no
+		}
+		effect = {
+			capital_scope = {  add_province_modifier = { name = single_market duration = -1 } }
+		}
+		ai_will_do = { factor = 1 }
+	}
+
+	xau_currency_union = {
+		picture = "currency_union"
+		potential = {
+			NOT = { has_country_flag = hide_superstate }
+			NOT = { capital_scope = { has_province_modifier = currency_union_province } }
+			OR = { exists = XEC exists = XEW exists = XSA exists = XEF exists = AOF exists = AEF } capital_scope = { continent = africa }
+		}
+		allow = {
+			has_country_flag = xau_ambition
+			capital_scope = { has_province_modifier = single_market }
+			OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+			economic_globalization = 1
+			election = no
+			war = no
+		}
+		effect = {
+			capital_scope = {  add_province_modifier = { name = currency_union_province duration = -1 } }
+		}
+		ai_will_do = { factor = 1 } 
+	}
+
+	xau_political_union = {
+		picture = "xau_ambition"
+		potential = {
+			NOT = { has_country_flag = hide_superstate }
+			NOT = { capital_scope = { is_core = XAU } }
+			OR = { exists = XEC exists = XEW exists = XSA exists = XEF exists = AOF exists = AEF } capital_scope = { continent = africa }
+		}
+		allow = {
+			has_country_flag = xau_ambition
+			capital_scope = { has_province_modifier = currency_union_province }
+			OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+			election = no
+			
+			war = no
+			commodities_and_credit = 1
+		}
+		effect = {
+			any_owned = { limit = { continent = africa } add_core = XAU }
+		}
+
+		ai_will_do = { factor = 1 }
+
+	}
+	xau_defence_union = {
+		picture = "defence_union"
+		potential = {
+			NOT = { has_country_flag = hide_superstate }
+			NOT = { capital_scope = { has_province_modifier = defence_union } }
+			OR = { exists = XEC exists = XEW exists = XSA exists = XEF exists = AOF exists = AEF } capital_scope = { continent = africa }
+		}
+		allow = {
+			has_country_flag = xau_ambition
+			capital_scope = { is_core = XAU }
+			OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+			election = no
+			war = no
+			age_of_protests = 1
+			#has_unclaimed_cores = no
+		}
+		effect = {
+			capital_scope = { add_province_modifier = { name = defence_union duration = -1 } }
+		}
+		ai_will_do = { factor = 1 } 
+	}
+
+#
+# Leader Decision: Political Union
+#
+	xau_form_union = {
+		picture = "xau_parlament"
+		potential = {
+			NOT = { has_country_flag = hide_superstate }
+			XAU = { exists = no }
+			OR = { exists = XEC exists = XEW exists = XSA exists = XEF exists = AOF exists = AEF } capital_scope = { continent = africa }
+		}
+		allow = {
+			has_country_flag = xau_ambition
+			capital_scope = { has_province_modifier = defence_union } 
+			OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+			election = no
+			is_greater_power = yes
+			political_polarization = 1
+            war = no
+            XAU = { any_core = { owner = { war = no OR = { tag = THIS in_sphere = THIS vassal_of = THIS } has_country_flag = xau_ambition } } }
+		}
+		effect = {
+			prestige = 20
+			all_core = {
+				add_core = XAU
+			}
+			change_tag = XAU
+			add_accepted_culture = black_anglo
+			add_accepted_culture = black_french
+			add_accepted_culture = black_portuguese
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	
+	xau_enlarge_union = {
+		picture = "xau_ambition"
+		potential = {
+			NOT = { has_country_flag = hide_superstate }
+			tag = XAU
+			any_neighbor_country = { has_country_flag = xau_ambition in_sphere = THIS NOT = { has_country_modifier = rejected_union } }
+		}
+		allow = {
+			OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+			election = no
+			is_greater_power = yes
+			political_polarization = 1
+            war = no
+		}
+		effect = {
+			any_neighbor_country = { 
+			limit = { has_country_flag = xau_ambition OR = { vassal_of = THIS in_sphere = THIS } } country_event = 11106 }
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}		
+}

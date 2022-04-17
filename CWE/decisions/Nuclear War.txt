@@ -16,20 +16,38 @@ nuclear_ultimatum = {
 		}
 
 		allow = {
+		
+			#Pacifists will never choose to blow up the world
+			NOT = { war_policy = pacifism }
 
 			NOT = { has_country_modifier = nuclear_system_down }
 
 			OR = { 
+			
+				ai = no
+				
+				#Escalation if tatical nukes were used
+				AND = { 
+					NOT = { war_policy = pacifism } 
+					any_owned_province = { has_province_modifier = tactical_nuked } 
+				}
 
-				has_country_modifier = defcon1 
-
-				AND = { NOT = { war_policy = pacifism } ai = no }
-
-				AND = { national_provinces_occupied = 0.40 war_policy = jingoism any_owned_province = { has_province_modifier = tactical_nuked } }
+				#Normal willingness
+				AND = { 
+					national_provinces_occupied = 0.40 
+					war_policy = jingoism 
+				}
+				
+				#Special cases
+				AND = { 
+					national_provinces_occupied = 0.20
+					has_country_flag = more_willing_nuke_behaviour 
+				}
 
 			}
 
 			NOT = { has_country_modifier = nukes_used_recently }
+			NOT = { has_global_flag = someone_is_firing_nukes }
 		}
 
 		effect = {
@@ -40,6 +58,8 @@ nuclear_ultimatum = {
 			add_country_modifier = { name = nukes_used_recently duration = 365 }
 
 			badboy = 20
+			
+			set_global_flag = someone_is_firing_nukes
 
 			#Increase Pacifism
 			any_pop = {
@@ -51,7 +71,9 @@ nuclear_ultimatum = {
 
 		}
 	
-		ai_will_do = { factor = 0.25 }
+		ai_will_do = { 
+			factor = 0.75 
+		}
 
 	}
 
@@ -64,16 +86,25 @@ fire_tactical_nuke = {
 		}
 
 		allow = {
+		
+			#Pacifists will never choose to blow up the world
+			NOT = { war_policy = pacifism }
 	
 			NOT = { has_country_modifier = nuclear_system_down }
 
 			OR = { 
+			
+				ai = no
 
-				has_country_modifier = defcon1 
-
-				AND = { NOT = { war_policy = pacifism } ai = no }
+				has_country_modifier = defcon1
 
 				any_owned_province = { has_province_modifier = tactical_nuked } 
+				
+				#Special cases
+				AND = { 
+					national_provinces_occupied = 0.20
+					has_country_flag = more_willing_nuke_behaviour 
+				}
 
 			}
 
@@ -87,7 +118,7 @@ fire_tactical_nuke = {
 		}
 		
 		ai_will_do = { 
-			factor = 0.75
+			factor = 0.25
 		}
 
 	}
@@ -107,13 +138,17 @@ nuclear_second_strike = {
 
 		allow = {
 			war = yes
-			has_country_modifier = recently_attacked_nuke
 			NOT = { has_country_modifier = nuclear_system_down }
+			
+			#Has not expended nuclear arsenal
+			NOT = { has_country_modifier = nukes_used_recently }
 		}
 
 		effect = {
 	
 			remove_country_modifier = recently_attacked_nuke
+			
+			add_country_modifier = { name = nukes_used_recently duration = 365 }
 		
 			#Inform of retaliatory strike
 			any_country = { 

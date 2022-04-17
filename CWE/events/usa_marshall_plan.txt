@@ -1,156 +1,276 @@
+#US option to issue the Marshall plan
 country_event = {
   id = 8202001
   title = EVT_8202001_NAME
   desc = EVT_8202001_DESC
   picture = "nwo2_marshall_plan"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = USA
-    year = 1947 NOT = { year = 1950 }
-	money = 200000
-  }
+	trigger = {
+		tag = USA
+		year = 1947 
+		NOT = { year = 1950 }
+		
+		war = no
+		
+		#Cold War
+		has_global_flag = blocsenabled
+		
+		money = 300000
+	}
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 1  }
 
-  option = {
-    name = EVT_8202001_A
-	RUS = { country_event = 8202002 }
-	treasury = -100000
+	option = {
+		name = "Offer it to the whole of Europe"
+		prestige = 100
+		
+		#Offer to the USSR
+		RUS = { country_event = 8202002 }
+		
+		money = -200000
+		
+		ai_chance = { factor = 0.7 }
+	}
+
+	option = {
+		name = "Offer it to only Western Europe"
+		prestige = 200
+		
+		#Communist nations are pissed
+		any_country = { 
+			limit = { 
+				exists = yes
+				capital_scope = { continent = europe } 
+				OR = { 
+					government = proletarian_dictatorship 
+					ruling_party_ideology = communist 
+				}
+			} 
+			relation = { who = THIS value = -100 }
+		} 
+		
+		#Offer to all democratic European nations
+		any_country = { 
+			limit = { 
+				exists = yes
+				capital_scope = { continent = europe } 
+				OR = { 
+					government = democracy
+					government = democracy1
+					government = hms_government
+					government = hms_government1
+				}
+				NOT = { ruling_party_ideology = communist }
+			} 
+			country_event = 8202020
+		} 
 	
-	set_global_flag = marshall_plan_enacted
-	
-	ai_chance = { factor = 0.7 }
-  }
+		ai_chance = { factor = 0.2 }
+	}
 
-  option = {
-    name = EVT_8202001_B
-	any_country = { 
-		limit = { capital_scope = { continent = europe } government = proletarian_dictatorship } 
-		relation = { who = USA value = -100 } 
-	} 
-	relation = { who = FRA value = 150 } 
-	relation = { who = ENG value = 150 } 
-	any_pop = { militancy = 0.5 consciousness = 1 }
-	set_global_flag = marshall_plan_west_only 
-	treasury = -6000
-	
-	set_global_flag = marshall_plan_enacted
-	
-	ai_chance = { factor = 0.2 }
-  }
+	option = {
+		name = "Who cares about Europe, America First!"
 
-  option = {
-    name = EVT_8202001_C
-	any_country = { 
-		limit = { capital_scope = { continent = europe } NOT = { government = proletarian_dictatorship } } 
-		relation = { who = USA value = -50 } 
-		any_pop = { militancy = 2.0 consciousness = 1 }
-	} 
-	ai_chance = { factor = 0.1 }
-  }
+		#Add money to pops
+		capitalists = { money = 500 }
+		aristocrats = { money = 200 }
+		artisans = { money = 150 }
+		clerks = { money = 10 }
+		craftsmen = { money = 5 }
+
+		#Socialism rises in Europe
+		any_country = { 
+			limit = { 
+				exists = yes
+				capital_scope = { continent = europe } 
+				OR = { 
+					government = democracy
+					government = democracy1
+					government = hms_government
+					government = hms_government1
+				}
+				NOT = { ruling_party_ideology = communist }
+			} 
+			any_pop = { 
+				limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+				ideology = { factor = 0.05 value = conservative } 
+			}
+		}
+
+		ai_chance = { factor = 0.1 }
+	}
 }
+
+#Russian choice of what to do
 country_event = {
   id = 8202002
   title = EVT_8202002_NAME
   desc = EVT_8202002_DESC
   picture = "nwo2_marshall_plan"
-  is_triggered_only = yes
+  
+	is_triggered_only = yes
 
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8202002_A
-	relation = { who = USA value = -50 } 
-	any_pop = { militancy = 0.1 consciousness = 0.5 }
-	set_global_flag = marshall_plan_west_only 
-	ai_chance = { factor = 0.7 }
-  }
-
-  option = {
-    name = EVT_8202002_B
-	relation = { who = USA value = 50 } 
-	set_global_flag = marshall_plan_west_plus_two 
-	RUS  = { country_event = 8225001 } 
-	ai_chance = { factor = 0.2 }
-  }
-
-  option = {
-    name = EVT_8202002_C
-	relation = { who = USA value = 150 } 
-	set_global_flag = marshall_plan_for_all 
-	RUS  = { country_event = 8225001 } 
-	ai_chance = { factor = 0.1 }
-  }
-}
-country_event = {
-  id = 8202003
-  title = EVT_8202003_NAME
-  desc = EVT_8202003_DESC
-  picture = "nwo2_marshall_plan"
-  fire_only_once = yes
-
-  trigger = {
-    tag = USA
-    OR = {
-		has_global_flag = marshall_plan_for_all
-		has_global_flag = marshall_plan_west_plus_two
-		has_global_flag = marshall_plan_west_only
-    }
-    
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8202003_A
-	any_country = { 
-		limit = { has_global_flag = marshall_plan_west_only capital_scope = { continent = europe } is_vassal = no has_country_modifier = democratic_bloc NOT = { ruling_party_ideology = communist } }  
-		USA = { treasury = -20000 prestige = 10 }
-		country_event = 8202020
-	} 
-	any_country = { 
-		limit = { has_global_flag = marshall_plan_for_all capital_scope = { continent = europe } is_vassal = no } 
-		USA = { treasury = -20000 prestige = 10 }
-		country_event = 8202020
+	option = {
+		name = "The Soviet bloc shall not accept Western capital!"
 		
-	} 
-	any_country = { 
-		limit = { has_global_flag = marshall_plan_west_plus_two capital_scope = { continent = europe } OR = { NOT = { government = proletarian_dictatorship } tag = CZH tag = POL } is_vassal = no } 
-		USA = { treasury = -20000 prestige = 10 }
-		country_event = 8202020
-	} 
-  }
+		#Communist nations are pissed
+		any_country = { 
+			limit = { 
+				exists = yes
+				capital_scope = { continent = europe } 
+				OR = { 
+					government = proletarian_dictatorship 
+					ruling_party_ideology = communist 
+				}
+			} 
+			relation = { who = THIS value = -50 }
+		} 
+		
+		#Offer to all democratic European nations
+		any_country = { 
+			limit = { 
+				exists = yes
+				capital_scope = { continent = europe } 
+				OR = { 
+					government = democracy
+					government = democracy1
+					government = hms_government
+					government = hms_government1
+				}
+				NOT = { ruling_party_ideology = communist }
+			} 
+			country_event = 8202020
+		}
+		
+		relation = { who = USA value = -50 } 
+	
+		ai_chance = { factor = 0.9 }
+	}
 
+	option = {
+		name = "The Soviet bloc can take the Yankee's money"
+		prestige_factor = -0.05
+		
+		#USSR gets the aid
+		country_event = 8202020
+
+		#Offer to all European nations
+		any_country = { 
+			limit = { 
+				exists = yes
+				capital_scope = { continent = europe } 
+			} 
+			country_event = 8202020
+		} 
+
+		ai_chance = { factor = 0.1 }
+	}
 }
+
+#THIS is offered the marshall plan
 country_event = {
   id = 8202020
   title = EVT_820202X_NAME
   desc = EVT_820202X_DESC
   picture = "nwo2_marshall_plan"
-  is_triggered_only = yes
+  
+	is_triggered_only = yes
 
-  option = {
-    name = "Inject the cash into the National Bank"
-	prestige = 100
-random_pop = { limit = { location = { is_capital = yes } type = capitalists } money = 1000000 }
-	ai_chance = { factor = 1 }
-  }
+	option = {
+		name = "Inject the cash into the National Bank"
+		prestige = 100
+		
+		#Add money to pops
+		capitalists = { money = 500 }
+		aristocrats = { money = 200 }
+		artisans = { money = 150 }
+		clerks = { money = 10 }
+		craftsmen = { money = 5 }
+		
+		#US gains influence and relations with country_event
+		USA = {
+			relation = { who = THIS value = 100 }
+			diplomatic_influence = { who = THIS value = 50 }
+		}
+		
+		#Right wing boost
+		any_pop = { 
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			ideology = { factor = 0.05 value = conservative } 
+		}
+		
+		#Used currently in Italy, but can be used in France and Germany too for exclusion of communists
+		set_country_flag = accepted_marshall_plan_aid
+		
+		ai_chance = { factor = 1 }
+	}
 
-  option = {
-    name = "Balanced distribution"
-	prestige = 100
-	money = 500000
-random_pop = { limit = { location = { is_capital = yes } type = capitalists } money = 500000 }
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = "Balanced distribution"
+		prestige = 100
+		money = 500000
+		
+		#UK had more Marshall Plan aid
+		random_owned = { limit = { owner = { tag = ENG } } owner = { money = 500000 } }
+		
+		#Add money to pops
+		capitalists = { money = 250 }
+		aristocrats = { money = 100 }
+		artisans = { money = 75 }
+		clerks = { money = 5 }
+		
+		#US gains influence and relations with country_event
+		USA = {
+			relation = { who = THIS value = 100 }
+			diplomatic_influence = { who = THIS value = 50 }
+		}
+		
+		#Right wing boost
+		any_pop = { 
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			ideology = { factor = 0.05 value = conservative } 
+		}
+		
+		#Used currently in Italy, but can be used in France and Germany too for exclusion of communists
+		set_country_flag = accepted_marshall_plan_aid
+		
+		ai_chance = { factor = 0 }
+	}
 
-  option = {
-    name = "Inject the cash into the $COUNTRY_ADJ$ Coffers"
-	prestige = 100
-	money = 1000000
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = "Inject the cash into the $COUNTRY_ADJ$ coffers"
+		prestige = 100
+		money = 1000000
+		
+		#UK had more Marshall Plan aid
+		random_owned = { limit = { owner = { tag = ENG } } owner = { money = 1000000 } }
+		
+		#US gains influence and relations with country_event
+		USA = {
+			relation = { who = THIS value = 100 }
+			diplomatic_influence = { who = THIS value = 50 }
+		}
+		
+		#Right wing boost
+		any_pop = { 
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			ideology = { factor = 0.05 value = conservative } 
+		}
+		
+		#Used currently in Italy, but can be used in France and Germany too for exclusion of communists
+	    set_country_flag = accepted_marshall_plan_aid
+		
+		ai_chance = { factor = 0 }
+	}
+	
+	
+	
+	option = {
+		name = "We don't need any aid!"
+		prestige = 200
+		ai_chance = { factor = 0 }
+	}
 
 }
-

@@ -222,6 +222,69 @@ country_event = {
 	
 }
 
+#Combat Illiteracy Campaign
+country_event = { 
+	id = 8002808
+	title = "Combat Illiteracy Campaign"
+	desc = EVTDESC8002808
+	picture = "PRC_literacy_campaign"
+  
+	fire_only_once = yes
+
+	trigger = {
+    	tag = CHI
+		year = 1950
+		NOT = { year = 1990 }
+		
+		government = proletarian_dictatorship
+		is_vassal = no
+		war = no
+		
+		ruling_party_ideology = communist
+		
+		compulsory_primary_education = 1
+	}
+
+	mean_time_to_happen = { months = 12 }
+
+	option = {
+		name = "Launch the campaign!"
+		prestige = 50
+		
+		money = -100000
+		
+		social_reform = unlimited_education
+		
+		add_country_modifier = { name = literacy_campaign duration = 3650 }
+		
+		any_pop = {
+			limit = { literacy = 0.10 }
+			consciousness = 5
+		}
+		
+		any_pop = {
+			limit = { NOT = { literacy = 0.10 } }
+			consciousness = 2.5
+			literacy = 0.01
+		}
+		
+		ai_chance = { factor = 0.99 }
+	}	
+
+	option = {
+		name = "There is no need to waste our money."
+		prestige = -50
+		
+		any_pop = {
+			limit = { OR = { literacy = 0.10 type = clergymen } }
+			militancy = 5
+		}
+		
+		ai_chance = { factor = 0.01 }
+	}
+	
+}
+
 #Mao Zedong's Death
 country_event = {
   id = 8002809
@@ -278,6 +341,7 @@ country_event = {
 	option = {
 		name = "Let them be the next rulers of China"
 		relation = { who = RUS value = 100 }
+		set_country_flag = restoration_china
 		ai_chance = { factor = 0.1 }
 	}
 
@@ -480,6 +544,9 @@ country_event = {
 		is_greater_power = yes
 		government = proletarian_dictatorship
 		war = no
+		
+		#Reconcilled borders
+		NOT = { has_global_flag = border_sino_soviet }
 		
 		RUS = {
 			is_greater_power = yes
@@ -986,11 +1053,11 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-    	tag = USA
+    		tag = USA
 		
 		has_global_flag = china_ping_pong_diplo
 		
-    	war = no
+    		war = no
 		
 		#Cold war ongoing
 		has_global_flag = blocsenabled
@@ -1004,6 +1071,7 @@ country_event = {
 	option = {
     	name = EVT_8002851_A
 		CHI = { country_event = 8002852 } 
+		RUS = { country_event = 9001081 }
 		relation = { who = CHI value = 200 } 
 		relation = { who = RUS value = -100 }
 		ai_chance = { factor = 0.9 }
@@ -1038,12 +1106,17 @@ country_event = {
 		
 		clr_country_flag = not_participating_UNSC
 		clr_country_flag = not_participating_UN 
+		
+		add_country_modifier = { name = united_nations_ga_member duration = -1 }
 		add_country_modifier = { name = unsc_permanent_member duration = -1 } 
 		
 		KMT = { 
 			set_country_flag = not_participating_UNSC 
 			set_country_flag = not_participating_UN 
+			
+			remove_country_modifier = united_nations_ga_member
 			remove_country_modifier = unsc_permanent_member 
+			
 			country_event = 1512301
 		}
 	}

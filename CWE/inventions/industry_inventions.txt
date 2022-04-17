@@ -1,35 +1,61 @@
-#fossil_fuel_power
-coal_transport_delivery = {
+#Activate Power Plants
+coal_power_plant = {
 	limit = { fossil_fuel_power = 1 }
 	chance = {
-		base = 2
-		modifier = {
-			factor = 2
-			average_consciousness = 3
-		}
+		base = 4
 	}
 	effect = {
-		factory_goods_output = {
-			cement = 0.05 
-		}
+		activate_building = coal_fuel_factory
 	}
 }
-thermal_power_station = {
-	limit = { fossil_fuel_power = 1 }
+oil_power_plant = {
+	limit = { oil_well = 1 }
 	chance = {
-		base = 2
-		modifier = {
-			factor = 2
-			average_consciousness = 3
-		}
+		base = 4
 	}
 	effect = {
-		factory_goods_output = { machine_parts = 0.05 }
+		activate_building = heating_electricity_factory
+	}
+}
+gas_power_plant = {
+	limit = { oil_well = 1 }
+	chance = {
+		base = 4
+	}
+	effect = {
+		activate_building = electricity_gas_factory
+	}
+}
+nuclear_power_plant = {
+	limit = { nuclear_power = 1 }
+	chance = {
+		base = 4
+	}
+	effect = {
+		activate_building = nuclear_fuel_factory
 	}
 }
 
-gas_turbine_plants = {
+#fossil_fuel_power
+petroleum_processing = {
 	limit = { fossil_fuel_power = 1 }
+	chance = {
+		base = 3
+		modifier = {
+			factor = 2
+			average_consciousness = 2
+		}
+		modifier = { 
+			factor = 2
+			economic_policy = laissez_faire
+		}
+	}
+	effect = {
+		activate_building = petroleum_fuel_factory
+	}
+}
+natural_gas_processing = {
+	limit = { oil_well = 1 }
 	chance = {
 		base = 3
 		modifier = {
@@ -45,20 +71,7 @@ gas_turbine_plants = {
 		activate_building = gas_fuel_factory
 	}
 }
-reciprocating_engines = {
-	limit = { fossil_fuel_power = 1 }
-	chance = {
-		base = 2
-		modifier = {
-			factor = 2
-			average_consciousness = 3
-		}
-	}
-	effect = {
-		rgo_output = 0.05
-		factory_throughput = 0.05
-	}
-}
+
 #oil_well
 drilling_rig = {
 	limit = { oil_well = 1 }
@@ -158,7 +171,6 @@ reprocessing_depleted_uranium = {
 		}
 	}
 	effect = {
-		activate_building = heating_electricity_factory
 		factory_throughput = 0.05
 	}
 }
@@ -591,10 +603,6 @@ radio_navigation = {
 		base = 2
 		modifier = {
 			factor = 2
-			invention = work_classification
-		}
-		modifier = {
-			factor = 2
 			multilateral_development_bank = 1
 		}
 	}
@@ -608,10 +616,6 @@ radar = {
 	limit = { radio = 1 }
 	chance = {
 		base = 2
-		modifier = {
-			factor = 2
-			invention = work_classification
-		}
 		modifier = {
 			factor = 2
 			multilateral_development_bank = 1
@@ -629,10 +633,6 @@ radio_broadcasting = {
 		base = 2
 		modifier = {
 			factor = 2
-			invention = work_classification
-		}
-		modifier = {
-			factor = 2
 			multilateral_development_bank = 1
 		}
 	}
@@ -646,10 +646,6 @@ digital_radio = {
 	limit = { radio = 1 }
 	chance = {
 		base = 2
-		modifier = {
-			factor = 2
-			invention = work_classification
-		}
 		modifier = {
 			factor = 2
 			multilateral_development_bank = 1
@@ -669,10 +665,6 @@ electronic_television = {
 		base = 2
 		modifier = {
 			factor = 2
-			invention = work_classification
-		}
-		modifier = {
-			factor = 2
 			multilateral_development_bank = 1
 		}
 	}
@@ -686,10 +678,6 @@ color_television = {
 	limit = { television = 1 }
 	chance = {
 		base = 2
-		modifier = {
-			factor = 2
-			invention = work_classification
-		}
 		modifier = {
 			factor = 2
 			multilateral_development_bank = 1
@@ -707,10 +695,6 @@ digital_television = {
 		base = 2
 		modifier = {
 			factor = 2
-			invention = work_classification
-		}
-		modifier = {
-			factor = 2
 			multilateral_development_bank = 1
 		}
 	}
@@ -720,15 +704,39 @@ digital_television = {
 		}
 	}
 }
+ternary_computer = {
+	limit = { television = 1 }
+	chance = {
+		base = 1
+		modifier = {
+			factor = 2
+			OR = {
+				ruling_party_ideology = communist 
+				ruling_party_ideology = communist_social 
+				ruling_party_ideology = socialist
+			}
+		}
+		modifier = {
+			factor = -2 #Found more widespread adoption after the Cold War
+			has_global_flag = blocsenabled
+		}
+
+		modifier = {
+			factor = 3 #Usage came from potential application for Quantum Computing in the future
+			quantum_computer = 1
+		}
+	}
+
+	effect = {
+		increase_research = 0.025
+	}
+}
+
 #semiconductor
 vacuum_tubes = {
 	limit = { television = 1 }
 	chance = {
 		base = 2
-		modifier = {
-			factor = 2
-			invention = work_classification
-		}
 		modifier = {
 			factor = 2
 			multilateral_development_bank = 1
@@ -746,10 +754,6 @@ semiconductor_device_fabrication = {
 		base = 2
 		modifier = {
 			factor = 2
-			invention = work_classification
-		}
-		modifier = {
-			factor = 2
 			multilateral_development_bank = 1
 		}
 	}
@@ -760,31 +764,23 @@ semiconductor_device_fabrication = {
 	}
 }
 #microprocessor
-integrated_circuit = {
-	limit = { microprocessor = 1 }
-	chance = {
-		base = 2
-		modifier = {
-			factor = 2
-			invention = work_classification
-		}
-		modifier = {
-			factor = 2
-			multilateral_development_bank = 1
-		}
-	}
-	effect = {
-		activate_building = integrated_circuits_factory
-	}
-}
+#integrated_circuit = {
+#	limit = { microprocessor = 1 }
+#	chance = {
+#		base = 2
+#		modifier = {
+#			factor = 2
+#			multilateral_development_bank = 1
+#		}
+#	}
+#	effect = {
+#		activate_building = integrated_circuits_factory
+#	}
+#}
 bit_design = {
 	limit = { microprocessor = 1 }
 	chance = {
 		base = 2
-		modifier = {
-			factor = 2
-			invention = work_classification
-		}
 		modifier = {
 			factor = 2
 			multilateral_development_bank = 1
@@ -802,10 +798,6 @@ multi_core_design = {
 		base = 2
 		modifier = {
 			factor = 2
-			invention = work_classification
-		}
-		modifier = {
-			factor = 2
 			multilateral_development_bank = 1
 		}
 	}
@@ -816,31 +808,23 @@ multi_core_design = {
 	}
 }
 #microcomputer
-transistor_transistor_logic = {
-	limit = { microcomputer = 1 }
-	chance = {
-		base = 2
-		modifier = {
-			factor = 2
-			invention = work_classification
-		}
-		modifier = {
-			factor = 2
-			multilateral_development_bank = 1
-		}
-	}
-	effect = {
-		activate_building = computers_factory
-	}
-}
+#transistor_transistor_logic = {
+#	limit = { microcomputer = 1 }
+#	chance = {
+#		base = 2
+#		modifier = {
+#			factor = 2
+#			multilateral_development_bank = 1
+#		}
+#	}
+#	effect = {
+#		activate_building = computers_factory
+#	}
+#}
 commodore64 = {
 	limit = { microcomputer = 1 }
 	chance = {
 		base = 2
-		modifier = {
-			factor = 2
-			invention = work_classification
-		}
 		modifier = {
 			factor = 2
 			multilateral_development_bank = 1
@@ -856,10 +840,6 @@ programmable_device = {
 	limit = { microcomputer = 1 }
 	chance = {
 		base = 2
-		modifier = {
-			factor = 2
-			invention = work_classification
-		}
 		modifier = {
 			factor = 2
 			multilateral_development_bank = 1
@@ -2108,7 +2088,58 @@ automation = {
 		factory_throughput = 0.02
 	}
 }
-#electricity
+#electricity - Assembly Line
+cement_manufacturing = {
+	limit = { electricity = 1 }
+	chance = {
+		base = 4
+	}
+	effect = {
+		activate_building = cement_factory
+	}
+}
+machine_parts_manufacturing = {
+	limit = { electricity = 1 }
+	chance = {
+		base = 4
+	}
+	effect = {
+		activate_building = machine_parts_factory
+	}
+}
+electric_gear_manufacturing = {
+	limit = { electricity = 1 }
+	chance = {
+		base = 4
+	}
+	effect = {
+		activate_building = electric_gear_factory
+	}
+}
+steel_factory_manufacturing = {
+	limit = { electricity = 1 }
+	chance = {
+		base = 4
+	}
+	effect = {
+		activate_building = steel_factory
+	}
+}
+
+reciprocating_engines = {
+	limit = { fossil_fuel_power = 1 }
+	chance = {
+		base = 2
+		modifier = {
+			factor = 2
+			average_consciousness = 3
+		}
+	}
+	effect = {
+		rgo_output = 0.05
+		factory_throughput = 0.05
+	}
+}
 spinning = {
 	limit = { electricity = 1 }
 	chance = {
@@ -2119,7 +2150,7 @@ spinning = {
 	}
 }
 circuits = {
-	limit = { electricity = 1 }
+	limit = { radio = 1 }
 	chance = {
 		base = 2
 		modifier = {
@@ -2132,13 +2163,11 @@ circuits = {
 		}
 	}
 	effect = {
-		factory_goods_output = {
-			integrated_circuits = 0.05 
-		}
+		activate_building = copper_wire_factory
 	}
 }
 electric_power = {
-	limit = { electricity = 1 }
+	limit = { fossil_fuel_power = 1 }
 	chance = {
 		base = 2
 		modifier = {
@@ -2157,13 +2186,13 @@ electric_power = {
 		}
 	}
 }
-synthetic_polymers = { # part of electricity because 1946 we need plastics
-	limit = { electricity = 1 }
+synthetic_polymers = {
+	limit = { oil_well = 1 }
 	chance = {
 		base = 2
 		modifier = {
 			factor = 2
-			average_consciousness = 3
+			electricity = 1
 		}
 	}
 	effect = {

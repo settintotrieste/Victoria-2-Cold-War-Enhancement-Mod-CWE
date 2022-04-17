@@ -9,7 +9,7 @@ country_event = {
 	
 	trigger = {
 		tag = FRA
-		year = 1949
+		year = 1946
 		NOT = { has_global_flag = 1950_start_date_flag }
 		NOT = { year = 1990 }
 		
@@ -23,8 +23,13 @@ country_event = {
 		SVI = { exists = no }
 		any_owned_province = { is_core = SVI }
 		
-		1380 = { NOT = { controlled_by = FRA } } # Saigon
-		1369 = { NOT = { controlled_by = FRA } } # Hanoi
+		OR = {
+			AND = { ai = yes year = 1949 }
+			AND = {
+				1380 = { NOT = { controlled_by = FRA } } # Saigon
+				1369 = { NOT = { controlled_by = FRA } } # Hanoi
+			}
+		}
 	}
 
 	mean_time_to_happen = {
@@ -32,9 +37,12 @@ country_event = {
 	}
 
 	option = {
-		name = "Continue the war!"
+		name = "Grant South Vietnam autonomy!"
 		prestige = -25
 		badboy = 5 
+		
+		#End war with DAI
+		end_war = DAI
 		
 		#Release South Vietnam
 		release_vassal = SVI
@@ -91,7 +99,7 @@ country_event = {
 		create_alliance = SVI
 		diplomatic_influence = { who = SVI value = 200 }
 		
-		ai_chance = { factor = 0.2 }
+		ai_chance = { factor = 0.1 }
 	}
 
 	option = {
@@ -114,13 +122,33 @@ country_event = {
 		
 		ai_chance = { factor = 0.1 }
 	}
+	
+	option = {
+		name = "We must continue French rule over Indochina!"
+		
+		badboy = 5
+		
+		#Increase pacifism
+		any_pop = { 
+			limit = { culture = french } 
+			
+			militancy = 4
+			
+			dominant_issue = {
+				value = pacifism
+				factor = 0.15
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
 #1954 Geneva Conference
 country_event = {
 	id = 1228002
-	title = "1954 Geneva Conference"
+	title = "$YEAR$ Geneva Conference"
 	desc = EVTDESC1512224
 	picture = "1954_geneva_dai"
 
@@ -228,6 +256,108 @@ country_event = {
 
 }
 
+#1954-1959 Vietnam Armistice - SVI
+country_event = {
+	id = 12280021
+	title = "Armistice in Vietnam?"
+	desc = EVTDESC12280021
+	picture = "1954_SVI_DAI_armistice"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = SVI
+		year = 1954
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
+
+		DAI = { 
+			exists = yes 
+			is_vassal = no 
+			war = no 
+		}
+	}
+
+	mean_time_to_happen = { 
+		months = 6
+	}
+
+	option = {
+		name = "Propose an armistice (90% success chance)"
+		badboy = -5
+		
+		relation = { who = USA value = 100 }
+		relation = { who = RUS value = 100 }
+		
+		#Propose an armistice to North Vietnam
+		DAI = { country_event = 12280022 }
+	
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Keep all options on the table!"
+		badboy = 5
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#1954-1959 Vietnam Armistice - SVI
+country_event = {
+	id = 12280022
+	title = "Armistice in Vietnam?"
+	desc = EVTDESC12280021
+	picture = "1954_SVI_DAI_armistice"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Accept the armistice agreement"
+		badboy = -5
+		
+		#Clear all cores
+		SVI = { 
+			all_core = { 
+				limit = { is_core = DAI owned_by = SVI } 
+				remove_core = DAI
+			} 
+		}
+		DAI = { 
+			all_core = { 
+				limit = { is_core = SVI owned_by = DAI } 
+				remove_core = SVI
+			} 
+		}
+		
+		relation = { who = SVI value = 200 }
+		relation = { who = RUS value = 100 }
+	
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Peace?! We want war!"
+		badboy = 5
+		
+		#Early Vietnam War
+		war = { 
+			target = SVI
+			attacker_goal = { casus_belli = civil_war } 
+			defender_goal = { casus_belli = civil_war } 
+			call_ally = no
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
 #Unification election, 1956
 country_event = {
   id = 1228003
@@ -285,6 +415,60 @@ country_event = {
 
 }
 
+#The Gulf of Tonkin Incident, 1964
+country_event = {
+  id = 12280031
+  title = "The Gulf of Tonkin Incident"
+  desc = EVTDESC12280031
+  picture = "nwo2_vietnam_tonkin"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 1964
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		
+		#Cold War
+		has_global_flag = blocsenabled
+		
+		#Divided Vietnam
+		DAI = { exists = yes is_vassal = no ruling_party_ideology = communist }
+		SVI = { exists = yes is_vassal = no NOT = { ruling_party_ideology = communist } }
+	}
+
+	mean_time_to_happen = { months = 8 }
+
+	option = {
+		name = "Bomb North Vietnam!"
+		
+		relation = { who = DAI value = -200 }
+		diplomatic_influence = { who = DAI value = -200 }
+		
+		relation = { who = SVI value = 50 }
+		diplomatic_influence = { who = SVI value = 50 }
+		
+		set_global_flag = vietnam_war_flag_start
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Tell the truth"
+		prestige_factor = -0.03
+		
+		relation = { who = DAI value = 50 }
+		
+		relation = { who = SVI value = -50 }
+		diplomatic_influence = { who = SVI value = -50 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+}
+
 #The Vietnam War - DAI
 country_event = {
   id = 1228004
@@ -300,7 +484,10 @@ country_event = {
 		NOT = { year = 1990 }
 		
 		is_vassal = no
-		war = no
+		OR = { war = no war_with = LUA }
+		
+		#Gulf of Tonkin Incident
+		has_global_flag = vietnam_war_flag_start
 		
 		ruling_party_ideology = communist
 		
@@ -313,7 +500,7 @@ country_event = {
 		}
 	}
 
-	mean_time_to_happen = { months = 10 }
+	mean_time_to_happen = { months = 1 }
 
 	option = {
 		name = "Escalate the confrontation!"
@@ -358,10 +545,16 @@ country_event = {
 
 	option = {
 		name = "We shall begin the ground war against the Viet Cong"
+		
+		#Ally with SVI
+		create_alliance = SVI
+		
+		#Vietnam war with the US only
 		war = { 
 			target = DAI
-			attacker_goal = { casus_belli = cut_down_to_size } 
-			defender_goal = { casus_belli = humiliate } 
+			attacker_goal = { casus_belli = cut_down_to_size }
+			defender_goal = { casus_belli = territorial_dispute_internal }
+			defender_goal = { casus_belli = war_reparations }
 			call_ally = no
 		}
 		
@@ -377,7 +570,73 @@ country_event = {
 	
 	option = {
 		name = "We don't want an all out war"
+		prestige_factor = -0.03
 		relation = { who = SVI value = -50 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#The Ho Chi Minh Trail - DAI
+country_event = {
+  id = 1228006
+  title = "The Ho Chi Minh Trail"
+  desc = EVTDESC1228006
+  picture = "nwo2_vietnam_war_trail_DAI"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = DAI
+		year = 1960
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		
+		#Ho Chi Minh
+		ruling_party_ideology = communist
+		
+		#Vietnam war
+		war_with = SVI
+		SVI = { 
+			is_vassal = no
+			NOT = { ruling_party_ideology = communist } 
+		}
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "Build the network!"
+		prestige = 50
+		
+		money = -250000
+
+		#Better defense
+		any_owned = {
+			fort = 2
+		}
+		
+		#More soldiers
+		any_pop = { 
+			limit = { type = soldier }
+			reduce_pop = 1.10
+			ideology = {
+				factor = 0.05
+				value = communist
+			}
+		}
+		
+		officers = { money = 15 }
+		soldiers = { money = 10 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Save the expense for our victory parade!"
+		officers = { money = 10 }
+		soldiers = { money = 5 }
 		ai_chance = { factor = 0.1 }
 	}
 

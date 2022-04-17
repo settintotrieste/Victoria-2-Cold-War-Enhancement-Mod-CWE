@@ -636,36 +636,61 @@ country_event = {
 	title = "Diplomatic neutrality violated"
 	desc = "Neutral $COUNTRY$'s diplomatic immunity has been violated. All nations at war with $COUNTRY$ will be punished by the international community."
 	picture = "arctic_r_lose"
+	
 	major = yes
 
 	trigger = {
-		any_neighbor_country = { war_with = THIS }
-		war = yes
-	NOT = { has_country_flag = declared_neutrality_active }
+		#Country is neutral
 		has_country_flag = neutrality
+		
+		#Country has been attacked
+		war = yes
+		
+		#Only fires if the country is really neutral - no alliances at the time of this event
+		NOT = { num_of_allies = 1 }
+		
+		#Event has not already fired
+		NOT = { has_country_flag = declared_neutrality_active }
+		
+		#Not fighting a civil war
 		NOT = { 
-		OR = { 
-		war_with = R01 
-		war_with = R02
-		war_with = R03
-		war_with = R04
-		war_with = R05
-		war_with = R06
-		war_with = R07
-		war_with = R08
-		war_with = R09
-		war_with = R10
+			OR = { 
+				war_with = R01 
+				war_with = R02
+				war_with = R03
+				war_with = R04
+				war_with = R05
+				war_with = R06
+				war_with = R07
+				war_with = R08
+				war_with = R09
+				war_with = R10
 			} 
 		}
 	}
 
-mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 1 }
 
 	option = {
 		name = "We need their support"
 		set_country_flag = declared_neutrality_active
+		
+		#Option for aggressor to seek peace or face a potential coaliation against them
 		any_country = { limit = { war_with = THIS } country_event = 1412144 }
-		any_country = { limit = { NOT = { has_country_flag = neutrality } is_vassal = no has_country_modifier = united_nations_ga_member relation = { who = THIS value = 0 } exists = yes NOT = { war_with = THIS } } create_alliance = THIS relation = { who = THIS value = 50 } }
+		
+		#Form global UN alliance with THIS
+		any_country = { 
+			limit = { 
+				NOT = { has_country_flag = neutrality } 
+				is_vassal = no 
+				has_country_modifier = united_nations_ga_member 
+				relation = { who = THIS value = 50 } 
+				exists = yes 
+				NOT = { war_with = THIS } 
+			} 
+			create_alliance = THIS 
+			relation = { who = THIS value = 50 } 
+		}
 	}
 
 }

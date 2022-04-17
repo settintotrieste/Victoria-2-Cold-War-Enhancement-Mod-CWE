@@ -8,15 +8,25 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
+		capital_scope = { continent = europe } # ENG or FBU
 		year = 1951
 		NOT = { year = 1990 }
-		capital_scope = { continent = europe } # ENG or FBU
-		#government = hms_government
+		
+		OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+		is_vassal = no
+		war = no
+		
 		2024 = { owner = { OR = { tag = THIS vassal_of = THIS } } } # Nairobi
 		2019 = { owner = { OR = { tag = THIS vassal_of = THIS } } } # Entebbe
 		2036 = { owner = { OR = { tag = THIS vassal_of = THIS } } } # Dar Es Salaam
 	}
 	mean_time_to_happen = { months = 10 }
+
+	option = {
+		name = "Abandon the idea"
+		prestige = 25
+		ai_chance = { factor = 0.95 }
+	}
 
 	option = {
 		name = "Form the federation"
@@ -48,31 +58,17 @@ country_event = {
 			add_accepted_culture = kikuyu #Kenya
 			add_accepted_culture = swahili #Tanganyika
 			add_accepted_culture = ganda #Uganda
-			
-			any_owned = { remove_core = XEF }
+			add_accepted_culture = indian
 		}
 		diplomatic_influence = { who = XEF value = 200 }
 		ai_chance = {
 			factor = 0.05
-			modifier = {
-				factor = 19 # Equal chance
-				tag = FBU
-			}
-			modifier = {
-				factor = 9
-				exists = CAF # Rhodesia and Nyasaland
-				CAF = { in_sphere = THIS }
-			}
 		}
 	}
 
-	option = {
-		name = "Abandon the idea"
-		prestige = 25
-		ai_chance = { factor = 0.95 }
-	}
 }
 
+#Tanganyika Autonomy
 country_event = {
 	id = 8029699
 	title = "Self-Rule in Tanganyika"
@@ -82,11 +78,16 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		NOT = { exists = TAN }
 		capital_scope = { continent = europe }
-		owns = 2036 # Dar Es Salaam
-		year = 1957 NOT = { year = 1990 }
-		OR = { exists = GHA exists = NGE year = 1970 }
+		year = 1957 
+		NOT = { year = 1990 }
+		
+		OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+		is_vassal = no
+		war = no
+		
+		#Owns Tanzania
+		is_possible_vassal = TAN
 	}
 
 	mean_time_to_happen = {
@@ -110,22 +111,28 @@ country_event = {
 		TAN = {
 			government = mandate_government
 			country_event = 800054
+			ruling_party_ideology = conservative
 		}
 		diplomatic_influence = { who = TAN value = 200 }
 		create_alliance = TAN
-		ai_chance = { factor = 1 }
+		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
 		name = EVT_8029700_B
-		prestige = -10
-		TAN = { any_core = { add_province_modifier = { name = nationalist_agitation duration = 1095 } } }
-		any_pop = { limit = { location = { is_core = TAN } } militancy = 5  consciousness = 5.0 }
-		# TODO TAN UDI
-		ai_chance = { factor = 0 }
+		prestige = -50
+		badboy = 5
+		TAN = { 
+			all_core = { 
+				add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+				any_pop = { militancy = 10 consciousness = 10 }
+			} 
+		}
+		ai_chance = { factor = 0.1 }
 	}
 }
 
+# Independence of Tanganyika, 1961 historical
 country_event = {
 	id = 8029700
 	title = EVT_8029700_NAME # Independence of Tanganyika
@@ -135,13 +142,20 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		is_our_vassal = TAN
+		capital_scope = { continent = europe }
+		year = 1961
 		NOT = { year = 1990 }
+		
+		OR = { government = hms_government government = hms_government1 }
+		is_vassal = no
+		war = no
+		
+		is_our_vassal = TAN
 		TAN = { government = mandate_government }
 	}
 
 	mean_time_to_happen = {
-		months = 72
+		months = 12
 		modifier = {
 			factor = 0.5
 			TAN = { ruling_party_ideology = nationalist }
@@ -152,18 +166,23 @@ country_event = {
 		name = EVT_8029700_A
 		prestige = 10
 		release_vassal = TAN
-		TAN = { government = hms_government1 }
-		ai_chance = { factor = 1 }
+		TAN = { government = hms_government1 election = yes }
+		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
 		name = EVT_8029700_B
 		prestige = -10
-		TAN = { any_pop = { limit = { location = { is_core = TAN } } militancy = 5  consciousness = 5.0 } }
-		# TODO TAN UDI
-		ai_chance = { factor = 0 }
+		badboy = 5
+		TAN = { 
+			add_country_modifier = { name = revolution_chaos duration = 3650 }
+			any_pop = { militancy = 10 consciousness = 10 } 
+		}
+		ai_chance = { factor = 0.1 }
 	}
 }
+
+# Independence of Zanzibar
 country_event = {
 	id = 8029701
 	title = EVT_8029701_NAME # Independence of Zanzibar
@@ -174,9 +193,19 @@ country_event = {
 
 	trigger = {
 		capital_scope = { continent = europe } # ENG or FBU
+		year = 1963 
+		NOT = { year = 1990 }
+		
+		OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+		is_vassal = no
+		war = no
+		
 		is_our_vassal = ZAN
-		year = 1963 NOT = { year = 1990 }
-		exists = TAN
+		
+		OR = {
+			exists = TAN
+			exists = XEF
+		}
 	}
 
 	mean_time_to_happen = { months = 12 }
@@ -193,24 +222,34 @@ country_event = {
 	option = {
 		name = EVT_8029701_B
 		prestige = -10
-		ZAN = { add_country_modifier = { name = revolution_chaos duration = 3650 } }
-		any_pop = { limit = { OR = { is_primary_culture = ZAN is_accepted_culture = ZAN } } militancy = 5 consciousness = 5.0 }
-		# TODO ZAN UDI
+		ZAN = { 
+			add_country_modifier = { name = revolution_chaos duration = 3650 } 
+			any_pop = { 
+				militancy = 10 
+				consciousness = 10 
+			}
+		}
 		ai_chance = { factor = 0.1 }
 	}
 
 }
 
+# Zanzibar Revolution, immediate upon independence
 country_event = {
 	id = 8029702
 	title = EVT_8029702_NAME # Zanzibar Revolution
 	desc = EVT_8029702_DESC
 	picture = "zanzibar_revolution"
+	
 	fire_only_once = yes
 
 	trigger = {
 		tag = ZAN
+		NOT = { year = 1990 }
+		
 		is_vassal = no
+		war = no
+		
 		2036 = { owner = { capital_scope = { continent = africa } is_vassal = no } }
 	}
 
@@ -222,11 +261,11 @@ country_event = {
 		badboy = 10
 		add_country_modifier = { name = ethnic_cleansing duration = 350 }
 		random_list = {
-			1 = {
+			50 = {
 				government = proletarian_dictatorship
 				country_event = 800042
 			}
-			1 = {
+			50 = {
 				government = nationalist_dictatorship
 				country_event = 800040
 			}
@@ -237,12 +276,18 @@ country_event = {
 	option = {
 		name = EVT_8029702_B
 		prestige = -10
-		any_pop = { limit = { culture = swahili } militancy = 5  consciousness = 5.0 }
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		any_pop = { 
+			limit = { culture = swahili } 
+			militancy = 10
+			consciousness = 10
+		}
 		ai_chance = { factor = 0.1 }
 	}
 
 }
 
+#Formation of Tanzania
 country_event = {
 	id = 8029720
 	title = EVT_8029720_NAME # Union of $COUNTRY$ and Zanzibar
@@ -252,78 +297,101 @@ country_event = {
 
 	trigger = {
 		owns = 2036
-		primary_culture = swahili # TAN or XEF
-		is_vassal = no
-		year = 1964 NOT = { year = 1990 }
+		OR = {
+			primary_culture = swahili # TAN
+			accepted_culture = swahili #XEF
+		}
+		year = 1964
+		NOT = { year = 1990 }
 		exists = ZAN
 		ZAN = {
-			OR = {
-			AND = { ai = yes primary_culture = swahili }
+			ai = yes
 			has_country_flag = xef_zan_union
-			}
+			primary_culture = swahili
 			is_vassal = no
 			war = no
 		}
 	}
-
 	mean_time_to_happen = {
 		months = 8
 		modifier = {
 			factor = 0.5
-			ZAN = { OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social } }
-			OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social }
+			ZAN = {
+				OR = {
+					ruling_party_ideology = socialist
+					ruling_party_ideology = communist
+					ruling_party_ideology = communist_social
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = EVT_8029720_A
+		prestige = 50
+		inherit = ZAN
+		
+		#Become Tanzania
+		random_owned = {
+			limit = { owner = { government = hms_government1 } }
+			owner = { government = democracy }
+		}
+		
+		ZAN = { 
+			all_core = { 
+				add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+				any_pop = { militancy = 10 consciousness = 10 } 
+			} 
+		}
+		
+		ai_chance = { factor = 0.8 }
+	}
+	option = {
+		name = EVT_8029720_B
+		prestige = -25
+		ai_chance = { factor = 0.2 }
+	}
+	
+}
+
+# Arab monarchy petitions to join XEF for protection
+country_event = {
+	id = 8029721
+	title = EVT_8029721_NAME # Arab monarchy petitions to join XEF for protection
+	desc = EVT_8029720_DESC
+	picture = "nwo2_tanzania"
+	fire_only_once = yes
+
+	trigger = {
+		owns = 2036
+		OR = {
+			accepted_culture = swahili #XEF
+		}
+		year = 1951
+		NOT = { year = 1990 }
+		exists = ZAN
+		ZAN = { 
+			ai = yes
+			accepted_culture = arab
+			is_vassal = no
+			war = no
+			OR = {
+				government = hms_government
+				government = absolute_monarchy
+			}
 		}
 	}
 
 	option = {
 		name = EVT_8029720_A
 		inherit = ZAN
-		government = democracy
+		add_accepted_culture = arab
 		ai_chance = { factor = 0.8 }
 	}
-
 	option = {
 		name = EVT_8029720_B
 		prestige = -5
 		ai_chance = { factor = 0.2 }
 	}
-
-}
-
-country_event = {
-	id = 8029721
-	title = EVT_8029721_NAME # Union of $FROMCOUNTRY$ and $COUNTRY$
-	desc = EVT_8029720_DESC
-	picture = "nwo2_tanzania"
-	is_triggered_only = yes # ZAN
-
-	option = {
-		name = EVT_8029721_A
-		set_country_flag = xef_zan_union
-		sphere_owner = {
-			diplomatic_influence = { who = THIS value = -200 }
-			casus_belli = { target = THIS type = add_to_sphere months = 6 }
-		}
-		ai_chance = {
-			factor = 0.75
-			modifier = {
-				factor = 0.8
-				NOT = { primary_culture = swahili }
-			}
-		}
-	}
-
-	option = {
-		name = EVT_8029721_B
-		prestige = -5
-		any_pop = { limit = { has_pop_culture = ibad_arab } consciousness = -3 }
-		ai_chance = {
-			factor = 0.25
-			modifier = {
-				factor = 0
-				FROM = { ai = no }
-			}
-		}
-	}
-
+	
 }

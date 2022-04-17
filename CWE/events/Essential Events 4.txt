@@ -39,7 +39,7 @@ country_event = {
 	id = 1412011
 	title = "Anti-War Civil Disobedience"
 	desc = EVTDESC1412011
-	picture = "war_protest"
+	picture = "war_protest_disobedience"
 
 	trigger = {
 		war = yes
@@ -95,123 +95,6 @@ country_event = {
 		remove_country_modifier = anti_war_strike 
 	}
 }
-
-#UNSC Veto Option
-country_event = {
-	id = 1412013
-	title = "UN Resolution to end $FROMCOUNTRY$'s conflict"
-	desc = "$FROMCOUNTRY$ is currently facing an war with another country and has requested United Nations intervention to stop the war. As a Permanent Member of the UNSC, should we let the resolution pass?"
-	picture = "unsc_vote"
-
-	is_triggered_only = yes
-	
-	option = {
-		name = "Support the Resolution!"
-
-any_country = { 
-limit = { NOT = { alliance_with = FROM } war_policy = pacifism }
-relation = { who = THIS value = 10 } 
-}
-
-any_country = { 
-limit = { alliance_with = FROM } 
-relation = { who = THIS value = 50 } 
-}
-
-any_country = { 
-limit = { war_with = FROM } 
-relation = { who = THIS value = -50 } 
-}
-
-any_pop = {
-dominant_issue = {
-	value = pacifism
-	factor = 0.05
-}
-	}
-
-relation = { who = FROM value = 50 }
-
-ai_chance = { 
-factor = 1 
-modifier = { 
-factor = 0 
-NOT = { relation = { who = FROM value = 0 } }
-		}
-}
-		}
-
-	option = {
-		name = "Abstain from voting!"
-
-prestige = -25
-
-relation = { who = FROM value = -50 }
-
-any_country = { 
-limit = { NOT = { alliance_with = FROM } war_policy = pacifism }
-relation = { who = THIS value = -10 } 
-}
-
-any_country = { 
-limit = { alliance_with = FROM } 
-relation = { who = THIS value = -50 } 
-}
-
-any_country = { 
-limit = { war_with = FROM } 
-relation = { who = THIS value = 50 } 
-}
-
-ai_chance = { 
-factor = 1 
-modifier = { 
-factor = 0 
-OR = { NOT = { relation = { who = FROM value = -150 } } relation = { who = FROM value = 0 } }
-		}
-}
-		}
-
-	option = {
-		name = "Veto the Resolution!"
-
-prestige = -20
-
-FROM = { add_country_modifier = { name = resolution_vetoed_unsc duration = 600 } }
-
-any_country = { limit = { AND = { war_with = THIS has_country_modifier = called_allies_un } } add_country_modifier = { name = resolution_vetoed_unsc duration = 600 } }
-
-relation = { who = FROM value = -100 }
-
-any_country = { 
-limit = { NOT = { alliance_with = FROM } war_policy = pacifism }
-relation = { who = THIS value = -20 } 
-}
-
-any_country = { 
-limit = { alliance_with = FROM } 
-relation = { who = THIS value = -100 } 
-}
-
-any_country = { 
-limit = { war_with = FROM } 
-relation = { who = THIS value = 100 } 
-}
-
-any_pop = {
-dominant_issue = {
-	value = jingoism
-	factor = 0.05
-}
-	}
-
-ai_chance = { 
-factor = 1 
-modifier = { factor = 0 NOT = { relation = { who = FROM value = -150 } } }
-}
-		}
-
-	}
 	
 #1412014 to 1412018 is found in virus epidemic.txt
 
@@ -372,30 +255,6 @@ country_event = {
 	option = {
 		name = "We will get them next time!"
 		prestige = -50
-		}
-	}
-
-#Remove Residual French Relations
-country_event = {
-	id = 1412026
-	title = "Last vestige of French Indochina removed"
-	desc = "The newly independent Government of $COUNTRY$ has decided to remove French colonial influence from the country."
-	picture = "unclos_3"
-
-	trigger = {
-		ai = yes
-OR = { tag = CAM tag = LUA }
-is_vassal = no
-		NOT = { year = 1990 }
-		NOT = { has_country_flag = outfrench }
-	}
-
-	option = {
-		name = "Good riddance"
-relation = { who = FRA value = -200 }
-diplomatic_influence = { who = FRA value = -150 }
-		set_country_flag = outfrench
-leave_alliance = FRA
 		}
 	}
 
@@ -606,37 +465,60 @@ country_event = {
 #French Indochina
 country_event = {
 	id = 1412035
-	title = "French Indochina"
-	desc = "As we have managed to win the French Indochina War, we can once again form the Colonial Indochina."
+	title = "Consolidate French Indochina?"
+	desc = "EVTDESC1412035"
 	picture = "nwo2_south_vietnam"
+	
+	fire_only_once = yes
 
 	trigger = {
-	tag = FRA
-	war = no
-	NOT = { year = 1990 }
-	DAI = { exists = no }
-	SVI = { exists = no }
-	controls = 1369
-	controls = 1380
+		tag = FRA
+		year = 1946
+		NOT = { year = 1990 }
+		
+		government = democracy
+		war = no
+		is_vassal = no
+		
+		is_possible_vassal = DAI
+		is_possible_vassal = SVI
 	}
+	
+	mean_time_to_happen = { months = 6 }
 	
 	option = {
-		name = "That is a good idea"
-	release_vassal = DAI
-	release_vassal = CAM
-	release_vassal = LUA
+		name = "Unite the Indochinese colonies into a single nation!"
+		prestige = 50
+		
+		release_vassal = DAI
 	
-	DAI = { change_tag = ICU }
+		#Form the ICU
+		DAI = { change_tag = ICU }
 
-	ICU = { government = colonial_government }
-	ICU = { country_event = 800054 }
+		ICU = { 
+			government = colonial_government 
+			country_event = 800054 
+			ruling_party_ideology = conservative
+			inherit = CAM
+			inherit = LUA
+		}
 
-	diplomatic_influence = { who = ICU value = 200 }
-
-	ICU = { inherit = CAM }
-	ICU = { inherit = LUA }
-			}
+		diplomatic_influence = { who = ICU value = 200 }
+		
+		ai_chance = { factor = 0.9 }
 	}
+	option = {
+		name = "Maintain direct rule"
+		badboy = 5
+		DAI = { 
+			all_core = { 
+				any_pop = { militancy = 10 consciousness = 10 }
+				add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+			} 
+		}
+		ai_chance = { factor = 0.1 }
+	}
+}
 #French Indochina
 country_event = {
 	id = 1412036
@@ -779,7 +661,7 @@ any_owned = { limit = { is_coastal = yes } add_province_modifier = { name = four
 					}
 		}
 
-#Microstates
+#Microstates - AI only
 country_event = {
 	id = 1412041
 	title = "Microstates"
@@ -787,25 +669,41 @@ country_event = {
 	picture = "rising_sea_level"
 
 	trigger = {
-ai = yes
-NOT = { OR = { tag = SPA tag = SWI tag = FRA tag = ITA } }
-OR = { 603 = { NOT = { has_province_modifier = liechenstein } }
-472 = { NOT = { has_province_modifier = monaco } }
-457 = { NOT = { has_province_modifier = andorra } }
-749 = { NOT = { has_province_modifier = vatican_city } }
-743 = { NOT = { has_province_modifier = san_marino } } }
+		ai = yes
+		
+		#Event does not fire for the country that owns the Microstate
+		NOT = { 
+			OR = { 
+				owns = 603 
+				owns = 472
+				owns = 457
+				owns = 749
+				owns = 743
+			} 
 		}
+		
+		#Province modifier representing the microstates does not exist and the microstate was not annexed
+		OR = { 
+			AND = { 603 = { NOT = { has_province_modifier = liechenstein } } NOT = { has_global_flag = liechenstein_annexed_flag } }
+			AND = { 472 = { NOT = { has_province_modifier = monaco } } NOT = { has_global_flag = monaco_annexed_flag } }
+			AND = { 457 = { NOT = { has_province_modifier = andorra } } NOT = { has_global_flag = andorra_annexed_flag } }
+			AND = { 749 = { NOT = { has_province_modifier = vatican_city } } NOT = { has_global_flag = vatican_city_annexed_flag } }
+			AND = { 743 = { NOT = { has_province_modifier = san_marino } } NOT = { has_global_flag = san_marino_annexed_flag } }
+		}
+	}
 	
 	option = {
 		name = "Interesting Microstates"
+		
+		random_country = { limit = { owns = 603 603 = { NOT = { has_province_modifier = liechenstein } } NOT = { has_global_flag = liechenstein_annexed_flag } } 603 = { add_province_modifier = { name = liechenstein duration = -1 } } }
+		random_country = { limit = { owns = 472 472 = { NOT = { has_province_modifier = monaco } } NOT = { has_global_flag = monaco_annexed_flag } } 472 = { add_province_modifier = { name = monaco duration = -1 } } }
+		random_country = { limit = { owns = 457 457 = { NOT = { has_province_modifier = andorra } } NOT = { has_global_flag = andorra_annexed_flag } } 457 = { add_province_modifier = { name = andorra duration = -1 } } }
+		random_country = { limit = { owns = 749 749 = { NOT = { has_province_modifier = vatican_city } } NOT = { has_global_flag = vatican_city_annexed_flag } } 749 = { add_province_modifier = { name = vatican_city duration = -1 } } }
+		random_country = { limit = { owns = 743 743 = { NOT = { has_province_modifier = san_marino } } NOT = { has_global_flag = san_marino_annexed_flag } } 743 = { add_province_modifier = { name = san_marino duration = -1 } } }
 
-603 = { add_province_modifier = { name = liechenstein duration = -1 } }
-472 = { add_province_modifier = { name = monaco duration = -1 } }
-457 = { add_province_modifier = { name = andorra duration = -1 } }
-749 = { add_province_modifier = { name = vatican_city duration = -1 } }
-743 = { add_province_modifier = { name = san_marino duration = -1 } }
-					}
-		}
+	}
+
+}
 
 #Uniting for Peace Secondary Powers Recipients
 country_event = {
@@ -814,54 +712,64 @@ country_event = {
 	desc = EVTDESC1412042
 	picture = "uniting_for_peace"
 
-is_triggered_only = yes
+	is_triggered_only = yes
 	
 	option = {
-		name = "Vote in favour"
-relation = { who = FROM value = 20 }
-any_country = { limit = { is_vassal = no war_with = FROM } country_event = 1412043 }
-
-ai_chance = { factor = 1 modifier = { factor = 0 NOT = { relation = { who = FROM value = 100 } } } }
-					}
-	option = {
-		name = "Vote against"
-relation = { who = FROM value = -20 }
-any_country = { limit = { war_with = FROM } relation = { who = THIS value = 10 } }
-
-ai_chance = { factor = 1 modifier = { factor = 0 relation = { who = FROM value = 100 } } }
-					}
-
+		name = "Vote in favour of $FROMCOUNTRY$!"
+		relation = { who = FROM value = 20 }
+		any_country = { 
+			limit = { 
+				is_vassal = no 
+				war_with = FROM 
+			} 
+			country_event = 1412043 
 		}
+
+		ai_chance = { 
+			factor = 1 
+			modifier = { 
+				factor = 0 
+				NOT = { relation = { who = FROM value = 100 } } 
+			} 
+		}
+	}
+	option = {
+		name = "Vote against $FROMCOUNTRY$!"
+		relation = { who = FROM value = -20 }
+		any_country = { 
+			limit = { war_with = FROM } 
+			relation = { who = THIS value = 10 } 
+		}
+
+		ai_chance = { 
+			factor = 1 
+			modifier = { 
+				factor = 0 
+				relation = { who = FROM value = 100 } 
+			} 
+		}
+	}
+
+}
 
 #Uniting for Peace war with Recipients
 country_event = {
 	id = 1412043
-	title = "$FROMCOUNTRY$ condemns our nation's war"
-	desc = "As the UNSC failed to pass the opposing nation's resolution to end the conflict, they decided to use the Uniting for Peace Resolution to impose sanctions on our nation. $FROMCOUNTRY$ voted to condemn us."
+	title = "$FROMCOUNTRY$ Condemns $COUNTRY$"
+	desc = "As the UNSC failed to pass the opposing nation's resolution to end the conflict, they decided to use a Uniting for Peace Resolution to impose sanctions on our nation. $FROMCOUNTRY$ voted to condemn us."
 	picture = "uniting_for_peace"
 
-is_triggered_only = yes
+	is_triggered_only = yes
 	
 	option = {
 		name = "SAD, but the war goes on!"
-prestige = -25
-badboy = 3
-money = -50000
-add_tax_relative_income = -10
-ai_chance = { factor = 1 modifier = { factor = 0 money = 200000 } }
-					}
+		prestige = -25
+		badboy = 3
+		money = -50000
+		add_tax_relative_income = -10
+	}
 
-	option = {
-		name = "Sue for peace!"
-prestige = -100
-
-any_country = { limit = { AND = { exists = yes NOT = { tag = REB } is_vassal = no war_with = THIS } } prestige = 10 country_event = 1512251 }
-
-ai_chance = { factor = 1 modifier = { factor = 0 NOT = { money = 200000 } } }
-					}
-
-
-		}
+}
 
 #Communist Togo
 country_event = {
@@ -978,56 +886,72 @@ prestige = 10
 #Moon Mission Success
 country_event = {
 	id = 1412047
-	title = "Got away with Faking the Moon Mission"
+	title = "Got away with Fake Moon Mission"
 	desc = "Our attempt to fake the moon mission succeeded. We can thank Kubrick for that too. We saved a lot of money by not actually having a mission."
 	picture = "moon_fake_success"
 	
-is_triggered_only = yes
-major = yes
-option = {
-name = "A small step for man, a giant leap for conspiracy!"
-prestige = 500
-set_global_flag = moon_mission_win_1
-add_country_modifier = { name = space_project_attempted duration = 365 }
-set_country_flag = space_moon
-remove_country_modifier = develop_moon_mission
-		}
+	is_triggered_only = yes
+	
+	major = yes
+	
+	option = {
+		name = "A small step for man, a giant leap for conspiracy theorists!"
+		prestige = 500
+		set_global_flag = moon_mission_win_1
+		add_country_modifier = { name = space_project_attempted duration = 365 }
+		set_country_flag = space_moon
+		remove_country_modifier = develop_moon_mission
+	}
 }
 
 #Moon Mission Failure
 country_event = {
 	id = 1412048
-	title = "Attempt to fake the moon mission failed"
-	desc = "The public managed to discover that we faked the moon issue which has tremendously damaged our international standing."
+	title = "Fake Moon Mission Discovered"
+	desc = "The public managed to discover that we faked the moon landing which has damaged our international standing tremendously."
 	picture = "moon_fake_failure"
 	
-is_triggered_only = yes
+	is_triggered_only = yes
+	
+	major = yes
 
-option = {
-name = "Perhaps we should try a real mission now?"
-prestige = -1000
-add_country_modifier = { name = space_project_attempted duration = 365 }
-		}
+	option = {
+		name = "Perhaps we should try a real mission now?"
+		prestige = -1000
+		add_country_modifier = { name = space_project_attempted duration = 365 }
+		
+		clr_country_flag = space_moon_develop_fake
+		clr_country_flag = space_moon_develop
+	}
+	
 }
 
 #Fake Moon Mission result
 country_event = {
 	id = 1412049
-	title = "Faking Moon Mission Underway"
+	title = "Fake Moon Mission Underway"
 	desc = EVTDESC1412049
 	picture = "moon_fake_underway"
 	
-is_triggered_only = yes
+	trigger = {
+		has_country_flag = space_moon_develop_fake
+		war = no
+	}
+	
+	mean_time_to_happen = { 
+		months = 4
+	}
 
-option = {
-name = "Let's hope the Conspiracy Theorists don't find out"
+	option = {
+		name = "Let's hope the Conspiracy Theorists don't find out"
 
-random_list = {
-	50 = { country_event = 1412047 } 
-	50 = { country_event = 1412048 }
-					}
-
+		random_list = {
+			50 = { country_event = 1412047 } 
+			50 = { country_event = 1412048 }
 		}
+		
+	}
+	
 }
 
 #1 degrees
@@ -1541,7 +1465,7 @@ add_country_modifier = { name = bio_nation duration = -1 }
 #Biological weapons attack
 country_event = {
 	id = 1412062
-	title = "$COUNTRY$ has been struck by Biological Weapons"
+	title = "$COUNTRY$ Struck by Biological Weapons"
 	desc = "Our nation has been struck by biological weapons, our population has been severely damaged by the weapons."
 	picture = "biological_weapons_attack"
 
@@ -1552,29 +1476,53 @@ country_event = {
 	option = {
 		name = "A disaster!"
 		prestige_factor = -0.05
-		add_country_modifier = { name = biological_attack duration = -1 }
-		random = {
-			chance = 25
-			FROM = { prestige_factor = -0.05 }
-			badboy = 5
-			country_event = 1412063
-		}					
+		any_pop = { limit = { is_state_capital = yes } reduce_pop = 0.99 }
+		add_country_modifier = { name = biological_attack duration = 3650 }
 	}
 	
 }
 
-#Biological weapons Epidemic
+#Biological weapons - Epidemic
 country_event = {
 	id = 1412063
 	title = "Biological Weapons Especially Infectious"
-	desc = "The biological weapon that was unleashed on our nation was especially infectious has has caused an epidemic in our nation. This will allow the weapons to spread to other nations."
+	desc = EVTDESC1412063
 	picture = "biological_weapons_attack"
 	
-	major = yes
 	is_triggered_only = yes
 
 	option = {
 		name = "This can spread!"
+		
+		any_country = {
+			limit = { exists = yes is_vassal = no }
+			relation = { who = FROM value = -100 }
+		}
+		
+		#Spawn virus in a country at with FROM
+		random_country = {
+			limit = { NOT = { tag = REB } war_with = FROM }
+			country_event = 14120631
+		}
+	}
+
+}
+
+#Biological weapons - Epidemic
+country_event = {
+	id = 14120631
+	title = "Biological Weapon Induced Epidemic"
+	desc = EVTDESC1412063
+	picture = "biological_weapons_attack"
+	
+	major = yes
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "This can spread!"
+		prestige_factor = -0.025
+		
 		poor_strata = {
 			consciousness = 1
 			militancy = 1
@@ -1609,6 +1557,7 @@ country_event = {
 			}
 			add_province_modifier = { name = virus_outbreak_deadly duration = 730 }
 		}
+		
 	}
 
 }
@@ -1620,33 +1569,32 @@ country_event = {
 	desc = "A nation has been struck by biological weapons and the agents have been highly infectious allowing it to spread to $COUNTRY$ due to our proximity to a nation which is currently infected with the agents."
 	picture = "agent_spreads"
 
-trigger = {
-NOT = { has_country_flag = spreading_bio_weapon }
-NOT = { has_country_modifier = biological_attack }
-any_neighbor_country = { has_country_flag = spreading_bio_weapon has_country_modifier = biological_attack }
-
-}
+	trigger = {
+		NOT = { has_country_flag = spreading_bio_weapon }
+		NOT = { has_country_modifier = biological_attack }
+		any_neighbor_country = { has_country_flag = spreading_bio_weapon has_country_modifier = biological_attack }
+	}
 	
-mean_time_to_happen = { 
-months = 2
+	mean_time_to_happen = { 
+		months = 2
 
-modifier = { factor = 4 AND = { immigration_policy = nobody_gets_out war = no } }
+		modifier = { factor = 4 AND = { immigration_policy = nobody_gets_out war = no } }
 
-modifier = { factor = 2 AND = { immigration_policy = quota_immigration war = no } }
+		modifier = { factor = 2 AND = { immigration_policy = quota_immigration war = no } }
 
-modifier = { factor = 2 health_care = good_health_care }
-modifier = { factor = 1.5 health_care = acceptable_health_care }
-modifier = { factor = 1.25 health_care = low_health_care }
-}
+		modifier = { factor = 2 health_care = good_health_care }
+		modifier = { factor = 1.5 health_care = acceptable_health_care }
+		modifier = { factor = 1.25 health_care = low_health_care }
+	}
 
 	option = {
 		name = "We need to find a vaccine for it!"
-prestige = -25
-set_country_flag = spreading_bio_weapon
-add_country_modifier = { name = biological_attack duration = 3650 }
-					}
-		}
-		
+		prestige = -25
+		set_country_flag = spreading_bio_weapon
+		add_country_modifier = { name = biological_attack duration = 3650 }
+	}
+}
+
 #1412065 located in virus epidemic.txt
 
 #Puppet Requests Independence
@@ -1929,7 +1877,7 @@ country_event = {
 country_event = {
 	id = 1412073
 	title = "$COUNTRY_ADJ$ Independence Day"
-	desc = "Our Overlord has accepted our request for self determination. We now need to decide what our post-independence relations with $FROMCOUNTRY$ will be."
+	desc = "EVTDESC1412073"
 	picture = "independence_day_vote"
 
 	trigger = {
@@ -1944,71 +1892,93 @@ country_event = {
 	immediate = { clr_country_flag = independence_vote_passes_flag }
 
 	option = {
-	name = "Very close relations with our former Overlord"
-prestige = 20
-overlord = { relation = { who = THIS value = 200 } }
-add_country_modifier = { name = revolution_chaos duration = 365 }
+		name = "Very close relations with our former Overlord"
+		prestige = 20
+		
+		overlord = { 
+			relation = { who = THIS value = 200 } 
+			diplomatic_influence = { who = THIS value = 50 } 
+		}
+		
+		add_country_modifier = { name = post_colonial_chaos duration = 3650 }
+		
+		#Set Govt type
+		random_owned = { limit = { owner = { NOT = { government = democracy1 } overlord = { OR = { government = democracy government = democracy1 } } } } owner = { government = democracy country_event = 800054 } }
+		
+		random_owned = { limit = { owner = { overlord = { government = socialist_democracy } } } owner = { government = socialist_democracy country_event = 800054 } }
 
-add_country_modifier = { name = post_colonial_chaos duration = 3650 }
+		random_owned = { limit = { owner = { NOT = { government = hms_government1 } overlord = { government = hms_government } } } owner = { government = hms_government country_event = 800054 } }
 
-random_owned = { limit = { owner = { overlord = { government = hms_government } } } owner = { government = hms_government country_event = 800054 } }
+		random_owned = { limit = { owner = { overlord = { government = absolute_monarchy } } } owner = { government = absolute_monarchy country_event = 800050 } }
 
-random_owned = { limit = { owner = { overlord = { government = absolute_monarchy } } } owner = { government = absolute_monarchy country_event = 800050 } }
+		random_owned = { limit = { owner = { overlord = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } } } owner = { government = proletarian_dictatorship country_event = 800050 } }
 
-random_owned = { limit = { owner = { overlord = { government = proletarian_dictatorship } } } owner = { government = proletarian_dictatorship country_event = 800050 } }
-
-clr_country_flag = full_independance
-set_country_flag = former_colonial_nation
-overlord = { release_vassal = THIS }
-ai_chance = { factor = 0.4 }
-				}
+		clr_country_flag = full_independance
+		set_country_flag = former_colonial_nation
+		
+		#Independence!
+		overlord = { release_vassal = THIS }
+		
+		ai_chance = { factor = 0.4 }
+	}
+	
 	option = {
 		name = "Close relations with our former Overlord"
-prestige = 40
-overlord = { relation = { who = THIS value = 50 } }
-set_country_flag = former_colonial_nation
-add_country_modifier = { name = revolution_chaos duration = 365 }
-
-add_country_modifier = { name = post_colonial_chaos duration = 3650 }
-
-overlord = { diplomatic_influence = { who = THIS value = -10 } }
-clr_country_flag = full_independance
-
-
-random_owned = { limit = { owner = { overlord = { government = hms_government } } } owner = { government = hms_government1 country_event = 800054 } }
-
-random_owned = { limit = { owner = { overlord = { government = absolute_monarchy } } } owner = { government = hms_government country_event = 800054 } }
-
-random_owned = { limit = { owner = { overlord = { government = proletarian_dictatorship } } } owner = { government = proletarian_dictatorship country_event = 800050 } }
-
-overlord = { end_military_access = THIS }
-
-overlord = { release_vassal = THIS }
-ai_chance = { factor = 0.4 }
-				}
-option = {
-		name = "Sever all ties with our former Overlord"
-prestige = 60
-overlord = { relation = { who = THIS value = -200 } }
-set_country_flag = former_colonial_nation
-overlord = { diplomatic_influence = { who = THIS value = -200 } }
-add_country_modifier = { name = revolution_chaos duration = 365 }
-
-add_country_modifier = { name = post_colonial_chaos duration = 3650 }
-
-clr_country_flag = full_independance
-
-overlord = { end_military_access = THIS }
-
-overlord = { release_vassal = THIS }
-
-government = democracy
-
-country_event = 800054
-
-ai_chance = { factor = 0.2 }
-				}
+		prestige = 40
+		
+		overlord = { 
+			relation = { who = THIS value = 50 } 
+			diplomatic_influence = { who = THIS value = -50 } 
 		}
+		
+		add_country_modifier = { name = post_colonial_chaos duration = 1825 }
+
+		#Set Govt type
+		random_owned = { limit = { owner = { NOT = { government = democracy1 } overlord = { OR = { government = democracy government = democracy1 } } } } owner = { government = democracy country_event = 800054 } }
+		
+		random_owned = { limit = { owner = { overlord = { government = socialist_democracy } } } owner = { government = democracy country_event = 800054 } }
+
+		random_owned = { limit = { owner = { NOT = { government = hms_government1 } overlord = { government = hms_government } } } owner = { government = hms_government1 country_event = 800054 } }
+
+		random_owned = { limit = { owner = { overlord = { government = absolute_monarchy } } } owner = { government = hms_government1 country_event = 800054 } }
+
+		random_owned = { limit = { owner = { overlord = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } } } owner = { government = proletarian_dictatorship country_event = 800050 } }
+
+		overlord = { end_military_access = THIS }
+
+		clr_country_flag = full_independance
+		set_country_flag = former_colonial_nation
+
+		#Independence!
+		overlord = { release_vassal = THIS }
+
+		ai_chance = { factor = 0.4 }
+	}
+	option = {
+		name = "Sever all ties with our former Overlord"
+		prestige = 60
+		
+		overlord = { 
+			relation = { who = THIS value = -200 } 
+			diplomatic_influence = { who = THIS value = -200 } 
+		}
+		
+		add_country_modifier = { name = post_colonial_chaos duration = 730 }
+		
+		#Set Govt type - Republic
+		government = democracy
+
+		overlord = { end_military_access = THIS leave_alliance = THIS }
+		
+		clr_country_flag = full_independance
+		set_country_flag = former_colonial_nation
+
+		#Independence!
+		overlord = { release_vassal = THIS }
+
+		ai_chance = { factor = 0.2 }
+		}
+	}
 
 #Start of Factionalism
 country_event = {
@@ -2017,43 +1987,47 @@ country_event = {
 	desc = EVTDESC1412074
 	picture = "great_leader_killed"
 
-trigger = {
+	trigger = {
 
-has_country_flag = president_for_life
+		#Any government with President for Life
+		has_country_flag = president_for_life
+		
+		#Monarchies do not have presidents so they are to use Regency & Monarch death systems instead
+		NOT = { OR = { government = absolute_monarchy government = hms_government government = hms_government1 } }
 
-#Historical
-NOT = { AND = { tag = SPA government = populist_dictatorship NOT = { year = 1985 } } }
+		#Historical
+		NOT = { AND = { tag = SPA government = populist_dictatorship NOT = { year = 1985 } } }
 
-NOT = { AND = { tag = POR government = populist_dictatorship NOT = { year = 1975 } } }
+		NOT = { AND = { tag = POR government = populist_dictatorship NOT = { year = 1975 } } }
 
-NOT = { AND = { tag = RUS government = proletarian_dictatorship NOT = { year = 1990 } } }
+		NOT = { AND = { tag = RUS government = proletarian_dictatorship NOT = { year = 1990 } } }
 
-NOT = { AND = { tag = CHI government = proletarian_dictatorship NOT = { year = 1975 } } }
+		NOT = { AND = { tag = CHI government = proletarian_dictatorship NOT = { year = 1975 } } }
 
-NOT = { AND = { tag = NKO government = proletarian_dictatorship NOT = { year = 1990 } } }
+		NOT = { AND = { tag = NKO government = proletarian_dictatorship NOT = { year = 1990 } } }
 
-NOT = { AND = { tag = DAI government = proletarian_dictatorship NOT = { year = 1980 } } }
+		NOT = { AND = { tag = DAI government = proletarian_dictatorship NOT = { year = 1980 } } }
 
-#Dictatorships only
-OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship government = proletarian_dictatorship government = proletarian_dictatorship1 government = theocracy }
+		NOT = { has_country_modifier = power_vacuum }
 
-NOT = { has_country_modifier = power_vacuum }
+		NOT = { has_country_modifier = civil_war }
 
-NOT = { has_country_modifier = civil_war }
+		NOT = { has_country_modifier = government_consensus }
 
-NOT = { has_country_modifier = government_consensus }
+	}
 
-}
-
-mean_time_to_happen = { 
-months = 360
-}
+	mean_time_to_happen = { 
+		months = 360
+	}
 
 	option = {
 		name = "It is a day of mourning"
+		
+		#Clear President for Life, new dictator has to earn his eternal presidency. If democratic then life term ends, new guy to take over and earn his life term
+		clr_country_flag = president_for_life
 
-#If leader refused to leave via 'backbencher's plot' event
-clr_country_flag = leader_refuses_to_leave
+		#If leader refused to leave via 'backbencher's plot' event
+		clr_country_flag = leader_refuses_to_leave
 
 		remove_country_modifier = expert_diplomat
 		remove_country_modifier = successful_industrialist
@@ -2078,51 +2052,52 @@ clr_country_flag = leader_refuses_to_leave
 		remove_country_modifier = ambitious_union_boss
 		remove_country_modifier = dour_economist
 
-clr_country_flag = right_set_up
-clr_country_flag = far_right_set_up
-clr_country_flag = centre_set_up
-clr_country_flag = left_set_up
-clr_country_flag = far_left_set_up
+		clr_country_flag = right_set_up
+		clr_country_flag = far_right_set_up
+		clr_country_flag = centre_set_up
+		clr_country_flag = left_set_up
+		clr_country_flag = far_left_set_up
 
-add_country_modifier = { name = power_vacuum duration = 730 }
+		add_country_modifier = { name = power_vacuum duration = 730 }
 
-any_pop = {
-consciousness = 2
-militancy = 1
-}
-					}
+		any_pop = {
+			consciousness = 2
+			militancy = 1
 		}
+	}
+	
+}
 
 #Debate over the Successor - stage 1
 country_event = {
 	id = 1412075
-title = "$YEAR$ Congress to select new $MONARCHTITLE$"
+	title = "$YEAR$ Congress to select new $MONARCHTITLE$"
 	desc = EVTDESC1412075
 	picture = "great_leader_selection"
 
-trigger = {
+	trigger = {
 
-OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship government = proletarian_dictatorship government = proletarian_dictatorship1 government = theocracy }
+		OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship government = proletarian_dictatorship government = proletarian_dictatorship1 government = theocracy }
 
-has_country_modifier = power_vacuum
+		has_country_modifier = power_vacuum
 
-NOT = { has_country_modifier = factionalism }
+		NOT = { has_country_modifier = factionalism }
 
-NOT = { has_country_modifier = civil_war }
+		NOT = { has_country_modifier = civil_war }
 
-NOT = { has_country_modifier = government_consensus }
+		NOT = { has_country_modifier = government_consensus }
 
-}
+	}
 
-mean_time_to_happen = { month = 1 }
+	mean_time_to_happen = { months = 2 }
 
 	option = {
-	name = "Let the leadership contest begin!"
-add_country_modifier = { name = factionalism duration = 1825 }
+		name = "Let the leadership contest begin!"
+		add_country_modifier = { name = factionalism duration = 1825 }
 		country_event = 111222
 	}
 
-		}
+}
 
 #Choice for the new dictator
 country_event = {
@@ -2133,59 +2108,64 @@ country_event = {
 
 	trigger = {
 
-OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship government = proletarian_dictatorship government = proletarian_dictatorship1 government = theocracy }
+		OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship government = proletarian_dictatorship government = proletarian_dictatorship1 government = theocracy }
 
-has_country_modifier = factionalism
-has_country_modifier = power_vacuum
+		has_country_modifier = factionalism
+		has_country_modifier = power_vacuum
 
-NOT = { has_country_flag = leadership_election }
+		NOT = { has_country_flag = leadership_election }
 
 	}
 
-mean_time_to_happen = { month = 1 }
+	mean_time_to_happen = { months = 2 }
 
 	option = {
-	name = "I will preserve the status quo!"
+		name = "I will preserve the status quo!"
 
-	remove_country_modifier = power_vacuum
+		remove_country_modifier = power_vacuum
 
-#Elites will be happy
-any_pop = { 
-limit = { OR = { type = officers type = aristocrats type = bureaucrats } }
-militancy = -10
-}
-
-	ai_chance = { factor = 0.6 }
-				}
-
-	option = {
-	name = "I will crush the counter-revolutionaries!"
-	badboy = 2
-	prestige_factor = -0.025
-	country_event = 1412077
-	remove_country_modifier = power_vacuum
-	ai_chance = { factor = 0.4 }
-				}
-
-	option = {
-	name = "I will start immediate political reforms!"
-	prestige_factor = -0.1
-	country_event = 800054
-	remove_country_modifier = power_vacuum
-
-#Coup risk
-add_country_modifier = { name = coup_risk duration = 1825 }
-
-#Elites get angry
-any_pop = { 
-limit = { OR = { type = officers type = aristocrats type = bureaucrats } }
-militancy = 10 
-}
-
-	ai_chance = { factor = 0 }
-				}
-
+		#Elites will be happy
+		any_pop = { 
+			limit = { OR = { type = officers type = aristocrats type = bureaucrats } }
+			militancy = -10
 		}
+
+		ai_chance = { factor = 0.6 }
+	}
+
+	option = {
+		name = "I will crush the counter-revolutionaries!"
+		badboy = 2
+		prestige_factor = -0.025
+		country_event = 1412077
+		remove_country_modifier = power_vacuum
+		ai_chance = { factor = 0.4 }
+	}
+
+	option = {
+		name = "I will start immediate political reforms!"
+		prestige_factor = -0.1
+		
+		#Enact democratic reforms
+		political_reform = parties_only_nominated
+		political_reform = open_opinion
+		
+		#Remove Power Vacuum
+		remove_country_modifier = power_vacuum
+
+		#Coup risk
+		add_country_modifier = { name = coup_risk duration = 1825 }
+
+		#Elites get angry
+		any_pop = { 
+			limit = { OR = { type = officers type = aristocrats type = bureaucrats } }
+			militancy = 10 
+		}
+
+		ai_chance = { factor = 0 }
+	}
+
+}
 
 #Purge - Factionalism
 country_event = {
@@ -2490,7 +2470,6 @@ country_event = {
 	}
 }
 
-
 #Select Aggressive UN Secretary General
 country_event = {
 	id = 1412088
@@ -2601,7 +2580,7 @@ country_event = {
 		war = yes
 		has_country_modifier = united_nations_ga_member
 		NOT = { has_country_modifier = unsc_permanent_member }
-		NOT = { OR = { any_neighbor_country = { war_with = THIS casus_belli = THIS } any_greater_power = { war_with = THIS casus_belli = THIS } } }
+		has_country_flag = this_is_aggressor
 		has_global_flag = UNSG_aggressive
 		NOT = { has_country_modifier = un_sanctions_strong }
 		NOT = { has_country_modifier = un_sanctions_weak }
@@ -2627,7 +2606,7 @@ country_event = {
 		war = yes
 		has_country_modifier = united_nations_ga_member
 		NOT = { has_country_modifier = unsc_permanent_member }
-		NOT = { OR = { any_neighbor_country = { war_with = THIS casus_belli = THIS } any_greater_power = { war_with = THIS casus_belli = THIS } } }
+		has_country_flag = this_is_aggressor
 		has_global_flag = UNSG_normal
 		NOT = { has_country_modifier = un_sanctions_weak }
 		NOT = { has_country_modifier = un_sanctions_strong }
@@ -2650,29 +2629,37 @@ country_event = {
 	picture = "financial_crisis"
 
 	trigger = {
+	
+		#Favourable economic condition
+		OR = {
+			money = 5000000
+			has_country_modifier = economic_boom
+		}
 
-		OR = { money = 20000000 ai = no }
-
+		#Post 2000s
 		modern_stock_exchange = 1
-		NOT = { ruling_party_ideology = communist }
+		
+		#Appropriate economic policy
+		OR = {
+			economic_policy = laissez_faire
+			economic_policy = interventionism
+			AND = { economic_policy = state_capitalism has_country_modifier = stock_market_crash }
+		}
+		
+		#Does not have high baking regulations
 		NOT = { has_country_modifier = bkrhigh }
+		
+		#Does not already have an economic crisis in THIS
+		NOT = { has_country_modifier = financial_crisis }
 		NOT = { has_country_modifier = recession }
 		NOT = { has_country_modifier = great_recession }
-		OR = {
-			is_secondary_power = no
-			AND = {
-				is_secondary_power = yes
-				NOT = { any_neighbor_country = { has_country_modifier = great_recession } }
-				NOT = { any_neighbor_country = { has_country_modifier = recession } }
-			}
-		}
-		OR = {
-			is_greater_power = no
-			AND = {
-				is_greater_power = yes
-				NOT = { any_greater_power = { has_country_modifier = great_recession } }
-			}
-		}
+		NOT = { has_country_modifier = great_depression }
+		
+		#Only 1 financial crisis at a time
+		NOT = { any_neighbor_country = { has_country_modifier = great_recession } }
+		NOT = { any_neighbor_country = { has_country_modifier = recession } }
+		NOT = { any_greater_power = { has_country_modifier = great_recession } }
+
 	}
 
 	mean_time_to_happen = {
@@ -2683,15 +2670,27 @@ country_event = {
 
 	option = {
 		name = "Bail the banks out, we can't afford a meltdown"
-		add_tax_relative_income = -200
-		REB = { random_country = { # Change scope to fake country to that we can reselect ourselves
-			limit = { tag = THIS is_greater_power = no }
-			prestige = -25
-		} }
-		REB = { random_country = {
-			limit = { tag = THIS is_greater_power = yes }
-			prestige = -50
-		} }
+		add_tax_relative_income = -50
+
+		#Prestige loss
+		random_owned = { 
+			limit = { owner = { is_greater_power = yes } }
+			owner = { prestige_factor = -0.02 }
+		}
+		
+		random_owned = { 
+			limit = { owner = { is_greater_power = no } }
+			owner = { prestige_factor = -0.02 }
+		}
+		
+		#Pops want less government intervention in the economy
+		any_pop = {
+			dominant_issue = {
+				value = laissez_faire
+				factor = 0.15
+			}
+		}
+
 		ai_chance = {
 			factor = 0.8
 			modifier = {
@@ -2703,175 +2702,350 @@ country_event = {
 
 	option = {
 		name = "Let the market restructure itself"
-		# Civilized and secondary
-		REB = { random_country = {
-			limit = {
-				tag = THIS
-				is_greater_power = no
+		
+		capitalists = { money = -1000 }
+		aristocrats = { money = -500 }
+		
+		#Prestige loss
+		random_owned = { 
+			limit = { owner = { is_greater_power = yes } }
+			owner = { prestige_factor = -0.02 }
+		}
+		
+		random_owned = { 
+			limit = { owner = { is_greater_power = no } }
+			owner = { prestige_factor = -0.02 }
+		}
+		
+		#Pops want more government intervention in the economy
+		any_pop = {
+			dominant_issue = {
+				value = interventionism
+				factor = 0.15
 			}
-			prestige = -50
-			add_tax_relative_income = -100
-random_pop = { limit = { location = { is_capital = yes } type = capitalists } money = -1000000 }
-	add_country_modifier = { name = recession duration = 900 }
-		} }
-		# Secondary only
-		REB = { random_country = {
-			limit = {
-				tag = THIS
-				is_secondary_power = yes
-				capital_scope = { continent = europe }
-			}
-			any_country = {
-				limit = {
-					capital_scope = { continent = europe }
-					NOT = {
-						tag = THIS
+		}
+		
+		#Economic contagion to the whole world if a rank 2 and above GP
+		random_owned = { 
+			limit = { owner = { is_greater_power = yes rank = 2 } }
+			owner = { 
+			
+				add_country_modifier = { name = great_recession duration = 1000 }
+			
+				any_country = {
+					limit = { 
+					
+						exists = yes
+					
+						#Appropriate economic policy
 						OR = {
-							ruling_party_ideology = communist
-							has_country_modifier = bkrhigh
+							economic_policy = laissez_faire
+							economic_policy = interventionism
+							AND = { economic_policy = state_capitalism has_country_modifier = stock_market_crash }
 						}
+		
+						#Does not have high baking regulations
+						NOT = { has_country_modifier = bkrhigh }
+		
+						#Does not already have an economic crisis in THIS
+						NOT = { has_country_modifier = financial_crisis }
+						NOT = { has_country_modifier = recession }
+						NOT = { has_country_modifier = great_recession }
+						NOT = { has_country_modifier = great_depression }
 					}
+					#Economic Contagion - Great Recession
+					country_event = 1412095
 				}
-				country_event = 1412096
 			}
-		} }
-		REB = { random_country = {
-			limit = {
-				tag = THIS
-				is_secondary_power = yes
-				capital_scope = { continent = mena }
-			}
-			any_country = {
-				limit = {
-					capital_scope = { continent = mena }
-					NOT = {
-						tag = THIS
+		}
+		
+		#Economic contagion to the whole world if a rank 4 and below GP
+		random_owned = { 
+			limit = { owner = { is_greater_power = yes NOT = { rank = 2 } } }
+			owner = { 
+			
+				add_country_modifier = { name = recession duration = 900 }
+			
+				any_country = {
+					limit = { 
+					
+						exists = yes
+					
+						#Appropriate economic policy
 						OR = {
-							ruling_party_ideology = communist
-							has_country_modifier = bkrhigh
+							economic_policy = laissez_faire
+							economic_policy = interventionism
+							AND = { economic_policy = state_capitalism has_country_modifier = stock_market_crash }
 						}
+		
+						#Does not have high baking regulations
+						NOT = { has_country_modifier = bkrhigh }
+		
+						#Does not already have an economic crisis in THIS
+						NOT = { has_country_modifier = financial_crisis }
+						NOT = { has_country_modifier = recession }
+						NOT = { has_country_modifier = great_recession }
+						NOT = { has_country_modifier = great_depression }
 					}
+					#Economic Contagion - Normal Recession
+					country_event = 1412096
 				}
-				country_event = 1412096
 			}
-		} }
-		REB = { random_country = {
-			limit = {
-				tag = THIS
-				is_secondary_power = yes
-				capital_scope = { continent = asia }
-			}
-			any_country = {
-				limit = {
-					capital_scope = { continent = asia }
-					NOT = {
-						tag = THIS
+		}
+		
+		#Economic contagion to the whole region if is an SP
+		#europe
+		random_owned = { 
+			limit = { owner = { is_secondary_power = yes capital_scope = { continent = europe } } }
+			owner = { 
+			
+				add_country_modifier = { name = recession duration = 900 }
+			
+				any_country = {
+					limit = { 
+					
+						exists = yes
+						
+						capital_scope = { continent = europe }
+					
+						#Appropriate economic policy
 						OR = {
-							ruling_party_ideology = communist
-							has_country_modifier = bkrhigh
+							economic_policy = laissez_faire
+							economic_policy = interventionism
+							AND = { economic_policy = state_capitalism has_country_modifier = stock_market_crash }
 						}
+		
+						#Does not have high baking regulations
+						NOT = { has_country_modifier = bkrhigh }
+		
+						#Does not already have an economic crisis in THIS
+						NOT = { has_country_modifier = financial_crisis }
+						NOT = { has_country_modifier = recession }
+						NOT = { has_country_modifier = great_recession }
+						NOT = { has_country_modifier = great_depression }
 					}
+					#Economic Contagion - Normal Recession
+					country_event = 1412096
 				}
-				country_event = 1412096
 			}
-		} }
-		REB = { random_country = {
-			limit = {
-				tag = THIS
-				is_secondary_power = yes
-				capital_scope = { continent = africa }
-			}
-			any_country = {
-				limit = {
-					capital_scope = { continent = africa }
-					NOT = {
-						tag = THIS
+		}
+		
+		#asia
+		random_owned = { 
+			limit = { owner = { is_secondary_power = yes capital_scope = { continent = asia } } }
+			owner = { 
+			
+				add_country_modifier = { name = recession duration = 900 }
+			
+				any_country = {
+					limit = { 
+					
+						exists = yes
+						
+						capital_scope = { continent = asia }
+					
+						#Appropriate economic policy
 						OR = {
-							ruling_party_ideology = communist
-							has_country_modifier = bkrhigh
+							economic_policy = laissez_faire
+							economic_policy = interventionism
+							AND = { economic_policy = state_capitalism has_country_modifier = stock_market_crash }
 						}
+		
+						#Does not have high baking regulations
+						NOT = { has_country_modifier = bkrhigh }
+		
+						#Does not already have an economic crisis in THIS
+						NOT = { has_country_modifier = financial_crisis }
+						NOT = { has_country_modifier = recession }
+						NOT = { has_country_modifier = great_recession }
+						NOT = { has_country_modifier = great_depression }
 					}
+					#Economic Contagion - Normal Recession
+					country_event = 1412096
 				}
-				country_event = 1412096
 			}
-		} }
-		REB = { random_country = {
-			limit = {
-				tag = THIS
-				is_secondary_power = yes
-				capital_scope = { continent = oceania }
-			}
-			any_country = {
-				limit = {
-					capital_scope = { continent = oceania }
-					NOT = {
-						tag = THIS
+		}
+		
+		#africa
+		random_owned = { 
+			limit = { owner = { is_secondary_power = yes capital_scope = { continent = africa } } }
+			owner = { 
+			
+				add_country_modifier = { name = recession duration = 900 }
+			
+				any_country = {
+					limit = { 
+					
+						exists = yes
+						
+						capital_scope = { continent = africa }
+					
+						#Appropriate economic policy
 						OR = {
-							ruling_party_ideology = communist
-							has_country_modifier = bkrhigh
+							economic_policy = laissez_faire
+							economic_policy = interventionism
+							AND = { economic_policy = state_capitalism has_country_modifier = stock_market_crash }
 						}
+		
+						#Does not have high baking regulations
+						NOT = { has_country_modifier = bkrhigh }
+		
+						#Does not already have an economic crisis in THIS
+						NOT = { has_country_modifier = financial_crisis }
+						NOT = { has_country_modifier = recession }
+						NOT = { has_country_modifier = great_recession }
+						NOT = { has_country_modifier = great_depression }
 					}
+					#Economic Contagion - Normal Recession
+					country_event = 1412096
 				}
-				country_event = 1412096
 			}
-		} }
-		REB = { random_country = {
-			limit = {
-				tag = THIS
-				is_secondary_power = yes
-				capital_scope = { continent = north_america }
-			}
-			any_country = {
-				limit = {
-					capital_scope = { continent = north_america }
-					NOT = {
-						tag = THIS
+		}
+		
+		#mena
+		random_owned = { 
+			limit = { owner = { is_secondary_power = yes capital_scope = { continent = mena } } }
+			owner = { 
+			
+				add_country_modifier = { name = recession duration = 900 }
+			
+				any_country = {
+					limit = { 
+					
+						exists = yes
+						
+						capital_scope = { continent = mena }
+					
+						#Appropriate economic policy
 						OR = {
-							ruling_party_ideology = communist
-							has_country_modifier = bkrhigh
+							economic_policy = laissez_faire
+							economic_policy = interventionism
+							AND = { economic_policy = state_capitalism has_country_modifier = stock_market_crash }
 						}
+		
+						#Does not have high baking regulations
+						NOT = { has_country_modifier = bkrhigh }
+		
+						#Does not already have an economic crisis in THIS
+						NOT = { has_country_modifier = financial_crisis }
+						NOT = { has_country_modifier = recession }
+						NOT = { has_country_modifier = great_recession }
+						NOT = { has_country_modifier = great_depression }
 					}
+					#Economic Contagion - Normal Recession
+					country_event = 1412096
 				}
-				country_event = 1412096
 			}
-		} }
-		REB = { random_country = {
-			limit = {
-				tag = THIS
-				is_secondary_power = yes
-				capital_scope = { continent = south_america }
-			}
-			any_country = {
-				limit = {
-					capital_scope = { continent = south_america }
-					NOT = {
-						tag = THIS
+		}
+		
+		#north_america
+		random_owned = { 
+			limit = { owner = { is_secondary_power = yes capital_scope = { continent = north_america } } }
+			owner = { 
+			
+				add_country_modifier = { name = recession duration = 900 }
+			
+				any_country = {
+					limit = { 
+					
+						exists = yes
+						
+						capital_scope = { continent = north_america }
+					
+						#Appropriate economic policy
 						OR = {
-							ruling_party_ideology = communist
-							has_country_modifier = bkrhigh
+							economic_policy = laissez_faire
+							economic_policy = interventionism
+							AND = { economic_policy = state_capitalism has_country_modifier = stock_market_crash }
 						}
+		
+						#Does not have high baking regulations
+						NOT = { has_country_modifier = bkrhigh }
+		
+						#Does not already have an economic crisis in THIS
+						NOT = { has_country_modifier = financial_crisis }
+						NOT = { has_country_modifier = recession }
+						NOT = { has_country_modifier = great_recession }
+						NOT = { has_country_modifier = great_depression }
 					}
+					#Economic Contagion - Normal Recession
+					country_event = 1412096
 				}
-				country_event = 1412096
 			}
-		} }
-		# Great only
-		REB = { random_country = {
-			limit = { tag = THIS is_greater_power = yes }
-			prestige = -50
-			country_event = 1412095
-			any_country = {
-				limit = {
-					NOT = {
+		}
+		
+		#south_america
+		random_owned = { 
+			limit = { owner = { is_secondary_power = yes capital_scope = { continent = south_america } } }
+			owner = { 
+			
+				add_country_modifier = { name = recession duration = 900 }
+			
+				any_country = {
+					limit = { 
+					
+						exists = yes
+						
+						capital_scope = { continent = south_america }
+					
+						#Appropriate economic policy
 						OR = {
-							ruling_party_ideology = communist
-							has_country_modifier = bkrhigh
+							economic_policy = laissez_faire
+							economic_policy = interventionism
+							AND = { economic_policy = state_capitalism has_country_modifier = stock_market_crash }
 						}
+		
+						#Does not have high baking regulations
+						NOT = { has_country_modifier = bkrhigh }
+		
+						#Does not already have an economic crisis in THIS
+						NOT = { has_country_modifier = financial_crisis }
+						NOT = { has_country_modifier = recession }
+						NOT = { has_country_modifier = great_recession }
+						NOT = { has_country_modifier = great_depression }
 					}
+					#Economic Contagion - Normal Recession
+					country_event = 1412096
 				}
-				country_event = 1412095
 			}
-		} }
+		}
+		
+		#oceania
+		random_owned = { 
+			limit = { owner = { is_secondary_power = yes capital_scope = { continent = oceania } } }
+			owner = { 
+			
+				add_country_modifier = { name = recession duration = 900 }
+			
+				any_country = {
+					limit = { 
+					
+						exists = yes
+						
+						capital_scope = { continent = oceania }
+					
+						#Appropriate economic policy
+						OR = {
+							economic_policy = laissez_faire
+							economic_policy = interventionism
+							AND = { economic_policy = state_capitalism has_country_modifier = stock_market_crash }
+						}
+		
+						#Does not have high baking regulations
+						NOT = { has_country_modifier = bkrhigh }
+		
+						#Does not already have an economic crisis in THIS
+						NOT = { has_country_modifier = financial_crisis }
+						NOT = { has_country_modifier = recession }
+						NOT = { has_country_modifier = great_recession }
+						NOT = { has_country_modifier = great_depression }
+					}
+					#Economic Contagion - Normal Recession
+					country_event = 1412096
+				}
+			}
+		}
+		
 		ai_chance = { factor = 0.2 }
 	}
 }
@@ -2879,17 +3053,18 @@ random_pop = { limit = { location = { is_capital = yes } type = capitalists } mo
 # Great Recession for all eligible
 country_event = {
 	id = 1412095
-	title = "Great Recession of $YEAR$"
+	title = "The Great Recession of $YEAR$"
 	desc = EVT_1412095_DESC
 	picture = "financial_crisis"
 	is_triggered_only = yes
 
 	option = {
 		name = EVT_1412095_A # "We will have to tide through this"
-		prestige = -50
-		add_tax_relative_income = -100
+		prestige_factor = -0.02
+		add_tax_relative_income = -50
 
-random_pop = { limit = { location = { is_capital = yes } type = capitalists } money = -2000000 }
+		capitalists = { money = -1000 }
+		aristocrats = { money = -500 }
 
 		add_country_modifier = { name = great_recession duration = 1000 }
 	}
@@ -2899,17 +3074,20 @@ random_pop = { limit = { location = { is_capital = yes } type = capitalists } mo
 # Financial crisis for all in region
 country_event = {
 	id = 1412096
-	title = "Financial crisis spreads to our nation"
+	title = "The Financial Crisis of $YEAR$"
 	desc = EVT_1412095_DESC
 	picture = "financial_crisis"
 	is_triggered_only = yes
 
 	option = {
 		name = EVT_1412095_A
-		prestige = -25
-		add_tax_relative_income = -100
-random_pop = { limit = { location = { is_capital = yes } type = capitalists } money = -1000000 }
-	add_country_modifier = { name = recession duration = 900 }
+		prestige_factor = -0.01
+		add_tax_relative_income = -25
+		
+		capitalists = { money = -500 }
+		aristocrats = { money = -250 }
+		
+		add_country_modifier = { name = recession duration = 900 }
 	}
 }
 
@@ -2930,7 +3108,7 @@ country_event = {
 	option = {
 		name = "As the losers, we have no choice"
 		prestige = -10
-add_country_modifier = { name = ger_war_rep duration = 23360 }
+		add_country_modifier = { name = ger_war_rep duration = 23360 }
 	}
 }
 
@@ -2953,41 +3131,6 @@ country_event = {
 		name = "As the losers, we have no choice"
 		prestige = -10
 		add_country_modifier = { name = ger_war_rep duration = 8395 }
-	}
-}
-
-#1952 Jordanian Constitution
-country_event = {
-	id = 1412099
-	title = "1952 Constitution"
-	desc = EVTDESC1412099
-	picture = "jor_hms_govt_con"
-
-	fire_only_once = yes
-
-	trigger = {
-		tag = JOR
-		government = absolute_monarchy
-		year = 1952
-		is_vassal = no
-		NOT = { year = 1991 }
-	}
-
-mean_time_to_happen = { months = 3 }
-
-	option = {
-		name = "The King's power shall not be curtailed"
-		prestige = -10
-		any_pop = { militancy = 1 }
-		ai_chance = { factor = 0.1 }
-	}
-
-	option = {
-		name = "Embrace greater democracy"
-		prestige = 10
-		government = hms_government
-		country_event = 800054
-		ai_chance = { factor = 0.9 }
 	}
 }
 
@@ -3076,6 +3219,10 @@ country_event = {
 
 	option = {
 		name = "Let's celebrate!"
+		
+		#Clear cores
+		SVI = { all_core = { add_core = DAI remove_core = SVI } }
+		
 		change_tag = DAI
 		prestige = 50
 	}

@@ -1,436 +1,147 @@
+#Nazi Refugees
 country_event = {
   id = 8231000
-  title = EVT_8231000_NAME
+  title = "Nazi Refugees in $COUNTRY$"
   desc = EVT_8231000_DESC
   picture = "nwo2_german_expulsion"
-  fire_only_once = yes
 
-  trigger = {
-    tag = ARG
-    NOT = { year = 1990 }
-    NOT = { social_reform_want = 0.5 }
-    
-  }
-  immediate = { set_global_flag = event_fired_8231000 }
+	trigger = {
+		OR = { tag = ARG tag = SPA tag = BRZ }
+		year = 1945
+		NOT = { year = 1950 }
+		
+		is_vassal = no
+		war = no
+		
+		NOT = { has_country_flag = german_expulsion_to_THIS_flag }
+	}
+	
+	immediate = {
+		set_country_flag = german_expulsion_to_THIS_flag
+	}
 
-  mean_time_to_happen = { months = 12 }
+	mean_time_to_happen = { months = 3 }
 
-  option = {
-    name = EVT_8231000_A
-	RUS = { random_pop = { limit = { strata = rich culture = german } move_pop = 2348 } } # Buenos Aires
-	POL = { random_pop = { limit = { strata = rich culture = german } move_pop = 2348 } } # Buenos Aires
-	POL = { random_pop = { limit = { strata = rich culture = german } move_pop = 2351 } } # La Plata
-	add_country_modifier = { name = economic_boom duration = 365 }
-	ai_chance = { factor = 1 }
-  }
+	option = {
+		name = "Welcome!"
+		badboy = 5
+		
+		#Move pops
+		random_owned = {
+			limit = { owner = { tag = ARG } }
+			owner = {
+				RUS = { random_pop = { limit = { strata = rich culture = german } move_pop = 2348 } } # Buenos Aires
+				POL = { random_pop = { limit = { strata = rich culture = german } move_pop = 2348 } } # Buenos Aires
+				POL = { random_pop = { limit = { strata = rich culture = german } move_pop = 2351 } } # La Plata
+			}
+		}
+		random_owned = {
+			limit = { owner = { tag = SPA } }
+			owner = {
+				POL = { random_pop = { limit = { strata = rich culture = german } move_pop = 487 } } # Madrid
+			}
+		}
+		random_owned = {
+			limit = { owner = { tag = BRZ } }
+			owner = {
+				POL = { random_pop = { limit = { strata = rich culture = german } move_pop = 2463 } } # Porto Alegre
+				POL = { random_pop = { limit = { strata = rich culture = german } move_pop = 2450 } } # Sao Paulo
+				POL = { random_pop = { limit = { strata = rich culture = german } move_pop = 2459 } } # Lajes
+			}
+		}
+		
+		#Increase Right wing
+		all_core = {
+			any_pop = { 
+				ideology = { factor = 0.05 value = nationalist } 
+				consciousness = 5
+			}
+		}
+		
+		#Bring Nazi loot!
+		money = 500000
+		years_of_research = 5
+		add_country_modifier = { name = german_scientists duration = 3650 }
+		ai_chance = { factor = 1 }
+	}
 
-  option = {
-    name = EVT_8231000_B
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = "I want no fucking Nazis"
+		prestige = 50
+		ai_chance = { factor = 0 }
+	}
 }
-country_event = {
-  id = 8231001
-  title = EVT_8231001_NAME
-  desc = EVT_8231001_DESC
-  picture = "nwo2_german_expulsion"
-  fire_only_once = yes
 
-  trigger = {
-    tag = SPA
-    NOT = { year = 1990 }
-    NOT = { social_reform_want = 0.5 }
-    
-  }
-
-  immediate = { set_global_flag = event_fired_8231001 }
-
-
-  mean_time_to_happen = { months = 12 }
-
-  option = {
-    name = EVT_8231001_A
-	badboy = 1 
-	POL = { random_pop = { limit = { strata = rich culture = german } move_pop = 487 } } # Madrid
-	add_country_modifier = { name = economic_boom duration = 365 }
-	country_event = { id = 8231010 days = 350 }
-  }
-
-  option = {
-    name = EVT_8231001_B
-  }
-}
-country_event = {
-  id = 8231004
-  title = EVT_8231004_NAME
-  desc = EVT_8231004_DESC
-  picture = "nwo2_german_expulsion"
-  fire_only_once = yes
-
-  trigger = {
-    tag = BRZ
-    NOT = { year = 1990 }
-    NOT = { social_reform_want = 0.5 }
-    
-  }
-
-  immediate = { set_global_flag = event_fired_8231004 }
-
-  mean_time_to_happen = { months = 12 }
-
-  option = {
-    name = EVT_8231004_A
-	badboy = 1 
-	POL = { random_pop = { limit = { strata = rich culture = german } move_pop = 2463 } } # Porto Alegre
-	POL = { random_pop = { limit = { strata = rich culture = german } move_pop = 2450 } } # Sao Paulo
-	POL = { random_pop = { limit = { strata = rich culture = german } move_pop = 2459 } } # Lajes
-	add_country_modifier = { name = economic_boom duration = 365 }
-  }
-
-  option = {
-    name = EVT_8231004_B
-  }
-}
-country_event = {
-  id = 8231010
-  title = EVT_8231010_NAME
-  desc = EVT_8231010_DESC
-  picture = "nwo2_emile_dewoitine"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8231010_A
-	add_country_modifier = { name = german_scientists duration = 365 }
-	country_event = { id = 8231011 days = 750 }
-  }
-}
-country_event = {
-  id = 8231005
-  title = EVT_8231005_NAME
-  desc = EVT_8231005_DESC
-  picture = "expulsion_of_germans"
-
-  trigger = {
-    OR = { tag = GER tag = DDR }
-    NOT = { year = 1990 }
-	NOT = { has_country_flag = expulsion_of_germans }
-	OR = { CZH = { has_country_flag = expulsion_of_sudeten_germans } POL = { has_country_flag = expulsion_of_germans } }
-  }
-
-  mean_time_to_happen = { months = 12 }
-
-  option = {
-    name = EVT_8231005_A
-	set_country_flag = expulsion_of_germans
-	add_country_modifier = { name = german_scientists duration = 365 }
-  }
-}
-country_event = {
-  id = 8231011
-  title = EVT_8231011_NAME
-  desc = EVT_8231011_DESC
-  picture = "nwo2_cesare_pallavicino"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8231011_A
-	add_country_modifier = { name = german_scientists duration = 365 }
-  }
-}
-country_event = {
-  id = 8231012
-  title = EVT_8231012_NAME
-  desc = EVT_8231012_DESC
-  picture = "nwo2_ronald_richter"
-  fire_only_once = yes
-
-  trigger = {
-    tag = ARG
-    NOT = { year = 1990 }
-    has_global_flag = event_fired_8231000
-  }
-
-  mean_time_to_happen = { months = 12 }
-
-  option = {
-    name = EVT_8231012_A
-money = -5000 
-  }
-}
-country_event = {
-  id = 8231013
-  title = EVT_8231013_NAME
-  desc = EVT_8231013_DESC
-  picture = "nwo2_kurt_tank"
-  fire_only_once = yes
-
-  trigger = {
-    tag = ARG
-    NOT = { year = 1990 }
-    has_global_flag = event_fired_8231000
-  }
-
-  mean_time_to_happen = { months = 25 }
-
-  option = {
-    name = EVT_8231013_A
-	add_country_modifier = { name = german_scientists duration = 365 }
-  }
-}
-country_event = {
-  id = 8231014
-  title = EVT_8231014_NAME
-  desc = EVT_8231014_DESC
-  picture = "nwo2_hans_ulrich_rudel"
-  fire_only_once = yes
-
-  trigger = {
-    tag = ARG
-    NOT = { year = 1990 }
-    has_global_flag = event_fired_8231000
-  }
-
-  mean_time_to_happen = { months = 32 }
-
-  option = {
-    name = EVT_8231014_A
-	add_country_modifier = { name = german_scientists duration = 365 }
-  }
-}
-country_event = {
-  id = 8231015
-  title = EVT_8231015_NAME
-  desc = EVT_8231015_DESC
-  picture = "nwo2_reimar_horten"
-  fire_only_once = yes
-
-  trigger = {
-    tag = ARG
-    NOT = { year = 1990 }
-    has_global_flag = event_fired_8231000
-  }
-
-  mean_time_to_happen = { months = 45 }
-
-  option = {
-    name = EVT_8231015_A
-	add_country_modifier = { name = german_scientists duration = 365 }
-  }
-}
-country_event = {
-  id = 8231016
-  title = EVT_8231016_NAME
-  desc = EVT_8231016_DESC
-  picture = "nwo2_hans_guido_mutke"
-  fire_only_once = yes
-
-  trigger = {
-    tag = ARG
-    NOT = { year = 1990 }
-    has_global_flag = event_fired_8231000
-  }
-
-  mean_time_to_happen = { months = 55 }
-
-  option = {
-    name = EVT_8231016_A
-	add_country_modifier = { name = german_scientists duration = 365 }
-  }
-}
-country_event = {
-  id = 8231020
-  title = EVT_8231020_NAME
-  desc = EVT_8231020_DESC
-  picture = "nwo2_emile_dewoitine"
-  fire_only_once = yes
-
-  trigger = {
-    tag = SPA
-    NOT = { year = 1990 }
-    has_global_flag = event_fired_8231001
-  }
-
-  mean_time_to_happen = { months = 12 }
-
-  option = {
-    name = EVT_8231020_A
-	add_country_modifier = { name = german_scientists duration = 365 }
-  }
-}
-country_event = {
-  id = 8231021
-  title = EVT_8231021_NAME
-  desc = EVT_8231021_DESC
-  picture = "nwo2_willy_messerschmitt"
-  fire_only_once = yes
-
-  trigger = {
-    tag = SPA
-    NOT = { year = 1990 }
-    has_global_flag = event_fired_8231001
-  }
-
-  mean_time_to_happen = { months = 32 }
-
-  option = {
-    name = EVT_8231021_A
-	add_country_modifier = { name = german_scientists duration = 365 }
-  }
-}
-country_event = {
-  id = 8231040
-  title = EVT_8231040_NAME
-  desc = EVT_8231040_DESC
-  picture = "nwo2_wilhelm_voss"
-  fire_only_once = yes
-
-  trigger = {
-    tag = EGY
-    NOT = { year = 1990 }
-  }
-
-  mean_time_to_happen = { months = 12 }
-
-  option = {
-    name = EVT_8231040_A
-	add_country_modifier = { name = german_scientists duration = 365 }
-  }
-}
-country_event = {
-  id = 8231041
-  title = EVT_8231041_NAME
-  desc = EVT_8231041_DESC
-  picture = "nwo2_rolf_engel"
-  fire_only_once = yes
-
-  trigger = {
-    tag = RUS
-    NOT = { year = 1990 }
-  }
-
-  mean_time_to_happen = { months = 22 }
-
-  option = {
-    name = EVT_8231041_A
-	years_of_research = 0.1	
-  }
-}
-country_event = {
-  id = 8231042
-  title = EVT_8231042_NAME
-  desc = EVT_8231042_DESC
-  picture = "nwo2_wilhelm_fahrmbacher"
-  fire_only_once = yes
-
-  trigger = {
-    tag = EGY
-    NOT = { year = 1990 }
-  }
-
-  mean_time_to_happen = { months = 45 }
-
-  option = {
-    name = EVT_8231042_A
-	add_country_modifier = { name = german_scientists duration = 365 }
-  }
-}
-country_event = {
-  id = 8231043
-  title = EVT_8231043_NAME
-  desc = EVT_8231043_DESC
-  picture = "nwo2_ferdinand_brandner"
-  fire_only_once = yes
-
-  trigger = {
-    tag = EGY
-    NOT = { year = 1990 }
-  }
-
-  mean_time_to_happen = { months = 78 }
-
-  option = {
-    name = EVT_8231043_A
-	add_country_modifier = { name = german_scientists duration = 365 }
-  }
-}
-country_event = {
-  id = 8231050
-  title = EVT_8231050_NAME
-  desc = EVT_8231050_DESC
-  picture = "nwo2_heinrich_focke"
-  fire_only_once = yes
-
-  trigger = {
-    tag = BRZ
-	NOT = { year = 1990 }
-    has_global_flag = event_fired_8231004
-  }
-
-  mean_time_to_happen = { months = 12 }
-
-  option = {
-    name = EVT_8231050_A
-	add_country_modifier = { name = german_scientists duration = 365 }
-  }
-}
+#Operation Paperclip
 country_event = {
   id = 8231100
   title = EVT_8231100_NAME
   desc = EVT_8231100_DESC
   picture = "nwo2_operation_paperclip"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = USA
-	year = 1945 NOT = { year = 1990 }
-    
-  }
+	trigger = {
+		tag = USA
+		year = 1945 
+		NOT = { year = 1950 }
+	}
 
-  mean_time_to_happen = { months = 12 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8231100_A
-	add_country_modifier = { name = german_scientists duration = 365 }
-  }
+	option = {
+		name = "The Germans sure are smart!"
+		#Bring Nazi loot!
+		money = 500000
+		years_of_research = 5
+		add_country_modifier = { name = german_scientists duration = 3650 }
+	}
 }
 country_event = {
   id = 8231101
   title = EVT_8231101_NAME
   desc = EVT_8231101_DESC
   picture = "nwo2_operation_ossovioakhim"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = RUS
-	year = 1945 NOT = { year = 1990 }
-    
-  }
+	trigger = {
+		tag = RUS
+		year = 1945 
+		NOT = { year = 1950 }
+	}
 
-  mean_time_to_happen = { months = 12 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8231101_A
-	add_country_modifier = { name = german_scientists duration = 365 }
-  }
+	option = {
+		name = "The Germans sure are smart!"
+		#Bring Nazi loot!
+		money = 500000
+		years_of_research = 5
+		add_country_modifier = { name = german_scientists duration = 3650 }
+	}
 }
 country_event = {
   id = 8231102
   title = EVT_8231102_NAME
   desc = EVT_8231102_DESC
   picture = "nwo2_operation_backfire"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = ENG
-	year = 1945 NOT = { year = 1990 }
-    
-    ENG = { alliance_with = USA }
-  }
+	trigger = {
+		tag = ENG
+		year = 1945 
+		NOT = { year = 1950 }
+	}
 
-  mean_time_to_happen = { months = 12 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8231102_A
-	add_country_modifier = { name = german_scientists duration = 365 }
-  }
+	option = {
+		name = "The Germans sure are smart!"
+		#Bring Nazi loot!
+		money = 500000
+		years_of_research = 5
+		add_country_modifier = { name = german_scientists duration = 3650 }
+	}
 }

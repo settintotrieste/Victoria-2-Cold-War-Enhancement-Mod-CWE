@@ -1,18 +1,25 @@
+# EVT_8018214_NAME;1994 Yemeni Civil War
 country_event = {
 	id = 8018214
-	title = EVT_8018214_NAME
-	# EVT_8018214_NAME;1994 Yemeni Civil War
+	title = "Yemeni Civil War of $YEAR$"
 	desc = EVT_8018214_DESC
 	picture = "1994_yemen_civil_war"
+	
 	fire_only_once = yes
 
 	trigger = {
 		tag = YEM
-		is_vassal = no
 		year = 1994
-		NOT = { exists = SYE }
+		
+		OR = { government = democracy government = democracy1 government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship }
+		is_vassal = no
 		war = no
-		owns = 1412 # Aden
+		
+		#GPC
+		ruling_party_ideology = big_tent
+		
+		#Owns South Yemen
+		is_possible_vassal = SYE
 	}
 
 	mean_time_to_happen = {
@@ -20,53 +27,82 @@ country_event = {
 	}
 	
 	option = {
-		name = EVT_8018214_A
-		ai_chance = { factor = 0.7 }
+		name = "Stop any attempts to divide the country!"
 		badboy = 5
+		
+		#War with South Yemen
 		release = SYE
+		SYE = {
+			government = proletarian_dictatorship
+			country_event = 800052
+			ruling_party_ideology = communist_social
+		}
+		
 		war = {
 			target = SYE
 			attacker_goal = {
 				casus_belli = civil_war
 			}
 			defender_goal = {
-				casus_belli = status_quo
+				casus_belli = humiliate
 			}
-		}		
+		}
+		
+		ai_chance = { factor = 0.9 }
 	}
+	
 	option = {
-		name = EVT_8018214_B
+		name = "Let South Yemen be independent"
+		
+		prestige_factor = -0.1
+		
+		any_pop = { 
+			militancy = 5 
+			consciousness = 5
+		}
+		
 		release = SYE
-		any_pop = { militancy = 2  consciousness = 4 }
-		prestige = -10 
+		SYE = {
+			government = proletarian_dictatorship
+			country_event = 800052
+			ruling_party_ideology = communist_social
+		}
+		
 		ai_chance = { factor = 0.1 }
 	}
-	option = {
-		name = EVT_8018214_C
-		any_pop = { militancy = 1 consciousness = 3 }
-		release_vassal = SYE
-SYE = { government = sar_government country_event = 800054 }
-sphere_owner = { diplomatic_influence = { who = SYE value = 200 } }
-		prestige = -5 
-		ai_chance = { factor = 0.2 }
-	}
+
 }
 
+# EVT_8018215_NAME; 2015 Yemeni Civil War
 country_event = {
 	id = 8018215
-	title = EVT_8018215_NAME
-	# EVT_8018215_NAME;Yemeni Civil War
+	title = "Yemeni Civil War of $YEAR$"
 	desc = EVT_8018215_DESC
 	picture = "yemeni_civil_war"
+	
 	fire_only_once = yes
 
 	trigger = {
 		tag = YEM
 		year = 2015
-OR = { average_militancy = 6 has_global_flag = arab_spring }
+		has_global_flag = arab_spring
+		NOT = { year = 2025 }
+		
+		OR = { government = democracy government = democracy1 government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship }
+		is_vassal = no
 		war = no
+		
+		#Not already traditionalist
+		NOT = { ruling_party_ideology = traditionalist }
+
+		#Houthi Yemen does not exist
 		HOU = { exists = no }
-		owns = 1412 # Aden
+		
+		#Owns South Yemen
+		is_possible_vassal = SYE
+		
+		#Owns Aden
+		owns = 1412
 	}
 
 	mean_time_to_happen = {
@@ -75,13 +111,32 @@ OR = { average_militancy = 6 has_global_flag = arab_spring }
 	
 	option = {
 		name = EVT_8018215_A
-		ai_chance = { factor = 0.8 }
-		set_country_flag = yemeni_civil_war
-		1178 = { secede_province = HOU } 
-		1179 = { secede_province = HOU }
-		1180 = { secede_province = HOU }
-casus_belli = { target = HOU type = civil_war months = 12 }
+		
+		set_global_flag = yemeni_civil_war
+		
+		#Capital moves to Aden
 		capital = 1412
+		
+		#Release HOU
+		any_owned = {
+			limit = { 
+				OR = { 
+					province_id = 1178
+					province_id = 1179
+					province_id = 1180
+				} 
+			}
+			secede_province = HOU
+		}
+		
+		#HOU
+		HOU = {
+			government = nationalist_dictatorship 
+			country_event = 800050
+			ruling_party_ideology = traditionalist
+		}
+		
+		#Start civil war
 		war = {
 			target = HOU
 			attacker_goal = {
@@ -90,36 +145,30 @@ casus_belli = { target = HOU type = civil_war months = 12 }
 			defender_goal = {
 				casus_belli = civil_war
 			}
-		}	
+		}
+		
+		ai_chance = { factor = 0.9 }
+		
 	}
+	
 	option = {
 		name = EVT_8018215_B
-government = nationalist_dictatorship country_event = 800050
-ruling_party_ideology = traditionalist
-any_pop = { limit = { culture = yemeni } militancy = 5  consciousness = 4 }
-		ai_chance = { factor = 0.1 }
-	}
-	option = {
-		name = EVT_8018215_C
-		set_country_flag = yemeni_civil_war
-		1178 = { secede_province = HOU infrastucture = -3 } 
-		1179 = { secede_province = HOU infrastucture = -3 }
-		1180 = { secede_province = HOU infrastucture = -3 }
-		change_tag_no_core_switch = HOU
-		YEM = { capital = 1412 }
-		HOU = { capital = 1178 } 
-casus_belli = { target = YEM type = civil_war months = 12 }
-		war = {
-			target = YEM
-			attacker_goal = {
-				casus_belli = civil_war
-			}
-			defender_goal = {
-				casus_belli = civil_war
-			}
+		
+		prestige_factor = -0.1
+		
+		government = nationalist_dictatorship 
+		country_event = 800050
+		ruling_party_ideology = traditionalist
+		
+		any_pop = { 
+			limit = { culture = yemeni } 
+			militancy = 5 
+			consciousness = 4 
 		}
+		
 		ai_chance = { factor = 0.1 }
 	}
+
 }
 
 country_event = {
@@ -132,11 +181,12 @@ country_event = {
 
 	trigger = {
 		tag = HOU
-
-		NOT = { exists = YEM }
-		war = no
 		has_global_flag = yemeni_civil_war
-		owns = 1412
+
+		is_vassal = no
+		war = no
+		
+		NOT = { exists = YEM }
 	}
 
 	mean_time_to_happen = {
@@ -145,13 +195,20 @@ country_event = {
 
 	option = {
 		name = EVT_8018216_A
-
-any_pop = { limit = { culture = yemeni } militancy = 3  consciousness = 2 }
-		prestige = 20
-		change_tag_no_core_switch = YEM
-		clr_country_flag = yemeni_civil_war
-		SAA = { country_event = 8011435 } #iranian_saudi_arabian_cold_war.txt TODO: check that intervention actually happened
+		
+		clr_global_flag = yemeni_civil_war
+		
+		prestige = 50
+		
+		any_pop = { limit = { culture = yemeni } militancy = 3 consciousness = 2 }
+		
+		all_core = { remove_core = HOU }
+		
+		change_tag = YEM
+		
+		random_country = { limit = { tag = SAA government = absolute_monarchy is_vassal = no has_country_flag = intervention_in_2015_YEM_civil_war_flag } country_event = 8011435 } #iranian_saudi_arabian_cold_war.txt TODO: check that intervention actually happened
 	}
+	
 }
 
 country_event = {
@@ -164,11 +221,12 @@ country_event = {
 
 	trigger = {
 		tag = YEM
-		NOT = { exists = HOU }
-
-		war = no
 		has_global_flag = yemeni_civil_war
-		owns = 1178
+
+		is_vassal = no
+		war = no
+		
+		NOT = { exists = HOU }
 	}
 
 	mean_time_to_happen = {
@@ -177,13 +235,16 @@ country_event = {
 
 	option = {
 		name = EVT_8018217_A
-
-any_pop = { limit = { has_pop_religion = shiite } militancy = 3  consciousness = 2 }
+		
+		clr_global_flag = yemeni_civil_war
+		
 		prestige = 20
-		capital = 1178
-		clr_country_flag = yemeni_civil_war
-		SAA = { country_event = 8011436 }
+
+		any_pop = { limit = { has_pop_religion = shiite } militancy = 3 consciousness = 2 }
+		
+		random_country = { limit = { tag = SAA government = absolute_monarchy is_vassal = no has_country_flag = intervention_in_2015_YEM_civil_war_flag } country_event = 8011436 } #iranian_saudi_arabian_cold_war.txt TODO: check that intervention actually happened
 	}
+	
 }
 
 country_event = {
@@ -196,9 +257,16 @@ country_event = {
 
 	trigger = {
 		tag = YEM
-		exists = HOU
-		war = no
 		has_global_flag = yemeni_civil_war
+		
+		is_vassal = no
+		war = no
+		
+		HOU = {
+			exists = yes
+			is_vassal = no
+			war = no
+		}
 	}
 
 	mean_time_to_happen = {
@@ -207,13 +275,22 @@ country_event = {
 
 	option = {
 		name = EVT_8018218_A
+		
+		clr_global_flag = yemeni_civil_war
+		
+		prestige = -20
 
-		any_pop = { militancy = 2  consciousness = 4 }
-		change_tag_no_core_switch = SYE
-		prestige = -10
+		any_pop = { militancy = 2 consciousness = 4 }
+		
+		#Yemen becomes South Yemen
+		change_tag = SYE
+		
+		#Change HOU to YEM
 		HOU = { country_event = 8018219 }
-		SAA = { country_event = 8011437 }
+		
+		random_country = { limit = { tag = SAA government = absolute_monarchy is_vassal = no has_country_flag = intervention_in_2015_YEM_civil_war_flag } country_event = 8011437 } #iranian_saudi_arabian_cold_war.txt TODO: check that intervention actually happened
 	}
+	
 }
 
 country_event = {
@@ -222,33 +299,24 @@ country_event = {
 	# EVT_8018219_NAME;The Partition of Yemen
 	desc = EVT_8018219_DESC
 	picture = "partition_of_yemen"
-	fire_only_once = yes
-
-	trigger = {
-		tag = HOU
-		exists = HOU
-
-		war = no
-		has_global_flag = yemeni_civil_war
-	}
-
-	mean_time_to_happen = {
-		months = 1
-	}
+	
+	is_triggered_only = yes
 
 	option = {
 		name = EVT_8018219_A
+		
+		clr_global_flag = yemeni_civil_war
+		
+		prestige = -20
 
-		any_pop = { militancy = 2  consciousness = 4 }
-		change_tag_no_core_switch = YEM
-		remove_core = 1412
-		remove_core = 1177
-		remove_core = 1176	
-		remove_core = 1175
-		remove_core = 1173
-		prestige = -10
-		clr_country_flag = yemeni_civil_war
+		any_pop = { militancy = 2 consciousness = 4 }
+		
+		all_core = { remove_core = HOU }
+		
+		#Houthi Yemen becomes Yemen
+		change_tag = YEM
 	}
+	
 }
 
 country_event = {
@@ -262,6 +330,10 @@ country_event = {
 	trigger = {
 		tag = YEM
 		has_global_flag = yemeni_civil_war
+		
+		is_vassal = no
+		war_with = HOU
+		
 		owns = 1412
 	}
 
@@ -272,7 +344,18 @@ country_event = {
 	option = {
 		name = EVT_8018221_A
 
-		any_pop = { limit = { pop_majority_ideology = traditionalist } militancy = 5  consciousness = 6.5 }
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
+			}
+			scaled_militancy = {
+				factor = 5
+				ideology = conservative
+			}
+		}
+
 		1173 = { change_controller = REB }
 	}
+	
 }

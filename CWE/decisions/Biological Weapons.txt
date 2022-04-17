@@ -18,7 +18,7 @@ political_decisions = {
 			NOT = { is_disarmed = yes }
 			NOT = { part_of_sphere = yes }
 			NOT = { has_country_modifier = wmd_removed }
-			OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social ruling_party_ideology = traditionalist ruling_party_ideology = nationalist ruling_party_ideology = populist }
+			OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social ruling_party_ideology = traditionalist ruling_party_ideology = nationalist ruling_party_ideology = populist war_policy = jingoism }
 			OR = { is_secondary_power = yes is_greater_power = yes military_score = 300 }
 		}
 		effect = {
@@ -30,9 +30,23 @@ political_decisions = {
 		}
 		ai_will_do = {
 			factor = 1
+			
+			#Low infamy
 			modifier = {
 				factor = 0
-				badboy = 0.75
+				badboy = 0.2
+			}
+			
+			#AI only builds chemical weapons when world tensions are high and past 1950
+			modifier = { 
+				factor = 0
+				OR = {
+					has_country_modifier = cold_war_medium
+					has_country_modifier = cold_war_low
+					
+					has_country_modifier = world_medium
+					has_country_modifier = world_low
+				}
 			}
 		}
 	}
@@ -50,6 +64,7 @@ political_decisions = {
 			election = no
 			war = no
 			OR = { ruling_party_ideology = progressive ruling_party_ideology = liberal AND = { badboy = 1 is_disarmed = yes } is_vassal = yes }
+			NOT = { war_policy = jingoism }
 		}
 
 		effect = {
@@ -76,8 +91,21 @@ political_decisions = {
 		}
 
 		effect = {
-			any_country = { limit = { NOT = { tag = REB } war_with = THIS } country_event = 1412062 }
 			add_country_modifier = { name = bio_used duration = 365 }
+			
+			#Attack all hostile nations
+			any_country = { limit = { NOT = { tag = REB } war_with = THIS } country_event = 1412062 }
+			
+			#Chance of global pandemic
+			random = {
+				chance = 25
+				
+				prestige_factor = -0.05 
+				
+				badboy = 5
+
+				UNO = { country_event = 1412063 }
+			}
 		}
 		ai_will_do = {
 			factor = 1

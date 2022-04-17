@@ -1,0 +1,3062 @@
+#Abolition of the Monarchy
+country_event = {
+	id = 8022914
+	title = "Referendum on the Monarchy"
+	desc = EVTDESC8022914
+	picture = "BUL_SOV_puppet"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1946
+		NOT = { year = 1950 }
+		
+		government = hms_government
+		war = no
+		is_vassal = no
+		
+		ruling_party_ideology = communist
+		
+		has_global_flag = blocsenabled
+
+		NOT = { has_global_flag = 1950_start_date_flag }
+	}
+
+	mean_time_to_happen = { months = 9 }
+
+	option = {
+		name = "The people overwhelmingly vote to abolish the monarchy."
+	   
+		relation = { who = RUS value = 50 }
+		
+		any_pop = { 
+			limit = { OR = { strata = middle strata = poor } }
+			ideology = {
+				factor = 0.10
+				value = communist
+			}
+		}
+		
+		government = democracy
+		political_reform = universal_voting
+		political_reform = open_opinion
+		political_reform = limited_meetings
+		political_reform = elitist_service #Elitist
+		political_reform = firewall_publishing
+		political_reform = state_controlled_unions #State Unions
+		political_reform = parties_only_nominated
+		political_reform = open_immigration
+		political_reform = lgbt_outlawed #no_draft
+		political_reform = minorities_affirmative_action
+		political_reform = proportional_representation
+
+		ai_chance = {
+			factor = 0.95
+		}
+	}
+
+	option = {
+		name = "Cancel the referendum and keep the monarchy."
+	   
+		relation = { who = RUS value = -200 }
+		
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
+		
+		any_pop = { 
+			limit = { OR = { strata = middle strata = poor } }
+			ideology = {
+				factor = 0.15
+				value = conservative
+			}
+		}
+
+		RUS = { country_event = 120002 } #War to vassalise
+
+		ai_chance = {
+			factor = 0.05
+			modifier = {
+				factor = 0.1
+				NOT = { pop_majority_ideology = traditionalist }
+			}
+		}
+    }
+	
+}
+
+####	      ####
+#### Dimitrov ####
+####	      ####
+
+
+#Aid to Communist Greece
+country_event = {
+	id = 8022915
+	title = "Intervention in the Greek Civil War?"
+	desc = EVTDESC8022915
+	picture = "greek_civil_war"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1946
+		NOT = { year = 1950 }
+
+		OR = { government = socialist_democracy government = proletarian_dictatorship government = proletarian_dictatorship1 }
+
+		ruling_party_ideology = communist
+
+		war = no
+
+		#Parties to the war
+		GRE = { government = hms_government }
+		UGR = { government = proletarian_dictatorship }
+		
+		#War is underway
+		GRE = { war_with = UGR }
+
+		NOT = { has_country_flag = support_greek_gov_bul }
+
+		has_global_flag = blocsenabled
+	}
+
+	mean_time_to_happen = { months = 2 }
+
+
+	option = {
+		name = "Continue providing logistical and material support."
+		prestige = 50
+		
+		set_country_flag = support_greek_gov_bul
+		
+		relation = { who = UGR value = 50 }
+		
+		#European Liberals are angry
+		any_country = {
+			limit = { 
+				capital_scope = { continent = europe } 
+				NOT = {
+					OR = {
+						ruling_party_ideology = communist
+						ruling_party_ideology = communist_social
+					}
+				}
+			}
+			relation = { who = THIS value = -15 }
+		}
+		
+		#Material support to Greece
+		money = -5000
+		UGR = { country_event = 8940028 }
+		
+		ai_chance = {
+			factor = 0.85
+		}
+	}
+
+	option = {
+		name = "Send troops into Greek Macedonia to support the communist government."
+		badboy = 5
+	   
+		set_country_flag = support_greek_gov_bul
+		
+		relation = { who = UGR value = 200 }
+		
+		#European Liberals are angry
+		any_country = {
+			limit = { 
+				capital_scope = { continent = europe } 
+				NOT = {
+					OR = {
+						ruling_party_ideology = communist
+						ruling_party_ideology = communist_social
+					}
+				}
+			}
+			relation = { who = THIS value = -100 }
+		}
+		
+		#Material support to Greece
+		money = -5000
+		UGR = { country_event = 8940029 }
+
+		ai_chance = {
+			factor = 0.1
+		}
+	}
+
+	option = {
+		name = "We should stick to our own affairs."
+		prestige = -30
+		relation = { who = UGR value = -50 }
+
+		ai_chance = {
+			factor = 0.05
+		}
+	}
+	
+}
+
+#Death of Dimitrov
+country_event = { 
+	id = 8022916
+	title = "Dimitrov Passes"
+	desc = EVTDESC8022916
+	picture = "dimitrov_passing"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1949
+		NOT = { year = 1950 }
+		
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+		NOT = { has_country_flag = collective_leadership_bul }
+		has_country_flag = dimitrov_bul
+	}
+
+	mean_time_to_happen = { months = 7 }
+
+	option = {
+		name = "A period of collective leadership will guide the nation."
+		any_pop = { 
+			ideology = { factor = 0.05 value = communist }
+		}
+		
+		add_country_modifier = { name = collective_leadership duration = 3650 }
+		clr_country_flag = dimitrov_bul
+		set_country_flag = collective_leadership_bul
+		any_pop = { militancy = -3 consciousness = -3 }
+		
+		
+	}
+	
+}
+
+####		####
+#### Chervenkov ####
+####		####
+
+
+#1949 purges
+country_event = { 
+	id = 8022917
+	title = "Anti-Titoist Purges"
+	desc = EVTDESC8022917
+	picture = "bul_1949"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1949
+		NOT = { year = 1950 }
+		has_country_flag = collective_leadership_bul 
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+		NOT = { has_country_flag = broad_bul_purges }
+		
+		has_global_flag = tito_stalin_split
+	}
+
+	mean_time_to_happen = { months = 2 }
+
+	option = {
+		name = "Crack down on traitors!"
+		badboy = 1
+		any_pop = { 
+			ideology = { factor = 0.05 value = communist }
+			militancy = -3 
+			consciousness = -3
+		}
+		
+		set_country_flag = broad_bul_purges
+		ai_chance = {
+			factor = 0.9
+		}
+	}
+
+	option = {
+		name = "Show more leniency towards dissent within the party."
+		add_country_modifier = { name = political_strife duration = 1095 }
+		any_pop = { 
+			ideology = { factor = 0.05 value = communist_social }
+			militancy = -3 
+			consciousness = -3
+		}
+		
+	}
+	
+}
+
+#Collective Leadership falls apart
+country_event = { 
+	id = 8022918
+	title = "The End of Collective Leadership"
+	desc = EVTDESC8022918
+	picture = "bul_chervenkov"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1950
+		NOT = { year = 1990 }
+		
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+		
+		NOT = { OR = { has_country_flag = chervenkov_bul has_country_flag = chervenkov_bul_limited } }
+		
+		OR = { has_country_modifier = collective_leadership has_global_flag = 1950_start_date_flag }
+	}
+	
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "Chervenkov takes the post of Prime Minister for himself."
+		badboy = 1
+		any_pop = { 
+			ideology = { factor = 0.05 value = communist }
+		}
+		remove_country_modifier = collective_leadership
+		clr_country_flag = collective_leadership_bul
+		set_country_flag = chervenkov_bul	
+		ai_chance = {
+			factor = 0.9
+		}
+	}
+
+	option = {
+		name = "Allow the post to remain independent."
+		add_country_modifier = { name = political_strife duration = 1095 }
+		any_pop = { 
+			ideology = { factor = 0.05 value = communist_social }
+		}
+		remove_country_modifier = collective_leadership
+		clr_country_flag = collective_leadership_bul
+		set_country_flag = chervenkov_bul_limited	
+		ai_chance = {
+			factor = 0.1
+		}
+	}
+	
+}
+
+
+#Cult of Personality/Stalinism
+country_event = { 
+	id = 8022919
+	title = "The Stalin of Bulgaria"
+	desc = EVTDESC8022919
+	picture = "stalinism_legacy" 
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1950
+		NOT = { year = 1990 }
+		
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+		war = no
+		vassal_of = RUS
+
+		has_country_flag = chervenkov_bul	
+	}
+
+	mean_time_to_happen = { months = 3 }
+
+	option = {
+		name = "Chervenkov will bring Bulgaria forward!"
+
+		any_pop = { militancy = -5 consciousness = -5 }
+		
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = poor } 
+			ideology = { factor = 0.2 value = communist } 
+		}
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = middle } 
+			ideology = { factor = 0.1 value = communist }
+		}
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = rich } 
+			ideology = { factor = 0.05 value = communist }
+		}
+		
+		ai_chance = { factor = 0.9 }
+
+	}
+
+	option = {
+		name = "Perhaps we should curtail these ambitions."
+		add_country_modifier = { name = political_strife duration = 1095 }		
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = poor } 
+			ideology = { factor = 0.05 value = communist_social } 
+		}
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = middle } 
+			ideology = { factor = 0.10 value = communist_social }
+		}
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = rich } 
+			militancy = 5 consciousness = 5
+			ideology = { factor = 0.10 value = communist }
+		}
+		
+		ai_chance = { factor = 0.1 }
+
+	}
+	
+}
+
+#Bulgarian New Course
+country_event = { 
+	id = 8022920
+	title = "New Course"
+	desc = EVTDESC8022920
+	picture = "nwo2_east_german_industry"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1953 
+		NOT = { year = 1990 }
+		
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+		war = no
+		
+		RUS = { has_country_flag = death_of_stalin_flag }
+		
+		owns = 809
+	}
+
+	mean_time_to_happen = { months = 5 }
+
+
+	option = {
+		name = "Prosperity will come to Bulgaria!"
+		prestige = 50
+		
+		any_pop = { militancy = -3 consciousness = -3 }
+		
+		809 = {
+			trade_goods = copper
+			any_pop = {
+				limit = { type = farmers }
+				pop_type = labourers
+			}
+		}
+
+		add_country_modifier = { name = economic_boom duration = 1825 }
+	}
+	
+}
+
+#1954 succession, historical
+country_event = { 
+	id = 8022921
+	title = "Ousting of Chervenkov"
+	desc = EVTDESC8022921
+	picture = "bul_communist_congress"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1954 
+		NOT = { year = 1990 }
+		has_country_flag = broad_bul_purges 
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+		war = no
+		OR = { has_country_flag = chervenkov_bul has_country_flag = chervenkov_bul_limited	}
+		
+		RUS = { has_country_flag = death_of_stalin_flag }
+	}
+
+	mean_time_to_happen = { months = 4 }
+
+	option = {
+		name = "Todor Zhivkov."
+		clr_country_flag = chervenkov_bul
+		set_country_flag = zhivkov_bul
+		
+		any_pop = { militancy = -5 consciousness = -5 }
+		
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.05 value = communist }
+		}
+		
+		any_pop = { 
+			limit = { strata = poor }
+			ideology = { factor = 0.10 value = communist }
+		}
+		
+		ai_chance = { factor = 0.7 }
+	}
+
+	option = {
+		name = "Anton Yugov."
+		clr_country_flag = chervenkov_bul
+		set_country_flag = yugov_bul
+
+		any_pop = { militancy = -5 consciousness = -5 }
+		
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.05 value = communist_social }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			ideology = { factor = 0.10 value = communist_social }
+		}
+		
+		ai_chance = { 
+			factor = 0.2 
+			modifier = {
+				factor = 6
+				pop_majority_ideology = communist_social
+			}
+		}
+	}
+
+	option = {
+		name = "Fight against a removal from power!"
+		any_pop = { militancy = -2 consciousness = -2 }
+		
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = poor } 
+			ideology = { factor = 0.2 value = communist } 
+		}
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = middle } 
+			ideology = { factor = 0.2 value = communist_social }
+		}
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = rich } 
+			ideology = { factor = 0.2 value = nationalist }
+		}
+		
+		#Soviet reaction
+		random_country = {
+			limit = { tag = RUS has_global_flag = blocsenabled is_our_vassal = BUL }
+			country_event = 8022923
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+#1954 succession, Ahistorical
+country_event = { 
+	id = 8022922
+	title = "Ousting of Chervenkov"
+	desc = EVTDESC8022922
+	picture = "bul_communist_congress"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1954 
+		NOT = { year = 1990 }
+		
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+		war = no
+		
+		has_country_flag = chervenkov_bul_limited
+		NOT = { has_country_flag = broad_bul_purges }
+		
+		RUS = { has_country_flag = death_of_stalin_flag }
+	}
+
+	mean_time_to_happen = { months = 4 }
+
+	option = {
+		name = "Anton Yugov, a leading 'Home Communist'."
+		clr_country_flag = chervenkov_bul
+		set_country_flag = yugov_bul
+		
+		any_pop = { militancy = -5 consciousness = -5 }
+		
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.05 value = communist_social }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			ideology = { factor = 0.10 value = communist_social }
+		}
+		ai_chance = { factor = 0.7 }
+	}
+
+	option = {
+		name = "Zhivkov will ensure stability."
+		clr_country_flag = chervenkov_bul
+		set_country_flag = zhivkov_bul
+		
+		any_pop = { militancy = -5 consciousness = -5 }
+		
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.05 value = communist }
+		}
+		
+		any_pop = { 
+			limit = { strata = poor }
+			ideology = { factor = 0.10 value = communist }
+		}
+		ai_chance = { factor = 0.2 }
+	}
+
+	option = {
+		name = "Traicho Kostov, a nationalist 'Home Communist'."
+		clr_country_flag = chervenkov_bul
+		set_country_flag = kostov_bul
+		
+		any_pop = { militancy = -5 consciousness = -5 }
+
+		any_pop = { 
+			limit = { strata = rich }
+			ideology = { factor = 0.01 value = nationalist }
+		}		
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.05 value = communist_social }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			ideology = { factor = 0.10 value = communist_social }
+		}
+		ai_chance = { 
+			factor = 0.1 
+			modifier = {
+				factor = 6
+				pop_majority_ideology = communist_social
+			}
+		}
+	}
+
+}
+
+#Soviet Response to Bulgarian Stalinism
+country_event = {
+	id = 8022923
+	title = "A Stalinist Holdout"
+	desc = EVTDESC8022923
+	picture = "nwo2_eastern_allies"
+  
+	is_triggered_only = yes 
+	
+	option = {
+		name = "It is war then"
+		
+		release_vassal = BUL
+
+		war = {
+			target = BUL
+			attacker_goal = { casus_belli = make_puppet }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = no
+		}
+		
+		BUL = { set_country_flag = bulgaria_does_something_silly }
+		
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "So be it"
+		prestige_factor = -0.05
+		
+		#Warsaw pact
+		any_country = {
+			limit = {
+				exists = yes
+				OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+				ruling_party_ideology = communist
+				capital_scope = { continent = europe }
+			}
+			any_pop = {
+				consciousness = 2
+				militancy = 2
+				ideology = { factor = 0.05 value = nationalist }
+			}
+		}
+		
+		ai_chance = { factor = 0.2 }
+	}
+	
+}
+
+#Soviets put Zhivkov into power if Bulgaria is invaded
+country_event = { 
+	id = 8022924
+	title = "End of the Bulgarian Uprising"
+	desc = EVTDESC8022924
+	picture = "nwo2_eastern_allies"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		has_country_flag = bulgaria_does_something_silly
+		
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+		war = no
+		vassal_of = RUS
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "Moscow's Authority is restored."
+		clr_country_flag = bulgaria_does_something_silly 
+		clr_country_flag = chervenkov_bul
+		set_country_flag = zhivkov_bul
+		any_pop = { militancy = 5 consciousness = 5 }
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = poor } 
+			ideology = { factor = 0.02 value = communist_social } 
+		}
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = middle } 
+			ideology = { factor = 0.02 value = communist_social }
+		}
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = rich } 
+			ideology = { factor = 0.02 value = liberal }
+		}
+	}
+	
+}
+
+####	     ####
+#### Zhivkov ####
+####	     ####
+
+
+#Destalinization, 1956
+country_event = { 
+	id = 8022925
+	title = "April Line"
+	desc = EVTDESC8022925
+	picture = "bul_communist_congress"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1956
+		NOT = { year = 1990 }
+		
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+		war = no
+		vassal_of = RUS
+		
+		has_global_flag = de_stalinization
+		NOT = { has_country_flag = bulgarian_de_stalinization }
+		OR = { has_country_flag = zhivkov_bul has_country_flag = yugov_bul has_country_flag = kostov_bul }
+	}
+
+	mean_time_to_happen = { months = 5 }
+
+	option = {
+		name = "Remove the vestiges of Stalinism."
+
+		#Set forced labourers free
+		any_pop = { 
+			limit = { type = slaves } 
+			pop_type = farmers 
+		}
+		
+		#Gain popularity
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = poor } 
+			ideology = { factor = 0.1 value = liberal } 
+		}
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = middle } 
+			ideology = { factor = 0.05 value = liberal }
+		}
+		
+		set_country_flag = bulgarian_de_stalinization
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Limit the scope of de-Stalinization."
+		add_country_modifier = { name = political_strife duration = 1095 }
+		any_pop = { militancy = -5 consciousness = -5 }
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = poor } 
+			ideology = { factor = 0.1 value = communist } 
+		}
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = middle } 
+			ideology = { factor = 0.1 value = liberal }
+		}
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = rich } 
+			ideology = { factor = 0.1 value = liberal }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Astronautical Society/Bulgarian cosmonaut program, 1957
+country_event = {
+	id = 8022926
+	title = "Bulgarian Astronautical Society"
+	desc = EVTDESC8022926
+	picture = "bul_space"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1957
+		NOT = { year = 1990 }
+		
+		OR = { has_country_flag = zhivkov_bul has_country_flag = lagadinova_bul has_country_flag = technocracy_bul }
+		
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+		war = no
+		
+		money = 100000
+		
+		NOT = { has_country_modifier = space_agency }
+	}
+
+	mean_time_to_happen = { months = 9 }
+
+	option = {
+		name = "Bulgaria will continue to reach for the stars!"
+		prestige = 50
+		money = -50000
+		research_points = 350
+		add_country_modifier = { name = space_agency duration = -1 }
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "The resources are better spent else-where."
+		add_country_modifier = { name = political_strife duration = 1095 }
+		any_pop = { consciousness = -2 }
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+#Elena Lagadinova, 1959
+country_event = {
+	id = 8022927
+	title = "Elena Lagadinova"
+	desc = EVTDESC8022927
+	picture = "bul_lagadinova"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1959
+		NOT = { year = 1990 }
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "Her achievements will benefit the cause of socialism!"
+		prestige = 50
+		research_points = 375
+	}
+
+}
+
+#Anti-Stalinist Purges, 1961
+country_event = { 
+	id = 8022928
+	title = "Stalinist Purges"
+	desc = EVTDESC8022928
+	picture = "bul_congress_2"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1961
+		NOT = { year = 1990 }
+		has_country_flag = zhivkov_bul 
+		has_country_flag = bulgarian_de_stalinization
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+		NOT = { has_country_flag = stalinist_bul_purges }
+	}
+
+	mean_time_to_happen = { months = 2 }
+
+
+	option = {
+		name = "Expel the remaining vocal Stalinists."
+		badboy = 1
+		any_pop = { 
+			ideology = { factor = 0.05 value = communist_social }
+			militancy = -3 
+			consciousness = -3
+		}
+		
+		set_country_flag = stalinist_bul_purges 
+		
+		ai_chance = {
+			factor = 0.9
+		}
+	}
+
+	option = {
+		name = "They are no threat." #Leadership Challenge in 1971, 1965, or 1969
+		add_country_modifier = { name = political_strife duration = 1095 }
+		any_pop = { 
+			ideology = { factor = 0.05 value = communist }
+			militancy = -3 
+			consciousness = -3
+		}
+		ai_chance = {
+			factor = 0.1
+		}	
+	}
+	
+}
+
+#Radioelektronika, 1965
+country_event = {
+	id = 8022930
+	title = "Radioelektronika"
+	desc = EVTDESC8022930
+	picture = "wireless_interconnected_network"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1965
+		NOT = { year = 1990 }
+		
+		OR = { has_country_flag = zhivkov_bul has_country_flag = lagadinova_bul has_country_flag = technocracy_bul }
+		
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+		war = no
+		
+		RUS = {
+			OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+			is_greater_power = yes
+			has_country_flag = kupriyanovich
+		}
+		
+		money = 100000
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "Radioelektronika will bring this 'mobile phone' to Bulgaria!"
+		prestige_factor = 0.01
+		money = -50000
+		research_points = 450
+		set_country_flag = radioelektronika_bul
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "The resources are better spent else-where."
+		add_country_modifier = { name = political_strife duration = 295 }
+		any_pop = { consciousness = -2 }
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+#1965 coup attempt
+country_event = { 
+	id = 8022931
+	title = "April Conspiracy"
+	desc = EVTDESC8022931
+	picture = "bul_todorov"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1965
+		NOT = { year = 1990 }
+		
+		has_country_flag = zhivkov_bul 
+		has_country_flag = stalinist_bul_purges
+		
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+		war = no
+	}
+
+	mean_time_to_happen = { months = 4 }
+
+	option = {
+		name = "The plan if foiled prior to its execution."
+		add_country_modifier = { name = political_strife duration = 195 }
+		any_pop = { consciousness = -2 }
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = poor } 
+			ideology = { factor = 0.05 value = communist } 
+		}
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = middle } 
+			ideology = { factor = 0.05 value = communist_social }
+		}
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = rich } 
+			ideology = { factor = 0.05 value = liberal }
+		}
+		ai_chance = { factor = 0.95 }
+	}
+
+	option = {
+		name = "The Stalinist-Maoist Todorov-Gorunya rises to power by force."
+		add_country_modifier = { name = revolution_chaos duration = 1650 }
+		clr_country_flag = zhivkov_bul
+		set_country_flag = todorov_gorunya_bul
+		
+		#Soviet Reaction
+		random_country = {
+			limit = { tag = RUS has_global_flag = blocsenabled is_our_vassal = BUL }
+			country_event = 8022932
+		}
+		
+		any_pop = { consciousness = 2 }
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = poor } 
+			ideology = { factor = 0.3 value = communist } 
+		}
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = middle } 
+			ideology = { factor = 0.2 value = liberal }
+		}
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = rich } 
+			ideology = { factor = 0.5 value = communist }
+		}
+		ai_chance = { factor = 0.05 }
+	}
+	
+}
+
+
+#Soviet Response to the coup
+country_event = {
+	id = 8022932
+	title = "A Coup in Bulgaria"
+	desc = EVTDESC8022932
+	picture = "nwo2_eastern_allies"
+  
+	is_triggered_only = yes 
+	
+	option = {
+		name = "It is war then"
+		
+		release_vassal = BUL
+
+		war = {
+			target = BUL
+			attacker_goal = { casus_belli = make_puppet }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = no
+		}
+		
+		BUL = { set_country_flag = bulgaria_does_something_silly_2 }
+		ai_chance = { factor = 0.7 }
+	}
+
+	option = {
+		name = "So be it"
+		prestige_factor = -0.05
+		
+		#Warsaw pact
+		any_country = {
+			limit = {
+				exists = yes
+				OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+				ruling_party_ideology = communist
+				capital_scope = { continent = europe }
+			}
+			any_pop = {
+				consciousness = 2
+				militancy = 2
+				ideology = { factor = 0.05 value = nationalist }
+			}
+		}
+		
+		ai_chance = { factor = 0.3 }
+	}
+	
+}
+
+#Soviets put Zhivkov into power if Bulgaria is invaded
+country_event = { 
+	id = 8022933
+	title = "End of the Conspiracy"
+	desc = EVTDESC8022933
+	picture = "nwo2_eastern_allies"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		has_country_flag = bulgaria_does_something_silly_2 
+		
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+		war = no
+		vassal_of = RUS
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+
+	option = {
+		name = "Moscow's Authority is restored."
+		clr_country_flag = bulgaria_does_something_silly_2 
+		clr_country_flag = todorov_gorunya_bul
+		set_country_flag = zhivkov_bul
+		any_pop = { militancy = 5 consciousness = 5 }
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = poor } 
+			ideology = { factor = 0.02 value = communist_social } 
+		}
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = middle } 
+			ideology = { factor = 0.02 value = communist_social }
+		}
+		any_pop = { 
+			limit = { is_culture_group = THIS strata = rich } 
+			ideology = { factor = 0.02 value = liberal }
+		}
+	}
+	
+}
+
+#Elena Lagadinova in gov, 1968
+country_event = {
+	id = 8022934
+	title = "Technical Expertise in the Party?"
+	desc = EVTDESC8022934
+	picture = "bul_lagadinova"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1968
+		NOT = { year = 1990 }
+		has_country_flag = zhivkov_bul
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "Encourage her to join the government."
+		prestige = 50
+		research_points = 500
+		ai_chance = { factor = 0.84 }
+	}
+
+	option = {
+		name = "Ensure she put into an even higher position of authority."
+		add_country_modifier = { name = political_strife duration = 365 }
+		set_country_flag = bul_pre_technocracy
+		prestige = 30
+		research_points = 750
+		ai_chance = { factor = 0.15 }
+	}
+
+	option = {
+		name = "Ignore this whining scientist."
+		add_country_modifier = { name = political_strife duration = 1095 }
+		badboy = 1
+		prestige = -10
+		ai_chance = { factor = 0.01 }
+	}
+	
+}
+
+#Silicon Valley of the Eastern Bloc, 1977
+country_event = {
+	id = 8022935
+	title = "Silicon Valley of the Eastern Bloc"
+	desc = EVTDESC8022935
+	picture = "bulgarian_computing_1"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1977
+		NOT = { year = 1990 }
+		OR = { has_country_flag = zhivkov_bul has_country_flag = lagadinova_bul has_country_flag = technocracy_bul }
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+		war = no
+		money = 100000
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "Cybernetisation will be Bulgaria's future!"
+		prestige_factor = 0.01
+		money = -50000
+		research_points = 550
+		set_country_flag = cybernetisation_bul
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "The money is better spent elsewhere."
+		add_country_modifier = { name = political_strife duration = 1095 }
+		any_pop = { consciousness = -2 }
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+
+#Boris Velchev and reformist purge, 1977
+country_event = { 
+	id = 8022936
+	title = "Reformist Purges"
+	desc = EVTDESC8022936
+	picture = "bul_congress_2"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1977
+		NOT = { year = 1990 }
+		has_country_flag = zhivkov_bul 
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+		NOT = { has_country_flag = reformer_bul_purges }
+	}
+
+	mean_time_to_happen = { months = 2 }
+
+	option = {
+		name = "Purge Liberals within the party."
+		badboy = 1
+		any_pop = { 
+			ideology = { factor = 0.05 value = communist_social }
+			militancy = -3 
+			consciousness = -3
+		}
+		
+		set_country_flag = reformer_bul_purges 
+		
+		ai_chance = {
+			factor = 0.9
+		}
+	}
+
+	option = {
+		name = "They are no threat."
+		add_country_modifier = { name = political_strife duration = 1095 }
+		any_pop = { 
+			ideology = { factor = 0.05 value = communist }
+			militancy = -3 
+			consciousness = -3
+		}
+		
+		ai_chance = {
+			factor = 0.1
+		}
+	}
+	
+}
+
+#Bulgaria's 'New Economic Mechanism', 1979
+country_event = { 
+	id = 8022937
+	title = "New Economic Mechanism"
+	desc = EVTDESC8022937
+	picture = "bul_industry_1"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1979
+		NOT = { year = 1990 }
+		has_country_flag = zhivkov_bul
+		
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+		war = no
+	}
+
+	mean_time_to_happen = { months = 5 }
+
+	option = {
+		name = "Begin Bulgaria's 'New Economic Mechanism'"
+	
+		add_country_modifier = { name = yugoslaveia_economic_boom duration = 2920 }
+		
+		any_pop = {
+			consciousness = 2
+			militancy = 1
+			ideology = { factor = 0.05 value = liberal }
+		}
+		
+		ai_chance = { factor = 0.8 }
+	}
+	
+	option = {
+		name = "There is no need for these reforms in our economy."
+		add_country_modifier = { name = political_strife duration = 1095 }
+		any_pop = { 
+			ideology = { factor = 0.05 value = communist_social }
+			militancy = -3 
+			consciousness = 3
+		}
+		
+		ai_chance = { factor = 0.2 }
+	}
+	
+}
+
+#'Revival Process', 1984
+country_event = {
+	id = 8022938
+	title = "Revival Process"
+	desc = EVTDESC8022938
+	picture = "bul_revival_process"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1984
+		NOT = { year = 1990 }
+		
+		has_country_flag = zhivkov_bul
+
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+		war = no
+		
+		NOT = { minorities_reform = minorities_oppression }
+		
+		owns = 813
+	}
+
+	mean_time_to_happen = { months = 8 }
+
+	option = {
+		name = "We will restore Bulgarian culture!"
+		set_country_flag = revival_process_bul
+		political_reform = minorities_oppression
+		badboy = 3
+		813 = {
+			add_province_modifier = { name = nationalist_agitation duration = 1500 }
+		}
+		any_pop = { 
+			limit = { culture = turkish }
+			ideology = { factor = 0.05 value = liberal }
+			militancy = 8
+			consciousness = 8
+		}
+		any_pop = { 
+			limit = { has_pop_religion = sunni }
+			ideology = { factor = 0.02 value = conservative }
+			militancy = 6
+			consciousness = 6
+		}
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "We will not instate these policies against our Turkish comrades."
+		prestige = 10
+		add_country_modifier = { name = political_strife duration = 1095 }
+		any_pop = { 
+			limit = { culture = turkish }
+			ideology = { factor = 0.05 value = communist }
+		}
+		any_pop = { 
+			limit = { culture = bulgarian }
+			ideology = { factor = 0.02 value = nationalist }
+		}
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+#1984 Chance to invest more heavily in computing
+country_event = {
+	id = 8022939
+	title = "The Completion of Cyberisation"
+	desc = EVTDESC8022939
+	picture = "bulgarian_computing_2"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1984
+		NOT = { year = 1990 }
+		
+		OR = { has_country_flag = zhivkov_bul has_country_flag = lagadinova_bul has_country_flag = technocracy_bul }
+		
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+		war = no
+		
+		money = 100000
+		
+		has_country_flag = cybernetisation_bul
+	}
+
+	mean_time_to_happen = { months = 6 }
+	option = {
+		name = "Let us begin small scale automation in Bulgaria!"
+		money = -50000
+		add_country_modifier = { name = partial_automation_ogas duration = 3650 }
+		
+		set_country_flag = partial_automation_bul
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "The resources are better spent else-where."
+		any_pop = { consciousness = -2 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+#1987 Endorsement of the Gorb
+country_event = {
+	id = 8022940
+	title = "Endorsement of Reform?"
+	desc = EVTDESC8022940
+	picture = "nwo2_mikhail_gorbachev"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1987
+		NOT = { year = 1990 }
+
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+		OR = { is_vassal = no vassal_of = RUS }
+		war = no
+		
+		ruling_party_ideology = communist
+		
+		has_country_flag = zhivkov_bul
+		
+		RUS = { 
+			is_greater_power = yes 
+			government = proletarian_dictatorship
+			OR = { 
+				ruling_party_ideology = communist_social 
+				has_country_flag = mikhail_gorbachev 
+			}
+		}
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "Limit the implementation of these reforms inside of Bulgaria."
+		any_pop = { 
+			limit = { strata = rich }
+			ideology = { factor = 0.01 value = communist }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.01 value = communist }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			ideology = { factor = 0.01 value = communist }
+		}
+		
+		any_pop = { militancy = -5 consciousness = -5 }
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "We must fully endorse and enact these reforms!"
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		government = socialist_democracy 
+		country_event = 800054
+		ruling_party_ideology = communist_social
+		
+		any_pop = { 
+			limit = { strata = rich }
+			ideology = { factor = 0.20 value = socialist }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.10 value = communist_social }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			ideology = { factor = 0.05 value = communist_social }
+		}
+		
+		any_pop = { militancy = -5 consciousness = 5 }
+
+		ai_chance = { factor = 0.05 }
+	}
+
+	option = {
+		name = "Take preemptive measures against reform in Bulgaria by purging any remaining reformists."
+		badboy = 3
+		set_country_flag = reformist_purge_large_bul
+		add_country_modifier = { name = political_strife duration = 3095 }	
+		any_pop = { 
+			limit = { strata = rich }
+			ideology = { factor = 0.05 value = liberal }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.05 value = liberal }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			ideology = { factor = 0.05 value = communist }
+		}
+		
+		any_pop = { militancy = 8 consciousness = 8 }
+
+		ai_chance = { factor = 0.05 }
+	}
+	
+}
+
+#Decree Number 56, 1989
+country_event = {
+	id = 8022941
+	title = "Decree Number 56"
+	desc = EVTDESC8022941
+	picture = "bul_industry_2"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1989
+		NOT = { year = 1990 }
+		
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+		OR = { is_vassal = no vassal_of = RUS }
+		war = no
+		
+		ruling_party_ideology = communist
+		
+		NOT = { has_country_flag = reformist_purge_large_bul }
+		has_country_flag = zhivkov_bul
+		
+		RUS = { 
+			is_greater_power = yes 
+			government = proletarian_dictatorship
+			OR = { 
+				ruling_party_ideology = communist_social 
+				has_country_flag = mikhail_gorbachev 
+			}
+		}
+	}
+
+	mean_time_to_happen = { months = 1 }
+	
+	option = {
+		name = "Begin gradual market reforms."
+		ruling_party_ideology = communist_social
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.10 value = communist_social }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			ideology = { factor = 0.10 value = communist_social }
+		}
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Fight against any reform."
+		add_country_modifier = { name = political_strife duration = 1095 }
+
+		any_pop = { 
+			limit = { strata = rich }
+			ideology = { factor = 0.1 value = communist }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = 6 consciousness = 6
+			ideology = { factor = 0.2 value = liberal }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = 3 consciousness = 3
+			ideology = { factor = 0.1 value = socialist }
+		}
+
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+
+#Big Excursion, 1989
+country_event = {
+	id = 8022942
+	title = "Big Excursion"
+	desc = EVTDESC8022942
+	picture = "big_excursion"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1989
+		NOT = { year = 1990 }
+		
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+
+		war = no
+
+		RUS = { 
+			is_greater_power = yes 
+			government = proletarian_dictatorship
+			OR = { 
+				ruling_party_ideology = communist_social 
+				has_country_flag = mikhail_gorbachev 
+			}
+		}
+
+		TUR = {
+			exists = yes
+			is_vassal = no
+			NOT = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+		}
+		
+		has_country_flag = revival_process_bul
+		has_country_flag = zhivkov_bul
+	}
+
+	mean_time_to_happen = { months = 5 }
+
+	option = {
+		name = "Arrange the 'Big Excursion'."
+		set_country_flag = big_execursion_bul
+		badboy = 10
+		any_pop = { 
+			limit = { culture = turkish }
+			ideology = { factor = 0.05 value = liberal }
+			reduce_pop = 0.85
+			militancy = 8
+			consciousness = 8
+		}
+		any_pop = { 
+			limit = { has_pop_religion = sunni }
+			ideology = { factor = 0.02 value = conservative }
+			militancy = 6
+			consciousness = 6
+		}
+		TUR = {
+			random_owned = {
+				limit = { is_core = TUR }
+				any_pop = { 
+					limit = { culture = turkish }
+					reduce_pop = 1.02
+					militancy = 1
+					consciousness = 1
+				}
+			}
+			random_owned = {
+				limit = { is_core = TUR }
+				any_pop = { 
+					limit = { culture = turkish }
+					reduce_pop = 1.02
+					militancy = 1
+					consciousness = 1
+				}
+			}
+			random_owned = {
+				limit = { is_core = TUR }
+				any_pop = { 
+					limit = { culture = turkish }
+					reduce_pop = 1.02
+					militancy = 1
+					consciousness = 1
+				}
+			}
+			random_owned = {
+				limit = { is_core = TUR }
+				any_pop = { 
+					limit = { culture = turkish }
+					reduce_pop = 1.03
+					militancy = 1
+					consciousness = 1
+				}
+			}
+			random_owned = {
+				limit = { is_core = TUR }
+				any_pop = { 
+					limit = { culture = turkish }
+					reduce_pop = 1.03
+					militancy = 1
+					consciousness = 1
+				}
+			}
+			random_owned = {
+				limit = { is_core = TUR }
+				any_pop = { 
+					limit = { culture = turkish }
+					reduce_pop = 1.03
+					militancy = 1
+					consciousness = 1
+				}
+			}
+		}
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "Organize a crack-down and continue assimilation policies."
+		badboy = 4
+		add_country_modifier = { name = political_strife duration = 1095 }
+		any_pop = { 
+			limit = { culture = turkish }
+			ideology = { factor = 0.04 value = liberal }
+			reduce_pop = 0.95
+			militancy = -3
+			consciousness = -3
+		}
+		any_pop = { 
+			limit = { has_pop_religion = sunni }
+			ideology = { factor = 0.02 value = liberal }
+			reduce_pop = 0.99
+			militancy = -3
+			consciousness = -3
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
+	option = {
+		name = "End the Campaign."
+		prestige = -10
+		badboy = -2
+		any_pop = { 
+			limit = { culture = turkish }
+			ideology = { factor = 0.04 value = socialist }
+			militancy = -8
+			consciousness = -8
+		}
+		any_pop = { 
+			limit = { culture = bulgarian }
+			ideology = { factor = 0.04 value = nationalist }
+			militancy = -8
+			consciousness = -8
+		}
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+
+####			 ####
+#### Mladenov Democratic ####
+####			 ####
+
+
+#Continued Unrest
+country_event = {
+	id = 8022943
+	title = "Continued Unrest in Bulgaria"
+	desc = EVTDESC8022943
+	picture = "bul_protest"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1990
+		NOT = { year = 1992 }
+
+		government = socialist_democracy
+
+		war = no
+		
+		has_country_flag = mladenov_democractic_bul
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "We have to act quickly."
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.2 value = socialist }
+		}
+	}
+	
+}
+
+
+####		    ####
+#### Post-Communist ####
+####		    ####
+
+
+#Abandon Marxist-Leninist platform, 1990 April
+country_event = {
+	id = 8022944
+	title = "Democratization in Bulgaria"
+	desc = EVTDESC8022944
+	picture = "bsp_bcp"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1990
+		NOT = { year = 1992 }
+
+		government = socialist_democracy
+		is_vassal = no
+		war = no
+		
+		has_country_flag = mladenov_democractic_bul
+	}
+
+	mean_time_to_happen = { months = 4 }
+
+	option = {
+		name = "Begin the process of full-scale democratization."
+		add_country_modifier = { name = economic_malaise duration = 1825 }
+		any_pop = { militancy = -3  consciousness = -3 }
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.2 value = socialist }
+		}
+		ruling_party_ideology = socialist
+		government = democracy
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Try to preserve communism in Bulgaria."
+		add_country_modifier = { name = political_strife duration = 1095 }
+		any_pop = { militancy = 10  consciousness = 10 }
+		any_pop = { 
+			limit = { strata = poor }
+			ideology = { factor = 0.1 value = communist_social }
+		}
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+#1990 Elections, 1990 June
+country_event = {
+	id = 8022945
+	title = "Constitutional Assembly Elections in Bulgaria"
+	desc = EVTDESC8022945
+	picture = "bulgarian_election"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1990
+		NOT = { has_global_flag = 1992_start_date_flag }
+		
+		government = democracy
+		war = no
+		is_vassal = no
+		
+		election = yes
+		
+		ruling_party_ideology = socialist
+		
+		has_country_flag = mladenov_democractic_bul
+	}
+
+	mean_time_to_happen = { months = 2 }
+
+	option = {
+		name = "The now reformed BSP manages to achieve majority."
+		
+		ruling_party_ideology = socialist
+		
+		any_pop = { 
+			limit = { strata = rich }
+			ideology = { factor = 0.1 value = socialist }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.1 value = socialist }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			ideology = { factor = 0.2 value = socialist }
+		}
+		
+		ai_chance = { 
+			factor = 0.9 
+			modifier = {
+				factor = 0.5
+				NOT = { pop_majority_ideology = socialist }
+			}
+		}
+	}
+
+	option = {
+		name = "Union of Democratic Forces brings a rapid change."
+
+		ruling_party_ideology = conservative
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		any_pop = { 
+			limit = { strata = rich }
+			ideology = { factor = 0.2 value = conservative }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.1 value = conservative }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			ideology = { factor = 0.2 value = socialist }
+		}
+		
+		#Uncle Sam is amused
+		random_country = { 
+			limit = { tag = USA is_greater_power = yes government = democracy } 
+			relation = { who = THIS value = 100 }
+			diplomatic_influence = { who = THIS value = 50 }
+		}
+		
+		ai_chance = { 
+			factor = 0.1
+			modifier = {
+				factor = 0.1
+				NOT = { pop_majority_ideology = conservative }
+			}
+		}
+	}
+
+}
+
+#1991 Constitution
+country_event = {
+	id = 8022946
+	title = "$YEAR$ Bulgarian Constitution"
+	desc = EVTDESC8022946
+	picture = "bul_constitution_91"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1991
+		NOT = { has_global_flag = 1992_start_date_flag }
+
+		OR = { government = democracy government = democracy1 government = socialist_democracy }
+		is_vassal = no
+		war = no
+		
+		ruling_party_ideology = socialist
+		
+		OR = {
+			has_country_flag = mladenov_democractic_bul
+			has_country_flag = lukanov_democractic_bul
+			has_country_flag = caretaker_gov_bul
+		}
+	}
+
+	mean_time_to_happen = { 
+		months = 6
+	}
+
+	option = {
+		name = "Enshrine the western-styled reforms."
+		clr_country_flag = mladenov_democractic_bul
+		clr_country_flag = lukanov_democractic_bul
+		
+		government = democracy
+		
+		#Bulgaria is a parliamentary republic
+		clr_country_flag = presidential_system_republic
+		clr_country_flag = semi_presidential_system_republic
+		set_country_flag = parliamentary_system_republic
+		
+		add_country_modifier = { name = changecentral duration = 1825 }
+		
+		#Changing to Parliamentary Republic clears legislative gridlock
+		clr_country_flag = gridlocked_legislature
+
+		any_pop = {
+			scaled_militancy = { 
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = communist_social
+			}
+			scaled_militancy = { 
+				factor = 5 
+				ideology = socialist
+			}
+		}
+
+		random_country = { 
+			limit = { tag = USA is_greater_power = yes government = democracy } 
+			relation = { who = THIS value = 25 }
+			diplomatic_influence = { who = THIS value = 100 }
+		}
+		
+		ai_chance = { 
+			factor = 0.95
+			modifier = {
+				factor = 0.3
+				NOT = { pop_majority_ideology = socialist }
+			}
+			modifier = {
+				factor = 10
+				has_country_flag = caretaker_gov_bul
+			}
+		}
+		
+	}
+	
+	option = {
+		name = "Fight for elements of socialism in the new constitution."
+		badboy = 5
+		
+		government = socialist_democracy
+
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
+
+		any_pop = {
+			scaled_militancy = { 
+				factor = 10
+				ideology = traditionalist
+			}
+			scaled_militancy = { 
+				factor = 5
+				ideology = conservative
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = liberal
+			}
+			scaled_militancy = { 
+				factor = 5
+				ideology = progressive
+			}
+		}
+		
+		ai_chance = { 
+			factor = 0.05
+			modifier = {
+				factor = 12
+				pop_majority_ideology = socialist
+			}
+			modifier = {
+				factor = 5
+				has_country_flag = mladenov_democractic_bul
+			}
+			modifier = {
+				factor = 3
+				has_country_flag = lukanov_democractic_bul
+			}
+		}
+		
+	}
+	
+}
+
+
+#1991 elections
+country_event = {
+	id = 8022947
+	title = "$YEAR$ Bulgarian General Election"
+	desc = EVTDESC8022947
+	picture = "bulgarian_election"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1991
+		NOT = { has_global_flag = 1992_start_date_flag }
+		NOT = { year = 1994 }
+		
+		government = democracy
+		is_vassal = no
+		war = no
+		
+		OR = { ruling_party_ideology = socialist ruling_party_ideology = conservative }
+		
+		#Some form of parliamentary government
+		OR = {
+			has_country_flag = semi_presidential_system_republic
+			has_country_flag = parliamentary_system_republic
+		}
+		
+		#These 1991 elections only took place because of the earlier protests
+		has_country_flag = caretaker_gov_bul
+	}
+
+	mean_time_to_happen = { months = 10 }
+
+	option = {
+		name = "SDS"
+		clr_country_flag = caretaker_gov_bul
+		
+		ruling_party_ideology = conservative
+		
+		any_pop = { 
+			ideology = { factor = 0.2 value = conservative }
+		}
+		ai_chance = { 
+			factor = 0.9 
+			modifier = {
+				factor = 0.3
+				NOT = { pop_majority_ideology = conservative }
+			}
+		}
+		
+	}
+
+	option = {
+		name = "BSP"
+		clr_country_flag = caretaker_gov_bul
+		
+		ruling_party_ideology = socialist
+		
+		add_country_modifier = { name = revolution_chaos duration = 1365 }
+		
+		any_pop = { 
+			ideology = { factor = 0.2 value = socialist }
+		}
+		ai_chance = { 
+			factor = 0.1
+			modifier = {
+				factor = 6
+				pop_majority_ideology = socialist
+			}
+		}
+		
+	}
+
+}
+
+#1994 elections
+country_event = {
+	id = 8022948
+	title = "$YEAR$ Bulgarian General Election"
+	desc = EVTDESC8022948
+	picture = "bulgarian_election"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1994
+		NOT = { year = 1997 }
+		
+		government = democracy
+		war = no
+		is_vassal = no
+		
+		OR = { ruling_party_ideology = socialist ruling_party_ideology = conservative }
+		
+		#Some form of parliamentary government
+		OR = {
+			has_country_flag = semi_presidential_system_republic
+			has_country_flag = parliamentary_system_republic
+		}
+	}
+
+	mean_time_to_happen = { months = 11 }
+
+	option = {
+		name = "Democratic Left Coalition"
+		ruling_party_ideology = socialist
+		any_pop = { 
+			ideology = { factor = 0.2 value = socialist }
+		}
+		ai_chance = { 
+			factor = 0.9
+			modifier = {
+				factor = 0.3
+				NOT = { pop_majority_ideology = socialist }
+			}
+		}
+	}
+
+	option = {
+		name = "SDS"
+		ruling_party_ideology = conservative
+		add_country_modifier = { name = revolution_chaos duration = 1365 }
+		any_pop = { 
+			ideology = { factor = 0.2 value = conservative }
+		}
+		ai_chance = { 
+			factor = 0.1
+			modifier = {
+				factor = 6
+				pop_majority_ideology = conservative
+			}
+		}
+	}
+
+}
+
+#1997 elections
+country_event = {
+	id = 8022949
+	title = "$YEAR$ Bulgarian General Election"
+	desc = EVTDESC8022949
+	picture = "bulgarian_election"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1997
+		NOT = { year = 2001 }
+		
+		government = democracy
+		war = no
+		is_vassal = no
+		
+		OR = { ruling_party_ideology = socialist ruling_party_ideology = conservative }
+		
+		#Some form of parliamentary government
+		OR = {
+			has_country_flag = semi_presidential_system_republic
+			has_country_flag = parliamentary_system_republic
+		}
+	}
+
+	mean_time_to_happen = { months = 4 }
+
+	option = {
+		name = "SDS"
+		ruling_party_ideology = conservative
+		any_pop = { 
+			ideology = { factor = 0.2 value = conservative }
+		}
+		ai_chance = { 
+			factor = 0.9
+			modifier = {
+				factor = 0.3
+				NOT = { pop_majority_ideology = conservative }
+			}
+		}
+	}
+
+	option = {
+		name = "BSP"
+		ruling_party_ideology = socialist
+		add_country_modifier = { name = revolution_chaos duration = 1365 }
+		any_pop = { 
+			ideology = { factor = 0.2 value = socialist }
+		}
+		ai_chance = { 
+			factor = 0.1
+			modifier = {
+				factor = 6
+				pop_majority_ideology = socialist
+			}
+		}
+	}
+
+}
+
+#Bulgarian Ostalgia
+country_event = {
+	id = 8022950
+	title = "Ostalgia"
+	desc = EVTDESC8022950
+	picture = "bulgarian_ostalgia"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 2000
+		
+		government = democracy
+		war = no
+		is_vassal = no
+	}
+
+	mean_time_to_happen = { months = 5 }
+
+	option = {
+		name = "People remember a future that never was."
+		any_pop = { 
+			limit = { culture = bulgarian }
+			ideology = { factor = 0.15 value = populist }
+		}
+		any_pop = { 
+			limit = { culture = bulgarian strata = rich }
+			ideology = { factor = 0.15 value = nationalist }
+		}
+		any_pop = { 
+			limit = { culture = bulgarian strata = middle }
+			ideology = { factor = 0.1 value = socialist }
+		}
+		any_pop = { 
+			limit = { culture = bulgarian strata = poor }
+			ideology = { factor = 0.1 value = communist_social }
+		}
+		any_pop = { 
+			limit = { culture = turkish }
+			ideology = { factor = 0.2 value = liberal }
+		}
+	}
+	
+}
+
+#2001 elections
+country_event = {
+	id = 8022951
+	title = "$YEAR$ Bulgarian General Election"
+	desc = EVTDESC8022951
+	picture = "bulgarian_election"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 2001
+		NOT = { year = 2005 }
+		
+		government = democracy
+		war = no
+		is_vassal = no
+		
+		OR = { ruling_party_ideology = socialist ruling_party_ideology = conservative }
+		
+		#Some form of parliamentary government
+		OR = {
+			has_country_flag = semi_presidential_system_republic
+			has_country_flag = parliamentary_system_republic
+		}
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "NDSV"
+		ruling_party_ideology = populist
+		any_pop = { 
+			ideology = { factor = 0.2 value = populist }
+		}
+		ai_chance = { 
+			factor = 0.9
+			modifier = {
+				factor = 0.3
+				NOT = { pop_majority_ideology = populist }
+			}
+		}
+	}
+
+	option = {
+		name = "SDS"
+		ruling_party_ideology = conservative
+		add_country_modifier = { name = revolution_chaos duration = 1365 }
+		any_pop = { 
+			ideology = { factor = 0.2 value = conservative }
+		}
+		ai_chance = { 
+			factor = 0.05
+			modifier = {
+				factor = 12
+				pop_majority_ideology = conservative
+			}
+		}
+	}
+
+	option = {
+		name = "Democratic Left Coalition"
+		ruling_party_ideology = socialist
+		add_country_modifier = { name = revolution_chaos duration = 1365 }
+		any_pop = { 
+			ideology = { factor = 0.2 value = socialist }
+		}
+		ai_chance = { 
+			factor = 0.05
+			modifier = {
+				factor = 12
+				pop_majority_ideology = socialist
+			}
+		}
+	}
+
+}
+
+#2005 elections
+country_event = {
+	id = 8022952
+	title = "$YEAR$ Bulgarian General Election"
+	desc = EVTDESC8022952
+	picture = "bulgarian_election"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 2005
+		NOT = { year = 2009 }
+		
+		government = democracy
+		war = no
+		is_vassal = no
+		
+		OR = { ruling_party_ideology = socialist ruling_party_ideology = conservative ruling_party_ideology = populist }
+		
+		#Some form of parliamentary government
+		OR = {
+			has_country_flag = semi_presidential_system_republic
+			has_country_flag = parliamentary_system_republic
+		}
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "Democratic Left Coalition"
+		ruling_party_ideology = socialist
+		any_pop = { 
+			ideology = { factor = 0.2 value = socialist }
+		}
+		ai_chance = { 
+			factor = 0.9
+			modifier = {
+				factor = 0.3
+				NOT = { pop_majority_ideology = socialist }
+			}
+		}
+	}
+
+	option = {
+		name = "NDSV"
+		add_country_modifier = { name = revolution_chaos duration = 1365 }
+		ruling_party_ideology = populist
+		any_pop = { 
+			ideology = { factor = 0.2 value = populist }
+		}
+		ai_chance = { 
+			factor = 0.05
+			modifier = {
+				factor = 12
+				pop_majority_ideology = populist
+			}
+		}
+	}
+
+	option = {
+		name = "SDS"
+		ruling_party_ideology = conservative
+		add_country_modifier = { name = revolution_chaos duration = 1365 }
+		any_pop = { 
+			ideology = { factor = 0.2 value = conservative }
+		}
+		ai_chance = { 
+			factor = 0.05
+			modifier = {
+				factor = 12
+				pop_majority_ideology = conservative
+			}
+		}
+	}
+
+}
+
+#Maritsa Iztok Complex, 2006
+country_event = { 
+	id = 8022953
+	title = "Stara Zagora Coal Mines"
+	desc = EVTDESC8022953
+	picture = "bul_coal_stuff"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 1952
+		
+		war = no
+		
+		NOT = { economic_policy = laissez_faire }
+		
+		money = 20000
+		
+		owns = 816
+	}
+
+	mean_time_to_happen = { months = 5 }
+
+
+	option = {
+		name = "Make use of Bulgaria's natural wealth."
+		money = -10000
+		
+		816 = {
+			trade_goods = coal
+		}
+		
+		816 = {
+			any_pop = {
+				limit = { type = farmers }
+				pop_type = labourers
+			}
+		}
+
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "Save the money for other matters."
+
+		ai_chance = { factor = 0 }
+	}
+	
+}
+
+#Pleven Gas Field, 2009
+country_event = { 
+	id = 8022954
+	title = "Pleven Gas Field"
+	desc = EVTDESC8022954
+	picture = "bul_oil"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 2009
+		
+		NOT = { economic_policy = laissez_faire }
+		war = no
+		
+		money = 20000
+		
+		owns = 812
+	}
+
+	mean_time_to_happen = { months = 5 }
+
+
+	option = {
+		name = "Build this complex."
+		money = -10000
+		812 = {
+			trade_goods = natural_gas
+			any_pop = {
+				limit = { type = farmers }
+				pop_type = labourers
+			}
+		}
+
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "Save the money for other matters."
+
+		ai_chance = { factor = 0 }
+	}
+	
+}
+
+#2009 elections
+country_event = {
+	id = 8022955
+	title = "$YEAR$ Bulgarian General Election"
+	desc = EVTDESC8022955
+	picture = "bulgarian_election"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 2009
+		NOT = { year = 2013 }
+		
+		government = democracy
+		war = no
+		is_vassal = no
+		
+		OR = { ruling_party_ideology = socialist ruling_party_ideology = conservative }
+		
+		#Some form of parliamentary government
+		OR = {
+			has_country_flag = semi_presidential_system_republic
+			has_country_flag = parliamentary_system_republic
+		}
+	}
+
+	mean_time_to_happen = { months = 7 }
+
+	option = {
+		name = "GERB"
+		ruling_party_ideology = conservative
+		any_pop = { 
+			ideology = { factor = 0.2 value = conservative }
+		}
+		ai_chance = { 
+			factor = 0.9
+			modifier = {
+				factor = 0.3
+				NOT = { pop_majority_ideology = socialist }
+			}
+		}
+	}
+
+	option = {
+		name = "Democratic Left Coalition"
+		ruling_party_ideology = socialist
+		add_country_modifier = { name = revolution_chaos duration = 1365 }
+		any_pop = { 
+			ideology = { factor = 0.2 value = socialist }
+		}
+		ai_chance = { 
+			factor = 0.1
+			modifier = {
+				factor = 6
+				pop_majority_ideology = socialist
+			}
+		}
+	}
+
+}
+
+#2013 elections
+country_event = {
+	id = 8022956
+	title = "$YEAR$ Bulgarian General Election"
+	desc = EVTDESC8022956
+	picture = "bulgarian_election"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 2013
+		NOT = { year = 2014 }
+		
+		government = democracy
+		war = no
+		is_vassal = no
+		
+		OR = { ruling_party_ideology = socialist ruling_party_ideology = conservative }
+		
+		#Some form of parliamentary government
+		OR = {
+			has_country_flag = semi_presidential_system_republic
+			has_country_flag = parliamentary_system_republic
+		}
+	}
+
+	mean_time_to_happen = { months = 5 }
+
+	option = {
+		name = "GERB"
+		ruling_party_ideology = conservative
+		any_pop = { 
+			ideology = { factor = 0.2 value = conservative }
+		}
+		ai_chance = { 
+			factor = 0.9
+			modifier = {
+				factor = 0.3
+				NOT = { pop_majority_ideology = conservative }
+			}
+		}
+	}
+
+	option = {
+		name = "Democratic Left Coalition"
+		ruling_party_ideology = socialist
+		add_country_modifier = { name = revolution_chaos duration = 1365 }
+		any_pop = { 
+			ideology = { factor = 0.2 value = socialist }
+		}
+		ai_chance = { 
+			factor = 0.1
+			modifier = {
+				factor = 6
+				pop_majority_ideology = socialist
+			}
+		}
+	}
+
+}
+
+#2014 elections
+country_event = {
+	id = 8022957
+	title = "$YEAR$ Bulgarian General Election"
+	desc = EVTDESC8022957
+	picture = "bulgarian_election"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 2014
+		NOT = { year = 2017 }
+		
+		government = democracy
+		war = no
+		is_vassal = no
+		
+		OR = { ruling_party_ideology = socialist ruling_party_ideology = conservative }
+		
+		#Some form of parliamentary government
+		OR = {
+			has_country_flag = semi_presidential_system_republic
+			has_country_flag = parliamentary_system_republic
+		}
+	}
+
+	mean_time_to_happen = { months = 9 }
+
+	option = {
+		name = "GERB"
+		ruling_party_ideology = conservative
+		any_pop = { 
+			ideology = { factor = 0.2 value = conservative }
+		}
+		ai_chance = { 
+			factor = 0.9
+			modifier = {
+				factor = 0.3
+				NOT = { pop_majority_ideology = conservative }
+			}
+		}
+	}
+
+	option = {
+		name = "Democratic Left Coalition"
+		ruling_party_ideology = socialist
+		add_country_modifier = { name = revolution_chaos duration = 1365 }
+		any_pop = { 
+			ideology = { factor = 0.2 value = socialist }
+		}
+		ai_chance = { 
+			factor = 0.1
+			modifier = {
+				factor = 6
+				pop_majority_ideology = socialist
+			}
+		}
+	}
+
+}
+
+#2017 elections
+country_event = {
+	id = 8022958
+	title = "$YEAR$ Bulgarian General Election"
+	desc = EVTDESC8022958
+	picture = "bulgarian_election"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = BUL
+		year = 2014
+		NOT = { year = 2017 }
+		
+		government = democracy
+		war = no
+		is_vassal = no
+		
+		OR = { ruling_party_ideology = socialist ruling_party_ideology = conservative }
+		
+		#Some form of parliamentary government
+		OR = {
+			has_country_flag = semi_presidential_system_republic
+			has_country_flag = parliamentary_system_republic
+		}
+	}
+
+	mean_time_to_happen = { months = 3 }
+
+	option = {
+		name = "GERB"
+		ruling_party_ideology = conservative
+		any_pop = { 
+			ideology = { factor = 0.2 value = conservative }
+		}
+		ai_chance = { 
+			factor = 0.8
+			modifier = {
+				factor = 0.3
+				NOT = { pop_majority_ideology = conservative }
+			}
+		}
+	}
+
+	option = {
+		name = "Democratic Left Coalition"
+		ruling_party_ideology = socialist
+		add_country_modifier = { name = revolution_chaos duration = 1365 }
+		any_pop = { 
+			ideology = { factor = 0.2 value = socialist }
+		}
+		ai_chance = { 
+			factor = 0.2
+			modifier = {
+				factor = 6
+				pop_majority_ideology = socialist
+			}
+		}
+	}
+
+}
+
+#American Response to the Bulgarian elections
+country_event = {
+	id = 8022959
+	title = "Sweeping Away the Past in Bulgaria"
+	desc = EVTDESC8022959
+	picture = "usa_ned"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		NOT = { has_global_flag = 1992_start_date_flag }
+		
+		government = democracy
+		is_greater_power = yes
+		war = no
+		
+		NOT = { ruling_party_ideology = communist }
+		
+		money = 60000
+		
+		BUL = {
+			exists = yes
+			
+			OR = { government = democracy government = democracy1 government = socialist_democracy }
+			is_vassal = no
+			war = no
+			
+			ruling_party_ideology = socialist
+			
+			has_country_flag = mladenov_democractic_bul
+		}
+		
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "Let us make it clear that the opposition forces will lead Bulgaria."
+		badboy = 3
+		money = -50000 
+		
+		BUL = {
+			country_event = 8022960
+		}
+
+		ai_chance = { 
+			factor = 0.9 
+		}
+	}
+
+	option = {
+		name = "The Cold War is over, let the Bulgarian people have their 'socialism'."
+		prestige = -100 
+		
+		add_country_modifier = { name = political_strife duration = 1650 }
+		
+		ai_chance = { 
+			factor = 0.1
+		}
+	}
+	
+}
+
+#The opposition contests the elections 
+country_event = {
+	id = 8022960
+	title = "The UDF Contests Elections"
+	desc = EVTDESC8022960
+	picture = "bul_protest"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "We are forced to gave to the pressure from a united opposition."
+		clr_country_flag = mladenov_democractic_bul
+		set_country_flag = lukanov_democractic_bul
+
+		any_pop = { 
+			limit = { strata = rich }
+			ideology = { factor = 0.2 value = conservative }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.1 value = conservative }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			ideology = { factor = 0.05 value = conservative }
+		}
+
+		random_country = { 
+			limit = { tag = USA is_greater_power = yes government = democracy } 
+			relation = { who = THIS value = 25 }
+			diplomatic_influence = { who = THIS value = 50 }
+		}
+
+		ai_chance = { 
+			factor = 0.8 
+		}
+	}
+
+	option = {
+		name = "The Americans do not dictate the will of the Bulgarian people!"
+		badboy = 1
+
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+
+		random_country = { 
+			limit = { tag = USA is_greater_power = yes government = democracy } 
+			relation = { who = THIS value = -200 }
+			diplomatic_influence = { who = THIS value = -200 }
+		}
+		
+		any_pop = { 
+			limit = { strata = rich }
+			ideology = { factor = 0.2 value = populist }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.1 value = socialist }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			ideology = { factor = 0.1 value = socialist }
+		}
+		
+		ai_chance = { 
+			factor = 0.2
+		}
+	}
+	
+}
+
+#A Continued Push
+country_event = {
+	id = 8022961
+	title = "Widespread Opposition Demonstrations"
+	desc = EVTDESC8022961
+	picture = "bul_protest"
+
+	fire_only_once = yes
+	
+	trigger = {
+		tag = BUL
+		year = 1991
+		NOT = { has_global_flag = 1992_start_date_flag }
+		
+		OR = { government = democracy government = democracy1 government = socialist_democracy }
+		is_vassal = no
+		war = no
+		
+		ruling_party_ideology = socialist
+		
+		has_country_flag = lukanov_democractic_bul
+	}
+
+	mean_time_to_happen = { months = 3 }
+
+	option = {
+		name = "A caretaker government will lead Bulgaria until fresh elections can be held."
+		clr_country_flag = lukanov_democractic_bul
+		set_country_flag = caretaker_gov_bul
+		
+		any_pop = { 
+			limit = { strata = rich }
+			ideology = { factor = 0.2 value = conservative }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.1 value = conservative }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			ideology = { factor = 0.05 value = conservative }
+		}
+
+		random_country = { 
+			limit = { tag = USA is_greater_power = yes government = democracy } 
+			relation = { who = THIS value = 25 }
+			diplomatic_influence = { who = THIS value = 50 }
+		}
+
+		ai_chance = { 
+			factor = 0.8 
+		}
+	}
+
+	option = {
+		name = "The demands of the opposition are absurd, we must refuse."
+		badboy = 1
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+
+		random_country = { 
+			limit = { tag = USA is_greater_power = yes government = democracy } 
+			relation = { who = THIS value = -200 }
+			diplomatic_influence = { who = THIS value = -200 }
+		}
+
+		any_pop = { 
+			limit = { strata = rich }
+			ideology = { factor = 0.25 value = populist }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.15 value = conservative }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			ideology = { factor = 0.05 value = socialist }
+		}
+
+		ai_chance = { 
+			factor = 0.2
+		}
+	}
+	
+}

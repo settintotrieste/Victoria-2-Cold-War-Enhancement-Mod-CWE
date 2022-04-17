@@ -1,7 +1,7 @@
 #Start Leadership election
 country_event = {
 	id = 111222
-	title = "Change in $COUNTRY$'s leadership"
+	title = "Change in $COUNTRY_ADJ$ Leadership"
 	desc = EVTDESC111222
 	picture = "election_win"
 
@@ -49,22 +49,21 @@ country_event = {
 			}
 		}
 		
-		#Dictatorships are automatically president for life unless they have Head of State reforms taken
-		OR = {
-			government = democracy
-			government = democracy1
-			government = hms_government
-			government = hms_government1
-			government = colonial_government
-			government = mandate_government
+		#Any form of government without president for life that does not have an absolute monarch
+		NOT = { government = absolute_monarchy }
+		
+		OR = { 
+			#Bypass for Constitutional Monarchies & Special Gov types since they use PMs or Gov Generals
+			government = hms_government 
+			government = hms_government1 
 			government = sar_government
-			government = socialist_democracy
+			government = mandate_government
+			government = colonial_government
 			
-			has_country_flag = semi_democratic_dictatorship
+			#President for Life blocks this event, only events 1412074 and 60140 can remove the leader from office
+			NOT = { has_country_flag = president_for_life } 
 		}
 
-		#Kings use a different system
-		NOT = { government = absolute_monarchy }
 	}
 	
 	mean_time_to_happen = {
@@ -165,46 +164,69 @@ OR = { government = proletarian_dictatorship government = proletarian_dictatorsh
 	option = {
 		name = "EVTOPTA100080021"
 
-#Clear any stray opposition wins flag
-clr_country_flag = opposition_is_the_new_gov
+		#Clear any stray opposition wins flag
+		clr_country_flag = opposition_is_the_new_gov
 
-#Clear party split flag
-clr_country_flag = ruling_party_split
+		#Clear party split flag
+		clr_country_flag = ruling_party_split
 
-#Clear President for Life flag
-clr_country_flag = president_for_life
-clr_country_flag = semi_democratic_dictatorship
+		#Clear President for Life flag
+		clr_country_flag = president_for_life
 
-#If leader refused to leave via 'backbencher's plot' event
-clr_country_flag = leader_refuses_to_leave
+		#If leader refused to leave via 'backbencher's plot' event
+		clr_country_flag = leader_refuses_to_leave
 
-#If there is a party scandal
-remove_country_modifier = ruling_party_scandal
-remove_country_modifier = party_scandal_evidence 
+		#If there is a party scandal
+		remove_country_modifier = ruling_party_scandal
+		remove_country_modifier = party_scandal_evidence 
 
-#If there is a cult of personality
-remove_country_modifier = cult_of_personality
+		#If there is a cult of personality
+		remove_country_modifier = cult_of_personality
 
-set_country_flag = leadership_election
+		set_country_flag = leadership_election
 
-add_country_modifier = { name = leader_cooldown duration = 365 }
+		add_country_modifier = { name = leader_cooldown duration = 365 }
 
-#Monarchy Leaders
-
-remove_country_modifier = regency_government
-
-remove_country_modifier = centrist_king #Big tent
-
-remove_country_modifier = populist_king #Populist
-	
-remove_country_modifier = socialist_king #Socialist
-
-remove_country_modifier = traditional_king #Traditionalist
-
-remove_country_modifier = nationalist_king #Nationalist
-
-remove_country_modifier = conservative_king #Conservative
-
+		#Monarchy Leaders - Remove only if not an absolute_monarchy
+		random_owned = {
+			limit = { 
+				owner = { 
+					NOT = { 
+						OR = {
+							government = absolute_monarchy 
+							government = hms_government
+							government = hms_government1
+						}
+					} 
+				}
+			}
+			owner = {
+				remove_country_modifier = regency_government
+			
+				remove_country_modifier = centrist_king #Big tent
+				remove_country_modifier = populist_king #Populist
+				remove_country_modifier = socialist_king #Socialist
+				remove_country_modifier = traditional_king #Traditionalist
+				remove_country_modifier = nationalist_king #Nationalist
+				remove_country_modifier = conservative_king #Conservative
+			}
+		}
+		
+		#Remove PM system modifiers for semi-presidential republics
+		random_owned = {
+			limit = { 
+				owner = { 
+					#THIS is a semi-presidential republic
+					has_country_flag = semi_presidential_system_republic
+					OR = { 
+						government = democracy 
+						government = democracy1 
+						government = socialist_democracy 
+					}
+				} 
+			}
+			owner = { set_country_flag = to_appoint_a_PM }
+		}
 
 		#Generic Leaders
 

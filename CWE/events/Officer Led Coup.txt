@@ -1,4 +1,4 @@
-#Officer Led Coup - Initate
+#Officer Led Coup - Permit coups to fire
 country_event = {
   id = 100100
   title = "Stirrings of a $COUNTRY_ADJ$ Coup d'etat"
@@ -7,49 +7,73 @@ country_event = {
 
 	trigger = {
 
-		OR = { ai = no NOT = { has_global_flag = blocsenabled } }
-
+		#Special gov types do not have independent militaries
 		NOT = { government = sar_government }
+		NOT = { government = colonial_government }
+		NOT = { government = mandate_government }
 
-		is_disarmed = no
+		#Country has a military
 		total_amount_of_divisions = 1
+		is_disarmed = no
+		
+		#Country is not at war
+		war = no
 
-		NOT = { military_spending = 0.8 }
-
+		#Event has not already fired recently
 		NOT = { has_country_modifier = military_strife }
 
+		#Political situation is poor
 		OR = { 
 			has_country_modifier = coup_risk 
-			AND = { has_country_modifier = power_vacuum average_militancy = 7 }
+			
+			#Power vacuum
+			has_country_modifier = power_vacuum
 
-			AND = {
-				average_militancy = 6
-				any_owned_province = {
-					is_core = THIS
-					any_pop = { 
-						type = officers 
-						militancy = 8 
-					} 
-				}
+			#Officers are angry
+			any_owned_province = {
+				is_core = THIS
+				any_pop = { 
+					type = officers 
+					militancy = 8 
+				} 
 			}
-
+			
+			#There is a need for law and order
+			has_country_modifier = mass_riots
+			
+			#Country is broke
+			has_country_modifier = in_bankrupcy
+			
+			#There is a civil war ongoing
+			has_country_flag = civil_war_in_country
 		}
+		
+		#Low military loyalty
 		OR = { 
 			has_country_modifier = coup_risk
+			
 			has_country_modifier = military_loyalty_low
 			AND = { has_country_modifier = military_loyalty_medium has_recently_lost_war = yes }
 		}
-		war = no
 	}
 
-	mean_time_to_happen = { months = 3 }
+	mean_time_to_happen = { 
+		months = 3 
+		modifier = { factor = 0.5 has_country_flag = civil_war_in_country }
+	}
 
 	option = {
 		name = EVT152009872OPTA
 		add_country_modifier = { name = military_strife duration = 1825 }
+		
 		add_country_modifier = { name = coup_risk duration = 1825 }
+		
+		#Military becomes agitated
 		any_pop = { 
-			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } OR = { type = officers type = soldiers } }
+			limit = { 
+				OR = { is_primary_culture = yes is_accepted_culture = yes } 
+				OR = { type = officers type = soldiers } 
+			}
 			ideology = {
 				value = nationalist
 				factor = 0.25
@@ -65,211 +89,12 @@ country_event = {
 
 }
 
-#Officer Led Coup - Final
-country_event = {
-  id = 100101
-  title = "The $COUNTRY_ADJ$ Military Coup d'etat"
-  desc = EVTDESC152009873
-  picture = "military_coup"
-
-	trigger = {
-		war = no
-		is_disarmed = no
-
-		NOT = { government = sar_government }
-
-		total_amount_of_divisions = 1
-		capital_scope = {
-			controlled_by = THIS
-			country_units_in_province = THIS
-		}
-
-		NOT = { military_spending = 0.8 }
-
-		OR = { 
-			AND = { has_country_modifier = power_vacuum average_militancy = 7 }
-
-			AND = {
-				average_militancy = 6
-				any_owned_province = {
-					is_core = THIS
-					any_pop = { 
-						type = officers militancy = 8 
-					} 
-				}
-			}
- 
-		}
-
-		OR = { has_country_modifier = military_strife AND = { has_country_modifier = army_defects has_country_modifier = coup_risk } }
-		OR = { 
-			has_country_modifier = coup_risk 
-			has_country_modifier = military_loyalty_low
-			AND = { has_country_modifier = military_loyalty_medium has_recently_lost_war = yes }
-		}
-
-	}
-
-	mean_time_to_happen = { 
-		months = 3 
-		modifier = {
-			factor = 2
-			NOT = { average_militancy = 2 }
-		}
-		modifier = {
-			factor = 2
-			NOT = { average_militancy = 1 }
-		}
-	}
-
-	option = {
-		name = EVT152009873OPTA
-
-		#If country is a vassal
-		sphere_owner = { diplomatic_influence = { who = THIS value = -200 } }
-
-		random_country = { 
-			limit = { is_our_vassal = THIS } 
-			release_vassal = THIS country_event = 1512212 
-		}
-
-		#If martial law was declared
-		remove_country_modifier = martial_law
-
-		#Remove coup markers
-		remove_country_modifier = military_strife
-		remove_country_modifier = coup_risk
-
-		#Socialist Dictatorship
-		random_owned = { 
-			limit = { 
-				owner = { pop_majority_ideology = socialist }
-			}
-			owner = {
-				government = presidential_dictatorship
-				ruling_party_ideology = socialist
-				country_event = 800050
-			}
-		}
-
-		#Conservative Dictatorship
-		random_owned = { 
-			limit = { 
-				owner = { OR = { pop_majority_ideology = traditionalist pop_majority_ideology = conservative pop_majority_ideology = big_tent pop_majority_ideology = liberal pop_majority_ideology = progressive } }
-			}
-			owner = {
-				government = presidential_dictatorship
-				ruling_party_ideology = conservative
-				country_event = 800050
-			}
-		}
-
-		#Nationalist Dictatorship
-		random_owned = { 
-			limit = { 
-				owner = { OR = { pop_majority_ideology = nationalist pop_majority_ideology = populist } }
-			}
-			owner = {
-				government = populist_dictatorship
-				ruling_party_ideology = nationalist
-				country_event = 800050
-			}
-		}
-
-		#Communist Dictatorship
-		random_owned = { 
-			limit = { 
-				owner = { OR = { pop_majority_ideology = communist pop_majority_ideology = communist_social } }
-			}
-			owner = {
-				government = proletarian_dictatorship
-				ruling_party_ideology = communist
-				country_event = 800052
-			}
-		}
-
-		#Remove generic civil war markers, if applicable
-		remove_country_modifier = army_defects
-		clr_country_flag = government_extends_peace_hand
-		remove_country_modifier = government_consensus
-		remove_country_modifier = violent_crackdown
-		remove_country_modifier = civil_war
-
-		any_pop = { 
-			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } OR = { type = officers type = soldiers } }
-			ideology = {
-				value = nationalist
-				factor = 0.25
-			}
-			dominant_issue = {
-				value = jingoism
-				factor = 0.25
-			}
-			militancy = -8
-			consciousness = -4
-
-		}
-
-		ai_chance = { factor = 0.75 }
-  	}
-
-	option = {
-		name = EVT152009873OPTB
-
-		remove_country_modifier = revolution_chaos
-
-		add_country_modifier = { name = revolution_chaos duration = 1825 }
-
-		#Possible Military Rebellion if more than 2 states
-		random_owned = { 
-			limit = { owner = { is_vassal = no number_of_states = 2 any_owned_province = { is_capital = no is_core = THIS average_militancy = 7 } } }
-			owner = {
-				random = {
-					chance = 90
-					country_event = 100102
-				}
-			}
-		}
-
-		any_pop = {
-			limit = {
-				OR = {
-					is_primary_culture = yes
-					is_accepted_culture = yes
-				}
-				NOT = {
-					type = officers
-					type = soldiers
-				}
-			}
-			scaled_militancy = {
-				ideology = nationalist
-				factor = 8
-			}
-		}
-
-		any_pop = { 
-			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } OR = { type = officers type = soldiers } }
-			ideology = {
-				value = nationalist
-				factor = 0.25
-			}
-			dominant_issue = {
-				value = jingoism
-				factor = 0.25
-			}
-			militancy = 8
-			consciousness = -4
-		}	
-		ai_chance = { factor = 0.25 }	
-	}
-
-}
+#Coup is in event 1412009
 
 #Army Defection - Initate
 country_event = {
   id = 100102
-  title = "Defections in the $COUNTRY_ADJ$ Military"
+  title = "Factionalism in the $COUNTRY_ADJ$ Army"
   desc = EVTDESC100102
   picture = "1989_phi_coup"
 
@@ -280,9 +105,14 @@ country_event = {
 
 		prestige_factor = -0.05
 
-		any_country = { limit = { exists = no OR = { tag = R01 tag = R02 tag = R03 tag = R04 tag = R05 tag = R06 tag = R07 tag = R08 tag = R09 tag = R10 } } country_event = 100103 }
-
-		country_event = { id = 1400077 days = 2 }
+		#Release rebel tag
+		any_country = { 
+			limit = {
+				exists = no
+				OR = { tag = R01 tag = R02 tag = R03 tag = R04 tag = R05 tag = R06 tag = R07 tag = R08 tag = R09 tag = R10 }
+			} 
+			country_event = 1400072 
+		}
 	}
 
 }
@@ -290,7 +120,7 @@ country_event = {
 #Army Defection - rebel tag
 country_event = {
   id = 100103
-  title = "Parts of the $FROMCOUNTRY_ADJ$ Army Defects"
+  title = "$COUNTRY_ADJ$ Warlords!"
   desc = "A rogue general has declared himself independent of the $FROMCOUNTRY_ADJ$ government and has committed to toppling it."
   picture = "civil_war"
 

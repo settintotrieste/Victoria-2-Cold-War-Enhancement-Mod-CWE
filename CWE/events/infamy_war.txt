@@ -160,6 +160,7 @@ country_event = {
 		#Capable of going to war
 		war = no
 		is_disarmed = no
+		has_recently_lost_war = no
 		
 		#Member of the UNSC
 		is_greater_power = yes
@@ -167,7 +168,9 @@ country_event = {
 		
 		#Not a pariah as well
 		NOT = { has_country_modifier = international_pariah }
-		NOT = { badboy = 1 }
+		
+		#Have enough infamy to spare
+		NOT = { badboy = 0.2 }
 		
 		NOT = {
 			has_global_flag = ultimatum_delivered
@@ -176,6 +179,7 @@ country_event = {
 			has_country_modifier = punitive_effects
 		}
 		
+		#Enemy GP
 		any_greater_power = {
 			badboy = 1.2
 			is_disarmed = no
@@ -185,9 +189,33 @@ country_event = {
 			NOT = { has_country_modifier = punitive_effects }
 			NOT = { has_country_flag = ultimatum_accepted }
 			
-			NOT = { relation = { who = THIS value = 50 } }
+			#Does not have good relations with THIS
+			NOT = { relation = { who = THIS value = 0 } }
 			NOT = { alliance_with = THIS }
 			NOT = { truce_with = THIS }
+			
+			#Has a lower military score than THIS
+			NOT = { military_score = THIS }
+			
+			#Not member of the same bloc
+			NOT = {
+				OR = {
+					AND = { OR = { has_country_modifier = communist_bloc has_country_modifier = communist_bloc_leader } THIS = { OR = { has_country_modifier = communist_bloc has_country_modifier = communist_bloc_leader } } }
+					AND = { OR = { has_country_modifier = democratic_bloc has_country_modifier = democratic_bloc_leader } THIS = { OR = { has_country_modifier = democratic_bloc has_country_modifier = democratic_bloc_leader } } }
+					
+					AND = { has_country_modifier = alliance_nato THIS = { has_country_modifier = alliance_nato } }
+					AND = { has_country_modifier = rio_pact THIS = { has_country_modifier = rio_pact } }
+					
+					AND = { has_country_modifier = warsaw_pact THIS = { has_country_modifier = warsaw_pact } }
+					AND = { has_country_modifier = csto_alliance THIS = { has_country_modifier = csto_alliance } }
+					
+					AND = { has_country_modifier = anzus_alliance THIS = { has_country_modifier = anzus_alliance } }
+					
+					AND = { has_country_modifier = sco_pact THIS = { has_country_modifier = sco_pact } }
+					
+					AND = { has_country_modifier = cento_member THIS = { has_country_modifier = cento_member } }
+				}
+			}
 		}
 	}
 
@@ -291,13 +319,16 @@ country_event = {
 			war = {
 				target = THIS
 				attacker_goal = {
-					casus_belli = dismantle_cb
+					casus_belli = free_dismantle_cb
 				}
 				call_ally = yes
 			}
 			
-			badboy = -25
-			
+		}
+		ai_chance = { 
+			factor = 0.50
+			modifier = { factor = 0 war_policy = pacifism }
+			modifier = { factor = 0 is_disarmed = yes }
 		}
 	}
 
@@ -312,7 +343,12 @@ country_event = {
 				NOT = { alliance_with = THIS }
 			}
 			set_country_flag = coalition_member
-		}		
+		}
+		ai_chance = { 
+			factor = 0.50 
+			modifier = { factor = 0 AND = { rank = 2 is_disarmed = no NOT = { war_policy = pacifism } } }
+			modifier = { factor = 0 war_policy = jingoism }
+		}
 	}
 }
 
@@ -331,6 +367,13 @@ country_event = {
 		war = no
 		is_disarmed = no
 		is_greater_power = yes
+		
+		#Not a pariah as well
+		NOT = { has_country_modifier = international_pariah }
+		
+		#Have enough infamy to spare
+		NOT = { badboy = 0.2 }
+		
 		any_greater_power = {
 			badboy = 1.2
 			is_disarmed = no
@@ -499,7 +542,7 @@ country_event = {
 			war = {
 				target = THIS
 				attacker_goal = {
-					casus_belli = dismantle_cb
+					casus_belli = free_dismantle_cb
 				}
 				call_ally = yes
 			}

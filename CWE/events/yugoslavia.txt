@@ -80,9 +80,12 @@ country_event = {
 		tag = YUG
 		year = 1948 
 		NOT = { year = 1953 }
-		NOT = { ruling_party_ideology = communist_social }
-		is_vassal = no
+		
 		government = proletarian_dictatorship
+		is_vassal = no
+		
+		NOT = { ruling_party_ideology = communist_social }
+		
 		has_global_flag = blocsenabled
 	}
 
@@ -97,7 +100,15 @@ country_event = {
 		
 		RUS = { country_event = 8022726 }
 		
-		ai_chance = { factor = 0.9 }
+		ai_chance = { 
+			factor = 0.9 
+			
+			#Lower chance of split if RUS backed greek communists
+			modifier = { 
+				factor = 0.5 
+				has_global_flag = ussr_intervenes_GCW_flag 
+			}
+		}
 	}
 
 	option = {
@@ -374,6 +385,16 @@ country_event = {
 				sphere_owner = { diplomatic_influence = { who = ALB value = 200 } }
 			}
 		}
+		#If Trieste was incorporated
+		random_owned = {
+			limit = { owner = { is_possible_vassal = TRE } NOT = { is_core = CRO } }
+			owner = { 
+				release_vassal = TRE 
+				TRE = { government = proletarian_dictatorship ruling_party_ideology = communist country_event = 800052 }
+				diplomatic_influence = { who = TRE value = 200 }
+				sphere_owner = { diplomatic_influence = { who = TRE value = 200 } }
+			}
+		}
 		ai_chance = { factor = 0.1 }
 	}
 
@@ -446,6 +467,17 @@ country_event = {
 				ALB = { government = proletarian_dictatorship ruling_party_ideology = communist country_event = 800052 }
 				diplomatic_influence = { who = ALB value = 200 }
 				sphere_owner = { diplomatic_influence = { who = ALB value = 200 } }
+			}
+		}
+		
+		#If Trieste was incorporated
+		random_owned = {
+			limit = { owner = { is_possible_vassal = TRE } NOT = { is_core = CRO } }
+			owner = { 
+				release_vassal = TRE 
+				TRE = { government = proletarian_dictatorship ruling_party_ideology = communist_social country_event = 800052 }
+				diplomatic_influence = { who = TRE value = 200 }
+				sphere_owner = { diplomatic_influence = { who = TRE value = 200 } }
 			}
 		}
 
@@ -974,10 +1006,10 @@ country_event = {
 	}
 }
 
-#The Bosnian War - Croat–Bosniak War
+#The Bosnian War - Croat Bosniak War
 country_event = {
   id = 8022744
-  title = "The Croat–Bosniak War"
+  title = "The Croat Bosniak War"
   desc = EVTDESC8022744
   picture = "croat_bosniak_war"
   fire_only_once = yes 
@@ -1034,7 +1066,7 @@ country_event = {
 	}
 }
 
-#The Bosnian War - Croat–Bosniak War - Washington Agreement - HZB
+#The Bosnian War - Croat Bosniak War - Washington Agreement - HZB
 country_event = {
   id = 8022745
   title = "The Washington Agreement"
@@ -1711,6 +1743,125 @@ country_event = {
 	option = {
 		name = "We are no longer simply Serbian!"
 		all_core = { assimilate = yes }
+	}
+
+}
+
+#Italian backed coup in Croatia
+country_event = {
+  	id = 8020438
+  	title = "Croatian Defence Forces Coup d'Etat"
+  	desc = EVT_8020438_DESC
+  	picture = "CRO_HOS_Fighter"
+  
+  	fire_only_once = yes
+
+	trigger = {
+		tag = CRO
+		year = 1990 
+		NOT = { has_global_flag = 1992_start_date_flag }
+		
+		OR = { government = democracy government = democracy1 }
+		is_vassal = no
+		
+		OR = { truce_with = YUG truce_with = SER }
+		
+		#Italy must exist to back the coup
+		ITA = {
+			exists = yes
+			
+			government = populist_dictatorship 
+			is_vassal = no
+		}
+		
+		ITA = { OR = { has_country_flag = ITA_CRO_Koper has_country_flag = ITA_CRO_Istria } }
+		has_global_flag = ITA_CRO_Ustasha_funding
+		has_global_flag = ITA_Operation_Tora_Tora
+	}
+
+	mean_time_to_happen = { months = 3 }
+
+	option = {
+		name = "The Coup succeeds"
+		badboy = 5
+		
+		government = populist_dictatorship 
+		country_event = 800050
+		ruling_party_ideology = populist
+		
+		any_pop = { 
+		    consciousness = -4
+			militancy = -4
+			scaled_consciousness = { ideology = liberal factor = 2 }
+			scaled_militancy = { ideology = liberal factor = 4 }
+			scaled_consciousness = { ideology = socialist factor = 4 }
+			scaled_militancy = { ideology = socialist factor = 4 }
+			scaled_consciousness = { ideology = communist factor = 4 }
+			scaled_militancy = { ideology = communist factor = 6 }
+			scaled_consciousness = { ideology = communist_social factor = 4 }
+			scaled_militancy = { ideology = communist_social factor = 6 }
+		}
+		
+		random_country = {   
+			limit = { tag = ITA government = populist_dictatorship is_vassal = no }
+			relation = { who = THIS value = 100 }
+		}
+		random_country = {   
+			limit = { tag = FRA OR = { government = populist_dictatorship government = nationalist_dictatorship } is_vassal = no }
+			relation = { who = THIS value = 75 }
+		}
+		random_country = {   
+			limit = { tag = SPA OR = { government = populist_dictatorship government = nationalist_dictatorship government = absolute_monarchy } is_vassal = no }
+			relation = { who = THIS value = 50 }
+		}
+		random_country = {   
+			limit = { tag = POR OR = { government = populist_dictatorship government = nationalist_dictatorship } is_vassal = no }
+			relation = { who = THIS value = 50 }
+		}
+		random_country = {   
+			limit = { tag = FAG OR = { government = populist_dictatorship government = nationalist_dictatorship } is_vassal = no }
+			relation = { who = THIS value = 50 }
+		}
+		random_country = {   
+			limit = { tag = GRE OR = { government = populist_dictatorship government = nationalist_dictatorship government = absolute_monarchy } is_vassal = no }
+			relation = { who = THIS value = 50 }
+		}
+		random_country = {   
+			limit = { tag = ALB OR = { government = hms_government government = hms_government1 government = absolute_monarchy } is_vassal = no }
+			relation = { who = THIS value = 50 }
+		}
+		random_country = {   
+			limit = { tag = SAF OR = { government = populist_dictatorship government = nationalist_dictatorship government = democracy } is_vassal = no }
+			relation = { who = THIS value = 25 }
+		}
+		random_country = {   
+			limit = { tag = RHO OR = { government = populist_dictatorship government = nationalist_dictatorship government = democracy } is_vassal = no }
+			relation = { who = THIS value = 25 }
+		}
+		
+		ai_chance = { factor = 0.8 }
+	}
+	
+	option = {
+		name = "The Coup is aborted"
+		any_pop = {  
+			scaled_consciousness = { ideology = nationalist factor = 4 }
+			scaled_militancy = { ideology = nationalist factor = -6 }
+			scaled_consciousness = { ideology = socialist factor = 4 }
+			scaled_militancy = { ideology = socialist factor = 2 }
+			scaled_consciousness = { ideology = communist factor = 4 }
+			scaled_militancy = { ideology = communist factor = 2 }
+			consciousness = 2
+		}
+		
+		random_country = {   
+			limit = { tag = ITA OR = { government = populist_dictatorship government = nationalist_dictatorship } is_vassal = no }
+			relation = { who = THIS value = -150 }
+		}
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		ai_chance = { factor = 0.2 }
 	}
 
 }

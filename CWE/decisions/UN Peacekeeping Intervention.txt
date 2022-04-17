@@ -2,28 +2,44 @@ political_decisions = {
 	call_for_un_intervention = {
 		picture = "callun"
 		potential = {
+		
 			is_vassal = no
 			war = yes
-			NOT = { has_country_modifier = uniting_for_peace }
+			
+			#In the UNGA
 			has_country_modifier = united_nations_ga_member
+			
+			#Have not called the UN before
 			NOT = { has_country_modifier = called_allies_un }
 			NOT = { has_country_modifier = called_allies }
+			NOT = { has_country_modifier = stop_un_spam }
+			NOT = { has_country_modifier = resolution_vetoed_unsc }
+			
+			#Did not call for Uniting for Peace
+			NOT = { has_country_modifier = uniting_for_peace }
 			
 			#The UN is paralysed during a Hot Cold War
 			NOT = { AND = { has_global_flag = blocsenabled USA = { war_with = RUS } } }
+			
+			#Only 1 vote at a time in the war
+			war_countries = { NOT = { has_country_modifier = called_allies_un } }
 		}
 		alert = yes
 		allow = {
 			
 			#THIS is not an aggressor or war_policy is pacifism
-			OR = { NOT = { has_country_flag = this_is_aggressor } war_policy = pacifism }
+			OR = { 
+				NOT = { has_country_flag = this_is_aggressor } 
+				war_policy = pacifism 
+			}
 
+			#Situation is grave
 			OR = { 
 				ai = no
 
-				national_provinces_occupied = 0.75
+				AND = { national_provinces_occupied = 0.75 NOT = { war_policy = jingoism } }
 
-				war_exhaustion = 50
+				AND = { war_exhaustion = 50 NOT = { war_policy = jingoism } }
 
 				AND = { 
 					OR = { 
@@ -39,8 +55,15 @@ political_decisions = {
 		}
 		effect = {
 			prestige_factor = -0.02
-			add_country_modifier = { name = called_allies_un duration = 600 }
-			any_country = { limit = { has_country_modifier = unsc_permanent_member } country_event = 1412013 }
+			
+			#Block spam
+			add_country_modifier = { name = called_allies_un duration = 730 }
+			
+			#Initiate UNSC vote
+			any_country = { 
+				limit = { has_country_modifier = unsc_permanent_member exists = yes } 
+				country_event = 1412013
+			}
 		}
 		ai_will_do = { 
 			factor = 1
@@ -81,7 +104,16 @@ political_decisions = {
 		effect = {
 			prestige_factor = -0.01
 			add_country_modifier = { name = uniting_for_peace duration = 365 }
-			any_country = { limit = { is_vassal = no has_country_modifier = united_nations_ga_member is_secondary_power = yes NOT = { war_with = THIS } } country_event = 1412042 }
+			any_country = { 
+				limit = { 
+					exists = yes
+					is_vassal = no 
+					has_country_modifier = united_nations_ga_member 
+					is_secondary_power = yes 
+					NOT = { war_with = THIS } 
+				} 
+				country_event = 1412042
+			}
 		}
 		ai_will_do = { 
 			factor = 1

@@ -205,77 +205,70 @@ country_event = {
 #Region Check event
 country_event = {
 	id = 1412151
-title = "Peaceful/Unstable Regions"
+	title = "Peaceful/Unstable Regions"
 	desc = EVTDESC1412151
 	picture = "region_system"
 
-trigger = { 
-NOT = { has_country_modifier = region_timer }
-			} 
-
-mean_time_to_happen = { 
-months = 60
-modifier = { factor = 0 any_owned_province = { NOT = { OR = { has_province_modifier = peace_region has_province_modifier = unstable_region } } } }
-modifier = { factor = 0.1 war = yes }
-modifier = { factor = 0.2 num_of_revolts = 1 }
-modifier = { factor = 0 NOT = { any_owned_province = { OR = { has_province_modifier = peace_region has_province_modifier = unstable_region } } } }
-}
-
-option = {
-name = "Who cares?"
-
-add_country_modifier = { name = region_timer duration = 60 }
-
-any_owned = { remove_province_modifier = peace_region remove_province_modifier = unstable_region }
-
-#Add Unstable Region
-any_owned = { 
-limit = { 
-
-OR = { 
-has_province_modifier = nuke_low 
-has_province_modifier = nuke_medium 
-has_province_modifier = nuke_high
-has_province_modifier = tactical_nuked
-controlled_by_rebels = yes  
-NOT = { controlled_by = THIS }
-is_blockaded = yes
-average_militancy = 5
-any_neighbor_province = { owner = { war = yes } }
-any_neighbor_province = { controlled_by_rebels = yes }
+	trigger = { 
+		NOT = { has_country_modifier = region_timer }
 	} 
 
-}
+	mean_time_to_happen = { 
+		months = 60
+		modifier = { factor = 0 any_owned_province = { NOT = { OR = { has_province_modifier = peace_region has_province_modifier = unstable_region } } } }
+		modifier = { factor = 0.1 war = yes }
+		modifier = { factor = 0.2 num_of_revolts = 1 }
+		modifier = { factor = 0 NOT = { any_owned_province = { OR = { has_province_modifier = peace_region has_province_modifier = unstable_region } } } }
+	}
 
-add_province_modifier = { name = unstable_region duration = -1 }
+	option = {
+		name = "Who cares?"
 
-} 
+		add_country_modifier = { name = region_timer duration = 60 }
 
-#Add Stable Region
-any_owned = { 
-limit = { 
-NOT = {
-OR = { 
-has_province_modifier = nuke_low 
-has_province_modifier = nuke_medium 
-has_province_modifier = nuke_high
-has_province_modifier = tactical_nukes
-controlled_by_rebels = yes  
-NOT = { controlled_by = THIS }
-is_blockaded = yes
-average_militancy = 5
-any_neighbor_province = { owner = { war = yes } }
-any_neighbor_province = { controlled_by_rebels = yes }
-	} 
-}
+		#Add Unstable Region
+		any_owned = { 
+			limit = { 
+				OR = { 
+					has_province_modifier = nuke_low 
+					has_province_modifier = nuke_medium 
+					has_province_modifier = nuke_high
+					has_province_modifier = tactical_nuked
+					controlled_by_rebels = yes  
+					NOT = { controlled_by = THIS }
+					is_blockaded = yes
+					average_militancy = 5
+					any_neighbor_province = { owner = { war = yes } }
+					any_neighbor_province = { controlled_by_rebels = yes }
+				} 
+			}
+			remove_province_modifier = peace_region
+			add_province_modifier = { name = unstable_region duration = -1 }
+		} 
 
-}
+		#Add Stable Region
+		any_owned = { 
+			limit = { 
+				NOT = {
+					OR = { 
+						has_province_modifier = nuke_low 
+						has_province_modifier = nuke_medium 
+						has_province_modifier = nuke_high
+						has_province_modifier = tactical_nukes
+						controlled_by_rebels = yes  
+						NOT = { controlled_by = THIS }
+						is_blockaded = yes
+						average_militancy = 5
+						any_neighbor_province = { owner = { war = yes } }
+						any_neighbor_province = { controlled_by_rebels = yes }
+					} 
+				}
+			}
+			remove_province_modifier = unstable_region
+			add_province_modifier = { name = peace_region duration = -1 }
+		} 
 
-add_province_modifier = { name = peace_region duration = -1 }
-
-} 
-
-		}
+	}
 
 }
 
@@ -995,95 +988,213 @@ owner = { any_pop = { ideology = { factor = -0.05 value = communist_social } } }
 
 }
 
-#Civil Defence - Nuke Protection
+#Civil Defence - Nuke Protection - Start
 country_event = {
 	id = 1412169
-title = "Nuclear Shelters Activated"
-	desc = "A significant part of the population in nuclear hit areas have managed to seek refuge in purpose built bunkers to tide through the nuclear fallout."
+	title = "Nuclear Shelters Activated"
+	desc = EVTDESC1412169
 	picture = "nuclear_shelter"
 
-trigger = { 
-	has_country_modifier = nuke_fallout
-OR = { has_country_modifier = cdhigh has_country_modifier = cdmedium has_country_modifier = cdlow }
-	NOT = { has_country_flag = nuke_protection }
-}
+	trigger = { 
+	
+		#Country has been hit by nuclear weapons
+		any_owned_province = { 
+			OR = { 
+				has_province_modifier = nuke_high 
+				has_province_modifier = nuke_medium 
+				has_province_modifier = nuke_low 
+			} 
+		}
+		
+		#Has some proper Civil Defence
+		OR = { 
+			has_country_modifier = cdhigh 
+			has_country_modifier = cdmedium 
+		}
+		
+		NOT = { has_country_flag = nuke_protection }
+	}
 
-option = {
-name = "A moment of silence for those who didn't make it"
+	option = {
+		name = "A moment of silence for those who didn't make it"
+		
+		set_country_flag = nuke_protection
 
-random_owned = { 
-
-limit = { owner = { has_country_modifier = cdhigh } } 
-
-owner = { 
-
-any_owned = { 
-
-limit = { OR = { has_province_modifier = nuke_high has_province_modifier = nuke_medium has_province_modifier = nuke_low } } 
-
-add_province_modifier = { name = nuke_pro_high duration = 18250 } 
-
-		} 
-	} 
-}
-
-random_owned = { 
-
-limit = { owner = { has_country_modifier = cdmedium } } 
-
-owner = { 
-
-any_owned = { 
-
-limit = { OR = { has_province_modifier = nuke_high has_province_modifier = nuke_medium has_province_modifier = nuke_low } } 
-
-add_province_modifier = { name = nuke_pro_medium duration = 18250 } 
-
-		} 
-	} 
-}
-
-
-random_owned = { 
-
-limit = { owner = { has_country_modifier = cdlow } } 
-
-owner = { 
-
-any_owned = { 
-
-limit = { OR = { has_province_modifier = nuke_high has_province_modifier = nuke_medium has_province_modifier = nuke_low } } 
-
-add_province_modifier = { name = nuke_pro_low duration = 18250 } 
-
-		} 
-	} 
-}
-
-set_country_flag = nuke_protection
+		#High Civil Defence
+		random_owned = { 
+			limit = { owner = { has_country_modifier = cdhigh } } 
+			owner = { 
+				any_owned = { 
+					limit = { has_province_modifier = nuke_low } 
+					remove_province_modifier = nuke_low
+					add_province_modifier = { name = nuke_low duration = 9125 } 
+				} 
+				any_owned = { 
+					limit = { has_province_modifier = nuke_medium } 
+					remove_province_modifier = nuke_medium
+					add_province_modifier = { name = nuke_low duration = 18250 } 
+				} 
+				any_owned = { 
+					limit = { has_province_modifier = nuke_high } 
+					remove_province_modifier = nuke_high
+					add_province_modifier = { name = nuke_medium duration = 18250 } 
+				} 
+			} 
+		}
+		
+		#Medium Civil Defence - Only protects against medium nuke damage at best
+		random_owned = { 
+			limit = { owner = { has_country_modifier = cdhigh } } 
+			owner = { 
+				any_owned = { 
+					limit = { has_province_modifier = nuke_low } 
+					remove_province_modifier = nuke_low
+					add_province_modifier = { name = nuke_low duration = 9125 } 
+				} 
+				any_owned = { 
+					limit = { has_province_modifier = nuke_medium } 
+					remove_province_modifier = nuke_medium
+					add_province_modifier = { name = nuke_low duration = 18250 } 
+				} 
+			} 
 		}
 
+	}
+
 }
 
-#Civil Defence - END Nuke Protection
+#Civil Defence - No Nuke Protection - Total Anarchy!
+country_event = {
+	id = 14121691
+	title = "Anarchy in $COUNTRY$"
+	desc = EVTDESC14121691
+	picture = "nuclear_fallout_anarchy"
+
+	trigger = { 
+	
+		#Country has been hit by nuclear weapons
+		any_owned_province = { 
+			OR = { 
+				has_province_modifier = nuke_high 
+				has_province_modifier = nuke_medium 
+				has_province_modifier = nuke_low 
+			} 
+		}
+		
+		#Has no Civil Defence
+		NOT = { 
+			OR = { 
+				has_country_modifier = cdhigh 
+				has_country_modifier = cdmedium 
+			}
+		}
+		
+		NOT = { has_country_flag = nuke_protection }
+	}
+
+	option = {
+		name = "A moment of silence for those who didn't make it"
+		
+		set_country_flag = nuke_protection
+
+		#All provinces get transferred to rebels
+		any_owned = {
+			limit = { controlled_by = THIS }
+			change_controller = REB
+		}
+
+	}
+
+}
+
+#Civil Defence - states occassionally fall to rebels
+country_event = {
+	id = 14121692
+	title = "Government Control Weakens"
+	desc = EVTDESC14121692
+	picture = "nuclear_fallout_anarchy_2"
+
+	trigger = { 
+	
+		#Country has been hit by nuclear weapons
+		any_owned_province = { 
+			OR = { 
+				has_province_modifier = nuke_high 
+				has_province_modifier = nuke_medium 
+				has_province_modifier = nuke_low 
+			} 
+			controlled_by = THIS
+			average_militancy = 9
+		}
+		
+		#Has weak civil defence
+		NOT = { has_country_modifier = cdhigh }
+		
+		#Post nuclear government
+		has_country_flag = nuke_protection
+	}
+	
+	mean_time_to_happen = { 
+		months = 6
+	}
+
+	option = {
+		name = "At this rate we might lose the whole country!"
+		prestige_factor = -0.01
+		
+		#Transfer states to rebels
+		any_owned = { 
+			limit = {
+				OR = { 
+					has_province_modifier = nuke_high 
+					has_province_modifier = nuke_medium 
+					has_province_modifier = nuke_low 
+				} 
+				controlled_by = THIS
+				average_militancy = 9
+			}
+			state_scope = {
+				any_owned = {
+					limit = { 
+						is_state_capital = no 
+						controlled_by = THIS 
+					}
+					change_controller = REB
+				}
+			}
+		}
+	}
+
+}
+
+#Civil Defence - ENL Nuke Protection
 country_event = {
 	id = 1412170
-title = "All clear to leave the Nuclear Shelters"
-	desc = "It is now safe to leave the nuclear shelters so our population is now slowly rebuilding the nuclear hit areas back to their glory days."
+	title = "Nuclear Fallout has Subsided"
+	desc = "It is now safe to leave the nuclear shelters, if there were any, so our population can start to slowly restore the nuclear hit wasteland back to its glory days."
 	picture = "nuclear_shelter_clear"
 
-trigger = { 
-	NOT = { has_country_modifier = nuke_fallout }
-	has_country_flag = nuke_protection
-}
-
-option = {
-name = "We will rebuild civilisation"
-clr_country_flag = nuke_protection
-any_owned = { remove_province_modifier = nuke_pro_high
-remove_province_modifier = nuke_pro_medium
-remove_province_modifier = nuke_pro_low }
+	trigger = { 
+	
+		#No more nuke damage
+		NOT = {
+			any_owned_province = { 
+				OR = { 
+					has_province_modifier = nuke_high 
+					has_province_modifier = nuke_medium 
+					has_province_modifier = nuke_low 
+				} 
+			}
 		}
+		
+		has_country_flag = nuke_protection
+	}
+
+	option = {
+		name = "We will rebuild the $COUNTRY_ADJ$ civilisation!"
+		clr_country_flag = nuke_protection
+		clr_country_flag = post_nuke_government
+	}
 
 }
 
@@ -1158,119 +1269,6 @@ badboy = 10
 any_pop = { limit = { is_primary_culture = yes } militancy = -2 }
 relation = { who = ISR value = -100 }
 ai_chance = { factor = 0.1 modifier = { factor = 1 stronger_army_than = ISR } }
-		}
-
-}
-
-#Emirate of Cyrenaica
-country_event = {
-	id = 1412172
-title = "Emirate of Cyrenaica"
-	desc = EVTDESC1412172
-	picture = "cyrenaica"
-
-fire_only_once = yes
-
-trigger = { 
-year = 1949
-tag = ENG
-government = hms_government
-owns = 1735
-FRA = { owns = 1743 }
-TRI = { exists = no }
-CYR = { exists = no }
-FEZ = { exists = no }
-NOT = { year = 1990 }
-	}
-
-mean_time_to_happen = { 
-months = 3
-}
-
-option = {
-name = "Establish the Emirate"
-prestige = 10
-release = CYR
-diplomatic_influence = { who = CYR value = 200 }
-FRA = { country_event = { id = 1412173 days = 36 } }
-ai_chance = { factor = 0.9 }
-		}
-
-option = {
-name = "Aim for a united Libya"
-ai_chance = { factor = 0.1 }
-		}
-
-}
-
-#Fezzan
-country_event = {
-	id = 1412173
-title = "Independence of Fezzan-Ghadames"
-	desc = EVTDESC1412173
-	picture = "fezzan"
-
-is_triggered_only = yes
-
-option = {
-name = "Establish the Kingdom"
-prestige = 10
-release = FEZ
-diplomatic_influence = { who = FEZ value = 200 }
-ai_chance = { factor = 0.2 }
-		}
-
-option = {
-name = "Aim for a united Libya"
-ai_chance = { factor = 0.8 }
-		}
-
-}
-
-#United Libya
-country_event = {
-	id = 1412174
-title = "United Kingdom of Libya"
-	desc = EVTDESC1412174
-	picture = "united_king_libya"
-
-fire_only_once = yes
-
-trigger = { 
-year = 1951
-tag = ENG
-owns = 1731
-TRI = { exists = no }
-OR = { CYR = { exists = yes }
-FEZ = { exists = yes } }
-NOT = { year = 1990 }
-	}
-
-mean_time_to_happen = { 
-months = 5
-}
-
-option = {
-name = "Form a United Libya"
-prestige = 10
-release = TRI
-diplomatic_influence = { who = TRI value = 200 }
-TRI = { inherit = FEZ inherit = CYR }
-ai_chance = { factor = 0.9 }
-		}
-
-option = {
-name = "Create a Federation instead"
-ENG = { release = TRI }
-diplomatic_influence = { who = TRI value = 200 }
-TRI = { inherit = FEZ inherit = CYR }
-
-TRI = { release_vassal = FEZ } 
-TRI = { release_vassal = CYR }
-FRA = { diplomatic_influence = { who = FEZ value = 200 } }
-diplomatic_influence = { who = CYR value = 200 }
-
-ai_chance = { factor = 0.1 }
 		}
 
 }
@@ -1433,38 +1431,74 @@ remove_country_modifier = un_diplo_sanc
 #Add Soviet cores
 country_event = {
 	id = 1412179
-title = "Republics of the Soviet Union"
+	title = "Republics of the Soviet Union"
 	desc = EVTDESC1412179
 	picture = "ussr_cores"
 
-fire_only_once = yes
+	#fire_only_once = yes
 
-trigger = { 
-tag = RUS
-government = proletarian_dictatorship
+	trigger = { 
+		tag = RUS
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+		is_vassal = no
+		war = no
+		
+		#Does not currently have claims over a former SSR's land
+		OR = {
+			UKR = { any_core = { NOT = { is_core = RUS } NOT = { is_core = CRI } } }
+			BYE = { any_core = { NOT = { is_core = RUS } } }
+			GEO = { any_core = { NOT = { is_core = RUS } } }
+			AZB = { any_core = { NOT = { is_core = RUS } NOT = { is_core = PER } } }
+			ARM = { any_core = { NOT = { is_core = RUS } } }
+			TKR = { any_core = { NOT = { is_core = RUS } } }
+			MOL = { any_core = { NOT = { is_core = RUS } } }
+			UZB = { any_core = { NOT = { is_core = RUS } } }
+			KYR = { any_core = { NOT = { is_core = RUS } } }
+			TAJ = { any_core = { NOT = { is_core = RUS } } }
+			KAZ = { any_core = { NOT = { is_core = RUS } } }
+			LIT = { any_core = { NOT = { is_core = RUS } } has_country_flag = USSR_baltic_claims_recognised }
+			LAT = { any_core = { NOT = { is_core = RUS } } has_country_flag = USSR_baltic_claims_recognised }
+			EST = { any_core = { NOT = { is_core = RUS } } has_country_flag = USSR_baltic_claims_recognised }
+		}
+	}
+	
+	mean_time_to_happen = { 
+		months = 1
 	}
 
-option = {
-name = "Great!"
-
-any_owned = { 
-limit = { OR = { 
-	is_core = UKR 
-	is_core = BYE 
-	is_core = GEO 
-	is_core = AZB 
-	is_core = ARM 
-	is_core = TKR
-	is_core = MOL
-	is_core = UZB 
-	is_core = KYR 
-	is_core = TAJ 
-	is_core = KAZ 
-} } 
-add_core = RUS
-}
-
+	option = {
+		name = "Great!"
+		
+		#Ex-Soviet Republics will hate Russia
+		any_country = { 
+			limit = { 
+				exists = yes 
+				any_core = { is_core = RUS } 
+			}
+			relation = { who = THIS value = -100 }
 		}
+		
+		#Add USSR cores over former SSR lands
+		UKR = { all_core = { limit = { NOT = { is_core = RUS } NOT = { is_core = CRI } } add_core = RUS } }
+		BYE = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		GEO = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		AZB = { all_core = { limit = { NOT = { is_core = RUS } NOT = { is_core = PER } } add_core = RUS } }
+		ARM = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		TKR = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		MOL = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		UZB = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		KYR = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		TAJ = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		KAZ = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		LIT = { all_core = { limit = { owner = { has_country_flag = USSR_baltic_claims_recognised } NOT = { is_core = RUS } } add_core = RUS } }
+		LAT = { all_core = { limit = { owner = { has_country_flag = USSR_baltic_claims_recognised } NOT = { is_core = RUS } } add_core = RUS } }
+		EST = { all_core = { limit = { owner = { has_country_flag = USSR_baltic_claims_recognised } NOT = { is_core = RUS } } add_core = RUS } }
+		
+		#Reset THIS's option to keep USSR cores
+		clr_country_flag = USSR_cores_remain_option
+
+	}
+	
 }
 
 #Soviet States Recognition
@@ -1474,13 +1508,41 @@ country_event = {
 	desc = EVTDESC14121799
 	picture = "relinquish_ussr_cores"
 
-	fire_only_once = yes
+	#fire_only_once = yes
 
 	trigger = { 
 		tag = RUS 
+		
+		#RUS is no longer the USSR or USS
 		NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } }
 		is_vassal = no
-		NOT = { has_global_flag = 1992_start_date_flag }
+		war = no
+		
+		#Currently have claims over a former SSR's land
+		OR = {
+			UKR = { any_core = { is_core = RUS NOT = { is_core = CRI } } }
+			BYE = { any_core = { is_core = RUS } }
+			GEO = { any_core = { is_core = RUS } }
+			AZB = { any_core = { is_core = RUS } }
+			ARM = { any_core = { is_core = RUS } }
+			TKR = { any_core = { is_core = RUS } }
+			MOL = { any_core = { is_core = RUS } }
+			UZB = { any_core = { is_core = RUS } }
+			KYR = { any_core = { is_core = RUS } }
+			TAJ = { any_core = { is_core = RUS } }
+			KAZ = { any_core = { is_core = RUS } }
+			LIT = { any_core = { is_core = RUS } }
+			LAT = { any_core = { is_core = RUS } }
+			EST = { any_core = { is_core = RUS } }
+		}
+		
+		#THIS did not previously choose to retain the USSR cores
+		NOT = { has_country_flag = USSR_cores_remain_option }
+		
+	}
+	
+	mean_time_to_happen = { 
+		months = 1
 	}
 
 	option = {
@@ -1490,7 +1552,10 @@ country_event = {
 
 		#Ex-Soviet Republics will like Russia
 		any_country = { 
-			limit = { any_core = { is_core = RUS } }
+			limit = { 
+				exists = yes 
+				any_core = { is_core = RUS } 
+			}
 			relation = { who = THIS value = 50 }
 		}
 
@@ -1517,7 +1582,7 @@ country_event = {
 			remove_core = RUS
 		}
 
-		ai_chance = { factor = 0.9 }
+		ai_chance = { factor = 0.95 }
 
 	}
 
@@ -1535,8 +1600,10 @@ country_event = {
 			limit = { any_core = { is_core = RUS } }
 			relation = { who = THIS value = -200 }
 		}
+		
+		set_country_flag = USSR_cores_remain_option
 
-		ai_chance = { factor = 0.1 }
+		ai_chance = { factor = 0.05 }
 	}
 
 }
@@ -1846,51 +1913,60 @@ random_province = { limit = { is_colonial = no NOT = { total_pops = 50000 } } ad
 #State Visit
 country_event = {
 	id = 1412191
-title = "State Visit by a major Geopolitical Power"
+	title = "Important State Visit in $CAPITAL$"
 	desc = EVTDESC1412191
 	picture = "state_visit"
 
-trigger = { 
-is_vassal = no
-war = no
-election = no
-NOT = { has_country_flag = stop_loan }
+	trigger = { 
+	
+		#Diplomacy focus
+		has_country_modifier = nprlow
+		
+		#Big powers dont waste time with irrelevant minors
+		rank = 45
+		
+		is_vassal = no
+		war = no
+		election = no
+		
+		#No visits if THIS doesn't give loans
+		NOT = { has_country_flag = stop_loan }
 	}
 
-mean_time_to_happen = { 
-months = 36
-modifier = { factor = 2 is_greater_power = no is_secondary_power = no }
-modifier = { factor = 1.5 badboy = 0.1 }
-modifier = { factor = 1.5 badboy = 0.2 }
-modifier = { factor = 1.5 badboy = 0.3 }
-modifier = { factor = 1.5 badboy = 0.4 }
-modifier = { factor = 1.5 badboy = 0.5 }
-modifier = { factor = 1.5 badboy = 0.6 }
-modifier = { factor = 1.5 badboy = 0.7 }
-modifier = { factor = 1.5 badboy = 0.8 }
-modifier = { factor = 1.5 badboy = 0.9 }
-modifier = { factor = 1.5 badboy = 1.0 }
-}
+	mean_time_to_happen = { 
+		months = 36
+		modifier = { factor = 2 is_greater_power = no is_secondary_power = no }
+		modifier = { factor = 1.5 badboy = 0.1 }
+		modifier = { factor = 1.5 badboy = 0.2 }
+		modifier = { factor = 1.5 badboy = 0.3 }
+		modifier = { factor = 1.5 badboy = 0.4 }
+		modifier = { factor = 1.5 badboy = 0.5 }
+		modifier = { factor = 1.5 badboy = 0.6 }
+		modifier = { factor = 1.5 badboy = 0.7 }
+		modifier = { factor = 1.5 badboy = 0.8 }
+		modifier = { factor = 1.5 badboy = 0.9 }
+		modifier = { factor = 1.5 badboy = 1.0 }
+	}
 
-option = {
-name = "Discuss deepening trade ties"
-prestige = 10
-random_country = { limit = { OR = { is_greater_power = yes is_secondary_power = yes } } relation = { who = THIS value = 10 } }
-add_country_modifier = { name = economic_boom duration = 730 }
-		}
+	option = {
+		name = "Discuss deepening trade ties"
+		prestige = 10
+		random_country = { limit = { OR = { is_greater_power = yes is_secondary_power = yes } } relation = { who = THIS value = 10 } }
+		add_country_modifier = { name = economic_boom duration = 730 }
+	}
 
-option = {
-name = "Discuss mutual interests"
-prestige = 5
-random_country = { limit = { OR = { is_greater_power = yes is_secondary_power = yes } } diplomatic_influence = { who = THIS value = 5 } relation = { who = THIS value = 25 } }
-		}
+	option = {
+		name = "Discuss mutual interests"
+		prestige = 5
+		random_country = { limit = { OR = { is_greater_power = yes is_secondary_power = yes } } diplomatic_influence = { who = THIS value = 5 } relation = { who = THIS value = 25 } }
+	}
 
 
-option = {
-name = "Discuss contentious issues"
-prestige = 30
-random_country = { limit = { OR = { is_greater_power = yes is_secondary_power = yes } } relation = { who = THIS value = -25 } }
-		}
+	option = {
+		name = "Discuss contentious issues"
+		prestige = 30
+		random_country = { limit = { OR = { is_greater_power = yes is_secondary_power = yes } } relation = { who = THIS value = -25 } }
+	}
 
 }
 
@@ -2016,48 +2092,48 @@ set_global_flag = future_age
 #Free City of Danzig
 country_event = {
 	id = 1412197
-title = "The Danzig Question"
+	title = "The Danzig Question"
 	desc = EVTDESC1412197
 	picture = "fcod"
 
-fire_only_once = yes
+	fire_only_once = yes
 
-trigger = { 
-NOT = { year = 1990 }
-tag = POL
-government = democracy
-is_vassal = no
-owns = 690
-DZG = { exists = no }
+	trigger = { 
+		tag = POL
+		year = 1946
+		NOT = { year = 1990 }
+
+		government = democracy
+		is_vassal = no
+		war = no
+		
+		is_possible_vassal = DZG
 	}
 
-mean_time_to_happen = { 
-months = 3
-}
+	mean_time_to_happen = { 
+		months = 3
+	}
+	
+	option = {
+		name = "Keep hold of the Danzig"
+		ai_chance = { factor = 0.9 }
+	}
 
-option = {
-name = "Restore the sovereignty of Danzig"
-690 = { remove_core = POL }
-release = DZG
-DZG = { government = democracy country_event = 800054 }
-prestige = 100
-ai_chance = { factor = 0.1 }
+	option = {
+		name = "Restore the sovereignty of Danzig"
+		prestige = 100
+		
+		690 = { remove_core = POL }
+		
+		release = DZG
+		DZG = { 
+			government = democracy 
+			country_event = 800054 
+			ruling_party_ideology = conservative 
 		}
-
-option = {
-name = "Grant partial autonomy to the Danzig"
-690 = { remove_core = POL }
-release_vassal = DZG
-DZG = { government = sar_government country_event = 800054 }
-prestige = 50
-set_global_flag = dzg_puppet
-ai_chance = { factor = 0.2 }
-		}
-
-option = {
-name = "Keep hold of the Danzig"
-ai_chance = { factor = 0.7 }
-		}
+		
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
@@ -2164,149 +2240,6 @@ country_event = {
 		
 		ai_chance = { factor = 0.1 }
 	}
-
-}
-
-#Set Development Levels
-country_event = {
-	id = 1412201
-title = "Developmental Levels"
-	desc = EVTDESC1412201
-	picture = "developmental_levels"
-
-trigger = { 
-any_owned_province = { NOT = { OR = { has_province_modifier = dev_1 has_province_modifier = dev_2 has_province_modifier = dev_3 has_province_modifier = dev_4 has_province_modifier = dev_5 } } }
-	}
-
-mean_time_to_happen = { 
-months = 1
-}
-
-option = {
-name = "Time to start developing our nation"
-
-add_country_modifier = { name = dev_timer duration = 730 }
-
-any_owned = { limit = { 
-
-total_pops = 15000
-
-NOT = { OR = { has_province_modifier = dev_1 has_province_modifier = dev_2 has_province_modifier = dev_3 has_province_modifier = dev_4 has_province_modifier = dev_5 } } 
-
-literacy = 0.20 } add_province_modifier = { name = dev_5 duration = -1 } }
-
-any_owned = { limit = { 
-
-total_pops = 15000
-
-NOT = { OR = { has_province_modifier = dev_1 has_province_modifier = dev_2 has_province_modifier = dev_3 has_province_modifier = dev_4 has_province_modifier = dev_5 } } 
-
-literacy = 0.15 } add_province_modifier = { name = dev_4 duration = -1 } }
-
-any_owned = { limit = { 
-
-total_pops = 15000
-
-NOT = { OR = { has_province_modifier = dev_1 has_province_modifier = dev_2 has_province_modifier = dev_3 has_province_modifier = dev_4 has_province_modifier = dev_5 } } 
-
-literacy = 0.10 } add_province_modifier = { name = dev_3 duration = -1 } }
-
-any_owned = { limit = { 
-
-total_pops = 15000
-
-NOT = { OR = { has_province_modifier = dev_1 has_province_modifier = dev_2 has_province_modifier = dev_3 has_province_modifier = dev_4 has_province_modifier = dev_5 } } 
-
-literacy = 0.05 } add_province_modifier = { name = dev_2 duration = -1 } }
-
-any_owned = { limit = { 
-
-OR = { NOT = { literacy = 0.05 } NOT = { total_pops = 15000 } }
-
-NOT = { OR = { has_province_modifier = dev_1 has_province_modifier = dev_2 has_province_modifier = dev_3 has_province_modifier = dev_4 has_province_modifier = dev_5 } } 
-
-} add_province_modifier = { name = dev_1 duration = -1 } }
-
-		}
-}
-
-#Developmental Levels Review
-country_event = {
-	id = 1412202
-title = "Developmental Levels Progress"
-	desc = EVTDESC1412201
-	picture = "developmental_levels"
-
-trigger = { 
-OR = { has_country_modifier = nprhigh has_country_modifier = nprmedium has_country_modifier = nprlow }
-NOT = { has_country_modifier = dev_timer }
-OR = { any_owned_province = { has_province_modifier = dev_1 }any_owned_province = { has_province_modifier = dev_2 }any_owned_province = { has_province_modifier = dev_3 }
-any_owned_province = { has_province_modifier = dev_4 }any_owned_province = { has_province_modifier = dev_5 } }
-
-any_owned_province = { NOT = { has_province_modifier = dev_5 } }
-
-	}
-
-mean_time_to_happen = { 
-months = 60
-
-modifier = { factor = 1.5 has_country_modifier = nprmedium }
-modifier = { factor = 2.0 has_country_modifier = nprlow }
-modifier = { factor = 0.5 is_greater_power = yes }
-modifier = { factor = 0.75 is_secondary_power = yes }
-
-}
-
-option = {
-name = "Press ahead with our nation's development"
-
-prestige = 20
-
-add_country_modifier = { name = dev_timer duration = 730 }
-
-any_owned = { remove_province_modifier = dev_5 remove_province_modifier = dev_4 remove_province_modifier = dev_3 remove_province_modifier = dev_2 remove_province_modifier = dev_1 }
-
-any_owned = { limit = { 
-
-OR = { total_pops = 35000 is_capital = yes }
-
-NOT = { OR = { has_province_modifier = dev_1 has_province_modifier = dev_2 has_province_modifier = dev_3 has_province_modifier = dev_4 has_province_modifier = dev_5 } } 
-
-literacy = 0.20 } add_province_modifier = { name = dev_5 duration = -1 } }
-
-any_owned = { limit = { 
-
-OR = { total_pops = 30000 is_capital = yes }
-
-NOT = { OR = { has_province_modifier = dev_1 has_province_modifier = dev_2 has_province_modifier = dev_3 has_province_modifier = dev_4 has_province_modifier = dev_5 } } 
-
-literacy = 0.15 } add_province_modifier = { name = dev_4 duration = -1 } }
-
-any_owned = { limit = { 
-
-OR = { total_pops = 25000 is_capital = yes }
-
-NOT = { OR = { has_province_modifier = dev_1 has_province_modifier = dev_2 has_province_modifier = dev_3 has_province_modifier = dev_4 has_province_modifier = dev_5 } } 
-
-literacy = 0.10 } add_province_modifier = { name = dev_3 duration = -1 } }
-
-any_owned = { limit = { 
-
-OR = { total_pops = 20000 is_capital = yes }
-
-NOT = { OR = { has_province_modifier = dev_1 has_province_modifier = dev_2 has_province_modifier = dev_3 has_province_modifier = dev_4 has_province_modifier = dev_5 } } 
-
-literacy = 0.05 } add_province_modifier = { name = dev_2 duration = -1 } }
-
-any_owned = { limit = { 
-
-OR = { NOT = { literacy = 0.05 } NOT = { total_pops = 20000 } }
-
-NOT = { OR = { has_province_modifier = dev_1 has_province_modifier = dev_2 has_province_modifier = dev_3 has_province_modifier = dev_4 has_province_modifier = dev_5 } } 
-
-} add_province_modifier = { name = dev_1 duration = -1 } }
-
-		}
 
 }
 
@@ -2708,7 +2641,7 @@ title = "Dissolution of the United Kingdom"
 
 trigger = { 
 
-NOT = { exists = END }
+NOT = { exists = ENL }
 
 tag = ENG
 
@@ -2729,9 +2662,9 @@ months = 1
 option = {
 name = "It's the end of an era"
 prestige_factor = -0.25
-change_tag = END
-END = { primary_culture = english }
-any_owned = { limit = { is_core = ENG } add_core = END }
+change_tag = ENL
+ENL = { primary_culture = english }
+any_owned = { limit = { is_core = ENG } add_core = ENL }
 		}
 
 }
@@ -2749,7 +2682,7 @@ trigger = {
 
 NOT = { exists = ENG }
 
-tag = END
+tag = ENL
 
 OR = { NOT = { exists = SCO } is_our_vassal = SCO }
 OR = { NOT = { exists = IRE } is_our_vassal = IRE }
@@ -2881,86 +2814,153 @@ country_event = {
 #Keep the Empire - All Colonial Provinces add modifier
 country_event = {
 	id = 1412217
-title = "Dissent amongst our Colonial Subjects"
+	title = "Dissent in the $COUNTRY_ADJ$ Colonies"
 	desc = EVTDESC1412217
 	picture = "colonial_dissent"
 
-trigger = {
+	trigger = {
+	
+		#Blocking decolonisation events
+		has_country_flag = decolonise_yes
 
-has_country_flag = decolonise_yes
+		#Oppressing minorities
+		minorities_reform = minorities_oppression
 
-minorities_reform = minorities_oppression
-
-any_owned_province = { NOT = { is_core = THIS } is_colonial = yes NOT = { has_province_modifier = decolonise_yes } }
-
-}
-
-mean_time_to_happen = { 
-months = 1
-}
-
-option = {
-name = "A necessary evil to preserve the empire"
-badboy = 1
-prestige = -10
-any_owned = { limit = { NOT = { is_core = THIS } is_colonial = yes NOT = { has_province_modifier = decolonise_yes } } add_province_modifier = { name = decolonise_yes duration = -1 } }
+		#Has colonial provinces without the dissent province modifier
+		any_owned_province = { 
+			NOT = { is_core = THIS } 
+			is_colonial = yes 
+			NOT = { has_province_modifier = decolonise_yes } 
 		}
 
+	}
+
+	mean_time_to_happen = { 
+		months = 6
+	}
+
+	option = {
+		name = "A necessary evil to preserve the empire"
+		badboy = 1
+		prestige = -10
+		any_owned = { 
+			limit = { 
+				NOT = { is_core = THIS } 
+				is_colonial = yes 
+				NOT = { has_province_modifier = decolonise_yes } 
+			} 
+			add_province_modifier = { name = decolonise_yes duration = -1 } 
+		}
+	}
+
 }
 
-#Keep the Empire - Remove Province Modifier
-country_event = {
+#Keep the Empire - Remove Province Modifier (province event)
+province_event = {
 	id = 1412218
-title = "Colonial Dissent Review"
+	title = "Anti-Colonial Dissent Eases in $STATENAME$"
 	desc = EVTDESC1412218
 	picture = "dissant_reduce"
 
-trigger = {
+	trigger = {
+	
+		#Has colonial dissent modifier
+		has_province_modifier = decolonise_yes
 
-has_country_flag = decolonise_yes
+		#Owner blocking decolonisation events
+		owner = { has_country_flag = decolonise_yes }
+		
+		#Owner is not oppressing minorities
+		owner = { NOT = { minorities_reform = minorities_oppression } }
+		
+		#Only fires in the state capital
+		is_state_capital = yes
+		
+		#Province conditions
+		controlled_by = owner
+		is_colonial = yes
+		
+		#Don't have a lot of radicals sitting around
+		NOT = { populist = 0.10 }
+		NOT = { nationalist = 0.10 }
+		NOT = { traditionalist = 0.10 }
+		NOT = { socialist = 0.15 }
+		NOT = { communist = 0.10 }
+		NOT = { communist_social = 0.10 }
 
-NOT = { minorities_reform = minorities_oppression }
-
-any_owned_province = { NOT = { pop_majority_ideology = nationalist } is_colonial = yes has_province_modifier = decolonise_yes }
-
-}
-
-mean_time_to_happen = { 
-months = 120
 	}
 
-option = {
-name = "Some colonial subjects are gradually accepting $COUNTRY_ADJ$ rule"
-any_owned = { limit = { NOT = { pop_majority_ideology = nationalist } has_province_modifier = decolonise_yes } remove_province_modifier = decolonise_yes }
+	mean_time_to_happen = { 
+		months = 400
+	}
+
+	option = {
+		name = "Excellent news!"
+		state_scope = { 
+			any_owned = { 
+				remove_province_modifier = decolonise_yes 
+				any_pop = { militancy = -5 consciousness = -5 }
+			} 
 		}
+	}
 
 }
 
-#Keep the Empire - Gain Legitimacy
-country_event = {
+#Keep the Empire - Gain Legitimacy (province event)
+province_event = {
 	id = 1412219
-title = "Colonial Legitimacy"
-	desc = "As we have ruled over some of our colonies for so long, the international community has now accepted our legitimacy to rule over those areas."
+	title = "$COUNTRY_ADJ$ Colonial Legitimacy"
+	desc = EVTDESC1412219
 	picture = "gain_colony_core"
 
-trigger = {
+	trigger = {
+	
+		#Only fires in the state capital
+		is_state_capital = yes
+		
+		#Province conditions
+		controlled_by = owner
+		is_colonial = yes
+		
+		#Not already a core of THIS
+		NOT = { is_core = THIS }
 
-minorities_reform = minorities_affirmative_action
+		#Owner is pro-natives
+		owner = { minorities_reform = minorities_affirmative_action }
+		
+		#Need the requisite tech (post 1990), needs to remove a generation of natives that remembered their former independence
+		owner = { cultural_imperialism = 1 }
 
-has_country_flag = decolonise_yes
+		#Low militancy
+		NOT = { average_militancy = 2 }
+		
+		#Not has colonial dissent modifier
+		NOT = { has_province_modifier = decolonise_yes }
+		
+		#Don't have a lot of radicals sitting around
+		NOT = { populist = 0.10 }
+		NOT = { nationalist = 0.10 }
+		NOT = { traditionalist = 0.10 }
+		NOT = { socialist = 0.15 }
+		NOT = { communist = 0.10 }
+		NOT = { communist_social = 0.10 }
 
-any_owned_province = { NOT = { is_core = THIS } NOT = { pop_majority_ideology = nationalist } NOT = { pop_majority_ideology = populist } is_colonial = yes NOT = { has_province_modifier = decolonise_yes } }
-
-}
-
-mean_time_to_happen = { 
-months = 240
 	}
 
-option = {
-name = "Our empire is finally gaining acceptance"
-any_owned = { limit = { NOT = { is_core = THIS } NOT = { pop_majority_ideology = nationalist } NOT = { pop_majority_ideology = populist } is_colonial = yes NOT = { has_province_modifier = decolonise_yes } } add_core = THIS }
+	mean_time_to_happen = { 
+		months = 1000
+	}
+
+	option = {
+		name = "It's about time!"
+		prestige = 10
+		state_scope = { 
+			any_owned = { 
+				any_pop = { militancy = -5 consciousness = -5 }
+				add_core = THIS
+			}
 		}
+	}
 
 }
 
@@ -4017,55 +4017,6 @@ ai_chance = { factor = 0.2 }
 
 }
 
-#Form the Palestinian Authority
-country_event = {
-	id = 1412243
-title = "Palestinian National Authority"
-	desc = EVTDESC1412243
-	picture = "pal_authority"
-
-fire_only_once = yes
-
-trigger = {
-tag = ISR
-war = no
-PAL = { exists = no }
-year = 2005
-any_owned_province = { is_core = PAL }
-}
-
-mean_time_to_happen = { 
-months = 4
-	}
-
-option = {
-name = "Restore the Palestinian National Authority"
-prestige = 10
-badboy = -5
-
-918 = { remove_core = ISR }
-
-920 = { remove_core = ISR }
-
-918 = { secede_province = PAL }
-
-920 = { secede_province = PAL }
-
-create_vassal = PAL
-PAL = { government = sar_government country_event = 800054 } 
-ai_chance = { factor = 0.9 }
-		}
-
-option = {
-name = "Continue the occupation"
-prestige = -50
-badboy = 5
-any_pop = { militancy = 2 }
-ai_chance = { factor = 0.1 }
-		}
-
-}
-
 #Integration of Sikkim
 country_event = {
 	id = 1412246
@@ -4172,406 +4123,283 @@ ai_chance = { factor = 0.1 }
 #Austria Hungary - From Hungary
 country_event = {
 	id = 1412248
-title = "Desperate times call for desperate measures"
+	title = "Desperate times call for desperate measures"
 	desc = EVTDESC1412248
 	picture = "kuk_union"
 
-fire_only_once = yes
+	fire_only_once = yes
 
-trigger = {
-tag = HUN
-AUS = { is_vassal = no }
-AUS = { ai = yes }
-government = hms_government
-AUS = { exists = yes }
-AUS = { has_unclaimed_cores = no }
-AUS = { government = democracy }
-NOT = { year = 1990 }
-}
-
-mean_time_to_happen = { 
-months = 5
+	trigger = {
+		tag = HUN
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		government = hms_government
+		is_vassal = no
+		war = no
+		
+		AUS = { 
+			exists = yes 
+			
+			government = democracy
+			is_vassal = no 
+			war = no
+			
+			ai = yes 
+			
+			#Occupation of Austria has ended
+			owns = 619 
+			owns = 613 
+			owns = 612 
+			owns = 616
+		}
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
 	}
 
-option = {
-name = "Propose to Austria"
-AUS = { country_event = 1412249 }
-ai_chance = { factor = 0.9 }
-		}
+	mean_time_to_happen = { 
+		months = 5
+	}
 
-option = {
-name = "We are not interested"
-ai_chance = { factor = 0.1 }
-		}
+	option = {
+		name = "Propose to Austria (80% chance)"
+		AUS = { country_event = 1412249 }
+		ai_chance = { factor = 0.01 }
+	}
+
+	option = {
+		name = "We are not interested"
+		prestige = 100
+		ai_chance = { factor = 0.99 }
+	}
 
 }
 
 #Austria Hungary - 2
 country_event = {
 	id = 1412249
-title = "The Hungarian Proposal"
+	title = "The Hungarian Proposal"
 	desc = EVTDESC1412248
 	picture = "kuk_union"
 
-is_triggered_only = yes 
+	is_triggered_only = yes 
 
-option = {
-name = "Accept"
-HUN = { country_event = 1412250 }
-ai_chance = { factor = 0.8 }
-		}
+	option = {
+		name = "Accept"
+		HUN = { country_event = 1412250 }
+		ai_chance = { factor = 0.8 }
+	}
 
-option = {
-name = "Reject"
-prestige = 10
-relation = { who = HUN value = -50 }
-ai_chance = { factor = 0.2 }
-		}
+	option = {
+		name = "Reject"
+		prestige = 100
+		relation = { who = HUN value = -50 }
+		ai_chance = { factor = 0.2 }
+	}
 
 }
 
 #Austria Hungary - 3
 country_event = {
 	id = 1412250
-title = "Austria-Hungary"
+	title = "Austria-Hungary"
 	desc = EVTDESC1412250
 	picture = "kuk_union_2"
 
-is_triggered_only = yes 
+	is_triggered_only = yes 
 
-option = {
-name = "Long Live the King!"
-change_tag = KUK
-government = hms_government
-primary_culture = austrian_german
-add_accepted_culture = hungarian
-add_accepted_culture = german
-inherit = AUS
-any_owned = { limit = { OR = { is_core = AUS is_core = HUN } } add_core = KUK }
-capital = 619
+	option = {
+		name = "Long Live the King!"
+		
+		inherit = AUS
+		
+		#Become Austria Hungary
+		change_tag = KUK
+		
+		KUK = {
+			government = hms_government
+			primary_culture = austrian_german
+			add_accepted_culture = hungarian
+			add_accepted_culture = german
+
+			AUS = { all_core = { add_core = KUK } }
+			HUN = { all_core = { add_core = KUK } }
+			
+			capital = 619
 		}
-}
-
-#Indonesia wins the war
-country_event = {
-	id = 1412251
-title = "The Indonesian National Revolution succeeds"
-	desc = EVTDESC1412251
-	picture = "dutcheast_indies"
-
-fire_only_once = yes
-
-trigger = {
-tag = NET
-has_country_flag = is_disabled_for_now
-NOT = { war_with = IDO }
-IDO = { is_vassal = no }
-any_owned_province = { is_core = IDO NOT = { is_core = WPA } }
-NOT = { year = 1990 }
-}
-
-option = {
-name = "We have lost our colonial empire"
-prestige = -100
-relation = { who = IDO value = -100 }
-diplomatic_influence = { who = IDO value = -200 }
-any_owned = { limit = { is_core = IDO NOT = { is_core = WPA } } secede_province = IDO }
-		}
+		
+	}
 }
 
 #Vassals pay overlord
 country_event = {
 	id = 1412252
-title = "$COUNTRY$'s tax contribution"
+	title = "$COUNTRY$'s tax contribution"
 	desc = EVTDESC1412252
 	picture = "vts"
 
-
-
-trigger = {
-is_vassal = yes
-overlord = { has_country_flag = vtslow }
-NOT = { has_country_modifier = vts_default }
-NOT = { has_country_modifier = vts_timer }
-money = 250000
-NOT = { overlord = { ai = yes money = 20000000 } }
-}
-
-option = {
-name = "Pay the tax"
-
-add_country_modifier = { name = vts_timer duration = 365 }
-
-#250K to 500K
-random_owned = { 
-
-limit = { 
-owner = { money = 250000 NOT = { money = 500000 } } 
-} 
-
-
-
-owner = { money = -50000 overlord = { money = 50000 } }
-
-}
-
-#500K to 750K
-random_owned = { 
-
-limit = { 
-owner = { money = 500000 NOT = { money = 750000 } } 
-} 
-
-
-
-owner = { money = -75000 overlord = { money = 75000 } }
-
-}
-
-
-#750K to 1000K
-random_owned = { 
-
-limit = { 
-owner = { money = 750000 NOT = { money = 1000000 } } 
-} 
-
-
-
-owner = { money = -100000 overlord = { money = 100000 } }
-
-}
-
-### 1000K ###
-
-#1000K to 1250K
-random_owned = { 
-
-limit = { 
-owner = { money = 1000000 NOT = { money = 1250000 } } 
-} 
-
-
-
-owner = { money = -125000 overlord = { money = 125000 } }
-
-}
-
-#1250K to 1500K
-random_owned = { 
-
-limit = { 
-owner = { money = 1250000 NOT = { money = 1500000 } } 
-} 
-
-
-
-owner = { money = -150000 overlord = { money = 150000 } }
-
-}
-
-
-#1500K to 1750K
-random_owned = { 
-
-limit = { 
-owner = { money = 1500000 NOT = { money = 1750000 } } 
-} 
-
-
-
-owner = { money = -175000 overlord = { money = 175000 } }
-
-}
-
-#1750K to 2000K
-random_owned = { 
-
-limit = { 
-owner = { money = 1750000 NOT = { money = 2000000 } } 
-} 
-
-
-
-owner = { money = -200000 overlord = { money = 200000 } }
-
-}
-
-
-### 2000K ###
-
-#2000K to 2250K
-random_owned = { 
-
-limit = { 
-owner = { money = 2000000 NOT = { money = 2250000 } } 
-} 
-
-
-
-owner = { money = -225000 overlord = { money = 225000 } }
-
-}
-
-#2250K to 2500K
-random_owned = { 
-
-limit = { 
-owner = { money = 2250000 NOT = { money = 2500000 } } 
-} 
-
-
-
-owner = { money = -250000 overlord = { money = 250000 } }
-
-}
-
-
-#2500K to 2750K
-random_owned = { 
-
-limit = { 
-owner = { money = 2500000 NOT = { money = 2750000 } } 
-} 
-
-
-
-owner = { money = -275000 overlord = { money = 275000 } }
-
-}
-
-#2750K to 3000K
-random_owned = { 
-
-limit = { 
-owner = { money = 2750000 NOT = { money = 3000000 } } 
-} 
-
-
-
-owner = { money = -300000 overlord = { money = 300000 } }
-
-}
-
-### 3000K ###
-
-#3000K to 3250K
-random_owned = { 
-
-limit = { 
-owner = { money = 3000000 NOT = { money = 3250000 } } 
-} 
-
-
-
-owner = { money = -325000 overlord = { money = 325000 } }
-
-}
-
-#3250K to 3500K
-random_owned = { 
-
-limit = { 
-owner = { money = 3250000 NOT = { money = 3500000 } } 
-} 
-
-
-
-owner = { money = -350000 overlord = { money = 350000 } }
-
-}
-
-
-#3500K to 3750K
-random_owned = { 
-
-limit = { 
-owner = { money = 3500000 NOT = { money = 3750000 } } 
-} 
-
-
-
-owner = { money = -375000 overlord = { money = 375000 } }
-
-}
-
-#3750K to 4000K
-random_owned = { 
-
-limit = { 
-owner = { money = 3750000 NOT = { money = 4000000 } } 
-} 
-
-
-
-owner = { money = -400000 overlord = { money = 400000 } }
-
-}
-
-### 4000K ###
-
-#4000K to 4250K
-random_owned = { 
-
-limit = { 
-owner = { money = 4000000 NOT = { money = 4250000 } } 
-} 
-
-
-
-owner = { money = -425000 overlord = { money = 425000 } }
-
-}
-
-#4250K to 4500K
-random_owned = { 
-
-limit = { 
-owner = { money = 4250000 NOT = { money = 4500000 } } 
-} 
-
-
-
-owner = { money = -450000 overlord = { money = 450000 } }
-
-}
-
-
-#4500K to 4750K
-random_owned = { 
-
-limit = { 
-owner = { money = 4500000 NOT = { money = 4750000 } } 
-} 
-
-
-
-owner = { money = -475000 overlord = { money = 475000 } }
-
-}
-
-#4750K to 5000K
-random_owned = { 
-
-limit = { 
-owner = { money = 4750000 } 
-} 
-
-
-
-owner = { money = -500000 overlord = { money = 500000 } }
-
-}
-
-ai_chance = { factor = 1 }
+	trigger = {
+		is_vassal = yes
+		overlord = { has_country_flag = vtslow }
+		NOT = { has_country_modifier = vts_default }
+		NOT = { has_country_modifier = vts_timer }
+		money = 250000
+		NOT = { overlord = { ai = yes money = 20000000 } }
+	}
+
+	option = {
+		name = "Pay the tax"
+
+		add_country_modifier = { name = vts_timer duration = 365 }
+
+		#Send construction goods
+		random_owned = { limit = { owner = { copper_wire = 25 } } owner = { overlord = { copper_wire = 25 } } }
+		random_owned = { limit = { owner = { fuel = 25 } } owner = { overlord = { fuel = 25 } } }
+		random_owned = { limit = { owner = { lumber = 25 } } owner = { overlord = { lumber = 25 } } }
+		random_owned = { limit = { owner = { inorganic_chemicals = 25 } } owner = { overlord = { inorganic_chemicals = 25 } } }
+		random_owned = { limit = { owner = { plastics = 25 } } owner = { overlord = { plastics = 25 } } }
+		random_owned = { limit = { owner = { machine_parts = 25 } } owner = { overlord = { machine_parts = 25 } } }
+		random_owned = { limit = { owner = { aluminium = 25 } } owner = { overlord = { aluminium = 25 } } }
+		random_owned = { limit = { owner = { integrated_circuits = 25 } } owner = { overlord = { integrated_circuits = 25 } } }
+		random_owned = { limit = { owner = { electric_gear = 25 } } owner = { overlord = { electric_gear = 25 } } }
+		random_owned = { limit = { owner = { optics = 25 } } owner = { overlord = { optics = 25 } } }
+		random_owned = { limit = { owner = { cement = 25 } } owner = { overlord = { cement = 25 } } }
+
+		#250K to 500K
+		random_owned = { 
+			limit = { owner = { money = 250000 NOT = { money = 500000 } } } 
+			owner = { money = -50000 overlord = { money = 50000 } }
 		}
 
-option = {
-name = "Default on the payment"
-overlord = { relation = { who = THIS value = -50 } }
-add_country_modifier = { name = vts_default duration = 365 }
-ai_chance = { factor = 0 }
+		#500K to 750K
+		random_owned = { 
+			limit = { owner = { money = 500000 NOT = { money = 750000 } } } 
+			owner = { money = -75000 overlord = { money = 75000 } }
 		}
+
+
+		#750K to 1000K
+		random_owned = { 
+			limit = { owner = { money = 750000 NOT = { money = 1000000 } } } 
+			owner = { money = -100000 overlord = { money = 100000 } }
+		}
+
+		### 1000K ###
+
+		#1000K to 1250K
+		random_owned = { 
+			limit = { owner = { money = 1000000 NOT = { money = 1250000 } } } 
+			owner = { money = -125000 overlord = { money = 125000 } }
+		}
+
+		#1250K to 1500K
+		random_owned = { 
+			limit = { owner = { money = 1250000 NOT = { money = 1500000 } } } 
+			owner = { money = -150000 overlord = { money = 150000 } }
+		}
+
+		#1500K to 1750K
+		random_owned = { 
+			limit = { owner = { money = 1500000 NOT = { money = 1750000 } } } 
+			owner = { money = -175000 overlord = { money = 175000 } }
+		}
+
+		#1750K to 2000K
+		random_owned = { 
+			limit = { owner = { money = 1750000 NOT = { money = 2000000 } } } 
+			owner = { money = -200000 overlord = { money = 200000 } }
+		}
+
+		### 2000K ###
+
+		#2000K to 2250K
+		random_owned = { 
+			limit = { owner = { money = 2000000 NOT = { money = 2250000 } } } 
+			owner = { money = -225000 overlord = { money = 225000 } }
+		}
+
+		#2250K to 2500K
+		random_owned = { 
+			limit = { owner = { money = 2250000 NOT = { money = 2500000 } } } 
+			owner = { money = -250000 overlord = { money = 250000 } }
+		}
+
+		#2500K to 2750K
+		random_owned = { 
+			limit = { owner = { money = 2500000 NOT = { money = 2750000 } } } 
+			owner = { money = -275000 overlord = { money = 275000 } }
+
+		}
+
+		#2750K to 3000K
+		random_owned = { 
+			limit = { owner = { money = 2750000 NOT = { money = 3000000 } } } 
+			owner = { money = -300000 overlord = { money = 300000 } }
+		}
+
+		### 3000K ###
+
+		#3000K to 3250K
+		random_owned = { 
+			limit = { owner = { money = 3000000 NOT = { money = 3250000 } } } 
+			owner = { money = -325000 overlord = { money = 325000 } }
+		}
+
+		#3250K to 3500K
+		random_owned = { 
+			limit = { owner = { money = 3250000 NOT = { money = 3500000 } } } 
+			owner = { money = -350000 overlord = { money = 350000 } }
+		}
+
+		#3500K to 3750K
+		random_owned = { 
+			limit = { owner = { money = 3500000 NOT = { money = 3750000 } } } 
+			owner = { money = -375000 overlord = { money = 375000 } }
+		}
+
+		#3750K to 4000K
+		random_owned = { 
+			limit = { owner = { money = 3750000 NOT = { money = 4000000 } } } 
+			owner = { money = -400000 overlord = { money = 400000 } }
+
+		}
+
+		### 4000K ###
+
+		#4000K to 4250K
+		random_owned = { 
+			limit = { owner = { money = 4000000 NOT = { money = 4250000 } } } 
+			owner = { money = -425000 overlord = { money = 425000 } }
+		}
+
+		#4250K to 4500K
+		random_owned = { 
+			limit = { owner = { money = 4250000 NOT = { money = 4500000 } } } 
+			owner = { money = -450000 overlord = { money = 450000 } }
+		}
+
+		#4500K to 4750K
+		random_owned = { 
+			limit = { owner = { money = 4500000 NOT = { money = 4750000 } } } 
+			owner = { money = -475000 overlord = { money = 475000 } }
+		}
+
+		#4750K to 5000K
+		random_owned = { 
+			limit = { owner = { money = 4750000 } } 
+			owner = { money = -500000 overlord = { money = 500000 } }
+		}
+
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "Default on the payment"
+		overlord = { relation = { who = THIS value = -50 } }
+		add_country_modifier = { name = vts_default duration = 365 }
+		ai_chance = { factor = 0 }
+	}
 
 }
 

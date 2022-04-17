@@ -1,36 +1,3 @@
-#Soviet influence gain in Cuba
-country_event = {
-	id = 112314
-	title = "Do we want to help in Cuba's War of Independence?"
-	desc = "The Soviet Union has a special interest in Cuba's survival as a communist Cuba in the USA's own backyard can be useful to threaten the US into agreeing into our demands... especially if we were to place nuclear bombs in Cuba."
-	picture = "sovietcubainfluence"
-	
-	
-	trigger = {
-		year = 1946
-		tag = RUS
-		government = proletarian_dictatorship
-		war = no
-		CUB = { government = proletarian_dictatorship }
-		CUB = { war_with = USA }
-		NOT = { has_country_flag = sovietaidincuba }
-
-	}
-	
-	option = {
-		name = "We shall help Cuba"
-RUS = { diplomatic_influence = { who = CUB value = 400 } }
-		set_country_flag = sovietaidincuba
-		USA = { end_war = CUB }
-		ai_chance = { factor = 1 }
-		}
-	option = {
-		name = "We should not antagonise the USA"
-		prestige = -50
-		set_country_flag = sovietaidincuba
-		ai_chance = { factor = 0 }
-		}
-}
 #Bretton Woods for USA
 country_event = {
 	id = 1300013
@@ -88,46 +55,59 @@ country_event = {
 #Creditor Nation
 country_event = {
 	id = 1300015
-	title = "We are a Creditor Nation"
-	desc = "Our nation has reached a sufficient politico-economic status to be a creditor nation." 
+	title = "We are a Major Creditor Nation"
+	desc = "Our nation has reached a sufficient politico-economic status to be a major creditor nation." 
 	picture = "world_bank"
 	
 	trigger = {
-		year = 1946
-	NOT = { government = proletarian_dictatorship }
+		#GPs only
 		is_greater_power = yes
-		treasury = 5000000
-		industry_score = 1000
-		NOT = { has_country_flag = creditornation }
-
+		
+		#Must have a large economy
+		industrial_score = 1000
+		
+		#Must have a lot of money
+		money = 4000000
+		
+		#Must not have high infamy
+		NOT = { badboy = 0.8 }
+		
+		#Not at war
+		war = no
+		
+		NOT = { has_country_modifier = creditor_nation }
 	}
 	
+	mean_time_to_happen = { months = 12 }
+	
 	option = {
-	name = "Rejoice!"
-add_country_modifier = { name = creditor_nation duration = -1 } 
-		set_country_flag = creditornation
-		}
+		name = "Rejoice!"
+		prestige = 100
+		add_country_modifier = { name = creditor_nation duration = -1 } 
+	}
 }
 #Creditor Nation lose
 country_event = {
 	id = 1300016
-	title = "We are no longer a Creditor Nation"
+	title = "Major Creditor Nation Status Lost"
 	desc = "Our nation has not reached a sufficient politico-economic status to be a creditor nation anymore." 
 	picture = "world_bank"
 	
 	trigger = {
-		year = 1946
-	NOT = { government = proletarian_dictatorship }
-	is_greater_power = no
-	has_country_flag = creditornation
-
+		has_country_modifier = creditor_nation
+		
+		#THIS is not a GP
+		is_greater_power = no
 	}
 	
+	mean_time_to_happen = { months = 12 }
+	
 	option = {
-	name = "NOOOOOO!"
-remove_country_modifier = creditor_nation
-		clr_country_flag = creditornation
-		}
+		name = "NOOOOOO!"
+		prestige = -100
+		remove_country_modifier = creditor_nation
+	}
+	
 }
 #Rotating Chairmanship of the IMF
 country_event = {
@@ -240,69 +220,165 @@ set_country_flag = ibrd_chairmanship
 		}
 }
 
-#Rotating Chairmanships USA first - imf
+#Rotating Chairmanships USA first - IMF
 country_event = {
 	id = 1300023
 	title = "Chairmanship of the IMF"
-	desc = "The Chairmanship of the IMF is rotating and we get the first one as we are the founder. The Chairmanship only lasts 5 years." 
+	desc = "The Chairmanship of the IMF is currently vacant so we have been chosen to fill it. The Chairmanship only lasts 5 years." 
 	picture = "world_bank"
 	
-trigger = { 
-rank = 1
-has_country_modifier = imf_member
-NOT = { has_global_flag = imfusafirst }
-}
 	major = yes
+	
+	trigger = {
+		is_greater_power = yes
+		has_country_modifier = imf_member
+		#NOT = { has_global_flag = imfusafirst }
+		
+		NOT = { has_country_modifier = imf_chairmanship }
+		
+		NOT = { any_greater_power = { has_country_modifier = imf_chairmanship } }
+	}
+	
+	mean_time_to_happen = { months = 6 }
+	
 	option = {
-	name = "Splendid!"
-prestige = 10
-add_country_modifier = { name = imf_chairmanship duration = 1825 }
-set_country_flag = imf_chairmanship
-set_global_flag = imfusafirst
+		name = "Splendid!"
+		prestige = 10
+		add_country_modifier = { name = imf_chairmanship duration = 1825 }
+		set_country_flag = imf_chairmanship
+		set_global_flag = imfusafirst
+		
+		random_owned = { 
+			limit = { owner = { OR = { economic_policy = state_capitalism economic_policy = planned_economy1 economic_policy = planned_economy } } } 
+			owner = { 
+				add_country_modifier = { name = imfhigh duration = -1 } 
+				any_country = { limit = { has_country_modifier = imf_member } add_country_modifier = { name = imfhigh duration = -1 } }
+			} 
 		}
+		random_owned = { 
+			limit = { owner = { economic_policy = interventionism } } 
+			owner = { 
+				add_country_modifier = { name = imfmedium duration = -1 }
+				any_country = { limit = { has_country_modifier = imf_member } add_country_modifier = { name = imfmedium duration = -1 } }
+			} 
+		}
+		random_owned = { 
+			limit = { owner = { economic_policy = laissez_faire } } 
+			owner = { 
+				add_country_modifier = { name = imflow duration = -1 }
+				any_country = { limit = { has_country_modifier = imf_member } add_country_modifier = { name = imflow duration = -1 } }
+			} 
+		}
+		
+	}
+	
 }
 #Rotating Chairmanships USA first - WTO
 country_event = {
 	id = 1300024
 	title = "Chairmanship of the WTO"
-	desc = "The Chairmanship of the WTO is rotating and we get the first one as we are the founder. The Chairmanship only lasts 5 years." 
+	desc = "The Chairmanship of the WTO is currently vacant so we have been chosen to fill it. The Chairmanship only lasts 5 years." 
 	picture = "world_bank"
 	
-trigger = { 
-rank = 1
-has_country_modifier = wto_member
-NOT = { has_global_flag = wtousafirst }
-}
 	major = yes
+	
+	trigger = { 
+		is_greater_power = yes
+		has_country_modifier = wto_member
+		#NOT = { has_global_flag = wtousafirst }
+		
+		NOT = { has_country_modifier = wto_chairmanship }
+		
+		NOT = { any_greater_power = { has_country_modifier = wto_chairmanship } }
+	}
+	
+	mean_time_to_happen = { months = 6 }
+	
 	option = {
-	name = "Splendid!"
-prestige = 10
-add_country_modifier = { name = wto_chairmanship duration = 1825 }
-set_country_flag = wto_chairmanship
-set_global_flag = wtousafirst
-set_global_flag = wto_created
+		name = "Splendid!"
+		prestige = 10
+		add_country_modifier = { name = wto_chairmanship duration = 1825 }
+		set_country_flag = wto_chairmanship
+		set_global_flag = wtousafirst
+		set_global_flag = wto_created
+		
+		random_owned = { 
+			limit = { owner = { trade_policy = protectionism } } 
+			owner = { 
+				add_country_modifier = { name = wtohigh duration = -1 } 
+				any_country = { limit = { has_country_modifier = wto_member } add_country_modifier = { name = wtohigh duration = -1 } }
+			} 
 		}
+		random_owned = { 
+			limit = { owner = { trade_policy = free_trade NOT = { economic_policy = laissez_faire } } } 
+			owner = { 
+				add_country_modifier = { name = wtomedium duration = -1 }
+				any_country = { limit = { has_country_modifier = wto_member } add_country_modifier = { name = wtomedium duration = -1 } }
+			} 
+		}
+		random_owned = { 
+			limit = { owner = { trade_policy = free_trade economic_policy = laissez_faire } } 
+			owner = { 
+				add_country_modifier = { name = wtolow duration = -1 }
+				any_country = { limit = { has_country_modifier = wto_member } add_country_modifier = { name = wtolow duration = -1 } }
+			} 
+		}
+		
+	}
+	
 }
 #Rotating Chairmanships USA first - IBRD
 country_event = {
 	id = 1300025
 	title = "Chairmanship of the IBRD"
-	desc = "The Chairmanship of the IBRD is rotating and we get the first one as we are the founder. The Chairmanship only lasts 5 years." 
+	desc = "The Chairmanship of the IBRD is currently vacant so we have been chosen to fill it. The Chairmanship only lasts 5 years." 
 	picture = "world_bank"
 	
-trigger = { 
-rank = 1
-has_country_modifier = ibrd_member
-NOT = { has_global_flag = ibrdusafirst }
-}
 	major = yes
+	
+	trigger = { 
+		is_greater_power = yes
+		has_country_modifier = ibrd_member
+		#NOT = { has_global_flag = ibrdusafirst }
+		
+		NOT = { has_country_modifier = ibrd_chairmanship }
+		
+		NOT = { any_greater_power = { has_country_modifier = ibrd_chairmanship } }
+	}
+	
+	mean_time_to_happen = { months = 6 }
+	
 	option = {
-	name = "Splendid!"
-prestige = 10
-add_country_modifier = { name = ibrd_chairmanship duration = 1825 }
-set_country_flag = ibrd_chairmanship
-set_global_flag = ibrdusafirst
+		name = "Splendid!"
+		prestige = 10
+		add_country_modifier = { name = ibrd_chairmanship duration = 1825 }
+		set_country_flag = ibrd_chairmanship
+		set_global_flag = ibrdusafirst
+
+		random_owned = { 
+			limit = { owner = { OR = { economic_policy = state_capitalism economic_policy = planned_economy1 economic_policy = planned_economy } } } 
+			owner = { 
+				add_country_modifier = { name = ibrdhigh_gp duration = -1 } 
+				any_country = { limit = { has_country_modifier = ibrd_member } add_country_modifier = { name = ibrdhigh duration = -1 } }
+			} 
 		}
+		random_owned = { 
+			limit = { owner = { economic_policy = interventionism } } 
+			owner = { 
+				add_country_modifier = { name = ibrdmedium_gp duration = -1 }
+				any_country = { limit = { has_country_modifier = ibrd_member } add_country_modifier = { name = ibrdmedium duration = -1 } }
+			} 
+		}
+		random_owned = { 
+			limit = { owner = { economic_policy = laissez_faire } } 
+			owner = { 
+				add_country_modifier = { name = ibrdlow_gp duration = -1 }
+				any_country = { limit = { has_country_modifier = ibrd_member } add_country_modifier = { name = ibrdlow duration = -1 } }
+			} 
+		}
+		
+	}
+	
 }
 #UK Choice to go with Empire or the EEC
 country_event = {
@@ -429,31 +505,6 @@ NOT = { is_our_vassal = MLI } NOT = { owns = 1794 }
 
 }
 
-#Rename as Vietnam
-country_event = {
-	id = 1300028
-	title = "Establishment of a united Vietnam"
-	desc = "With South Vietnam out of the way, we can now rightfully call ourselves Vietnam!"
-	picture = "nwo2_united_vietnam_under_hanoi"
-
-	trigger = {
-		war = no
-		tag = DAI
-		government = proletarian_dictatorship1
-		NOT = { FRA = { is_our_vassal = CAM } }
-		NOT = { FRA = { is_our_vassal = LUA } }
-		NOT = { exists = SVI }
-		NOT = { has_country_flag = vietnamrename }
-
-	}
-	
-	option = {
-		name = "Rejoice!"
-		government = proletarian_dictatorship
-		prestige = 10
-		set_country_flag = vietnamrename
-		}
-	}
 #SAR status
 country_event = {
 	id = 1300029
@@ -535,26 +586,27 @@ country_event = {
 
 	trigger = {
 
-ai = no
-is_vassal = no
+		ai = no
+		is_vassal = no
 
-NOT = { has_country_modifier = defcon5 }
-NOT = { has_country_modifier = defcon4 }
-NOT = { has_country_modifier = defcon3 }
-NOT = { has_country_modifier = defcon2 }
-NOT = { has_country_modifier = defcon1 }
+		NOT = { has_country_modifier = defcon5 }
+		NOT = { has_country_modifier = defcon4 }
+		NOT = { has_country_modifier = defcon3 }
+		NOT = { has_country_modifier = defcon2 }
+		NOT = { has_country_modifier = defcon1 }
 
 	}
 	
 	option = {
 		name = "Peace has returned"
-add_country_modifier = { name = defcon5 duration = -1 }
-remove_country_modifier = defcon1
-remove_country_modifier = defcon2
-remove_country_modifier = defcon3
-remove_country_modifier = defcon4
-		}
+		add_country_modifier = { name = defcon5 duration = -1 }
+		remove_country_modifier = defcon1
+		remove_country_modifier = defcon2
+		remove_country_modifier = defcon3
+		remove_country_modifier = defcon4
 	}
+	
+}
 
 #Defcon 5
 country_event = {
@@ -565,33 +617,36 @@ country_event = {
 
 	trigger = {
 
-OR = { ai = yes is_vassal = yes }
+		OR = { ai = yes is_vassal = yes }
 
 		war = no
+		
 		crisis_exist = no
-OR = { 
-has_country_modifier = cold_war_low 
-has_country_modifier = world_low 
-}
+		
+		OR = { 
+			has_country_modifier = cold_war_low 
+			has_country_modifier = world_low 
+		}
 
 		OR = { 
-		NOT = { has_country_modifier = defcon5 }
-		has_country_modifier = defcon1
-		has_country_modifier = defcon2
-		has_country_modifier = defcon3 
-		has_country_modifier = defcon4
+			NOT = { has_country_modifier = defcon5 }
+			has_country_modifier = defcon1
+			has_country_modifier = defcon2
+			has_country_modifier = defcon3 
+			has_country_modifier = defcon4
 		}
 	}
 	
 	option = {
 		name = "Peace has returned"
-add_country_modifier = { name = defcon5 duration = -1 }
-remove_country_modifier = defcon1
-remove_country_modifier = defcon2
-remove_country_modifier = defcon3
-remove_country_modifier = defcon4
-		}
+		add_country_modifier = { name = defcon5 duration = -1 }
+		remove_country_modifier = defcon1
+		remove_country_modifier = defcon2
+		remove_country_modifier = defcon3
+		remove_country_modifier = defcon4
 	}
+	
+}
 #Defcon 4
 country_event = {
 	id = 1300033
@@ -601,28 +656,30 @@ country_event = {
 
 	trigger = {
 
-OR = { ai = yes is_vassal = yes }
+		OR = { ai = yes is_vassal = yes }
 
 		war = no
 
-OR = { 
-AND = { crisis_exist = no OR = { has_country_modifier = cold_war_medium has_country_modifier = world_medium } }
+		OR = { 
+			AND = { crisis_exist = no OR = { has_country_modifier = cold_war_medium has_country_modifier = world_medium } }
 
-AND = { crisis_exist = yes 
-NOT = { crisis_temperature = 35 } }
-}
-		NOT = { has_country_modifier = defcon4 }
+			AND = { crisis_exist = yes NOT = { crisis_temperature = 35 } }
 		}
+		
+		NOT = { has_country_modifier = defcon4 }
+		
+	}
 	
 	option = {
 		name = "Up the ante on our enemies"
-add_country_modifier = { name = defcon4 duration = -1 }
-remove_country_modifier = defcon1
-remove_country_modifier = defcon2
-remove_country_modifier = defcon3
-remove_country_modifier = defcon5
-		}
+		add_country_modifier = { name = defcon4 duration = -1 }
+		remove_country_modifier = defcon1
+		remove_country_modifier = defcon2
+		remove_country_modifier = defcon3
+		remove_country_modifier = defcon5
 	}
+	
+}
 #Defcon 3
 country_event = {
 	id = 1300034
@@ -632,27 +689,29 @@ country_event = {
 
 	trigger = {
 
-OR = { ai = yes is_vassal = yes }
+		OR = { ai = yes is_vassal = yes }
 
 		war = no
-OR = { 
-AND = { crisis_exist = no OR = { has_country_modifier = cold_war_high has_country_modifier = world_high } }
+		
+		OR = { 
+			AND = { crisis_exist = no OR = { has_country_modifier = cold_war_high has_country_modifier = world_high } }
 
-AND = { crisis_exist = yes crisis_temperature = 35 
-NOT = { crisis_temperature = 75 } }
-}
-		NOT = { has_country_modifier = defcon3 }
+			AND = { crisis_exist = yes crisis_temperature = 35 NOT = { crisis_temperature = 75 } }
 		}
+		
+		NOT = { has_country_modifier = defcon3 }
+	}
 	
 	option = {
 		name = "Up the ante on our enemies"
-add_country_modifier = { name = defcon3 duration = -1 }
-remove_country_modifier = defcon1
-remove_country_modifier = defcon2
-remove_country_modifier = defcon4
-remove_country_modifier = defcon5
-		}
+		add_country_modifier = { name = defcon3 duration = -1 }
+		remove_country_modifier = defcon1
+		remove_country_modifier = defcon2
+		remove_country_modifier = defcon4
+		remove_country_modifier = defcon5
 	}
+	
+}
 #Defcon 2
 country_event = {
 	id = 1300035
@@ -662,30 +721,32 @@ country_event = {
 
 	trigger = {
 
-#OR = { ai = yes is_vassal = yes }
+		OR = { ai = yes is_vassal = yes war = yes }
 
-NOT = { AND = { has_country_modifier = defcon1 ai = no is_vassal = no } }
+		NOT = { AND = { has_country_modifier = defcon1 ai = no is_vassal = no } }
 
 		OR = { 
-		war = yes 
-AND = { crisis_exist = no 
-has_country_modifier = cold_war_hot }
-AND = { crisis_exist = yes
-crisis_temperature = 75 }
+			war = yes 
+			AND = { crisis_exist = no has_country_modifier = cold_war_hot }
+			AND = { crisis_exist = yes crisis_temperature = 75 }
 		}
+		
 		NOT = { national_provinces_occupied = 0.40 }
+		
 		NOT = { has_country_modifier = defcon2 }
-		}
+		
+	}
 	
 	option = {
 		name = "It's war!"
-add_country_modifier = { name = defcon2 duration = -1 }
-remove_country_modifier = defcon1
-remove_country_modifier = defcon3
-remove_country_modifier = defcon4
-remove_country_modifier = defcon5
-		}
+		add_country_modifier = { name = defcon2 duration = -1 }
+		remove_country_modifier = defcon1
+		remove_country_modifier = defcon3
+		remove_country_modifier = defcon4
+		remove_country_modifier = defcon5
 	}
+	
+}
 #Defcon 1
 country_event = {
 	id = 1300036
@@ -695,24 +756,28 @@ country_event = {
 
 	trigger = {
 
-OR = { ai = yes is_vassal = yes }
+		OR = { ai = yes is_vassal = yes }
 
-NOT = { AND = { has_country_modifier = defcon2 ai = no is_vassal = no } }
+		NOT = { AND = { has_country_modifier = defcon2 ai = no is_vassal = no } }
 
 		OR = { war = yes has_country_modifier = cold_war_hot }
+		
 		national_provinces_occupied = 0.40
+		
 		NOT = { has_country_modifier = defcon1 }
-		}
+		
+	}
 	
 	option = {
 		name = "Let the bombs fly!"
-add_country_modifier = { name = defcon1 duration = -1 }
-remove_country_modifier = defcon2
-remove_country_modifier = defcon3
-remove_country_modifier = defcon4
-remove_country_modifier = defcon5
-		}
+		add_country_modifier = { name = defcon1 duration = -1 }
+		remove_country_modifier = defcon2
+		remove_country_modifier = defcon3
+		remove_country_modifier = defcon4
+		remove_country_modifier = defcon5
 	}
+	
+}
 
 #End of the Capital of the Empire
 country_event = {
@@ -739,27 +804,37 @@ country_event = {
 #Kick out of OPEC
 country_event = {
 	id = 1400013
-	title = "We have been kicked out of OPEC"
-	desc = "The OPEC Council has deemed our membership as invalid due to 1. Either we are a vassal or 2. We do not produce oil anymore."
+	title = "Expelled from OPEC"
+	desc = "The OPEC Council has deemed our membership as invalid due to 1. Either we are a vassal or 2. We do not produce oil anymore or 3. Our gov type is incompatible."
 	picture = "kickedoutofopec"
 
 	trigger = {
 		has_country_modifier = opecmember
-	OR = { NOT = { any_owned_province = { trade_goods = petroleum } } is_vassal = yes }
-		}
-	
-	option = {
-	name = "We need to find a way to rejoin the organisation!"
-		prestige = -10
-		remove_country_modifier = opecmember
-any_owned = { 
-remove_province_modifier = oil_high }
-any_owned = { 
-remove_province_modifier = oil_medium }
-any_owned = { 
-remove_province_modifier = oil_low } 
+		OR = { 
+			NOT = { any_owned_province = { trade_goods = petroleum } } 
+			is_vassal = yes 
+			government = proletarian_dictatorship 
+			government = proletarian_dictatorship1 
+			government = theocracy
 		}
 	}
+	
+	option = {
+		name = "We can go it alone!"
+		prestige = -10
+		
+		remove_country_modifier = opecmember
+		any_owned = { 
+			remove_province_modifier = oil_high 
+			remove_province_modifier = oil_medium 
+			remove_province_modifier = oil_low 
+		}
+		clr_country_flag = oil_high
+		clr_country_flag = oil_medium
+		clr_country_flag = oil_low
+	}
+	
+}
 #Vietnamese Doi Moi
 country_event = {
 	id = 1400014
@@ -1015,29 +1090,46 @@ country_event = {
 	title = "Gaullism"
 	desc = EVTDESC1400022
 	picture = "gaullism"
+	
+	fire_only_once = yes
 
 	trigger = {
 		tag = FRA
-NOT = { year = 1990 }
-NOT = { has_country_flag = gallisum }
-NOT = { has_country_modifier = gaullism }
-
-			}
+		has_country_flag = fifth_republic
+		NOT = { year = 1990 }
+		
+		government = democracy
+		is_vassal = no
+		war = no
+		
+		NOT = { has_country_flag = gallisum }
+		NOT = { has_country_modifier = gaullism }
+	}
+	
+	mean_time_to_happen = { months = 6 }
 	
 	option = {
-	name = "Rebuild France!"
-		prestige = 10
-		militancy = -4
-		set_country_flag = gallisum
-add_country_modifier = { name = gaullism duration = 10950 }
-			}
+		name = "Rebuild France!"
+		prestige = 50
+		
+		any_pop = { 
+			limit = { is_primary_culture = yes } 
+			militancy = -4 
 		}
+		
+		set_country_flag = gallisum
+		add_country_modifier = { name = gaullism duration = 3650 }
+	}
+	
+}
 #Laos Socialism with Market Characteristics
 country_event = {
 	id = 1400023
 	title = "New Economic Mechanism"
 	desc = EVTDESC1400023
 	picture = "laosmarketreforms"
+	
+	fire_only_once = yes
 
 	trigger = {
 		tag = LUA
@@ -1664,258 +1756,6 @@ ai_chance = { factor = 1 }
 		}
 }
 
-#Rocket Failure
-country_event = {
-	id = 1400054
-	title = "Our Rocket Launch attempt failed"
-	desc = "Poor launch planning, human errors during the launch and technical flaws in the rocket design are reasons cited for the failure."
-	picture = "rocket_failure"
-	
-is_triggered_only = yes
-
-option = {
-name = "Damn, it is back to square one!"
-clr_country_flag = space_attempt_fired
-prestige = -5
-add_country_modifier = { name = space_project_attempted duration = 365 }
-		}
-}
-
-#Rocket Success
-country_event = {
-	id = 1400055
-	title = "Our Rocket Launch attempt succeeded"
-	desc = "Good launch planning, no human errors during the launch and technical genius in the rocket design are reasons cited for the success."
-	picture = "rocket_success"
-	
-is_triggered_only = yes
-
-option = {
-name = "Excellent news!"
-clr_country_flag = space_attempt_fired
-prestige = 20
-add_country_modifier = { name = space_project_attempted duration = 365 }
-add_country_modifier = { name = space_rocket duration = -1 }
-remove_country_modifier = develop_space_rocket
-		}
-}
-
-#Satellite Success
-country_event = {
-	id = 1400056
-	title = "Our Satellite Launch attempt succeeded"
-	desc = "Good launch planning, no human errors during the launch and technical genius in the satellite design are reasons cited for the success."
-	picture = "satellite_success"
-	
-is_triggered_only = yes
-
-option = {
-name = "Excellent news!"
-clr_country_flag = space_attempt_fired
-prestige = 30
-add_country_modifier = { name = space_project_attempted duration = 365 }
-add_country_modifier = { name = space_satellite duration = -1 }
-remove_country_modifier = develop_space_satellite
-		}
-}
-
-#Satellite Failure
-country_event = {
-	id = 1400057
-	title = "Our Satellite Launch attempt failed"
-	desc = "Poor launch planning, human errors during the launch and technical flaws in the satellite design are reasons cited for the failure."
-	picture = "satellite_failure"
-	
-is_triggered_only = yes
-
-option = {
-name = "We must keep trying!"
-clr_country_flag = space_attempt_fired
-prestige = -10
-add_country_modifier = { name = space_project_attempted duration = 365 }
-		}
-}
-#Space man Success
-country_event = {
-	id = 1400058
-	title = "Our Man in Space attempt succeeded"
-	desc = "Good launch planning, no human errors during the launch and excellent astronaut training are reasons cited for the success."
-	picture = "space_man_success"
-	
-is_triggered_only = yes
-
-option = {
-name = "Excellent news!"
-clr_country_flag = space_attempt_fired
-prestige = 40
-add_country_modifier = { name = space_project_attempted duration = 365 }
-add_country_modifier = { name = space_man duration = -1 }
-remove_country_modifier = develop_space_man
-		}
-}
-
-#Space man Failure
-country_event = {
-	id = 1400059
-	title = "Our Man in Space attempt failed"
-	desc = "Poor launch planning, human errors during the launch and excellent astronaut training are reasons cited for the failure."
-	picture = "space_man_fail"
-	
-is_triggered_only = yes
-
-option = {
-name = "We must keep trying!"
-clr_country_flag = space_attempt_fired
-prestige = -15
-add_country_modifier = { name = space_project_attempted duration = 365 }
-		}
-}
-#Space Probe Success
-country_event = {
-	id = 1400060
-	title = "Our Space Probe attempt succeeded"
-	desc = "Good launch planning, no human errors during the launch and excellent probe designs are reasons cited for the success."
-	picture = "space_probe_success"
-	
-is_triggered_only = yes
-
-option = {
-name = "Excellent news!"
-clr_country_flag = space_attempt_fired
-prestige = 30
-add_country_modifier = { name = space_project_attempted duration = 365 }
-add_country_modifier = { name = space_probe duration = -1 }
-remove_country_modifier = develop_space_probe
-		}
-}
-
-#Space Probe Failure
-country_event = {
-	id = 1400061
-	title = "Our Space Probe attempt failed"
-	desc = "Poor launch planning, human errors during the launch and poor probe designs are reasons cited for the failure."
-	picture = "space_probe_failure"
-	
-is_triggered_only = yes
-
-option = {
-name = "We must keep trying!"
-clr_country_flag = space_attempt_fired
-prestige = -15
-add_country_modifier = { name = space_project_attempted duration = 365 }
-		}
-}
-
-#Space Station Success
-country_event = {
-	id = 1400062
-	title = "Our Space Station Establishment attempt succeeded"
-	desc = "Good launch planning, no human errors during the launch and excellent space station designs are reasons cited for the success."
-	picture = "space_station_success"
-	
-is_triggered_only = yes
-
-option = {
-name = "Excellent news!"
-clr_country_flag = space_attempt_fired
-prestige = 50
-add_country_modifier = { name = space_project_attempted duration = 365 }
-add_country_modifier = { name = space_station duration = -1 }
-remove_country_modifier = develop_space_station
-		}
-}
-
-#Space Station Failure
-country_event = {
-	id = 1400063
-	title = "Our Space Station Establishment attempt failed"
-	desc = "Poor launch planning, human errors during the launch and atrocious space station designs are reasons cited for the failure."
-	picture = "space_station_failure"
-	
-is_triggered_only = yes
-
-option = {
-name = "We must keep trying!"
-clr_country_flag = space_attempt_fired
-prestige = -20
-add_country_modifier = { name = space_project_attempted duration = 365 }
-		}
-}
-
-#Moon Mission Success
-country_event = {
-	id = 1400064
-	title = "Our Manned Moon Mission succeeded"
-	desc = "Good launch planning, no human errors during the launch and excellent astronaut skills are reasons cited for the success."
-	picture = "moon_success"
-	
-is_triggered_only = yes
-major = yes
-
-option = {
-name = "A small step for man, a giant leap for mankind!"
-clr_country_flag = space_attempt_fired
-prestige = 500
-set_global_flag = moon_mission_win_1
-add_country_modifier = { name = space_project_attempted duration = 365 }
-set_country_flag = space_moon
-remove_country_modifier = develop_moon_mission
-		}
-}
-
-#Moon Mission Failure
-country_event = {
-	id = 1400065
-	title = "Our Manned Moon Mission failed"
-	desc = "Poor launch planning, human errors during the launch and atrocious astronaut skills are reasons cited for the failure."
-	picture = "moon_failure"
-	
-is_triggered_only = yes
-
-option = {
-name = "We must keep trying!"
-clr_country_flag = space_attempt_fired
-prestige = -50
-add_country_modifier = { name = space_project_attempted duration = 365 }
-		}
-}
-
-#Mars Mission Success
-country_event = {
-	id = 1400066
-	title = "Our Manned Mars Mission succeeded"
-	desc = "Good launch planning, no human errors during the launch and excellent astronaut skills are reasons cited for the success."
-	picture = "mars_success"
-	
-is_triggered_only = yes
-major = yes
-option = {
-name = "Ad Astra!"
-clr_country_flag = space_attempt_fired
-prestige = 1000
-add_country_modifier = { name = space_project_attempted duration = 365 }
-set_country_flag = space_mars
-remove_country_modifier = develop_mars_mission
-		}
-}
-
-#Mars  Mission Failure
-country_event = {
-	id = 1400067
-	title = "Our Space Station Establishment attempt failed"
-	desc = "Poor launch planning, human errors during the launch and atrocious astronaut skills are reasons cited for the failure."
-	picture = "mars_failure"
-	
-is_triggered_only = yes
-
-option = {
-name = "We must keep trying!"
-clr_country_flag = space_attempt_fired
-prestige = -100
-add_country_modifier = { name = space_project_attempted duration = 365 }
-		}
-}
-
 #ISS Construction
 country_event = {
 	id = 1400068
@@ -2082,17 +1922,23 @@ country_event = {
 	
 	fire_only_once = yes
 	
-trigger = { 
-tag = RUS
-NOT = { government = proletarian_dictatorship }
-NOT = { has_country_modifier = economic_malaise }
-}
+	trigger = { 
+		tag = RUS
+		NOT = { government = proletarian_dictatorship }
+		
+		#Higher Education rate prevents this
+		NOT = { literacy = 0.15 }
+		
+		NOT = { has_country_modifier = economic_malaise }
+	}
 
-option = {
-name = "We have to shake them out of their laziness!"
-prestige = -25
-add_country_modifier = { name = economic_malaise duration = 7300 }
-		}
+	option = {
+		name = "We have to shake them out of their laziness!"
+		prestige_factor = -0.05
+		
+		set_country_flag = economic_malaise
+		add_country_modifier = { name = economic_malaise duration = 7300 }
+	}
 }
 
 #Pietro Badoglio War Trials
@@ -2102,51 +1948,47 @@ country_event = {
 	desc = EVTDESC1410073
 	picture = "badoglio"
 	
-trigger = { 
-tag = ITA
-year = 1946
-government = democracy
-NOT = { has_country_flag = Badoglio }
-NOT = { year = 1990 }
-}
+	fire_only_once = yes
+	
+    trigger = { 
+        tag = ITA
+        year = 1946
+		NOT = { year = 1990 }
+		
+        OR = { government = democracy government = democracy1 }
+		
+        has_global_flag = paris_peace_treaty_1947
+    }
 
-option = {
-name = "Yes!"
-prestige = 25
-any_pop = { 
-ideology = {
-	factor = 0.2
-	value = socialist
-} 
-ideology = {
-	factor = 0.2
-	value = communist
-} 
-	}
-set_country_flag = Badoglio
-ai_chance = { 
-factor = 0.1
-}
-		}
+    option = {
+        name = "NO!"
+        prestige = 5
+		
+        any_pop = { 
+            scaled_militancy = { factor = 1 ideology = socialist }
+			scaled_consciousness = { factor = 2 ideology = socialist }
+			scaled_militancy = { factor = 1 ideology = communist }
+			scaled_consciousness = { factor = 2 ideology = communist }
+        }
+	
+	    ai_chance = { factor = 0.9 }
+    }
 
-option = {
-name = "NO!"
-prestige = -25
-any_pop = { 
-ideology = {
-	factor = -0.2
-	value = socialist
-} 
-ideology = {
-	factor = -0.2
-	value = communist
-} 
-	}
-set_country_flag = Badoglio
-ai_chance = { 
-factor = 0.9
-}
-		}
+    option = {
+        name = "Yes!"
+        prestige = 10
+		
+        any_pop = { 
+            ideology = { factor = 0.02 value = socialist } 
+            ideology = { factor = 0.04 value = communist } 
+			scaled_militancy = { factor = -1 ideology = socialist }
+			scaled_consciousness = { factor = -2 ideology = socialist }
+			scaled_militancy = { factor = -1 ideology = communist }
+			scaled_consciousness = { factor = -2 ideology = communist }
+	    }
+
+        ai_chance = { factor = 0.1 }
+    }
 
 }
 
@@ -2157,51 +1999,59 @@ country_event = {
 	desc = EVTDESC1410074
 	picture = "graziani"
 	
-trigger = { 
-tag = ITA
-year = 1948
-government = democracy
-NOT = { has_country_flag = Graziani }
-NOT = { year = 1990 }
-}
+	fire_only_once = yes
+	
+    trigger = { 
+        tag = ITA
+        year = 1948
+		NOT = { year = 1990 }
+		
+        OR = { government = democracy government = democracy1 }
+		
+        has_global_flag = paris_peace_treaty_1947
+    }
 
-option = {
-name = "Give him the harsh sentence!"
-prestige = 25
-any_pop = { 
-ideology = {
-	factor = 0.2
-	value = socialist
-} 
-ideology = {
-	factor = 0.2
-	value = communist
-} 
-	}
-set_country_flag = Graziani
-ai_chance = { 
-factor = 0.1
-}
-		}
+    option = {
+        name = "Give him the light sentence!"
+        prestige = -5
+		
+        any_pop = { 
+            scaled_militancy = { factor = 1 ideology = socialist }
+			scaled_consciousness = { factor = 2 ideology = socialist }
+			scaled_militancy = { factor = 1 ideology = communist }
+			scaled_consciousness = { factor = 2 ideology = communist }
+        }
+		
+		#Ethiopia had asked the trial
+		random_country = {
+			limit = { tag = ETH OR = { government = absolute_monarchy government = hms_government government = hms_government1 } is_vassal = no }
+			relation = { who = THIS value = -25 }
+        }
+	
+	    ai_chance = { factor = 0.9 }
+    }
 
-option = {
-name = "Give him the light sentence!"
-prestige = -25
-any_pop = { 
-ideology = {
-	factor = -0.2
-	value = socialist
-} 
-ideology = {
-	factor = -0.2
-	value = communist
-} 
-	}
-set_country_flag = Graziani
-ai_chance = { 
-factor = 0.9
-}
-		}
+    option = {
+        name = "Give him the harsh sentence!"
+        prestige = 10
+		
+        any_pop = { 
+            ideology = { factor = 0.01 value = socialist } 
+            ideology = { factor = 0.02 value = communist } 
+			scaled_militancy = { factor = -1 ideology = socialist }
+			scaled_consciousness = { factor = -2 ideology = socialist }
+			scaled_militancy = { factor = -1 ideology = communist }
+			scaled_consciousness = { factor = -2 ideology = communist }
+	    }
+		
+		#Ethiopia is satisfied
+		random_country = {
+			limit = { tag = ETH OR = { government = absolute_monarchy government = hms_government government = hms_government1 } is_vassal = no }
+			relation = { who = THIS value = 15 }
+        }
+
+        ai_chance = { factor = 0.1 }
+    }
 
 }
 
@@ -2212,28 +2062,41 @@ country_event = {
 	desc = EVTDESC1410075
 	picture = "impastato"
 	
+	fire_only_once = yes
+	
 trigger = { 
 tag = ITA
 year = 1978
 month = 4
 government = democracy
-NOT = { has_country_flag = Impastato }
 NOT = { year = 1990 }
 }
 
 option = {
 name = "Today is a day of National Mourning"
+SIC_763 = {
+	any_pop = { 
+		ideology = { factor = 0.02 value = nationalist } 
+		ideology = { factor = 0.01 value = big_tent } 
+		ideology = { factor = 0.05 value = progressive } 
+		ideology = { factor = 0.03 value = communist } 
+		consciousness = 5
+	}
+}
 any_pop = { 
 ideology = {
-	factor = 0.1
-	value = liberal
+	factor = 0.01
+	value = communist
 } 
 ideology = {
-	factor = 0.2
-	value = populist
+	factor = 0.02
+	value = progressive
+} 
+ideology = {
+	factor = 0.01
+	value = big_tent
 } 
 	}
-set_country_flag = Impastato
 ai_chance = { 
 factor = 0.1
 }
@@ -2247,27 +2110,40 @@ country_event = {
 	desc = EVTDESC1410076
 	picture = "borsellino"
 	
+	fire_only_once = yes
+	
 trigger = { 
 tag = ITA
 year = 1992
 month = 6
 government = democracy
-NOT = { has_country_flag = Borsellino }
 }
 
 option = {
 name = "Today is a day of National Mourning"
+SIC_763 = {
+	any_pop = { 
+		ideology = { factor = 0.03 value = nationalist } 
+		ideology = { factor = 0.01 value = big_tent } 
+		ideology = { factor = 0.05 value = progressive } 
+		ideology = { factor = 0.01 value = communist } 
+		consciousness = 5
+	}
+}
 any_pop = { 
 ideology = {
-	factor = 0.1
-	value = liberal
+	factor = 0.02
+	value = progressive
 } 
 ideology = {
-	factor = 0.2
+	factor = 0.01
+	value = big_tent
+}
+ideology = {
+	factor = 0.02
 	value = populist
-} 
+}
 	}
-set_country_flag = Borsellino
 ai_chance = { 
 factor = 0.1
 }
@@ -2826,46 +2702,6 @@ set_global_flag = event_force_end_of_indonesian_revolution
 		}
 }
 
-#Batista Regime
-country_event = {
-	id = 1410093
-	title = "Batista Coup of $YEAR$"
-	desc = EVTDESC1410093
-	picture = "batista_regime"
-	
-	trigger = { 
-		tag = CUB
-		government = democracy
-		year = 1952
-		NOT = { year = 1990 }
-		NOT = { has_country_flag = batista_regime }
-		OR = { 
-			vassal_of = USA 
-			is_vassal = no 
-		}
-	}
-
-	mean_time_to_happen = { 
-		months = 6
-	}
-
-	option = {
-		name = "Viva la Batista!"
-		set_country_flag = batista_regime
-		ruling_party_ideology = conservative
-		country_event = 800050
-		government = presidential_dictatorship
-		ai_chance = { factor = 0.9 }
-	}
-
-	option = {
-		name = "Viva la Democracy!"
-		set_country_flag = batista_regime
-		add_country_modifier = { name = revolution_chaos duration = 3650 }
-		ai_chance = { factor = 0.1 }
-	}
-}
-
 #Union of Soverign States
 country_event = {
 	id = 1410094
@@ -2873,14 +2709,130 @@ country_event = {
 	desc = EVTDESC1410094
 	picture = "union_treaty"
 	
-is_triggered_only = yes
+	is_triggered_only = yes
 
-option = {
-name = "Cheers for Socialism!"
-government = socialist_democracy
-country_event = 800054
-set_country_flag = eussr
+	option = {
+		name = "Three cheers for Socialism!"
+		government = socialist_democracy
+		
+		political_reform = universal_voting
+		political_reform = open_opinion
+		political_reform = limited_meetings
+		political_reform = elitist_service
+		political_reform = responsible_publishing
+		political_reform = state_controlled_unions
+		political_reform = parties_only_nominated
+		political_reform = jefferson_method
+		
+		any_country = {
+			limit = { 
+				exists = yes 
+				vassal_of = THIS 
+				OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+			}
+			country_event = 14100941
 		}
+		
+		set_country_flag = eussr
+	}
+	
+}
+
+#Union of Soverign States - Puppets can choose to embrace socialist democracy
+country_event = {
+	id = 14100941
+	title = "A Socialist Democracy?"
+	desc = EVTDESC14100941
+	picture = "union_treaty"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "Embrace the developments in $COUNTRY$!"
+		government = socialist_democracy
+		
+		#Match ruling party with overlord
+		random_owned = {
+			limit = { owner = { FROM = { ruling_party_ideology = communist } } }
+			owner = { ruling_party_ideology = communist }
+		}
+		random_owned = {
+			limit = { owner = { FROM = { ruling_party_ideology = communist_social } } }
+			owner = { ruling_party_ideology = communist_social }
+		}
+		random_owned = {
+			limit = { owner = { FROM = { ruling_party_ideology = socialist } } }
+			owner = { ruling_party_ideology = socialist }
+		}
+		random_owned = {
+			limit = { owner = { FROM = { ruling_party_ideology = progressive } } }
+			owner = { ruling_party_ideology = progressive }
+		}
+		
+		political_reform = universal_voting
+		political_reform = open_opinion
+		political_reform = limited_meetings
+		political_reform = elitist_service
+		political_reform = responsible_publishing
+		political_reform = state_controlled_unions
+		political_reform = parties_only_nominated
+		political_reform = jefferson_method
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = 10
+			consciousness = 10
+			ideology = { factor = 0.25 value = communist }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = -5
+			consciousness = -5
+			ideology = { factor = 0.1 value = progressive }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = -2.5
+			consciousness = -2.5
+			ideology = { factor = 0.1 value = socialist }
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "We shall go our own way!"
+		
+		#USS loses influence in THIS
+		overlord = { 
+			relation = { who = THIS value = -200 }
+			diplomatic_influence = { who = THIS value = -100 }
+			release_vassal = THIS 
+		}
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = -5
+			consciousness = -5
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = 6
+			consciousness = 6
+			ideology = { factor = 0.2 value = liberal }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = 3
+			consciousness = 3
+			ideology = { factor = 0.1 value = liberal }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
 }
 
 #Thai Communist Insurgency - Begin
@@ -2947,84 +2899,24 @@ country_event = {
 	title = "Election of a populist President"
 	desc = EVTDESC1410097
 	picture = "wallace"
+	
+	fire_only_once = yes
+	
 	trigger = {
 		tag = USA
 		NOT = { year = 2000 }
+		
+		government = democracy
+		
 		ruling_party_ideology = populist
+		
 		NOT = { has_country_flag = wallace }
-		}
+	}
 	option = {
-	name = "It's time to Stand Up for America!"
-	set_country_flag = wallace
-			}
+		name = "It's time to Stand Up for America!"
+		set_country_flag = wallace
 	}
-
-#UN Peace Resolution Passes
-country_event = {
-	id = 1410098
-	title = "UN Peace Resolution to end conflict passes"
-	desc = "Our request to end the current conflict that we are involved in has been accepted by the United Nations Security Council. The UN will now demand all warring parties to reach an armistice or face international intervention."
-	picture = "unsc_vote"
-
-	trigger = {
-		war = yes
-		has_country_modifier = called_allies_un
-		NOT = { has_country_modifier = cold_war_hot }
-		NOT = { has_country_modifier = stop_un_spam }
-		NOT = { has_country_modifier = resolution_vetoed_unsc }
-	}
-	
-	mean_time_to_happen = { 
-		months = 3
-	}
-	
-	option = {
-		name = "May peace come soon!"
-		prestige = 30
-		any_country = { limit = { is_vassal = no exists = yes NOT = { tag = REB } war_with = THIS } country_event = 1410099 }
-		add_country_modifier = { name = stop_un_spam duration = 1000 }
-	}
-	
 }
-
-#UN Peace Resolution Passes (Warring Parties)
-country_event = {
-	id = 1410099
-	title = "UN Peace Resolution to end conflict passes"
-	desc = "$FROMCOUNTRY$ request to end the current conflict that we are involved in has been accepted by the United Nations Security Council. The UN will now demand all warring parties to reach an armistice or face international intervention."
-	picture = "unsc_vote"
-
-is_triggered_only = yes
-
-			
-	option = {
-	name = "Withdraw to pre-war lines!"
-		end_war = FROM
-any_country = { limit = { AND = { exists = yes NOT = { tag = REB } war_with = THIS alliance_with = FROM } } end_war = THIS add_country_modifier = { name = un_armistice duration = 1825 } set_country_flag = un_armistice }
-		prestige_factor = -0.10
-add_country_modifier = { name = un_armistice duration = 1825 }
-set_country_flag = un_armistice
-ai_chance = { factor = 0.5 modifier = { factor = 0 war_policy = jingoism } }
-			}
-
-option = {
-	name = "Propose an armistice to each warring party!"
-FROM = { country_event = 1512251 }		
-any_country = { limit = { AND = { exists = yes NOT = { tag = REB } is_vassal = no war_with = THIS alliance_with = FROM } } country_event = 1512251 }
-		prestige_factor = -0.05
-		badboy = 10
-ai_chance = { factor = 0.4 modifier = { factor = 0 war_policy = pacifism } }
-			}
-
-	option = {
-	name = "Reject the UN led armistice!"
-		prestige_factor = 0.05
-		badboy = 26
-add_country_modifier = { name = unsanctionslevel1 duration = 730 }
-ai_chance = { factor = 0.1 modifier = { factor = 0 war_policy = pacifism } }
-			}
-
-	}
 
 #Rotating Chairmanship of the OIC
 country_event = {
@@ -3211,303 +3103,99 @@ country_event = {
 	desc = "We have proposed to pause our nuclear program in exchange for international aid."
 	picture = "nuclear_blackmail"
 	
-is_triggered_only = yes
+	is_triggered_only = yes
 
 	option = {
-	name = "Let's roll the dice of fate"
+		name = "Let's roll the dice of fate"
 
-random_list = {
-	10 = { badboy = 25 add_country_modifier = { name = blackmail_failed duration = 365 } }
-	90 = { 
-add_country_modifier = { name = nuke_blackmail duration = 730 } 
-prestige = 50 
-remove_country_modifier = develop_atomic_bomb
-add_country_modifier = { name = develop_atomic_bomb duration = 2555 }
-}
-
-}
-	}
+		random_list = {
+			10 = { badboy = 25 add_country_modifier = { name = blackmail_failed duration = 365 } }
+			90 = { 
+				add_country_modifier = { name = nuke_blackmail duration = 730 } 
+				prestige = 50 
+				remove_country_modifier = develop_atomic_bomb
+				add_country_modifier = { name = develop_atomic_bomb duration = 2555 }
 			}
-
-#Operation Moongoose Target Nations - High Rebels
-country_event = {
-	id = 1410112
-title = "Active Superpower Support for $COUNTRY_ADJ$ Rebels"
-	desc = "As we are in a sphere of a Superpower, the rivial Superpower will fund anti-government forces to instigate a revolution to overthrow the current government and install one that is friendly to the rival Superpower."
-	picture = "high_rebels"
-	
-trigger = {
-
-OR = {
-
-AND = {
-any_greater_power = { 
-has_country_modifier = un_king1 
-is_sphere_leader_of = THIS 
-has_global_flag = rank_2_high_rebels
-}
-any_owned_province = { NOT = { has_province_modifier = high_rebels_rank_2 } }
-	}
-
-AND = {
-any_greater_power = { 
-has_country_modifier = un_king2
-is_sphere_leader_of = THIS 
-has_global_flag = rank_1_high_rebels 
-}
-any_owned_province = { NOT = { has_province_modifier = high_rebels_rank_1 } }
-	}
-
-}
-
-	}
-
-mean_time_to_happen = { 
-months = 6
-}
-
-	option = {
-	name = "We must find those insurgents!"
-
-set_country_flag = superpower_rebel_instigation_flag
-
-any_owned = { remove_province_modifier = low_rebels_rank_1 }
-any_owned = { remove_province_modifier = low_rebels_rank_2 }
-any_owned = { remove_province_modifier = high_rebels_rank_1 }
-any_owned = { remove_province_modifier = high_rebels_rank_2 }
-
-#Lose relations with rival Superpower
-random_country = { 
-limit = { 
-NOT = { is_sphere_leader_of = THIS } 
-OR = { has_country_modifier = un_king1 has_country_modifier = un_king2 } 
-	} 
-relation = { who = THIS value = -50  } 
-}
-
-#If Rival SP is rank 1 (Sphere owner is Rank 2)
-random_owned = {
-	limit = { owner = {
-any_greater_power = { 
-has_country_modifier = un_king2
-is_sphere_leader_of = THIS 
-has_global_flag = rank_1_high_rebels 
-}
-	} }
-	owner = { any_owned = { add_province_modifier = { name = high_rebels_rank_1 duration = -1 } } }
-}
-
-#If Rival SP is rank 2 (Sphere owner is Rank 1)
-random_owned = {
-	limit = { owner = {
-any_greater_power = { 
-has_country_modifier = un_king1
-is_sphere_leader_of = THIS 
-has_global_flag = rank_2_high_rebels 
-}
-	} }
-	owner = { any_owned = { add_province_modifier = { name = high_rebels_rank_2 duration = -1 } } }
-}
 
 		}
+	}
 }
 
-#Operation Moongoose Target Nations - Low Rebels
+#Operation Moongoose - Superpower
 country_event = {
-	id = 1410115
-title = "Passive Superpower Support for $COUNTRY_ADJ$ Rebels"
-	desc = "As we are in a sphere of a Superpower, the rivial Superpower will fund anti-government forces to instigate a revolution to overthrow the current government and install one that is friendly to the rival Superpower."
-	picture = "low_rebels"
+	id = 1410112
+	title = "$FROMCOUNTRY_ADJ$ Interference in the $COUNTRY_ADJ$ Sphere"
+	desc = EVTDESC1410112
+	picture = "high_rebels_superpower"
 	
-trigger = {
-OR = {
-
-AND = {
-any_greater_power = { 
-has_country_modifier = un_king1
-is_sphere_leader_of = THIS 
-has_global_flag = rank_2_low_rebels
-}
-any_owned_province = { NOT = { has_province_modifier = low_rebels_rank_2 } }
-	}
-
-AND = {
-any_greater_power = { 
-has_country_modifier = un_king2
-is_sphere_leader_of = THIS 
-has_global_flag = rank_1_low_rebels 
-}
-any_owned_province = { NOT = { has_province_modifier = low_rebels_rank_1 } }
-	}
-
-}
-	}
-
-mean_time_to_happen = { 
-months = 6
-}
+	is_triggered_only = yes
 
 	option = {
-	name = "We must find those insurgents!"
-
-set_country_flag = superpower_rebel_instigation_flag
-
-any_owned = { remove_province_modifier = low_rebels_rank_1 }
-any_owned = { remove_province_modifier = low_rebels_rank_2 }
-any_owned = { remove_province_modifier = high_rebels_rank_1 }
-any_owned = { remove_province_modifier = high_rebels_rank_2 }
-
-#Lose relations with rival Superpower
-random_country = { 
-limit = { 
-NOT = { is_sphere_leader_of = THIS } 
-OR = { has_country_modifier = un_king1 has_country_modifier = un_king2 }
-	} 
-relation = { who = THIS value = -50  } 
-}
-
-#If Rival SP is rank 1 (Sphere owner is Rank 2)
-random_owned = {
-	limit = { owner = {
-any_greater_power = { 
-has_country_modifier = un_king2
-is_sphere_leader_of = THIS 
-has_global_flag = rank_1_low_rebels 
-}
-	} }
-	owner = { any_owned = { add_province_modifier = { name = low_rebels_rank_1 duration = -1 } } }
-}
-
-#If Rival SP is rank 2 (Sphere owner is Rank 1)
-random_owned = {
-	limit = { owner = {
-any_greater_power = { 
-has_country_modifier = un_king1
-is_sphere_leader_of = THIS 
-has_global_flag = rank_2_low_rebels 
-}
-	} }
-	owner = { any_owned = { add_province_modifier = { name = low_rebels_rank_2 duration = -1 } } }
-}
-
+		name = "Issue a strong complaint!"
+		prestige = -20
+		
+		relation = { who = FROM value = -15 }
+		
+		#Affect the THIS's sphere
+		any_country = {
+			limit = { 
+				OR = { 
+					vassal_of = THIS 
+					in_sphere = THIS 
+					alliance_with = THIS 
+				} 
 			}
+			country_event = 1410113
+		}
 
+	}
 }
 
-#Operation Moongoose Target Nations - No Rebels
+#Operation Moongoose - Superpower's sphere
 country_event = {
-	id = 1410116
-title = "No Superpower Support for $COUNTRY_ADJ$ Rebels"
-	desc = "As we are in a sphere of a Superpower, the rivial Superpower will fund anti-government forces to instigate a revolution to overthrow the current government and install one that is friendly to the rival Superpower."
-	picture = "no_rebels"
+	id = 1410113
+	title = "Anti-$FROMCOUNTRY_ADJ$ Instigators"
+	desc = EVTDESC1410113
+	picture = "high_rebels"
 	
-trigger = {
-
-OR = {
-
-AND = {
-any_greater_power = { 
-has_country_modifier = un_king1
-is_sphere_leader_of = THIS 
-has_global_flag = rank_2_no_rebels
-}
-any_owned_province = { OR = { has_province_modifier = low_rebels_rank_2 has_province_modifier = high_rebels_rank_2 } }
-	}
-
-AND = {
-any_greater_power = { 
-has_country_modifier = un_king2
-is_sphere_leader_of = THIS 
-has_global_flag = rank_1_no_rebels 
-}
-any_owned_province = { OR = { has_province_modifier = low_rebels_rank_1 has_province_modifier = high_rebels_rank_1 } }
-	}
-
-}
-
-	}
-
-mean_time_to_happen = { 
-months = 6
-}
+	is_triggered_only = yes
 
 	option = {
-	name = "We must find those insurgents!"
+		name = "We must find those insurgents!"
+		
+		#Population supports ideology of rival superpower less
+		random_owned = { limit = { owner = { FROM = { ruling_party_ideology = traditionalist } } } owner = { any_pop = { militancy = 2 consciousness = 1 ideology = { factor = -0.04 value = traditionalist } } } }
+		random_owned = { limit = { owner = { FROM = { ruling_party_ideology = conservative } } } owner = { any_pop = { militancy = 2 consciousness = 1 ideology = { factor = -0.04 value = conservative } } } }
+		random_owned = { limit = { owner = { FROM = { ruling_party_ideology = liberal } } } owner = { any_pop = { militancy = 2 consciousness = 1 ideology = { factor = -0.04 value = liberal } } } }
+		random_owned = { limit = { owner = { FROM = { ruling_party_ideology = big_tent } } } owner = { any_pop = { militancy = 2 consciousness = 1 ideology = { factor = -0.04 value = big_tent } } } }
+		random_owned = { limit = { owner = { FROM = { ruling_party_ideology = progressive } } } owner = { any_pop = { militancy = 2 consciousness = 1 ideology = { factor = -0.04 value = progressive } } } }
+		random_owned = { limit = { owner = { FROM = { ruling_party_ideology = socialist } } } owner = { any_pop = { militancy = 2 consciousness = 1 ideology = { factor = -0.04 value = socialist } } } }
+		random_owned = { limit = { owner = { FROM = { ruling_party_ideology = communist } } } owner = { any_pop = { militancy = 2 consciousness = 1 ideology = { factor = -0.04 value = communist } } } }
+		random_owned = { limit = { owner = { FROM = { ruling_party_ideology = communist_social } } } owner = { any_pop = { militancy = 2 consciousness = 1 ideology = { factor = -0.04 value = communist_social } } } }
+		random_owned = { limit = { owner = { FROM = { ruling_party_ideology = nationalist } } } owner = { any_pop = { militancy = 2 consciousness = 1 ideology = { factor = -0.04 value = nationalist } } } }
+		random_owned = { limit = { owner = { FROM = { ruling_party_ideology = populist } } } owner = { any_pop = { militancy = 2 consciousness = 1 ideology = { factor = -0.04 value = populist } } } }
 
-clr_country_flag = superpower_rebel_instigation_flag
-
-any_owned = { remove_province_modifier = low_rebels_rank_1 }
-any_owned = { remove_province_modifier = low_rebels_rank_2 }
-any_owned = { remove_province_modifier = high_rebels_rank_1 }
-any_owned = { remove_province_modifier = high_rebels_rank_2 }
-
-#Gain relations with rival Superpower
-random_country = { 
-limit = { 
-NOT = { is_sphere_leader_of = THIS } 
-OR = { has_country_modifier = un_king1 has_country_modifier = un_king2 }
-	} 
-relation = { who = THIS value = 50 } 
-}
-
+		#Rival superpower loses influence and relation in THIS
+		random_country = {
+			limit = { 
+				NOT = { tag = FROM }
+				OR = { 
+					has_country_modifier = un_king1 
+					has_country_modifier = un_king2 
+				} 
 			}
-
-}
-
-#Clean Up - target nations
-country_event = {
-	id = 1410118
-	title = "Change in $COUNTRY_ADJ$ Rebel Activity"
-	desc = "Due to changes in the geopolitical scene, the level of support given to $COUNTRY_ADJ$ rebels has changed."
-	picture = "change_rebels"
-	
-trigger = {
-
-OR = { 
-has_country_flag = superpower_rebel_instigation_flag
-any_owned_province = { has_province_modifier = high_rebels_rank_1 } 
-any_owned_province = { has_province_modifier = high_rebels_rank_2 } 
-any_owned_province = { has_province_modifier = low_rebels_rank_1 } 
-any_owned_province = { has_province_modifier = low_rebels_rank_2 } 
-} 
-
-part_of_sphere = no
+			relation = { who = THIS value = -25 }
+			diplomatic_influence = { who = THIS value = -25 }
+		}
+		
+		#Add interference modifier to rural provinces
+		any_owned = {
+			limit = { is_state_capital = no }
+			add_province_modifier = { name = superpower_backed_rebels duration = 730 }
+		}
 
 	}
-
-option = {
-	name = "We welcome this development!"
-
-clr_country_flag = superpower_rebel_instigation_flag
-
-any_owned = { remove_province_modifier = high_rebels_rank_1 }
-any_owned = { remove_province_modifier = high_rebels_rank_2 }
-any_owned = { remove_province_modifier = low_rebels_rank_1 }
-any_owned = { remove_province_modifier = low_rebels_rank_2 }
-
-			}
-}
-
-#Clean Up - Remove ability for former superpower
-country_event = {
-	id = 1410119
-	title = "$COUNTRY_ADJ$ Guerrilla Network Fades"
-	desc = "Due to changes in the Geopolitical scene, our ability to support international rebels has diminished."
-	picture = "lost_rebels"
 	
-trigger = {
-NOT = { OR = { has_country_modifier = un_king1 has_country_modifier = un_king2 } }
-OR = { has_country_modifier = low_rebels
-has_country_modifier = high_rebels has_country_modifier = no_rebels } 
-}
-
-option = {
-	name = "We will reappraise our situation!"
-	remove_country_modifier = no_rebels
-	remove_country_modifier = low_rebels
-	remove_country_modifier = high_rebels
-			}
-
 }
 
 #Franco-British Union
@@ -3517,36 +3205,38 @@ country_event = {
 	desc = EVTDESC1410120
 	picture = "fbu_union"
 	
-trigger = {
-tag = FRA
-ai = yes
-exists = ENG
-ENG = { government = hms_government }
-FRA = { government = democracy }
-year = 1956
-NOT = { year = 1990 }
-NOT = { has_global_flag = fbu_fired }
-
-#Suez Crisis fired
-has_global_flag = suez_crisis_triggered
-}
+	fire_only_once = yes
 	
-mean_time_to_happen = { 
-months = 6
-}
+	trigger = {
+		tag = FRA
+		ai = yes
+		exists = ENG
+		ENG = { government = hms_government }
+		FRA = { government = democracy }
+		year = 1956
+		NOT = { year = 1990 }
+		NOT = { has_global_flag = fbu_fired }
 
-option = {
-	name = "Propose the Union!"
-ai_chance = { factor = 0.8 }
-ENG = { country_event = 1410121 }
-set_global_flag = fbu_fired
-			}
+		#Suez Crisis fired
+		has_global_flag = suez_crisis_triggered
+	}
+	
+	mean_time_to_happen = { 
+		months = 6
+	}
 
-option = {
-	name = "Keep our independence!"
-ai_chance = { factor = 0.2 }
-set_global_flag = fbu_fired
-			}
+	option = {
+		name = "Propose the Union!"
+		ai_chance = { factor = 0.8 }
+		ENG = { country_event = 1410121 }
+		set_global_flag = fbu_fired
+	}
+
+	option = {
+		name = "Keep our independence!"
+		ai_chance = { factor = 0.2 }
+		set_global_flag = fbu_fired
+	}
 
 }
 
@@ -4119,36 +3809,38 @@ country_event = {
 	desc = EVTDESC1410120
 	picture = "fbu_union"
 	
-trigger = {
-tag = FRA
-ai = no
-exists = ENG
-ENG = { government = hms_government }
-FRA = { government = democracy }
-year = 1956
-NOT = { year = 1990 }
-NOT = { has_global_flag = fbu_fired }
-
-#Suez Crisis fired
-has_global_flag = suez_crisis_triggered
-}
+	fire_only_once = yes
 	
-mean_time_to_happen = { 
-months = 11
-}
+	trigger = {
+		tag = FRA
+		ai = no
+		exists = ENG
+		ENG = { government = hms_government }
+		FRA = { government = democracy }
+		year = 1956
+		NOT = { year = 1990 }
+		NOT = { has_global_flag = fbu_fired }
 
-option = {
-	name = "Propose the Union!"
-ai_chance = { factor = 0.8 }
-ENG = { country_event = 1410142 }
-set_global_flag = fbu_fired
-			}
+		#Suez Crisis fired
+		has_global_flag = suez_crisis_triggered
+	}
+	
+	mean_time_to_happen = { 
+		months = 11
+	}
 
-option = {
-	name = "Keep our independence!"
-ai_chance = { factor = 0.2 }
-set_global_flag = fbu_fired
-			}
+	option = {
+		name = "Propose the Union!"
+		ai_chance = { factor = 0.8 }
+		ENG = { country_event = 1410142 }
+		set_global_flag = fbu_fired
+	}
+
+	option = {
+		name = "Keep our independence!"
+		ai_chance = { factor = 0.2 }
+		set_global_flag = fbu_fired
+	}
 
 }
 

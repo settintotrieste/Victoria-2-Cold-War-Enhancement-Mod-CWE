@@ -1,0 +1,277 @@
+# FALL OF COMMUNIST GREECE
+
+country_event = { # Unrest in Greece
+	id = 9001539
+	title = "Unrest in $COUNTRY$"
+	desc = EVT_9001539_DESC
+	picture = "Revolution"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		OR = { tag = UGR tag = GRE }
+		year = 1985
+		
+		government = proletarian_dictatorship
+		OR = { is_vassal = no vassal_of = RUS }
+		war = no
+		
+		ruling_party_ideology = communist
+		
+		has_global_flag = de_stalinization
+		has_country_flag = ugr_civil_war_victory
+		
+		OR = {
+			has_country_flag = ugr_charilaos_florakis
+			has_country_flag = ugr_alexandros_rosios
+		}
+		
+		OR = {
+			has_global_flag = autumn_of_nations
+			AND = {
+				average_consciousness = 3
+				average_militancy = 4
+			}
+		}
+		
+	}
+	
+	mean_time_to_happen = { months = 1 }
+	
+	option = {
+		name = "Reformists take over the government!"
+		
+		set_country_flag = ugr_reformists_in_power
+		clr_country_flag = ugr_charilaos_florakis
+		clr_country_flag = ugr_alexandros_rosios
+		
+		ruling_party_ideology = communist_social
+		
+		any_pop = {
+			militancy = -2 consciousness = -2
+			ideology = { factor = 0.05 value = communist_social }
+		}
+		any_pop = {
+			militancy = 2 consciousness = 2
+			ideology = { factor = 0.1 value = liberal }
+		}
+		any_pop = {
+			scaled_militancy = { 
+				factor = 10
+				ideology = communist
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Eliminate them... quickly!"
+		
+		clr_country_flag = ugr_charilaos_florakis
+		clr_country_flag = ugr_alexandros_rosios
+		
+		badboy = 10
+		
+		any_pop = {
+			scaled_consciousness = {
+				factor = 5
+				ideology = traditionalist
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = traditionalist
+			}
+			scaled_consciousness = {
+				factor = 5
+				ideology = conservative
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = conservative
+			}
+			scaled_consciousness = {
+				factor = 5
+				ideology = liberal
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = liberal
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+country_event = { # Declaration of Independence of South Macedonia
+	id = 9001540
+	title = "South Macedonian Declaration of Independence"
+	desc = EVT_9001540_DESC
+	picture = "2010_kyrgyz_revolution"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		OR = { tag = UGR tag = GRE }
+		year = 1989
+		
+		government = proletarian_dictatorship
+		war = no 
+		is_vassal = no
+		
+		ruling_party_ideology = communist
+		
+		has_global_flag = de_stalinization
+		has_country_flag = ugr_civil_war_victory
+		
+		OR = {
+			has_global_flag = autumn_of_nations
+			has_global_flag = ahistoric_autumn_of_nations
+		}
+		has_country_flag = ugr_agreements_of_macedonia
+		
+		is_possible_vassal = SMC
+	}
+	
+	mean_time_to_happen = { months = 2 }
+	
+	option = {
+		name = "Send the army to fight them!"
+		
+		clr_country_flag = ugr_agreements_of_macedonia
+		
+		badboy = 5
+		
+		release = SMC
+		SMC = {
+			government = socialist_democracy
+			country_event = 800054
+			ruling_party_ideology = socialist
+		}
+		
+		SMC = {
+			war = {
+				target = THIS
+				attacker_goal = { casus_belli = become_independent }
+				defender_goal = { } #stop_independence auto added by become_independent CB
+				call_ally = no
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Recognize their independence."
+		
+		clr_country_flag = ugr_agreements_of_macedonia
+		
+		badboy = -5
+		
+		release = SMC
+		
+		SMC = {
+			government = socialist_democracy
+			country_event = 800054
+			ruling_party_ideology = socialist
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+country_event = { # Abandon our principles?
+	id = 9001541
+	title = "Abandon our principles?"
+	desc = EVT_9001541_DESC
+	picture = "treaty_of_friendship_ussr_comm"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		OR = { tag = UGR tag = GRE }
+		year = 1986
+		
+		government = proletarian_dictatorship
+		war = no 
+		is_vassal = no
+		
+		ruling_party_ideology = communist_social
+		
+		election = no
+		
+		has_global_flag = de_stalinization
+		has_country_flag = ugr_civil_war_victory
+		has_country_flag = ugr_reformists_in_power
+	}
+	
+	mean_time_to_happen = { months = 4 }
+	
+	option = {
+		name = "Abandon Marxism-Leninism"
+		
+		government = socialist_democracy
+		country_event = 800054
+		ruling_party_ideology = socialist
+		
+		election = yes
+		
+		any_pop = {
+			scaled_consciousness = {
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = communist
+			}
+		}
+		
+		ai_chance = { factor = 0.95 }
+	}
+	
+	option = {
+		name = "We can't do that!"
+		
+		government = proletarian_dictatorship
+		country_event = 800052
+		ruling_party_ideology = communist
+		
+		clr_country_flag = ugr_reformists_in_power
+		
+		badboy = 10
+		
+		any_pop = {
+			scaled_consciousness = {
+				factor = 7
+				ideology = traditionalist
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = traditionalist
+			}
+			scaled_consciousness = {
+				factor = 7
+				ideology = conservative
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = conservative
+			}
+			scaled_consciousness = {
+				factor = 7
+				ideology = liberal
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = liberal
+			}
+		}
+		
+		ai_chance = { factor = 0.05 }
+	}
+	
+}

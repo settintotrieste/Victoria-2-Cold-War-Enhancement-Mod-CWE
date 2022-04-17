@@ -312,6 +312,23 @@ any_country = {
 	activate_technology = interstate_highway_system
 }
 
+#Close Air Support Tech bugfix for 1992 start
+any_country = { 
+	limit = { 
+		NOT = { close_air_support = 1 }
+		third_generation_jet_fighters = 1
+	} 
+	activate_technology = close_air_support
+}
+#Nuclear Submarines Tech bugfix for 1992 start
+any_country = { 
+	limit = { 
+		NOT = { nuclear_submarine = 1 }
+		destroyers = 1
+	} 
+	activate_technology = nuclear_submarine
+}
+
 #South Africa
 SAF = { primary_culture = afrikaaner add_accepted_culture = british }
 
@@ -512,52 +529,96 @@ NKO = { add_country_modifier = { name = space_agency duration = -1 } }
 SKO = { add_country_modifier = { name = space_agency duration = -1 } }
 
 #Space Race - Space agencies with launched rockets
-USA = { add_country_modifier = { name = space_rocket duration = -1 } }
-RUS = { add_country_modifier = { name = space_rocket duration = -1 } }
-FRA = { add_country_modifier = { name = space_rocket duration = -1 } }
-GER = { add_country_modifier = { name = space_rocket duration = -1 } }
-ENG = { add_country_modifier = { name = space_rocket duration = -1 } }
-HND = { add_country_modifier = { name = space_rocket duration = -1 } }
-ISR = { add_country_modifier = { name = space_rocket duration = -1 } }
+USA = { set_country_flag = space_rocket }
+RUS = { set_country_flag = space_rocket }
+FRA = { set_country_flag = space_rocket }
+GER = { set_country_flag = space_rocket }
+ENG = { set_country_flag = space_rocket }
+HND = { set_country_flag = space_rocket }
+ISR = { set_country_flag = space_rocket }
 
 #Space Race - Space agencies with launched satellites
-USA = { add_country_modifier = { name = space_satellite duration = -1 } }
-RUS = { add_country_modifier = { name = space_satellite duration = -1 } }
-FRA = { add_country_modifier = { name = space_satellite duration = -1 } }
-GER = { add_country_modifier = { name = space_satellite duration = -1 } }
-ENG = { add_country_modifier = { name = space_satellite duration = -1 } }
-HND = { add_country_modifier = { name = space_satellite duration = -1 } }
-ISR = { add_country_modifier = { name = space_satellite duration = -1 } }
+USA = { set_country_flag = space_satellite }
+RUS = { set_country_flag = space_satellite }
+FRA = { set_country_flag = space_satellite }
+GER = { set_country_flag = space_satellite }
+ENG = { set_country_flag = space_satellite }
+HND = { set_country_flag = space_satellite }
+ISR = { set_country_flag = space_satellite }
 
 #Space Race - Space agencies with space man capability
-USA = { add_country_modifier = { name = space_man duration = -1 } }
-RUS = { add_country_modifier = { name = space_man duration = -1 } }
+USA = { set_country_flag = space_man }
+RUS = { set_country_flag = space_man }
 
 #Space Race - Space agencies with space station capability
-USA = { add_country_modifier = { name = space_station duration = -1 } }
-RUS = { add_country_modifier = { name = space_station duration = -1 } }
+USA = { set_country_flag = space_station }
+RUS = { set_country_flag = space_station }
 
 #Space Race - Space agencies with space probe
-USA = { add_country_modifier = { name = space_probe duration = -1 } }
-RUS = { add_country_modifier = { name = space_probe duration = -1 } }
+USA = { set_country_flag = space_probe }
+RUS = { set_country_flag = space_probe }
 
 #Space Race - Moon
 USA = { set_country_flag = space_moon }
 
 #OPEC
-add_country_modifier = { name = opecmember duration = -1 }
-
 any_country = { 
-limit = { exists = yes any_owned_province = { trade_goods = petroleum } NOT = { government = proletarian_dictatorship } }
-add_country_modifier = { name = opecmember duration = -1 }
+	limit = { 
+		exists = yes 
+		is_greater_power = no 
+		any_owned_province = { trade_goods = petroleum } 
+		NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = theocracy } } 
+	}
+	add_country_modifier = { name = opecmember duration = -1 }
+	
+	random_owned = { limit = { owner = { has_country_modifier = opecmember OR = { ruling_party_ideology = populist ruling_party_ideology = communist ruling_party_ideology = socialist } } } owner = { set_country_flag = oil_high any_owned = { limit = { trade_goods = petroleum } add_province_modifier = { name = oil_high duration = -1 } } } }
+	random_owned = { limit = { owner = { has_country_modifier = opecmember OR = { ruling_party_ideology = conservative  ruling_party_ideology = big_tent ruling_party_ideology = liberal ruling_party_ideology = progressive ruling_party_ideology = communist_social } } } owner = { set_country_flag = oil_medium any_owned = { limit = { trade_goods = petroleum } add_province_modifier = { name = oil_medium duration = -1 } } } }
+	random_owned = { limit = { owner = { has_country_modifier = opecmember OR = { ruling_party_ideology = nationalist ruling_party_ideology = traditionalist } } } owner = { set_country_flag = oil_low any_owned = { limit = { trade_goods = petroleum } add_province_modifier = { name = oil_low duration = -1 } } } }
 }
 
 #Spy Agencies
 add_country_modifier = { name = spy_agency duration = -1 }
-
 any_country = { 
-limit = { exists = yes OR = { is_greater_power = yes is_secondary_power = yes } }
-add_country_modifier = { name = spy_agency duration = -1 }
+	limit = { exists = yes OR = { is_greater_power = yes is_secondary_power = yes } }
+	add_country_modifier = { name = spy_agency duration = -1 }
+	add_country_modifier = { name = spy_low duration = -1 }
+}
+
+#OIC
+any_country = {
+	limit = { 
+		exists = yes 
+		OR = { pop_majority_religion = sunni pop_majority_religion = ibad pop_majority_religion = shiite has_country_flag = muslim } 
+		NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
+		NOT = { is_culture_group = jewish_cultures }
+		NOT = { religious_policy = pro_atheism }
+	}
+	add_country_modifier = { name = oic_member duration = -1 }
+}
+
+#IAB
+USA = {
+	set_global_flag = iabformed
+	add_country_modifier = { name = iab_member duration = -1 }
+	add_country_modifier = { name = iab_chairmanship duration = -1 }
+}
+any_country = {
+	limit = { 
+		exists = yes 
+		OR = { tag = USA tag = MEX capital_scope = { continent = south_america } }
+		
+		is_vassal = no
+		
+		#Not LF or FPE
+		OR = {
+			economic_policy = planned_economy1
+			economic_policy = state_capitalism
+			economic_policy = interventionism
+		}
+		
+		trade_policy = free_trade
+	}
+	add_country_modifier = { name = iab_member duration = -1 }
 }
 
 #OECD
@@ -685,6 +746,81 @@ GRN = { set_country_flag = former_devolved_nation }
 
 #Naxalite insurgency
 HND = { set_country_flag = naxalite_insurgency }
+
+#Initiate certain cores
+any_country = {
+	limit = { OR = { tag = YUG tag = ALB tag = ROM tag = GRE tag = BUL } }
+	all_core = { 
+		limit = { continent = europe } 
+		add_core = BKF 
+	}
+}
+any_country = {
+	limit = { OR = { tag = LIT tag = LAT tag = EST } }
+	all_core = { 
+		limit = { continent = europe } 
+		add_core = UBD
+	}
+}
+any_country = {
+	limit = { OR = { tag = NOR tag = SWE tag = DEN } }
+	all_core = { 
+		limit = { continent = europe } 
+		add_core = SCA
+	}
+}
+
+#Germany years of lead
+GER = { add_country_modifier = { name = years_of_lead duration = 3650 } }
+
+#Ethiopia
+ETH = { 
+	set_country_flag = fall_of_derg 
+	
+	#Ongoing conflict in Eritrea
+	any_owned = { limit = { is_core = ERI } change_controller = REB }
+}
+
+#Venezuela
+VNZ = {
+	set_country_flag = hugo_chavez
+}
+
+#Bolivia
+BOL = { set_country_flag = bolivia_war_on_coca }
+
+#Romania
+ROM = {
+	set_country_flag = timisoara_revolt_1989_flag
+	set_country_flag = ion_illescu_romania_democratic
+}
+
+#Italy
+ITA = {
+	set_country_flag = parliamentary_system_republic
+	set_country_flag = ITA_1948_republic_flag
+	set_country_flag = ITA_Bolognina
+	set_country_flag = ITA_Tangentopoli
+	set_country_flag = ITA_Sorpasso
+	set_country_flag = 1987_ITA_Andreotti
+	
+	any_owned = {
+		limit = { 
+			OR = { 
+				province_id = 762 #Palermo
+				province_id = 763 #Messina
+				province_id = 764 #Catania
+				province_id = 765 #Cagliari
+				province_id = 766 #Sassari
+				province_id = 721 #Aosta
+				province_id = 734 #Trento
+				province_id = 735 #Bolzano
+			} 
+		}
+		add_province_modifier = { name = devolved_local_government duration = -1 }
+	}
+	
+}
 
 		}
 		ai_will_do = { 

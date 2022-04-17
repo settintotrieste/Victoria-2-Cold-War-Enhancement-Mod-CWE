@@ -139,13 +139,19 @@ country_event = {
 
 	trigger = {
     	tag = UAR
-    	year = 1961 NOT = { year = 1990 }
-		SYR = { exists = no }
-		any_owned_province = { is_core = SYR }
-		NOT = { has_global_flag = end_of_uar }
+    	year = 1961 
+		NOT = { year = 1990 }
+		
+		#UAR formed by EGY
+		capital_scope = { is_core = EGY }
+		
+		OR = { government = presidential_dictatorship government = nationalist_dictatorship government = populist_dictatorship }
 		war = no
 		is_vassal = no
-		OR = { government = presidential_dictatorship government = nationalist_dictatorship government = populist_dictatorship }
+		
+		is_possible_vassal = SYR
+		
+		NOT = { has_global_flag = end_of_uar }
 	}
   
 	mean_time_to_happen = { months = 12 }
@@ -212,9 +218,61 @@ country_event = {
 
 	option = {
 		name = "Abandon our attempts to centralise the Union"
-		release_vassal = SYR
-		SYR = { government = presidential_dictatorship country_event = 800050 ruling_party_ideology = socialist }
-		sphere_owner = { diplomatic_influence = { who = SYR value = 200 } }
+		
+		prestige_factor = -0.10
+		
+		random_owned = { 
+			limit = { owner = { is_possible_vassal = SYR } } 
+			owner = { 
+				release_vassal = SYR
+				SYR = { 
+					government = presidential_dictatorship 
+					country_event = 800050 
+					ruling_party_ideology = socialist 
+				}
+				sphere_owner = { diplomatic_influence = { who = SYR value = 200 } }
+			}
+		}
+		
+		random_owned = { 
+			limit = { owner = { is_possible_vassal = JOR } } 
+			owner = { 
+				release_vassal = JOR
+				JOR = { 
+					government = absolute_monarchy
+					country_event = 800050 
+					ruling_party_ideology = conservative 
+				}
+				sphere_owner = { diplomatic_influence = { who = JOR value = 200 } }
+			}
+		}
+		
+		random_owned = { 
+			limit = { owner = { is_possible_vassal = IRQ } } 
+			owner = { 
+				release_vassal = IRQ
+				IRQ = { 
+					government = presidential_dictatorship 
+					country_event = 800050 
+					ruling_party_ideology = socialist 
+				}
+				sphere_owner = { diplomatic_influence = { who = IRQ value = 200 } }
+			}
+		}
+		
+		random_owned = { 
+			limit = { owner = { is_possible_vassal = LEB } } 
+			owner = { 
+				release_vassal = LEB
+				LEB = { 
+					government = presidential_dictatorship 
+					country_event = 800050 
+					ruling_party_ideology = conservative
+				}
+				sphere_owner = { diplomatic_influence = { who = LEB value = 200 } }
+			}
+		}
+		
 		set_global_flag = end_of_uar
 		ai_chance = { factor = 0.2 }
 	}
@@ -309,12 +367,21 @@ country_event = {
 		war = no
 		is_vassal = no
 		
-		OR = { 
-			SYR = { exists = yes is_vassal = no }
-			JOR = { exists = yes is_vassal = no }
-			IRQ = { exists = yes is_vassal = no }
-			LEB = { exists = yes is_vassal = no }
-			TRI = { exists = yes is_vassal = no }
+		#Does not own one of the possible UAR states
+		NOT = {
+			OR = { 
+				is_possible_vassal = SYR
+				is_possible_vassal = JOR
+				is_possible_vassal = IRQ
+				is_possible_vassal = LEB
+				is_possible_vassal = LBY
+				
+				is_our_vassal = SYR
+				is_our_vassal = JOR
+				is_our_vassal = IRQ
+				is_our_vassal = LEB
+				is_our_vassal = LBY
+			}
 		}
 		
 	}
@@ -383,7 +450,7 @@ country_event = {
 
   option = {
     name = EVT_8218022_A
-	any_pop = { militancy = -0.5 consciousness = -1 }
+	any_pop = { militancy = -5 consciousness = -5 }
 	inherit = LEB
 	prestige = 50
   }
@@ -405,7 +472,7 @@ country_event = {
   option = {
     name = EVT_8218024_B
 	relation = { who = UAR value = -100 } 
-	any_pop = { militancy = -0.5 consciousness = -0.1 }
+	any_pop = { militancy = -5 consciousness = -5 }
 	set_country_flag = reject_uar
 	ai_chance = { factor = 0.6 }
   }
@@ -419,7 +486,7 @@ country_event = {
 
   option = {
     name = EVT_8218025_A
-	any_pop = { militancy = -0.5 consciousness = -0.1 }
+	any_pop = { militancy = -5 consciousness = -5 }
 	inherit = PAL
 	prestige = 50
   }

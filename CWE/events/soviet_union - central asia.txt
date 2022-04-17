@@ -1,0 +1,364 @@
+### INDEPENDENCE OF KYRGYZSTAN AND TAJIKISTAN ###
+
+country_event = { # Request for Independence for Kurgystan and Tajikistan
+	id = 9001270
+	title = "Independence of Kurgystan and Tajikistan?"
+	desc = EVT_9001270_DESC
+	picture = "Riot"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		year = 1992
+		NOT = { year = 1996 }
+		
+		government = proletarian_dictatorship
+		is_vassal = no
+		war = no
+		
+		OR = {
+			has_country_flag = ussr_alternative_reformists
+			has_country_flag = ussr_no_historical_reforms
+		}
+		
+		is_possible_vassal = KYR
+		is_possible_vassal = TAJ
+	}
+	
+	mean_time_to_happen = { months = 8 }
+
+	option = {
+		name = "No way!"
+		
+		badboy = 5
+		
+		any_pop = {
+			limit = { is_culture_group = turko_semitic }
+			militancy = 3 consciousness = 3 
+			ideology = { factor = 0.10 value = nationalist } }
+		
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+	option = {
+		name = "Ask for the people's opinion."
+		
+		random_list = {
+			65 = { country_event = 9001271 } #People vote Yes!
+			35 = { country_event = 9001272 } #People vote No!
+		}
+		
+		ai_chance = { factor = 0.3 }
+	}
+	
+	option = {
+		name = "Rig the Referendum."
+		
+		badboy = 2.5
+		
+		random_list = {
+			35 = { country_event = 9001271 } #People vote Yes!
+			65 = { country_event = 9001272 } #People vote No!
+		}
+		
+		ai_chance = { factor = 0.5 }
+	}
+	
+	option = {
+		name = "Grant Independence."
+		
+		badboy = -3
+		
+		prestige = 150
+		
+		KYR = { all_core = { remove_core = RUS } }
+		TAJ = { all_core = { remove_core = RUS } }
+		
+		release = KYR
+		KYR = { country_event = 9001273 }
+		
+		release = TAJ
+		TAJ = { country_event = 9001273 }
+		
+		any_pop = { consciousness = 3 militancy = 3 }
+		
+		set_global_flag = ussr_kyr_taj_independance
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+country_event = { # People vote Yes!
+	id = 9001271
+	title = "People vote Yes!"
+	desc = EVT_9001271_DESC
+	picture = "independence_day_sar"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "The people gave their verdict..."
+		
+		prestige = 150
+		
+		KYR = { all_core = { remove_core = RUS } }
+		TAJ = { all_core = { remove_core = RUS } }
+		
+		release = KYR
+		KYR = { country_event = 9001273 }
+		
+		release = TAJ
+		TAJ = { country_event = 9001273 }
+		
+		any_pop = { consciousness = 3 militancy = 3 }
+		
+		set_global_flag = ussr_kyr_taj_independance
+	}
+	
+}
+
+country_event = { # People vote No!
+	id = 9001272
+	title = "People vote No!"
+	desc = EVT_9001272_DESC
+	picture = "independence_fails"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "The people gave their verdict."
+		
+		any_pop = { consciousness = -2 militancy = -1 }
+	}
+	
+}
+
+country_event = { # Stayed close to Moscow?
+	id = 9001273
+	title = "The Future of $COUNTRY$"
+	desc = EVT_9001273_DESC
+	picture = "Outside_influences"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Maintain a Communist Regime."
+		
+		government = proletarian_dictatorship
+		country_event = 800052
+		ruling_party_ideology = communist
+		
+		FROM = { 
+			relation = { who = THIS value = 200 }
+			diplomatic_influence = { who = THIS value = 200 }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+	option = {
+		name = "Establish a Socialist Regime."
+		
+		government = socialist_democracy
+		country_event = 800054
+		ruling_party_ideology = socialist
+		
+		FROM = { 
+			relation = { who = THIS value = 50 }
+			diplomatic_influence = { who = THIS value = 100 }
+		}
+		
+		ai_chance = { factor = 0.3 }
+	}
+	
+	option = {
+		name = "Establish a Nationalist Regime."
+		
+		government = nationalist_dictatorship
+		country_event = 800050
+		ruling_party_ideology = nationalist
+		
+		FROM = { 
+			relation = { who = THIS value = -75 }
+			diplomatic_influence = { who = THIS value = -200 }
+		}
+		
+		ai_chance = { factor = 0.6 }
+	}
+	
+}
+
+country_event = { # Send our Warriors to the North?
+	id = 9001321
+	title = "Send our Warriors to the North?"
+	desc = EVT_9001321_DESC
+	picture = "soviet_afghan_war"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = AFG
+		year = 1997
+		NOT = { year = 2000 }
+		
+		government = theocracy
+		is_vassal = no
+		war = no
+		
+		ruling_party_ideology = traditionalist
+		
+		KYR = { exists = yes is_vassal = no }
+		TAJ = { exists = yes is_vassal = no }
+		
+		RUS = { exists = yes OR = { government = proletarian_dictatorship government = socialist_democracy } is_vassal = no }
+		
+		has_global_flag = ussr_kyr_taj_independance
+	}
+	
+	mean_time_to_happen = { months = 3 }
+
+	option = {
+		name = "Let us prepare our brothers to join us."
+		
+		badboy = 4
+		
+		prestige = 50
+		
+		KYR = { country_event = 9001274 }
+		
+		TAJ = { country_event = 9001274 }
+		
+		relation = { who = RUS value = -100 }
+		
+		ai_chance = { factor = 0.8 }
+	}
+	
+	option = {
+		name = "Let's not piss off the Russian Bear."
+		
+		any_pop = { consciousness = 3 militancy = 3 }
+		
+		ai_chance = { factor = 0.2 }
+	}
+	
+}
+
+country_event = { # The Mujahideen take power! - KYR & TAJ
+	id = 9001274
+	title = "The Mujahideen take power!"
+	desc = EVT_9001274_DESC
+	picture = "nwo2_afghani_coup_1973"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "This may not please the Soviet Union..."
+		
+		set_global_flag = ussr_kyr_taj_mujahideen
+		clr_global_flag = ussr_kyr_taj_independance
+		
+		government = theocracy
+		country_event = 800051
+		ruling_party_ideology = traditionalist
+		
+		create_alliance = FROM
+		
+		add_country_modifier = { name = sharia duration = 1750 }
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Try to resist the Afghan Jihadists..."
+		
+		set_global_flag = ussr_kyr_taj_mujahideen
+
+		FROM = {
+			war = {
+				target = THIS
+				attacker_goal = { casus_belli = install_theocratic_regime }
+				defender_goal = { casus_belli = territorial_dispute_internal }
+				call_ally = no
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+country_event = { # The Mujahideen take power! - RUS
+	id = 9001275
+	title = "The Mujahideen takes power in Central Asia!"
+	desc = EVT_9001275_DESC
+	picture = "nwo2_afghani_coup_1973"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		year = 1997
+		NOT = { year = 2000 }
+		
+		OR = { government = proletarian_dictatorship government = socialist_democracy }
+		is_greater_power = yes
+		war = no
+		
+		KYR = { exists = yes government = theocracy is_vassal = no war = no ruling_party_ideology = traditionalist }
+		TAJ = { exists = yes government = theocracy is_vassal = no war = no ruling_party_ideology = traditionalist }
+		
+		has_global_flag = ussr_kyr_taj_mujahideen
+	}
+	
+	mean_time_to_happen = { days = 5 }
+
+	option = {
+		name = "We must restore order in the region!"
+		
+		KYR = { all_core = { add_core = RUS } }
+		TAJ = { all_core = { add_core = RUS } }
+		
+		badboy = 3
+		
+		war = {
+			target = KYR
+			attacker_goal = { casus_belli = annex_core_country }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = no
+		}
+		
+		war = {
+			target = TAJ
+			attacker_goal = { casus_belli = annex_core_country }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = no
+		}
+		
+		set_global_flag = ussr_afghanistan_threat
+		
+		clr_global_flag = ussr_kyr_taj_mujahideen
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Protest at the UN."
+		
+		prestige = -100
+		
+		any_pop = {
+			limit = { is_culture_group = turko_semitic }
+			militancy = 4 consciousness = 4 
+			ideology = { factor = 0.10 value = nationalist }
+			ideology = { factor = 0.10 value = traditionalist }
+		}
+		
+		set_global_flag = ussr_afghanistan_threat
+		clr_global_flag = ussr_kyr_taj_mujahideen
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}

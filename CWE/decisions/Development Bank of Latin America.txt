@@ -1,56 +1,85 @@
 political_decisions = {
 
-join_dbla = {
-	picture = "join_dbla"
+	join_dbla = {
+		picture = "join_dbla"
 		potential = {
-
-NOT = { has_country_modifier = dbla_member }
-
-capital_scope = { continent = south_america }
-
-year = 1970
-				}
+			capital_scope = { continent = south_america }
+			year = 1970
+			NOT = { has_country_modifier = dbla_member }
+		}
 
 		allow = {
-			election = no
+			is_vassal = no
+			
 			war = no
-NOT = { has_country_modifier = in_bankrupcy }
-NOT = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social ruling_party_ideology = nationalist ruling_party_ideology = populist ruling_party_ideology = traditionalist } }
-
-OR = { money = 1000000 ai = no }
-						}
+			NOT = { is_disarmed = yes }
+			NOT = { has_recently_lost_war = yes }
+			NOT = { badboy = 0.5 }
+			
+			election = no
+			
+			#Not LF or FPE
+			OR = {
+				economic_policy = planned_economy1
+				economic_policy = state_capitalism
+				economic_policy = interventionism
+			}
+			
+			#Must be rich enough
+			money = 100000
+			NOT = { has_country_modifier = in_bankrupcy }
+			
+			multilateral_development_bank = 1
+		}
 
 		effect = {
-add_country_modifier = { name = dbla_member duration = -1 }
+			add_country_modifier = { name = dbla_member duration = -1 }
+			
+			#Gain relations with fellow members
+			any_country = {
+				limit = { 
+					exists = yes 
+					is_vassal = no
+					has_country_modifier = dbla_member
 				}
+				relation = { who = THIS value = 25 }
+			}
+			
+		}
 
 		ai_will_do = { 
 			factor = 1 
-				}
+		}
 	}
 
-leave_dbla = {
-	picture = "join_dbla"
+	leave_dbla = {
+		picture = "join_dbla"
 		potential = {
-
-has_country_modifier = dbla_member
-
-				}
-alert = no
+			has_country_modifier = dbla_member
+		}
+		alert = no
 		allow = {
+			OR = {
+			
+				#Vassals always leave
+				is_vassal = yes
+				
+				#Leave if FPE
+				economic_policy = planned_economy
+			}
+			
+			#Can only leave if not at war
+			war = no
 			election = no
-		
-OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social ruling_party_ideology = nationalist ruling_party_ideology = populist ruling_party_ideology = traditionalist has_country_modifier = in_bankrupcy NOT = { money = 1000000 } }
-
-						}
+		}
 
 		effect = {
-remove_country_modifier = dbla_member
-				}
+			remove_country_modifier = dbla_member
+		}
 
 		ai_will_do = { 
 			factor = 1 
-				}
+		}
 	}
 
 }

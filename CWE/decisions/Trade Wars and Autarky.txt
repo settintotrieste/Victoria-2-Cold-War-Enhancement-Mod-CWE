@@ -1,165 +1,268 @@
 political_decisions = {
 
-start_autarky = {
+	start_autarky = {
 		picture = "start_autarky"
-	potential = {
-NOT = { has_country_modifier = juche }
-OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = populist_dictatorship government = nationalist_dictatorship government = presidential_dictatorship government = theocracy government = absolute_monarchy }
-			}
-alert = no
+		potential = {
+			NOT = { has_country_modifier = juche }
+			OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = populist_dictatorship government = nationalist_dictatorship government = presidential_dictatorship government = theocracy government = absolute_monarchy }
+		}
+		alert = no
 		allow = {
 			war = no
 			prestige = 50
 
-OR = { ai = no ruling_party_ideology = communist government = theocracy }
+			OR = { ai = no ruling_party_ideology = communist government = theocracy }
 
-OR = { is_vassal = no overlord = { has_country_modifier = juche } }
+			OR = { is_vassal = no overlord = { has_country_modifier = juche } }
 
-OR = { part_of_sphere = no sphere_owner = { has_country_modifier = juche } }
-	
-					}
+			OR = { part_of_sphere = no sphere_owner = { has_country_modifier = juche } }
+		}
 
 		effect = {
+		
+			#Liberals are angry
+			any_pop = {
+				scaled_militancy = {
+					factor = 5
+					ideology = liberal
+				}
+				scaled_militancy = {
+					factor = 5
+					ideology = progressive
+				}
+			}
+			#Communists are happy
+			any_pop = {
+				scaled_militancy = {
+					factor = -4
+					ideology = communist
+				}
+				scaled_militancy = {
+					factor = -2
+					ideology = communist_social
+				}
+			}
 
-any_country = { 
-limit = { is_vassal = no NOT = { has_country_modifier = juche } } 
-relation = { who = THIS value = -50 } 
-}
+			any_country = { 
+				limit = { is_vassal = no NOT = { has_country_modifier = juche } } 
+				relation = { who = THIS value = -50 } 
+			}
 
-add_country_modifier = { name = juche duration = -1 }
+			add_country_modifier = { name = juche duration = -1 }
 
-#If country was Trade War instigator
+			#If country was Trade War instigator
 
-remove_country_modifier = trade_war_tariffs
+			remove_country_modifier = trade_war_tariffs
 
-random_owned = { limit = { owner = { has_country_flag = trade_war_initiator } } owner = { clr_country_flag = trade_war_initiator clr_global_flag = trade_war } }
+			random_owned = { limit = { owner = { has_country_flag = trade_war_initiator } } owner = { clr_country_flag = trade_war_initiator clr_global_flag = trade_war } }
 
-					}
+		}
 		ai_will_do = { 
 			factor = 1 
-			}
+		}
 	}
 
-end_autarky = {
+	end_autarky = {
 		picture = "end_autarky"
-	potential = {
-has_country_modifier = juche
-			}
+		potential = {
+			has_country_modifier = juche
+		}
 
 		allow = {
 			
-OR = { ai = no NOT = { has_country_flag = south_american_isi } }
+			OR = { ai = no NOT = { has_country_flag = south_american_isi } }
 
-NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = populist_dictatorship government = nationalist_dictatorship government = presidential_dictatorship government = theocracy government = absolute_monarchy ruling_party_ideology = communist } }
+			NOT = { 
+				OR = { 
+					government = proletarian_dictatorship 
+					government = proletarian_dictatorship1 
+					government = populist_dictatorship 
+					government = nationalist_dictatorship 
+					government = presidential_dictatorship 
+					government = theocracy 
+					government = absolute_monarchy 
+					ruling_party_ideology = communist 
+				} 
+			}
 	
-					}
+		}
 
 		effect = {
+		
+			#Liberals are happy
+			any_pop = {
+				scaled_militancy = {
+					factor = -3
+					ideology = liberal
+				}
+				scaled_militancy = {
+					factor = -3
+					ideology = progressive
+				}
+			}
+			#Communists are angry
+			any_pop = {
+				scaled_militancy = {
+					factor = 6
+					ideology = communist
+				}
+				scaled_militancy = {
+					factor = 3
+					ideology = communist_social
+				}
+			}
 
-any_country = { 
-limit = { is_vassal = no NOT = { has_country_modifier = juche } } 
-relation = { who = THIS value = 50 } 
-	}
+			any_country = { 
+				limit = { is_vassal = no NOT = { has_country_modifier = juche } } 
+				relation = { who = THIS value = 50 } 
+			}
 
-remove_country_modifier = juche
-					}
+			remove_country_modifier = juche
+		}
 		ai_will_do = { 
 			factor = 1 
-			}
+		}
 	}
 
-start_trade_war = {
+	start_trade_war = {
 		picture = "start_trade_war"
-	potential = {
-		NOT = { has_country_flag = trade_war_initiator }
-		NOT = { has_country_modifier = conceded_trade_war }
-		rank = 3
-		NOT = { ruling_party_ideology = communist }
-		NOT = { has_country_modifier = juche }
-			}
-alert = no
+		potential = {
+			NOT = { has_country_flag = trade_war_initiator }
+			NOT = { has_country_modifier = conceded_trade_war }
+			rank = 3
+			NOT = { ruling_party_ideology = communist }
+			NOT = { has_country_modifier = juche }
+		}
+		alert = no
 		allow = {
 			war = no
-			prestige = 1000
+			
+			#Must have a large economy
+			industrial_score = 1000
+			
 			election = no
 
-any_greater_power = { rank = 3 NOT = { has_country_modifier = conceded_trade_war } NOT = { has_country_modifier = juche } NOT = { ruling_party_ideology = communist } NOT = { relation = { who = THIS value = -50 } } }
+			any_greater_power = { rank = 3 NOT = { has_country_modifier = conceded_trade_war } NOT = { has_country_modifier = juche } NOT = { ruling_party_ideology = communist } NOT = { relation = { who = THIS value = -50 } } }
 
-OR = { ai = no ruling_party_ideology = populist }
-	
-					}
+			OR = { ai = no ruling_party_ideology = populist }
+		}
 
 		effect = {
 
-add_country_modifier = { name = trade_war_tariffs duration = -1 }
+			add_country_modifier = { name = trade_war_tariffs duration = -1 }
 
-any_country = { 
-limit = { is_vassal = no is_greater_power = no NOT = { has_country_modifier = juche } } 
-relation = { who = THIS value = -50 } 
-}
+			any_country = { 
+				limit = { is_vassal = no is_greater_power = no NOT = { has_country_modifier = juche } } 
+				relation = { who = THIS value = -50 } 
+			}
 
-set_country_flag = trade_war_initiator
+			set_country_flag = trade_war_initiator
 
-set_global_flag = trade_war
+			set_global_flag = trade_war
 
-any_country = { 
-limit = { is_greater_power = yes NOT = { has_country_modifier = juche } NOT = { relation = { who = THIS value = -50 } } } 
-country_event = 1512345 #Trade War declared
-}
+			any_country = { 
+				limit = { is_greater_power = yes NOT = { has_country_modifier = juche } NOT = { relation = { who = THIS value = -50 } } } 
+				country_event = 1512345 #Trade War declared
+			}
+			
+			#Liberals are angry
+			any_pop = {
+				scaled_militancy = {
+					factor = 3
+					ideology = liberal
+				}
+				scaled_militancy = {
+					factor = 3
+					ideology = progressive
+				}
+			}
+			#Populists are happy
+			any_pop = {
+				scaled_militancy = {
+					factor = -3
+					ideology = populist
+				}
+				scaled_militancy = {
+					factor = -3
+					ideology = nationalist
+				}
+			}
 
-					}
+		}
 
 		ai_will_do = { 
 			factor = 1 
-			}
+		}
 
 	}
 
-end_trade_war = {
+	end_trade_war = {
 		picture = "end_trade_war"
-	potential = {
-		has_global_flag = trade_war
-		has_country_flag = trade_war_initiator
-			}
+		potential = {
+			has_global_flag = trade_war
+			has_country_flag = trade_war_initiator
+		}
 
 		allow = {
 			election = no
 
-OR = { 
-ai = no 
-NOT = { ruling_party_ideology = populist }
-is_greater_power = no
-has_country_modifier = juche
-has_country_modifier = conceded_trade_war
+			OR = { 
+				ai = no 
+				NOT = { ruling_party_ideology = populist }
+				is_greater_power = no
+				has_country_modifier = juche
+				has_country_modifier = conceded_trade_war
 
-NOT = { any_greater_power = { rank = 3 NOT = { has_country_modifier = conceded_trade_war } NOT = { has_country_modifier = juche } NOT = { ruling_party_ideology = communist } NOT = { relation = { who = THIS value = -50 } } } }
+				NOT = { any_greater_power = { rank = 3 NOT = { has_country_modifier = conceded_trade_war } NOT = { has_country_modifier = juche } NOT = { ruling_party_ideology = communist } NOT = { relation = { who = THIS value = -50 } } } }
+			}
 
-}
-
-					}
+		}
 
 		effect = {
 
-remove_country_modifier = trade_war_tariffs
+			remove_country_modifier = trade_war_tariffs
 
-clr_global_flag = trade_war
-clr_country_flag = trade_war_initiator
+			clr_global_flag = trade_war
+			clr_country_flag = trade_war_initiator
 
-#In case more than one GP declared a Trade War
-random_owned = {
-owner = { any_country = { limit = { is_greater_power = yes has_country_flag = trade_war_initiator } set_global_flag = trade_war } }
-}
+			#In case more than one GP declared a Trade War
+			random_owned = {
+				owner = { any_country = { limit = { is_greater_power = yes has_country_flag = trade_war_initiator } set_global_flag = trade_war } }
+			}
 
-any_country = { 
-limit = { is_greater_power = yes NOT = { has_country_modifier = juche } } 
-country_event = 1512344 #Trade War Ended
-}
+			any_country = { 
+				limit = { is_greater_power = yes NOT = { has_country_modifier = juche } } 
+				country_event = 1512344 #Trade War Ended
+			}
+			
+			#Liberals are happy
+			any_pop = {
+				scaled_militancy = {
+					factor = -3
+					ideology = liberal
+				}
+				scaled_militancy = {
+					factor = -3
+					ideology = progressive
+				}
+			}
+			#Populists are angry
+			any_pop = {
+				scaled_militancy = {
+					factor = 3
+					ideology = populist
+				}
+				scaled_militancy = {
+					factor = 3
+					ideology = nationalist
+				}
+			}
 
-					}
+		}
 
 		ai_will_do = { 
 			factor = 1 
-			}
+		}
 
 	}
 

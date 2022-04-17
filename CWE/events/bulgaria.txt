@@ -1,93 +1,231 @@
+#Dimitrov Constitution
 country_event = {
-  id = 8002202
-  title = EVT_8002202_NAME
-  desc = EVT_8002202_DESC
-  picture = "nwo2_bulgarian_royal_palace"
-  fire_only_once = yes
+   id = 1605
+   title = "Dimitrov Constitution"
+   desc = EVTDESC1605
+   picture = "BUL_SOV_puppet"
 
-  trigger = {
-    tag = BUL
-	year = 1955
-	NOT = { year = 1980 }
-	government = hms_government
-  }
+	fire_only_once = yes
 
-  mean_time_to_happen = { months = 12 }
+	trigger = {
+		tag = BUL
+		year = 1947
+		NOT = { year = 1990 }
 
-  option = {
-    name = EVT_8002202_A
-	define_general = { name = "Simeon II" personality = energetic background = no_background }
-  }
+		government = democracy
+		is_vassal = no
+		war = no
+		
+		in_sphere = RUS
+		
+		ruling_party_ideology = communist
+		
+		has_global_flag = blocsenabled
+
+		NOT = { OR = { has_country_flag = dimitrovconstitution has_country_flag = socdembulgaria1 } }
+		NOT = { has_global_flag = 1950_start_date_flag }
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "Adopt the new Constitution!"
+		
+		set_country_flag = dimitrovconstitution
+	   
+		relation = { who = RUS value = 50 }
+	   
+		#Historic constitution based on the USSR's own 1936 constitution
+		government = proletarian_dictatorship
+
+		set_country_flag = dimitrov_bul
+       
+		political_reform = regulated_opinion
+		political_reform = none_voting #No voting
+		political_reform = limited_meetings
+		political_reform = politicised_service #Politicized
+		political_reform = censored_publishing
+		political_reform = state_controlled_unions #State Unions
+		political_reform = parties_only_nominated
+		political_reform = open_immigration
+		political_reform = lgbt_outlawed #no_draft
+		political_reform = minorities_affirmative_action
+		political_reform = proportional_representation
+
+		RUS = { country_event = 120003 } #Vassalise
+
+		#Benefits of Sovietisation to USSR
+		RUS = {
+			money = 250000
+			electric_gear = 500
+			machine_parts = 500
+			cement = 500
+			steel = 500
+			fuel = 500
+		}
+
+		ai_chance = {
+			factor = 0.99
+		}
+	}
+
+	option = {
+		name = "Press for a more liberal republic."
+	   
+		set_country_flag = socdembulgaria1
+
+		government = socialist_democracy
+	   
+		relation = { who = RUS value = -200 }
+
+		RUS = { country_event = 120002 } #War to vassalise
+
+		ai_chance = {
+			factor = 0.01
+		}
+    }
 }
-country_event = { # Death of Prince Kiril
-  id = 8022902
-  title = EVT_8022902_NAME
-  desc = EVT_8022902_DESC
-  picture = "nwo2_kiril_preslav"
-  fire_only_once = yes
 
-  trigger = {
-    tag = BUL
-    year = 1945
-    NOT = { year = 1946 }
-    
-  }
-
-  mean_time_to_happen = { months = 12 }
-
-  option = {
-    name = EVT_8022902_A
-  }
-}
+#Zhivkov Constitution
 country_event = {
-  id = 8022903
-  title = EVT_8022903_NAME
-  desc = EVT_8022903_DESC
-  picture = "nwo2_simeon_ii"
-  fire_only_once = yes
+   id = 1606
+   title = "Zhivkov Constitution"
+   desc = EVTDESC1606
+   picture = "1600"
 
-  trigger = {
-    tag = BUL
-    year = 1946
-    NOT = { year = 1949 }
-    
-	government = hms_government
-  }
+	fire_only_once = yes
 
-  mean_time_to_happen = { months = 12 }
+	trigger = {
+		tag = BUL
+		year = 1971
+		NOT = { year = 1990 }
+		
+		government = proletarian_dictatorship
+		vassal_of = RUS
+		war = no
+		
+		OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social }
+		has_country_flag = zhivkov_bul
+		has_country_flag = dimitrovconstitution
+		NOT = { OR = { has_country_flag = zhivkovconstitution has_country_flag = socdembulgaria2 } }
+	}
 
-  option = {
-    name = EVT_8022903_A
-	define_general = { name = "Simeon II" personality = energetic background = no_background }
-  }
+	mean_time_to_happen = { months = 5 }
+
+	option = {
+		name = "Adopt the new Constitution!"
+	   
+		set_country_flag = zhivkovconstitution
+	   
+		relation = { who = RUS value = 50 }
+	   	government = proletarian_dictatorship1
+		#Historic constitution signed in 1971, established more rigid state control
+		political_reform = ruling_party_opinion
+		political_reform = no_meetings
+		political_reform = censored_publishing
+		political_reform = parties_not_allowed #increased centralization
+		political_reform = nobody_gets_out
+
+
+		ai_chance = {
+			factor = 0.85
+		}
+    }
+
+	option = { #no change
+		name = "Stick to the status quo."
+		
+		set_country_flag = rejectedzhivkov
+		
+		relation = { who = RUS value = -50 }
+		
+		any_pop = { 
+			limit = { OR = { strata = middle strata = poor } }
+			ideology = {
+				factor = 0.25
+				value = liberal
+			}
+		}
+		
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
+		
+		ai_chance = {
+			factor = 0.10
+		}
+	}
+
+	option = {
+		name = "Take the oppurtunity to push for liberalization of the regime."
+	   
+		set_country_flag = socdembulgaria2
+		
+		relation = { who = RUS value = -50 }
+	   
+		#Second chance at socialist democracy
+		government = socialist_democracy
+		political_reform = universal_voting
+		political_reform = open_opinion
+		political_reform = limited_meetings
+		political_reform = elitist_service #Elitist
+		political_reform = firewall_publishing
+		political_reform = state_controlled_unions #State Unions
+		political_reform = parties_only_nominated
+		political_reform = open_immigration
+		political_reform = lgbt_outlawed #no_draft
+		political_reform = minorities_affirmative_action
+		political_reform = proportional_representation
+
+		RUS = { release_vassal = THIS country_event = 120002 } #War to vassalise
+
+		ai_chance = {
+			factor = 0.05
+		}
+	}
 }
+
+#1989 Ouster
 country_event = {
-  id = 8022913
-  title = EVT_8022913_NAME
-  desc = EVT_8022913_DESC
-  picture = "nwo2_bulgaria_1989"
-  fire_only_once = yes
+	id = 8022913
+	title = "Reformist Party Coup"
+	desc = EVT_8022913_DESC
+	picture = "bul_reformist_coup"
+	
+	fire_only_once = yes
 
-  trigger = {
-    tag = BUL
-    has_global_flag = autumn_of_nations
-	OR = { vassal_of = RUS is_vassal = no }
-	government = proletarian_dictatorship
-	war = no
-  }
+	trigger = {
+		tag = BUL
+		year = 1989
+		has_global_flag = autumn_of_nations
+		NOT = { year = 1992 }
+		
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+		is_vassal = no
+		war = no
+		
+		NOT = { has_country_flag = warsaw_pact_support }
+		NOT = { has_country_flag = reformist_purge_large_bul }
+		has_country_flag = zhivkov_bul
+	}
 
-  mean_time_to_happen = { months = 12}
+	mean_time_to_happen = { months = 10 }
 
-  option = {
-    name = EVT_8022913_A
-	overlord = { country_event = 8014250 } 
-	government = democracy  country_event = 800054
-	ai_chance = { factor = 1 }
-  }
+	option = {
+		name = "Party Reformists oust Zhivkov and pave the way for democracy."
+		clr_country_flag = zhivkov_bul
+		set_country_flag = mladenov_democractic_bul
+		
+		government = socialist_democracy 
+		country_event = 800054
+		ruling_party_ideology = communist_social
+		
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8022913_B
-	any_pop = { militancy = 2.5  consciousness = 2 }
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = "Zhivkov rallies support to cling to power."
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		any_pop = { militancy = 10 consciousness = 10 }
+		ai_chance = { factor = 0.1 }
+	}
+	
 }

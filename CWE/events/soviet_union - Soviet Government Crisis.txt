@@ -1,0 +1,731 @@
+country_event = { # Compromise with the CPSU?
+	id = 9001428
+	title = "Compromise with the CPSU?"
+	desc = EVT_9001428_DESC
+	picture = "cpsu"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		year = 1997
+		NOT = { year = 2020 }
+		
+		government = socialist_democracy
+		
+		war = no
+		
+		ruling_party_ideology = populist
+	}
+
+	mean_time_to_happen = { months = 5 }
+
+	option = {
+		name = "Deny any cooperation with the Communists."
+		
+		set_country_flag = ussr_start_political_crisis
+		
+		any_pop = {
+			scaled_consciousness = {
+				factor = 4
+				ideology = communist
+			}
+			scaled_militancy = {
+				factor = 5
+				ideology = communist
+			}
+			
+			scaled_consciousness = {
+				factor = 3
+				ideology = liberal
+			}
+			scaled_militancy = {
+				factor = 4
+				ideology = liberal
+			}
+			
+			scaled_consciousness = {
+				factor = 3
+				ideology = nationalist
+			}
+			scaled_militancy = {
+				factor = 3
+				ideology = nationalist
+			}
+		}
+		
+		upper_house = {
+			ideology = populist
+			value = 0.1
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Making some concessions..."
+		
+		any_pop = {
+			scaled_consciousness = {
+				factor = 4
+				ideology = populist
+			}
+			scaled_militancy = {
+				factor = 5
+				ideology = populist
+			}
+			
+			scaled_consciousness = {
+				factor = 3
+				ideology = nationalist
+			}
+			scaled_militancy = {
+				factor = 3
+				ideology = nationalist
+			}
+		}
+		
+		upper_house = {
+			ideology = populist
+			value = -0.1
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+country_event = { # $YEAR$ Soviet Government Crisis
+	id = 9001429
+	title = "$YEAR$ Soviet Government Crisis"
+	desc = EVT_9001429_DESC
+	picture = "soviet_constitutional_crisis"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		year = 1995
+		NOT = { year = 2023 }
+		
+		government = socialist_democracy
+		is_vassal = no
+		war = no
+		
+		ruling_party_ideology = populist
+		
+		election = no
+		
+		owns = 1008
+		
+		has_country_flag = ussr_start_political_crisis
+	}
+
+	mean_time_to_happen = { months = 8 }
+
+	option = {
+		name = "Refuse to leave."
+		
+		country_event = 9001430
+		
+		ai_chance = { factor = 0.95 }
+	}
+	
+	option = {
+		name = "Accept to leave. (Election)"
+		
+		clr_country_flag = ussr_start_political_crisis
+		
+		election = yes
+		
+		any_pop = {
+			limit = {
+				is_culture_group = russian_culture
+			}
+			consciousness = 3 militancy = 4
+		}
+		
+		ai_chance = { factor = 0.05 }
+	}
+}
+
+country_event = { # Alliance with which Far-Right?
+	id = 9001430
+	title = "Alliance with which Far-Right?"
+	desc = EVT_9001430_DESC
+	picture = "far_right_rally"
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "With Russian Nationalists."
+		
+		set_country_flag = ussr_political_crisis_russian
+		clr_country_flag = ussr_start_political_crisis
+		
+		country_event = 9001431
+		
+		ai_chance = { factor = 0.7 }
+	}
+	
+	option = {
+		name = "With Monarchists."
+		
+		set_country_flag = ussr_political_crisis_monarchist
+		clr_country_flag = ussr_start_political_crisis
+		
+		country_event = 9001431
+		
+		ai_chance = { factor = 0.2 }
+	}
+
+	option = {
+		name = "With Soviet Nationalists."
+		
+		set_country_flag = ussr_political_crisis_soviet
+		clr_country_flag = ussr_start_political_crisis
+		
+		country_event = 9001431
+		
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+country_event = { # Assault on the House of Soviets
+	id = 9001431
+	title = "Assault on the House of Soviets"
+	desc = EVT_9001431_DESC
+	picture = "soviet_constitutional_crisis_attack"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "The Pro-President camp must win!"
+		
+		random_list = {
+			70 = { country_event = 9001432 } #The opposition is holding its ground!
+			30 = { country_event = 9001433 } #The House of Soviets falls!
+		}
+	}
+}
+
+country_event = { # The opposition is holding its ground!
+	id = 9001432
+	title = "The opposition is holding its ground!"
+	desc = EVT_9001432_DESC
+	picture = "soviet_constitutional_crisis_holding"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Damn it! We have to prepare!"
+		
+		random_list = {
+			70 = { country_event = 9001434 } #The Opposition attacks the Kremlin
+			30 = { country_event = 9001435 } #The Opposition remains in place
+		}
+	}
+	
+}
+
+country_event = { # The House of Soviets falls!
+	id = 9001433
+	title = "The House of Soviets falls!"
+	desc = EVT_9001433_DESC
+	picture = "soviet_constitutional_crisis_fall"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "It is soon the end of communism..."
+		
+		set_country_flag = ussr_win_political_crisis
+		
+		badboy = 5
+		
+		prestige = -400
+		
+		any_pop = {
+			consciousness = -3 militancy = -4
+			ideology = { factor = 0.1 value = populist }
+		}
+	}
+	
+}
+
+country_event = { # The Opposition attacks the Kremlin
+	id = 9001434
+	title = "The Opposition attacks the Kremlin"
+	desc = EVT_9001434_DESC
+	picture = "soviet_constitutional_crisis_opposition_kremlin"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Try to fight them."
+		
+		random_list = {
+			60 = { country_event = 9001438 } #The Kremlin falls!
+			40 = { country_event = 9001439 } #The Kremlin is holding its ground!
+		}
+		
+		ai_chance = { factor = 0.7 }
+	}
+	
+	option = {
+		name = "Leave in exile."
+		
+		random_list = {
+			85 = { country_event = 9001436 } #Zhirinovsky goes into exile
+			15 = { country_event = 9001440 } #Zhirinovsky is killed!
+		}
+		
+		ai_chance = { factor = 0.2 }
+	}
+	
+	option = {
+		name = "I'd rather die!"
+		
+		random_list = {
+			50 = { country_event = 9001437 } #Zhirinovsky kills himself
+			50 = { country_event = 9001440 } #Zhirinovsky is killed!
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+country_event = { # The Opposition remains in place
+	id = 9001435
+	title = "The Opposition remains in place"
+	desc = EVT_9001435_DESC
+	picture = "soviet_constitutional_crisis_holding"
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "Initiate discussion."
+		
+		country_event = 9001441
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+	option = {
+		name = "Leave in exile."
+		
+		country_event = 9001436
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+}
+
+country_event = { # Zhirinovsky goes into exile
+	id = 9001436
+	title = "Zhirinovsky goes into exile"
+	desc = EVT_9001436_DESC
+	picture = "communist_crowd"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "The communists take back the power."
+		
+		badboy = 6
+		
+		any_pop = {
+			scaled_consciousness = {
+				factor = 6
+				ideology = populist
+			}
+			scaled_militancy = {
+				factor = 6
+				ideology = populist
+			}
+		}
+		
+		random_list = {
+			85 = { 
+				government = proletarian_dictatorship 
+				country_event = 800052 
+				ruling_party_ideology = communist 
+			}
+			15 = { election = yes }
+		}
+	}
+	
+}
+
+country_event = { # Zhirinovsky kills himself
+	id = 9001437
+	title = "Zhirinovsky kills himself"
+	desc = EVT_9001437_DESC
+	picture = "communist_crowd"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "The communists take back the power."
+		
+		badboy = 6
+		
+		any_pop = {
+			scaled_consciousness = {
+				factor = 7.5
+				ideology = populist
+			}
+			scaled_militancy = {
+				factor = 7.5
+				ideology = populist
+			}
+		}
+		
+		random_list = {
+			85 = { 
+				government = proletarian_dictatorship 
+				country_event = 800052 
+				ruling_party_ideology = communist 
+			}
+			15 = { election = yes }
+		}
+	}
+	
+}
+
+country_event = { # The Kremlin falls!
+	id = 9001438
+	title = "The Kremlin falls!"
+	desc = EVT_9001438_DESC
+	picture = "communist_crowd"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "The parliament has regained control of the situation."
+		
+		badboy = 3
+		
+		any_pop = {
+			scaled_consciousness = {
+				factor = 8
+				ideology = populist
+			}
+			scaled_militancy = {
+				factor = 8
+				ideology = populist
+			}
+		}
+		
+		random_list = {
+			20 = { government = proletarian_dictatorship country_event = 800052 ruling_party_ideology = communist }
+			60 = { government = proletarian_dictatorship country_event = 800052 ruling_party_ideology = communist_social }
+			10 = { election = yes }
+		}
+	}
+	
+}
+
+country_event = { # The Kremlin is holding its ground!
+	id = 9001439
+	title = "The Kremlin is holding its ground!"
+	desc = EVT_9001439_DESC
+	picture = "soviet_constitutional_crisis_kremlin_holding"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "It's now or never!"
+		
+		country_event = 9001433
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Let's try to negotiate."
+		
+		country_event = 9001441
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+country_event = { # Zhirinovsky is killed!
+	id = 9001440
+	title = "Zhirinovsky is killed!"
+	desc = EVT_9001440_DESC
+	picture = "communist_crowd"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "It's regrettable but at least it's over."
+		
+		badboy = 5
+		
+		any_pop = {
+			scaled_consciousness = {
+				factor = 10
+				ideology = populist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = populist
+			}
+		}
+		
+		random_list = {
+			80 = { government = proletarian_dictatorship country_event = 800052 ruling_party_ideology = communist }
+			20 = { government = socialist_democracy country_event = 800054 ruling_party_ideology = communist_social }
+		}
+	}
+	
+}
+
+country_event = { # Attempted Negotiation
+	id = 9001441
+	title = "Attempted Negotiation"
+	desc = EVT_9001441_DESC
+	picture = "government_consensus"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Accept the conditions."
+		
+		prestige = -100
+		
+		any_pop = {
+			consciousness = 3 militancy = -3
+		}
+		
+		government = socialist_democracy
+		country_event = 800054
+		ruling_party_ideology = communist_social
+		
+		ai_chance = { factor = 0.7 }
+	}
+	
+	option = {
+		name = "Don't give up!"
+		
+		badboy = 6
+		
+		prestige = -200
+		
+		set_country_flag = ussr_win_political_crisis
+		
+		1008 = { change_controller = REB }
+		
+		ai_chance = { factor = 0.3 }
+	}
+	
+}
+
+country_event = { # Remain loyal to the Soviet regime?
+	id = 9001442
+	title = "Remain loyal to the Soviet regime?"
+	desc = EVT_9001442_DESC
+	picture = "communist_cleanup"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = RUS
+		
+		government = socialist_democracy
+		is_vassal = no
+		war = no
+		
+		ruling_party_ideology = populist
+		
+		has_country_flag = ussr_win_political_crisis
+		has_country_flag = ussr_political_crisis_soviet
+	}
+
+	mean_time_to_happen = { months = 2 }
+
+	option = {
+		name = "Bring back the Dictatorship of the Proletariat."
+		
+		prestige = -200
+		
+		any_pop = {
+			consciousness = 2 militancy = 2
+		}
+		
+		clr_country_flag = ussr_win_political_crisis
+		clr_country_flag = ussr_political_crisis_soviet
+		
+		government = proletarian_dictatorship
+		country_event = 800052
+		ruling_party_ideology = communist
+		
+		ai_chance = { factor = 0.7 }
+	}
+	
+	option = {
+		name = "Break our promises."
+		
+		badboy = 3
+		
+		clr_country_flag = ussr_win_political_crisis
+		clr_country_flag = ussr_political_crisis_soviet
+		
+		any_pop = {
+			scaled_consciousness = {
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+		}
+		
+		ai_chance = { factor = 0.3 }
+	}
+	
+}
+
+country_event = { # Establishing a Presidential Dictatorship?
+	id = 9001443
+	title = "Establishing a Presidential Dictatorship?"
+	desc = EVT_9001443_DESC
+	picture = "nwo2_garcia_meza_dictatorship"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = RUS
+		
+		government = socialist_democracy
+		is_vassal = no
+		war = no
+		
+		ruling_party_ideology = populist
+		
+		has_country_flag = ussr_win_political_crisis
+		has_country_flag = ussr_political_crisis_russian
+	}
+
+	mean_time_to_happen = { months = 2 }
+
+	option = {
+		name = "Abandon communism completely."
+		
+		prestige = 250
+		
+		any_pop = {
+			consciousness = 4 militancy = 4
+		}
+		
+		clr_country_flag = ussr_win_political_crisis
+		clr_country_flag = ussr_political_crisis_russian
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		government = nationalist_dictatorship
+		country_event = 800050
+		ruling_party_ideology = nationalist
+		
+		ai_chance = { factor = 0.8 }
+	}
+	
+	option = {
+		name = "Break our promises."
+		
+		badboy = 2
+		
+		clr_country_flag = ussr_win_political_crisis
+		clr_country_flag = ussr_political_crisis_russian
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		any_pop = {
+			scaled_consciousness = {
+				factor = 10
+				ideology = nationalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+		}
+		
+		ai_chance = { factor = 0.2 }
+	}
+	
+}
+
+country_event = { # Restore the Russian Empire?
+	id = 9001444
+	title = "Restore the Russian Empire?"
+	desc = EVT_9001444_DESC
+	picture = "restore_russian_empire"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = RUS
+		
+		government = socialist_democracy
+		is_vassal = no
+		war = no
+		
+		ruling_party_ideology = populist
+		
+		has_country_flag = ussr_win_political_crisis
+		has_country_flag = ussr_political_crisis_monarchist
+	}
+
+	mean_time_to_happen = { months = 2 }
+
+	option = {
+		name = "Let's bring back the Tsars."
+		
+		prestige = 250
+		
+		any_pop = {
+			consciousness = 5 militancy = 4
+		}
+		
+		clr_country_flag = ussr_win_political_crisis
+		clr_country_flag = ussr_political_crisis_monarchist
+		
+		government = absolute_monarchy
+		country_event = 800050
+		ruling_party_ideology = traditionalist
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		ai_chance = { factor = 0.7 }
+	}
+	
+	option = {
+		name = "Break our promises."
+		
+		badboy = 2
+		
+		clr_country_flag = ussr_win_political_crisis
+		clr_country_flag = ussr_political_crisis_monarchist
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		any_pop = {
+			scaled_consciousness = {
+				factor = 10
+				ideology = traditionalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
+			}
+		}
+		
+		ai_chance = { factor = 0.3 }
+	}
+}

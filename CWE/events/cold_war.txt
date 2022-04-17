@@ -174,6 +174,45 @@ country_event = {
 	option = {
 		name = "EVT_19804_A"
 		
+		#Starting political support
+		random_owned = {
+			limit = { owner = { year = 1950 } }
+			owner = { 	
+				HND = {
+					any_pop = {
+						ideology = {
+							factor = 0.25
+							value = socialist
+						}
+					} 
+				}
+				PAK = {
+					any_pop = {
+						ideology = {
+							factor = 0.25
+							value = conservative
+						}
+					} 
+				}
+				THI = {
+					any_pop = {
+						ideology = {
+							factor = 0.25
+							value = conservative
+						}
+					} 
+				}
+				BUR = {
+					any_pop = {
+						ideology = {
+							factor = 0.25
+							value = socialist
+						}
+					} 
+				}
+			}
+		}
+		
 		#effects are added via 1946_start_decision
 
 	}
@@ -187,27 +226,63 @@ country_event = {
 	title = "EVT_19805_NAME" # EVT_19805_NAME;Non Aligned Movement
 	desc = "EVT_19805_DESC" # EVT_19805_ESC;The Non-Aligned Movement is a Movement of 115 members representing the interests and priorities of developing countries. (To remove the independent bloc modifier, join a bloc)
 	picture = "nam"
+	
+	fire_only_once = yes
+	
+	major = yes
 
 	trigger = {
+	
+		#NAM will form in one of the historical founding nations or one of the neutral Great Powers
+		OR = { tag = HND tag = IDO tag = YUG is_greater_power = yes }
 		year = 1961
+		
+		is_vassal = no
+		war = no
+		
+		#Cold War Ongoing
 		has_global_flag = blocsenabled
-		OR = { exists = HND exists = IDO exists = YUG }
-		NOT = { has_country_flag = joinnam } 
-		NOT = { has_country_flag = joindemo }
-		NOT = { has_country_flag = namformformed }
-		NOT = { has_country_flag = joincomm }
-	}
 
-	immediate = {
-		set_global_flag = namformed
+		#THIS is not in a superpower bloc
+		NOT = { 
+			OR = { 
+				has_country_modifier = communist_bloc_leader 
+				has_country_modifier = communist_bloc 
+				
+				has_country_modifier = democratic_bloc_leader 
+				has_country_modifier = democratic_bloc
+			} 
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 9
 	}
 	
 	option = {
 		name = "EVT_19805_A" # EVT_19805_A;Interesting
-		set_country_flag = namformformed
-		set_country_flag = joinnam
-USA =  { relation = { who = THIS value = 50 } }
-USA =  { diplomatic_influence = { who = THIS value = 10 } }
+		
+		prestige = 50
+		
+		#Set up the NAM organisation
+		set_global_flag = namformed
+		
+		#All nations not in a bloc automatically join the NAM
+		any_country = {
+			limit = { 
+				NOT = { 
+					OR = { 
+						has_country_modifier = communist_bloc_leader 
+						has_country_modifier = communist_bloc 
+						
+						has_country_modifier = democratic_bloc_leader 
+						has_country_modifier = democratic_bloc 
+					} 
+				} 
+			}
+			set_country_flag = joinnam
+		}
+		
 	}
 
 }
@@ -223,9 +298,8 @@ country_event = {
 	trigger = {
 		NOT = { has_global_flag =  blocsenabled }
 		OR = { 
-		has_global_flag = cold_warusa #USA victory
-
-		has_global_flag = cold_warussr #USSR victory
+			has_global_flag = cold_warusa #USA victory
+			has_global_flag = cold_warussr #USSR victory
 		}
 		NOT = { has_country_flag = endofthecoldwar }
 	}
@@ -303,13 +377,13 @@ country_event = {
 		remove_country_modifier = open_borders
 		remove_country_modifier = joint_aid
 
-#Clear ongoing Cold War Crisis flags
-clr_global_flag = cwcrisis_initiated
-any_country = { clr_country_flag = cw_crisis_target }
-any_country = { clr_country_flag = superpower_support_in_crisis }
-clr_global_flag = cwcrisis_full_blown
-clr_global_flag = called_for_superpower
-clr_global_flag = called_for_rival_superpower
+		#Clear ongoing Cold War Crisis flags
+		clr_global_flag = cwcrisis_initiated
+		any_country = { clr_country_flag = cw_crisis_target }
+		any_country = { clr_country_flag = superpower_support_in_crisis }
+		clr_global_flag = cwcrisis_full_blown
+		clr_global_flag = called_for_superpower
+		clr_global_flag = called_for_rival_superpower
 
 		any_country = {
 			limit = {
@@ -404,27 +478,33 @@ country_event = {
 	title = EVT_19807_NAME #EVT_19807_NAME;End of the Cold War
 	desc = EVT_19807_DESC #EVT_19807_DESC;With the fall of the USA, the Cold War has ended!
 	picture = "endofcoldwarussr"
+	
+	fire_only_once = yes
 
 	trigger = {
 
-#USSR or USS
-RUS = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy rank = 3 } }
+		#USSR or USS
+		RUS = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy rank = 3 } }
 
-USA = { 
-OR = { 
+		#Not during a Soviet Civil War
+		NOT = { has_global_flag = soviet_civil_war_happening }
 
-#Not a strong power
-NOT = { rank = 3 } 
+		#USA conditions
+		USA = { 
+			OR = { 
 
-#Left-wing authoritarian dictatorship
-AND = { OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social } NOT = { government = democracy government = democracy1 government = hms_government government = hms_government1 } }
+				#Not a strong power
+				NOT = { rank = 3 } 
 
-	} 
-}
+				#Left-wing authoritarian dictatorship
+				AND = { OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social } NOT = { government = democracy government = democracy1 government = hms_government government = hms_government1 } }
+
+			} 
+		}
 		
 		NOT = { has_country_flag = cold_warussr1 }
-		has_global_flag = blocsenabled
 		
+		has_global_flag = blocsenabled
 	}
 	
 	option = {
@@ -477,7 +557,7 @@ RUS = { OR = { NOT = { rank = 3 } NOT = { OR = { government = proletarian_dictat
 country_event = {
 	id = 19809
 	title = "$FROMCOUNTRY$ joins the Democratic Bloc"
-	desc = "$FROMCOUNTRY$ has decided to join the democratic bloc. The American ambassador warmly thanks the $FROMCOUNTRY$ people for their support."
+	desc = "$FROMCOUNTRY$ has decided to join the democratic bloc. The American ambassador warmly thanks the $FROMCOUNTRY_ADJ$ people for their support."
 	picture = "blocstrengthens"
 	is_triggered_only = yes
 	
@@ -494,7 +574,7 @@ country_event = {
 country_event = {
 	id = 198091
 	title = "$FROMCOUNTRY$ joins the Communist Bloc"
-	desc = "$FROMCOUNTRY$ has decided to join the communist bloc. The Soviet ambassador warmly thanks the $FROMCOUNTRY$ people for their support." 
+	desc = "$FROMCOUNTRY$ has decided to join the communist bloc. The Soviet ambassador warmly thanks the $FROMCOUNTRY_ADJ$ people for their support." 
 	picture = "blocweakens"
 	is_triggered_only = yes
 	
@@ -510,7 +590,7 @@ country_event = {
 country_event = {
 	id = 198092
 	title = "$FROMCOUNTRY$ joins the Non-Aligned Movement"
-	desc = "$FROMCOUNTRY$ has decided to join the Non-Aligned Movement. The Secretariat of the Non-Aligned Movement warmly thanks the $FROMCOUNTRY$ people for their support."
+	desc = "$FROMCOUNTRY$ has decided to join the Non-Aligned Movement. The Secretariat of the Non-Aligned Movement warmly thanks the $FROMCOUNTRY_ADJ$ people for their support."
 	picture = "blocstrengthens"
 	is_triggered_only = yes
 	

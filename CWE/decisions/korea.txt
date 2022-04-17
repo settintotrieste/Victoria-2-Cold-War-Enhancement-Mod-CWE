@@ -16,8 +16,8 @@ political_decisions = {
 		}
 		allow = {
 			war = no
-			NKO = { war = no OR = { exists = no in_sphere = THIS vassal_of = THIS } }
-			SKO = { war = no OR = { exists = no in_sphere = THIS vassal_of = THIS } }
+			NKO = { war = no OR = { in_sphere = THIS vassal_of = THIS } }
+			SKO = { war = no OR = { in_sphere = THIS vassal_of = THIS } }
 		}
 		effect = {
 			set_country_flag = allow_form_korea
@@ -28,9 +28,8 @@ political_decisions = {
 				limit = { owner = { AND = { is_our_vassal = SKO is_our_vassal = NKO } } }
 				owner = { 
 					SKO = { change_tag = KOR }
-					SKO = { all_core = { add_core = KOR } }
-					NKO = { all_core = { add_core = KOR } }
-					KOR = { inherit = SKO }
+					SKO = { all_core = { add_core = KOR remove_core = SKO } }
+					NKO = { all_core = { add_core = KOR remove_core = NKO } }
 					KOR = { inherit = NKO }
 					diplomatic_influence = { who = SKO value = 200 }
 				}
@@ -43,6 +42,40 @@ political_decisions = {
 
 	}
 	
+	become_korea = {
+		picture = "become_korea"
+		potential = {
+			OR = { 
+				tag = NKO
+				tag = SKO
+			}
+			OR = {
+				NKO = { exists = no }
+				SKO = { exists = no }
+			}
+			KOR = { exists = no }
+		}
+		allow = {
+		
+			#owns all NKO and SKO cores
+			owns = 1619 #Pyongyang
+			owns = 1624 #Seoul
+		
+			war = no
+		}
+		effect = {
+			prestige = 100
+			
+			SKO = { all_core = { add_core = KOR remove_core = SKO } }
+			NKO = { all_core = { add_core = KOR remove_core = NKO } }
+			
+			change_tag = KOR
+		}
+		ai_will_do = {
+			factor = 1
+		}
+	}
+	
 	form_korea = {
 		picture = "claim_greater_korea"
 		potential = {
@@ -50,71 +83,95 @@ political_decisions = {
 				tag = SKO
 				tag = NKO
 			}
+			
+			exists = NKO
+			exists = SKO
+			
 			KOR = { exists = no }
 		}
 		allow = {
 			war = no
 			is_vassal = no
 
-				OR = {
-
-any_greater_power = {
-	OR = { 
-AND = { is_sphere_leader_of = SKO is_sphere_leader_of = NKO }
-AND = { is_our_vassal = SKO is_our_vassal = NKO }
-	has_country_flag = allow_form_korea
-	}
-}
-
-AND = {
-SKO = { government = socialist_democracy }
-NKO = { government = socialist_democracy }
-	}
-
-AND = {
-SKO = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
-NKO = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
-	}
-
-AND = {
-SKO = { OR = { government = democracy government = democracy1 } }
-NKO = { OR = { government = democracy government = democracy1 } }
-	}
-
-AND = {
-SKO = { OR = { government = hms_government government = hms_government1 } }
-NKO = { OR = { government = hms_government government = hms_government1 } }
-	}
-
-AND = {
-SKO = { government = absolute_monarchy }
-NKO = { government = absolute_monarchy }
-	}
-
-AND = {
-SKO = { government = theocracy }
-NKO = { government = theocracy }
-	}
-
-AND = {
-SKO = { OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship } }
-NKO = { OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship } }
-	}
-
+			#Either SKO or NKO self unites or a third party GP unites them if both koreas share the same gov type
+			OR = { 
+				has_country_flag = allow_form_korea
+				
+				is_greater_power = yes
+				
+				#Permit third party unification
+				any_greater_power = {
+					OR = { 
+						AND = { is_sphere_leader_of = SKO is_our_vassal = NKO }
+						AND = { is_sphere_leader_of = NKO is_our_vassal = SKO }
+					}
 				}
+			}
+
+			#The divided koreas must have the same gov type
+			OR = {
+
+				AND = {
+					SKO = { government = socialist_democracy }
+					NKO = { government = socialist_democracy }
+				}
+
+				AND = {
+					SKO = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
+					NKO = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
+				}
+
+				AND = {
+					SKO = { OR = { government = democracy government = democracy1 } }
+					NKO = { OR = { government = democracy government = democracy1 } }
+				}
+
+				AND = {
+					SKO = { OR = { government = hms_government government = hms_government1 } }
+					NKO = { OR = { government = hms_government government = hms_government1 } }
+				}
+
+				AND = {
+					SKO = { government = absolute_monarchy }
+					NKO = { government = absolute_monarchy }
+				}
+
+				AND = {
+					SKO = { government = theocracy }
+					NKO = { government = theocracy }
+				}
+
+				AND = {
+					SKO = { OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship } }
+					NKO = { OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship } }
+				}
+
+			}
 
 		}
 		effect = {
 			prestige = 50
-			SKO = {
-				all_core = { add_core = KOR }
+			
+			#Remove North & South Korea cores
+			SKO = { all_core = { add_core = KOR remove_core = SKO } }
+			NKO = { all_core = { add_core = KOR remove_core = NKO } }
+			
+			#THIS inherits the other Korea and tag switches to KOR
+			random_owned = { 
+				limit = { owner = { tag = SKO } }
+				owner = { 
+					inherit = NKO 
+					change_tag = KOR
+				}
 			}
-			NKO = {
-				all_core = { add_core = KOR }
+
+			random_owned = { 
+				limit = { owner = { tag = NKO } }
+				owner = { 
+					inherit = SKO
+					change_tag = KOR
+				}
 			}
-			inherit = SKO
-			inherit = NKO
-			change_tag = KOR
 		}
 		ai_will_do = {
 			factor = 1
@@ -127,156 +184,190 @@ NKO = { OR = { government = presidential_dictatorship government = populist_dict
 	}
 	
 	claim_greater_korea = {
-			picture = "claim_greater_korea"
-			potential = {
-					tag = KOR
-					NOT = { has_country_flag = claim_greater_korea }
-			}
+		picture = "claim_greater_korea"
+		potential = {
+			tag = KOR
+			NOT = { has_country_flag = claim_greater_korea }
+		}
 
-			allow = {
-				   tag = KOR
-					part_of_sphere = no
-					has_unclaimed_cores = no
-					NOT = {	
-						has_country_flag = claim_greater_korea
-						ruling_party_ideology = socialist
-						ruling_party_ideology = progressive
-						ruling_party_ideology = liberal 
-					}
-					is_vassal = no
-					prestige = 45
-					OR = {
-							ruling_party_ideology = populist
-							jingoism = 24
-					}
+		allow = {
+			prestige = 45
+		
+			is_vassal = no
+			war = no
+			
+			election = no
+			
+			NOT = { part_of_sphere = yes }
+			NOT = { is_disarmed = yes }
+			
+			has_unclaimed_cores = no
+			
+			OR = { 
+				war_policy = jingoism
+				jingoism = 24
 			}
+			
+			NOT = {
+				ruling_party_ideology = socialist
+				ruling_party_ideology = progressive
+				ruling_party_ideology = liberal 
+			}
+		}
 
-			effect = {
-					badboy = 24
-					set_country_flag = claim_greater_korea
-					1081 = { add_core = KOR }
-					2613 = { add_core = KOR }
-					1479 = { add_core = KOR }
-					45 = { add_core = KOR }
-					1085 = { add_core = KOR }
-					1082 = { add_core = KOR }
-					1083 = { add_core = KOR }
-					2641 = { add_core = KOR }
-			}
+		effect = {
+			badboy = 20
+			set_country_flag = claim_greater_korea
+			
+			#Claim Manchuria
+			MCK = { all_core = { add_core = KOR } }
+			
+			#Claim Far East Republic
+			FER = { all_core = { add_core = KOR } }
+		}
 
 	}
 
 	abandon_claim_greater_korea = {
-			picture = "claim_greater_korea"
-			potential = {
-					tag = KOR
-					has_country_flag = claim_greater_korea
-					OR = {
-							government = democracy
-							government = hms_government
-					}
-			}
+		picture = "claim_greater_korea"
+		potential = {
+			tag = KOR
+			has_country_flag = claim_greater_korea
+		}
 
-			allow = {
-					war = no
-					is_vassal = no
-					has_country_flag = claim_greater_korea
-					OR = {
-							ruling_party_ideology = socialist
-							ruling_party_ideology = progressive
-							ruling_party_ideology = liberal
-					}
-			}
+		allow = {
+			is_vassal = no
+			war = no
+			
+			election = no
 
-			effect = {
-					prestige = 10
-					any_pop = {
-							consciousness = 1
-					}
-					clr_country_flag = claim_greater_korea
-					all_core = { 
-							limit = { NOT = { owned_by = THIS } }
-							remove_core = KOR
-					}
-			}
+			war_policy = pacifism
+			NOT = { jingoism = 24 }
+		}
 
-	}
+		effect = {
+			badboy = -5
+			clr_country_flag = claim_greater_korea
+			
+			#Renounce claims over Manchuria
+			MCK = { all_core = { remove_core = KOR } }
+			
+			#Renounce claims over Far East Republic
+			FER = { all_core = { remove_core = KOR } }
+		}
 
-	korea_trusteeship = {
-			picture = "korea_trusteeship"
-			potential = {
-				OR = {
-					AND = { controls = 1624 tag = USA NOT = { exists = SKO } }
-					AND = { controls = 1619 tag = RUS NOT = { exists = NKO } 1619 = { is_core = NKO } } # core check to see if decided to keep the land
-				}
-				NOT = { has_country_flag = korea_trusteeship }
-			}
-
-			allow = {
-				OR = {
-					tag = USA
-					tag = RUS
-				}
-				war = no
-				year = 1947
-			}
-
-			effect = {
-				prestige = 5
-				set_country_flag = korea_trusteeship
-			}
 	}
 
 	songjin_kimchaek = {
-			picture = "songjin_kimchaek"
-			potential = {
-					OR = {
-						tag = KOR
-						tag = NKO
-					}
-					owns = 1623
-					NOT = { has_global_flag = songjin_kimchaek }
+		picture = "songjin_kimchaek"
+		potential = {
+			OR = {
+				tag = KOR
+				tag = SKO
+				tag = NKO
 			}
-			allow = {
-					cold_war = 1
-					government = proletarian_dictatorship
-					year = 1952
-					owns = 1623
+			
+			owns = 1623
+			
+			NOT = { has_global_flag = songjin_kimchaek }
+		}
+		allow = {
+			government = proletarian_dictatorship
+			is_vassal = no
+			war = no
+		
+			cold_war = 1
+			decolonization = 1
+		}
+		effect = {
+			set_global_flag = songjin_kimchaek
+			
+			prestige = 50
+			
+			any_pop = { 
+				limit = { strata = rich }
+				ideology = {
+					factor = 0.10
+					value = nationalist
+				} 
 			}
-			effect = {
-					set_global_flag = songjin_kimchaek
-					prestige = 10
-					any_pop = { scaled_militancy = { ideology = nationalist factor = 3 } }
-					1623 = { change_province_name  = "Kimchaek" }
+			any_pop = { 
+				limit = { strata = middle }
+				militancy = -2.5
+				consciousness = -2.5
+				ideology = {
+					factor = 0.05
+					value = nationalist
+				} 
 			}
-			ai_will_do = { factor = 1 }
+			any_pop = { 
+				limit = { strata = poor }
+				militancy = -5
+				consciousness = -5
+				ideology = {
+					factor = 0.05
+					value = communist
+				} 
+			}
+			
+			1623 = { change_province_name = "Kimchaek" }
+		}
+		ai_will_do = { factor = 1 }
 	}
 
 	kimchaek_songjin = {
-			picture = "songjin_kimchaek"
-			potential = {
-					OR = {
-						tag = KOR
-						tag = SKO
-					}
-					owns = 1623
-					has_global_flag = songjin_kimchaek 
-					NOT = { 
-						OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social }
-					}
+		picture = "songjin_kimchaek"
+		potential = {
+			OR = {
+				tag = KOR
+				tag = SKO
+				tag = NKO
 			}
-			allow = {
-					cold_war = 1
-					NOT = { government = proletarian_dictatorship }
-					owns = 1623
+			
+			owns = 1623
+			
+			has_global_flag = songjin_kimchaek 
+		}
+		allow = {
+			is_vassal = no
+			war = no
+		
+			election = no
+		
+			NOT = { OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social } }
+		}
+		effect = {
+			clr_global_flag = songjin_kimchaek
+			
+			any_pop = { 
+				limit = { strata = rich }
+				ideology = {
+					factor = 0.10
+					value = conservative
+				} 
 			}
-			effect = {
-					clr_global_flag = songjin_kimchaek
-					prestige = 10
-					any_pop = { scaled_militancy = { ideology = communist factor = 3 } }
-					1623 = { change_province_name  = "Songjin" }
+			any_pop = { 
+				limit = { strata = middle }
+				militancy = -2.5
+				consciousness = -2.5
+				ideology = {
+					factor = 0.05
+					value = liberal
+				} 
 			}
-			ai_will_do = { factor = 1 }
+			any_pop = { 
+				limit = { strata = poor }
+				militancy = -5
+				consciousness = -5
+				ideology = {
+					factor = 0.05
+					value = progressive
+				} 
+			}
+
+			1623 = { change_province_name  = "Songjin" }
+		}
+		ai_will_do = { factor = 1 }
 	}
-					
+
 }

@@ -1,0 +1,234 @@
+country_event = { # Pressure on Turkey
+	id = 9001502
+	title = "A Second Turkish Straits Crisis?"
+	desc = EVT_9001502_DESC
+	picture = "treaty_of_kars"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = RUS
+		year = 1946
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		government = proletarian_dictatorship
+		is_greater_power = yes
+		war = no
+		
+		#USSR owns Crimea
+		is_possible_vassal = CRI
+		
+		#Greece is communist
+		OR = {
+			GRE = {
+				exists = yes
+				
+				OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+				is_vassal = no
+				war = no
+			}
+			UGR = {
+				exists = yes
+				
+				OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+				exists = yes
+				war = no
+				
+				has_global_flag = greek_communist_wins
+			}
+		}
+		
+		#Turkey exists, is independent, not communist and owns the Turkish strait
+		TUR = {
+			exists = yes
+			
+			NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
+			is_vassal = no
+			war = no
+			
+			NOT = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } }
+			
+			owns = 860
+		}
+		
+		#Crisis can occur
+		has_global_flag = crisis_ussr_waiting
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
+	}
+	
+	mean_time_to_happen = { months = 2 }
+	
+	option = {
+		name = "Ask them for free passage."
+		
+		badboy = 2
+		
+		TUR = { country_event = 9001503 }
+		
+		ai_chance = { factor = 0.6 }
+	}
+	
+	option = {
+		name = "Ask them for free passage and Istanbul."
+		
+		badboy = 4
+		
+		TUR = { country_event = 9001504 }
+		
+		ai_chance = { factor = 0.3 }
+	}
+	
+	option = {
+		name = "Do nothing."
+		
+		relation = { who = TUR value = 50 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+country_event = { # The claim of the Soviets - Not Istanbul
+	id = 9001503
+	title = "The USSR demands Naval Access!"
+	desc = EVT_9001503_DESC
+	picture = "turkish_straits_crisis"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "We have no choice."
+		prestige_factor = -0.05
+		
+		#Turkey enters the Soviet SOI
+		military_access = FROM
+		USA = { 
+			relation = { who = THIS value = -100 }
+			diplomatic_influence = { who = THIS value = -100 } 
+		}
+		RUS = { 
+			relation = { who = THIS value = 100 } 
+			diplomatic_influence = { who = THIS value = 200 }
+		}
+		
+		#Domestic reaction
+		any_pop = {
+			consciousness = 2.5
+			militancy = 2.5
+			ideology = { factor = 0.10 value = nationalist }
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "We refuse. (Chance of war)"
+		
+		RUS = { country_event = 9001505 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+country_event = { # The claim of the Soviets - Istanbul
+	id = 9001504
+	title = "The USSR demands Istanbul!"
+	desc = EVT_9001504_DESC
+	picture = "turkish_straits_crisis"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "We have no choice."
+		prestige_factor = -0.10
+		
+		#Transfer Istanbul to the USSR and give military_access
+		860 = { secede_province = RUS }
+		
+		#Turkey enters the Soviet SOI
+		military_access = FROM
+		USA = { 
+			relation = { who = THIS value = -200 }
+			diplomatic_influence = { who = THIS value = -200 } 
+		}
+		RUS = { 
+			prestige = 100
+			relation = { who = THIS value = 200 } 
+			diplomatic_influence = { who = THIS value = 200 }
+			create_alliance = TUR
+		}
+		
+		#Domestic reaction
+		any_pop = {
+			consciousness = 5
+			militancy = 5
+			ideology = { factor = 0.25 value = nationalist }
+		}
+		
+		ai_chance = { factor = 0.7 }
+	}
+	
+	option = {
+		name = "We refuse. (Chance of war)"
+		prestige = 100
+		
+		RUS = { country_event = 9001505 }
+		
+		ai_chance = { factor = 0.3 }
+	}
+	
+}
+
+country_event = { # Turkey refuses our claims
+	id = 9001505
+	title = "Turkey refuses our claims"
+	desc = EVT_9001505_DESC
+	picture = "turkish_straits_crisis"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Let it be."
+		prestige_factor = -0.1
+		
+		#USSR loses influence in Turkey
+		relation = { who = THIS value = -100 } 
+		diplomatic_influence = { who = THIS value = -100 } 
+		
+		#Domestic reaction
+		any_pop = {
+			consciousness = 5
+			militancy = 5
+		}
+		
+		ai_chance = { factor = 0.85 }
+	}
+
+	option = {
+		name = "So be it!"
+		
+		#War of control
+		war = {
+			target = TUR
+			attacker_goal = { casus_belli = make_puppet }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = yes
+		}
+		
+		#Western powers are not happy
+		any_country = {
+			limit = { 
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+				is_greater_power = yes 
+			}
+			relation = { who = THIS value = -100 }
+		}
+		
+		ai_chance = { factor = 0.15 }
+	}
+	
+}

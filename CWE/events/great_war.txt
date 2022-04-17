@@ -499,6 +499,7 @@ country_event = {
 			is_greater_power = yes
 			is_secondary_power = yes
 			colonial_nation = yes
+			is_vassal = no
 		}
 		OR = {
 			has_country_flag = ultimatum_accepted
@@ -568,9 +569,7 @@ country_event = {
 				is_overseas = yes
 				is_core = THIS
 			}
-
-			add_province_modifier = { name = colonial_unrest duration = 3650 }
-
+			remove_core = THIS
 		}
 
 		#normalize relations with treaty members
@@ -687,6 +686,8 @@ country_event = {
 						tag = PBC
 						tag = GCL
 						tag = XME
+						tag = ENG
+						tag = BKF
 						
 						#Do not release special countries
 						tag = ICB
@@ -955,7 +956,7 @@ country_event = {
 	is_triggered_only = yes
 	
 	immediate = {
-	
+		
 		#Superstates get dismantled
 		FROM = {
 			random_owned = {
@@ -991,6 +992,8 @@ country_event = {
 							tag = PBC
 							tag = GCL
 							tag = XME
+							tag = ENG
+							tag = BKF
 						}
 					}
 				}
@@ -1005,7 +1008,14 @@ country_event = {
 	option = {
 		name = "EVTOPTA96031" #Great
 		
-		FROM = {
+		#FROM releases THIS
+		random_country = {
+			limit = { 
+				tag = FROM
+				
+				#This country is not released if the capital of FROM is a core of THIS
+				capital_scope = { NOT = { is_core = THIS } }
+			}
 			any_state = {
 				limit = {
 					any_owned_province = { is_core = THIS }
@@ -1018,6 +1028,7 @@ country_event = {
 			}
 		}
 		
+		#Large countries get further dismantled
 		random_owned = {
 			limit = {
 				owner = { num_of_cities = 20 }
@@ -1048,6 +1059,7 @@ country_event = {
 		}
 		any_neighbor_country = {
 			limit = {
+				THIS = { exists = yes }
 				OR = {
 					truce_with = FROM
 					AND = {
@@ -1060,6 +1072,7 @@ country_event = {
 		}
 		any_country = {
 			limit = {
+				THIS = { exists = yes }
 				OR = {
 					truce_with = FROM
 					AND = {
@@ -1080,6 +1093,7 @@ country_event = {
 		}
 		any_country = {
 			limit = {
+				THIS = { exists = yes }
 				OR = {
 					truce_with = FROM
 					AND = {
@@ -1094,7 +1108,11 @@ country_event = {
 				value = 100
 			}
 		}
-		FROM = {
+		random_country = {
+			limit = { 
+				tag = FROM
+				THIS = { exists = yes }
+			}
 			diplomatic_influence = {
 				who = THIS
 				value = -200

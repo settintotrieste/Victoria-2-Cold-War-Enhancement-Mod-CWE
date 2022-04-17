@@ -1,3 +1,37 @@
+#Assassination of Mahatma Gandhi
+country_event = {
+	id = 8007220
+	title = "Assassination of Mahatma Gandhi"
+	desc = EVTDESC1512220
+	picture = "death_of_gandhi"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = HND
+
+		year = 1948
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+	}
+
+	mean_time_to_happen = { 
+		months = 6
+	}
+
+	option = {
+		name = "We have lost a great statesman"
+		add_country_modifier = { name = revolution_chaos duration = 183 }
+		
+		#INC support surges
+		any_pop = { 
+			limit = { OR = { has_pop_religion = sunni has_pop_religion = ibad has_pop_religion = shiite has_pop_religion = druze } }
+			ideology = { factor = 0.25 value = socialist } 
+		}
+	}
+
+}
+
 #Nehru Administration
 country_event = {
   id = 8007221
@@ -597,13 +631,25 @@ country_event = {
 		OR = { HND = { owns = 1224 } PAK = { owns = 1224 } }
 	}
 
-	mean_time_to_happen = { months = 9 }
+	mean_time_to_happen = { months = 1 }
 
 	option = {
 		name = EVT_8007229_A
-		any_pop = { militancy = 1.0 }
+		any_pop = { militancy = -3 }
 		badboy = 5 
-		war = { target = HYD attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = humiliate } }
+		
+		#INC support surges in India
+		any_pop = { 
+			limit = { location = { is_core = HND } }
+			ideology = { factor = 0.05 value = socialist } 
+		}
+		
+		#Start the War
+		war = { 
+			target = HYD 
+			attacker_goal = { casus_belli = annex_core_country } 
+			defender_goal = { casus_belli = territorial_dispute_internal } 
+		}
 		ai_chance = { factor = 1 }
 	}
 
@@ -654,6 +700,13 @@ country_event = {
 		name = "Opt to join India"
 		HND = { 
 			prestige = 50
+			
+			#INC support surges in India
+			any_pop = { 
+				limit = { location = { is_core = HND } }
+				ideology = { factor = 0.05 value = socialist } 
+			}
+			
 			inherit = JAK 
 		}
 		ai_chance = { factor = 0.1 }
@@ -693,6 +746,8 @@ country_event = {
 			attacker_goal = { casus_belli = annex_core_country } 
 			defender_goal = { casus_belli = war_reparations } 
 		}
+		
+		set_global_flag = PAK_opt_annex_JAK
 		
 		ai_chance = { factor = 0.9 }
 	}
@@ -738,7 +793,7 @@ country_event = {
 	}
 	
 	option = {
-		name = "I'm confident that we can defeat Pakistani"
+		name = "I'm confident that we can defeat Pakistan"
 		prestige = 50
 		ai_chance = { factor = 0.1 }
 	}
@@ -787,6 +842,12 @@ country_event = {
 			defender_goal = { casus_belli = humiliate }
 		}
 		
+		#INC support surges in India
+		any_pop = { 
+			limit = { location = { is_core = HND } }
+			ideology = { factor = 0.05 value = socialist } 
+		}
+		
 		ai_chance = { factor = 0.9 }
 	}
 	
@@ -794,6 +855,79 @@ country_event = {
 		name = "Leave them be"
 		prestige = -50
 		relation = { who = PAK value = 50 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Annexation of Kashmir - White peace - HND
+country_event = {
+  id = 80072331
+  title = "United Nations Ceasefire in Kashmir?"
+  desc = EVTDESC80072331
+  picture = "nwo2_kashmir_war_UNO"
+  
+	fire_only_once = yes
+
+	trigger = {
+    	tag = HND
+		year = 1948
+		NOT = { year = 1965 }
+		
+		is_vassal = no
+		
+		#Cold War
+		has_global_flag = blocsenabled
+		
+		#War with Pakistan over Kashmir
+		PAK = { exists = yes is_vassal = no }
+		war_with = PAK
+		
+		#Owns Kashmir
+		JAK = { exists = no }
+		any_owned_province = { is_core = JAK }
+		PAK = { any_owned_province = { is_core = JAK } }
+	}
+
+	mean_time_to_happen = { months = 2 }
+
+	option = {
+		name = "Propose a ceasefire to Pakistan (white peace)"
+		
+		#Offer a white peace
+		PAK = { country_event = 80072332 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "I'm confident that we can defeat Pakistan"
+		prestige = 50
+		badboy = 5
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Annexation of Kashmir - White peace - PAK
+country_event = {
+  id = 80072332
+  title = "United Nations Ceasefire in Kashmir?"
+  desc = EVTDESC80072331
+  picture = "nwo2_kashmir_war_UNO"
+  
+	is_triggered_only = yes
+
+	option = {
+		name = "Agree to a ceasefire"
+		end_war = HND
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "I'm confident that we can defeat Pakistan"
+		prestige = 50
+		badboy = 5
 		ai_chance = { factor = 0.1 }
 	}
 
@@ -856,6 +990,85 @@ country_event = {
 		name = "Leave them be"
 		prestige = -50
 		relation = { who = PAK value = 50 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Second Kashmir War - White peace - HND
+country_event = {
+  id = 8007235
+  title = "United Nations Ceasefire in Kashmir?"
+  desc = EVTDESC8007235
+  picture = "nwo2_kashmir_war_UNO_2"
+  
+	fire_only_once = yes
+
+	trigger = {
+    	tag = HND
+		year = 1965
+		NOT = { year = 1971 }
+		
+		is_vassal = no
+		
+		#Cold War
+		has_global_flag = blocsenabled
+		
+		#War with Pakistan over Kashmir
+		PAK = { exists = yes is_vassal = no }
+		war_with = PAK
+		
+		#Owns Kashmir
+		JAK = { exists = no }
+		any_owned_province = { is_core = JAK }
+		PAK = { any_owned_province = { is_core = JAK } }
+	}
+
+	mean_time_to_happen = { months = 3 }
+
+	option = {
+		name = "Propose a ceasefire to Pakistan (white peace)"
+		
+		#Offer a white peace
+		PAK = { country_event = 8007236 }
+		
+		#INC support surges in India
+		any_pop = { 
+			limit = { location = { is_core = HND } }
+			ideology = { factor = 0.05 value = socialist } 
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "I'm confident that we can defeat Pakistan"
+		prestige = 50
+		badboy = 5
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Second Kashmir War - White peace - PAK
+country_event = {
+  id = 8007236
+  title = "United Nations Ceasefire in Kashmir?"
+  desc = EVTDESC8007235
+  picture = "nwo2_kashmir_war_UNO_2"
+  
+	is_triggered_only = yes
+
+	option = {
+		name = "Agree to a ceasefire"
+		end_war = HND
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "I'm confident that we can defeat Pakistan"
+		prestige = 50
+		badboy = 5
 		ai_chance = { factor = 0.1 }
 	}
 
@@ -945,6 +1158,12 @@ country_event = {
 		name = EVT_8007252_A
 		any_pop = { consciousness = 2 }
 		prestige = 100
+		
+		#INC support surges in India
+		any_pop = { 
+			limit = { location = { is_core = HND } }
+			ideology = { factor = 0.05 value = socialist } 
+		}
 	}
 
 }

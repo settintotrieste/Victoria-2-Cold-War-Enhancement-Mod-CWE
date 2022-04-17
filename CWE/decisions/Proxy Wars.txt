@@ -1,0 +1,299 @@
+political_decisions = {
+
+	#Initiate Proxy Support for rebels (Regional)
+	support_rebels = {
+		picture = "support_rebels"
+		potential = {
+		
+			#Not for the AI during the cold war to avoid messing with historical events
+			OR = {
+				ai = no
+				NOT = { has_global_flag = blocsenabled }
+			}
+		
+			#Not already supporting Rebels
+			NOT = { 
+				OR = {
+					has_country_modifier = proxy_involvement_conservative_dictatorship
+					has_country_modifier = proxy_involvement_socialist_dictatorship
+					has_country_modifier = proxy_involvement_communist_dictatorship
+					has_country_modifier = proxy_involvement_theocracy
+					has_country_modifier = proxy_involvement_monarchy
+					has_country_modifier = proxy_involvement_democracy
+				} 
+			}
+
+			#Rebellion in neighbouring nation
+			any_neighbor_country = {
+			
+				#Not a GP
+				is_greater_power = no
+			
+				#Not a rebel tags
+				NOT = { OR = { tag = R01 tag = R02 tag = R03 tag = R04 tag = R05 tag = R06 tag = R07 tag = R08 tag = R09 tag = R10 } }
+			
+				#Must have sufficient local support
+				OR = {
+					AND = { THIS = { OR = { ruling_party_ideology = conservative ruling_party_ideology = nationalist ruling_party_ideology = populist } } NOT = { OR = { ruling_party_ideology = conservative ruling_party_ideology = nationalist ruling_party_ideology = populist } } OR = { conservative = 10 nationalist = 10 populist = 10 } }
+					AND = { THIS = { ruling_party_ideology = socialist } NOT = { ruling_party_ideology = socialist } socialist = 10 }
+					AND = { THIS = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } NOT = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } OR = { communist = 10 communist_social = 10 } }
+					AND = { THIS = { ruling_party_ideology = traditionalist } NOT = { ruling_party_ideology = traditionalist } traditionalist = 10 }
+					AND = { THIS = { OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive ruling_party_ideology = big_tent } } NOT = { OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive ruling_party_ideology = big_tent } } OR = { liberal = 10 big_tent = 10 progressive = 10 } }
+				}
+
+				#Bad relations
+				NOT = { relation = { who = THIS value = -100 } }
+				
+				#Is not a vassal
+				is_vassal = no 
+				
+				#Has a major revolt
+				revolt_percentage = 0.25 
+				
+				#Capital is not controlled by rebels
+				capital_scope = { NOT = { controlled_by = REB } } 
+				
+				#More than 3 states
+				number_of_states = 3
+			}
+
+			#THIS is not a vassal
+			is_vassal = no
+			
+			#Rebel tags are available
+			NOT = { AND = { exists = R01 exists = R02 exists = R03 exists = R04 exists = R05 exists = R06 exists = R07 exists = R08 exists = R09 exists = R10 } }
+			
+			#Post 1955
+			guerrilla = 1
+		}
+
+		allow = {
+			war = no
+			election = no
+			
+			#Must have decent military score
+			military_score = 300
+			
+			ammunition = 30
+			weaponry = 30
+			small_arms = 30
+			automobiles = 30
+			
+			money = 500000
+
+			OR = { ai = no war_policy = jingoism }
+			
+			#Post 1955
+			wars_of_national_liberation = 1
+		}
+
+		effect = {
+
+			random_country = { 
+
+				limit = { 
+			
+					#Neighbouring nation
+					neighbour = THIS
+					
+					#Not a GP
+					is_greater_power = no
+					
+					#Not a rebel tags
+					NOT = { OR = { tag = R01 tag = R02 tag = R03 tag = R04 tag = R05 tag = R06 tag = R07 tag = R08 tag = R09 tag = R10 } }
+				
+					#Must have sufficient local support
+					OR = {
+						AND = { THIS = { OR = { ruling_party_ideology = conservative ruling_party_ideology = nationalist ruling_party_ideology = populist } } NOT = { OR = { ruling_party_ideology = conservative ruling_party_ideology = nationalist ruling_party_ideology = populist } } OR = { conservative = 10 nationalist = 10 populist = 10 } }
+						AND = { THIS = { ruling_party_ideology = socialist } NOT = { ruling_party_ideology = socialist } socialist = 10 }
+						AND = { THIS = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } NOT = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } OR = { communist = 10 communist_social = 10 } }
+						AND = { THIS = { ruling_party_ideology = traditionalist } NOT = { ruling_party_ideology = traditionalist } traditionalist = 10 }
+						AND = { THIS = { OR = { ruling_party_ideology = liberal ruling_party_ideology = big_tent ruling_party_ideology = progressive } } NOT = { OR = { ruling_party_ideology = liberal ruling_party_ideology = big_tent ruling_party_ideology = progressive } } OR = { liberal = 10 big_tent = 10 progressive = 10 } }
+					}
+
+					#Bad relations
+					NOT = { relation = { who = THIS value = -100 } }
+				
+					#Is not a vassal
+					is_vassal = no 
+				
+					#Has a major revolt
+					revolt_percentage = 0.25 
+				
+					#Capital is not controlled by rebels
+					capital_scope = { NOT = { controlled_by = REB } } 
+					
+					#More than 3 states
+					number_of_states = 3
+				}
+
+				#Spawn Rebels
+				country_event = 1400071
+
+			}
+
+			money = -250000
+			
+			badboy = 5
+			
+			ammunition = -30
+			weaponry = -30
+			small_arms = -30
+			automobiles = -30
+			
+			#Add relevant modifier
+			random_owned = { limit = { owner = { OR = { ruling_party_ideology = conservative ruling_party_ideology = nationalist ruling_party_ideology = populist } } } owner = { add_country_modifier = { name = proxy_involvement_conservative_dictatorship duration = 1825 } } }
+			random_owned = { limit = { owner = { ruling_party_ideology = socialist } } owner = { add_country_modifier = { name = proxy_involvement_socialist_dictatorship duration = 1825 } } }
+			random_owned = { limit = { owner = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } } owner = { add_country_modifier = { name = proxy_involvement_communist_dictatorship duration = 1825 } } }
+			random_owned = { limit = { owner = { NOT = { government = absolute_monarchy } ruling_party_ideology = traditionalist } } owner = { add_country_modifier = { name = proxy_involvement_theocracy duration = 1825 } } }
+			random_owned = { limit = { owner = { government = absolute_monarchy ruling_party_ideology = traditionalist } } owner = { add_country_modifier = { name = proxy_involvement_monarchy duration = 1825 } } }
+			random_owned = { limit = { owner = { OR = { ruling_party_ideology = liberal ruling_party_ideology = big_tent ruling_party_ideology = progressive } } } owner = { add_country_modifier = { name = proxy_involvement_democracy duration = 1825 } } }
+		}
+		ai_will_do = { 
+			factor = 1 
+			modifier = { factor = 0 badboy = 0.5 } 
+		}
+	}
+	
+	#Initiate Proxy Support for government (Regional)
+	support_government = {
+		picture = "support_government"
+		potential = {
+		
+			#Not already supporting Rebels
+			NOT = { 
+				OR = {
+					has_country_modifier = proxy_involvement_conservative_dictatorship
+					has_country_modifier = proxy_involvement_socialist_dictatorship
+					has_country_modifier = proxy_involvement_communist_dictatorship
+					has_country_modifier = proxy_involvement_theocracy
+					has_country_modifier = proxy_involvement_monarchy
+					has_country_modifier = proxy_involvement_democracy
+				} 
+			}
+
+			#Rebellion in neighbouring nation
+			any_neighbor_country = {
+			
+				#Not a GP
+				is_greater_power = no
+			
+				#Not a rebel tags
+				NOT = { OR = { tag = R01 tag = R02 tag = R03 tag = R04 tag = R05 tag = R06 tag = R07 tag = R08 tag = R09 tag = R10 } }
+			
+				#Must have sufficient local support
+				OR = {
+					AND = { THIS = { OR = { ruling_party_ideology = conservative ruling_party_ideology = nationalist ruling_party_ideology = populist } } OR = { ruling_party_ideology = conservative ruling_party_ideology = nationalist ruling_party_ideology = populist } }
+					AND = { THIS = { ruling_party_ideology = socialist } ruling_party_ideology = socialist }
+					AND = { THIS = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } }
+					AND = { THIS = { ruling_party_ideology = traditionalist } ruling_party_ideology = traditionalist }
+					AND = { THIS = { OR = { ruling_party_ideology = liberal ruling_party_ideology = big_tent ruling_party_ideology = progressive } } OR = { ruling_party_ideology = liberal ruling_party_ideology = big_tent ruling_party_ideology = progressive } }
+				}
+
+				#Great relations
+				relation = { who = THIS value = 100 }
+				
+				#Is not a vassal
+				is_vassal = no 
+				
+				#Has a major revolt
+				revolt_percentage = 0.25 
+				
+				#Capital is not controlled by rebels
+				capital_scope = { NOT = { controlled_by = REB } } 
+				
+				#More than 3 states
+				number_of_states = 3
+			}
+
+			#THIS is not a vassal
+			is_vassal = no
+		}
+
+		allow = {
+			war = no
+			election = no
+			
+			ammunition = 30
+			weaponry = 30
+			small_arms = 30
+			automobiles = 30
+			
+			money = 500000
+
+			OR = { ai = no war_policy = jingoism }
+		}
+
+		effect = {
+
+			random_country = { 
+
+				limit = { 
+			
+					#Neighbouring nation
+					neighbour = THIS
+					
+					#Not a GP
+					is_greater_power = no
+					
+					#Not a rebel tags
+					NOT = { OR = { tag = R01 tag = R02 tag = R03 tag = R04 tag = R05 tag = R06 tag = R07 tag = R08 tag = R09 tag = R10 } }
+				
+					#Must have sufficient local support
+					OR = {
+						AND = { THIS = { OR = { ruling_party_ideology = conservative ruling_party_ideology = nationalist ruling_party_ideology = populist } } OR = { ruling_party_ideology = conservative ruling_party_ideology = nationalist ruling_party_ideology = populist } }
+						AND = { THIS = { ruling_party_ideology = socialist } ruling_party_ideology = socialist }
+						AND = { THIS = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } }
+						AND = { THIS = { ruling_party_ideology = traditionalist } ruling_party_ideology = traditionalist }
+						AND = { THIS = { OR = { ruling_party_ideology = liberal ruling_party_ideology = big_tent ruling_party_ideology = progressive } } OR = { ruling_party_ideology = liberal ruling_party_ideology = big_tent ruling_party_ideology = progressive } }
+					}
+
+					#Great relations
+					relation = { who = THIS value = 100 }
+				
+					#Is not a vassal
+					is_vassal = no 
+				
+					#Has a major revolt
+					revolt_percentage = 0.25 
+				
+					#Capital is not controlled by rebels
+					capital_scope = { NOT = { controlled_by = REB } } 
+					
+					#More than 3 states
+					number_of_states = 3
+				}
+
+				add_country_modifier = { name = support_government duration = 1825 }
+				
+				money = 250000
+			
+				ammunition = 30
+				weaponry = 30
+				small_arms = 30
+				automobiles = 30
+
+			}
+
+			money = -250000
+			
+			ammunition = -30
+			weaponry = -30
+			small_arms = -30
+			automobiles = -30
+			
+			#Add relevant modifier
+			random_owned = { limit = { owner = { OR = { ruling_party_ideology = conservative ruling_party_ideology = nationalist ruling_party_ideology = populist } } } owner = { add_country_modifier = { name = proxy_involvement_conservative_dictatorship duration = 1825 } } }
+			random_owned = { limit = { owner = { ruling_party_ideology = socialist } } owner = { add_country_modifier = { name = proxy_involvement_socialist_dictatorship duration = 1825 } } }
+			random_owned = { limit = { owner = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } } owner = { add_country_modifier = { name = proxy_involvement_communist_dictatorship duration = 1825 } } }
+			random_owned = { limit = { owner = { NOT = { government = absolute_monarchy } ruling_party_ideology = traditionalist } } owner = { add_country_modifier = { name = proxy_involvement_theocracy duration = 1825 } } }
+			random_owned = { limit = { owner = { government = absolute_monarchy ruling_party_ideology = traditionalist } } owner = { add_country_modifier = { name = proxy_involvement_monarchy duration = 1825 } } }
+			random_owned = { limit = { owner = { OR = { ruling_party_ideology = liberal ruling_party_ideology = big_tent ruling_party_ideology = progressive } } } owner = { add_country_modifier = { name = proxy_involvement_democracy duration = 1825 } } }
+		}
+		ai_will_do = { 
+			factor = 1 
+			modifier = { factor = 0 badboy = 0.5 } 
+		}
+	}
+
+}

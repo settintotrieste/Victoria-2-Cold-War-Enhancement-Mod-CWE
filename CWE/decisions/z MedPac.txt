@@ -1,0 +1,164 @@
+political_decisions = {
+	form_MedPac = {
+		picture = "MedPac"
+		potential = {
+			tag = ITA
+			year = 1970
+			NOT = { has_global_flag = 1992_start_date_flag }
+			
+			#Italy is right wing dictatorship and is either an SP or GP
+			OR = { government = populist_dictatorship government = nationalist_dictatorship government = presidential_dictatorship }
+			
+			#Italy is in NATO
+			has_country_modifier = alliance_nato
+			
+			#ITA conditions
+			has_global_flag = ITA_Operation_Tora_Tora
+			
+			#One time only decision
+			NOT = { has_global_flag = form_MedPac }
+		}
+		allow = {
+			OR = { is_greater_power = yes is_secondary_power = yes }
+			war = no
+
+			money = 200000
+		}
+		effect = {
+			set_global_flag = form_MedPac
+			prestige = 100
+			money = -100000
+        		add_country_modifier = { name = alliance_MedPac duration = 1825 }
+		}
+		ai_will_do = { 
+			factor = 1 
+		}
+	}
+
+	join_MedPac = {
+		picture = "MedPac"
+		potential = {
+			has_global_flag = form_MedPac
+		
+			#Potential members (any mediterranean nation)
+			capital_scope = {
+				OR = { 
+					continent = europe 
+					continent = mena 
+				}
+				OR = { 
+					is_core = ITA
+					is_core = POR 
+					is_core = SPA
+					is_core = FRA
+					is_core = FAG
+					is_core = CRO
+					is_core = GRE
+					is_core = ALB
+					is_core = CYP
+				}
+			}
+			
+			#Dictatorships or Right Wing governments only
+			OR = { 
+				government = populist_dictatorship 
+				government = nationalist_dictatorship 
+				government = presidential_dictatorship 
+				government = absolute_monarchy 
+				
+				ruling_party_ideology = nationalist
+				ruling_party_ideology = populist
+			}
+
+			#Not already in MedPac or has recently left
+			NOT = { has_country_modifier = alliance_MedPac }
+			NOT = { has_country_modifier = leave_alliance_MedPac }
+			
+			#Not in another alliance
+			NOT = { has_country_modifier = warsaw_pact }
+			NOT = { has_country_modifier = csto_alliance }
+			NOT = { has_country_modifier = alliance_sato }
+			NOT = { has_country_modifier = rio_pact }
+			
+			#MedPac collapses if Italy does not exist OR is a vassal OR is no longer a GP or SP OR is no longer rightwing
+			ITA = { 
+				OR = { 
+					exists = no
+					is_vassal = yes
+					AND = { is_greater_power = no is_secondary_power = no }
+					NOT = { OR = { government = populist_dictatorship government = nationalist_dictatorship government = presidential_dictatorship } }
+				} 
+			}
+		}
+		allow = {
+			is_vassal = no
+			war = no
+			
+			#THIS must not be neutral
+			NOT = { has_country_flag = neutrality }
+			NOT = { has_country_modifier = neutrality }
+		}
+		effect = {
+			any_country = {
+				limit = { has_country_modifier = alliance_MedPac }
+				relation = { who = THIS value = 100 }
+				create_alliance = THIS
+			}
+			add_country_modifier = { name = alliance_MedPac duration = 1825 }
+		}
+		ai_will_do = { 
+			factor = 1 
+		}
+	}
+
+	leave_MedPac = {
+		picture = "MedPac"
+		potential = {
+			has_country_modifier = alliance_MedPac
+		}
+		allow = {
+			#Members can only leave when at peace
+			war = no
+            
+	    		#Conditions for leaving
+			OR = { 
+				#Player can decide when to leave
+				ai = no 
+				
+				#Vassals always leave
+				is_vassal = yes
+				
+				#Member states that are NOT dictatorships or Right Wing governments leave
+				NOT = {
+					OR = { 
+						government = populist_dictatorship 
+						government = nationalist_dictatorship 
+						government = presidential_dictatorship 
+						government = absolute_monarchy 
+				
+						ruling_party_ideology = nationalist
+						ruling_party_ideology = populist
+					}
+				}
+			
+				#Neutral nations always leave
+				has_country_flag = neutrality 
+				has_country_modifier = neutrality 
+			}
+			
+		}
+		effect = {
+			any_country = {
+				limit = { has_country_modifier = alliance_MedPac }
+				relation = { who = THIS value = -100 }
+				leave_alliance = THIS
+			}
+			add_country_modifier = { name = leave_alliance_MedPac duration = 1825 }
+			remove_country_modifier = alliance_MedPac
+		}
+		ai_will_do = { 
+			factor = 1 
+		}
+	}
+	
+}

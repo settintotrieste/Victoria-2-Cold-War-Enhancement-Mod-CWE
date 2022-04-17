@@ -4,40 +4,47 @@ country_event = {
   title = EVT_8501001_NAME
   desc = EVT_8501001_DESC
   picture = "nationalisation_of_aioc"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
+	trigger = {
     	tag = PER
     	year = 1951
     	NOT = { year = 1990 }
-	in_sphere = ENG
-	is_vassal = no
-	war = no
-OR = { government = absolute_monarchy government = hms_government government = democracy }
-	has_country_flag = mohammed_mossadegh_in_power
-  }
+		
+		is_vassal = no
+		war = no
+		
+		#In the UK's sphere
+		in_sphere = ENG
+	
+		OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+		
+		#Mossadegh
+		has_country_flag = mohammed_mossadegh_in_power
+	}
 
-  immediate = { set_global_flag = event_fired_8501001 }
+	immediate = { set_global_flag = event_fired_8501001 }
 
-  mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8501001_A # Nationalize the fields
-	nationalize = yes
-	prestige = 50
-	money = 50000
-	ENG = { diplomatic_influence = { who = PER value = -200 } }
-	ENG = { country_event = 8501002 }
-	ai_chance = { factor = 0.8 }
-  }
+	option = {
+		name = EVT_8501001_A # Nationalize the fields
+		nationalize = yes
+		prestige = 50
+		money = 50000
+		ENG = { diplomatic_influence = { who = PER value = -200 } }
+		ENG = { country_event = 8501002 }
+		ai_chance = { factor = 0.8 }
+	}
 
-  option = {
-    name = EVT_8501001_B # Remain on good terms
-	any_pop = { militancy = 1.5 }
-	prestige_factor = -0.10
-ENG = { diplomatic_influence = { who = PER value = 100 } }
-	ai_chance = { factor = 0.2 }
-  }
+	option = {
+		name = EVT_8501001_B # Remain on good terms
+		any_pop = { militancy = 1.5 }
+		prestige_factor = -0.10
+		ENG = { diplomatic_influence = { who = PER value = 100 } }
+		ai_chance = { factor = 0.2 }
+	}
 }
 
 #British response to nationalisation
@@ -46,26 +53,25 @@ country_event = {
   title = EVT_8501002_NAME
   desc = EVT_8501002_DESC
   picture = "nwo2_abadan_crisis"
-  fire_only_once = yes
 
-  is_triggered_only = yes
+	is_triggered_only = yes
   
-  option = {
-    name = "Impose sanctions on Iran!"
-	badboy = 10 
-PER = { add_country_modifier = { name = embargo_nation duration = 3650 } }
-	relation = { who = PER value = -200 } 
-	set_global_flag = abadan_crisis
-	ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = "Impose sanctions on Iran!"
+		badboy = 10 
+		PER = { add_country_modifier = { name = embargo_nation duration = 3650 } }
+		relation = { who = PER value = -200 } 
+		set_global_flag = abadan_crisis
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = "Leave it be"
-	prestige_factor = -0.05
-	money = -100000
-	relation = { who = PER value = 100 } 
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Leave it be"
+		prestige_factor = -0.05
+		money = -100000
+		relation = { who = PER value = 100 } 
+		ai_chance = { factor = 0.1 }
+	}
 }
 
 #Second Phase of the Abadan Crisis
@@ -74,48 +80,68 @@ country_event = {
   title = EVT_8501003_NAME
   desc = EVT_8501003_DESC
   picture = "nwo2_abadan_crisis"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
+	trigger = {
     	tag = PER
     	year = 1953
-	is_vassal = no
-	war = no
-    	has_global_flag = abadan_crisis
-  }
+		NOT = { year = 1992 }
+		
+		is_vassal = no
+		war = no
+		
+		ENG = { exists = yes government = hms_government }
+		USA = { exists = yes government = democracy }
+		
+		#Abadan crisis
+		has_global_flag = abadan_crisis
+	}
 
-  immediate = { set_global_flag = event_fired_8501003 }
+	mean_time_to_happen = { months = 2 }
 
-  mean_time_to_happen = { months = 2 }
+	option = {
+		name = "Resist british imperialism!"
 
-  option = {
-    name = "Resist british imperialism!"
+		prestige = 50
 
-	prestige = 50
+		any_pop = { militancy = 1 consciousness = 5 }
 
-	any_pop = { militancy = 1 consciousness = 5 }
+		set_country_flag = seek_soviet_help
 
-	set_country_flag = seek_soviet_help
-
-	set_country_flag = operation_ajax
+		set_country_flag = operation_ajax
 	
-	ai_chance = { factor = 0.8 }
-  }
+		ai_chance = { factor = 0.8 }
+	}
 
-  option = {
-    name = "Cave in to the british"
+	option = {
+		name = "Cave in to the British"
+		prestige_factor = -0.25
+		
+		money = -50000
 
-remove_country_modifier = embargo_nation
-
-	any_pop = { militancy = 5 consciousness = 1 }
-	prestige_factor = -0.25
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-	ENG = { diplomatic_influence = { who = PER value = 200 } }
-	ENG = { diplomatic_influence = { who = PER value = 200 } }
-	relation = { who = ENG value = 200 }
-	money = -50000
-	ai_chance = { factor = 0.2 }
-  }
+		any_pop = { militancy = 5 consciousness = 1 }
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+	
+		remove_country_modifier = embargo_nation
+		
+		ENG = { diplomatic_influence = { who = PER value = 200 } }
+		ENG = { diplomatic_influence = { who = PER value = 200 } }
+		relation = { who = ENG value = 200 }
+		relation = { who = USA value = 200 }
+		
+		#Communist support grows
+		any_pop = { ideology = { factor = 0.15 value = communist } }
+		
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+		}
+		
+		ai_chance = { factor = 0.2 }
+	}
 }
 
 #Soviet offer of assistance
@@ -124,31 +150,35 @@ country_event = {
   title = EVT_8501004_NAME
   desc = EVT_8501004_DESC
   picture = "nwo2_abadan_crisis"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
+	trigger = {
     	tag = PER
-	is_vassal = no
-	war = no
+		
+		is_vassal = no
+		war = no
+		
     	has_global_flag = abadan_crisis
-	has_country_flag = seek_soviet_help
-  }
+		has_country_flag = seek_soviet_help
+		
+		#Cold War
+		has_global_flag = blocsenabled
+	}
 
-mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 1 }
 
-  immediate = { set_global_flag = event_fired_8501004 }
+	option = {
+		name = "We don't need their assistance"
+		any_pop = { militancy = 1 }
+		ai_chance = { factor = 0.7 }
+	}
 
-  option = {
-    name = "We don't need their assistance"
-	any_pop = { militancy = 1 }
-	ai_chance = { factor = 0.7 }
-  }
-
-  option = {
-    name = "Contact the Soviets immediately!"
-	RUS = { country_event = 8501005 }
-	ai_chance = { factor = 0.3 }
-  }
+	option = {
+		name = "Contact the Soviets immediately!"
+		RUS = { country_event = 8501005 }
+		ai_chance = { factor = 0.3 }
+	}
 }
 
 #Soviet are asked for help
@@ -158,22 +188,22 @@ country_event = {
   desc = EVT_8501005_DESC
   picture = "nwo2_abadan_crisis"
 
-  is_triggered_only = yes
+	is_triggered_only = yes
 
-  option = {
+	option = {
     	name = EVT_8501005_A # Help out
-	relation = { who = PER value = 100 }
-	diplomatic_influence = { who = PER value = 100 } 
-	USA = { country_event = 8501006 } # American ultimatum
-	ai_chance = { factor = 0.75 }
-  }
+		relation = { who = PER value = 100 }
+		diplomatic_influence = { who = PER value = 100 } 
+		USA = { country_event = 8501006 } # American ultimatum
+		ai_chance = { factor = 0.75 }
+	}
 
-  option = {
-    name = EVT_8501005_B # Refrain
-	relation = { who = PER value = -50 } 
-	diplomatic_influence = { who = PER value = -50 }
-	ai_chance = { factor = 0.25 }
-  }
+	option = {
+		name = EVT_8501005_B # Refrain
+		relation = { who = PER value = -50 } 
+		diplomatic_influence = { who = PER value = -50 }
+		ai_chance = { factor = 0.25 }
+	}
 
 }
 
@@ -184,24 +214,22 @@ country_event = {
   desc = EVT_8501006_DESC
   picture = "nwo2_abadan_crisis"
 
-  is_triggered_only = yes
+	is_triggered_only = yes
 
-  immediate = { set_global_flag = event_fired_8501006 }
+	option = {
+		name = EVT_8501006_A # Oppose Soviets
+		relation = { who = PER value = -50 }
+		relation = { who = RUS value = -100 }
+		RUS = { country_event = 8501007 } 
+		ai_chance = { factor = 0.60 }
+	}
 
-  option = {
-    name = EVT_8501006_A # Oppose Soviets
-	relation = { who = PER value = -50 }
-	relation = { who = RUS value = -100 }
-	RUS = { country_event = 8501007 } 
-	ai_chance = { factor = 0.60 }
-  }
-
-  option = {
-    name = EVT_8501006_B
-	RUS = { country_event = 8501010 } # Don't oppose soviets
-	relation = { who = ENG value = -150 } 
-	ai_chance = { factor = 0.40 }
-  }
+	option = {
+		name = EVT_8501006_B
+		RUS = { country_event = 8501010 } # Don't oppose soviets
+		relation = { who = ENG value = -150 } 
+		ai_chance = { factor = 0.40 }
+	}
 }
 
 #Soviet reaction to US opposition
@@ -211,21 +239,21 @@ country_event = {
   desc = EVT_8501007_DESC
   picture = "nwo2_abadan_crisis"
 
-  is_triggered_only = yes
+	is_triggered_only = yes
 
-  option = {
-    name = "Withdraw our support to Iran"
-	relation = { who = PER value = -100 } 
-	diplomatic_influence = { who = PER value = -100 }
-	ai_chance = { factor = 0.75 }
-  }
+	option = {
+		name = "Withdraw our support to Iran"
+		relation = { who = PER value = -100 } 
+		diplomatic_influence = { who = PER value = -100 }
+		ai_chance = { factor = 0.75 }
+	}
 
-  option = {
-    name = "Continue our support (50% chance of WW3)"
-	PER = { country_event = 8501010 } #Alliance with USSR
-	USA = { country_event = 8501008 } #Choice to fight
-	ai_chance = { factor = 0.25 }
-  }
+	option = {
+		name = "Continue our support (50% chance of WW3)"
+		PER = { country_event = 8501010 } #Alliance with USSR
+		USA = { country_event = 8501008 } #Choice to fight
+		ai_chance = { factor = 0.25 }
+	}
 }
 
 #US reaction to soviet refusal to withdraw support
@@ -235,25 +263,25 @@ country_event = {
   desc = EVT_8501008_DESC
   picture = "nwo2_abadan_crisis"
 
-  is_triggered_only = yes
+	is_triggered_only = yes
 
-  option = {
+	option = {
     	name = "Back down"
-	prestige_factor = -0.10
-	relation = { who = PER value = 100 }
-	relation = { who = RUS value = 100 }
-	ai_chance = { factor = 0.5 }
-  }
+		prestige_factor = -0.10
+		relation = { who = PER value = 100 }
+		relation = { who = RUS value = 100 }
+		ai_chance = { factor = 0.5 }
+	}
 
-  option = {
-    name = "It's war!"
+	option = {
+		name = "It's war!"
+		
+		country_event = 19821928 #USA declares war on USSR
 
-	country_event = 19821928 #USA declares war on USSR
-
-	any_pop = { consciousness = 2 }
-	any_state = { any_pop = { dominant_issue = { value = jingoism factor = 0.05 } } }
-	ai_chance =  { factor = 0.5 }
-  }
+		any_pop = { consciousness = 2 }
+		any_state = { any_pop = { dominant_issue = { value = jingoism factor = 0.05 } } }
+		ai_chance =  { factor = 0.5 }
+	}
 }
 
 #Iran receives Soviet Support
@@ -263,17 +291,17 @@ country_event = {
   desc = EVT_8501010_DESC
   picture = "nwo2_abadan_crisis"
 
-  is_triggered_only = yes
+	is_triggered_only = yes
 
-  option = {
-    name = "We welcome our new comrades"
-	prestige = 500
-	RUS = { diplomatic_influence = { who = PER value = 100 } }
-	relation = { who = RUS value = 100 }
-	create_alliance = RUS
-	any_pop = { militancy = -5 consciousness = -1 }
-	set_country_flag = ussr_supports_iran_1953
-  }
+	option = {
+		name = "We welcome our new comrades"
+		prestige = 500
+		RUS = { diplomatic_influence = { who = PER value = 100 } }
+		relation = { who = RUS value = 100 }
+		create_alliance = RUS
+		any_pop = { militancy = -5 consciousness = -1 }
+		set_country_flag = ussr_supports_iran_1953
+	}
 }
 
 #1953 Iranian Coup, Opearation Ajax - If no war with USSR
@@ -282,29 +310,35 @@ country_event = {
   title = EVT_8501020_NAME
   desc = EVT_8501020_DESC
   picture = "nwo2_1953_iranian_coup"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
     trigger = {
     	tag = PER
-	is_vassal = no
-	war = no
+		year = 1953
+		
+		OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+		is_vassal = no
+		war = no
+		
     	has_global_flag = abadan_crisis
-	has_country_flag = operation_ajax
-	year = 1953
-	OR = { government = democracy government = hms_government }
-	NOT = { government = absolute_monarchy }
-	NOT = { in_sphere = RUS }
-	NOT = { has_country_flag = ussr_supports_iran_1953 }
-	ENG = { government = hms_government exists = yes }
-	USA = { government = democracy exists = yes }
-  }
+		has_country_flag = operation_ajax
+		
+		#Cold War
+		has_global_flag = blocsenabled
+		
+		NOT = { in_sphere = RUS }
+		NOT = { has_country_flag = ussr_supports_iran_1953 }
+		ENG = { government = hms_government exists = yes }
+		USA = { government = democracy exists = yes }
+	}
 
-mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 2 }
 
-  option = {
-	name = "Only fate can decide Iran's future (75% chance of Operation Ajax)"
-	ENG = { country_event = 8501021 }
-  }
+	option = {
+		name = "Only fate can decide Iran's future (75% chance of Operation Ajax)"
+		ENG = { country_event = 8501021 }
+	}
 }
 
 #British decision to launch Operation Ajax
@@ -314,26 +348,31 @@ country_event = {
   desc = EVT_8501021_DESC
   picture = "nwo2_operation_ajax"
 
-is_triggered_only = yes
+	is_triggered_only = yes
 
-  option = {
-    name = "Restore the Shah's power in Iran"
-	badboy = 5
-	relation = { who = USA value = 100 }
-	any_pop = { consciousness = 2 }
-	PER = { country_event = 8011407 }
-	money = -100000
-	ai_chance =  { factor = 0.75 }
-  }
+	option = {
+		name = "Restore the Shah's power in Iran"
+		badboy = 5
+		relation = { who = USA value = 100 }
+		any_pop = { consciousness = 2 }
+		PER = { country_event = 8011407 }
+		money = -100000
+		ai_chance =  { factor = 0.75 }
+	}
 
-  option = {
-    name = "Let it be, (Shah flees Iran for good)"
-	prestige_factor = -0.05
-	badboy = -5
-	PER = { government = democracy prestige = 500 }
-	relation = { who = USA value = -50 }
-	ai_chance =  { factor = 0.25 }
-  }
+	option = {
+		name = "Let it be"
+		prestige_factor = -0.05
+		badboy = -5
+		
+		PER = { 
+			government = democracy 
+			ruling_party_ideology = socialist 
+			prestige = 500 
+		}
+		relation = { who = USA value = -50 }
+		ai_chance =  { factor = 0.25 }
+	}
 
 }
 
@@ -344,27 +383,28 @@ country_event = {
   desc = EVT_8011407_DESC
   picture = "nwo2_operation_ajax"
 
-  is_triggered_only = yes
+	is_triggered_only = yes
   
-  option = {
-    name = "This is the end of democracy in Iran"
+	option = {
+		name = "This is the end of democracy in Iran"
 
-prestige = -50
+		prestige = -50
 
-government = absolute_monarchy
-ruling_party_ideology = conservative
-country_event = 800050
+		government = absolute_monarchy
+		ruling_party_ideology = conservative
+		country_event = 800050
 
-relation = { who = ENG value = 100 }
-relation = { who = RUS value = -100 }
-relation = { who = USA value = 100 }
+		relation = { who = ENG value = 100 }
+		relation = { who = USA value = 100 }
+		relation = { who = RUS value = -100 }
 
-ENG = { diplomatic_influence = { who = PER value = 200 } }
+		ENG = { diplomatic_influence = { who = PER value = 200 } }
+		RUS = { diplomatic_influence = { who = PER value = -200 } }
 
-remove_country_modifier = embargo_nation
+		remove_country_modifier = embargo_nation
 
-	any_state = { any_pop = { dominant_issue = { value = parties_allowed factor = 0.3 } } }
-	any_state = { any_pop = { dominant_issue = { value = planned_economy factor = 0.35 } } }
-  }
+		any_state = { any_pop = { dominant_issue = { value = parties_allowed factor = 0.3 } } }
+		any_state = { any_pop = { dominant_issue = { value = planned_economy factor = 0.35 } } }
+	}
 
 }
