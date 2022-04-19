@@ -683,8 +683,8 @@ pops = {
     NATIONALIST_MOVEMENT_MIL_CAP = 3.0,
     MOVEMENT_SUPPORT_UH_FACTOR = 3, --  3x means 30% country support equals full UH support
     REBEL_OCCUPATION_STRENGTH_BONUS = 0.01, -- the amount of strength given to rebel movements when they occupy a province
-    LARGE_POPULATION_LIMIT = 9000000,
-    LARGE_POPULATION_INFLUENCE_PENALTY_CHUNK = 250000,
+    LARGE_POPULATION_LIMIT = 25000000,
+    LARGE_POPULATION_INFLUENCE_PENALTY_CHUNK = 2500000,
 },
 
 ai = {
