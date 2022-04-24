@@ -45,7 +45,22 @@ country_event = {
 		}
 		civilized = yes
 		vote_franschise = none_voting
-		ruling_party_ideology = nationalist
+		OR = {
+			ruling_party_ideology = nationalist
+			AND = { # jingoist ruling parties gets nationalist dictatorship, otherwise it's presidential dictatorship
+				OR = {
+					ruling_party_ideology = socialist
+					ruling_party_ideology = conservative
+					ruling_party_ideology = populist
+				}
+				war_policy = jingoism
+			}
+		}
+		# good attitude towards minorities leads to nationalist dictatorship instead of sectarian regime
+		AND = {
+			NOT = { minorities_reform = minorities_oppression }
+			citizenship_policy = full_citizenship
+		}
 	}
 	
 	mean_time_to_happen = {
@@ -257,7 +272,17 @@ country_event = {
 		OR = { government = democracy government = democracy1 }
 		civilized = yes
 		vote_franschise = none_voting
-		OR = { ruling_party_ideology = conservative ruling_party_ideology = big_tent ruling_party_ideology = socialist }
+		OR = {
+			AND = {
+				OR = { # Non-jingoist ruling parties gets presidential dictatorship instead of nationalist dictatorship
+					ruling_party_ideology = conservative
+					ruling_party_ideology = populist
+					ruling_party_ideology = socialist
+				}
+				NOT = { war_policy = jingoism }
+			}
+			ruling_party_ideology = big_tent
+		}
 	}
 	
 	mean_time_to_happen = {
@@ -282,17 +307,22 @@ country_event = {
 
 		OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
 		vote_franschise = none_voting
-		OR = { ruling_party_ideology = populist ruling_party_ideology = nationalist }
+		OR = { ruling_party_ideology = socialist ruling_party_ideology = populist ruling_party_ideology = nationalist }
+		# poor attitude towards minorities leads to sectarian regime
+		AND = {
+			minorities_reform = minorities_oppression
+			NOT = { citizenship_policy = full_citizenship }
+		}
 		civilized = yes
 	}
 	
 	mean_time_to_happen = {
 		months = 1
 	}
-	
+
 	option = {
 		name = "EVTOPTA60080"
-		government = populist_dictatorship
+		government = nationalist_dictatorship
 	}
 }
 
