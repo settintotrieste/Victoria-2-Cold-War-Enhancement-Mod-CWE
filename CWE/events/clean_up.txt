@@ -60,9 +60,9 @@ country_event = {
 
 country_event = {
 	id = 60020
-	title = "EVTNAME60020"
-	desc = "EVTDESC60020"
-	picture = "populist_cleanup"
+	title = "EVTNAME60040"
+	desc = "EVTDESC60040"
+	picture = "monarchy_cleanup"
 	
 	trigger = {
 
@@ -72,11 +72,28 @@ country_event = {
 			government = presidential_dictatorship
 			government = populist_dictatorship
 			government = nationalist_dictatorship
+			government = absolute_monarchy
+			government = theocracy
+			government = hms_government
+			government = hms_government1
 		}
 		civilized = yes
 		vote_franschise = none_voting
-		ruling_party_ideology = nationalist
-		has_country_flag = is_disabled_for_now
+		ruling_party_ideology = traditionalist
+		OR = {
+			has_country_flag = pre_existing_monarchy # Country must have recently had a monarchy
+			AND = {
+				has_global_flag = 1992_start_date_flag
+				OR = {
+					#Former Eastern Bloc Monarchies get the option to restore the monarchy
+					tag = ROM
+					tag = ALB
+					tag = BUL
+					tag = HUN
+					tag = RUS # Russia has political parties in favor of restoring the monarchy
+				}
+			}
+		}
 	}
 	
 	mean_time_to_happen = {
@@ -84,8 +101,63 @@ country_event = {
 	}
 	
 	option = {
-		name = "EVTOPTA60020"
-		government = nationalist_dictatorship
+		name = "We should become a momarchy."
+		government = absolute_monarchy
+		ai_chance = { 
+			factor = 0.95
+			modifier = {
+				factor = 0.01
+				tag = PER
+				AND = {
+					has_country_flag = 1979_revolution_flag #Islamic revolution happened
+				}
+			}
+			modifier = {
+				factor = 0.01
+				tag = AFG
+				AND = {
+					has_country_flag = islamic_state_afg #Monarchy was overthrown and post-1979 events happened
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "We should instead form a theocracy"
+		government = theocracy
+		ai_chance = { 
+			factor = 0.05
+			modifier = {
+				factor = 10
+				tag = PER
+				AND = {
+					has_country_flag = 1979_revolution_flag 
+				}
+			}
+			modifier = {
+				factor = 10
+				tag = AFG
+				AND = {
+					has_country_flag = islamic_state_afg
+				}
+			}
+			modifier = {
+				factor = 10
+				tag = LEB #Hezbollah
+			}
+			modifier = {
+				factor = 10
+				tag = SYR #Jihadist uprisings in 1983 and SCW
+			}
+			modifier = {
+				factor = 10
+				tag = ALG #Jihadist uprising in 1990s
+			}
+			modifier = {
+				factor = 100
+				tag = ISI #Always a theocracy
+			}
+		}
 	}
 }
 
@@ -111,6 +183,20 @@ country_event = {
 		civilized = yes
 		vote_franschise = none_voting
 		ruling_party_ideology = traditionalist
+		NOT = {
+			has_country_flag = pre_existing_monarchy # Country must not have recently had a monarchy
+			AND = {
+				has_global_flag = 1992_start_date_flag
+				OR = {
+					#Exclude Former Eastern Bloc Monarchies so they get option to turn monarchist in 1992 start date
+					tag = ROM
+					tag = ALB
+					tag = BUL
+					tag = HUN
+					tag = RUS
+				}
+			}
+		}
 	}
 	
 	mean_time_to_happen = {
