@@ -45,7 +45,21 @@ country_event = {
 		}
 		civilized = yes
 		vote_franschise = none_voting
-		ruling_party_ideology = nationalist
+		OR = {
+			ruling_party_ideology = nationalist
+			AND = { # jingoist ruling parties gets nationalist dictatorship, otherwise it's presidential dictatorship
+				OR = {
+					ruling_party_ideology = socialist
+					AND = { ruling_party_ideology = conservative NOT = { religious_policy = moralism } } # must be secular for conservatives to get nationalist dictatorship to prevent conflict with theocracy entry
+					ruling_party_ideology = populist
+				}
+				war_policy = jingoism
+			}
+		}
+		AND = { # good attitude towards minorities leads to nationalist dictatorship instead of sectarian regime
+			NOT = { minorities_reform = minorities_oppression }
+			NOT = { citizenship_policy = residency }
+		}
 	}
 	
 	mean_time_to_happen = {
@@ -76,7 +90,7 @@ country_event = {
 		civilized = yes
 		vote_franschise = none_voting
 		ruling_party_ideology = nationalist
-		has_country_flag = is_disabled_for_now
+		has_country_flag = is_disabled_for_now #Keep disabled as the game doesn't seem to like having this entry be functional
 	}
 	
 	mean_time_to_happen = {
@@ -110,7 +124,11 @@ country_event = {
 		}
 		civilized = yes
 		vote_franschise = none_voting
-		ruling_party_ideology = traditionalist
+		AND = {
+			NOT = { has_country_flag = pre_existing_monarchy }
+			OR = { ruling_party_ideology = traditionalist ruling_party_ideology = conservative }
+			religious_policy = moralism
+		}
 	}
 	
 	mean_time_to_happen = {
@@ -120,6 +138,41 @@ country_event = {
 	option = {
 		name = "EVTOPTA60030"
 		government = theocracy
+	}
+}
+
+country_event = {
+	id = 60040
+	title = "EVTNAME60040"
+	desc = "EVTDESC60040"
+	picture = "monarchy_cleanup"
+	
+	trigger = {
+		OR = {
+			government = hms_government
+			government = hms_government1
+			AND = {
+				OR = { government = democracy government = democracy1 }
+				OR = { ruling_party_ideology = traditionalist ruling_party_ideology = conservative } # conservatives in a country with monarchists will restore the monarchy no matter what
+				has_country_flag = pre_existing_monarchy
+			}
+		}
+		civilized = yes
+		
+		NOT = { ruling_party_ideology = progressive }
+		NOT = { ruling_party_ideology = liberal }
+		NOT = { ruling_party_ideology = communist }
+		NOT = { ruling_party_ideology = communist_social }
+		vote_franschise = none_voting
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "EVTOPTA60040"
+		government = absolute_monarchy
 	}
 }
 
@@ -195,33 +248,6 @@ country_event = {
 }
 
 country_event = {
-	id = 60040
-	title = "EVTNAME60040"
-	desc = "EVTDESC60040"
-	picture = "monarchy_cleanup"
-	
-	trigger = {
-		OR = { government = hms_government government = hms_government1 }
-		civilized = yes
-		
-		NOT = { ruling_party_ideology = progressive }
-		NOT = { ruling_party_ideology = liberal }
-		NOT = { ruling_party_ideology = communist }
-		NOT = { ruling_party_ideology = communist_social }
-		vote_franschise = none_voting
-	}
-	
-	mean_time_to_happen = {
-		months = 1
-	}
-	
-	option = {
-		name = "EVTOPTA60040"
-		government = absolute_monarchy
-	}
-}
-
-country_event = {
 	id = 60060
 	title = "EVTNAME60060"
 	desc = "EVTDESC60060"
@@ -257,7 +283,17 @@ country_event = {
 		OR = { government = democracy government = democracy1 }
 		civilized = yes
 		vote_franschise = none_voting
-		OR = { ruling_party_ideology = conservative ruling_party_ideology = big_tent ruling_party_ideology = socialist }
+		OR = {
+			AND = {
+				OR = {
+					AND = { ruling_party_ideology = conservative NOT = { religious_policy = moralism } } # must be secular to prevent conservatives from getting theocracy
+					ruling_party_ideology = populist
+					ruling_party_ideology = socialist
+				}
+				NOT = { war_policy = jingoism } # must not be jingoist or they get nationalist dictatorship instead
+			}
+			ruling_party_ideology = big_tent
+		}
 	}
 	
 	mean_time_to_happen = {
@@ -282,17 +318,21 @@ country_event = {
 
 		OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
 		vote_franschise = none_voting
-		OR = { ruling_party_ideology = populist ruling_party_ideology = nationalist }
+		OR = { ruling_party_ideology = socialist ruling_party_ideology = populist ruling_party_ideology = nationalist ruling_party_ideology = conservative }
+		AND = { # poor attitude towards minorities leads to sectarian regime
+			minorities_reform = minorities_oppression
+			NOT = { citizenship_policy = full_citizenship }
+		}
 		civilized = yes
 	}
 	
 	mean_time_to_happen = {
 		months = 1
 	}
-	
+
 	option = {
 		name = "EVTOPTA60080"
-		government = populist_dictatorship
+		government = nationalist_dictatorship
 	}
 }
 
