@@ -166,10 +166,27 @@ country_event = {
 		name = EVT_8000318_B
 		# EVT_8000318_B;Follow the will of the people
 		any_pop = { militancy = 1.0 consciousness = 1 }
-		government = theocracy country_event = 800051
+		government = theocracy 
+		country_event = 800051
 		badboy = 10
-		random_country = { limit = { tag = ALG part_of_sphere = yes } sphere_owner = { diplomatic_influence = { who = ALG value = -200 } } }
-		any_neighbor_country = { limit = { NOT = { government = theocracy } } relation = { who = ALG value = -200 } add_casus_belli = { target = ALG type = install_authoritarian_regime  months = 48 } }
+		random_country = { 
+			limit = { 
+				tag = ALG 
+				part_of_sphere = yes 
+			} 
+			sphere_owner = { 
+				diplomatic_influence = { who = ALG value = -200 }
+			} 
+		}
+		any_neighbor_country = {
+			limit = {
+				NOT = {
+					government = theocracy
+				} 
+			} 
+			relation = { who = ALG value = -200 }
+			add_casus_belli = { target = ALG type = install_authoritarian_regime  months = 48 }
+		}
 		ai_chance = { factor = 0 }
 	}
 }
@@ -184,7 +201,13 @@ country_event = {
 
 	trigger = {
 		tag = ISI
+		year = 1992
+		
+		war = no
+		is_vassal = no
+		
 		any_neighbor_country = {
+			tag = ALG
 			has_country_flag = algerian_civil_war
 			NOT = { war_with = THIS }
 			have_core_in = THIS
@@ -193,41 +216,34 @@ country_event = {
 
 	option = {
 		name = "EVT_8000319_A" # And that is precisely what we will do
-		government = theocracy
-		ruling_party_ideology = traditionalist
-		upper_house = {
-			ideology = traditionalist
-			value = 1
-		}
-		country_event = 800051
-		badboy = 25
-		add_country_modifier = { name = baby_boom duration = 7000 }
-		add_country_modifier = { name = contraception_decay duration = 17500 }
+		badboy = 15
 		any_country = {
 			limit = {
-				NOT = { government = theocracy }
-				OR = { neighbour = THIS is_greater_power = yes ai = no }
+				AND = {
+					NOT = { government = theocracy }
+					neighbour = THIS
+				}
 			}
 			casus_belli = { target = THIS type = liberate_country months = 60 }
 		}
-		random_country = { # ALG
-			limit = { has_country_flag = algerian_civil_war }
-			all_core = { add_core = ISI }
-			# Terrorism
-			random_owned = { province_event = 1511119 }
-			sphere_owner = { random_owned = { province_event = 1511119 } }
+		ALG = {
+			any_core = { add_core = ISI }
+		}
+		war = {
+			target = ALG
+			attacker_goal = { casus_belli = annex_core_country }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = no
 		}
 		any_pop = {
 			limit = {
 				OR = {
 					NOT = { religion = sunni }
-					pop_majority_ideology = liberal
-					pop_majority_ideology = progressive
+					NOT = { pop_majority_ideology = traditionalist pop_majority_ideology = conservative }
 				}
 			}
 			militancy = 10
 			consciousness = 8
-			reduce_pop = 0.5
 		}
 		any_pop = {
 			limit = { pop_majority_ideology = traditionalist }
