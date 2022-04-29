@@ -9383,44 +9383,77 @@ ai_chance = { factor = 0.1 }
 #Transnistria War 1990
 country_event = {
 	id = 1512241
-title = "Transnistria War"
+	title = "The Transnistria War"
 	desc = EVTDESC1512241
 	picture = "transnistria_war"
 
-fire_only_once = yes
+	fire_only_once = yes
 
-trigger = {
-tag = MOL
-TRD = { exists = no }
-any_owned_province = { is_core = TRD }
-year = 1990
-}
-
-mean_time_to_happen = { 
-months = 3
+	trigger = {
+		tag = MOL
+		year = 1990
+		NOT = { year = 2000 }
+		
+		is_vassal = no
+		OR = { war = no war_with = GAG }
+		
+		#Owns Transnistria
+		is_possible_vassal = TRD
+		
+		#Caused by USSR dissolution
+		RUS = { has_country_flag = eussr }
 	}
 
-option = {
-name = "Restore order to the renegade province!"
-release = TRD
-RUS = { diplomatic_influence = { who = TRD value = 200 } }
-TRD = { create_alliance = UKR create_alliance = RUS }
-war = {
-	target = TRD
-	attacker_goal = { casus_belli = annex_core_country }
-	defender_goal = { casus_belli = status_quo }
-	call_ally = no
-}
-ai_chance = { factor = 0.9 }
-		}
+	mean_time_to_happen = { 
+		months = 1
+	}
 
-option = {
-name = "Recognise Transnistrian independence"
-prestige = -50
-release = TRD
-TRD = { government = democracy country_event = 800054 }
-ai_chance = { factor = 0.1 }
+	option = {
+		name = "Restore order to the renegade province!"
+		
+		release = TRD
+		TRD = {
+			government = democracy1
+			country_event = 800054
+			ruling_party_ideology = nationalist
 		}
+		
+		random_country = {
+			limit = { tag = RUS is_greater_power = yes }
+			relation = { who = THIS value = 200 }
+			diplomatic_influence = { who = THIS value = 200 }
+			create_alliance = THIS
+		}
+		
+		random_country = {
+			limit = { tag = UKR is_vassal = no war = no }
+			relation = { who = THIS value = 200 }
+			diplomatic_influence = { who = THIS value = 200 }
+			create_alliance = THIS
+		}
+		
+		war = {
+			target = TRD
+			attacker_goal = { casus_belli = annex_core_country }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = no
+		}
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Recognise Transnistrian independence"
+		prestige_factor = -0.1
+		
+		release = TRD
+		TRD = {
+			government = democracy1
+			country_event = 800054
+			ruling_party_ideology = nationalist
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
@@ -13398,48 +13431,6 @@ PRU = { government = democracy country_event = 800054 ruling_party_ideology = co
 diplomatic_influence = { who = PRU value = 200 }
 ai_chance = { factor = 0.1 }
 		}
-
-}
-
-#1946 Greek Monarchy Referendum
-country_event = {
-	id = 1512342
-	title = "1946 Greek Monarchy Referendum"
-	desc = EVTDESC1512342
-	picture = "greek_king_question"
-
-	fire_only_once = yes
-
-	trigger = {
-		tag = GRE
-		year = 1946
-		NOT = { has_global_flag = 1950_start_date_flag }
-		NOT = { year = 1990 }
-		
-		government = hms_government
-		is_vassal = no
-	}
-
-	mean_time_to_happen = { months = 9 }
-
-	option = {
-		name = "The monarchists are victorious"
-		prestige = 10
-		relation = { who = ENG value = 50 }
-		ai_chance = { factor = 0.9 }
-	}
-
-	option = {
-		name = "The King is no more!"
-		government = democracy
-		relation = { who = ENG value = -50 }
-		any_pop = { 
-			limit = { is_primary_culture = yes } 
-			militancy = -10 
-			ideology = { factor = 0.10 value = communist } 
-		}
-		ai_chance = { factor = 0.1 }
-	}
 
 }
 

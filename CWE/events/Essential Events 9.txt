@@ -6488,7 +6488,7 @@ country_event = {
 	option = {
 		name = "Do not interfere"
 		badboy = -3
-		ai_chance = { factor = 0.7 }
+		ai_chance = { factor = 0.8 }
 	}
 
 	option = {
@@ -6498,18 +6498,34 @@ country_event = {
 		FRA = { 
 			relation = { who = THIS value = -100 }
 			any_pop = {
-				limit = { is_primary_culture = yes }
+				limit = { is_culture_group = european_french strata = poor }
+				ideology = { factor = 0.10 value = communist }
+				militancy = 2.5
+				consciousness = 2.5
+			}
+			any_pop = {
+				limit = { is_culture_group = european_french strata = middle }
 				ideology = { factor = 0.05 value = communist }
+				militancy = 2.5
+				consciousness = 2.5
 			}
 		}
 		ITA = { 
 			relation = { who = THIS value = -100 }
 			any_pop = {
-				limit = { is_primary_culture = yes }
+				limit = { is_culture_group = european_italian strata = poor }
+				ideology = { factor = 0.10 value = communist }
+				militancy = 2.5
+				consciousness = 2.5
+			}
+			any_pop = {
+				limit = { is_culture_group = european_italian strata = middle }
 				ideology = { factor = 0.05 value = communist }
+				militancy = 2.5
+				consciousness = 2.5
 			}
 		}
-		ai_chance = { factor = 0.2 }
+		ai_chance = { factor = 0.1 }
 	}
 	
 	option = {
@@ -6519,15 +6535,31 @@ country_event = {
 		FRA = { 
 			relation = { who = THIS value = -200 }
 			any_pop = {
-				limit = { is_primary_culture = yes }
-				ideology = { factor = 0.15 value = communist }
+				limit = { is_culture_group = european_french strata = poor }
+				ideology = { factor = 0.20 value = communist }
+				militancy = 5
+				consciousness = 5
+			}
+			any_pop = {
+				limit = { is_culture_group = european_french strata = middle }
+				ideology = { factor = 0.10 value = communist }
+				militancy = 5
+				consciousness = 5
 			}
 		}
 		ITA = { 
 			relation = { who = THIS value = -200 }
 			any_pop = {
-				limit = { is_primary_culture = yes }
-				ideology = { factor = 0.15 value = communist }
+				limit = { is_culture_group = european_italian strata = poor }
+				ideology = { factor = 0.20 value = communist }
+				militancy = 5
+				consciousness = 5
+			}
+			any_pop = {
+				limit = { is_culture_group = european_italian strata = middle }
+				ideology = { factor = 0.10 value = communist }
+				militancy = 5
+				consciousness = 5
 			}
 		}
 		ai_chance = { factor = 0.1 }
@@ -6538,7 +6570,7 @@ country_event = {
 #Soviet Interference in US election
 country_event = {
 	id = 1610108
-	title = "Interfere in the 1975 US Election?"
+	title = "Interfere in the $YEAR$ US Election?"
 	desc = EVTDESC1610108
 	picture = "USSR_USA_1975_election_interference"
 
@@ -6546,18 +6578,30 @@ country_event = {
 
 	trigger = {
 		tag = RUS
-		year = 1975
-		NOT = { year = 1990 }
-		has_global_flag = blocsenabled
+		year = 1974
+		NOT = { year = 1980 }
+		
+		government = proletarian_dictatorship
+		is_greater_power = yes
 		war = no
-		USA = { exists = yes }
-		ruling_party_ideology = conservative
-		USA = { detente = 1 }
-		RUS = { detente = 1 }
+		
+		money = 600000
+		
+		#Gerald Ford is President & USA is having an election
+		USA = { 
+			ruling_party_ideology = conservative 
+			election = yes 
+		}
+		
+		#Detente ongoing
+		has_country_modifier = cold_war_low
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
 	}
 
 	mean_time_to_happen = { 
-		months = 8
+		months = 1
 	}
 
 	option = {
@@ -6567,22 +6611,24 @@ country_event = {
 		USA = {
 			relation = { who = THIS value = 100 }
 			any_pop = {
-				limit = { is_primary_culture = yes }
+				limit = { is_culture_group = american_cultures }
 				ideology = { factor = 0.05 value = conservative }
+				consciousness = 5
 			}
 		}
-		ai_chance = { factor = 0.7 }
+		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
 		name = "Leave it to the American people"
 		USA = {
 			any_pop = {
-				limit = { is_primary_culture = yes }
+				limit = { is_culture_group = american_cultures }
 				ideology = { factor = 0.05 value = liberal }
+				consciousness = 5
 			}
 		}
-		ai_chance = { factor = 0.3 }
+		ai_chance = { factor = 0.1 }
 	}
 
 }
@@ -9180,6 +9226,200 @@ country_event = {
 	option = {
 		name = "Remain independent!"
 		money = -25000
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#The Gagauz Republic
+country_event = {
+	id = 1610148
+	title = "The Gagauz Republic"
+	desc = EVTDESC1610148
+	picture = "GAG_indy_1990"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = MOL
+		year = 1990
+		NOT = { year = 2000 }
+		
+		is_vassal = no
+		OR = { war = no war_with = TRD }
+		
+		#Owns Gaugazia
+		is_possible_vassal = GAG
+		
+		#Caused by USSR dissolution
+		RUS = { has_country_flag = eussr }
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "We must find a diplomatic solution!"
+		prestige_factor = -0.1
+		
+		#Form The Gagauz Republic
+		release = GAG
+		GAG = {
+			government = democracy1
+			country_event = 800054
+			ruling_party_ideology = nationalist
+		}
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "It is war then!"
+		badboy = 5
+		
+		#Form The Gagauz Republic
+		release = GAG
+		GAG = {
+			government = democracy1
+			country_event = 800054
+			ruling_party_ideology = nationalist
+		}
+		
+		#War of independence
+		GAG = {
+			war = { 
+				target = THIS 
+				attacker_goal = { casus_belli  = become_independent } 
+				defender_goal = { } 
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#The Autonomous Territorial Unit of Gagauzia
+country_event = {
+	id = 1610149
+	title = "Federate with Moldova?"
+	desc = EVTDESC1610149
+	picture = "GAG_sar_1995"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = GAG
+		year = 1995
+		NOT = { year = 2005 }
+		
+		OR = { government = democracy government = democracy1 }
+		is_vassal = no
+		war = no
+		
+		#MOL
+		MOL = {
+			exists = yes
+			OR = { government = democracy government = democracy1 }
+			is_vassal = no
+			war = no
+		}
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "Offer to join Moldova as an SAR"
+		prestige_factor = -0.1
+		
+		money = 50000
+		
+		MOL = { country_event = 1610150 }
+		
+		#Increased Gagauz nationalism
+		any_pop = {
+			limit = { culture = gagauz }
+			militancy = 3
+			consciousness = 3
+			ideology = { factor = 0.05 value = nationalist }
+		}
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "We shall remain independent"
+		prestige = 50
+		
+		relation = { who = MOL value = -200 }
+		
+		any_pop = {
+			limit = { culture = romanian }
+			militancy = 10
+			consciousness = 10
+			ideology = { factor = 0.25 value = nationalist }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#The Autonomous Territorial Unit of Gagauzia
+country_event = {
+	id = 1610150
+	title = "Union with Gagauzia?"
+	desc = EVTDESC1610149
+	picture = "GAG_sar_1995"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Accept their generous offer to federate"
+		prestige = 50
+		
+		#Create GAG SAR
+		inherit = GAG
+		release_vassal = GAG
+		GAG = {
+			government = sar_government
+			country_event = 800054
+			ruling_party_ideology = big_tent
+			election = yes
+		}
+		sphere_owner = { diplomatic_influence = { who = GAG value = 200 } }
+		
+		#Increased Romanian nationalism
+		any_pop = {
+			limit = { culture = romanian }
+			militancy = 2.5
+			consciousness = 2.5
+			ideology = { factor = 0.05 value = nationalist }
+		}
+
+		ai_chance = { factor = 0.8 }
+	}
+	
+	option = {
+		name = "Federation is insufficient!"
+		
+		war = { 
+			target = FROM
+			attacker_goal = { casus_belli = conquest } 
+			defender_goal = { casus_belli = status_quo } 
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+	option = {
+		name = "We do not need them"
+		
+		relation = { who = FROM value = -100 }
+		
 		ai_chance = { factor = 0.1 }
 	}
 

@@ -183,8 +183,8 @@ military = {
     AI_BLOCKADE_RANGE = 8000, -- max distance the AI will send out blockade fleets from their home base
     RECON_UNIT_RATIO = 0.1, -- the % of units in the army that must have a recon value to get the full bonus
     ENGINEER_UNIT_RATIO = 0.1, -- the % of units in the army that must have a fort attack value to get the full bonus
-    SIEGE_BRIGADES_MIN = 3, -- the number of brigades needed for a siege to progress at normal speed
-    SIEGE_BRIGADES_MAX = 13, -- the number of brigades above which you get no addition benefit in sieges
+    SIEGE_BRIGADES_MIN = 1, -- the number of brigades needed for a siege to progress at normal speed
+    SIEGE_BRIGADES_MAX = 50, -- the number of brigades above which you get no addition benefit in sieges
     SIEGE_BRIGADES_BONUS = 0.5, -- the bonus to siege speed from each brigade
     RECON_SIEGE_EFFECT = 0.5, -- multiplier to effect of recon on speeding up sieges
     SIEGE_ATTRITION = 2, -- fixed attrition on sieging units
@@ -683,8 +683,8 @@ pops = {
     NATIONALIST_MOVEMENT_MIL_CAP = 3.0,
     MOVEMENT_SUPPORT_UH_FACTOR = 3, --  3x means 30% country support equals full UH support
     REBEL_OCCUPATION_STRENGTH_BONUS = 0.01, -- the amount of strength given to rebel movements when they occupy a province
-    LARGE_POPULATION_LIMIT = 9000000,
-    LARGE_POPULATION_INFLUENCE_PENALTY_CHUNK = 250000,
+    LARGE_POPULATION_LIMIT = 25000000,
+    LARGE_POPULATION_INFLUENCE_PENALTY_CHUNK = 2500000,
 },
 
 ai = {
