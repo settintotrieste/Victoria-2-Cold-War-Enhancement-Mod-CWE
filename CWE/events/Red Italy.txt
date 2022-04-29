@@ -445,47 +445,51 @@ country_event = {
 	fire_only_once = yes
 	
 	trigger = {
+		#THIS is either Italy
 		OR = { tag = ITA tag = RIT }
 		
 		#RIT was created by Italian Civil War event
 		has_global_flag = italian_civil_war
 		
-		#Must not be a vassal
-		ITA = { is_vassal = no }
-		RIT = { is_vassal = no }
-		
-		OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social ruling_party_ideology = socialist }
-		
+		#THIS is not vassal and not at war
+		is_vassal = no
 		war = no
 		
 		OR = { 
+			#ITA exists but not RIT
 			AND = { 
 				tag = ITA 
 				RIT = { exists = no } 
 			}
+			
+			#RIT exists but not ITA
 			AND = { 
 				tag = RIT
 				ITA = { exists = no }
 			}
+			
+			#Both RIT and ITA share the same government type and are independent
 			AND = { 
-				RIT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
-				ITA = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } 
+				RIT = { exists = yes OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } is_vassal = no }
+				ITA = { exists = yes OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } is_vassal = no } 
 			}
 			AND = { 
-				RIT = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } }
-				ITA = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } 
+				RIT = { exists = yes OR = { government = absolute_monarchy government = hms_government government = hms_government1 } is_vassal = no }
+				ITA = { exists = yes OR = { government = absolute_monarchy government = hms_government government = hms_government1 } is_vassal = no } 
 			}
 			AND = { 
-				RIT = { OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 government = socialist_democracy } }
-				ITA = { OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 government = socialist_democracy } } 
+				RIT = { exists = yes OR = { government = democracy government = democracy1 government = socialist_democracy } is_vassal = no }
+				ITA = { exists = yes OR = { government = democracy government = democracy1 government = socialist_democracy } is_vassal = no } 
 			}
+			
+			#Other tag is vassal of THIS
 			is_our_vassal = ITA
 			is_our_vassal = RIT
 		}
 		
 	}
 
-	mean_time_to_happen = { days = 1 }
+	mean_time_to_happen = { months = 1 }
 
 	option = {
 		name = "We are a united nation once again!"
@@ -553,7 +557,7 @@ country_event = {
 					RIT = { ai = yes } 
 				} 
 			}
-			owner = { inherit = RIT }
+			owner = { ITA = { inherit = RIT } }
 		}
 
 	}
