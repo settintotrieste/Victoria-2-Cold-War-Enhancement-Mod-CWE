@@ -11,10 +11,7 @@ country_event = {
 		tag = ETS
 		year = 1946
 		NOT = { year = 1950 }
-
 	}
-
-	#Not including a MTTH makes it fire instantly, yes?
 
 	option = {
 		name = "We will finally win our national liberation!"
@@ -32,6 +29,7 @@ country_event = {
 			consciousness = -8
 		}
 	}
+	
 }
 
 #Situation in Turkestan - Soviet Event
@@ -71,17 +69,25 @@ country_event = {
 		ETS = { country_event = 8013809 }
 		ai_chance = { factor = 0.8 }
 	}
+	
 	option = {
 		name = "Continue our covert support of Tore."
 		badboy = 3
 		money = -10000
-		ETS = { money = 7500 }
+		ETS = { 
+			money = 7500
+			small_arms = 75
+			weaponry = 75
+			aeroplanes = 75
+			ammunition = 75
+			automobiles = 75
+		}
 		diplomatic_relation = { who = KMT value = -50 }
 		diplomatic_relation = { who = CHI value = -50 }
 		ai_chance = { factor = 0.2 }
 	}
+	
 }
-
 
 #Soviets recall Tore
 country_event = {
@@ -103,8 +109,8 @@ country_event = {
 			consciousness = -8
 		}
 	}
+	
 }
-
 
 #Ceasefire offered by Xinjiang
 country_event = {
@@ -147,6 +153,7 @@ country_event = {
 			}
 		}
 	}
+	
 }
 
 #Accept - peace
@@ -160,13 +167,14 @@ country_event = {
 
 	option = {
 		name = "We can focus on ensuring a lasting peace."
-		end_war = ETS
+		end_war = FROM
 		prestige = 5
 		any_pop = {
 			militancy = -3
 			consciousness = -3
 		}
 	}
+	
 }
 
 #Reject - Continued war
@@ -186,6 +194,7 @@ country_event = {
 			consciousness = 3
 		}
 	}
+	
 }
 
 #Coalition Government proposed
@@ -196,7 +205,6 @@ country_event = {
 	picture = "turkestan_coalition"
 
 	is_triggered_only = yes
-
 
 	option = {
 		name = "We will move forward together! (Game Over)"
@@ -216,6 +224,7 @@ country_event = {
 			factor = 0.2
 		}
 	}
+	
 }
 
 #Accept - Game over
@@ -227,11 +236,10 @@ country_event = {
 
 	is_triggered_only = yes
 
-
 	option = {
 		name = "Xinjiang is united once more!"
 		prestige = 10
-		inherit = ETS
+		inherit = FROM
 		capital = 1600
 		add_accepted_culture = uighur
 		1600 = {
@@ -242,6 +250,7 @@ country_event = {
 			consciousness = -3
 		}
 	}
+	
 }
 
 #Reject - war
@@ -253,7 +262,6 @@ country_event = {
 
 	is_triggered_only = yes
 
-
 	option = {
 		name = "Then we must ensure peace through force."
 		prestige = -10
@@ -262,12 +270,13 @@ country_event = {
 			consciousness = 3
 		}
 		war = {
-			target = ETS
+			target = FROM
 			attacker_goal = { casus_belli = civil_war }
 			defender_goal = { casus_belli = civil_war }
 			call_ally = no
 		}
 	}
+	
 }
 
 #Proclaimation of an East Turkestani People's Republic
@@ -281,13 +290,23 @@ country_event = {
 
 	trigger = {
 		tag = ETS
-		war = no
+		
 		OR = {
 			is_vassal = no
-			overlord = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
-		} # I think this should ensure that if Tibet or some other nation puppets East Turkestan, it will not become communist, but being puppeted by a communist state will allow it to move along its event chain
+			AND = { 
+				OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+				is_vassal = yes
+				overlord = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } 
+			}
+		}
+		war = no
+		
 		XIJ = { exists = no }
+		
 		NOT = { has_country_flag = ets_victory }
+		
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { has_global_flag = 1992_start_date_flag }
 	}
 
 	mean_time_to_happen = { months = 1 }
@@ -297,8 +316,10 @@ country_event = {
 		government = proletarian_dictatorship
 		country_event = 800052
 		ruling_party_ideology = communist
+		
 		prestige = 100
 		set_country_flag = ets_victory
+		
 		1600 = {
 			change_province_name = "Urumqi"
 		}
@@ -319,13 +340,17 @@ country_event = {
 		government = socialist_democracy
 		country_event = 800054
 		ruling_party_ideology = communist
+		
 		political_reform = universal_voting
 		political_reform = open_opinion
 		political_reform = limited_meetings
 		political_reform = elitist_service #Elitist
 		political_reform = parties_only_nominated
+		
 		prestige = 100
+		
 		set_country_flag = ets_victory
+		
 		1600 = {
 			change_province_name = "Urumqi"
 		}
@@ -340,8 +365,8 @@ country_event = {
 			factor = 0.1
 		}
 	}
+	
 }
-
 
 #Sovietization of East Turkestan
 country_event = {
@@ -354,13 +379,14 @@ country_event = {
 
 	trigger = {
 		tag = ETS
-		war = no
+		
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
 		is_vassal = no
+		war = no
 
 		RUS = { exists = yes government = proletarian_dictatorship is_greater_power = yes war = no }
 
 		has_country_flag = ets_victory
-
 	}
 
 	mean_time_to_happen = { months = 3 }
@@ -391,6 +417,7 @@ country_event = {
 			factor = 0.01
 		}
 	}
+	
 }
 
 #Chiang demands our formal surrender
@@ -403,12 +430,17 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		tag = KMT
-		year = 1949 
+		OR = { tag = KMT tag = CHI }
+		year = 1949
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { has_global_flag = 1992_start_date_flag }
 		NOT = { year = 1990 }
-
-		war = no
+		
+		OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship }
 		is_vassal = no 
+		NOT = { war_with = ETS }
+		
+		OR = { ruling_party_ideology = traditionalist ruling_party_ideology = conservative ruling_party_ideology = nationalist ruling_party_ideology = populist }
 		
 		ETS = { 
 			exists = yes 
@@ -419,6 +451,7 @@ country_event = {
 		}
 		
 		NOT = { XIJ = { war_with = ETS } } #Ili Rebellion
+		
 		has_global_flag = KMT_won_civil_war #The KMT won the Civil War
 	}
 
@@ -441,6 +474,7 @@ country_event = {
 		
 		ai_chance = { factor = 0.1 }
 	}
+	
 }
 
 #Chiang demands our formal surrender - Response
@@ -454,18 +488,19 @@ country_event = {
 
 	option = {
 		name = "We cannot stand up to a united China. (Game Over)"
-		KMT = {
+		FROM = {
 			prestige = 100
 			inherit = ETS
 		}
 		ai_chance = { 
-			factor = 0.7
+			factor = 0.8
 		}
 	}
 
 	option = {
 		name = "The Uygher people have earned their freedom."
-		KMT = {
+		
+		FROM = {
 			war = {
 				target = ETS
 				attacker_goal = { casus_belli = annex_core_country }
@@ -473,12 +508,13 @@ country_event = {
 				call_ally = no
 			}
 		}
+		
 		ai_chance = { 
-			factor = 0.3
+			factor = 0.2
 		}
 	}
+	
 }
-
 
 ####			####
 ####	Xinjiang	####
@@ -497,10 +533,7 @@ country_event = {
 		tag = XIJ
 		year = 1946
 		NOT = { year = 1950 }
-
 	}
-
-	#Not including a MTTH makes it fire instantly, yes?
 
 	option = {
 		name = "We must defend the idea of a united China!"
@@ -511,6 +544,7 @@ country_event = {
 			consciousness = 8
 		}
 	}
+	
 }
 
 #An end to hostilities?
@@ -533,10 +567,8 @@ country_event = {
 			exists = yes
 		}
 
-
 		XIJ = { war_with = ETS } #Ili Rebellion
 		KMT = { war_with = CHI } #Chinese Civil War ongoing
-
 	}
 
 	mean_time_to_happen = { months = 2 }
@@ -544,9 +576,12 @@ country_event = {
 	option = {
 		name = "Propose a truce with the rebels."
 		badboy = -3
-		diplomatic_relation = { who = MGL value = 50 }
-		diplomatic_relation = { who = RUS value = 50 }
+		
+		relation = { who = MGL value = 50 }
+		relation = { who = RUS value = 50 }
+		
 		ETS = { country_event = 8013810 }
+		
 		ai_chance = { 
 			factor = 0.9
 		}
@@ -554,18 +589,22 @@ country_event = {
 	option = {
 		name = "Continue to push for a unified Xinjiang!"
 		badboy = 5
-		diplomatic_relation = { who = MGL value = -50 }
-		diplomatic_relation = { who = RUS value = -50 }
+		
+		relation = { who = MGL value = -50 }
+		relation = { who = RUS value = -50 }
+		
 		any_pop = {
 			limit = { NOT = { OR = { culture = chinese culture = hui } } }
 			ideology = { factor = 0.10 value = communist }
 			militancy = 8
 			consciousness = 8
 		}
+		
 		ai_chance = { 
 			factor = 0.1
 		}
 	}
+	
 }
 
 #Resignation of Zhongxin
@@ -581,11 +620,11 @@ country_event = {
 		tag = XIJ
 		year = 1946
 		NOT = { year = 1950 }
-
+		
+		government = populist_dictatorship
 		is_vassal = no
 		war = no
 
-		government = populist_dictatorship
 		ruling_party_ideology = conservative
 
 		NOT = { XIJ = { war_with = ETS } } #Ili Rebellion
@@ -597,12 +636,20 @@ country_event = {
 		name = "Zhizhong will lead the province."
 		ruling_party_ideology = socialist
 		any_pop = {
-			limit = { OR = { culture = chinese culture = hui }
+			limit = { OR = { culture = chinese culture = hui } }
 			ideology = { factor = 0.10 value = socialist }
 			militancy = 3
 			consciousness = 3
 		}
+		ai_chance = { factor = 0.9 }
 	}
+	
+	option = {
+		name = "Zhizhong defeats his opponents!"
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
+		ai_chance = { factor = 0.1 }
+	}
+	
 }
 
 
@@ -619,14 +666,17 @@ country_event = {
 		tag = XIJ
 		year = 1946
 		NOT = { year = 1950 } #If the war goes on this long there is no accounting for historical outcome
-
-		is_vassal = no
-		war = no
-
+		
 		government = populist_dictatorship
-		ruling_party_ideology = socialist
-
+		is_vassal = no
 		NOT = { war_with = ETS }
+
+		ruling_party_ideology = socialist
+		
+		ETS = { 
+			exists = yes 
+			is_vassal = no 
+		}
 
 	}
 
@@ -636,7 +686,7 @@ country_event = {
 		name = "Make a proposal for a coalition government."
 		ETS = { country_event = 8013813 }
 		any_pop = {
-			limit = { OR = { culture = chinese culture = hui }
+			limit = { OR = { culture = chinese culture = hui } }
 			ideology = { factor = 0.10 value = nationalist }
 			militancy = 3
 			consciousness = 3
@@ -657,7 +707,7 @@ country_event = {
 			call_ally = no
 		}
 		any_pop = {
-			limit = { OR = { culture = chinese culture = hui }
+			limit = { OR = { culture = chinese culture = hui } }
 			militancy = -3
 			consciousness = -3
 		}
@@ -665,6 +715,7 @@ country_event = {
 			factor = 0.2
 		}
 	}
+	
 }
 
 #Removal of Zhizhong
@@ -680,11 +731,11 @@ country_event = {
 		tag = XIJ
 		year = 1947
 		NOT = { year = 1950 }
-
+		
+		government = populist_dictatorship
 		is_vassal = no
 		war = no
-
-		government = populist_dictatorship
+		
 		ruling_party_ideology = socialist
 
 		NOT = { XIJ = { war_with = ETS } } #Ili Rebellion
@@ -696,7 +747,7 @@ country_event = {
 		name = "Masud Sabri will ensure loyalty."
 		ruling_party_ideology = conservative
 		any_pop = {
-			limit = { OR = { culture = chinese culture = hui }
+			limit = { OR = { culture = chinese culture = hui } }
 			ideology = { factor = 0.10 value = conservative }
 			militancy = 3
 			consciousness = 3
@@ -711,7 +762,7 @@ country_event = {
 		add_country_modifier = { name = political_strife duration = 395 }
 		ruling_party_ideology = nationalist
 		any_pop = {
-			limit = { OR = { culture = chinese culture = hui }
+			limit = { OR = { culture = chinese culture = hui } }
 			ideology = { factor = 0.10 value = nationalist }
 			militancy = 3
 			consciousness = 3
@@ -720,6 +771,7 @@ country_event = {
 			factor = 0.2
 		}
 	}
+	
 }
 
 #Dismantling the reforms
@@ -735,11 +787,11 @@ country_event = {
 		tag = XIJ
 		year = 1947
 		NOT = { year = 1950 }
-
+		
+		government = populist_dictatorship
 		is_vassal = no
 		war = no
 
-		government = populist_dictatorship
 		OR = { ruling_party_ideology = nationalist ruling_party_ideology = conservative }
 
 		NOT = { XIJ = { war_with = ETS } } #Ili Rebellion
@@ -753,7 +805,7 @@ country_event = {
 		remove_accepted_culture = uigher
 
 		any_pop = {
-			limit = { OR = { culture = chinese culture = hui }
+			limit = { OR = { culture = chinese culture = hui } }
 			ideology = { factor = 0.10 value = nationalist }
 			militancy = 3
 			consciousness = 3
@@ -767,7 +819,7 @@ country_event = {
 		name = "We will preserve what we have built."
 		add_country_modifier = { name = political_strife duration = 395 }
 		any_pop = {
-			limit = { OR = { culture = chinese culture = hui }
+			limit = { OR = { culture = chinese culture = hui } }
 			ideology = { factor = 0.10 value = socialist }
 			militancy = -3
 			consciousness = -3
@@ -776,6 +828,7 @@ country_event = {
 			factor = 0.2
 		}
 	}
+	
 }
 
 #Soviet Propaganda
@@ -792,8 +845,6 @@ country_event = {
 		year = 1947
 		NOT = { year = 1950 }
 
-		war = no
-
 		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
 		is_greater_power = yes
 		war = no
@@ -806,8 +857,8 @@ country_event = {
 			government = populist_dictatorship
 			NOT = { OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social } }
 		}
+		
 		KMT = { war_with = CHI } #Chinese Civil War ongoing
-
 	}
 
 	mean_time_to_happen = { months = 2 }
@@ -815,20 +866,28 @@ country_event = {
 	option = {
 		name = "Continue to support the Uyghur people."
 		badboy = 1
+		
 		money = -5000
+		
+		relation = { who = KMT value = -10 }
+		relation = { who = CHI value = -10 }
+		relation = { who = XIJ value = -200 }
 		diplomatic_relation = { who = KMT value = -10 }
 		diplomatic_relation = { who = CHI value = -10 }
 		diplomatic_relation = { who = XIJ value = -200 }
+		
 		XIJ = { country_event = 8023807 }
+		
 		ai_chance = { factor = 0.9 }
 	}
+	
 	option = {
 		name = "Leave the issue alone for now."
 		badboy = -1
 		ai_chance = { factor = 0.1 }
 	}
+	
 }
-
 
 #Soviet Propaganda - response
 country_event = {
@@ -839,7 +898,6 @@ country_event = {
 
 	is_triggered_only = yes
 
-
 	option = {
 		name = "The situation threatens to descend into rebellion once more."
 		any_pop = {
@@ -849,8 +907,8 @@ country_event = {
 			consciousness = 3
 		}
 	}
+	
 }
-
 
 #1947 unrest
 country_event = {
@@ -865,13 +923,14 @@ country_event = {
 		tag = XIJ
 		year = 1947
 		NOT = { year = 1950 }
-
-		war = no
-		is_vassal = no
-
-		NOT = { has_accepted_culture = uigher }
 		
-		AND = {
+		government = populist_dictatorship
+		is_vassal = no
+		war = no
+
+		NOT = { is_accepted_culture = uigher }
+		
+		OR = {
 			owns = 1600
 			owns = 1596
 			owns = 1595
@@ -891,8 +950,15 @@ country_event = {
 
 	option = {
 		name = "Introduce troops to stablize the situation."
-
-		1600 = { #Urumqi
+		
+		any_owned = {
+			limit = { 
+				OR = { 
+					province_id = 1600 #Urumqi
+					province_id = 1596 #Altay
+					province_id = 1595 #Gulja
+				} 
+			}
 			add_province_modifier = { name = nationalist_agitation duration = 380 }
 			any_pop = {
 				limit = { culture = uighur }
@@ -901,26 +967,14 @@ country_event = {
 				consciousness = 8
 			}
 		}
-		1596 = { #Altay
-			add_province_modifier = { name = nationalist_agitation duration = 380 }
-			any_pop = {
-				limit = { culture = uighur }
-				ideology = { factor = 0.10 value = communist }
-				militancy = 8
-				consciousness = 8
+		
+		any_owned = {
+			limit = { 
+				OR = { 
+					province_id = 3373 #Turpan
+					province_id = 1599 #Kumul
+				} 
 			}
-		}
-		1595 = { #Gulja
-			add_province_modifier = { name = nationalist_agitation duration = 380 }
-			any_pop = {
-				limit = { culture = uighur }
-				ideology = { factor = 0.10 value = communist }
-				militancy = 8
-				consciousness = 8
-			}
-		}
-
-		3373 = { #Turpan
 			any_pop = {
 				limit = { culture = uighur }
 				ideology = { factor = 0.10 value = nationalist }
@@ -928,15 +982,9 @@ country_event = {
 				consciousness = 3
 			}
 		}
-		1599 = { #Kumul
-			any_pop = {
-				limit = { culture = uighur }
-				ideology = { factor = 0.10 value = nationalist }
-				militancy = 3
-				consciousness = 3
-			}
-		}
+		
 	}
+	
 }
 
 #1948 massacre in Turfan
@@ -952,9 +1000,10 @@ country_event = {
 		tag = XIJ
 		year = 1948
 		NOT = { year = 1950 }
-
-		war = no
+		
+		government = populist_dictatorship
 		is_vassal = no
+		war = no
 
 		NOT = { has_accepted_culture = uigher }
 
@@ -965,7 +1014,6 @@ country_event = {
 		}
 
 		KMT = { war_with = CHI } #Chinese Civil War ongoing
-
 	}
 
 	mean_time_to_happen = { months = 4 }
@@ -983,8 +1031,8 @@ country_event = {
 			}
 		}
 	}
+	
 }
-
 
 #Beitashan Incident
 country_event = {
@@ -999,24 +1047,22 @@ country_event = {
 		tag = XIJ
 		year = 1948
 		NOT = { year = 1950 }
-
+		
+		government = populist_dictatorship
 		is_vassal = no
 		war = no
 
 		NOT = { has_accepted_culture = uigher }
 		
-		AND = {
+		OR = {
 			owns = 1596
 			owns = 3373
 			owns = 1599
 		}
-
-		ETS = { 
-			exists = no
-		}
+		
+		is_possible_vassal = ETS
 
 		KMT = { war_with = CHI } #Chinese Civil War ongoing
-
 	}
 
 	mean_time_to_happen = { months = 2 }
@@ -1024,30 +1070,24 @@ country_event = {
 	option = {
 		name = "Attack Soviet and Mongolian positions to try to quiet the north."
 		badboy = 2
-		random_country = { limit = { tag = MGL OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } is_vassal = no } relation = { who = THIS value = -200 } }
+		random_country = { limit = { tag = MGL OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } is_vassal = no } relation = { who = THIS value = -200 } country_event = 8023811 }
 		random_country = { limit = { tag = RUS OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } is_greater_power = yes } diplomatic_relation = { who = THIS value = -200 } }
-		1596 = { #Altay
+		
+		any_owned = {
+			limit = { 
+				OR = { 
+					province_id = 1596 #Altay
+					province_id = 3373 #Turpan
+					province_id = 1599 #Kumul
+				} 
+			}
 			any_pop = {
 				limit = { culture = uighur }
 				militancy = -3
 				consciousness = -3
 			}
 		}
-		3373 = { #Turpan
-			any_pop = {
-				limit = { culture = uighur }
-				militancy = -3
-				consciousness = -3
-			}
-		}
-		1599 = { #Kumul
-			any_pop = {
-				limit = { culture = uighur }
-				militancy = -3
-				consciousness = -3
-			}
-		}
-		MGL = { country_event = 8023811 }
+		
 		ai_chance = { 
 			factor = 0.8
 		}
@@ -1057,7 +1097,14 @@ country_event = {
 	option = {
 		name = "Avoid provoking the Soviets."
 		badboy = -2
-		3373 = { #Turpan
+		
+		any_owned = {
+			limit = { 
+				OR = { 
+					province_id = 3373 #Turpan
+					province_id = 1599 #Kumul
+				} 
+			}
 			add_province_modifier = { name = nationalist_agitation duration = 380 }
 			any_pop = {
 				limit = { culture = uighur }
@@ -1065,18 +1112,12 @@ country_event = {
 				consciousness = 3
 			}
 		}
-		1599 = { #Kumul
-			add_province_modifier = { name = nationalist_agitation duration = 380 }
-			any_pop = {
-				limit = { culture = uighur }
-				militancy = 3
-				consciousness = 3
-			}
-		}
+		
 		ai_chance = { 
 			factor = 0.2
 		}
 	}
+	
 }
 
 #Battle of Baitag Bogd Mountain
@@ -1088,59 +1129,95 @@ country_event = {
 
 	is_triggered_only = yes
 
-
 	option = {
 		name = "Merely drive back the Chinese forces."
 		prestige = 10
-		diplomatic_relation = { who = KMT value = -50 }
-		diplomatic_relation = { who = RUS value = 25 }
+		
+		random_country = { limit = { tag = RUS OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } is_greater_power = yes } diplomatic_relation = { who = THIS value = 25 } relation = { who = THIS value = 25 } }
+		
+		random_country = { limit = { OR = { tag = KMT tag = CHI } OR = { government = presidential_dictatorship government = populist_dictatorship1 } is_greater_power = yes } diplomatic_relation = { who = THIS value = -50 } relation = { who = THIS value = -50 } }
+		
 		any_pop = {
 			limit = { culture = kazakh }
 			militancy = -3
 			consciousness = -3
 		}
+		
+		#War with XIJ
+		war = {
+			target = FROM
+			attacker_goal = { casus_belli = territorial_dispute }
+			defender_goal = { casus_belli = territorial_dispute }
+			call_ally = no
+		}
+		
 		ai_chance = { 
 			factor = 0.9
 		}
+		
 	}
-
 
 	option = {
 		name = "Show our support for Li Rihan and the Uygher people!"
 		badboy = 5
-		XIJ = {
-			1600 = { #Urumqi
+		
+		FROM = {
+		
+			#Release ETS
+			any_owned = {
+				limit = { 
+					OR = { 
+						province_id = 1600 #Urumqi
+						province_id = 1596 #Altay
+						province_id = 1595 #Gulja
+					}
+				}
 				secede_province = ETS
 			}
-			1596 = { #Altay
-				secede_province = ETS
-			}
-			1595 = { #Gulja
-				secede_province = ETS
-			}
-			1599 = { #Kumul
-				secede_province = MGL
+			
+			#MGL
+			random_owned = {
+				limit = { 
+					province_id = 1599 #Kumul
+				}
 				add_core = MGL
+				change_controller = MGL
 			}
+			
 		}
+		
+		#ETS war with XIJ
 		ETS = {
-			change_capital = 1600
+			capital = 1600
+			
+			#War with XIJ
 			create_alliance = MGL
-			set_country_flag = ets_qasim
-			clr_country_flag = ets_tore
 			war = {
 				target = XIJ
 				attacker_goal = { casus_belli = civil_war }
 				defender_goal = { casus_belli = civil_war }
-				call_ally = yes
+				call_ally = no
 			}
+			
+			set_country_flag = ets_qasim
+			clr_country_flag = ets_tore
 		}
+		
+		#War with XIJ
+		war = {
+			target = FROM
+			attacker_goal = { casus_belli = annex_all_cores }
+			defender_goal = { casus_belli = territorial_dispute }
+			call_ally = no
+		}
+		
 		ai_chance = { 
 			factor = 0.1
 		}
+		
 	}
+	
 }
-
 
 #Shahidi's Ascension
 country_event = {
@@ -1155,11 +1232,12 @@ country_event = {
 		tag = XIJ
 		year = 1949
 		NOT = { year = 1953 }
-
+		
+		government = populist_dictatorship
 		is_vassal = no
 		war = no
-
-		government = populist_dictatorship
+		
+		NOT = { ruling_party_ideology = socialist }
 
 		NOT = { XIJ = { war_with = ETS } } #Ili Rebellion
 
@@ -1171,7 +1249,7 @@ country_event = {
 		name = "Burhan Shahidi's moderate position will bring stability."
 		ruling_party_ideology = socialist
 		any_pop = {
-			limit = { OR = { culture = chinese culture = hui }
+			limit = { OR = { culture = chinese culture = hui } }
 			ideology = { factor = 0.10 value = socialist }
 			militancy = 3
 			consciousness = 3
@@ -1186,7 +1264,7 @@ country_event = {
 		add_country_modifier = { name = political_strife duration = 395 }
 		ruling_party_ideology = traditionalist
 		any_pop = {
-			limit = { OR = { culture = chinese culture = hui }
+			limit = { OR = { culture = chinese culture = hui } }
 			ideology = { factor = 0.10 value = nationalist }
 			militancy = 3
 			consciousness = 3
@@ -1195,6 +1273,7 @@ country_event = {
 			factor = 0.2
 		}
 	}
+	
 }
 
 #Stabilizing the economy
@@ -1210,7 +1289,8 @@ country_event = {
 		tag = XIJ
 		year = 1949
 		NOT = { year = 1953 }
-
+		
+		government = populist_dictatorship
 		is_vassal = no
 		war = no
 
@@ -1240,7 +1320,7 @@ country_event = {
 		add_country_modifier = { name = political_strife duration = 395 }
 		add_country_modifier = { name = economic_malaise duration = 1825 }
 		any_pop = {
-			limit = { OR = { culture = chinese culture = hui }
+			limit = { OR = { culture = chinese culture = hui } }
 			ideology = { factor = 0.10 value = nationalist }
 			militancy = 3
 			consciousness = 3
@@ -1249,8 +1329,8 @@ country_event = {
 			factor = 0.2
 		}
 	}
+	
 }
-
 
 #Mao demands our formal surrender
 country_event = {
@@ -1263,11 +1343,14 @@ country_event = {
 
 	trigger = {
 		tag = CHI
-		year = 1949 
+		year = 1949
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { has_global_flag = 1992_start_date_flag }
 		NOT = { year = 1990 }
 		
 		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
 		is_vassal = no 
+		NOT = { war_with = XIJ }
 		
 		XIJ = { 
 			exists = yes 
@@ -1305,6 +1388,7 @@ country_event = {
 		
 		ai_chance = { factor = 0.1 }
 	}
+	
 }
 
 #Mao demands our formal surrender - Response
@@ -1318,17 +1402,18 @@ country_event = {
 
 	option = {
 		name = "Bloodshed must be avoided, we will negotiate a surrender of Xinjiang. (Game Over)"
-		CHI = {
+		FROM = {
+			prestige = 100
 			inherit = XIJ
 		}
 		ai_chance = { 
-			factor = 0.8
+			factor = 0.9
 		}
 	}
 
 	option = {
 		name = "We must fight to preserve the KMT's rule in Xinjiang!"
-		CHI = {
+		FROM = {
 			war = {
 				target = XIJ
 				attacker_goal = { casus_belli = annex_core_country }
@@ -1337,11 +1422,11 @@ country_event = {
 			}
 		}
 		ai_chance = { 
-			factor = 0.2
+			factor = 0.1
 		}
 	}
+	
 }
-
 
 #Chiang demands submission
 country_event = {
@@ -1353,11 +1438,17 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		tag = KMT
+		OR = { tag = KMT tag = CHI }
 		year = 1949 
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { has_global_flag = 1992_start_date_flag }
 		NOT = { year = 1990 }
 		
+		OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship }
 		is_vassal = no 
+		NOT = { war_with = XIJ }
+		
+		OR = { ruling_party_ideology = traditionalist ruling_party_ideology = conservative ruling_party_ideology = nationalist ruling_party_ideology = populist }
 		
 		XIJ = { 
 			exists = yes 
@@ -1375,6 +1466,9 @@ country_event = {
 
 	option = {
 		name = "It is time to exert control over this wayward province."
+		1600 = {
+			change_province_name = "Urumqi"
+		}
 		XIJ = { country_event = 8023817 } 
 		ai_chance = { factor = 0.99 }
 	}
@@ -1390,8 +1484,8 @@ country_event = {
 		
 		ai_chance = { factor = 0.01 }
 	}
+	
 }
-
 
 #Chiang demands submission - Response
 country_event = {
@@ -1406,7 +1500,8 @@ country_event = {
 
 	option = {
 		name = "Xinjiang will return to a united China! (Game Over)"
-		KMT = {
+		FROM = {
+			prestige = 100
 			inherit = XIJ
 		}
 		ai_chance = { 
@@ -1416,7 +1511,7 @@ country_event = {
 
 	option = {
 		name = "Xinjiang has drifted from the goals of the main KMT."
-		KMT = {
+		FROM = {
 			war = {
 				target = XIJ
 				attacker_goal = { casus_belli = annex_core_country }
@@ -1428,4 +1523,5 @@ country_event = {
 			factor = 0.1
 		}
 	}
+	
 }
