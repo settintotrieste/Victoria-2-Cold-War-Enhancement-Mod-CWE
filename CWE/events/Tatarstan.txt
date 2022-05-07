@@ -9,16 +9,18 @@ country_event = {
 
 	trigger = {
 		tag = TAR
-		year = 1992
-		has_global_flag = 1992_start_date_flag
-
-
-		war = no
-		TAR = { vassal_of = RUS }
-
+		OR = { 
+			has_global_flag = 1992_start_date_flag
+			
+			#Dissolution of the USSR event fired
+			RUS = { has_country_flag = eussr }
+		}
+		
 		government = socialist_democracy
-		ruling_party_ideology = socialist
+		OR = { vassal_of = RUS is_vassal = no }
+		war = no
 
+		ruling_party_ideology = socialist
 	}
 
 	mean_time_to_happen = { months = 1 }
@@ -39,8 +41,8 @@ country_event = {
 			consciousness = 3
 		}
 	}
+	
 }
-
 
 #1992 Sovereignty Referendum
 country_event = { 
@@ -53,56 +55,63 @@ country_event = {
 
 	trigger = {
 		tag = TAR
-		year = 1992
-		has_global_flag = 1992_start_date_flag
-
-		TAR = { vassal_of = RUS }
-
+		OR = { 
+			has_global_flag = 1992_start_date_flag
+			
+			#Dissolution of the USSR event fired
+			RUS = { has_country_flag = eussr }
+		}
+		
+		government = socialist_democracy
+		vassal_of = RUS
 		war = no
 
-		government = socialist_democracy
 		ruling_party_ideology = socialist
-
 	}
 
 	mean_time_to_happen = { months = 3 }
 
-
 	option = {
 		name = "Tatarstan is a free nation."
+		prestige = 50
 		badboy = 2
-		prestige = 10
-		ideology = { factor = 0.05 value = nationalist }
-		ideology = { factor = 0.05 value = socialist }
-		any_pop = { 
+		
+		any_pop = {
 			limit = { NOT = { culture = russian } }
 			militancy = -5
 			consciousness = -5
+			ideology = { factor = 0.05 value = nationalist }
+			ideology = { factor = 0.05 value = socialist }
 		}
-		any_pop = { 
+		any_pop = {
 			limit = { culture = russian }
 			ideology = { factor = 0.10 value = big_tent }
 			militancy = 5
 			consciousness = 5
 		}
+		
 		RUS = { country_event = 8120710 }
+		
 		country_event = 8120711
-		ai_chance = { factor = 0.8 }
+		
+		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
-		name = "Russians turn out to ensure a return to the newly established Federation. (Game Over)"
+		name = "Tatarstan shall rejoin Russia. (Game Over)"
 		any_pop = { 
 			limit = { NOT = { culture = russian } }
 			ideology = { factor = 0.05 value = nationalist }
 			militancy = 5
 			consciousness = 5
 		}
+		
 		RUS = { country_event = 8120709 }
-		ai_chance = { factor = 0.2 }
+		
+		ai_chance = { factor = 0.1 }
 	}
+	
 }
-
 
 #Tatarstan joins the Russian federation
 country_event = { 
@@ -113,19 +122,20 @@ country_event = {
   
 	is_triggered_only = yes
 
-
 	option = {
-		name = "We welcome Tatarstan back into Russia."
+		name = "We welcome Tatarstan back into the motherland."
 		prestige = 10
-		inherit = TAR
+		
+		inherit = FROM
+		
 		any_pop = { 
 			limit = { culture = russian }
 			militancy = -2
 			consciousness = -2
 		}
 	}
+	
 }
-
 
 #Tatarstan votes for independence
 country_event = { 
@@ -136,28 +146,33 @@ country_event = {
   
 	is_triggered_only = yes
 
-
 	option = {
-		name = "Russia cannot afford to risk a civil war."
+		name = "Russia cannot afford a civil war."
 		prestige = -10
 		any_pop = { 
 			ideology = { factor = 0.15 value = nationalist }
 			militancy = 8
 			consciousness = 8
 		}
-		ai_chance = { factor = 0.7 }
+		
+		set_country_flag = TAR_RUS_historical_flag
+		
+		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
 		name = "Russia will be one and united!"
 		badboy = 2
-		release_vassal = TAR
+		
+		#Start war
+		release_vassal = FROM
 		war = {
-			target = TAR
+			target = FROM
 			attacker_goal = { casus_belli = annex_core_country }
 			defender_goal = { casus_belli = status_quo }
 			call_ally = no
 		}
+		
 		any_pop = { militancy = 5 consciousness = 5 }
 		any_pop = { 
 			limit = { NOT = { culture = russian } }
@@ -169,26 +184,28 @@ country_event = {
 			militancy = -8
 			consciousness = -8
 		}
-		ai_chance = { factor = 0.3 }
+		
+		ai_chance = { factor = 0.1 }
 	}
+	
 }
-
 
 #New Constitution
 country_event = {
-   id = 8120711
-   title = "A Tatar Constitution"
-   desc = EVTDESC8120711
-   picture = "tar_gov"
+	id = 8120711
+	title = "A Tatar Constitution"
+	desc = EVTDESC8120711
+	picture = "tar_gov"
 
 	is_triggered_only = yes
 
-
 	option = {
 		name = "Let us proclaim the Islamic Republic of Tatarstan!"
+		
 		government = democracy1
 		ruling_party_ideology = big_tent
 		country_event = 800054
+		
 		any_pop = { 
 			limit = { culture = tatar }
 			ideology = { factor = 0.05 value = big_tent }
@@ -201,6 +218,7 @@ country_event = {
 			militancy = 8
 			consciousness = 8
 		}
+		
 		ai_chance = {
 			factor = 0.6
 		}
@@ -209,13 +227,16 @@ country_event = {
 	option = {
 		name = "We will carry on with the Soviet model."
 		badboy = 5
-		ruling_party_ideology = communist_social
+		
 		government = proletarian_dictatorship1
-		country_event = 800042
+		country_event = 800052
+		ruling_party_ideology = communist_social
+		
 		any_pop = { militancy = 5 consciousness = 5 }
 		any_pop = { 
 			ideology = { factor = 0.05 value = communist_social }
 		}
+		
 		ai_chance = {
 			factor = 0.3
 		}
@@ -227,17 +248,18 @@ country_event = {
 		any_pop = { 
 			ideology = { factor = 0.05 value = socialist }
 		}
+		
 		ai_chance = {
 			factor = 0.1
 		}
 	}
+	
 }
-
 
 #Joining with the Russian Federation?
 country_event = { 
 	id = 8120712
-	title = "Joining the Federation?"
+	title = "Join the Russian Federation?"
 	desc = EVTDESC8120712
 	picture = "tar_map"
   
@@ -245,68 +267,74 @@ country_event = {
 
 	trigger = {
 		tag = TAR
-		year = 1994
-		has_global_flag = 1992_start_date_flag
+		OR = { 
+			AND = { year = 1994 has_global_flag = 1992_start_date_flag }
+			
+			#Dissolution of the USSR event fired
+			RUS = { has_country_flag = TAR_RUS_historical_flag has_country_flag = eussr }
+		}
 
-		TAR = { vassal_of = RUS }
-
+		vassal_of = RUS
 		war = no
-
 	}
 
 	mean_time_to_happen = { months = 5 }
 
-
 	option = {
-		name = "Agree to join with the federation. (Game Over)"
-		badboy = 2
+		name = "Agree to join the federation. (Game Over)"
 		prestige = 10
+		badboy = 2
+		
 		RUS = { country_event = 8120713 }
 		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
 		name = "Continue to hold to independence."
-		badboy = 2
 		prestige = 100
+		badboy = 2
+		
 		any_pop = { 
 			limit = { NOT = { culture = russian } }
 			ideology = { factor = 0.05 value = nationalist }
 			militancy = 5
 			consciousness = 5
 		}
+		
 		RUS = { country_event = 8120714 }
 		ai_chance = { factor = 0.1 }
 	}
+	
 }
-
 
 #Tatarstan agrees to join
 country_event = { 
 	id = 8120713
-	title = "Tatarstan Agrees to Federation"
+	title = "Tatarstan joins the Federation"
 	desc = EVTDESC8120713
 	picture = "tar_rus"
   
 	is_triggered_only = yes
 
-
 	option = {
 		name = "We welcome Tatarstan back into Russia."
 		prestige = 50
-		inherit = TAR
+		
+		inherit = FROM
+		
 		any_pop = { 
 			limit = { culture = russian }
 			militancy = -2
 			consciousness = -2
 		}
 	}
+	
 }
 
 #Tatarstan refuses to join
 country_event = { 
 	id = 8120714
-	title = "Tatarstan Refuses Federation"
+	title = "Tatarstan Refuses to join the Federation"
 	desc = EVTDESC8120714
 	picture = "tar_rus"
   
@@ -315,13 +343,16 @@ country_event = {
 	option = {
 		name = "Russia will be one and united!"
 		badboy = 2
-		release_vassal = TAR
+		
+		#Start war
+		release_vassal = FROM
 		war = {
-			target = TAR
+			target = FROM
 			attacker_goal = { casus_belli = annex_core_country }
 			defender_goal = { casus_belli = status_quo }
 			call_ally = no
 		}
+		
 		any_pop = { militancy = 5 consciousness = 5 }
 		any_pop = { 
 			limit = { NOT = { culture = russian } }
@@ -333,19 +364,22 @@ country_event = {
 			militancy = -8
 			consciousness = -8
 		}
+		
 		ai_chance = { factor = 0.9 }
 	}
-
 
 	option = {
 		name = "Russia cannot afford a war."
 		prestige = -100
-		release_vassal = TAR
+		
+		release_vassal = FROM
 		any_pop = { 
 			ideology = { factor = 0.15 value = nationalist }
 			militancy = 8
 			consciousness = 8
 		}
+		
 		ai_chance = { factor = 0.1 }
 	}
+	
 }
