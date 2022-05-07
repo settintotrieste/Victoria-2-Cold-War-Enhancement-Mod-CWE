@@ -9,20 +9,28 @@ country_event = {
 
 	trigger = {
 		tag = CRI
-		year = 1992
-		has_global_flag = 1992_start_date_flag
-
+		
+		OR = { is_vassal = no vassal_of = UKR }
 		war = no
-
-		CRI = { vassal_of = UKR }
-
-		OR = { government = socialist_democracy }
+		
 		ruling_party_ideology = socialist
-
+		
+		RUS = {
+			exists = yes
+			
+			is_vassal = no
+			war = no
+		}
+		
+		UKR = {
+			exists = yes
+			
+			is_vassal = no
+			war = no
+		}
 	}
 
 	mean_time_to_happen = { months = 3 }
-
 
 	option = {
 		name = "Crimea will become an autonomous republic of Ukraine. (Game Over)"
@@ -39,8 +47,7 @@ country_event = {
 			consciousness = 5
 		}
 		UKR = { country_event = 8120701 }
-		ai_chance = { factor = 0.6 }
-
+		ai_chance = { factor = 0.8 }
 	}
 
 	option = {
@@ -58,12 +65,14 @@ country_event = {
 			consciousness = 5
 		}
 		RUS = { country_event = 8120702 }
-		ai_chance = { factor = 0.2 }
+		ai_chance = { factor = 0.1 }
 
 	}
 
 	option = {
-		name = "The time has come for the Crimean people to have a state of their own."
+		name = "Crimean people shall have a state of their own."
+		prestige = 100
+		
 		any_pop = { 
 			limit = { NOT = { culture = russian } }
 			ideology = { factor = 0.05 value = nationalist }
@@ -77,8 +86,7 @@ country_event = {
 			consciousness = 5
 		}
 		UKR = { country_event = 8120703 }
-		ai_chance = { factor = 0.2 }
-
+		ai_chance = { factor = 0.1 }
 	}
 
 }
@@ -92,11 +100,14 @@ country_event = {
   
 	is_triggered_only = yes
 
-
 	option = {
 		name = "A welcome sign of a bright future to come!"
-		inherit = CRI
+		prestige = 50
+		
+		inherit = FROM
+		
 		any_pop = { militancy = -5 consciousness = -5 }
+		
 		any_pop = { 
 			limit = { NOT = { culture = russian } }
 			ideology = { factor = 0.05 value = socialist }
@@ -108,24 +119,25 @@ country_event = {
 			ideology = { factor = 0.05 value = big_tent }
 		}
 	}
+	
 }
 
 #Join Russia
 country_event = { 
 	id = 8120702
-	title = "Crimea Joins the Russian Federation."
+	title = "Crimea Joins $COUNTRY$."
 	desc = EVTDESC8120702
 	picture = "cri_rus"
   
 	is_triggered_only = yes
 
-
 	option = {
 		name = "A sliver of stability returns to Russia with the return of Crimea."
-		inherit = CRI
 		prestige = 10
+		inherit = FROM
 		any_pop = { militancy = -5 consciousness = -5 }
 	}
+	
 }
 
 #Secede from Ukraine
@@ -137,11 +149,12 @@ country_event = {
   
 	is_triggered_only = yes
 
-
 	option = {
 		name = "The new Ukrainian state cannot afford a war."
 		prestige = -10
-		release_vassal = CRI
+		
+		release_vassal = FROM
+		
 		any_pop = { 
 			limit = { NOT = { culture = russian } }
 			ideology = { factor = 0.05 value = nationalist }
@@ -154,20 +167,28 @@ country_event = {
 			militancy = -8
 			consciousness = -8
 		}
-		CRI = { country_event = 8120704 }
-		ai_chance = { factor = 0.8 }
+		
+		random_country = {
+			limit = { tag = CRI government = socialist_democracy }
+			country_event = 8120704
+		}
+		
+		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
 		name = "We must maintain the borders of our new state!"
 		badboy = 1
-		release_vassal = CRI
+		
+		#War with Crimea
+		release_vassal = FROM
 		war = {
-			target = CRI
+			target = FROM
 			attacker_goal = { casus_belli = annex_core_country }
 			defender_goal = { casus_belli = status_quo }
 			call_ally = no
 		}
+		
 		any_pop = { militancy = -5 consciousness = -5 }
 		any_pop = { 
 			limit = { NOT = { culture = russian } }
@@ -179,27 +200,35 @@ country_event = {
 			militancy = 8
 			consciousness = 8
 		}
-		CRI = { country_event = 8120704 }
-		ai_chance = { factor = 0.2 }
+		
+		random_country = {
+			limit = { tag = CRI government = socialist_democracy }
+			country_event = 8120704
+		}
+		
+		ai_chance = { factor = 0.1 }
 	}
+	
 }
 
 
 #Choosing the fate of the nation
 country_event = {
-   id = 8120704
-   title = "A Crimean Constitution"
-   desc = EVTDESC8120704
-   picture = "cri_sov"
+	id = 8120704
+	title = "The Crimean Constitution"
+	desc = EVTDESC8120704
+	picture = "cri_sov"
 
 	is_triggered_only = yes
 
 	option = {
 		name = "We will preserve Lenin's legacy in Crimea!"
 		badboy = 5
-		ruling_party_ideology = communist_social
+		
 		government = proletarian_dictatorship
-		country_event = 800042
+		country_event = 800052
+		ruling_party_ideology = communist_social
+		
 		any_pop = { militancy = 5 consciousness = 5 }
 		any_pop = { 
 			limit = { NOT = { culture = russian } }
@@ -209,8 +238,9 @@ country_event = {
 			limit = { culture = russian }
 			ideology = { factor = 0.15 value = communist_social }
 		}
+		
 		ai_chance = {
-			factor = 0.6
+			factor = 0.7
 		}
 	}
 
@@ -226,14 +256,17 @@ country_event = {
 			ideology = { factor = 0.15 value = socialist }
 		}
 		ai_chance = {
-			factor = 0.4
+			factor = 0.2
 		}
 	}
 
 	option = {
 		name = "Crimea will push forward into a western aligned future."
+		
 		government = democracy
 		country_event = 800054
+		election = yes
+		
 		any_pop = { 
 			limit = { NOT = { culture = russian } }
 			ideology = { factor = 0.05 value = big_tent }
@@ -247,9 +280,10 @@ country_event = {
 			consciousness = 8
 		}
 		ai_chance = {
-			factor = 0.3
+			factor = 0.1
 		}
 	}
+	
 }
 
 #Repeating event for Russian party in charge
@@ -261,16 +295,17 @@ country_event = {
   
 	trigger = {
 		tag = CRI
-
+		
 		war = no
 
 		OR = { ruling_party_ideology = big_tent ruling_party_ideology = populist }
+		
+		election = no
 
 		primary_culture = tatar
 	}
 
 	mean_time_to_happen = { months = 1 }
-
 
 	option = {
 		name = "Tatar will continue to hold official status in Crimea."
@@ -288,8 +323,8 @@ country_event = {
 			militancy = -5
 			consciousness = -5
 		}
+		
 		ai_chance = { factor = 0.6 }
-
 	}
 
 	option = {
@@ -309,11 +344,11 @@ country_event = {
 			militancy = 5
 			consciousness = 5
 		}
+		
 		ai_chance = { factor = 0.4 }
-
 	}
+	
 }
-
 
 #Repeating event for Tatar party in charge
 country_event = { 
@@ -328,17 +363,19 @@ country_event = {
 		war = no
 
 		NOT = { OR = { ruling_party_ideology = big_tent ruling_party_ideology = populist } }
+		
+		election = no
 
 		primary_culture = russian
 	}
 
 	mean_time_to_happen = { months = 1 }
 
-
 	option = {
 		name = "Russian will continue to hold official status in Crimea"
 		primary_culture = tatar
 		add_accepted_culture = russian
+		
 		any_pop = { 
 			limit = { culture = tatar }
 			ideology = { factor = 0.05 value = nationalist }
@@ -350,14 +387,15 @@ country_event = {
 			militancy = -5
 			consciousness = -5
 		}
+		
 		ai_chance = { factor = 0.8 }
-
 	}
 
 	option = {
 		name = "Tatar will be the sole language of Crimea."
 		primary_culture = tatar
 		remove_accepted_culture = russian
+		
 		any_pop = { 
 			limit = { culture = tatar }
 			ideology = { factor = 0.05 value = socialist }
@@ -370,7 +408,8 @@ country_event = {
 			militancy = 5
 			consciousness = 5
 		}
+		
 		ai_chance = { factor = 0.2 }
-
 	}
+	
 }
