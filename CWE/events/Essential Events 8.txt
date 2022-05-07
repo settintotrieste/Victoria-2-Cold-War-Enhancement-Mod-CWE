@@ -10680,27 +10680,32 @@ country_event = {
 	desc = "Years of communist planned economy has wrought much economic destruction to our industries. With the end of the planned economy, our nation's markets have been able to grow through market forces and is on the track to a healthy recovery."
 	picture = "soviet_stagnation_end"
 
-	trigger = {
-	
-		#Stagnation
-		OR = { 
-			has_country_modifier = soviet_stagnation_1 
-			has_country_modifier = soviet_stagnation_2 
-			has_country_modifier = soviet_stagnation_3 
-			has_country_modifier = soviet_stagnation_4 
-		}
-		
+    	trigger = {
 		OR = {
-			#OGAS removes stagnation
-			has_country_modifier = ogas
-			has_country_modifier = cybersin
-			
-			#Not planned economy
-			NOT = {
-				OR = { 
-					economic_policy = planned_economy 
-					economic_policy = planned_economy1
+			#This event fires to reduce stagnation level when OGAS or Cybersin is developed
+			AND = {
+				OR = { has_country_modifier = ogas has_country_modifier = cybersin }
+				OR = { 			
+					has_country_modifier = soviet_stagnation_1 
+					has_country_modifier = soviet_stagnation_2 
+            				has_country_modifier = soviet_stagnation_3 
+           	 			has_country_modifier = soviet_stagnation_4  
 				}
+			}
+			#This event fires to remove OGAS and Cybersin modifiers if THIS no longer uses planned economy
+			AND = {
+				OR = { has_country_modifier = ogas has_country_modifier = cybersin }
+				NOT = { OR = { economic_policy = planned_economy economic_policy = planned_economy1 } }
+			}
+			#This event fires to remove stagnation modifiers if THIS no longer uses planned economy
+			AND = {
+				OR = { 			
+					has_country_modifier = soviet_stagnation_1 
+					has_country_modifier = soviet_stagnation_2 
+            				has_country_modifier = soviet_stagnation_3 
+           	 			has_country_modifier = soviet_stagnation_4  
+				}
+				NOT = { OR = { economic_policy = planned_economy economic_policy = planned_economy1 } }
 			}
 		}
 	}
@@ -10717,8 +10722,12 @@ country_event = {
 
 	option = {
 		name = "We have found a way to stop the rot"
-		remove_country_modifier = cybersin
-		remove_country_modifier = ogas 
+
+		#Remove OGAS and Cybersin modifiers if THIS is no longer a planned economy
+		random_owned = {
+			limit = { owner = { NOT = { OR = { economic_policy = planned_economy economic_policy = planned_economy1 } } } }
+			owner = { remove_country_modifier = ogas remove_country_modifier = cybersin }
+		}
 		remove_country_modifier = soviet_stagnation_1 
 		remove_country_modifier = soviet_stagnation_2 
 		remove_country_modifier = soviet_stagnation_3 
