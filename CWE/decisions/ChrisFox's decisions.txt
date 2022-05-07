@@ -1,101 +1,247 @@
 political_decisions = {
 
-transnistria_ascension = { #Annexation of transnistria to Russia if Russia shares a common border
-  picture = "RUS_annex_TRD"
-
-  potential = {
-    tag = RUS
-    exists = TRD
-	exists = ROM
-  }
-
-  allow = {
-   	neighbour = TRD
-	is_vassal = no
-	war = no
-TRD = { war = no }
-OR = { 
-is_our_vassal = TRD 
-AND = { in_sphere = RUS TRD = { is_vassal = no } } 
-}
-  }
-
-  effect = {
-   relation = { who = ROM value = -200 }
-   relation = { who = USA value = -100 }
-   inherit = TRD
-   badboy = 5
-	prestige = 100
-  }
-	ai_will_do = {
-			factor = 1
+	#Annexation of transnistria to Russia if Russia shares a common border
+	transnistria_ascension = {
+		picture = "RUS_annex_TRD"
+	
+		potential = {
+			tag = RUS
+			
+			#TRD & ROM exist
+			exists = TRD
+		
+			neighbour = TRD
+			
+			NOT = { has_global_flag = transnistria_ascension_decision_fired }
 		}
-}
-
-belarus_neo_soviet = { #Annexation of Belarus if Belarus and Russia are socialist republics
-  picture = "RUS_annex_BYE"
-
-  potential = {
-    tag = RUS
-    exists = BYE
-OR = { government = proletarian_dictatorship government = socialist_democracy }
-  }
-
-  allow = {
-neighbour = BYE
-is_vassal = no
-war = no
-BYE = { war = no OR = { AND = { in_sphere = RUS is_vassal = no } vassal_of = RUS } }
-BYE = { OR = { government = proletarian_dictatorship government = socialist_democracy } }
-  }
-
-  effect = {
-   relation = { who = USA value = -100 }
-   inherit = BYE
-   badboy = 5
-	prestige = -25
-  }
+	
+		allow = {
+			is_vassal = no
+			war = no
+		
+			TRD = {
+				OR = { 
+					vassal_of = THIS
+					AND = { in_sphere = THIS is_vassal = no } 
+				}
+				war = no
+			}
+		}
+	
+		effect = {
+			prestige = 100
+			badboy = 5
+			
+			random_country = { 
+				limit = { tag = ROM is_vassal = no } 
+				relation = { who = THIS value = -200 } 
+				THIS = { diplomatic_influence = { who = ROM value = -100 } } 
+			}
+			
+			random_country = { limit = { tag = USA government = democracy is_greater_power = yes } relation = { who = THIS value = -100 } }
+			
+			#Option for TRD to unite
+			TRD = { country_event = 11101 }
+			
+			set_global_flag = transnistria_ascension_decision_fired
+		}
+		
 		ai_will_do = {
 			factor = 1
+			modifier = { factor = 0 badboy = 0.5 }
 		}
-}
-
-lithuania_neo_soviet = { #Annexation of Lithuania if it did not expel Russian troops and the 93 coup resulted in a new Soviet Union
-  picture = "lithuania_neo_soviet"
-
-  potential = {
-    tag = RUS
-    exists = LIT
-    OR = { government = proletarian_dictatorship government = socialist_democracy }
-    has_global_flag = litsov
-  }
-
-  allow = {
-    has_global_flag = litsov
-	neighbour = LIT
-	LIT = { 
-OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social ruling_party_ideology = socialist } 
-
-war = no 
-
-OR = { AND = { in_sphere = RUS is_vassal = no } vassal_of = RUS }
-
 	}
-  }
-
-  effect = {
-   relation = { who = USA value = -100 }
-   relation = { who = EST value = -200 }
-   relation = { who = LAT value = -200 }
-   LIT = { country_event = 11106 }
-   badboy = 5
-	clr_global_flag = litsov
-  }
-	ai_will_do = {
-			factor = 1
+	
+	#Annexation of Belarus if Belarus and Russia are socialist republics
+	belarus_neo_soviet = {
+		picture = "RUS_annex_BYE"
+		potential = {
+			tag = RUS
+			exists = BYE
+			OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+			
+			NOT = { has_global_flag = belarus_neo_soviet_decision_fired }
 		}
-
-}
-
+		
+		allow = { 
+			neighbour = BYE
+			
+			is_vassal = no
+			war = no
+			
+			BYE = {
+				OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+				OR = { 
+					vassal_of = THIS
+					AND = { in_sphere = THIS is_vassal = no } 
+				}
+				war = no
+			}
+		}
+		
+		effect = {
+			prestige = 100
+			badboy = 5
+		
+			#Option for BYE to unite
+			BYE = { country_event = 11101 }
+		
+			random_country = { limit = { tag = USA government = democracy is_greater_power = yes } relation = { who = THIS value = -100 } }
+			
+			set_global_flag = belarus_neo_soviet_decision_fired
+		}
+		
+		ai_will_do = {
+			factor = 1
+			modifier = { factor = 0 badboy = 0.5 }
+		}
+	}
+	
+	#Annexation of Lithuania if it did not expel Russian troops and the 93 coup resulted in a new Soviet Union
+	lithuania_neo_soviet = {
+		picture = "lithuania_neo_soviet"
+		potential = {
+			tag = RUS
+			OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+			
+			exists = LIT
+			
+			has_global_flag = litsov
+		}
+		allow = {
+			neighbour = LIT
+			
+			LIT = { 
+				OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+				OR = { 
+					vassal_of = THIS
+					AND = { in_sphere = THIS is_vassal = no } 
+				}
+				war = no
+				
+				OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social ruling_party_ideology = socialist } 
+			}
+		}
+		
+		effect = {
+			prestige = 100
+			badboy = 5
+		
+			random_country = { limit = { tag = USA government = democracy is_greater_power = yes } relation = { who = THIS value = -100 } }
+			
+			random_country = { 
+				limit = { tag = EST is_vassal = no } 
+				relation = { who = THIS value = -200 } 
+				THIS = { diplomatic_influence = { who = EST value = -100 } } 
+			}
+			
+			random_country = { 
+				limit = { tag = LAT is_vassal = no } 
+				relation = { who = THIS value = -200 } 
+				THIS = { diplomatic_influence = { who = LAT value = -100 } } 
+			}
+			
+			#Option for LIT to unite
+			LIT = { country_event = 11101 }
+			
+			clr_global_flag = litsov
+		}
+		
+		ai_will_do = {
+			factor = 1
+			modifier = { factor = 0 badboy = 0.5 }
+		}
+	}
+	
+	#Annexation of Tatarstan early if Russia is communist
+	tatarstan_ascension = {
+		picture = "RUS_annex_TAR"
+		potential = {
+			tag = RUS
+			OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+			
+			exists = TAR
+			
+			NOT = { has_global_flag = tatarstan_ascension_decision_fired }
+		}
+		
+		allow = {
+			neighbour = TAR
+			
+			TAR = { 
+				OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+				OR = { 
+					vassal_of = THIS
+					AND = { in_sphere = THIS is_vassal = no } 
+				}
+				war = no
+			}
+		}
+		
+		effect = {
+			prestige = 100
+			badboy = 2.5
+			
+			random_country = { limit = { tag = USA government = democracy is_greater_power = yes } relation = { who = THIS value = -50 } }
+			
+			#Option for TAR to unite
+			TAR = { country_event = 11101 }
+			
+			set_global_flag = tatarstan_ascension_decision_fired
+		}
+		
+		ai_will_do = {
+			factor = 1
+			modifier = { factor = 0 badboy = 0.5 }
+		}
+	}
+	
+	#Annexation of Crimea
+	crimea_ascension = {
+		picture = "RUS_annex_CRI"
+		potential = {
+			tag = RUS
+			
+			exists = CRI
+			
+			NOT = { has_global_flag = crimea_ascension_decision_fired }
+		}
+		
+		allow = {
+			neighbour = CRI
+			
+			CRI = { 
+				OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+				OR = { 
+					vassal_of = THIS
+					AND = { in_sphere = THIS is_vassal = no } 
+				}
+				war = no
+			}
+		}
+		
+		effect = {
+			prestige = 100
+			badboy = 2.5
+		
+			random_country = { limit = { tag = USA government = democracy is_greater_power = yes } relation = { who = THIS value = -50 } }
+			
+			random_country = {
+				limit = { tag = UKR is_vassal = no any_core = { is_core = CRI } } 
+				relation = { who = THIS value = -200 } 
+				THIS = { diplomatic_influence = { who = UKR value = -100 } } 
+			}
+			
+			#Option for CRI to unite
+			CRI = { country_event = 11101 }
+			
+			set_global_flag = crimea_ascension_decision_fired
+		}
+		
+		ai_will_do = {
+			factor = 1
+			modifier = { factor = 0 badboy = 0.5 }
+		}
+	}
 
 }
