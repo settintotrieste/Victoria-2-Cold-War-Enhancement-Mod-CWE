@@ -3,6 +3,17 @@ political_decisions = {
 		alert = no
 		picture = "population_growth"
 		potential = {
+			NOT = {
+				OR = {
+					has_country_modifier = natalism_1
+					has_country_modifier = natalism_2
+					has_country_modifier = natalism_3
+					has_country_modifier = natalism_4
+					has_country_modifier = natalism_5
+				}
+			}
+			
+			#Cannot have a pop boom on top of another pop boom
 			NOT = { has_country_modifier = baby_boom }
 		}
 
@@ -19,21 +30,126 @@ political_decisions = {
 
 			#Traditionalist, nationalist, populist, communist governments with either nationalist, traditionalist, populist, or communist pop majority ideologies only
 			OR = { ruling_party_ideology = traditionalist ruling_party_ideology = nationalist ruling_party_ideology = populist ruling_party_ideology = communist ruling_party_ideology = communist_social }
-			OR = { pop_majority_ideology = traditionalist pop_majority_ideology = nationalist pop_majority_ideology = populist ruling_party_ideology = communist ruling_party_ideology = communist_social }
+			OR = { pop_majority_ideology = traditionalist pop_majority_ideology = nationalist pop_majority_ideology = populist pop_majority_ideology = communist pop_majority_ideology = communist_social }
+			
+			#AI
+			OR = {
+				ai = no
+				
+				#Expansionist nations will take this decision
+				AND = { war_policy = jingoism is_disarmed = no }
+				
+				#Nations facing a demographic crunch will take this
+				literacy = 0.20
+			}
 
 		}
 
 		effect = {
-			add_country_modifier = { name = baby_boom duration = 3650 }
-			any_pop = { consciousness = 5 }
+			
+			#Less than 5% higher education
+			random_owned = {
+				limit = { owner = { NOT = { literacy = 0.05 } } }
+				owner = { add_country_modifier = { name = natalism_1 duration = 1825 } }
+			}
+			
+			#5-10% higher education
+			random_owned = {
+				limit = { owner = { literacy = 0.05 NOT = { literacy = 0.10 } } }
+				owner = { add_country_modifier = { name = natalism_2 duration = 1825 } }
+			}
+			
+			#10-15% higher education
+			random_owned = {
+				limit = { owner = { literacy = 0.10 NOT = { literacy = 0.15 } } }
+				owner = { add_country_modifier = { name = natalism_3 duration = 1825 } }
+			}
+			
+			#15-20% higher education
+			random_owned = {
+				limit = { owner = { literacy = 0.15 NOT = { literacy = 0.20 } } }
+				owner = { add_country_modifier = { name = natalism_4 duration = 1825 } }
+			}
+			
+			#20%+ higher education
+			random_owned = {
+				limit = { owner = { literacy = 0.20 } }
+				owner = { add_country_modifier = { name = natalism_5 duration = 1825 } }
+			}
+		
+			#Accepted pops are happy
+			any_pop = { 
+				limit = { is_culture_group = THIS } 
+				consciousness = 5 
+			}
+			
+			#Oppressed pops are not happy
+			any_pop = { limit = { NOT = { is_culture_group = THIS } } consciousness = 5 militancy = 5 }
+			
+			#Pops become more socialist
+			any_pop = {
+				limit = { 
+					strata = middle
+					NOT = { OR = { pop_majority_ideology = communist pop_majority_ideology = communist_social } } 
+				}
+				ideology = { factor = 0.025 value = socialist }
+			}
+			any_pop = {
+				limit = { 
+					strata = poor 
+					NOT = { OR = { pop_majority_ideology = communist pop_majority_ideology = communist_social } } 
+				}
+				ideology = { factor = 0.05 value = socialist }
+			}
+			
+			any_pop = {
+				limit = { 
+					strata = middle
+					OR = { pop_majority_ideology = communist pop_majority_ideology = communist_social }
+				}
+				ideology = { factor = 0.025 value = communist }
+			}
+			any_pop = {
+				limit = { 
+					strata = poor 
+					OR = { pop_majority_ideology = communist pop_majority_ideology = communist_social }
+				}
+				ideology = { factor = 0.05 value = communist }
+			}
+			
+			#Decision comes with education reforms
+			random_owned = {
+				limit = { owner = { education = subsidised_higher_education } }
+				owner = { social_reform = public_higher_education }
+			}
+			random_owned = {
+				limit = { owner = { education = public_education } }
+				owner = { social_reform = subsidised_higher_education }
+			}
+			random_owned = {
+				limit = { owner = { education = self_financed_education } }
+				owner = { social_reform = public_education }
+			}
+			
+			#Decision comes with public housing reforms
+			random_owned = {
+				limit = { owner = { social_service_reform = social_abuse_protection } }
+				owner = { social_reform = anti_terror_surveillance }
+			}
+			random_owned = {
+				limit = { owner = { social_service_reform = social_services } }
+				owner = { social_reform = social_abuse_protection }
+			}
+			random_owned = {
+				limit = { owner = { social_service_reform = no_social_service } }
+				owner = { social_reform = social_services }
+			}
 		}
 
 		ai_will_do = {
 			factor = 1
-			
-			#Only GP AIs take this decision
-			modifier = { factor = 0 is_greater_power = no }
 		}
 		
 	}
+	
 }
