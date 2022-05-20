@@ -232,7 +232,7 @@ country_event = {
 		NOT = { has_global_flag = 1950_start_date_flag }
 	}
 
-	mean_time_to_happen = { months = 9 }
+	mean_time_to_happen = { months = 6 }
 
 	option = {
 		name = "Declare a People's Republic"
@@ -394,6 +394,16 @@ country_event = {
 		prestige = 25
 		money = -100000
 		RUS = { money = 100000 }
+
+		#664 = {
+		#	any_pop = {
+		#		limit = { type = aristocrats }
+		#		money = 5000 #To Allow Pops to Invest in Romania
+		#	}
+		#}
+		#random_pop = { limit = { type = aristocrats } money = 5000 } #Better alternative?
+		aristocrats = { money = 500 }
+
 		any_pop = { consciousness = 5 }
 	}
 	
@@ -431,6 +441,16 @@ country_event = {
 		money = -250000
 		add_country_modifier = { name = forced_labour duration = 3650 }
 		ai_chance = { factor = 0.9 }
+
+		#674 = {
+		#	any_pop = {
+		#		limit = { type = aristocrats }
+		#		money = 25000 #To Allow Pops to Invest in Romania
+		#	}
+		#}
+		aristocrats = { money = 250 } #Might be better this way
+
+
 	}
 	option = {
 		name = "There is no need to"
@@ -470,6 +490,17 @@ country_event = {
 		any_pop = { consciousness = -5 }
 		
 		set_country_flag = anti_stalinists_purged
+
+		659 = {
+			change_province_name = "Stalin"
+		}
+
+		654 = {
+			state_scope = {
+				change_region_name = "Crisana"
+			}
+		}
+
 		ai_chance = { factor = 0.9 }
 	}
 
@@ -493,6 +524,17 @@ country_event = {
 		}
 		
 		#Move to event 8023012100
+
+
+		659 = {
+			change_province_name = "Stalin"
+		}
+
+		654 = {
+			state_scope = {
+				change_region_name = "Crisana"
+			}
+		}
 		
 		ai_chance = { factor = 0.1 }
 	}
@@ -537,6 +579,12 @@ country_event = {
 			consciousness = -2
 			ideology = { factor = 0.10 value = nationalist }
 		}
+
+		657 = {
+			state_scope = {
+				change_region_name = "Mures-Magyar" #Magyar Autonomous Region
+			}
+		}
 		
 		set_country_flag = magyar_autonomy
 		
@@ -552,6 +600,12 @@ country_event = {
 			militancy = 5
 			consciousness = 5
 			ideology = { factor = 0.30 value = nationalist }
+		}
+
+		657 = {
+			state_scope = {
+				change_region_name = "Transylvania"
+			}
 		}
 		
 		ai_chance = { factor = 0.1 }
@@ -1160,6 +1214,15 @@ country_event = {
 			ideology = { factor = 0.1 value = nationalist }
 		}
 
+		659 = {
+			change_province_name = "Brasov"
+		}
+		657 = {
+			state_scope = {
+				change_region_name = "Transylvania"
+			}
+		}
+
 		ai_chance = { factor = 0.9 }
 		
 	}
@@ -1236,7 +1299,7 @@ country_event = {
 		
 		#Gain relations with the Western Powers
 		any_country = {
-			limit = { OR = { tag = USA tag = FRA tag = ENG } OR = { government = hms_government government = democracy } is_greater_power = yes }
+			limit = { OR = { tag = USA tag = FRA tag = ENG } OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 } is_greater_power = yes }
 			relation = { who = THIS value = 200 }
 			diplomatic_influence = { who = THIS value = 100 }
 		}
@@ -1456,6 +1519,9 @@ country_event = {
 		prestige_factor = 0.01
 		research_points = 750
 		money = -50000
+
+		#random_pop = { limit = { type = aristocrats } money = 2500 } #Immediate gains from production
+		aristocrats = { money = 200 } #Immediate gains from production #Might be better this way
 		
 		set_country_flag = microelectronica_flag
 		
@@ -1732,13 +1798,20 @@ country_event = {
 		
 		#Expensive projects
 		OR = { 
-			has_country_flag = systematization_ROM
 			has_country_flag = invested_in_electronics
 			has_country_flag = ROM_western_path_flag
+
 		}
-		has_country_flag = palace_of_the_parliament_ROM_flag
-		has_country_flag = romanian_cultural_revolution
-		has_country_flag = decree_770_flag
+		OR = {
+			has_country_flag = palace_of_the_parliament_ROM_flag
+			has_country_flag = systematization_ROM
+
+		}
+		OR = {
+			has_country_flag = romanian_cultural_revolution
+			has_country_flag = decree_770_flag
+			has_country_flag = romanian_oil_modernization_start
+		} #Makes it easier to avoid austerity, or not...
 		
 		has_country_flag = nicolae_ceausescu_flag
 	}
@@ -2996,6 +3069,66 @@ country_event = {
 				pop_majority_ideology = socialist
 			}
 		}
+	}
+
+}
+
+##	Extra Events - Big C	##
+
+#Oil Project - initial investment
+country_event = {
+	id = 80230155
+	title = "Oil Modernization in Romania"
+	desc = EVTDESC80230155
+	picture = "big_c_and_friends"
+
+  	fire_only_once = yes
+
+	trigger = {
+		tag = ROM
+		year = 1975
+		NOT = { year = 1990 }
+		
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+		war = no
+		
+		money = 100000
+		
+		has_country_flag = nicolae_ceausescu_flag
+		
+		NOT = { has_country_flag = romanian_oil_modernization_start }
+	}
+
+	mean_time_to_happen = { months = 7 }
+	
+	option = {
+		name = "Begin this ambitious project!"
+		prestige = 100
+		money = -75000
+		
+		set_country_flag = romanian_oil_modernization_start
+
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = 5 consciousness = 5
+		}
+
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "There's little hope of this project being completed, forget about oil modernization."
+
+		add_country_modifier = { name = political_strife duration = 1825 }
+		
+		any_pop = {
+			limit = { strata = rich }
+			consciousness = -2
+			militancy = -2
+			ideology = { factor = 0.15 value = liberal }
+		}
+		
+		ai_chance = { factor = 0.1 }
 	}
 
 }
