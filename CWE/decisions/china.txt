@@ -5,36 +5,73 @@ political_decisions = {
 		potential = {
 			OR = { tag = CHI tag = KMT }
 			owns = 1612
-			NOT = { government = proletarian_dictatorship }
-			NOT = { government = socialist_democracy }
-			NOT = { government = hms_government }
-			NOT = { government = hms_government1 }
-			NOT = { government = absolute_monarchy }
+			NOT = { OR = { government = hms_government government = hms_government1 government = absolute_monarchy government = socialist_democracy government = proletarian_dictatorship } }
 			NOT = { has_country_flag = become_qing }
 		}
-		
+
 		allow = {
-OR = { 
-AND = { ai = no ruling_party_ideology = traditionalist } 
-AND = { pop_majority_ideology = traditionalist ruling_party_ideology = traditionalist } 
-}
-
-government = presidential_dictatorship
-
-OR = { ai = no has_recently_lost_war = yes }
 			is_vassal = no
 			war = no
 			election = no
-		}
-		
-		effect = {
-			prestige = 50
-			government = absolute_monarchy
-			set_country_flag = become_qing
+			
+			#Not a theocracy
+			NOT = { government = theocracy }
+			
+			#Traditionalist majority
+			AND = {
+				ruling_party_ideology = traditionalist
+				pop_majority_ideology = traditionalist
+				upper_house = { ideology = traditionalist value = 0.66 }
+			}
 		}
 
+		effect = {
+			prestige = 50
+
+			#Democracy becomes a Constitutional Monarchy
+			random_owned = {
+				limit = {
+					owner = {
+						OR = {
+							government = democracy 
+							government = democracy1 
+							government = hms_government 
+							government = hms_government1 
+							government = sar_government 
+							government = colonial_government 
+							government = mandate_government 
+						}
+					}
+				}
+				owner = {
+					government = hms_government
+				}
+			}
+
+			#Dictatorship becomes an absolute monarchy
+			random_owned = {
+				limit = {
+					owner = {
+						NOT = {
+							OR = {
+								government = democracy 
+								government = democracy1 
+								government = hms_government 
+								government = hms_government1 
+								government = sar_government 
+								government = colonial_government 
+								government = mandate_government 
+							}
+						}
+					}
+				}
+				owner = {
+					government = absolute_monarchy
+				}
+			}
+			set_country_flag = become_qing
+		}
 		ai_will_do = { factor = 1 }
-	
 	}
 
 	laogai = {

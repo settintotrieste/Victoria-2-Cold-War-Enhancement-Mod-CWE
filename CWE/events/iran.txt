@@ -468,7 +468,7 @@ country_event = {
 
 }
 
-#The Iran hostage crisis
+#The Nojeh Coup Plot
 country_event = {
   id = 80111435
   title = "The Nojeh Coup Plot"
@@ -484,7 +484,7 @@ country_event = {
 		
 		government = theocracy 
 		is_vassal = no
-		war = no
+		OR = { war = no war_with = IRQ }
 		
 		#Iranian revolution
 		has_country_flag = 1979_revolution_flag
@@ -492,48 +492,48 @@ country_event = {
 		#Cold War
 		has_global_flag = blocsenabled
 		
-		#Iran-Iraq war
+		#Requires Ba'athist Iraq
 		IRQ = { 
 			exists = yes 
-			ruling_party_ideology = socialist 
 			OR = { government = presidential_dictatorship government = nationalist_dictatorship government = populist_dictatorship } 
+			is_vassal = no
+			ruling_party_ideology = socialist 
 		}
 	}
 
 	mean_time_to_happen = { months = 7 }
+	
+	option = {
+		name = "Purge the traitors!"
+		
+		set_country_flag = nojeh_coup_fired
+		
+		any_pop = {
+			limit = { type = officers } 
+			reduce_pop = 0.50
+			ideology = { factor = 0.50 value = traditionalist }
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
 
 	option = {
-		name = "We shall see what happens"
+		name = "Restore the Shah!"
 		
-		#Chance of impeachment
-		random_list = {
-		
-			#Become a constitutional monarchy
-			90 = { 
-				government = hms_government 
-				country_event = 800054 
-				ruling_party_ideology = conservative 
+		government = hms_government 
+		country_event = 800054 
+		ruling_party_ideology = conservative
 				
-				#Islamic pops are angry
-				any_pop = {
-					limit = { OR = { has_pop_religion = sunni has_pop_religion = ibad has_pop_religion = shiite has_pop_religion = druze } }
-					scaled_militancy = {
-						factor = 10
-						ideology = traditionalist
-					}
-				}
-			}
-			
-			#Remain as it is but purge officer corps
-			10 = { 
-				any_pop = { 
-					limit = { type = officers } 
-					reduce_pop = 0.50
-					ideology = { factor = 0.50 value = traditionalist }
-				}
+		#Islamic pops are angry
+		any_pop = {
+			limit = { OR = { has_pop_religion = sunni has_pop_religion = ibad has_pop_religion = shiite has_pop_religion = druze } }
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
 			}
 		}
 		
+		ai_chance = { factor = 0.1 }
 	}
 
 }
@@ -554,7 +554,19 @@ country_event = {
 		
 		government = theocracy 
 		is_vassal = no
-		war = no
+		OR = { war = no war_with = IRQ }
+		
+		#happened during Iran-Iraq War
+		has_global_flag = iran_iraq_war_flag
+		IRQ = { 
+			exists = yes 
+			OR = { government = presidential_dictatorship government = nationalist_dictatorship government = populist_dictatorship } 
+			is_vassal = no
+			ruling_party_ideology = socialist 
+		}
+		
+		#Follow on from The Nojeh Coup Plot
+		has_country_flag = nojeh_coup_fired
 		
 		#Iranian revolution
 		has_country_flag = 1979_revolution_flag
