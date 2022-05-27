@@ -1,135 +1,132 @@
 #Start Tajikistan Civil War
 country_event = {
-    id = 8008010
-    title = EVT_8008010_NAME
-    desc = EVT_8008010_DESC
-    picture = "tajikistan_civil_war"
-    fire_only_once = yes
+	id = 8008010
+	title = EVT_8008010_NAME
+	desc = EVT_8008010_DESC
+	picture = "tajikistan_civil_war"
+	
+	fire_only_once = yes
 
 	trigger = {
 		tag = TAJ
 		year = 1992
-		is_vassal = no
-
+		NOT = { year = 2002 }
+		
 		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
-	
-		AFG = { government = theocracy }
 		is_vassal = no
 		war = no
-		NOT = { exists = GOB }
+
+		AFG = { government = theocracy }
+		
+		is_possible_vassal = GOB
 	}
 
 	mean_time_to_happen = { months = 4  }
   
 	option = {
-		name = EVT_8008010_B
+		name = "Fight the United Tajik Opposition!"
+		
 		set_country_flag = tajikistan_civil_war_fired
-		government = democracy
+		
+		badboy = 5
+		
+		government = presidential_dictatorship
+		country_event = 800050
+		ruling_party_ideology = socialist
+		
+		#Release Rebels
 		release = GOB
 		1207 = { change_controller = GOB }
 		GOB = {
 			capital = 1208
+			
+			government = democracy
+			country_event = 800054
+			ruling_party_ideology = big_tent
+			
 			any_pop = {
 				consciousness = -5
 				militancy = -5
 			}
 		}
-		any_pop = { 
-			limit = { type = soldiers } 
-			militancy = 8
-		}
+		
+		#War with Rebels
 		war = { 
 			target = GOB 
 			attacker_goal = { casus_belli = civil_war } 
 			defender_goal =  { casus_belli = civil_war } 
+		}
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich } 
+			militancy = -4
+		}
+		any_pop = { 
+			limit = { strata = middle } 
+			militancy = 8
+		}
+		any_pop = { 
+			limit = { strata = poor } 
+			militancy = 4
 		}
 		
 		ai_chance = { factor = 0.9 }
 	}
 	
 	option = {
-		name = EVT_8008010_A
-		set_country_flag = tajikistan_civil_war_fired
+		name = "Give in to the Opposition"
+		prestige_factor = -0.1
+		
 		government = democracy
-		release = GOB
-		1207 = { change_controller = GOB }
-		GOB = {
-			capital = 1208
-			any_pop = {
-				consciousness = -5
-				militancy = -5
-			}
-		}
+		country_event = 800054
+		ruling_party_ideology = big_tent
+		
+		#Domestic reaction
 		any_pop = { 
-			limit = { type = soldiers } 
+			limit = { strata = rich } 
 			militancy = 8
 		}
-		war = { 
-			target = GOB 
-			attacker_goal = { casus_belli = civil_war } 
-			defender_goal =  { casus_belli = civil_war } 
+		any_pop = { 
+			limit = { strata = middle } 
+			militancy = -8
 		}
-		change_tag_no_core_switch = GOB
+		any_pop = { 
+			limit = { strata = poor } 
+			militancy = -4
+		}
 		
 		ai_chance = { factor = 0.1 }
 	}
   
 }
 
+#GOB becomes TAJ
 country_event = {
-    id = 8008011
-    title = EVT_8008011_NAME
-    desc = EVT_8008011_DESC
-    picture = "tajikistan_civil_war"
-    fire_only_once = yes
-
-	mean_time_to_happen = { months = 4  }
+	id = 8008011
+	title = EVT_8008011_NAME
+	desc = EVT_8008011_DESC
+	picture = "tajikistan_civil_war"
+	
+	fire_only_once = yes
   
 	trigger = {
-    	tag = GOB
+		tag = GOB
 		NOT = { exists = TAJ }
-		owns = 1201 # Dushanbe
+		
+		war = no
 	}
+	
+	mean_time_to_happen = { months = 1 }
 
 	option = {
 		name = EVT_8008011_A
 		change_tag = TAJ
+		
 		add_accepted_culture = pamir
 		capital = 1201 # Dushanbe
-	}
-  
-}
-
-#End of Tajikistan Civil War
-country_event = {
-    id = 8008012
-    title = EVT_8008012_NAME
-    desc = EVT_8008012_DESC
-    picture = "tajikistan_civil_war"
-    fire_only_once = yes
-  
-	trigger = {
-    	tag = TAJ
-		war = no
-		is_vassal = no
-		NOT = { exists = GOB }
-		year = 1992
-		has_country_flag = tajikistan_civil_war_fired
-	}
-	
-	mean_time_to_happen = { months = 24  }
-	
-	option = {
-		name = EVT_8008012_B
-		government = presidential_dictatorship
-		country_event = 800050
-		ai_chance = { factor = 0.9 }
-	}
-
-	option = {
-		name = EVT_8008012_A
-		any_pop = { militancy = 1.0 } 
-		ai_chance = { factor = 0.1 }
+		
+		GOB = { all_core = { remove_core = GOB } }
 	}
   
 }
