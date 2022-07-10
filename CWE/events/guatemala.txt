@@ -1,31 +1,50 @@
+#Land Reform in Guatemala
 country_event = {
   id = 8006301
   title = EVT_8006301_NAME
   desc = EVT_8006301_DESC
   picture = "nwo2_ten_years_of_spring"
-  fire_only_once = yes
 
-  trigger = {
-    tag = GUA
-    year = 1944 NOT = { year = 1948}
-  }
+	fire_only_once = yes
 
-  mean_time_to_happen = { months = 1 }
+	trigger = {
+		tag = GUA
+		OR = { government = democracy government = democracy1 }
+		social_service_reform = no_social_service
+		year = 1946 NOT = { year = 1957 }
+	}
 
-  option = {
-    name = EVT_8006301_A
-	government = democracy 
-	country_event = 800054
-	ai_chance = { factor = 0.9 }
-  }
+	mean_time_to_happen = { months = 36 }
 
-  option = {
-    name = "Stick to the status quo"
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Make the reforms"
+		social_reform = social_services
+		add_country_modifier = { name = economic_boom duration = 1825 }
+		any_pop = { limit = { strata = rich } militancy = 3.0 consciousness = 1 }
+		clr_country_flag = conservative_surge
+		clr_country_flag = traditionalist_surge
+		clr_country_flag = populist_surge
+		set_country_flag = socialist_surge
+		clr_country_flag = big_tent_surge
+		clr_country_flag = liberal_surge
+		clr_country_flag = progressive_surge
+		clr_country_flag = nationalist_surge
+		clr_country_flag = communist_surge
+		clr_country_flag = communist_social_surge
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Stick to the status quo"
+		ruling_party_ideology = big_tent
+		add_country_modifier = { name = revolution_chaos duration = 1820 }
+		ai_chance = { factor = 0.1 }
+	}
 
 }
+
+#Operation PBSUCCESS 2/2
 country_event = {
   id = 8006304
   title = EVT_8006304_NAME
@@ -37,19 +56,22 @@ country_event = {
     name = EVT_8006304_A
 	government = presidential_dictatorship 
 	country_event = 800050
+	ruling_party_ideology = populist
 	any_pop = { limit = { strata = poor } militancy = 2.0 consciousness = 1 }
 	relation = { who = USA value = 100 } 
 	ai_chance = { factor = 0.9 }
   }
 
   option = {
-    name = EVT_8006304_A
+    name = EVT_8006304_B
 	any_pop = { consciousness = 2 }
 	relation = { who = USA value = -100 }
-add_country_modifier = { name = revolution_chaos duration = 3650 } 
+	add_country_modifier = { name = revolution_chaos duration = 3650 } 
 	ai_chance = { factor = 0.1 }
   }
 }
+
+#Operation PBSUCCESS 1/2
 country_event = {
   id = 8006316
   title = EVT_8006316_NAME
@@ -59,7 +81,7 @@ country_event = {
 
   trigger = {
     tag = USA
-    year = 1957 NOT = { year = 1958}
+    year = 1957 NOT = { year = 1958 }
     exists = GUA
 	GUA = { government = democracy }
     war = no
@@ -80,15 +102,20 @@ country_event = {
 	ai_chance = { factor = 0.2 }
   }
 }
+
+#Maya Genocide
 country_event = {
   id = 8006317
   title = EVT_8006317_NAME
   desc = EVT_8006317_DESC
   picture = "nwo2_guatemalan_civil_war"
+
   fire_only_once = yes
 
   trigger = {
     tag = GUA
+	OR = { ruling_party_ideology = populist ruling_party_ideology = nationalist }
+	minorities_reform = minorities_oppression
     year = 1980 NOT = { year = 1983 }
   }
 
@@ -96,12 +123,23 @@ country_event = {
 
   option = {
     name = EVT_8006317_A
-	any_pop = { militancy = -2.0 consciousness = -1 }
+	any_pop = { militancy = 7.0 consciousness = 1 }
+	random_state = {
+		any_pop = {
+			limit = { culture = mayan }
+			reduce_pop = 0.85
+		}
+	}
+	set_country_flag = ethnic_cleansed
+	add_country_modifier = { name = ethnic_cleansing duration = -1 }
+	set_country_flag = discovered_genocide
+	random_owned = { limit = { owner = { has_country_flag = discovered_genocide NOT = { has_country_flag = discovered_genocide1 } } } owner = { set_country_flag = discovered_genocide1 country_event = 1410080 } }
 	any_owned = { limit = { is_capital = no } change_controller = REB }
   }
 }
 
-country_event = { # Belize Independence
+# Belize Independence
+country_event = { 
   id = 8006350
   title = EVT_8006350_NAME
   desc = EVT_8006350_DESC
