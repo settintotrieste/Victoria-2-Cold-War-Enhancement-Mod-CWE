@@ -12,6 +12,7 @@ country_event = { # Rwanda Independence
 	exists = CNG
 	war = no
 	#owns = 2034
+	NOT = { has_global_flag = 1992_start_date_flag }
   }
 
   mean_time_to_happen = { months = 1 }
@@ -22,8 +23,10 @@ country_event = { # Rwanda Independence
 	release_vassal = RWA
 	RWA = {
 		release = BRN
-		government = democracy
+		government = democracy1
+		primary_culture = hutu
 		country_event = 800054
+		
 		add_country_modifier = { name = post_colonial_chaos duration = 900 }
 	}
 	BRN = {
@@ -42,6 +45,46 @@ country_event = { # Rwanda Independence
 	ai_chance = { factor = 0 }
   }
 }
+
+#Collapse of Ruanda-Urundi
+	country_event = {
+	id = 1412113
+	title = "Collapse of Ruanda-Urundi"
+	desc = "The tensions between the Hutu and Tutsi has become so great that it is no longer possible to maintain the union of $COUNTRY$."
+	picture = "rwanda_independence"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = RWA
+		BRN = { exists = no }
+		is_vassal = no
+		owns = 2035
+	}
+
+	mean_time_to_happen = { months = 3 }
+
+	option = {
+		name = "It's the end of the $COUNTRY_ADJ$ union"
+		release = BRN
+		government = nationalist_dictatorship
+		country_event = 800050
+		BRN = { government = nationalist_dictatorship
+		country_event = 800050 }
+		prestige = -25
+		ai_will_do = { factor = 0.5 }
+	}
+	
+	option = {
+		name = "Not on my watch"
+		any_pop = { militancy = 4 }
+		prestige = -25
+		ai_will_do = { factor = 0.5 }
+	}
+
+}
+
+#First Congo War - RWA
 country_event = {
 	id = 1029501
 	title = "EVT_1029501_NAME"
@@ -50,11 +93,14 @@ country_event = {
 	
 	fire_only_once = yes
 	
-	trigger = { # Uganda has successfully intervened in Rwanda 8027001
+	trigger = {
 		tag = RWA
 		government = democracy
-
-OR = { year = 1996 AND = { has_recently_lost_war = yes badboy = 0.1 } }
+		ruling_party_ideology = socialist
+		year = 1996 
+		badboy = 1
+		has_global_flag = congo_war_flag
+		#AND = { has_recently_lost_war = yes badboy = 0.1 }
 
 	}
 	
@@ -63,14 +109,11 @@ OR = { year = 1996 AND = { has_recently_lost_war = yes badboy = 0.1 } }
 	}
 	
 	option = {
-		name = "EVT_1029501_A" # riece of tutsi nationalism
-		government = nationalist_dictatorship country_event = 800050
-		ruling_party_ideology = socialist
-		primary_culture = tutsi
+		name = "EVT_1029501_A"
 		UGA = { country_event = 1029502 } # offer alliance
 		CNG = { country_event = 1003301 } # support rebellion
 		small_arms = 200
-		treasury = 10000		
+		treasury = 10000
 		ai_chance = { factor = 0.9 }
 	}
 	
@@ -80,6 +123,45 @@ OR = { year = 1996 AND = { has_recently_lost_war = yes badboy = 0.1 } }
 	}
 	
 }
+
+#July 1966 Burundian coup d'état
+country_event = {
+	id = 1512145
+	title = "$YEAR$ Burundian coup d'état"
+	desc = EVTDESC1512145
+	picture = "brun_coup_1966"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = BRN
+		is_vassal = no
+		war = no
+		year = 1966
+		NOT = { year = 1990 }
+		OR = { government = hms_government government = hms_government1 }
+	}
+
+	mean_time_to_happen = { 
+		months = 11
+	}
+
+	option = {
+		name = "Expel the King!"
+		government = nationalist_dictatorship
+		country_event = 800050
+		#remove_accepted_culture = hutu
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Remain a monarchy"
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
 country_event = {
 	id = 1029502
 	title = "EVT_1029502_NAME" # Alliance with Uganda
@@ -101,6 +183,8 @@ country_event = {
 		ai_chance = { factor = 0 }
 	}
 }
+
+#Hutu Power Movement
 country_event = {
 	id = 1029503
 	title = "EVT_1029503_NAME"
@@ -112,7 +196,12 @@ country_event = {
 	trigger = { 
 		tag = RWA
 		exists = yes
-		year = 1996
+		year = 1973
+		OR = {
+			primary_culture = tutsi
+			government = nationalist_dictatorship
+		}
+		NOT = { year = 1990 }
 		NOT = { government = populist_dictatorship }
 	}
 	
@@ -123,34 +212,160 @@ country_event = {
 	option = {
 		name = "EVT_1029503_A"
 		government = populist_dictatorship country_event = 800050
+		add_country_modifier = { name = nationalist_agitation duration = 7300 }
 		primary_culture = hutu
 		ai_chance = { factor = 1 }
 	}
 	
 	option = {
 		name = "EVT_1029503_B" # never mind
+		add_country_modifier = { name = nationalist_agitation duration = 7300 }
 		ai_chance = { factor = 0 }
 	}
 	
 }
-country_event = { 
-id = 1029504 
-title = "Rwanda Genocide" 
-desc = "EVT_1029504_DESC" 
-picture = "rwanda_genocide" 
-fire_only_once = yes 
-trigger = { tag = RWA year = 1992 NOT = { year = 1996 } government = populist_dictatorship } mean_time_to_happen = { months = 1 }
-option = { name = "End of Habyarimana Regime" government = nationalist_dictatorship country_event = 800050 primary_culture = tutsi any_pop = { limit = { culture = tutsi } reduce_pop = 0.9 } any_pop = { limit = { culture = hutu } reduce_pop = 0.99 } ai_chance = { factor = 1 } } 
-option = { name = "Not so hastily!" ai_chance = { factor = 0 } } } 
-country_event = { 
-id = 1029505 
-title = "Rwanda Referendum" 
-desc = "EVT_1029505_DESC" 
-picture = "election_crowd" 
-fire_only_once = yes 
-trigger = { tag = RWA year = 2003 government = nationalist_dictatorship NOT = { government = democracy } } mean_time_to_happen = { months = 1 } 
-option = { name = "Embrace Democracy" government = democracy country_event = 800054 add_accepted_culture = hutu ai_chance = { factor = 1 } } 
-option = { name = "Preserve the dictatorship" 
-any_pop = { militancy = 4 consciousness = 2 } badboy = 3 ai_chance = { factor = 0 } } } 
 
+#Rwandan Genocide
+country_event = { 
+	id = 1029504 
+	title = "Fate of the Tutsi?" 
+	desc = "EVT_1029504_DESC" 
+	picture = "rwanda_genocide" 
+	fire_only_once = yes 
+	
+	major = yes
+	
+	trigger = {
+		tag = RWA
+		year = 1992
+		NOT = { year = 1996 }
+		government = populist_dictatorship
+	}
+	
+	mean_time_to_happen = { months = 12 }
+	
+	option = {
+		name = "Kill the Tutsi!"
+		government = nationalist_dictatorship
+		country_event = 800050
+		ruling_party_ideology = nationalist
+		prestige_factor = -0.05
+		badboy = 5
+		set_country_flag = ethnic_cleansed
+		set_country_flag = genocide_101
+		add_country_modifier = { name = ethnic_cleansing duration = -1 }
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
+		set_country_flag = discovered_genocide
+		random_owned = { limit = { owner = { has_country_flag = discovered_genocide NOT = { has_country_flag = discovered_genocide1 } } } owner = { set_country_flag = discovered_genocide1 country_event = 1410080 } }
+		any_pop = {
+			limit = { culture = tutsi }
+			reduce_pop = 0.9
+		}
+		any_pop = {
+			limit = { culture = hutu }
+			reduce_pop = 0.99
+		}
+		any_pop = { militancy = 8 consciousness = 4 }
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Leave them alone for now"
+		any_pop = { militancy = 8 consciousness = 4 }
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0 }
+	}
+} 
 
+country_event = { 
+	id = 1029505 
+	title = "Future of Rwanda" 
+	desc = "EVT_1029505_DESC" 
+	picture = "congo_war" 
+	
+	fire_only_once = yes 
+	
+	trigger = {
+		tag = RWA
+		year = 1994
+		OR = {
+			average_militancy = 7
+			has_country_modifier = ethnic_cleansing
+		}
+		OR = {
+			government = populist_dictatorship
+			government = nationalist_dictatorship
+		}
+	}
+	
+	mean_time_to_happen = { months = 1 } 
+	
+	option = {
+		name = "End the genocide"
+		government = democracy
+		country_event = 800054
+		ruling_party_ideology = socialist
+		
+		#End the genocide
+		set_global_flag = congo_war_flag
+		political_reform = minorities_affirmative_action
+		clr_country_flag = ethnic_cleansed
+		clr_country_flag = genocide_101
+		remove_country_modifier = ethnic_cleansing
+		clr_country_flag = discovered_genocide 
+		clr_country_flag = discovered_genocide1
+		
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Punish the Hutus!" 
+		government = presidential_dictatorship
+		country_event = 800050
+		ruling_party_ideology = socialist
+		#primary_culture = tutsi
+		any_pop = { militancy = 4 consciousness = 2 }
+		
+		#End the genocide
+		set_global_flag = congo_war_flag
+		clr_country_flag = ethnic_cleansed
+		clr_country_flag = genocide_101
+		remove_country_modifier = ethnic_cleansing
+		clr_country_flag = discovered_genocide 
+		clr_country_flag = discovered_genocide1
+		
+		ai_chance = { factor = 0 }
+	}
+}
+
+country_event = { 
+	id = 1029506 
+	title = "$YEAR$ Rwandan Constitutional Referendum" 
+	desc = "EVT_1029506_DESC" 
+	picture = "election_crowd" 
+	
+	fire_only_once = yes 
+	
+	trigger = {
+		tag = RWA
+		year = 2003
+		ruling_party_ideology = socialist
+		government = presidential_dictatorship
+	}
+	
+	mean_time_to_happen = { months = 1 } 
+	
+	option = {
+		name = "Embrace Democracy"
+		government = democracy
+		country_event = 800054
+		ai_chance = { factor = 0.5 }
+	}
+	
+	option = {
+		name = "Preserve the dictatorship" 
+		any_pop = { militancy = 4 consciousness = 2 }
+		badboy = 3
+		ai_chance = { factor = 0.5 }
+	}
+}
