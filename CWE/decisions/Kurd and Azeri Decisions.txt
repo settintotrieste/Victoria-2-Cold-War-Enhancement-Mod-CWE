@@ -1,14 +1,17 @@
 political_decisions = {
 
-#Become Kurdistan
+	#Become Kurdistan
 	become_kurdistan = {
 
 		potential = {
 			primary_culture = kurdish
 			OR = { tag = ROJ tag = KRQ tag = KRI }
+			
 			NOT = { exists = KUR }
-			is_vassal = no
+			
 			owns = 893
+			
+			is_vassal = no
 		}
 
 		allow = {
@@ -17,91 +20,155 @@ political_decisions = {
 		}
 
 		effect = {
+		
+			prestige = 100
+			
+			#Add KUR cores
 			all_core = { add_core = KUR }
+			
+			#Invite all split Kurdistans that are puppet of THIS to join the union
+			random_country = {
+				limit = {
+					tag = ROJ
+					vassal_of = THIS
+				}
+				country_event = 11101
+				all_core = { remove_core = ROJ add_core = KUR }
+			}
+			random_country = {
+				limit = {
+					tag = KRQ
+					vassal_of = THIS
+				}
+				country_event = 11101
+				all_core = { remove_core = KRQ add_core = KUR }
+			}
+			random_country = {
+				limit = {
+					tag = KRI
+					vassal_of = THIS
+				}
+				country_event = 11101
+				all_core = { remove_core = KRI add_core = KUR }
+			}
+			
+			#THIS becomes KUR
 			change_tag = KUR
+			
 			capital = 893
 		}
 
 		ai_will_do = {
 			factor = 1
 		}
-	}	
+		
+	}
 
-
-#Unite with Kurdistan if common government and main Kurdistan exists
+	#Unite with Kurdistan if common government and main Kurdistan exists
 	unite_with_kurdistan = {
 
 		potential = {
 			primary_culture = kurdish
 			OR = { tag = ROJ tag = KRQ tag = KRI }
+			
 			exists = KUR
+			
 			is_vassal = no
+			
+			#THIS shares a common gov with KUR
 			OR = { 
+				#Socialist group
 				AND = { 
-					THIS = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } }
+					OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
 					KUR = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } } 
 				}
+				
+				#Democracy group
 				AND = { 
-					THIS = { OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 } }
+					OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
 					KUR = { OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 } } 
 				}
+				
+				#Monarchy group
+				AND = { 
+					government = absolute_monarchy
+					KUR = { government = absolute_monarchy } 
+				}
+				
+				#Theocracy group
+				AND = { 
+					government = theocracy
+					KUR = { government = theocracy } 
+				}
 			}
+			
 		}
 
 		allow = {
 			war = no
 			is_vassal = no
+			
+			#THIS is either not in a SOI or is in SOI of KUR
 			OR = {
 				part_of_sphere = no
-				sphere_owner = { is_sphere_leader_of = KUR }
+				in_sphere = KUR
 			}
+			
+			#KUR must be independent
 			KUR = {
 				war = no
-				#is_vassal = no
+				is_vassal = no
 			}
 		}
 
 		effect = {
-			all_core = { add_core = KUR }
+		
+			all_core = { add_core = KUR remove_core = THIS }
+			
 			random_country = {
 				limit = {
 					tag = KUR
-					ai = yes
 					THIS = { ai = yes }
 				}
+				KUR = { prestige = 50 }
 				inherit = THIS
 			}
+			
 			random_country = {
 				limit = {
 					tag = KUR
-					ai = yes
 					THIS = { ai = no }
 				}
-				any_owned = { secede_province = THIS }
+				THIS = { inherit = KUR }
 				THIS = {
+					prestige = 50
 					random_owned = {
 						limit = { province_id = 893 }
 						owner = { capital = 893 }
 					}
 					change_tag = KUR
-				}	
+				}
 			}
+			
 		}
 
 		ai_will_do = {
 			factor = 1
 		}
-	}	
+		
+	}
 
-
-#Become Azerbaijan
+	#Become Azerbaijan
 	become_azerbaijan = {
 
 		potential = {
 			primary_culture = azerbaijani
 			tag = SZB
+			
 			NOT = { exists = AZB }
+			
 			is_vassal = no
+			
 			owns = 1102
 		}
 
@@ -111,74 +178,115 @@ political_decisions = {
 		}
 
 		effect = {
-			all_core = { add_core = AZB }
+			prestige = 50
+			all_core = { add_core = AZB remove_core = THIS }
+			
+			#Invite all split AZB that are puppet of THIS to join the union
+			any_country = {
+				limit = {
+					primary_culture = azerbaijani
+					vassal_of = THIS
+				}
+				all_core = { add_core = AZB }
+				country_event = 11101
+			}
+			
 			change_tag = AZB
 		}
 
 		ai_will_do = {
 			factor = 1
 		}
+		
 	}	
 
-
-#Unite with Azerbaijan
+	#Unite with Azerbaijan
 	unite_with_azerbaijan = {
 
 		potential = {
 			primary_culture = azerbaijani
 			tag = SZB
+			
 			exists = AZB
+			
 			is_vassal = no
+			
+			
+			#THIS shares a common gov with AZB
 			OR = { 
+				#Socialist group
 				AND = { 
-					SZB = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } }
+					OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
 					AZB = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } } 
 				}
+				
+				#Democracy group
 				AND = { 
-					SZB = { OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 } }
+					OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
 					AZB = { OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 } } 
 				}
+				
+				#Monarchy group
+				AND = { 
+					government = absolute_monarchy
+					AZB = { government = absolute_monarchy } 
+				}
+				
+				#Theocracy group
+				AND = { 
+					government = theocracy
+					AZB = { government = theocracy } 
+				}
 			}
+			
 		}
 
 		allow = {
 			war = no
 			is_vassal = no
+			
 			OR = {
 				part_of_sphere = no
-				sphere_owner = { is_sphere_leader_of = AZB }
+				in_sphere = AZB
 			}
 			AZB = {
 				war = no
-				#is_vassal = no
+				is_vassal = no
 			}
 		}
 
 		effect = {
 			all_core = { add_core = AZB }
+			
 			random_country = {
 				limit = {
 					tag = AZB
-					ai = yes
 					THIS = { ai = yes }
 				}
+				AZB = { prestige = 50 }
 				inherit = THIS
 			}
+			
 			random_country = {
 				limit = {
 					tag = AZB
-					ai = yes
 					THIS = { ai = no }
 				}
-				any_owned = { secede_province = THIS }
+				THIS = { 
+					prestige = 50
+					inherit = AZB 
+				}
 				THIS = {
 					change_tag = AZB
-				}	
+				}
 			}
+			
 		}
 
 		ai_will_do = {
 			factor = 1
 		}
-	}	
+		
+	}
+	
 }
