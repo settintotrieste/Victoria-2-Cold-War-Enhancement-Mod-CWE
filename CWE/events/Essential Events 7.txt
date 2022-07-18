@@ -4062,61 +4062,91 @@ ai_chance = { factor = 0.1 }
 #Question of the Dutch East Indies
 country_event = {
 	id = 1412247
-title = "Question of the Dutch East Indies"
+	title = "Question of the Dutch East Indies"
 	desc = EVTDESC1412247
 	picture = "dutcheast_indies"
 
-fire_only_once = yes
+	fire_only_once = yes
 
-trigger = {
-tag = NET
-war = no
-is_vassal = no
-any_owned_province = { is_core = IDO }
-OR = { is_our_vassal = IDO IDO = { exists = no } }
-NOT = { year = 1990 }
-}
+	trigger = {
+		tag = NET
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		
+		#NET owns IDO
+		OR = { is_our_vassal = IDO is_possible_vassal = IDO }
+	}
 
-option = {
-name = "Reform the Dutch East Indies"
-prestige = 10
-any_owned = { limit = { is_core = IDO NOT = { is_core = WPA } } secede_province = IDO }
-create_vassal = IDO
-IDO = { ruling_party_ideology = conservative government = colonial_government event = 800054 }
-
-diplomatic_influence = { who = IDO value = 200 }
-
-ai_chance = { factor = 0.7 }
+	option = {
+		name = "Reform the Dutch East Indies"
+		prestige = 10
+		
+		#Clear up IDO tag, if it exists
+		inherit = IDO
+		
+		#Release IDO tag
+		release_vassal = IDO
+		IDO = { 
+			government = colonial_government 
+			event = 800054 
+			ruling_party_ideology = conservative 
+			
+			#IDO returns any WPA cores to NET
+			any_owned = { limit = { is_core = WPA } secede_province = NET }
 		}
+		
+		diplomatic_influence = { who = IDO value = 200 }
+		
+		ai_chance = { factor = 0.8 }
+	}
 
-option = {
-name = "Turn into the United States of Indonesia"
-
-any_owned = { limit = { is_core = IDO NOT = { is_core = WPA } } secede_province = IDO }
-
-create_vassal = IDO
-
-IDO = { ruling_party_ideology = conservative government = democracy1 country_event = 800054 }
-
-IDO = { release_vassal = EID }
-IDO = { release_vassal = DYA }
-
-EID = { ruling_party_ideology = traditionalist }
-DYA = { ruling_party_ideology = traditionalist }
-
-NET = { diplomatic_influence = { who = IDO value = 200 } }
-NET = { diplomatic_influence = { who = EID value = 200 } }
-NET = { diplomatic_influence = { who = DYA value = 200 } }
-
-ai_chance = { factor = 0.2 }
+	option = {
+		name = "Reorganize into the United States of Indonesia"
+		
+		#Clear up IDO tag, if it exists
+		inherit = IDO
+		
+		#Release IDO tag
+		release_vassal = IDO
+		IDO = { 
+			government = democracy1 
+			country_event = 800054 
+			ruling_party_ideology = conservative
+			
+			#IDO returns any WPA cores to NET
+			any_owned = { limit = { is_core = WPA } secede_province = NET }
+			
+			release_vassal = EID
+			release_vassal = DYA
 		}
+		
+		EID = { government = democracy1 country_event = 800054 ruling_party_ideology = conservative }
+		DYA = { government = democracy1 country_event = 800054 ruling_party_ideology = conservative }
+		
+		diplomatic_influence = { who = IDO value = 200 }
+		diplomatic_influence = { who = EID value = 200 }
+		diplomatic_influence = { who = DYA value = 200 }
+		
+		ai_chance = { factor = 0.1 }
+	}
 
-option = {
-name = "Maintain direct rule"
-any_owned = { limit = { is_core = IDO } 
-remove_province_modifier = occupied_province add_province_modifier = { name = nationalist_agitation duration = 3650 } }
-ai_chance = { factor = 0.1 }
+	option = {
+		name = "Maintain direct rule"
+		badboy = 10
+		
+		#Clear up IDO tag, if it exists
+		inherit = IDO
+		
+		any_owned = { 
+			limit = { is_core = IDO } 
+			remove_province_modifier = occupied_province 
+			add_province_modifier = { name = nationalist_agitation duration = 3650 } 
 		}
+		
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
