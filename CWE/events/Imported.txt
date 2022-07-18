@@ -13,25 +13,24 @@ country_event = {
 
 	option = {
 		name = "We are now subjects of a different empire"
-			random_owned = {
-				limit = { owner = { is_vassal = no } }
-				owner = {
-					clr_country_flag = transfer_to_new_overlord
-					any_country = {
-						limit = {
-							exists = yes
-							has_country_flag = new_overlord
-							truce_with = THIS
-							OR = {
-								is_sphere_leader_of = THIS
-								THIS = { part_of_sphere = no }
-							}
+		random_owned = {
+			limit = { owner = { is_vassal = no } }
+			owner = {
+				clr_country_flag = transfer_to_new_overlord
+				any_country = {
+					limit = {
+						exists = yes
+						has_country_flag = new_overlord
+						truce_with = THIS
+						OR = {
+							is_sphere_leader_of = THIS
+							THIS = { part_of_sphere = no }
 						}
-						clr_country_flag = new_overlord
-						country_event = 6016824
 					}
+					country_event = 6016824
 				}
 			}
+		}
 	}
 
 }
@@ -54,7 +53,7 @@ country_event = {
 		random_owned = {
 			limit = { owner = { is_vassal = yes } }
 			owner = { clr_country_flag = transfer_to_new_overlord }
-			}
+		}
 	}
 }
 
@@ -64,11 +63,17 @@ country_event = {
 	title = "EVTNAME6016824"
 	desc = "EVTDESC6016824"
 	picture = "transfer_vassalage"
+	
+	allow_multiple_instances = yes
 
 	is_triggered_only = yes
 
 	option = {
 		name = "EVT6016824OPTA"
+		
+		#Event 6016822 fires immediately on day 1 while this event fires only on day 2 so there should be no issue with this flag being cleared before all potential vassals can be transferred.
+		clr_country_flag = new_overlord
+		
 		create_vassal = FROM
 		FROM = {
 			any_pop = {
@@ -82,46 +87,101 @@ country_event = {
 				militancy = 1
 				consciousness = 3
 			}
-any_owned = { limit = { is_core = FROM NOT = { is_core = THIS } } secede_province = FROM }
+			
+			#FROM returns any core that belongs to THIS to THIS
+			any_owned = { limit = { is_core = THIS NOT = { is_core = FROM } } secede_province = THIS }
+		}
+		
+		#THIS returns any core that does not belong to THIS to FROM
+		any_owned = { limit = { is_core = FROM NOT = { is_core = THIS } } secede_province = FROM }
+
+		#Match Government
+
+		#Communist Dictatorship
+		random_owned = { 
+			limit = { owner = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } } 
+			owner = { FROM = { government = proletarian_dictatorship country_event = 800052 } }
 		}
 
-#Match Government
+		#Socialist Democracy
+		random_owned = { 
+			limit = { owner = { government = socialist_democracy } } 
+			owner = { FROM = { government = socialist_democracy country_event = 800054 } }
+		}
 
-#Communist Dictatorship
-random_owned = { 
-limit = { owner = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } } 
-owner = { FROM = { government = proletarian_dictatorship country_event = 800052 } }
-}
+		#Authoritarian Dictatorships
+		random_owned = {
+			limit = { owner = { government = presidential_dictatorship } }
+			owner = { FROM = { government = presidential_dictatorship country_event = 800050 } }
+		}
+		random_owned = { 
+			limit = { owner = { government = government = populist_dictatorship } }
+			owner = { FROM = { government = populist_dictatorship country_event = 800050 } }
+		}
+		random_owned = { 
+			limit = { owner = { government = nationalist_dictatorship } }
+			owner = { FROM = { government = nationalist_dictatorship country_event = 800050 } }
+		}
 
-#Socialist Democracy
-random_owned = { 
-limit = { owner = { government = socialist_democracy } } 
-owner = { FROM = { government = socialist_democracy country_event = 800054 } }
-}
+		#Republic
+		random_owned = { 
+			limit = { owner = { OR = { government = democracy government = democracy1 } } } 
+			owner = { FROM = { government = democracy country_event = 800054 } }
+		}
 
-#Authoritarian Dictatorship
-random_owned = { 
-limit = { owner = { OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship } } } 
-owner = { FROM = { government = presidential_dictatorship country_event = 800050 } }
-}
+		#HM's Government
+		random_owned = { 
+			limit = { owner = { OR = { government = hms_government government = hms_government1 } } } 
+			owner = { FROM = { government = hms_government1 country_event = 800054 } }
+		}
 
-#Republic
-random_owned = { 
-limit = { owner = { OR = { government = democracy government = democracy1 } } } 
-owner = { FROM = { government = democracy country_event = 800054 } }
-}
-
-#HM's Government
-random_owned = { 
-limit = { owner = { OR = { government = hms_government government = hms_government1 } } } 
-owner = { FROM = { government = hms_government1 country_event = 800054 } }
-}
-
-#Absolute Monarchy
-random_owned = { 
-limit = { owner = { government = absolute_monarchy } } 
-owner = { FROM = { government = absolute_monarchy country_event = 800050 } }
-}
+		#Absolute Monarchy
+		random_owned = { 
+			limit = { owner = { government = absolute_monarchy } } 
+			owner = { FROM = { government = absolute_monarchy country_event = 800050 } }
+		}
+		
+		#Match ruling party
+		random_owned = {
+			limit = { owner = { ruling_party_ideology = traditionalist } }
+			owner = { FROM = { ruling_party_ideology = traditionalist } }
+		}
+		random_owned = {
+			limit = { owner = { ruling_party_ideology = conservative } }
+			owner = { FROM = { ruling_party_ideology = conservative } }
+		}
+		random_owned = {
+			limit = { owner = { ruling_party_ideology = liberal } }
+			owner = { FROM = { ruling_party_ideology = liberal } }
+		}
+		random_owned = {
+			limit = { owner = { ruling_party_ideology = big_tent } }
+			owner = { FROM = { ruling_party_ideology = big_tent } }
+		}
+		random_owned = {
+			limit = { owner = { ruling_party_ideology = progressive } }
+			owner = { FROM = { ruling_party_ideology = progressive } }
+		}
+		random_owned = {
+			limit = { owner = { ruling_party_ideology = socialist } }
+			owner = { FROM = { ruling_party_ideology = socialist } }
+		}
+		random_owned = {
+			limit = { owner = { ruling_party_ideology = communist } }
+			owner = { FROM = { ruling_party_ideology = communist } }
+		}
+		random_owned = {
+			limit = { owner = { ruling_party_ideology = communist_social } }
+			owner = { FROM = { ruling_party_ideology = communist_social } }
+		}
+		random_owned = {
+			limit = { owner = { ruling_party_ideology = populist } }
+			owner = { FROM = { ruling_party_ideology = populist } }
+		}
+		random_owned = {
+			limit = { owner = { ruling_party_ideology = nationalist } }
+			owner = { FROM = { ruling_party_ideology = nationalist } }
+		}
 
 	}
 
@@ -245,7 +305,7 @@ country_event = {
     trigger = {
 	
 		#Modern technology blocks such problems
-		NOT = { genetically_modified_organism = 1 }
+		NOT = { new_green_revolution = 1 }
 	
         any_owned_province = {
 			has_pop_type = farmers
@@ -838,7 +898,7 @@ country_event = {
     trigger = {
 	
 		#Modern technology blocks such problems
-		NOT = { genetically_modified_organism = 1 }
+		NOT = { new_green_revolution = 1 }
 	
         any_owned_province = {
 			has_pop_type = farmers

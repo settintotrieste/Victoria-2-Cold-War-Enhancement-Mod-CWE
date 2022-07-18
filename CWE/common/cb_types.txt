@@ -489,7 +489,7 @@ conquest = {
 					has_country_modifier = un_king1
 					has_country_modifier = un_king2
 					
-					AND = { government = nationalist_dictatorship ruling_party_ideology = nationalist }
+					AND = { government = populist_dictatorship ruling_party_ideology = nationalist }
 				} 
 			}
 			AND = {
@@ -2667,9 +2667,24 @@ make_puppet = {
 		THIS = { NOT = { has_country_flag = renounced_war_rights } }
 		NOT = { is_our_vassal = THIS }
 		NOT = { AND = { has_country_flag = un_armistice THIS = { has_country_flag = un_armistice } } }
-		NOT = { number_of_states = 9 }
-
-
+		
+		OR = {
+			#Target has less than 9 states
+			NOT = { number_of_states = 9 }
+			
+			# Only superpowers or nationalist dictatorships with nationalist ruling parties can puppet nations with more than 8 states
+			THIS = {
+				OR = {
+					has_country_modifier = un_king1
+					has_country_modifier = un_king2
+					
+					# Tiny countries cannot puppet large countries
+					AND = { government = populist_dictatorship ruling_party_ideology = nationalist OR = { is_greater_power = yes is_secondary_power = yes number_of_states = 9 } }
+				}
+			}
+			
+		}
+		
 		THIS = { 
 			OR = { 
 				government = theocracy
