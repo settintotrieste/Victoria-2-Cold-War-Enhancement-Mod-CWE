@@ -814,8 +814,7 @@ country_event = {
 			NOT = { any_owned_province = { trade_goods = petroleum } } 
 			is_vassal = yes 
 			government = proletarian_dictatorship 
-			government = proletarian_dictatorship1 
-			government = theocracy
+			government = proletarian_dictatorship1
 		}
 	}
 	
@@ -1168,6 +1167,7 @@ country_event = {
 		tag = CAR
 		year = 1966
 		NOT = { year = 1990 }
+		
 		government = democracy
 		is_vassal = no
 		war = no
@@ -1177,7 +1177,7 @@ country_event = {
 		name = "Launch the coup!"
 		government = presidential_dictatorship
 		country_event = 800050
-		ruling_party_ideology = conservative
+		ruling_party_ideology = nationalist
 		ai_chance = { factor = 0.9 }
 	}
 	option = {
@@ -1201,9 +1201,12 @@ country_event = {
 		tag = CAR
 		year = 1976
 		NOT = { year = 1990 }
+		
 		government = presidential_dictatorship
 		war = no
 		is_vassal = no
+		
+		OR = { ruling_party_ideology = traditionalist ruling_party_ideology = nationalist }
 	}
 	
 	option = {
@@ -3209,6 +3212,7 @@ country_event = {
 	
 	trigger = {
 		tag = FRA
+		ruling_party_ideology = socialist # SFIO must be in power
 		ai = yes
 		exists = ENG
 		ENG = { government = hms_government }
@@ -3251,7 +3255,7 @@ is_triggered_only = yes
 
 option = {
 	name = "Accept the Union!"
-ai_chance = { factor = 0.20 }
+ai_chance = { factor = 0.05 }
 
 add_accepted_culture = french
 
@@ -3271,7 +3275,7 @@ prestige = 50
 
 option = {
 	name = "Keep our independence!"
-ai_chance = { factor = 0.80 }
+ai_chance = { factor = 0.95 }
 prestige = 100
 			}
 
@@ -3682,123 +3686,135 @@ country_event = 1410143
 #Nuclear Blackmarket Acquisition successful
 country_event = {
 	id = 1410137
-title = "$COUNTRY$ has bought Nuclear Warheads"
+	title = "$COUNTRY$ bought Nuclear Warheads"
 	desc = "We have successfully obtained nuclear warheads from shadowy Arms Dealers."
-	picture = "generic_super_jet"
-major = yes	
-trigger = {
-NOT = { has_country_modifier = acquiring_bomb }
-has_country_flag = acquiring_bomb
-}	
+	picture = "nuclear_blackmarket"
+	
+	major = yes
+	
+	trigger = {
+		NOT = { has_country_modifier = acquiring_bomb }
+		has_country_flag = acquiring_bomb
+	}	
 
-option = {
-	name = "Success"
-prestige = 50
-clr_country_flag = acquiring_bomb
-add_country_modifier = { name = acquired_bomb duration = -1 }
-			}
+	option = {
+		name = "Success"
+		prestige = 50
+		clr_country_flag = acquiring_bomb
+		add_country_modifier = { name = acquired_bomb duration = -1 }
+	}
 
 }
 
 #UN Sanctions on Nuclear Blackmarket Nation
 country_event = {
 	id = 1410138
-title = "UN Sanctions on $COUNTRY$"
-	desc = "The United Nations has discovered our illegal Nuclear bomb acqusition and has condemned us and imposed punitative sanctions."
+	title = "$COUNTRY_ADJ$ Nuclear Bombs Condemned by UN"
+	desc = "The United Nations has condemned our illegal Nuclear bomb acqusition and has imposed punitative sanctions on us."
 	picture = "united_nations_sanctions"
 	
-trigger = {
-has_country_modifier = acquired_bomb
-NOT = { has_country_modifier = acquired_bomb_sanctions }
-}	
+	trigger = {
+		has_country_modifier = acquired_bomb
+		NOT = { has_country_modifier = acquired_bomb_sanctions }
+	}
+	
+	mean_time_to_happen = { 
+		months = 6
+		modifier = { factor = 0.5 has_global_flag = UNSG_aggressive }
+		modifier = { factor = 2 has_global_flag = UNSG_passive }
+	}
 
-option = {
-	name = "We will have to resist them!"
-prestige = -10
-add_country_modifier = { name = acquired_bomb_sanctions duration = -1 }
-			}
+	option = {
+		name = "We will have to resist them!"
+		prestige_factor = -0.05
+		add_country_modifier = { name = acquired_bomb_sanctions duration = -1 }
+	}
 
 }
 
 #Nuclear Threat
 country_event = {
 	id = 1410139
-title = "$FROMCOUNTRY$ Threatens peace or face Nuclear Attack"
-	desc = "$FROMCOUNTRY$ has delievered an ultimatum to say that if we do not seek peace with them, they will unleash their limited nuclear arsenal on us."
+	title = "$FROMCOUNTRY$ Threatens a Nuclear Attack!"
+	desc = "$FROMCOUNTRY$ has delivered an ultimatum to $CAPITAL$: if we do not cease hostilities, they will unleash their limited nuclear arsenal on us."
 	picture = "nuke_threat"
 	
-is_triggered_only = yes
+	allow_multiple_instances = yes  
+	
+	is_triggered_only = yes
 
-option = {
-	name = "Accept!"
-prestige = -50
-end_war = FROM
-ai_chance = { factor = 1 modifier = { factor = 0 NOT = { OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation } } } }
+	option = {
+		name = "Accept!"
+		prestige = -50
+		
+		end_war = FROM
+		
+		ai_chance = { factor = 1 modifier = { factor = 0 NOT = { OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation } } } }
+	}
+	
+	option = {
+		name = "Reject!"
 
-			}
-option = {
-	name = "Reject!"
+		add_country_modifier = { name = recently_attacked_nuke duration = 31 }
 
-ai_chance = { factor = 1 modifier = { factor = 0 OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation } } }
+		FROM = { remove_country_modifier = acquired_bomb }
 
-add_country_modifier = { name = recently_attacked_nuke duration = 31 }
+		random_owned = { 
+			set_province_flag = disease
+			set_province_flag = nuked_before
+			infrastructure = -2
+			add_province_modifier = { name = nuke_low duration = 18250 } 
+		}
 
-FROM = { remove_country_modifier = acquired_bomb }
+		random_owned = { 
+			set_province_flag = disease
+			set_province_flag = nuked_before
+			infrastructure = -2
+			add_province_modifier = { name = nuke_low duration = 18250 } 
+		}
+		
+		random_owned = {
+			set_province_flag = disease
+			set_province_flag = nuked_before
+			infrastructure = -2
+			add_province_modifier = { name = nuke_low duration = 18250 } 
+		}
+		
+		random_owned = {
+			set_province_flag = disease
+			set_province_flag = nuked_before
+			infrastructure = -2
+			add_province_modifier = { name = nuke_low duration = 18250 } 
+		}
+		
+		random_owned = { 
+			set_province_flag = disease
+			set_province_flag = nuked_before
+			infrastructure = -2
+			add_province_modifier = { name = nuke_low duration = 18250 } 
+		}
 
-random_owned = { 
-set_province_flag = disease
-set_province_flag = nuked_before
-infrastructure  = -2
-
-add_province_modifier = { name = nuke_low duration = 18250 } }
-
-random_owned = { 
-set_province_flag = disease
-set_province_flag = nuked_before
-infrastructure  = -2
-
-add_province_modifier = { name = nuke_low duration = 18250 } }
-
-random_owned = {
-set_province_flag = disease
-set_province_flag = nuked_before
-infrastructure  = -2
- 
-add_province_modifier = { name = nuke_low duration = 18250 } }
-
-random_owned = {
-set_province_flag = disease
-set_province_flag = nuked_before
-infrastructure  = -2
- 
-add_province_modifier = { name = nuke_low duration = 18250 } }
-
-random_owned = { 
-set_province_flag = disease
-set_province_flag = nuked_before
-infrastructure  = -2
-
-add_province_modifier = { name = nuke_low duration = 18250 } }
-			}
+		ai_chance = { factor = 1 modifier = { factor = 0 OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation } } }
+	}
 
 }
 
 #UN Sanctions on Nuclear Blackmarket Nation
 country_event = {
 	id = 1410140
-title = "UN Sanctions on $COUNTRY$ lifted"
+	title = "UN Sanctions on $COUNTRY$ lifted"
 	desc = "As we no longer possess illegal nuclear weapons, the United Nations Sanctions on us have been lifted."
 	picture = "united_nations_sanctions"
 	
-trigger = {
-NOT = { has_country_modifier = acquired_bomb }
-has_country_modifier = acquired_bomb_sanctions
-}	
+	trigger = {
+		NOT = { has_country_modifier = acquired_bomb }
+		has_country_modifier = acquired_bomb_sanctions
+	}	
 
-option = {
-	name = "That's good"
-remove_country_modifier = acquired_bomb_sanctions
-			}
+	option = {
+		name = "That's good"
+		remove_country_modifier = acquired_bomb_sanctions
+	}
 
 }
 
@@ -4881,6 +4897,13 @@ country_event = {
 		NEP = { money = 100000 }
 		set_country_flag = tripartite_agreement
 		set_country_flag = has_mercenary_training
+		
+		#India accepts nepali
+		random_owned = {
+			limit = { owner = { tag = HND } }
+			owner = { add_accepted_culture = nepali }
+		}
+		
 		ai_chance = { factor = 1 }
 	}
 	
