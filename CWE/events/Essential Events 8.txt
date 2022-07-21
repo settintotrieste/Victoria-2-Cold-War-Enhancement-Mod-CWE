@@ -5664,54 +5664,123 @@ country_event = {
 #End of the Warsaw Pact
 country_event = {
 	id = 1512136
-title = "Dissolution of the USSR"
+	title = "Dissolution of the USSR"
 	desc = EVT_8014249_DESC
 	picture = "rus_form_pic"
 
-is_triggered_only = yes
+	is_triggered_only = yes
 
-option = {
-name = "Declare $COUNTRY_ADJ$ sovereignty!"
-prestige = 50
-overlord = { release_vassal = THIS }
-RUS = { diplomatic_influence = { who = THIS value = -100 } }
-relation = { who = RUS value = -200 }
-country_event = { id = 1512137 days = 2 }
-ai_chance = { factor = 1 }
+	option = {
+		name = "Declare $COUNTRY_ADJ$ sovereignty!"
+		prestige = 100
+		
+		#FROM releases THIS
+		overlord = { release_vassal = THIS }
+		FROM = { diplomatic_influence = { who = THIS value = -200 } }
+		relation = { who = FROM value = -200 }
+		
+		#Choice to choose gov type if USSR collapsed messily, otherwise this remains as communist
+		random_owned = {
+			limit = { owner = { RUS = { has_country_flag = eussr } } }
+			owner = { country_event = { id = 1512137 days = 2 } }
 		}
+		
+		ai_chance = { factor = 1 }
+	}
 
-option = {
-name = "Remain in the Russian sphere"
-prestige = -50
-ai_chance = { factor = 0 }
+	option = {
+		name = "Remain in the $FROMCOUNTRY_ADJ$ sphere"
+		prestige = -50
+		
+		#Nationalist movements begin
+		any_pop = {
+			limit = { is_culture_group = THIS }
+			militancy = 10 
+			consciousness = 10 
+			ideology = { factor = 0.25 value = nationalist }
 		}
+		
+		ai_chance = { factor = 0 }
+	}
 
 }
 
 #End of the Warsaw Pact - choose Gov type
 country_event = {
 	id = 1512137
-title = "Constitutional Conference of $YEAR$"
+	title = "The Future of $COUNTRY$"
 	desc = EVTDESC1512137
 	picture = "warsaw_pact_end_gov"
 
-is_triggered_only = yes
+	is_triggered_only = yes
 
-option = {
-name = "Embrace democracy!"
-government = democracy
-country_event = 800054
-ruling_party_ideology = liberal
-any_pop = { ideology = { factor = 0.25 value = liberal } }
-ai_chance = { factor = 0.9 }
+	option = {
+		name = "Embrace democracy!"
+		
+		government = democracy
+		country_event = 800054
+		election = yes
+		
+		#Fragmentation of domestic politics
+		any_pop = {
+			limit = { strata = rich is_culture_group = THIS }
+			consciousness = 5
+			ideology = { factor = 0.3 value = conservative }
 		}
+		any_pop = {
+			limit = { strata = middle is_culture_group = THIS }
+			consciousness = 10
+			ideology = { factor = 0.3 value = liberal }
+		}
+		any_pop = {
+			limit = { strata = poor is_culture_group = THIS }
+			consciousness = 5
+			ideology = { factor = 0.2 value = socialist }
+			ideology = { factor = 0.2 value = conservative }
+		}
+		
+		#Communists are not happy to lose power
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist_social
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
 
-option = {
-name = "Maintain the status quo"
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-any_pop = { ideology = { factor = -0.25 value = communist } }
-ai_chance = { factor = 0.1 }
+	option = {
+		name = "Communism is still relevant!"
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		#Fragmentation of domestic politics
+		any_pop = {
+			limit = { strata = rich is_culture_group = THIS }
+			consciousness = 10 
+			ideology = { factor = 0.1 value = communist }
 		}
+		any_pop = {
+			limit = { strata = middle is_culture_group = THIS }
+			militancy = 10
+			consciousness = 10
+			ideology = { factor = 0.3 value = liberal }
+		}
+		any_pop = {
+			limit = { strata = poor is_culture_group = THIS }
+			militancy = 10
+			consciousness = 10
+			ideology = { factor = 0.1 value = conservative }
+			ideology = { factor = 0.1 value = big_tent }
+			ideology = { factor = 0.1 value = liberal }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
