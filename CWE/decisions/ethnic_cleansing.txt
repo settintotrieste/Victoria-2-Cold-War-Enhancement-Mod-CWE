@@ -1,5 +1,160 @@
 political_decisions = {
 
+	##### Decision chases away unaccepted pops from THIS #####
+
+	pop_displacement_system_on = {
+		picture = "pop_displacement_system_on"
+		alert = no
+		potential = {
+			NOT = { has_country_flag = pop_displacement_system_active }
+			
+			#Government must be a non-socialist dictatorship
+			OR = {
+				government = presidential_dictatorship
+				government = populist_dictatorship
+				government = nationalist_dictatorship
+				government = absolute_monarchy
+				government = theocracy
+			}
+			
+			NOT = { has_country_modifier = geno_cooldown }
+		}
+		
+		allow = {
+		
+			#Ruling Party must love accepted pops only
+			citizenship_policy = residency
+		
+			#Laws must already be against minorities
+			minorities_reform = minorities_oppression
+			
+			is_vassal = no
+			war = no
+		}
+		
+		effect = {
+			set_country_flag = pop_displacement_system_active
+			
+			prestige_factor = -0.01
+			
+			badboy = 5
+			
+			#Unaccepted pops go ballistic
+			any_pop = {
+				limit = { 
+					is_primary_culture = no 
+					is_accepted_culture = no 
+				}
+				militancy = 10
+				consciousness = 10
+				
+				ideology = { factor = 0.1 value = nationalist }
+			}
+			
+			#Accepted pops are happy to get more living space
+			any_pop = {
+				limit = { 
+					is_primary_culture = yes
+				}
+				militancy = -10
+				consciousness = -10
+				ideology = { factor = 0.1 value = nationalist }
+			}
+			any_pop = {
+				limit = { 
+					is_accepted_culture = yes
+				}
+				militancy = -5
+				consciousness = -5
+				ideology = { factor = 0.05 value = nationalist }
+			}
+			
+			#Stop exploit
+			add_country_modifier = { name = geno_cooldown duration = 365 }
+		}
+		
+		ai_will_do = { 
+			factor = 1
+			
+			#AI will not take decision if infamy is high
+			modifier = { factor = 0 badboy = 0.5 }
+			
+			#AI will not take decision unless militancy is high
+			modifier = { factor = 0 NOT = { average_militancy = 8 } }
+		}
+		
+	}
+
+	pop_displacement_system_off = {
+		picture = "pop_displacement_system_off"
+		alert = no
+		potential = {
+			has_country_flag = pop_displacement_system_active
+			
+			NOT = { has_country_modifier = geno_cooldown }
+		}
+		
+		allow = {
+		
+			OR = {
+				ai = no
+				
+				NOT = {
+					OR = {
+						government = presidential_dictatorship
+						government = populist_dictatorship
+						government = nationalist_dictatorship
+						government = absolute_monarchy
+						government = theocracy
+					}
+				}
+				
+				NOT = { citizenship_policy = residency }
+				
+				NOT = { minorities_reform = minorities_oppression }
+			}
+			
+		}
+		
+		effect = {
+			clr_country_flag = pop_displacement_system_active
+			
+			#Unaccepted pops are happy
+			any_pop = {
+				limit = { 
+					is_primary_culture = no 
+					is_accepted_culture = no 
+				}
+				militancy = -5
+				consciousness = -5
+			}
+			
+			#Accepted pops are angry
+			any_pop = {
+				limit = { 
+					is_primary_culture = yes
+				}
+				militancy = 5
+				consciousness = 5
+			}
+			any_pop = {
+				limit = { 
+					is_accepted_culture = yes
+				}
+				militancy = 2.5
+				consciousness = 2.5
+			}
+			
+		}
+		
+		ai_will_do = { 
+			factor = 1
+		}
+		
+	}
+	
+	##### Decision kills unaccepted pops in THIS #####
+
 	ethnic_cleansing = {
 		picture = "ethnic_cleansing"
 		alert = no
@@ -8,6 +163,7 @@ political_decisions = {
 				government = presidential_dictatorship
 				government = populist_dictatorship
 				government = nationalist_dictatorship
+				government = absolute_monarchy
 				government = theocracy
 				government = proletarian_dictatorship
 				government = proletarian_dictatorship1
@@ -27,6 +183,9 @@ political_decisions = {
 			NOT = { citizenship_policy = full_citizenship }
 		
 			OR = {
+				ai = no
+				
+				#Special cases for AI
 				AND = { ai = yes tag = ABK war = yes citizenship_policy = residency  war_policy = jingoism average_militancy = 5 }
 				AND = { ai = yes tag = AFG war = yes citizenship_policy = residency war_policy = jingoism average_militancy = 5 }
 				AND = { ai = yes tag = RWA average_militancy = 5 citizenship_policy = residency }
@@ -36,7 +195,8 @@ political_decisions = {
 				AND = { ai = yes tag = SER war = yes national_provinces_occupied = 0.5 citizenship_policy = residency }
 				AND = { ai = yes tag = CRO war = yes national_provinces_occupied = 0.5 citizenship_policy = residency }
 				AND = { ai = yes tag = BOS war = yes national_provinces_occupied = 0.5 citizenship_policy = residency }
-
+				
+				#Generic conditions for AI
 				AND = { 
 					average_militancy = 7 
 					citizenship_policy = residency
@@ -59,6 +219,10 @@ political_decisions = {
 
 		effect = {
 			set_country_flag = ethnic_cleansed
+			
+			prestige_factor = -0.01
+			
+			badboy = 5
 
 			country_event = 1512037
 
@@ -71,16 +235,17 @@ political_decisions = {
 			#Stop exploit
 			add_country_modifier = { name = geno_cooldown duration = 365 }
 		}
+		
 		ai_will_do = { 
 			factor = 1
-			modifier = { badboy = 1 war = no factor = 0 }
-			modifier = { tag = SAF factor = 0 }
-			modifier = { OR = { tag = RWA tag = RSR tag = SRK tag = SER tag = CRO tag = BOS } factor = 1 } 
+			modifier = { factor = 0 badboy = 0.5 }
+			modifier = { factor = 0 AND = { tag = SAF ruling_party_ideology = nationalist } }
+			modifier = { factor = 1 OR = { tag = RWA tag = RSR tag = SRK tag = SER tag = CRO tag = BOS } }
 		}
 	}
 	
 	end_ethnic_cleansing = {
-		picture = "ethnic_cleansing"
+		picture = "ethnic_cleansing_off"
 		
 		potential = {
 			OR = { 
@@ -118,4 +283,5 @@ political_decisions = {
 		}
 		ai_will_do = { factor = 1 }
 	}
+	
 }
