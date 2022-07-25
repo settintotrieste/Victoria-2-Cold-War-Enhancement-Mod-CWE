@@ -138,6 +138,135 @@ country_event = {
 
 }
 
+#Neutralizing Amilcar Cabral?
+country_event = {
+  id = 8011708
+  title = "Neutralizing Amilcar Cabral?"
+  desc = EVT_8011708_DESC
+  picture = "amilcar_cabral"
+  fire_only_once = yes
+
+	trigger = {
+		tag = POR
+		year = 1973
+		NOT = { year = 1990 }
+		
+		OR = { government = nationalist_dictatorship government = populist_dictatorship }
+		OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist }
+		
+		OR = { war = yes truce_with = GUB }
+		is_vassal = no
+		
+		GUB = { exists = yes ruling_party_ideology = communist }
+	}
+
+	mean_time_to_happen = { days = 20 }
+
+	option = {
+		name = "Take Cabral out"
+		badboy = 3
+		war_exhaustion = -5
+		
+		GUB = { add_country_modifier = { name = recent_terrorist_attack duration = 183 } }
+		
+		random_list = {
+			90 = { GUB = { country_event = 8011709 } } #Cabral dies
+			10 = { GUB = { country_event = 8011710 } } #Cabral survives
+		}
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "It's too riskious"
+		prestige = 10
+		war_exhaustion = 5
+		
+		any_pop = { limit = { type = soldiers } consciousness = 2 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Cabral dies
+country_event = {
+  id = 8011709
+  title = "Amilcar Cabral has been killed"
+  desc = EVT_8011709_DESC
+  picture = "amilcar_cabral"
+  is_triggered_only = yes
+
+	option = {
+		name = "Farewell Cabral, farewell!"
+		war_exhaustion = 10
+		
+		any_pop = { limit = { culture = black_portuguese } consciousness = 1 militancy = 2 }
+		
+		POR = { prestige = 20 war_exhaustion = -10 }
+		
+	}
+
+}
+
+#Cabral survives
+country_event = {
+  id = 8011710
+  title = "Amilcar Cabral avoids assasination attempt"
+  desc = EVT_8011710_DESC
+  picture = "amilcar_cabral"
+  is_triggered_only = yes
+
+	option = {
+		name = "A great strike against the occupiers!"
+		war_exhaustion = -10
+		
+		any_pop = { limit = { culture = black_portuguese } consciousness = -1 militancy = -2 }
+		
+		POR = { prestige = -20 war_exhaustion = 10 }
+		
+		set_country_flag = GUB_Cabral_alive
+	}
+
+}
+
+#The Question of Cape Verde
+country_event = {
+  id = 8011714
+  title = "The Question of Cape Verde"
+  desc = EVT_8011714_DESC
+  picture = "GUB_CPV_Unification"
+  is_triggered_only = yes
+
+	option = {
+		name = "Let the PAIGC take over"
+		prestige = 25
+		
+		release = CPV
+		
+		CPV = { ruling_party_ideology = communist }
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Enforce the High Commissioner authority"
+		prestige = -25
+		badboy = 3
+		
+		1876 = { secede_province = GUB }
+		
+		war = {
+			target = GUB
+			attacker_goal = { casus_belli = acquire_any_state state_province_id = 1876 }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = no
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
 #Overseas Military Defeat - Trigger the Carnation Revolution
 country_event = {
   id = 8011703
@@ -253,7 +382,7 @@ country_event = {
 		release = MOZ
 		release = GUB
 		release = STP
-		release = CPV
+		country_event = 8011714
 		
 		# Timor -> indonesia.txt events
 
