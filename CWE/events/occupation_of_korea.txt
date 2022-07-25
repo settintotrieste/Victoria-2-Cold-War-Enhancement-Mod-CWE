@@ -132,7 +132,7 @@ country_event = {
 	}
 
 	option = {
-		name = "Prepare the Korean people for 'freedom'!"
+		name = "Prepare the Korean workers for liberation!"
 		
 		set_country_flag = KOR_indy_path_flag
 		
@@ -429,6 +429,44 @@ country_event = {
 		
 		ai_chance = { factor = 0.1 }
 	}
+
+	option = {
+		name = "It is time to lead the Korean people into a new future!"
+		prestige = 50
+		
+		#Remove divided Korea cores
+		NKO = { all_core = { add_core = KOR remove_core = NKO } }
+		SKO = { all_core = { add_core = KOR remove_core = SKO } }
+		
+		#USA transfers all Korean cores to THIS
+		FROM = { 
+			any_owned = { 
+				limit = { is_core = KOR } 
+				secede_province = THIS
+			} 
+		}
+		
+		#Release Socialist Democracy Korea
+		release = KOR
+		change_tag = KOR
+		KOR = { 
+			government = socialist_democracy
+			country_event = 800054
+			ruling_party_ideology = socialist
+		}
+		
+		#Set relations
+		THIS = {
+			relation = { who = KOR value = 100 } 
+			diplomatic_influence = { who = KOR value = 100 }
+		}
+		FROM = {
+			relation = { who = KOR value = 100 } 
+			diplomatic_influence = { who = KOR value = 100 }
+		}
+
+		ai_chance = { factor = 0 }
+	}
 }
 
 
@@ -681,6 +719,120 @@ country_event = {
 
 		ai_chance = { factor = 0.05 }
 	}
+
+	option = {
+		name = "The Republic of Korea shall lead its people forward!"
+		prestige = 50
+		
+		#Release SKO
+		release = SKO
+		change_tag = SKO
+		SKO = {
+			government = democracy
+			country_event = 800054
+			ruling_party_ideology = conservative
+			
+			any_pop = { 
+				limit = { strata = rich }
+				consciousness = 10
+				ideology  = { factor = 0.30 value = conservative } 
+			} 
+			any_pop = { 
+				limit = { strata = middle }
+				consciousness = 10
+				ideology  = { factor = 0.20 value = conservative } 
+			} 
+			any_pop = { 
+				limit = { strata = poor }
+				consciousness = 10
+				ideology  = { factor = 0.10 value = socialist } 
+			}
+		}
+
+		#US influence over SKO
+		diplomatic_influence = { who = SKO value = 200 }
+		relation = { who = SKO value = 200 }
+		create_alliance = SKO
+		military_access = SKO
+		
+		#Give military goods
+		SKO = {
+			money = 100000
+			small_arms = 1000
+			weaponry = 1000
+			aeroplanes = 1000
+			ammunition = 1000
+			automobiles = 1000
+		}
+
+		#For North Korea to be released 1 month later
+		set_global_flag = SKO_released_flag
+		
+		#For KMT
+		random_owned = {
+			limit = { 
+				owner = { 
+					KMT = { 
+						exists = yes 
+						is_vassal = no 
+						has_country_flag = KMT_does_not_recognises_KOR_flag
+					} 
+				}
+			}
+			owner = {
+				KMT = {
+					#Lose relations with the Korean government
+					random_country = {
+						limit = { tag = KOR exists = yes }
+						KMT = {
+							relation = { who = KOR value = -100 }
+							diplomatic_influence = { who = KOR value = -100 }
+						}
+					}
+					random_country = {
+						limit = { tag = SKO exists = yes }
+						KMT = {
+							relation = { who = SKO value = -100 }
+							diplomatic_influence = { who = SKO value = -100 }
+						}
+					}
+				}
+			}
+		}
+		random_owned = {
+			limit = { 
+				owner = { 
+					KMT = { 
+						exists = yes 
+						is_vassal = no 
+						has_country_flag = KMT_recognises_KOR_flag
+					} 
+				}
+			}
+			owner = {
+				KMT = {
+					#Gain relations with the Korean government
+					random_country = {
+						limit = { tag = KOR exists = yes }
+						THIS = {
+							relation = { who = KOR value = 100 }
+							diplomatic_influence = { who = KOR value = 100 }
+						}
+					}
+					random_country = {
+						limit = { tag = SKO exists = yes }
+						THIS = {
+							relation = { who = SKO value = 100 }
+							diplomatic_influence = { who = SKO value = 100 }
+						}
+					}
+				}
+			}
+		}
+		
+		ai_chance = { factor = 0 }
+	}
+
 }
 
 #Form divided Korea - NKO
@@ -800,6 +952,53 @@ country_event = {
 		}
 		
 		ai_chance = { factor = 0.05 }
+	}
+
+
+	option = {
+		name = "The Korean workers will triumph in their struggle!"
+		badboy = 2
+		
+		#Release NKO
+		release_vassal = NKO
+		change_tag = NKO
+		NKO = {
+			government = proletarian_dictatorship
+			country_event = 800052
+			ruling_party_ideology = communist
+			
+			any_pop = { 
+				limit = { strata = rich }
+				consciousness = 10
+				ideology  = { factor = 0.30 value = communist } 
+			} 
+			any_pop = { 
+				limit = { strata = middle }
+				consciousness = 10
+				ideology  = { factor = 0.20 value = communist } 
+			} 
+			any_pop = { 
+				limit = { strata = poor }
+				consciousness = 10
+				ideology  = { factor = 0.10 value = communist } 
+			}
+		}
+
+		#USSR influence over NKO
+		diplomatic_influence = { who = NKO value = 200 }
+		relation = { who = NKO value = 200 }
+		
+		#Give military goods
+		NKO = {
+			money = 200000
+			small_arms = 1000
+			weaponry = 1000
+			aeroplanes = 1000
+			ammunition = 1000
+			automobiles = 1000
+		}
+		
+		ai_chance = { factor = 0.95 }
 	}
 }
 
