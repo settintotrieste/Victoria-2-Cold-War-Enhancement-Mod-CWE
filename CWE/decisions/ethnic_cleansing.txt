@@ -112,6 +112,9 @@ political_decisions = {
 				NOT = { citizenship_policy = residency }
 				
 				NOT = { minorities_reform = minorities_oppression }
+				
+				#AI will stop this if it will otherwise lead to containment against THIS
+				badboy = 1
 			}
 			
 		}
@@ -269,6 +272,9 @@ political_decisions = {
 				}
 				minorities_reform = minorities_equal_rights 
 				minorities_reform = minorities_affirmative_action 
+				
+				#AI will stop this if it will otherwise lead to containment against THIS
+				badboy = 1
 			}
 			
 			NOT = { has_country_modifier = geno_cooldown }
@@ -282,6 +288,149 @@ political_decisions = {
 			clr_country_flag = discovered_genocide1
 		}
 		ai_will_do = { factor = 1 }
+	}
+
+	##### Promote migration to colonies to outnumber natives there #####
+
+	promote_colonial_migration_on = {
+		picture = "promote_colonial_migration_on"
+		alert = no
+		potential = {
+			NOT = { has_country_flag = promote_colonial_migration_active }
+			
+			#THIS owns colonial provinces
+			colonial_nation = yes
+			
+			NOT = { has_country_modifier = geno_cooldown }
+		}
+		
+		allow = {
+		
+			#Ruling Party must love accepted pops only
+			citizenship_policy = residency
+		
+			#Laws must already be against minorities
+			minorities_reform = minorities_oppression
+			
+			is_vassal = no
+			war = no
+		}
+		
+		effect = {
+			set_country_flag = promote_colonial_migration_active
+			
+			badboy = 2.5
+			
+			#Unaccepted pops go ballistic
+			any_pop = {
+				limit = { 
+					is_primary_culture = no 
+					is_accepted_culture = no 
+				}
+				militancy = 10
+				consciousness = 10
+				
+				ideology = { factor = 0.1 value = nationalist }
+			}
+			
+			#Accepted pops are happy to get more living space
+			any_pop = {
+				limit = { 
+					is_primary_culture = yes
+				}
+				militancy = -10
+				consciousness = -10
+				ideology = { factor = 0.1 value = nationalist }
+			}
+			any_pop = {
+				limit = { 
+					is_accepted_culture = yes
+				}
+				militancy = -5
+				consciousness = -5
+				ideology = { factor = 0.05 value = nationalist }
+			}
+			
+			#Stop exploit
+			add_country_modifier = { name = geno_cooldown duration = 365 }
+		}
+		
+		ai_will_do = { 
+			factor = 1
+			
+			#AI will not take decision if infamy is high
+			modifier = { factor = 0 badboy = 0.5 }
+			
+			#AI will not take decision unless nationalistic
+			modifier = { factor = 0 NOT = { ruling_party_ideology = nationalist } }
+			
+			#AI will not take decision unless a GP
+			modifier = { factor = 0 is_greater_power = no }
+		}
+		
+	}
+	
+	promote_colonial_migration_off = {
+		picture = "promote_colonial_migration_off"
+		alert = no
+		potential = {
+			has_country_flag = promote_colonial_migration_active
+			
+			NOT = { has_country_modifier = geno_cooldown }
+		}
+		
+		allow = {
+		
+			OR = {
+				ai = no
+				
+				NOT = { colonial_nation = yes }
+				
+				NOT = { citizenship_policy = residency }
+				
+				NOT = { minorities_reform = minorities_oppression }
+				
+				#AI will stop this if it will otherwise lead to containment against THIS
+				badboy = 1
+			}
+			
+		}
+		
+		effect = {
+			clr_country_flag = promote_colonial_migration_active
+			
+			#Unaccepted pops are happy
+			any_pop = {
+				limit = { 
+					is_primary_culture = no 
+					is_accepted_culture = no 
+				}
+				militancy = -5
+				consciousness = -5
+			}
+			
+			#Accepted pops are angry
+			any_pop = {
+				limit = { 
+					is_primary_culture = yes
+				}
+				militancy = 5
+				consciousness = 5
+			}
+			any_pop = {
+				limit = { 
+					is_accepted_culture = yes
+				}
+				militancy = 2.5
+				consciousness = 2.5
+			}
+			
+		}
+		
+		ai_will_do = { 
+			factor = 1
+		}
+		
 	}
 	
 }
