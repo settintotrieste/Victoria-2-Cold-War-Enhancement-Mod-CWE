@@ -1051,7 +1051,7 @@ country_event = {
 	}
 }
 
-#Fall of the USSR
+#Fall of the USSR - Ahistorical clean transition to democracy, messy historical transition is handled by the August Coup chain
 country_event = {
 	id = 1991
 	title = "The Russian Federation"
@@ -1062,12 +1062,12 @@ country_event = {
 	
 	trigger = {
 		tag = RUS
-		government = democracy
-		
-		is_vassal = no
-		war = no
-		
 		NOT = { has_global_flag = 1992_start_date_flag }
+		
+		OR = { 
+			government = democracy 
+			government = democracy1 
+		}
 		
 		NOT = { has_country_flag = eussr }
 	}
@@ -1075,39 +1075,88 @@ country_event = {
 	option = {
 		name = "It is the end of Communist rule!"
 		
-		#So normal events can continue to fire
-		government = democracy1
-
-		remove_country_modifier = uss_timer
-
-		clr_country_flag = economic_malaise
-		remove_country_modifier = economic_malaise
+		badboy = -20
 		
-		#Hit to development levels
-		any_pop = { literacy = -0.15 }
-
+		remove_country_modifier = uss_timer
+		
+		#To allow historical events to continue to fire, if this event fired between 1990 and 2000
+		random_owned = {
+			limit = { 
+				owner = { 
+					year = 1990 
+					NOT = { year = 2000 } 
+					
+					NOT = { government = democracy1 }
+				} 
+			}
+			owner = { government = democracy1 }
+		}
+		
+		#Nationalist movements begin
+		any_pop = {
+			limit = { NOT = { is_culture_group = THIS } }
+			militancy = 10 
+			consciousness = 10 
+			ideology = { factor = 0.25 value = nationalist }
+		}
+		any_owned = { 
+			limit = { is_primary_culture = no }
+			add_province_modifier = { name = nationalist_agitation duration = 1825 } 
+		}
+		
+		#Fragmentation of domestic politics
+		any_pop = {
+			limit = { strata = rich is_culture_group = THIS }
+			consciousness = 5
+			ideology = { factor = 0.2 value = conservative }
+		}
+		any_pop = {
+			limit = { strata = middle is_culture_group = THIS }
+			consciousness = 10
+			ideology = { factor = 0.2 value = liberal }
+		}
+		any_pop = {
+			limit = { strata = poor is_culture_group = THIS }
+			consciousness = 5
+			ideology = { factor = 0.1 value = socialist }
+			ideology = { factor = 0.1 value = communist }
+		}
+		
+		#Communists are not happy to lose power
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist_social
+			}
+		}
+		
+		#### Vassals ####
+		
 		#Dissolution of the Warsaw Pact
 		random_owned = { 
 			limit = { owner = { NOT = { has_global_flag = breakup_of_ussr } } } 
 			owner = { country_event = 8225005 } 
 		}
 
-		#Release all vassals
-		any_country = { 
-			limit = { vassal_of = RUS } 
-			country_event = 1512136 
-		}
-
-		#Release SSRs
+		#Release all communist vassals
 		any_country = { 
 			limit = { 
-				exists = no 
-				OR = { tag = UKR tag = BYE tag = GEO tag = AZB tag = ARM tag = TKR tag = MOL tag = UZB tag = KYR tag = TAJ tag = KAZ tag = MOL tag = LIT tag = LAT tag = EST } 
-				any_core = { owned_by = THIS }
+				OR = { 
+					government = proletarian_dictatorship 
+					government = proletarian_dictatorship1 
+					government = socialist_democracy 
+				} 
+				vassal_of = RUS 
 			} 
-			country_event = 1512240 
+			country_event = 1512136 
 		}
-
+		
+		#### Berlin Problem ####
+		
 		#Return West Berlin, if USSR managed to annex West Berlin
 		random_owned = { 
 			limit = { 
@@ -1118,99 +1167,55 @@ country_event = {
 			} 
 			owner = { 549 = { secede_province = GER } } 
 		}
-
-		GER = { inherit = ICB }
-
-		#Ruling party during independence
-		ruling_party_ideology = socialist
-
-		#Remove badboy
-		badboy = -1000
-
-		#Communist support evaporates
-		any_pop = { 
-			limit = { culture = russian }
-			ideology = {
-				factor = 0.5
-				value = socialist
-			}
+		random_owned = { 
+			limit = { 
+				owner = { 
+					GER = { exists = no } 
+					DDR = { exists = yes }
+					owns = 549 
+				} 
+			} 
+			owner = { 549 = { secede_province = DDR } } 
 		}
 		
-		set_country_flag = eussr
+		#Release IC Berlin if GER or DDR does not exist
+		random_owned = { 
+			limit = { 
+				owner = { 
+					owns = 549 
+					GER = { exists = no } 
+					DDR = { exists = no } 
+				} 
+			} 
+			owner = { 
+				release = ICB 
+				government = sar_government 
+				country_event = 800054 
+				ruling_party_ideology = socialist 
+			} 
+		}
 		
-		#country_event = 8014271
+		#GER annexes ICB if ICB was a puppet of THIS
+		random_country = { 
+			limit = { 
+				tag = ICB 
+				OR = { is_vassal = no vassal_of = THIS } 
+				GER = { exists = yes }
+			}
+			GER = { inherit = ICB }
+		}
+		random_country = { 
+			limit = { 
+				tag = ICB 
+				OR = { is_vassal = no vassal_of = THIS } 
+				GER = { exists = no }
+				DDR = { exists = yes }
+			}
+			DDR = { inherit = ICB }
+		}
 		
-		ai_chance = { factor = 0.9 }
 	}
 	
-	option = {
-		name = "Stop the breakup of Russia!"
-		prestige_factor = -0.10
-		
-		badboy = 15
-		
-		remove_country_modifier = uss_timer
-
-		clr_country_flag = economic_malaise
-		remove_country_modifier = economic_malaise
-		
-		#Hit to development levels
-		any_pop = { literacy = -0.15 }
-
-		#Dissolution of the Warsaw Pact
-		random_owned = { 
-			limit = { owner = { NOT = { has_global_flag = breakup_of_ussr } } } 
-			owner = { country_event = 8225005 } 
-		}
-
-		#Release all vassals
-		any_country = { 
-			limit = { vassal_of = RUS } 
-			country_event = 1512136 
-		}
-
-		#Russian Civil War
-		any_country = { 
-			limit = { 
-				exists = no 
-				OR = { tag = UKR tag = BYE tag = GEO tag = AZB tag = ARM tag = TKR tag = MOL tag = UZB tag = KYR tag = TAJ tag = KAZ tag = MOL tag = LIT tag = LAT tag = EST } 
-				any_core = { owned_by = THIS }
-			} 
-			country_event = 19911
-		}
-
-		#Return West Berlin, if USSR managed to annex West Berlin
-		random_owned = { 
-			limit = { 
-				owner = { 
-					GER = { exists = yes } 
-					owns = 549 
-				} 
-			} 
-			owner = { 549 = { secede_province = GER } } 
-		}
-
-		GER = { inherit = ICB }
-
-		#Ruling party during independence
-		ruling_party_ideology = conservative
-
-		#Remove badboy
-		badboy = -1000
-
-		#Communist support evaporates
-		any_pop = { 
-			limit = { culture = russian }
-			ideology = {
-				factor = 0.5
-				value = conservative
-			}
-		}
-		
-		set_country_flag = eussr
-		
-		ai_chance = { factor = 0.1 }
-	}
 }
 
 #Russian Civil War

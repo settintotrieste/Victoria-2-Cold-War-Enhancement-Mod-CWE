@@ -1167,6 +1167,7 @@ country_event = {
 		tag = CAR
 		year = 1966
 		NOT = { year = 1990 }
+		
 		government = democracy
 		is_vassal = no
 		war = no
@@ -1200,10 +1201,13 @@ country_event = {
 		tag = CAR
 		year = 1976
 		NOT = { year = 1990 }
+		
 		government = presidential_dictatorship
 		OR = { ruling_party_ideology = traditionalist ruling_party_ideology = nationalist }
 		war = no
 		is_vassal = no
+		
+		OR = { ruling_party_ideology = traditionalist ruling_party_ideology = nationalist }
 	}
 	
 	option = {
@@ -3683,10 +3687,12 @@ country_event = 1410143
 #Nuclear Blackmarket Acquisition successful
 country_event = {
 	id = 1410137
-	title = "We have bought Nuclear Warheads"
+	title = "$COUNTRY$ bought Nuclear Warheads"
 	desc = "We have successfully obtained nuclear warheads from shadowy Arms Dealers."
 	picture = "nuclear_blackmarket"
-	#major = yes	
+	
+	major = yes
+	
 	trigger = {
 		NOT = { has_country_modifier = acquiring_bomb }
 		has_country_flag = acquiring_bomb
@@ -3694,8 +3700,9 @@ country_event = {
 
 	option = {
 		name = "Success"
+		prestige = 50
 		clr_country_flag = acquiring_bomb
-		add_country_modifier = { name = acquired_bomb duration = 3650 }
+		add_country_modifier = { name = acquired_bomb duration = -1 }
 	}
 
 }
@@ -3703,20 +3710,24 @@ country_event = {
 #UN Sanctions on Nuclear Blackmarket Nation
 country_event = {
 	id = 1410138
-	title = "$COUNTRY$ has bought Nuclear Warheads"
-	desc = "The United Nations has discovered our illegal Nuclear bomb acqusition and has condemned us and imposed punitative sanctions."
-	picture = "nuclear_disarmament_un"
-	major = yes	
+	title = "$COUNTRY_ADJ$ Nuclear Bombs Condemned by UN"
+	desc = "The United Nations has condemned our illegal Nuclear bomb acqusition and has imposed punitative sanctions on us."
+	picture = "united_nations_sanctions"
 	
 	trigger = {
 		has_country_modifier = acquired_bomb
 		NOT = { has_country_modifier = acquired_bomb_sanctions }
-	}	
+	}
+	
+	mean_time_to_happen = { 
+		months = 6
+		modifier = { factor = 0.5 has_global_flag = UNSG_aggressive }
+		modifier = { factor = 2 has_global_flag = UNSG_passive }
+	}
 
 	option = {
 		name = "We will have to resist them!"
-		prestige = 50
-		badboy = 10
+		prestige_factor = -0.05
 		add_country_modifier = { name = acquired_bomb_sanctions duration = -1 }
 	}
 
@@ -3725,25 +3736,26 @@ country_event = {
 #Nuclear Threat
 country_event = {
 	id = 1410139
-	title = "$FROMCOUNTRY$ Threatens peace or face Nuclear Attack"
-	desc = "$FROMCOUNTRY$ has delivered an ultimatum to say that if we do not seek peace with them, they will unleash their limited nuclear arsenal on us."
-	picture = "nuke_threat"
+	title = "$FROMCOUNTRY$ Threatens a Nuclear Attack!"
+	desc = "$FROMCOUNTRY$ has delivered an ultimatum to $CAPITAL$: if we do not cease hostilities, they will unleash their limited nuclear arsenal on us."
 
+	picture = "nuke_threat"
+	
 	allow_multiple_instances = yes  
 	
 	is_triggered_only = yes
 
 	option = {
 		name = "Accept!"
-		prestige_factor = -0.25
+		prestige = -50
+		
 		end_war = FROM
+		
 		ai_chance = { factor = 1 modifier = { factor = 0 NOT = { OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation } } } }
-
 	}
+	
 	option = {
 		name = "Reject!"
-
-		ai_chance = { factor = 1 modifier = { factor = 0 OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation } } }
 
 		add_country_modifier = { name = recently_attacked_nuke duration = 31 }
 
@@ -3752,38 +3764,40 @@ country_event = {
 		random_owned = { 
 			set_province_flag = disease
 			set_province_flag = nuked_before
-			infrastructure  = -2
-
-			add_province_modifier = { name = nuke_low duration = 18250 } }
-
-		random_owned = { 
-			set_province_flag = disease
-			set_province_flag = nuked_before
-			infrastructure  = -2
-
-			add_province_modifier = { name = nuke_low duration = 18250 } }
-
-		random_owned = {
-			set_province_flag = disease
-			set_province_flag = nuked_before
-			infrastructure  = -2
- 
-			add_province_modifier = { name = nuke_low duration = 18250 } }
-
-		random_owned = {
-			set_province_flag = disease
-			set_province_flag = nuked_before
-			infrastructure  = -2
- 
-			add_province_modifier = { name = nuke_low duration = 18250 } }
-
-		random_owned = { 
-			set_province_flag = disease
-			set_province_flag = nuked_before
-			infrastructure  = -2
-
-			add_province_modifier = { name = nuke_low duration = 18250 } }
+			infrastructure = -2
+			add_province_modifier = { name = nuke_low duration = 18250 } 
 		}
+
+		random_owned = { 
+			set_province_flag = disease
+			set_province_flag = nuked_before
+			infrastructure = -2
+			add_province_modifier = { name = nuke_low duration = 18250 } 
+		}
+		
+		random_owned = {
+			set_province_flag = disease
+			set_province_flag = nuked_before
+			infrastructure = -2
+			add_province_modifier = { name = nuke_low duration = 18250 } 
+		}
+		
+		random_owned = {
+			set_province_flag = disease
+			set_province_flag = nuked_before
+			infrastructure = -2
+			add_province_modifier = { name = nuke_low duration = 18250 } 
+		}
+		
+		random_owned = { 
+			set_province_flag = disease
+			set_province_flag = nuked_before
+			infrastructure = -2
+			add_province_modifier = { name = nuke_low duration = 18250 } 
+		}
+
+		ai_chance = { factor = 1 modifier = { factor = 0 OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation } } }
+	}
 
 }
 
@@ -3798,7 +3812,7 @@ country_event = {
 	trigger = {
 		NOT = { has_country_modifier = acquired_bomb }
 		has_country_modifier = acquired_bomb_sanctions
-	}
+	}	
 
 	option = {
 		name = "That's good"
@@ -4887,6 +4901,13 @@ country_event = {
 		add_accepted_culture = nepali
 		set_country_flag = tripartite_agreement
 		set_country_flag = has_mercenary_training
+		
+		#India accepts nepali
+		random_owned = {
+			limit = { owner = { tag = HND } }
+			owner = { add_accepted_culture = nepali }
+		}
+		
 		ai_chance = { factor = 1 }
 	}
 	

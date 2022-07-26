@@ -1,49 +1,63 @@
 country_event = { # Rwanda Independence
-  id = 1029500
-  title = EVT_1029500_NAME
-  desc = EVT_1029500_DESC
-  picture = "rwanda_independence"
-  fire_only_once = yes
+	id = 1029500
+	title = EVT_1029500_NAME
+	desc = EVT_1029500_DESC
+	picture = "rwanda_independence"
+	
+	fire_only_once = yes
 
-  trigger = {
-    tag = BEL
-	is_our_vassal = RWA
-	NOT = { exists = BRN }
-	exists = CNG
-	war = no
-	#owns = 2034
-	NOT = { has_global_flag = 1992_start_date_flag }
-  }
-
-  mean_time_to_happen = { months = 1 }
-
-  option = {
-    name = EVT_8003300_A
-	prestige = 20
-	release_vassal = RWA
-	RWA = {
-		release = BRN
-		government = democracy1
-		primary_culture = hutu
-		country_event = 800054
+	trigger = {
+		tag = BEL
+		NOT = { has_global_flag = 1992_start_date_flag }
+	
+		is_vassal = no
+		war = no
+	
+		is_our_vassal = RWA
+		NOT = { exists = BRN }
+		exists = CNG
 		
-		add_country_modifier = { name = post_colonial_chaos duration = 900 }
+		#owns = 2034
 	}
-	BRN = {
-		government = hms_government
-		add_country_modifier = { name = post_colonial_chaos duration = 900 }
-		country_event = 800054
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = EVT_8003300_A
+		prestige = 20
+		release_vassal = RWA
+		RWA = {
+			release = BRN
+			government = democracy1
+			country_event = 800054
+			
+			primary_culture = hutu
+		
+			add_country_modifier = { name = post_colonial_chaos duration = 900 }
+		}
+		BRN = {
+			government = hms_government
+			country_event = 800054
+			add_country_modifier = { name = post_colonial_chaos duration = 900 }
+		}
+		ai_chance = { factor = 0.9 }
 	}
-	ai_chance = { factor = 1 }
-  }
-  option = {
-    name = EVT_8003300_B
-	any_pop = { limit = { location = { is_colonial = yes } } militancy = 2.0 }
-	any_pop = { limit = { location = { is_colonial = yes } } consciousness = 1.0 }
-	prestige = -10
-	badboy = 1.0
-	ai_chance = { factor = 0 }
-  }
+	
+	option = {
+		name = EVT_8003300_B
+		prestige = -10
+		badboy = 1.0
+		
+		any_pop = { limit = { location = { is_colonial = yes } } militancy = 5 }
+		any_pop = { limit = { location = { is_colonial = yes } } consciousness = 5 }
+		
+		RWA = { 
+			any_pop = { limit = { location = { is_colonial = yes } } militancy = 5 }
+			any_pop = { limit = { location = { is_colonial = yes } } consciousness = 5 }
+		}
+		ai_chance = { factor = 0.1 }
+	}
+	
 }
 
 #Collapse of Ruanda-Urundi
@@ -57,28 +71,45 @@ country_event = { # Rwanda Independence
 
 	trigger = {
 		tag = RWA
-		BRN = { exists = no }
+		
 		is_vassal = no
-		owns = 2035
+		war = no
+		
+		#Owns BRN
+		is_possible_vassal = BRN
 	}
 
 	mean_time_to_happen = { months = 3 }
 
 	option = {
 		name = "It's the end of the $COUNTRY_ADJ$ union"
-		release = BRN
+		prestige = -25
+		
 		government = nationalist_dictatorship
 		country_event = 800050
-		BRN = { government = nationalist_dictatorship
-		country_event = 800050 }
-		prestige = -25
+		ruling_party_ideology = nationalist
+		
+		release = BRN
+		BRN = { 
+			government = nationalist_dictatorship
+			country_event = 800050 
+			ruling_party_ideology = nationalist
+		}
+		
+		relation = { who = BRN value = -200 }
+		
 		ai_will_do = { factor = 0.5 }
 	}
 	
 	option = {
 		name = "Not on my watch"
-		any_pop = { militancy = 4 }
 		prestige = -25
+		
+		any_pop = { 
+			militancy = 8 
+			consciousness = 5 
+		}
+		
 		ai_will_do = { factor = 0.5 }
 	}
 
@@ -124,10 +155,10 @@ country_event = {
 	
 }
 
-#July 1966 Burundian coup d'état
+#July 1966 Burundian coup d'etat
 country_event = {
 	id = 1512145
-	title = "$YEAR$ Burundian coup d'état"
+	title = "$YEAR$ Burundian coup d'etat"
 	desc = EVTDESC1512145
 	picture = "brun_coup_1966"
 
@@ -135,11 +166,12 @@ country_event = {
 
 	trigger = {
 		tag = BRN
-		is_vassal = no
-		war = no
 		year = 1966
 		NOT = { year = 1990 }
+		
 		OR = { government = hms_government government = hms_government1 }
+		is_vassal = no
+		war = no
 	}
 
 	mean_time_to_happen = { 
