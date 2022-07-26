@@ -489,6 +489,27 @@ migration_chance = { # 1
 #general colonial migration mtth, same for all pops
 colonialmigration_chance = {
 	factor = 0.25
+	
+	modifier = {
+		factor = 0.6
+		OR = { 
+			is_primary_culture = yes 
+			is_accepted_culture = yes 
+		}
+		country = { has_country_flag = promote_colonial_migration_active }
+	}
+	
+	modifier = {
+		factor = 0.4
+		OR = { 
+			is_primary_culture = yes 
+			is_accepted_culture = yes 
+		}
+		country = { 
+			has_country_flag = promote_colonial_migration_active 
+			has_country_flag = pop_displacement_system_active 
+		}
+	}
 
     modifier = {
         factor = -0.5
@@ -846,6 +867,14 @@ emigration_chance = { # 0.5
 		is_primary_culture = no
 		is_accepted_culture = no
 		country = { has_country_flag = pop_displacement_system_active }
+	}
+	
+	modifier = {
+		factor = 0.5
+		is_primary_culture = no
+		is_accepted_culture = no
+		location = { is_colonial = yes }
+		country = { has_country_flag = promote_colonial_migration_active }
 	}
 	
 	group = {
@@ -1262,6 +1291,14 @@ conversion_chance = { # 1.0
 	factor = 0.3
 
 	modifier = { factor = -100 NOT = { location = { controlled_by = owner } } }
+	
+	modifier = { 
+		factor = 0.5 
+		country = { 
+			has_country_flag = desecularized
+			has_country_flag = religious_inquisition_active 
+		} 
+	}
 
 	group = {
 		modifier = { factor = 0.05 literacy = 0.1 NOT = { has_pop_religion = secularism } }
@@ -1320,6 +1357,7 @@ conversion_chance = { # 1.0
 	modifier = {
 		factor = -2
 		OR = {
+		
 			AND = {
 
 				# Muslims and Amish will only convert if 80% literate, not militant, and in their home country or culture converted (see note)											
@@ -1332,6 +1370,7 @@ conversion_chance = { # 1.0
 					has_pop_religion = shiite
 					has_pop_religion = ibad
 				}
+				
 				OR = {
 					NOT = { literacy = 0.5 }
 					militancy = 2
@@ -1340,7 +1379,12 @@ conversion_chance = { # 1.0
 						has_culture_core = yes
 					}
 				}
+				
+				# Forced religious conversion system can however bypass this restriction
+				
+				country = { NOT = { has_country_flag = religious_inquisition_active } }
 			}
+			
 			AND = { 
 
 				# Jews will only convert in Israel, Druze in Druze, Sikh in Punjab
@@ -1350,18 +1394,30 @@ conversion_chance = { # 1.0
 					has_pop_religion = druze
 					has_pop_religion = sikh
 				}
+				
 				NOT = { culture = THIS }
+				
+				# Forced religious conversion system can however bypass this restriction
+				
+				country = { NOT = { has_country_flag = religious_inquisition_active } }
 			}
 
-			# Secular pops will only convert in a theocracy or if poor and scared
-
 			AND = { 
+			
+				# Secular pops will only convert in a theocracy or if poor and scared
+			
 				has_pop_religion = secularism
+				
 				OR = {
 					NOT = { country = { government = theocracy } }
 					NOT = { AND = { strata = poor militancy = 5 } }
 				}
+				
+				# Forced religious conversion system can however bypass this restriction
+				
+				country = { NOT = { has_country_flag = religious_inquisition_active } }
 			}
+			
 		}
 	}
 
