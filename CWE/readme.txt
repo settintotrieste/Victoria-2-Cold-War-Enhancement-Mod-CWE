@@ -11,7 +11,7 @@ oil_seeds Image: Avocado (Persea americana) Oil in clear glass vial https://comm
 
 plastic_industry Image: https://openclipart.org/detail/6634/coffee-cup author antontw
 
-artillery image: A British 60-pounder (5-inch (130 mm)) gun at full recoil, in action during the Battle of Gallipoli, 1915. https://en.wikipedia.org/wiki/Artillery#/media/File:60_pounder_Cape_Helles_June_1915.jpg Photo by Ernest Brooks 
+heavy_tanks Image: A British 60-pounder (5-inch (130 mm)) gun at full recoil, in action during the Battle of Gallipoli, 1915. https://en.wikipedia.org/wiki/Artillery#/media/File:60_pounder_Cape_Helles_June_1915.jpg Photo by Ernest Brooks 
 
 HUAC Image: While newsmen take notes, Chairman Dies of House Committee investigating Un-American activities, proofs & reads his statement replying to Pres. Roosevelt's attack on the Committee, Oct. 26, 1938 https://en.wikipedia.org/wiki/File:Chairman_Dies_of_House_Committee_investigating_Un-American_activities.jpg authors: Harris & Ewing, official White House photographers
 
