@@ -1,0 +1,141 @@
+political_decisions = {
+
+	##### Decision increase religious conversion #####
+
+	religious_inquisition_on = {
+		picture = "religious_inquisition_on"
+		alert = no
+		potential = {
+			NOT = { has_country_flag = religious_inquisition_active }
+			
+			#Government must be a non-socialist dictatorship
+			OR = {
+				government = presidential_dictatorship
+				government = populist_dictatorship
+				government = nationalist_dictatorship
+				government = absolute_monarchy
+				government = theocracy
+			}
+			
+			is_vassal = no
+			
+			#Country is not secular
+			has_country_flag = desecularized
+			
+			NOT = { has_country_modifier = geno_cooldown }
+		}
+		
+		allow = {
+		
+			#Ruling Party must love accepted pops only
+			religious_policy = moralism
+		
+			#Laws must already be against minorities
+			minorities_reform = minorities_oppression
+			
+			is_vassal = no
+		}
+		
+		effect = {
+			set_country_flag = religious_inquisition_active
+			
+			badboy = 2.5
+			
+			#Atheist or non state religion pops go ballistic
+			any_pop = {
+				limit = { 
+					OR = { 
+						has_pop_religion = secularism 
+						is_state_religion = no
+					}
+				}
+				militancy = 10
+				consciousness = 10
+			}
+			
+			#Accepted pops are happy to get more converts
+			any_pop = {
+				limit = { 
+					is_state_religion = yes
+				}
+				militancy = -5
+				consciousness = -5
+			}
+			
+			#Stop exploit
+			add_country_modifier = { name = geno_cooldown duration = 365 }
+		}
+		
+		ai_will_do = { 
+			factor = 1
+			
+			#AI will not take decision if infamy is high
+			modifier = { factor = 0 badboy = 0.5 }
+			
+			#AI will not take decision unless militancy is high
+			modifier = { factor = 0 NOT = { average_militancy = 8 } }
+		}
+		
+	}
+	
+	religious_inquisition_off = {
+		picture = "religious_inquisition_off"
+		alert = no
+		potential = {
+			has_country_flag = religious_inquisition_active
+			
+			NOT = { has_country_modifier = geno_cooldown }
+		}
+		
+		allow = {
+		
+			OR = {
+				ai = no
+				
+				NOT = {
+					OR = {
+						government = presidential_dictatorship
+						government = populist_dictatorship
+						government = nationalist_dictatorship
+						government = absolute_monarchy
+						government = theocracy
+					}
+				}
+				
+				NOT = { has_country_flag = desecularized }
+				
+				NOT = { religious_policy = moralism }
+				
+				NOT = { minorities_reform = minorities_oppression }
+				
+				#AI will stop this if it will otherwise lead to containment against THIS
+				badboy = 1
+				
+			}
+			
+		}
+		
+		effect = {
+			clr_country_flag = religious_inquisition_active
+			
+			#Unaccepted pops are happy
+			any_pop = {
+				limit = { 
+					OR = { 
+						has_pop_religion = secularism 
+						is_state_religion = no
+					}
+				}
+				militancy = -5
+				consciousness = -5
+			}
+			
+		}
+		
+		ai_will_do = { 
+			factor = 1
+		}
+		
+	}
+	
+}
