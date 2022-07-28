@@ -8,7 +8,7 @@ country_event = {
 	fire_only_once = yes
 	
 	trigger = {
-		tag = ENG
+		OR = { tag = ENG tag = FBU }
 		year = 1952 
 		NOT = { year = 1990 }
 		
@@ -19,10 +19,10 @@ country_event = {
 		is_possible_vassal = KEN
 	}
 	
-	mean_time_to_happen = { months = 3 }
+	mean_time_to_happen = { months = 10 }
 	
 	option = {
-		name = "Quash the rebellion!"
+		name = "Declare the state of emergency"
 		badboy = 5
 		
 		any_pop = { 
@@ -33,17 +33,83 @@ country_event = {
 
 		any_owned = { 
 			limit = { is_core = KEN } 
-			add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+			add_province_modifier = { name = nationalist_agitation duration = 5475 } 
 		}
-
+        
+		set_country_flag = mau_mau_uprising
 		ai_chance = { factor = 0.9 }
 	}
 	
 	option = {
 		name = "Give in to the Mau Mau" 
 		prestige = -100
+		badboy = -5
+		
 		release = KEN
 		KEN = { government = nationalist_dictatorship country_event = 800050 ruling_party_ideology = nationalist }
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+#Swynnerton Plan
+country_event = {
+	id = 8029803
+	title = "The Swynnerton Plan" 
+	desc = EVT_8029803_DESC
+	picture = "mau_mau_uprising" 
+	
+	fire_only_once = yes
+	
+	trigger = {
+		OR = { tag = ENG tag = FBU }
+		year = 1954
+		NOT = { year = 1990 }
+		
+		war = no
+		is_vassal = no
+		
+		#owns KEN
+		is_possible_vassal = KEN
+		has_country_flag = mau_mau_uprising
+	}
+	
+	mean_time_to_happen = { months = 2 }
+	
+	option = {
+		name = "Enact the plan"
+		prestige = 5
+		
+		any_owned = { 
+		    limit = { is_core = KEN } 
+			farmers = { money = 15 } 
+		}
+        
+		clr_country_flag = mau_mau_uprising
+		set_country_flag = swynnerton_plan
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "We owe them nothing" 
+		
+		any_pop = { 
+			limit = { culture = kikuyu } 
+			militancy = 8 
+			consciousness = 8
+		}
+		any_pop = { 
+			limit = { is_core = KEN culture = british } 
+			militancy = -8 
+			consciousness = -8
+		}
+		any_owned = { 
+			limit = { is_core = KEN } 
+			add_province_modifier = { name = revolution_chaos duration = 1825 } 
+		}
+		
+		clr_country_flag = mau_mau_uprising
 		ai_chance = { factor = 0.1 }
 	}
 	
@@ -52,30 +118,32 @@ country_event = {
 #Independence of Kenya
 country_event = {
 	id = 8029801
-	title = "The Independence of Kenya"
+	title = "Kenya Independence Act"
 	desc = EVT_8029801_DESC
 	picture = "independence_kenya" 
 	
 	fire_only_once = yes
 	
 	trigger = {
-		tag = ENG
+		OR = { tag = ENG tag = FBU }
 		year = 1963
 		NOT = { year = 1990 }
 		
-		government = hms_government
 		war = no
 		is_vassal = no
 		
 		#owns KEN
 		is_possible_vassal = KEN
+		
+		has_country_flag = swynnerton_plan
 	}
 	
-	mean_time_to_happen = { months = 3 }
+	mean_time_to_happen = { months = 9 }
 	
     option = {
 		name = "Kenya is now a free country"
 		prestige = 25
+		badboy = -3
 		
 		release = KEN
 
@@ -83,38 +151,22 @@ country_event = {
 			government = hms_government1
 			country_event = 800054
 			ruling_party_ideology = conservative
-			
-			set_country_flag = former_colonial_nation
-			set_country_flag = full_independance 
+			any_pop = {
+		        limit = { NOT = { OR = { culture = british culture = indian } } }
+			    militancy = -6 
+			    consciousness = -2
+			    ideology = { factor = 0.4 value = conservative }
+			    ideology = { factor = 0.1 value = big_tent }
+		    }
+		    any_pop = { limit = { culture = british } move_pop = 300 } #London
+		    any_pop = { limit = { culture = indian } move_pop = 300 } #London
 		}
 
 		ENG = { diplomatic_influence = { who = KEN value = 200 } } 
 		
+		clr_country_flag = swynnerton_plan
 		ai_chance = { factor = 0.7 }
     }
-  
-	option = {
-		name = "Outline Kenya's future as a dominion"
-		
-		release_vassal = KEN
-	
-		KEN = { 
-			government = colonial_government
-			country_event = 800054
-			ruling_party_ideology = conservative
-			
-			any_pop = {
-				limit = { NOT = { culture = british } } 
-				militancy = 4
-				consciousness = 2
-			}
-			
-			add_country_modifier = { name = revolution_chaos duration = 3650 }
-		}
-	
-		ENG = { diplomatic_influence = { who = KEN value = 200 } }
-		ai_chance = { factor = 0.2 }
-	}  
 
 	option = {
 		name = "Kenya shall remain British!"
@@ -135,6 +187,7 @@ country_event = {
 			add_province_modifier = { name = nationalist_agitation duration = 3650 } 
 		}
 		
+		clr_country_flag = swynnerton_plan
 		ai_chance = { factor = 0.1 }
 	}	
 	
@@ -154,7 +207,7 @@ country_event = {
 		year = 1964
 		NOT = { year = 1990 }
 		
-		OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+		government = hms_government1 
 		is_vassal = no
 		war = no
 	}
@@ -162,16 +215,363 @@ country_event = {
 	mean_time_to_happen = { months = 3 }
 	
     option = {
-		name = "This is the way forward"
-	  	government = presidential_dictatorship 
-		country_event = 800050
+		name = "Long live the Republic! Long live Kenyatta!"
+		prestige = 25
+		
+	  	government = presidential_dictatorship
 		ruling_party_ideology = conservative
+		country_event = 800050
+		
+		any_pop = {
+			militancy = -6 
+			consciousness = 4
+			ideology = { factor = 0.15 value = conservative }
+			ideology = { factor = 0.05 value = big_tent }
+		}
+		
+		random_country = {
+			limit = { tag = TAN OR = { government = democracy government = democracy1 government = hms_government1 } is_vassal = no }
+			relation = { who = THIS value = 100 }
+		}
+        random_country = {
+			limit = { tag = UGA OR = { government = democracy government = democracy1 government = hms_government1 } is_vassal = no }
+			relation = { who = THIS value = 100 }
+		}
+		
 		ai_chance = { factor = 0.9 }
     }
 
 	option = {
-		name = "Stick to the status quo"
-		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		name = "We want the Queen!"
+		prestige = 10
+				
+		random_country = {
+			limit = { tag = ENG OR = { government = hms_government government = hms_government1 } is_greater_power = yes }
+			relation = { who = THIS value = 200 }
+			diplomatic_influence = { who = THIS value = 50 }
+		}
+		random_country = {
+			limit = { tag = TAN government = hms_government1 is_vassal = no }
+			relation = { who = THIS value = 100 }
+		}
+        random_country = {
+			limit = { tag = UGA government = hms_government1 is_vassal = no }
+			relation = { who = THIS value = 100 }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Kenya UDI
+country_event = {
+	id = 8029804
+	title = "Kenya's $YEAR$ UDI"
+	desc = EVT_8029804_DESC
+	picture = "independence_kenya" 
+	
+	fire_only_once = yes
+	
+	trigger = {
+		OR = { tag = ENG tag = FBU }
+		year = 1966
+		NOT = { year = 1990 }
+		
+		war = no
+		is_vassal = no
+		
+		#owns KEN
+		is_possible_vassal = KEN
+		
+		NOT = { has_country_flag = swynnerton_plan }
+		NOT = { has_country_flag = mau_mau_uprising }
+	}
+	
+	mean_time_to_happen = { months = 7 }
+	
+    option = {
+		name = "Condemn the Settler's actions"
+		prestige = 25
+		badboy = -3
+		
+		release = KEN
+
+		KEN = { 
+			government = populist_dictatorship
+			country_event = 800050
+			ruling_party_ideology = populist
+			
+			primary_culture = british
+			add_accepted_culture = indian
+			remove_accepted_culture = kalenjin
+			
+			any_pop = {
+		        limit = { NOT = { OR = { culture = british culture = indian } } }
+			    militancy = 8
+			    consciousness = 8
+		    }
+		    any_pop = {
+		        limit = { OR = { culture = british culture = indian } }
+			    militancy = -8
+			    consciousness = -8
+				ideology = { factor = 0.6 value = populist }
+		    }
+		}
+
+		ENG = { diplomatic_influence = { who = KEN value = -200 } }
+		ENG = { relation = { who = KEN value = -400 } }
+		
+		random_country = {
+			limit = { tag = TAN OR = { government = democracy government = democracy1 government = hms_government1 } is_vassal = no }
+			relation = { who = THIS value = 100 }
+			diplomatic_influence = { who = THIS value = 25 }
+		}
+        random_country = {
+			limit = { tag = UGA OR = { government = democracy government = democracy1 government = hms_government1 } is_vassal = no }
+			relation = { who = THIS value = 100 }
+			diplomatic_influence = { who = THIS value = 25 }
+		}
+		
+		ai_chance = { factor = 0.6 }
+    }
+	
+	option = {
+		name = "Recognize the new government"
+		prestige = -5
+		
+		release = KEN
+
+		KEN = { 
+			government = populist_dictatorship
+			country_event = 800050
+			ruling_party_ideology = populist
+			
+			primary_culture = british
+			add_accepted_culture = indian
+			remove_accepted_culture = kalenjin
+			
+			any_pop = {
+		        limit = { NOT = { OR = { culture = british culture = indian } } }
+			    militancy = 8
+			    consciousness = 8
+		    }
+		    any_pop = {
+		        limit = { OR = { culture = british culture = indian } }
+			    militancy = -8
+			    consciousness = -8
+				ideology = { factor = 0.6 value = populist }
+		    }
+		}
+
+		ENG = { diplomatic_influence = { who = KEN value = 200 } }
+		ENG = { relation = { who = KEN value = 400 } }
+		create_alliance = KEN
+		
+		random_country = {
+			limit = { tag = TAN OR = { government = democracy government = democracy1 } is_vassal = no }
+			relation = { who = THIS value = -150 }
+			diplomatic_influence = { who = THIS value = -25 }
+		}
+        random_country = {
+			limit = { tag = UGA OR = { government = democracy government = democracy1 } is_vassal = no }
+			relation = { who = THIS value = -150 }
+			diplomatic_influence = { who = THIS value = -25 }
+		}
+		
+		ai_chance = { factor = 0.3 }
+    }
+
+	option = {
+		name = "We have no choice but restore order"
+		prestige = 5
+		badboy = 3
+		
+		release = KEN
+
+		KEN = { 
+			government = populist_dictatorship
+			country_event = 800050
+			ruling_party_ideology = populist
+			
+			primary_culture = british
+			add_accepted_culture = indian
+			remove_accepted_culture = kalenjin
+			
+			any_pop = {
+		        limit = { NOT = { OR = { culture = british culture = indian } } }
+			    militancy = 8
+			    consciousness = 8
+		    }
+		    any_pop = {
+		        limit = { OR = { culture = british culture = indian } }
+			    militancy = -8
+			    consciousness = -8
+				ideology = { factor = 0.6 value = populist }
+		    }
+		}
+
+		ENG = { diplomatic_influence = { who = KEN value = -200 } }
+		ENG = { relation = { who = KEN value = -400 } }
+		
+		random_country = {
+			limit = { tag = TAN OR = { government = democracy government = democracy1 government = hms_government1 } is_vassal = no }
+			relation = { who = THIS value = 100 }
+			diplomatic_influence = { who = THIS value = 25 }
+		}
+        random_country = {
+			limit = { tag = UGA OR = { government = democracy government = democracy1 government = hms_government1 } is_vassal = no }
+			relation = { who = THIS value = 100 }
+			diplomatic_influence = { who = THIS value = 25 }
+		}
+		
+		war = {
+			target = KEN
+			attacker_goal = { casus_belli = colonial_war }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = no
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}	
+	
+}
+
+#1982 Coup
+country_event = {
+	id = 8029805
+	title = "$YEAR$ Kenyan Coup"
+	desc = EVT_8029805_DESC
+	picture = "independence_uganda" 
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = KEN
+		year = 1982
+		NOT = { has_global_flag = 1992_start_date_flag }
+		
+		ruling_party_ideology = conservative
+		
+		government = presidential_dictatorship
+		war = no
+		is_vassal = no
+		
+		has_global_flag = blocsenabled
+	}
+	
+	mean_time_to_happen = { months = 5 }
+	
+	option = {
+	  name = "The Putschists are arrested"
+	  prestige = 10
+	  
+	  any_pop = { militancy = 2 consciousness = 2 }
+	  
+      add_country_modifier = { name = revolution_chaos duration = 60 }
+	  
+	  ai_chance = { factor = 0.9 }
+    }
+	
+    option = {
+	  name = "Down with Moi!"
+	  
+	  government = proletarian_dictatorship
+	  ruling_party_ideology = communist
+	  country_event = 800052
+	  
+	  any_pop = {
+	    militancy = -4 
+		consciousness = 2
+        ideology = { factor = 0.4 value = communist }
+        ideology = { factor = 0.2 value = socialist }
+	  }
+	  
+	  random_country = {
+		limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes }
+		relation = { who = THIS value = 200 }
+		diplomatic_influence = { who = THIS value = 100 }
+	  }
+	  random_country = {
+		limit = { tag = CHI government = proletarian_dictatorship is_greater_power = yes }
+		relation = { who = THIS value = 200 }
+		diplomatic_influence = { who = THIS value = 25 }
+	  }
+	  random_country = {
+		limit = { tag = ENG OR = { government = hms_government government = hms_government1 } is_greater_power = yes }
+		relation = { who = THIS value = -400 }
+		diplomatic_influence = { who = THIS value = -200 }
+	  }
+	  random_country = {
+		limit = { tag = USA OR = { government = democracy government = presidential_dictatorship } is_greater_power = yes }
+		relation = { who = THIS value = -400 }
+		diplomatic_influence = { who = THIS value = -200 }
+	  }
+	  
+	  ai_chance = { factor = 0.1 }
+    }
+
+}
+
+#Democratization
+country_event = {
+	id = 8029806
+	title = "The case for Multi-Party Democracy?"
+	desc = EVT_8029806_DESC
+	picture = "CNG_democracy"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = KEN
+		OR = {
+		    AND = {
+			    year = 1990
+				NOT = { has_global_flag = 1992_start_date_flag }
+			    government = proletarian_dictatorship
+				OR = { 
+			        has_global_flag = perestroika_intention_global_flag
+			        RUS = { NOT = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } }
+			        NOT = { has_global_flag = blocsenabled }
+		        }
+			}
+			AND = {
+			    year = 2002
+				ruling_party_ideology = conservative
+			    government = presidential_dictatorship
+			}
+		}
+		
+		is_vassal = no
+		war = no
+	}
+
+	mean_time_to_happen = { months = 2 }
+
+	option = {
+		name = "Implement democratization"
+		prestige = 25
+		
+		government = democracy
+		country_event = 800054
+		
+		any_pop = { 
+			consciousness = -4 
+			militancy = -4
+			ideology = { factor = 0.10 value = conservative } 
+			ideology = { factor = 0.40 value = socialist } 
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "The time is not ripe yet"
+		prestige = -10
+        badboy = 1
+		
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
+		
 		ai_chance = { factor = 0.1 }
 	}
 

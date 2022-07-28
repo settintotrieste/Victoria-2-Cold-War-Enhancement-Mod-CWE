@@ -9,22 +9,25 @@ country_event = {
 
 	trigger = {
 		capital_scope = { continent = europe } # ENG or FBU
-		year = 1951
-		NOT = { year = 1990 }
+		year = 1953
+		NOT = { year = 1970 }
 		
 		OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
 		is_vassal = no
 		war = no
 		
-		2024 = { owner = { OR = { tag = THIS vassal_of = THIS } } } # Nairobi
-		2019 = { owner = { OR = { tag = THIS vassal_of = THIS } } } # Entebbe
-		2036 = { owner = { OR = { tag = THIS vassal_of = THIS } } } # Dar Es Salaam
+		is_our_vassal = TAN
+		TAN = { government = mandate_government }
+		is_possible_vassal = UGA
+		is_possible_vassal = KEN
 	}
+	
 	mean_time_to_happen = { months = 10 }
 
 	option = {
 		name = "Abandon the idea"
 		prestige = 25
+		
 		ai_chance = { factor = 0.95 }
 	}
 
@@ -42,7 +45,6 @@ country_event = {
 					is_core = UGA
 					is_core = RWA
 					is_core = BRN
-					AND = { is_core = SSU NOT = { is_core = SUD } }
 				}
 			}
 			add_core = XEF
@@ -68,74 +70,10 @@ country_event = {
 
 }
 
-#Tanganyika Autonomy
+#Tanganyika Independence Act 1961
 country_event = {
 	id = 8029699
-	title = "Self-Rule in Tanganyika"
-	desc = EVT_8029700_DESC
-	picture = "independence_tanganyika"
-
-	fire_only_once = yes
-
-	trigger = {
-		capital_scope = { continent = europe }
-		year = 1957 
-		NOT = { year = 1990 }
-		
-		OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
-		is_vassal = no
-		war = no
-		
-		#Owns Tanzania
-		is_possible_vassal = TAN
-	}
-
-	mean_time_to_happen = {
-		months = 12
-		modifier = {
-			factor = 0.1
-			any_owned_province = {
-				is_core = TAN
-				OR = {
-					has_province_modifier = nationalist_agitation
-					controlled_by_rebels = yes
-				}
-			}
-		}
-	}
-
-	option = {
-		name = EVT_8029700_A
-		prestige = 10
-		release_vassal = TAN
-		TAN = {
-			government = mandate_government
-			country_event = 800054
-			ruling_party_ideology = conservative
-		}
-		diplomatic_influence = { who = TAN value = 200 }
-		create_alliance = TAN
-		ai_chance = { factor = 0.9 }
-	}
-
-	option = {
-		name = EVT_8029700_B
-		prestige = -50
-		badboy = 5
-		TAN = { 
-			all_core = { 
-				add_province_modifier = { name = nationalist_agitation duration = 3650 } 
-				any_pop = { militancy = 10 consciousness = 10 }
-			} 
-		}
-		ai_chance = { factor = 0.1 }
-	}
-}
-
-# Independence of Tanganyika, 1961 historical
-country_event = {
-	id = 8029700
-	title = EVT_8029700_NAME # Independence of Tanganyika
+	title = "The $YEAR$ Tanganyika Independence Act"
 	desc = EVT_8029700_DESC
 	picture = "independence_tanganyika"
 
@@ -155,18 +93,31 @@ country_event = {
 	}
 
 	mean_time_to_happen = {
-		months = 12
+		months = 11
 		modifier = {
 			factor = 0.5
-			TAN = { ruling_party_ideology = nationalist }
+			TAN = { OR = { ruling_party_ideology = nationalist ruling_party_ideology = socialist } }
 		}
 	}
 
 	option = {
 		name = EVT_8029700_A
 		prestige = 10
+		badboy = -3
+		
 		release_vassal = TAN
-		TAN = { government = hms_government1 election = yes }
+		TAN = { 
+		    government = hms_government1 
+			ruling_party_ideology = socialist
+			any_pop = {
+			    limit = { NOT = { culture = british } }
+			    militancy = -8 
+				consciousness = -8
+			    ideology = { factor = 0.6 value = socialist }
+			}
+			country_event = 800054
+		}
+		
 		ai_chance = { factor = 0.9 }
 	}
 
@@ -174,10 +125,135 @@ country_event = {
 		name = EVT_8029700_B
 		prestige = -10
 		badboy = 5
+		
 		TAN = { 
 			add_country_modifier = { name = revolution_chaos duration = 3650 }
-			any_pop = { militancy = 10 consciousness = 10 } 
+			any_pop = { militancy = 10 consciousness = 10 }
 		}
+		
+		random_country = {
+			limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = -400 }
+		}
+        random_country = {
+			limit = { tag = CHI government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = -400 }
+		}			
+		random_country = {
+			limit = { tag = USA government = democracy is_greater_power = yes }
+			relation = { who = THIS value = -200 }
+		}
+		random_country = {
+			limit = { tag = FRA government = democracy is_greater_power = yes }
+			relation = { who = THIS value = -200 }
+		}
+		random_country = {
+			limit = { tag = KMT ruling_party_ideology = conservative is_vassal = no }
+			relation = { who = THIS value = -200 }
+			diplomatic_influence  = { who = THIS value = -200 }
+		}
+		
+		ai_chance = { factor = 0.07 }
+	}
+	
+	option = {
+		name = "Abolish the mandate"
+		prestige = -50
+		badboy = 25
+		
+		inherit = TAN
+		
+		any_pop = { limit = { culture = swahili } militancy = 10 consciousness = 10 }
+		
+		random_country = {
+			limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = -400 }
+		}
+        random_country = {
+			limit = { tag = CHI government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = -400 }
+		}			
+		random_country = {
+			limit = { tag = USA government = democracy is_greater_power = yes }
+			relation = { who = THIS value = -200 }
+		}
+		random_country = {
+			limit = { tag = FRA government = democracy is_greater_power = yes }
+			relation = { who = THIS value = -200 }
+		}
+		random_country = {
+			limit = { tag = KMT ruling_party_ideology = conservative is_vassal = no }
+			relation = { who = THIS value = -200 }
+		}
+		
+		ai_chance = { factor = 0.03 }
+	}
+}
+
+#1962 Constitution
+country_event = {
+	id = 8029700
+	title = "The $YEAR$ Tanganyka Constitution"
+	desc = EVT_8029700_DESC
+	picture = "independence_tanganyika"
+
+	fire_only_once = yes
+
+	trigger = {
+	    tag = TAN
+		year = 1962
+		NOT = { year = 1990 }
+		
+		OR = { government = hms_government government = hms_government1 }
+		is_vassal = no
+		war = no
+
+	}
+
+	mean_time_to_happen = { months = 9 }
+
+	option = {
+		name = "A Republican constitution!"
+		prestige = 25
+		
+		government = democracy
+		
+		any_pop = {
+			limit = { NOT = { culture = british } }
+			militancy = -2 
+		    consciousness = -2
+			ideology = { factor = 0.1 value = socialist }
+		}
+		
+		random_country = {
+			limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = 100 }
+			diplomatic_influence = { who = THIS value = 10 }
+		}
+        random_country = {
+			limit = { tag = CHI government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = 150 }
+			diplomatic_influence = { who = THIS value = 25 }
+		}			
+		random_country = {
+			limit = { tag = ENG OR = { government = hms_government government = hms_government1 } is_greater_power = yes }
+			relation = { who = THIS value = 50 }
+			diplomatic_influence = { who = THIS value = -25 }
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "A Monarchist constitution!"
+		prestige = 10
+				
+		random_country = {
+			limit = { tag = ENG OR = { government = hms_government government = hms_government1 } is_greater_power = yes }
+			relation = { who = THIS value = 200 }
+			diplomatic_influence = { who = THIS value = 50 }
+		}
+		
 		ai_chance = { factor = 0.1 }
 	}
 }
@@ -208,20 +284,23 @@ country_event = {
 		}
 	}
 
-	mean_time_to_happen = { months = 12 }
+	mean_time_to_happen = { months = 11 }
 
 	option = {
 		name = EVT_8029701_A
 		prestige = 10
+		
 		release_vassal = ZAN
-		diplomatic_influence = { who = ZAN value = -200 }
+		ZAN = { government = hms_government country_event = 800054 }
 		create_alliance = ZAN
+		
 		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
 		name = EVT_8029701_B
 		prestige = -10
+		
 		ZAN = { 
 			add_country_modifier = { name = revolution_chaos duration = 3650 } 
 			any_pop = { 
@@ -229,12 +308,13 @@ country_event = {
 				consciousness = 10 
 			}
 		}
+		
 		ai_chance = { factor = 0.1 }
 	}
 
 }
 
-# Zanzibar Revolution, immediate upon independence
+#Zanzibar Revolution, immediate upon independence
 country_event = {
 	id = 8029702
 	title = EVT_8029702_NAME # Zanzibar Revolution
@@ -247,41 +327,235 @@ country_event = {
 		tag = ZAN
 		NOT = { year = 1990 }
 		
+		government = hms_government
 		is_vassal = no
 		war = no
 		
-		2036 = { owner = { capital_scope = { continent = africa } is_vassal = no } }
+		OR = { 
+		    AND = { 
+			    exists = TAN 
+				TAN = { 
+					OR = { 
+					    government = democracy 
+					    government = proletarian_dictatorship 
+					    government = proletarian_dictatorship1 
+					    government = socialist_democracy 
+					    government = presidential_dictatorship
+                        government = nationalist_dictatorship
+                        government = populist_dictatorship						
+				    }
+                    is_vassal = no					
+				}
+			}
+			AND = { 
+			    exists = XEF 
+				XEF = { 
+					OR = { 
+					    government = democracy 
+					    government = proletarian_dictatorship 
+					    government = proletarian_dictatorship1 
+					    government = socialist_democracy 
+					    government = presidential_dictatorship
+                        government = nationalist_dictatorship
+                        government = populist_dictatorship						
+				    }
+                    is_vassal = no					
+				}
+			}
+		}
 	}
 
-	mean_time_to_happen = { months = 15 }
+	mean_time_to_happen = { months = 12 }
 
 	option = {
 		name = EVT_8029702_A
-		primary_culture = swahili
 		badboy = 10
-		add_country_modifier = { name = ethnic_cleansing duration = 350 }
-		random_list = {
-			50 = {
-				government = proletarian_dictatorship
-				country_event = 800042
-			}
-			50 = {
-				government = nationalist_dictatorship
-				country_event = 800040
-			}
+		
+		government = nationalist_dictatorship
+		ruling_party_ideology = socialist
+		country_event = 800042
+		
+		primary_culture = swahili
+		remove_accepted_culture = arab remove_accepted_culture = indian
+		
+		any_pop = {
+		    limit = { culture = swahili }
+			militancy = 6 
+			consciousness = 2
+			ideology = { factor = 0.25 value = communist }
+			ideology = { factor = 0.40 value = socialist }
+			ideology = { factor = 0.20 value = populist }
 		}
+		any_pop = { limit = { culture = arab } reduce_pop = 0.5 }
+		any_pop = { limit = { culture = indian } move_pop = 300 } #London
+		
+		random_country = {
+			limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = 200 }
+			diplomatic_influence = { who = THIS value = 25 }
+		}
+		random_country = {
+			limit = { tag = CHI government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = 200 }
+			diplomatic_influence = { who = THIS value = 25 }
+		}
+		random_country = {
+			limit = { tag = DDR OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
+			relation = { who = THIS value = 200 }
+		}
+		random_country = {
+			limit = { tag = CUB OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } is_vassal = no }
+			relation = { who = THIS value = 200 }
+		}
+		random_country = {
+			limit = { tag = ENG OR = { government = hms_government government = hms_government1 } is_greater_power = yes }
+			relation = { who = THIS value = -400 }
+			diplomatic_influence = { who = THIS value = -200 }
+		}
+		
+		add_country_modifier = { name = ethnic_cleansing duration = 350 }		
 		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
 		name = EVT_8029702_B
-		prestige = -10
-		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
 		any_pop = { 
 			limit = { culture = swahili } 
 			militancy = 10
 			consciousness = 10
+			ideology = { factor = 0.35 value = communist }
+			ideology = { factor = 0.40 value = socialist }
+			ideology = { factor = 0.25 value = populist }
 		}
+		
+		random_country = {
+			limit = { tag = ENG OR = { government = hms_government government = hms_government1 } is_greater_power = yes }
+			relation = { who = THIS value = 400 }
+			diplomatic_influence = { who = THIS value = 200 }
+		}
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#A Union with Tanganyka?
+country_event = {
+	id = 8029703
+	title = "A Union with Tanganyka?"
+	desc = EVT_8029703_DESC
+	picture = "zanzibar_revolution"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = ZAN
+		NOT = { year = 1990 }
+		
+		ruling_party_ideology = socialist
+		
+		government = nationalist_dictatorship
+		is_vassal = no
+		war = no
+		
+		OR = { 
+		    AND = { 
+			    exists = TAN 
+				TAN = { 
+					OR = { 
+					    government = democracy 
+					    government = proletarian_dictatorship 
+					    government = proletarian_dictatorship1 
+					    government = socialist_democracy 
+					    government = presidential_dictatorship
+                        government = nationalist_dictatorship
+                        government = populist_dictatorship						
+				    }
+                    is_vassal = no					
+				}
+			}
+			AND = { 
+			    exists = XEF 
+				XEF = { 
+					OR = { 
+					    government = democracy 
+					    government = proletarian_dictatorship 
+					    government = proletarian_dictatorship1 
+					    government = socialist_democracy 
+					    government = presidential_dictatorship
+                        government = nationalist_dictatorship
+                        government = populist_dictatorship						
+				    }
+                    is_vassal = no					
+				}
+			}
+		}
+	}
+
+	mean_time_to_happen = { months = 5 }
+
+	option = {
+		name = "Petition Dar es-Salaam"
+		prestige = 10
+		badboy = -5
+		
+		any_pop = {
+			militancy = -2 
+			consciousness = -4
+			ideology = { factor = 0.15 value = socialist }
+			ideology = { factor = 0.05 value = communist }
+		}
+		
+		random_country = {
+			limit = { tag = TAN is_vassal = no }
+			relation = { who = THIS value = 200 }
+			country_event = 8029720
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Surrender to the Umma"
+		
+		government = proletarian_dictatorship
+		ruling_party_ideology = communist
+		country_event = 800042
+		
+		add_accepted_culture = arab
+		
+		any_pop = { 
+			militancy = 2
+			consciousness = 2
+			ideology = { factor = 0.20 value = communist }
+		}
+		
+		random_country = {
+			limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = 200 }
+			diplomatic_influence = { who = THIS value = 50 }
+		}
+		random_country = {
+			limit = { tag = CHI government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = 200 }
+			diplomatic_influence = { who = THIS value = 100 }
+		}
+		random_country = {
+			limit = { tag = DDR OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
+			relation = { who = THIS value = 200 }
+		}
+		random_country = {
+			limit = { tag = CUB OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } is_vassal = no }
+			relation = { who = THIS value = 200 }
+		}
+		random_country = {
+			limit = { tag = ENG OR = { government = hms_government government = hms_government1 } is_vassal = no }
+			relation = { who = THIS value = -200 }
+			country_event = 8029704
+		}
+		
 		ai_chance = { factor = 0.1 }
 	}
 
@@ -293,62 +567,70 @@ country_event = {
 	title = EVT_8029720_NAME # Union of $COUNTRY$ and Zanzibar
 	desc = EVT_8029720_DESC
 	picture = "nwo2_tanzania"
-	fire_only_once = yes
-
-	trigger = {
-		owns = 2036
-		OR = {
-			primary_culture = swahili # TAN
-			accepted_culture = swahili #XEF
-		}
-		year = 1964
-		NOT = { year = 1990 }
-		exists = ZAN
-		ZAN = {
-			ai = yes
-			has_country_flag = xef_zan_union
-			primary_culture = swahili
-			is_vassal = no
-			war = no
-		}
-	}
-	mean_time_to_happen = {
-		months = 8
-		modifier = {
-			factor = 0.5
-			ZAN = {
-				OR = {
-					ruling_party_ideology = socialist
-					ruling_party_ideology = communist
-					ruling_party_ideology = communist_social
-				}
-			}
-		}
-	}
+	is_triggered_only = yes
 	
 	option = {
-		name = EVT_8029720_A
+		name = "Proclaim the United Republic of Tanganyika and Zanzibar" 
 		prestige = 50
+		
 		inherit = ZAN
+		2048 = { add_core = TAN }
 		
 		#Become Tanzania
-		random_owned = {
-			limit = { owner = { government = hms_government1 } }
-			owner = { government = democracy }
+		government = democracy1
+		
+		any_pop = { 
+			militancy = -6
+			consciousness = 1
+			ideology = { factor = 0.1 value = socialist }
 		}
 		
+		ai_chance = { factor = 0.9 }
+	}
+	option = {
+		name = "We don't want this"
+		prestige = -10
+		
 		ZAN = { 
-			all_core = { 
-				add_province_modifier = { name = nationalist_agitation duration = 3650 } 
-				any_pop = { militancy = 10 consciousness = 10 } 
-			} 
+			ruling_party_ideology = populist
+			any_pop = {
+			    limit = { culture = swahili }
+			    militancy = 4
+			    consciousness = 2
+			    ideology = { factor = 0.2 value = populist }
+		    }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+#Operation Shed
+country_event = {
+	id = 8029704
+	title = "Operation Shed"
+	desc = EVT_8029704_DESC
+	picture = "zanzibar_revolution"
+	is_triggered_only = yes
+	
+	option = {
+		name = "Greenlight the Operation" 
+		prestige = 10
+		badboy = 5
+		
+		war = {
+			target = ZAN
+			attacker_goal = { casus_belli = install_absolute_monarchy }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = yes
 		}
 		
 		ai_chance = { factor = 0.8 }
 	}
 	option = {
-		name = EVT_8029720_B
-		prestige = -25
+		name = "Redlight the Operation"
+		
 		ai_chance = { factor = 0.2 }
 	}
 	
@@ -359,39 +641,94 @@ country_event = {
 	id = 8029721
 	title = EVT_8029721_NAME # Arab monarchy petitions to join XEF for protection
 	desc = EVT_8029720_DESC
-	picture = "nwo2_tanzania"
+	picture = "independence_zanzibar"
 	fire_only_once = yes
 
 	trigger = {
-		owns = 2036
-		OR = {
-			accepted_culture = swahili #XEF
-		}
-		year = 1951
+	    tag = XEF
+		year = 1961
 		NOT = { year = 1990 }
+		
+		is_vassal = no
+			war = no
+		
+		owns = 2036
+		
 		exists = ZAN
 		ZAN = { 
 			ai = yes
-			accepted_culture = arab
+            
+			OR = { government = hms_government government = absolute_monarchy }
 			is_vassal = no
-			war = no
-			OR = {
-				government = hms_government
-				government = absolute_monarchy
-			}
+			war = no	
 		}
+		
 	}
 
 	option = {
 		name = EVT_8029720_A
+		prestige = 10
+		
 		inherit = ZAN
+		
 		add_accepted_culture = arab
+		
 		ai_chance = { factor = 0.8 }
 	}
+	
 	option = {
 		name = EVT_8029720_B
 		prestige = -5
+		
 		ai_chance = { factor = 0.2 }
 	}
+	
+}
+
+#Invasion of Uganda 1972
+country_event = {
+	id = 8029705
+	title = "The Invasion of Uganda" 
+	desc = EVT_8029705_DESC
+	picture = "uganda_tanzania_war" 
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = TAN
+		year = 1972 
+		NOT = { year = 1990 }
+		
+		UGA = { ruling_party_ideology = populist government = nationalist_dictatorship } 
+	
+		war = no
+		is_vassal = no
+	}
+	
+	option = {
+	  name = "Avoid Military confrontation"
+	  
+	  random_country = {
+		limit = { tag = UGA government = nationalist_dictatorship is_vassal = no }
+		relation = { who = THIS value = 25 }
+	  }
+	  
+	  ai_chance = { factor = 0.9 }
+	}
+	
+    option = {
+	  name = "Help our Ugandan brethens"
+	  prestige = 25
+	  badboy = 1
+	  
+	  war = { 
+	    target = UGA 
+		attacker_goal = { casus_belli = install_democracy } 
+		defender_goal = { casus_belli = status_quo }
+		call_ally = no
+	  }
+	  
+	  ai_chance = { factor = 0.1 }
+    }
 	
 }
