@@ -1,0 +1,429 @@
+###               ###
+### Guinea-Bissau ###
+###               ###
+
+#The Union between Guinea-Bissau and Cabo Verde - GUB
+country_event = {
+	id = 8011711
+	title = "The Guinea-Bissau and Cabo Verde Union"
+	desc = EVT_8011711_DESC
+	picture = "GUB_CPV_Unification"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = GUB
+		OR = { 
+			AND = { year = 1974 has_country_flag = GUB_Cabral_alive } 
+			AND = { year = 1984 NOT = { has_country_flag = GUB_Cabral_alive } NOT = { has_country_flag = GUB_Vieira_coup } } 
+		}
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		
+		ruling_party_ideology = communist
+		
+		CPV = {
+			exists = yes 
+			is_vassal = no 
+			war = no 
+			
+			ruling_party_ideology = communist 
+		}	
+	}
+
+	mean_time_to_happen = { 
+		months = 1 
+		modifier = { factor = 0.1 year = 1975 }
+	}
+
+	option = {
+		name = "Go along with the Unification project"
+		prestige = 25
+		
+		add_accepted_culture = pardo_portuguese
+		
+		1876 = { add_core = GUB }
+		
+		CPV = { country_event = 8011713 }
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "We shall continue our paths independently"
+		prestige = 5
+		
+		any_pop = { 
+			consciousness = 3
+			militancy = 1
+			ideology = { factor = 0.05 value = communist } 
+			ideology = { factor = 0.03 value = socialist } 
+			ideology = { factor = 0.1 value = nationalist } 
+		}
+		
+		random_country = {   
+			limit = { tag = CPV is_vassal = no }
+			relation = { who = THIS value = 100 }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#The Union between Guinea-Bissau and Cabo Verde - CPV
+country_event = {
+	id = 8011713
+	title = "The Guinea-Bissau and Cabo Verde Union"
+	desc = EVT_8011711_DESC
+	picture = "GUB_CPV_Unification"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "Go along with the Unification project"
+		
+		any_pop = { 
+			consciousness = -2 
+			militancy = -4
+			ideology = { factor = 0.1 value = communist } 
+			ideology = { factor = 0.03 value = communist_social } 
+			ideology = { factor = 0.05 value = socialist } 
+		}
+		
+		FROM = { 
+			prestige = 25 
+			any_pop = { 
+				consciousness = -2 
+				militancy = -4
+				ideology = { factor = 0.1 value = communist } 
+				ideology = { factor = 0.03 value = communist_social } 
+				ideology = { factor = 0.05 value = socialist } 
+			}
+			
+			inherit = CPV 
+		}
+
+		ai_chance = { factor = 0.99 }
+	}
+
+	option = {
+		name = "We shall continue our paths independently"
+		prestige = 5
+		
+		any_pop = { 
+			consciousness = 3
+			militancy = 1
+			ideology = { factor = 0.05 value = communist } 
+			ideology = { factor = 0.03 value = socialist } 
+			ideology = { factor = 0.1 value = nationalist } 
+		}
+		
+		random_country = {   
+			limit = { tag = GUB is_vassal = no }
+			relation = { who = THIS value = 100 }
+		}
+		
+		ai_chance = { factor = 0.01 }
+	}
+
+}
+
+#The 1980 Guinea-Bissau coup d'état
+country_event = {
+	id = 8011712
+	title = "The $YEAR$ Guinea-Bissau Coup d'Etat"
+	desc = EVT_8011712_DESC
+	picture = "Joao_Bernardo_Vieira"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = GUB
+		year = 1980
+		NOT = { year = 1990 }
+		
+		government = proletarian_dictatorship
+		is_vassal = no
+		war = no
+		
+		ruling_party_ideology = communist
+		
+		NOT = { has_country_flag = GUB_Cabral_alive }		
+	}
+
+	mean_time_to_happen = { 
+		months = 11 
+		modifier = { factor = 0.1 year = 1981 }
+	}
+
+	option = {
+		name = "General Vieira takes control"
+		
+		ruling_party_ideology = communist_social
+		
+		primary_culture = balanta		
+		remove_accepted_culture = black_portuguese
+		
+		any_pop = { 
+			consciousness = 1 
+			militancy = 2
+			ideology = { factor = 0.05 value = nationalist } 
+			ideology = { factor = 0.03 value = communist_social } 
+		}
+		
+		add_country_modifier = { name = purge_ongoing duration = 60 }
+		
+		random_country = {   
+			limit = { tag = CPV is_vassal = no ruling_party_ideology = communist }
+			relation = { who = THIS value = -150 }
+		}
+		
+		set_country_flag = GUB_Vieira_coup
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "General Secretary Cabral fends off the putschists"
+		
+		ruling_party_ideology = communist
+		
+		prestige = 5
+		
+		any_pop = { 
+			consciousness = -1
+			militancy = -4
+			ideology = { factor = 0.07 value = communist } 
+			ideology = { factor = 0.03 value = socialist } 
+		}
+		
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Democratization
+country_event = {
+	id = 8011717
+	title = "The Return of Multi-Party Democracy?"
+	desc = EVT_8011717_DESC
+	picture = "CNG_democracy"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = GUB
+		year = 1994
+		NOT = { year = 2004 }
+		
+		government = proletarian_dictatorship
+		is_vassal = no
+		war = no
+		
+		OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social }
+		
+		OR = { 
+			has_global_flag = perestroika_intention_global_flag 
+			RUS = { NOT = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } } 
+		}
+		
+		OR = { 
+			has_country_flag = GUB_Vieira_coup 
+			has_global_flag = 1992_start_date_flag 
+		}
+	}
+
+	mean_time_to_happen = { 
+		months = 7
+		modifier = { factor = 0.1 year = 1995 }
+	}
+
+	option = {
+		name = "Implement democratization"
+		prestige = 15
+		
+		government = democracy
+		country_event = 800054
+		ruling_party_ideology = socialist
+		
+		any_pop = { 
+			consciousness = -4 
+			militancy = -4
+			ideology = { factor = 0.30 value = big_tent } 
+			ideology = { factor = 0.35 value = socialist } 
+		}
+		
+		clr_country_flag = GUB_Vieira_coup
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "The time is not ripe yet"
+		prestige = -10
+		
+		any_pop = { 
+			consciousness = 4
+			militancy = 2
+			ideology = { factor = 0.03 value = nationalist } 
+			ideology = { factor = 0.05 value = conservative }
+			ideology = { factor = 0.10 value = big_tent }
+		}
+		
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+###            ###
+### Cabo Verde ###
+###            ###
+
+#Democratization
+country_event = {
+	id = 8011715
+	title = "The Return of Multi-Party Democracy?"
+	desc = EVT_8011715_DESC
+	picture = "CNG_democracy"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = CPV
+		year = 1990
+		NOT = { year = 2000 }
+		
+		government = proletarian_dictatorship
+		is_vassal = no
+		war = no
+		
+		OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social }
+		
+		OR = { 
+			has_global_flag = perestroika_intention_global_flag
+			RUS = { NOT = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } }
+			NOT = { has_global_flag = blocsenabled }
+		}
+	}
+
+	mean_time_to_happen = { 
+		months = 2
+		modifier = { factor = 0.1 year = 1991 }
+	}
+
+	option = {
+		name = "Implement democratization"
+		prestige = 15
+		
+		government = democracy
+		country_event = 800054
+		ruling_party_ideology = socialist
+		
+		any_pop = { 
+			consciousness = -4 
+			militancy = -4
+			ideology = { factor = 0.50 value = conservative } 
+			ideology = { factor = 0.25 value = socialist } 
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "The time is not ripe yet"
+		prestige = -10
+		
+		any_pop = { 
+			consciousness = 4
+			militancy = 2
+			ideology = { factor = 0.03 value = nationalist } 
+			ideology = { factor = 0.05 value = conservative }
+			ideology = { factor = 0.10 value = big_tent }
+		}
+		
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+### Sao Tome ###
+###   and    ###
+### Principe ###
+
+#Democratization
+country_event = {
+	id = 8011716
+	title = "The Return of Multi-Party Democracy?"
+	desc = EVT_8011716_DESC
+	picture = "CNG_democracy"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = STP
+		year = 1990
+		NOT = { year = 2000 }
+		
+		government = proletarian_dictatorship
+		is_vassal = no
+		war = no
+		
+		OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social }
+		
+		OR = { 
+			has_global_flag = perestroika_intention_global_flag
+			RUS = { NOT = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } }
+			NOT = { has_global_flag = blocsenabled }
+		}
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+		modifier = { factor = 0.1 year = 1991 }
+	}
+
+	option = {
+		name = "Implement democratization"
+		prestige = 15
+		
+		government = democracy
+		country_event = 800054
+		ruling_party_ideology = socialist
+		
+		any_pop = { 
+			consciousness = -4 
+			militancy = -4
+			ideology = { factor = 0.50 value = conservative } 
+			ideology = { factor = 0.25 value = socialist } 
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "The times are not ripe yet"
+		prestige = -10
+		
+		any_pop = { 
+			consciousness = 4
+			militancy = 2
+			ideology = { factor = 0.03 value = nationalist } 
+			ideology = { factor = 0.05 value = conservative }
+			ideology = { factor = 0.10 value = big_tent }
+		}
+		
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
