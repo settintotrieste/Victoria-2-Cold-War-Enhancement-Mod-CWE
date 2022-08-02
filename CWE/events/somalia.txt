@@ -1,4 +1,5 @@
-country_event = { # Trust Territory of Somaliland
+#Trust Territory of Somaliland
+country_event = { 
 	id = 8014100
 	title = EVT_8014100_NAME
 	desc = EVT_8014100_DESC
@@ -6,17 +7,20 @@ country_event = { # Trust Territory of Somaliland
 	fire_only_once = yes
 
 	trigger = {
-		capital_scope = { continent = europe } # ENG or FBU
-		owns = 1869
+	    year = 1950
 		NOT = { year = 1990 }
+		capital_scope = { continent = europe } # ENG or FBU
+		
+		owns = 1869 #Mogadishu
+		is_possible_vassal = SOM
 	}
 
-	mean_time_to_happen = {
-		months = 36
-	}
+	mean_time_to_happen = { days = 1 }
 
 	option = {
 		name = EVT_8014100_A
+		prestige = 25
+		
 		any_owned = {
 			limit = {
 				is_core = SOM
@@ -25,42 +29,98 @@ country_event = { # Trust Territory of Somaliland
 			}
 			secede_province = ITA
 		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Ignore the UN"
+		prestige = -100
+		badboy = 25
+		
+		any_pop = { limit = { culture = somali } militancy = 10 consciousness = 10 }
+		
+		random_country = {
+			limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = -400 }
+		}
+        random_country = {
+			limit = { tag = CHI government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = -400 }
+		}			
+		random_country = {
+			limit = { tag = USA government = democracy is_greater_power = yes }
+			relation = { who = THIS value = -200 }
+		}
+		random_country = {
+			limit = { tag = FRA government = democracy is_greater_power = yes }
+			relation = { who = THIS value = -200 }
+		}
+		random_country = {
+			limit = { tag = KMT ruling_party_ideology = conservative is_vassal = no }
+			relation = { who = THIS value = -200 }
+		}
+		
+		random_country = {
+			limit = { tag = ITA OR = { government = democracy government = hms_government1 government = presidential_dictatorship } is_vassal = no }
+			relation = { who = THIS value = -400 }
+		}
+		
+		ai_chance = { factor = 0.1 }
 	}
 }
+
+#Somalia if Italy is communist
 country_event = {
   id = 8014101
-  title = EVT_8014100_NAME
+  title = "The Question of Somalia"
   desc = EVT_8014100_DESC
   picture = "somalia_trust_territory"
   fire_only_once = yes
 
   trigger = {
-    tag = ITA
-	owns = 1869
-	year = 1949 NOT = { year = 1990 }
-	NOT = { exists = SOM }
+    tag = ENG
+	NOT = { year = 1990 }
+	
+	ITA = { government = proletarian_dictatorship is_vassal = no owns = 1869 }
   }
 
-  mean_time_to_happen = { months = 1 }
+  mean_time_to_happen = { days = 1 }
 
   option = {
-    name = EVT_8014101_A
-	release_vassal = SOM
-	1873 = { owner = { diplomatic_influence = { who = SOM value = 200 } } } # Berbera, ENG
-	create_vassal = SOM # some strange bug makes SOM UK vassal!!
-SOM = { government = mandate_government country_event = 800054 }
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = "Stick to the status quo"
-	prestige_factor = -0.25
-	badboy = 20
-	ai_chance = { factor = 0 }
+    name = "The Mandate is back in our hands"
+	prestige = 50
+	
+    ITA = {
+	    any_owned = { limit = { is_core = SOM } secede_province = ENG }
+	}
+	
+	random_country = {
+		limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes }
+		relation = { who = THIS value = -100 }
+	}
+    random_country = {
+		limit = { tag = CHI government = proletarian_dictatorship is_greater_power = yes }
+		relation = { who = THIS value = -100 }
+	}			
+	random_country = {
+		limit = { tag = USA government = democracy is_greater_power = yes }
+		relation = { who = THIS value = 100 }
+	}
+	random_country = {
+		limit = { tag = FRA government = democracy is_greater_power = yes }
+		relation = { who = THIS value = 100 }
+	}
+	random_country = {
+	    limit = { tag = KMT ruling_party_ideology = conservative is_vassal = no }
+		relation = { who = THIS value = 100 }
+	}
+	
   }
 
 }
-country_event = { # Somalia Independence
+
+country_event = { #Somalia Independence
   id = 8014102
   title = EVT_8014102_NAME
   desc = EVT_8014102_DESC
@@ -68,30 +128,69 @@ country_event = { # Somalia Independence
   fire_only_once = yes
 
   trigger = {
-	tag = ITA
-	exists = SOM
-	is_our_vassal = SOM
-	SOM = { government = mandate_government }
-    year = 1960 NOT = { year = 1990 }
+	capital_scope = { continent = europe }
+	year = 1960
+	NOT = { year = 1990 }
+	
+	owns = 1869 #Mogadishu
+	is_possible_vassal = SOM
   }
 
-  mean_time_to_happen = { months = 1 }
+  mean_time_to_happen = { months = 3 }
 
   option = {
     name = EVT_8014102_A
-	release_vassal = SOM
-	SOM = { government = democracy }
+	prestige = 25
+	
+	release = SOM
+	SOM = { 
+	    government = democracy
+		ruling_party_ideology = socialist
+		any_pop = {
+			limit = { culture = somali }
+			militancy = -8 
+		    consciousness = -8
+			ideology = { factor = 0.6 value = socialist }
+		}
+		country_event = 800054
+	}
 
-random_country = { limit = { owns = 1873 } country_event = 8014103 }
+    random_country = { limit = { owns = 1873 } country_event = 8014103 }
 
 	ai_chance = { factor = 1 }
   }
+  
   option = {
-    name = "Stick to the status quo"
-	prestige_factor = -0.25
-	badboy = 20
+    name = "Disregard the UN"
+	prestige = -100
+	badboy = 25
+		
+	any_pop = { limit = { culture = somali } militancy = 10 consciousness = 10 }
+		
+	random_country = {
+		limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes }
+		relation = { who = THIS value = -400 }
+	}
+    random_country = {
+		limit = { tag = CHI government = proletarian_dictatorship is_greater_power = yes }
+		relation = { who = THIS value = -400 }
+	}			
+	random_country = {
+		limit = { tag = USA government = democracy is_greater_power = yes }
+		relation = { who = THIS value = -200 }
+	}
+	random_country = {
+		limit = { tag = FRA government = democracy is_greater_power = yes }
+		relation = { who = THIS value = -200 }
+	}
+	random_country = {
+	    limit = { tag = KMT ruling_party_ideology = conservative is_vassal = no }
+		relation = { who = THIS value = -200 }
+	}
+		
 	ai_chance = { factor = 0 }
   }
+  
 }
 country_event = {
   id = 8014103
@@ -103,30 +202,36 @@ country_event = {
   option = {
     name = EVT_8014103_A
 	prestige = 10
+	
 	any_owned = { limit = { OR = { is_core = SOM is_core = DJI } } secede_province = SOM } # DJI for FBU
-	ai_chance = { factor = 0.8 }
+	
+	ai_chance = { factor = 0.9 }
   }
+  
   option = {
     name = EVT_8014103_B
+	prestige = 5
+	
 	release = SML
-
-SML = { government = hms_government country_event = 800054 }
-SML = { set_country_flag = former_colonial_nation }
+    SML = { government = hms_government1 country_event = 800054 }
+	diplomatic_influence = { who = SML value = 200 }
 
 	any_owned = { limit = { is_core = ETH } secede_province = SML } # In case Ogaden Occupation event never fired
 	any_owned = { limit = { is_core = DJI } secede_province = SML } # If FBU
-	badboy = 2
-	prestige = -5
-	diplomatic_influence = { who = SML value = 200 }
-	ai_chance = { factor = 0.2 }
+	
+	ai_chance = { factor = 0.07 }
   }
+  
   option = {
     name = EVT_8014103_C
+	prestige = -25
 	badboy = 5
-	prestige = -100
+	
 	any_pop = { limit = { culture = somali } militancy = 8.0  consciousness = 5.0 }
-	ai_chance = { factor = 0 }
+	
+	ai_chance = { factor = 0.03 }
   }
+  
 }
 
 #1969 Coup, Somali Democratic Republic
@@ -138,26 +243,95 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-    	tag = SOM
+    tag = SOM
+	year = 1969
+	NOT = { year = 1990 }
+	
+	government = democracy
 	is_vassal = no
 	war = no
-	NOT = { government = proletarian_dictatorship }
-    	year = 1969 NOT = { year = 1990 }
+	
   }
 
   mean_time_to_happen = { months = 10 }
 
   option = {
-    name = EVT_8014117_A
+    name = EVT_8014117_A	
 	government = proletarian_dictatorship 
 	country_event = 800052
 	ruling_party_ideology = communist
+	
+	any_pop = { limit = { culture = somali } ideology = { factor = 0.25 value = communist } }
+		
+	random_country = {
+		limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes }
+		relation = { who = THIS value = 400 }
+		diplomatic_influence = { who = THIS value = 200 }
+	}
+	
 	ai_chance = { factor = 0.9 }
   }
 
   option = {
-    name = "Stick to the status quo"
-add_country_modifier = { name = revolution_chaos duration = 3650 }
+    name = "Fend off the plotters"
+	government = presidential_dictatorship 
+	country_event = 800050
+	
+	any_pop = { limit = { culture = somali } consciousness = 4 }
+	
+    add_country_modifier = { name = revolution_chaos duration = 3650 }
+	
+	ai_chance = { factor = 0.1 }
+  }
+
+}
+
+#1978 Attempted Coup
+country_event = {
+  id = 8014122
+  title = "$YEAR$ Somali Coup"
+  desc = EVT_8014122_DESC
+  picture = "SOM_siad_barre"
+  fire_only_once = yes
+
+  trigger = {
+    tag = SOM
+	year = 1978
+	NOT = { year = 1990 }
+	
+	ruling_party_ideology = communist_social
+	is_vassal = no
+	war = no
+	
+	NOT = { owns = 1865 owns = 1866 owns = 1867 }
+	
+	truce_with = ETH
+  }
+
+  mean_time_to_happen = { months = 1 }
+  
+  option = {
+    name = "Execute the plotters"
+	
+	any_pop = { limit = { culture = somali } ideology = { factor = 0.25 value = communist_social } }
+	
+    add_country_modifier = { name = revolution_chaos duration = 3650 }
+	
+	ai_chance = { factor = 0.9 }
+  }
+
+  option = {
+    name = "The plotters succeed"
+	ruling_party_ideology = communist
+	
+	any_pop = { limit = { culture = somali } militancy = -4 consciousness = -4 }
+		
+	random_country = {
+		limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes }
+		relation = { who = THIS value = 400 }
+		diplomatic_influence = { who = THIS value = 200 }
+	}
+	
 	ai_chance = { factor = 0.1 }
   }
 
@@ -168,31 +342,61 @@ country_event = {
   id = 8014121
   title = EVT_8014121_NAME
   desc = EVT_8014121_DESC
-  picture = "nwo2_mohamed_barre"
+  picture = "SOM_siad_barre"
   fire_only_once = yes
 
   trigger = {
     	tag = SOM
     	year = 1991
-	is_vassal = no
-	war = no
-	government = proletarian_dictatorship
-  }
+		NOT = { has_global_flag = 1992_start_date }
+		
+		ruling_party_ideology = communist_social
+		
+		government = proletarian_dictatorship
+	    is_vassal = no
+	    war = no
+	
+    }
 
   mean_time_to_happen = { months = 1 }
 
   option = {
-    name = "End the tyranny of communism"
+    name = "End the tyranny of Siad Barre"
+	prestige = 25
+	badboy = -10
+	
 	government = democracy
 	country_event = 800054
-	ruling_party_ideology = big_tent
-	ai_chance = { factor = 0.8 }
+	ruling_party_ideology = nationalist
+	
+	release = SML
+	
+	any_pop = {
+	    limit = { culture = somali }
+		militancy = 8 
+		consciousness = 8
+		ideology = { factor = 0.6 value = traditionalist }
+	}
+	
+	add_country_modifier = { name = revolution_chaos duration = 3650 }
+	
+	ai_chance = { factor = 0.9 }
   }
 
   option = {
-    name = "Stick to the status quo"
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-	ai_chance = { factor = 0.2 }
+    name = "Cling on to power"
+	badboy = 5
+	
+	any_pop = {
+	    limit = { culture = somali }
+		militancy = 9 
+		consciousness = 9
+		ideology = { factor = 0.6 value = traditionalist }
+	}
+	
+    add_country_modifier = { name = revolution_chaos duration = 3650 }
+	
+	ai_chance = { factor = 0.1 }
   }
 
 }
