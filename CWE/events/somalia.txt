@@ -401,6 +401,97 @@ country_event = {
 
 }
 
+#Djibouti 1958 Referendum
+country_event = { 
+  id = 8014151
+  title = "$YEAR$ Somaliland Referendum"
+  desc = EVT_8014151_DESC
+  picture = "djibouti_independence"
+  fire_only_once = yes
+
+  trigger = {
+    tag = FRA
+    year = 1958
+	NOT = { year = 1990 }
+	
+	is_vassal = no
+	war = no
+	
+	is_possible_vassal = DJI
+	SOM = { exists = yes is_vassal = no }
+  }
+
+  mean_time_to_happen = { months = 6 }
+  
+  option = {
+    name = "For!"
+	
+	any_pop = { limit = { culture = somali }  militancy = 2  consciousness = 8 }
+	
+	ai_chance = { factor = 0.9 }
+  }
+  
+  option = {
+    name = "Against!"
+	
+	any_owned = { limit = { OR = { is_core = SOM is_core = DJI } } secede_province = SOM }
+	
+	random_country = {
+		limit = { tag = SOM is_vassal = no }
+		relation = { who = THIS value = 100 }
+		diplomatic_influence = { who = THIS value = 10 }
+	}
+	
+	ai_chance = { factor = 0.1 }
+  }
+  
+}
+
+#Djibouti 1958 Referendum
+country_event = { 
+  id = 8014152
+  title = "$YEAR$ Somaliland Referendum"
+  desc = EVT_8014152_DESC
+  picture = "djibouti_independence"
+  fire_only_once = yes
+
+  trigger = {
+    tag = FRA
+    year = 19567
+	NOT = { year = 1990 }
+	
+	is_vassal = no
+	war = no
+	
+	is_possible_vassal = DJI
+	SOM = { exists = yes is_vassal = no }
+  }
+
+  mean_time_to_happen = { months = 6 }
+  
+  option = {
+    name = "Remain a Territory!"
+	
+	any_pop = { limit = { culture = somali }  militancy = 2  consciousness = 8 }
+	
+	ai_chance = { factor = 0.9 }
+  }
+  
+  option = {
+    name = "Independence!"
+	
+	any_owned = { limit = { OR = { is_core = SOM is_core = DJI } } secede_province = SOM }
+	
+	random_country = {
+		limit = { tag = SOM is_vassal = no }
+		relation = { who = THIS value = 100 }
+		diplomatic_influence = { who = THIS value = 10 }
+	}
+	
+	ai_chance = { factor = 0.1 }
+  }
+  
+}
 
 country_event = { # Djibouti Independence
   id = 8014150
@@ -411,37 +502,113 @@ country_event = { # Djibouti Independence
 
   trigger = {
     tag = FRA
-    year = 1977 NOT = { year = 1990 }
-	owns = 1875 # Djibouti
+    year = 1977 
+	NOT = { year = 1990 }
+	
+	is_vassal = no
 	war = no
+	
+	is_possible_vassal = DJI
   }
 
   mean_time_to_happen = { months = 6 }
 
   option = {
     name = EVT_8014150_A
-	release = DJI
-	diplomatic_influence = { who = DJI value = 200 }
-	create_alliance = DJI
 	prestige = 10
-	ai_chance = { factor = 0.7 }
-  }
-  option = {
-    name = "Grant a loose confederation with France instead"
-	release_vassal = DJI
+	
+	release = DJI
+	DJI = {
+	    government = democracy
+		ruling_party_ideology = socialist
+		any_pop = {
+			limit = { culture = somali }
+			militancy = -8 
+		    consciousness = -8
+			ideology = { factor = 0.6 value = socialist }
+		}
+		country_event = 800054
+	}
 	diplomatic_influence = { who = DJI value = 200 }
 	create_alliance = DJI
-	prestige = -50
-	badboy = 2.5
-	DJI = { government = colonial_government }
-DJI = { add_country_modifier = { name = revolution_chaos duration = 3650 } }
-	ai_chance = { factor = 0.2 }
+	
+	ai_chance = { factor = 0.9 }
   }
+  
+  option = {
+    name = "Let the Territory join Somalia"
+	prestige = 5
+	
+	any_owned = { limit = { OR = { is_core = SOM is_core = DJI } } secede_province = SOM }
+	
+	random_country = {
+		limit = { tag = SOM is_vassal = no }
+		relation = { who = THIS value = 100 }
+		diplomatic_influence = { who = THIS value = 10 }
+	}
+	
+	ai_chance = { factor = 0.05 }
+  }
+  
   option = {
     name = EVT_8014150_B
+	prestige = -50
 	badboy = 5
-	prestige = -100
-	any_pop = { limit = { location = { is_core = DJI } }  militancy = 8  consciousness = 5.0 }
-	ai_chance = { factor = 0.1 }
+	
+	any_pop = { limit = { location = { is_core = DJI } }  militancy = 8  consciousness = 5 }
+	
+	ai_chance = { factor = 0.05 }
   }
+  
+}
+
+#One Party State
+country_event = {
+	id = 8014153
+	title = "Outlawing the Opposition"
+	desc = EVT_8014153_DESC
+	picture = "djibouti_independence" 
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = DJI
+		year = 1981
+		NOT = { year = 199\ }
+		
+		ruling_party_ideology = socialist
+		
+		war = no
+		is_vassal = no
+	}
+	
+	mean_time_to_happen = { months = 3 }
+	
+    option = {
+	  name = "Long live President Aptidon!"
+	  
+	  government = presidential_dictatorship 
+	  country_event = 800050
+	  
+	  any_pop = { militancy = 3 consciousness = 4 }
+	  
+	  ai_chance = { factor = 0.9 }
+    }
+
+	option = {
+	  name = "We can still avoid that"
+	  ruling_party_ideology = conservative
+	  
+	  any_pop = { 
+		militancy = 6 
+		consciousness = -2 
+		ideology = { factor = 0.2 value = conservative }
+		ideology = { factor = 0.1 value = big_tent }
+	  }
+	  
+      add_country_modifier = { name = revolution_chaos duration = 1825 }
+	  
+	  ai_chance = { factor = 0.1 }
+    }
+	
 }
