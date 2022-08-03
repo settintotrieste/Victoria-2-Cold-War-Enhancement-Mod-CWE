@@ -18,16 +18,26 @@ country_event = {
 		
 		is_possible_vassal = SRL
 		
-		#Dominion of India			
-#		HND = { 
-#			exists = yes 
-#			is_vassal = no 
-#			OR = { 
-#				government = hms_government 
-#				government = hms_government1 
-#			} 
-#		}
-#	}
+		#Dominion of India	
+		OR = {
+			RAJ = { 
+				exists = yes 
+				is_vassal = no 
+				OR = { 
+					government = hms_government 
+					government = hms_government1 
+				} 
+			}	
+			HND = { 
+				exists = yes 
+				is_vassal = no 
+				OR = { 
+					government = hms_government 
+					government = hms_government1 
+				} 
+			}
+		}
+	}
 
 	mean_time_to_happen = { months = 2 }
 
@@ -70,17 +80,36 @@ country_event = {
 		ai_chance = { factor = 0.2 }
 	}
   
-# 	option = {
-#		name = "Hand Ceylon to India"
-#		relation = { who = HND value = 200 }
-#		any_owned = { 
-#			limit = { is_core = SRL } 
-#			secede_province = HND 
-#		} 
-#		ai_chance = { 
-#			factor = 0.1
-#		}
-#	}
+	option = {
+		name = "Hand Ceylon to India"
+		any_pop = { 
+			limit = { culture = sinhala }
+			militancy = 10
+			consciousness = 10
+			ideology = {
+				factor = 0.3
+				value = nationalist
+			} 
+		}
+		release = SRL
+		random_country = { limit = { tag = HND owns = 1236 NOT = { exists = RAJ } } inherit = SRL }
+		HND = {
+			any_owned = { 
+				limit = { is_core = SRL }
+				add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+			}	
+		}
+		random_country = { limit = { tag = RAJ } inherit = SRL }
+		RAJ = {
+			any_owned = { 
+				limit = { is_core = SRL }
+				add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+			}
+		}
+		ai_chance = { 
+			factor = 0.1
+		}
+	}
 
 	option = {
 		name = "Ceylon shall remain British Ceylon!"
@@ -88,8 +117,9 @@ country_event = {
 		badboy = 3
 	
 		any_owned = { 
-			limit = { is_core = SRL } 
-			any_pop = { 
+			limit = { is_core = SRL }
+			any_pop = {
+				limit = { NOT = { OR = { culture = english culture = british } } }
 				militancy = 10
 				consciousness = 10
 				ideology = { factor = 0.15 value = nationalist }
