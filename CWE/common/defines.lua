@@ -116,9 +116,9 @@ economy = {
     MAX_FACTORY_MONEY_SAVE = 2500,    -- how much money is stored maximum in a factory.
     SMALL_DEBT_LIMIT = 20000,
     FACTORY_UPGRADE_EMPLOYEE_FACTOR = 0.7, -- determines how close to the employee limit we need to be before "upgrade all" will upgrade/expand a given factory (1 = 100%).
-    RGO_SUPPLY_DEMAND_FACTOR_HIRE_HI = 0.50,    -- how fast pops are Hired when there is a high demand
-    RGO_SUPPLY_DEMAND_FACTOR_HIRE_LO = 0.25,    -- how fast pops are Hired when there is a medium demand
-    RGO_SUPPLY_DEMAND_FACTOR_FIRE = 0.00,        -- how fast pops are Fired when there is a low demand
+    RGO_SUPPLY_DEMAND_FACTOR_HIRE_HI = 0.50,    --0.2 how fast pops are Hired when there is a high demand
+    RGO_SUPPLY_DEMAND_FACTOR_HIRE_LO = 0.25,    --0.02 how fast pops are Hired when there is a medium demand
+    RGO_SUPPLY_DEMAND_FACTOR_FIRE = 0.001,        --0.2 how fast pops are Fired when there is a low demand
     EMPLOYMENT_HIRE_LOWEST = 0.01,                -- we Hire pops no slower then x% of total required per day
     EMPLOYMENT_FIRE_LOWEST = 0.01,                -- we Fire pops no slower then x% of total required per day
     TRADE_CAP_LOW_LIMIT_LAND = 0.05,                 -- the lowest % the slider can go for land units
@@ -626,10 +626,10 @@ pops = {
     PROMOTION_ASSIMILATION_CHANCE = 0.01,
     LUXURY_THRESHOLD = 500,
     BASE_GOODS_DEMAND = 0.8,
-	BASE_POPGROWTH = 0.0002,
-	MIN_LIFE_RATING_FOR_GROWTH = 30,
-	LIFE_RATING_GROWTH_BONUS = 0.00002,
-	LIFE_NEED_STARVATION_LIMIT = 0.1,
+    BASE_POPGROWTH = 0.0002,
+    MIN_LIFE_RATING_FOR_GROWTH = 30,
+    LIFE_RATING_GROWTH_BONUS = 0.00002,
+    LIFE_NEED_STARVATION_LIMIT = 0.1,
 
     MIL_LACK_EVERYDAY_NEED = 0.1,
     MIL_HAS_EVERYDAY_NEED = -0.1,

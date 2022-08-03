@@ -54,6 +54,7 @@ annex_all_colonial_cores
 annex_un_occupied_territories
 free_allied_cores
 install_democracy
+event_install_democracy
 assert_hegemony
 add_to_sphere 
 take_from_sphere 
@@ -489,7 +490,7 @@ conquest = {
 					has_country_modifier = un_king1
 					has_country_modifier = un_king2
 					
-					AND = { government = populist_dictatorship ruling_party_ideology = nationalist }
+					AND = { government = nationalist_dictatorship ruling_party_ideology = nationalist }
 				} 
 			}
 			AND = {
@@ -3860,6 +3861,95 @@ install_communist_gov_cb = {
 	
 		country_event = 1610022
 		THIS = { set_country_flag = friendly_communist_regime }
+		
+		THIS = { set_country_flag = this_won_CB }
+		set_country_flag = this_lost_CB
+		
+	}
+}
+
+event_install_democracy = {
+	sprite_index = 19
+	is_triggered_only = yes
+	months = 12
+	crisis = no
+	constructing_cb = no
+
+	badboy_factor = 1.5
+	prestige_factor = 5
+	peace_cost_factor = 50
+	penalty_factor = 1
+
+	break_truce_prestige_factor = 1
+	break_truce_infamy_factor = 1
+	break_truce_militancy_factor = 1
+	truce_months = 48
+	
+	good_relation_prestige_factor = 1
+	good_relation_infamy_factor = 1
+	good_relation_militancy_factor = 1
+
+	can_use = {
+
+		THIS = { NOT = { has_country_modifier = no_more_war } }
+
+		THIS = { NOT = { has_country_flag = renounced_war_rights } }
+		NOT = { AND = { has_country_flag = un_armistice THIS = { has_country_flag = un_armistice } } }
+
+		THIS = { 
+			OR = { 
+				AND = { has_country_flag = truman_doctrine has_global_flag = blocsenabled }
+				AND = {
+					OR = { war_policy = jingoism war_policy = pro_military } 
+
+					NOT = { OR = { is_greater_power = yes is_secondary_power = yes ai = no } }
+
+					OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
+				}
+			} 	
+		}
+
+		is_vassal = no
+		civilized = yes
+		
+		NOT = { is_our_vassal = THIS }
+		NOT = { government = hms_government } 
+		NOT = { government = hms_government1 }
+		NOT = { government = democracy } 
+		NOT = { government = democracy1 }
+	}
+	
+	po_remove_prestige = yes
+
+	war_name = WAR_INSTALL_NEW_GOV_NAME
+	
+	on_add = {
+	
+		set_country_flag = this_is_aggressor
+	
+		move_issue_percentage = {
+			from = jingoism 
+			to = pro_military
+			value = 0.05
+		}
+	}
+	
+	on_po_accepted = {
+	
+		#Enforce an unconditional surrender
+		country_event = 1610129
+	
+		THIS = {
+			set_country_flag = friendly_democracy
+			any_country = {
+				limit = {
+				NOT = { government = hms_government } NOT = { government = democracy1 }
+					NOT = { government = democracy } NOT = { government = hms_government1 }
+				}
+				relation = { who = THIS value = -50 }
+			}
+		}
+		country_event = 96085
 		
 		THIS = { set_country_flag = this_won_CB }
 		set_country_flag = this_lost_CB

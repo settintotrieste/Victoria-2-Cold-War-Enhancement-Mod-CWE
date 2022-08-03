@@ -1,6 +1,6 @@
 #TODO make this about drugs,not alcohol
 
-#Temperance League
+#Drug Policy
 country_event = {
 	id = 100
 	title = "EVTNAME100"
@@ -13,6 +13,7 @@ country_event = {
 			OR = {
 				has_country_modifier = libertine_culture
 				has_country_modifier = anti_drug
+				penal_system = rehabilitation
 				poor_strata_life_needs = 0.9
 			}
 		}
@@ -28,7 +29,7 @@ country_event = {
 		}
 		modifier = {
 			factor = 0.9
-			beverages = 50
+			beverage_tobacco = 50
 		}
 		modifier = {
 			factor = 0.9
@@ -59,7 +60,7 @@ country_event = {
 	}
 }
 
-#Drug liberalization
+#Drug Abuse
 country_event = {
 	id = 110
 	title = "EVTNAME110"
@@ -89,7 +90,7 @@ country_event = {
 		}
 		modifier = {
 			factor = 1.5
-			has_country_modifier = anti_drug
+			penal_system = rehabilitation
 		}
 	}
 	
@@ -100,8 +101,8 @@ country_event = {
 				is_colonial = no
 			}
 			add_province_modifier = {
-				name = gangs
-				duration = -1
+				name = destitution_and_poverty
+				duration = 1825
 			}
 		}
 	}
@@ -119,7 +120,7 @@ country_event = {
 	}
 }
 
-#Drug Gangs
+#Police Brutality
 province_event = {
 	id = 120
 	title = "EVTNAME120"
@@ -127,6 +128,10 @@ province_event = {
 
 	trigger = {
 		has_province_modifier = gangs
+		owner = {
+			NOT = { minorities_reform = minorities_affirmative_action }
+			has_country_modifier = anti_drug
+		}
 	}
 
 	mean_time_to_happen = {
@@ -163,11 +168,11 @@ province_event = {
 	desc = "EVTDESC130"
 	
 	trigger = {
-		has_province_modifier = gangs
+		has_province_modifier = destitution_and_poverty
 		state_scope = {
 			any_owned_province = {
 				NOT = {
-					has_province_modifier = destitution_and_poverty
+					has_province_modifier = gangs
 				}
 			}
 		}
@@ -192,6 +197,10 @@ province_event = {
 			average_consciousness = 5
 		}
 		modifier = {
+			factor = 1.5
+			penal_system = rehabilitation
+		}
+		modifier = {
 			factor = 0.9
 			unemployment = 0.15
 		}
@@ -199,7 +208,6 @@ province_event = {
 	
 	option = {
 		name = "EVTOPTA130"
-		remove_province_modifier = gangs
 		state_scope = {
 			any_pop = {
 				militancy = 3
@@ -213,11 +221,11 @@ province_event = {
 			random_owned = {
 				limit = {
 					NOT = {
-						has_province_modifier = destitution_and_poverty
+						has_province_modifier = gangs
 					}
 				}
 				add_province_modifier = {
-					name = destitution_and_poverty
+					name = gangs
 					duration = 3650
 				}
 			}
@@ -300,7 +308,7 @@ province_event = {
 	}
 }
 
-#Religious Vigilante 
+#Anti Drug Vigilantes 
 country_event = {
 	id = 150
 	title = "EVTNAME150"
@@ -309,12 +317,12 @@ country_event = {
 
 	trigger = {
 		civilized = yes
-		OR = {
-			religion = sunni
-			religion = shiite
+		any_owned_province = {
+			has_province_modifier = gangs
 		}
 		moralism = 10
-		traditionalist = 20
+		NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
+		OR = { populist = 5 traditionalist = 5 nationalist = 5 } #socialist = 5
 	}
 	
 	mean_time_to_happen = {
@@ -345,6 +353,12 @@ country_event = {
 	
 	option = {
 		name = "EVTOPTA150"
+		any_owned = {
+			limit = {
+				is_colonial = no
+			}
+			add_crime = citizen_guard
+		}
 		random_state = {
 			limit = {
 				is_colonial = no
@@ -380,31 +394,36 @@ country_event = {
 		
 	trigger = {
 		civilized = yes
-		NOT = {
-			OR = {
-				religion = sunni
-				religion = shiite
-			}
-		}
+		year = 1965
+		NOT = { war_policy = pacifism }
 		has_country_modifier = anti_drug
+		average_militancy = 4
 	}
 
 	mean_time_to_happen = {
-		months = 300
+		months = 400
+		modifier = {
+			factor = 1.5
+			pacifism = 20
+		}
+		modifier = {
+			factor = 0.8
+			jingoism = 20
+		}
 		modifier = {
 			factor = 0.9
 			moralism = 20
 		}
 		modifier = {
 			factor = 0.9
-			OR = { conservative = 50 big_tent = 50 }
+			OR = { conservative = 50 big_tent = 50 traditionalist = 20 populist = 20 }
 		}
 		modifier = {
-			factor = 0.9
+			factor = 1.2
 			average_consciousness = 5
 		}
 		modifier = {
-			factor = 1.5
+			factor = 0.9
 			average_militancy = 5
 		}
 	}
@@ -413,6 +432,7 @@ country_event = {
 		name = "EVTOPTA160"
 		random_state = {
 			any_owned = {
+				limit = { has_province_modifier = gangs }
 				remove_province_modifier = gangs
 			}
 			poor_strata = {
@@ -448,11 +468,12 @@ country_event = {
 	id = 170
 	title = "EVTNAME170"
 	desc = "EVTDESC170"
-	picture = "Demonstration"	
+	picture = "Demonstration"
 	
 	trigger = {
 		civilized = yes
-		progressive = 20
+		has_country_modifier = anti_drug
+		penal_system = rehabilitation
 	}
 
 	mean_time_to_happen = {
@@ -469,7 +490,7 @@ country_event = {
 		}
 		modifier = {
 			factor = 0.8
-			progressive = 50
+			progressive = 20
 		}
 		modifier = {
 			factor = 1.5
@@ -481,7 +502,16 @@ country_event = {
 	
 	option = {
 		name = "EVTOPTA170"
+		remove_country_modifier = anti_drug
+		any_owned = {
+			limit = {
+				#is_colonial = no
+				has_province_modifier = gangs
+			}
+			remove_province_modifier = gangs
+		}
 		random_state = {
+			random_pop = { limit = { type = { capitalists } money = 1000 } }
 			poor_strata = {
 				militancy = -1
 				consciousness = 2
@@ -541,17 +571,9 @@ country_event = {
 	
 	option = {
 		name = "EVTOPTA190"
-		remove_country_modifier = anti_drug
-		random_owned = {
-			limit = {
-				NOT = {
-					has_province_modifier = gangs
-				}
-			}
-			add_province_modifier = {
-				name = gangs
-				duration = -1
-			}
+		upper_house = {
+			ideology = progressive
+			value = 0.05
 		}
 	}
 	option = {
@@ -560,7 +582,7 @@ country_event = {
 			any_pop = {
 				scaled_militancy = {
 					factor = 3
-					ideology = liberal
+					ideology = progressive
 				}
 			}
 		}
