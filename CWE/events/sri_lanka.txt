@@ -18,14 +18,10 @@ country_event = {
 		
 		is_possible_vassal = SRL
 		
-		#Dominion of India	
+		#Dominion of India exists
 		OR = {
-			RAJ = { 
-				exists = yes 
-			}	
-			HND = { 
-				exists = yes 
-			}
+			RAJ = { exists = yes }	
+			HND = { exists = yes }
 		}
 	}
 
@@ -33,7 +29,8 @@ country_event = {
 
 	option = {
 		name = "Set them free!"
-		prestige = 25
+		
+		#Release Ceylon
 		release = SRL 
 		SRL = { 
 			set_country_flag = full_independance
@@ -50,28 +47,44 @@ country_event = {
 				} 
 			}
 		}
+		
 		relation = { who = SRL value = 200 }
 		diplomatic_influence = { who = SRL value = 200 }
-		ai_chance = { factor = 0.7 }
+		
+		ai_chance = { factor = 0.8 }
 	}
 
 	option = {
 		name = "Delay independence"
-		prestige = -50
-		badboy = 2
+		prestige = -25
+		badboy = 2.5
+		
+		#Create SRL dominion
 		release_vassal = SRL 
 		SRL = { 
 			government = colonial_government
 			country_event = 800054
 			ruling_party_ideology = big_tent
-			add_country_modifier = { name = revolution_chaos duration = 3650 } 
+			
+			add_country_modifier = { name = revolution_chaos duration = 3650 }
+			any_pop = { 
+				ideology = {
+					factor = 0.10
+					value = nationalist
+				} 
+			}
 		}
+		
+		relation = { who = SRL value = 200 }
 		diplomatic_influence = { who = SRL value = 200 }
-		ai_chance = { factor = 0.2 }
+		
+		ai_chance = { factor = 0.1 }
 	}
   
 	option = {
-		name = "Hand Ceylon to India"
+		name = "Hand Ceylon to India instead"
+		
+		#SRL pops are furious!
 		any_pop = { 
 			limit = { culture = sinhala }
 			militancy = 10
@@ -81,43 +94,69 @@ country_event = {
 				value = nationalist
 			} 
 		}
+		
+		#Default is that SRL is released like in option 1
 		release = SRL
-		random_country = { limit = { tag = HND owns = 1236 NOT = { exists = RAJ } } inherit = SRL }
-		HND = {
-			any_owned = { 
-				limit = { is_core = SRL }
-				add_province_modifier = { name = nationalist_agitation duration = 3650 } 
-			}	
+		SRL = { 
+			set_country_flag = full_independance
+			set_country_flag = former_colonial_nation
+			
+			government = hms_government
+			country_event = 800054 
+			ruling_party_ideology = conservative
 		}
-		random_country = { limit = { tag = RAJ } inherit = SRL }
-		RAJ = {
+		
+		#SRL goes to HND if HND owns Delhi
+		random_country = { 
+			limit = { 
+				tag = HND 
+				owns = 1236 
+				NOT = { exists = RAJ } 
+			} 
+			inherit = SRL 
 			any_owned = { 
 				limit = { is_core = SRL }
 				add_province_modifier = { name = nationalist_agitation duration = 3650 } 
 			}
 		}
-		ai_chance = { 
-			factor = 0.1
+		
+		#SRL goes to RAJ if RAJ owns Delhi
+		random_country = { 
+			limit = { 
+				tag = RAJ 
+				owns = 1236 
+			} 
+			inherit = SRL
+			any_owned = { 
+				limit = { is_core = SRL }
+				add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+			}
 		}
+		
+		ai_chance = { factor = 0.05 }
+		
 	}
 
 	option = {
-		name = "Ceylon shall remain British Ceylon!"
+		name = "Ceylon shall remain British!"
 		prestige = -50
-		badboy = 3
-	
+		badboy = 5
+		
+		#SRL pops are furious!
 		any_owned = { 
 			limit = { is_core = SRL }
 			any_pop = {
-				limit = { NOT = { OR = { culture = english culture = british } } }
+				limit = { NOT = { is_culture_group = THIS } }
 				militancy = 10
 				consciousness = 10
 				ideology = { factor = 0.15 value = nationalist }
 			} 
 			add_province_modifier = { name = nationalist_agitation duration = 3650 } 
 		}
-		ai_chance = { factor = 0 }
+		
+		ai_chance = { factor = 0.05 }
 	}
+	
 }
 
 #Sri Lankan Civil War
