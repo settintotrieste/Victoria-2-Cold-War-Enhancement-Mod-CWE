@@ -1,4 +1,4 @@
-CWE v2 0.80.33.7 branch
+CWE v2 0.80.33.8 branch
 
 third_generation_jet_fighters Image: A left front view of two multinational variable-swept-winged Tornado aircraft taking off at the Farnborough Air Show. https://en.wikipedia.org/wiki/File:RAF_Tornado_F2.JPEG Author: TSGT BOYD BELCHER
 
