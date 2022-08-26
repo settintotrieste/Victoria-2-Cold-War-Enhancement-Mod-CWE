@@ -196,6 +196,8 @@ country_event = {
 		NOT = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } }
 
 		civilized = yes
+		
+		#Must not have no voting or no political parties
 		NOT = { vote_franschise = none_voting }
 		NOT = { political_parties = parties_not_allowed }
 	}
@@ -206,17 +208,28 @@ country_event = {
 	
 	option = {
 		name = "EVTOPTA60050"
-
-		#Transition to Democracy
-		random_owned = { 
-			limit = { owner = { NOT = { government = absolute_monarchy } } }
-			owner = { government = democracy }
-		}
-
-		#Transition to Constitutional Monarchy
+		
+		#Transition to Constitutional Monarchy if THIS is absolute_monarchy
 		random_owned = { 
 			limit = { owner = { government = absolute_monarchy } }
 			owner = { government = hms_government }
+		}
+
+		#Transition to Republic if THIS is not absolute_monarchy
+		random_owned = { 
+			limit = { 
+				owner = { 
+					OR = {
+						government = proletarian_dictatorship
+						government = proletarian_dictatorship1
+						government = presidential_dictatorship
+						government = populist_dictatorship
+						government = nationalist_dictatorship
+						government = theocracy
+					}
+				} 
+			}
+			owner = { government = democracy }
 		}
 
 	}
@@ -255,9 +268,12 @@ country_event = {
 	
 	trigger = {
 		government = absolute_monarchy
+		
+		civilized = yes
+		
+		#Must not have no voting or no political parties
 		NOT = { vote_franschise = none_voting }
-		NOT = { political_parties = parties_not_allowed }	
-		civilized = yes	
+		NOT = { political_parties = parties_not_allowed }
 	}
 	
 	mean_time_to_happen = {
