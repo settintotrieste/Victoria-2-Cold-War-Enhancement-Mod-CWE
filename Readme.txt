@@ -1,3 +1,24 @@
+DO NOT MERGE THIS. Experimental fork for testing
+
+This is one of the forks I've been maintaining offline. The fork contains bugfixes and content from me and Historical-Project-Mod ( https://github.com/arkhometha/Historical-Project-Mod ) NWO mod ( https://github.com/simsulla/nwomod ) and probably others I've forgotten. It's a test submod and isn't intended for merger in its current undocumented and badly atributed state.
+
+WIP credits
+Converted Liberian primary culture back to afro_american and updated superstate decisions
+Liberian primary culture was afro_american in core game
+Combined karachay and balkar cultures
+Merged kabarday into circassians
+Abkhazia tweaks
+socialism_fascism event tweaks
+Ported over Burkina Faso and Chad primary culture from Historical Project Mod
+Fixed Angola, Cameroon and Gabon's primary cultures
+Ported over Gabon primary culture from Historical Project Mod
+Ported Senegal's primary culture from Historical Project Mod
+Fixed Guinea Niger and Togo's primary culture and added black_french to Ivory Coast
+Fixed Benin's primary and tweaked secondary culture
+Started adapting the British and English/white_anglo culture changes from NWO
+Adapted Chiapas and Yucatan tags from HPM mod
+Copied Scottish names from HPM
+
 ### What are needed for CWE to run ###
 
 Both the Heart of Darkness + A House Divided DLCs
