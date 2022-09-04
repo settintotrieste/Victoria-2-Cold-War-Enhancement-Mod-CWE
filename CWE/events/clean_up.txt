@@ -183,6 +183,8 @@ country_event = {
 	picture = "democracy_cleanup"
 	
 	trigger = {
+	
+		#Dictatorial republican government
 		OR = {
 			government = provisional_government
 			government = proletarian_dictatorship
@@ -190,52 +192,23 @@ country_event = {
 			government = presidential_dictatorship
 			government = populist_dictatorship
 			government = nationalist_dictatorship
-			government = absolute_monarchy
 			government = theocracy
+			
+			#Absolute monarchy becomes republic if centrists, conservative and traditionalists are not in power, otherwise becomes a HMS gov
+			AND = {
+				government = absolute_monarchy
+				NOT = { OR = { ruling_party_ideology = traditionalist ruling_party_ideology = conservative ruling_party_ideology = big_tent } }
+			}
+			
 		}
 
+		#Communists create socialist republic instead
 		NOT = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } }
-
-		civilized = yes
+		
+		#Must have voting, political parties and not ruling party only UH
 		NOT = { vote_franschise = none_voting }
 		NOT = { political_parties = parties_not_allowed }
-	}
-	
-	mean_time_to_happen = {
-		months = 1
-	}
-	
-	option = {
-		name = "EVTOPTA60050"
-
-		#Transition to Democracy
-		random_owned = { 
-			limit = { owner = { NOT = { government = absolute_monarchy } } }
-			owner = { government = democracy }
-		}
-
-		#Transition to Constitutional Monarchy
-		random_owned = { 
-			limit = { owner = { government = absolute_monarchy } }
-			owner = { government = hms_government }
-		}
-
-	}
-}
-
-country_event = {
-	id = 60051
-	title = "EVTNAME60050"
-	desc = "EVTDESC60050"
-	picture = "democracy_cleanup"
-	
-	trigger = {
-		government = socialist_democracy
-		civilized = yes
-		NOT = { has_country_flag = disable_demo_event }
-		political_parties = parties_allowed
-		vote_franschise = universal_voting
-		political_opinions = free_opinion
+		NOT = { political_opinions = ruling_party_opinion }
 	}
 	
 	mean_time_to_happen = {
@@ -249,6 +222,33 @@ country_event = {
 }
 
 country_event = {
+	id = 60051
+	title = "EVTNAME60050"
+	desc = "EVTDESC60050"
+	picture = "democracy_cleanup"
+	
+	trigger = {
+		government = socialist_democracy
+		
+		NOT = { has_country_flag = disable_demo_event }
+		
+		political_parties = parties_allowed
+		vote_franschise = universal_voting
+		political_opinions = free_opinion
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+	}
+	
+	option = {
+		name = "EVTOPTA60050"
+		government = democracy
+	}
+	
+}
+
+country_event = {
 	id = 60060
 	title = "EVTNAME60060"
 	desc = "EVTDESC60060"
@@ -256,9 +256,14 @@ country_event = {
 	
 	trigger = {
 		government = absolute_monarchy
+		
+		#Absolute monarchy becomes Constitutional monarchy if centrists, conservative and traditionalists are in power, otherwise becomes a republic
+		OR = { ruling_party_ideology = traditionalist ruling_party_ideology = conservative ruling_party_ideology = big_tent }
+		
+		#Must have voting, political parties and not ruling party only UH
 		NOT = { vote_franschise = none_voting }
-		NOT = { political_parties = parties_not_allowed }	
-		civilized = yes	
+		NOT = { political_parties = parties_not_allowed }
+		NOT = { political_opinions = ruling_party_opinion }
 	}
 	
 	mean_time_to_happen = {
@@ -269,6 +274,7 @@ country_event = {
 		name = "EVTOPTA60070"
 		government = hms_government
 	}
+	
 }
 
 country_event = {
@@ -305,6 +311,7 @@ country_event = {
 		name = "EVTOPTA60080"
 		government = presidential_dictatorship
 	}
+	
 }
 
 country_event = {
@@ -485,11 +492,25 @@ country_event = {
 	picture = "Unite"
 	
 	trigger = {
-		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+		
+		#Dictatorial government
+		OR = {
+			government = proletarian_dictatorship
+			government = proletarian_dictatorship1
+			government = presidential_dictatorship
+			government = populist_dictatorship
+			government = nationalist_dictatorship
+			government = absolute_monarchy
+			government = theocracy
+		}
+		
+		#Communists in charge
+		OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social }
+		
+		#Must have voting, political parties and not ruling party only UH
 		NOT = { vote_franschise = none_voting }
 		NOT = { political_parties = parties_not_allowed }
 		NOT = { political_opinions = ruling_party_opinion }
-		OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social }
 	}
 	
 	mean_time_to_happen = {
