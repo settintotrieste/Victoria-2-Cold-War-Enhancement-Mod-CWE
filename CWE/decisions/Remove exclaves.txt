@@ -1,0 +1,92 @@
+political_decisions = {
+
+	take_landlocked_provinces = {
+		picture = "take_landlocked_provinces"
+        potential = {
+			any_neighbor_country = {
+				is_vassal = no
+				any_owned_province = {
+					is_core = THIS
+					has_province_modifier = landlocked_province
+					NOT = { 
+						any_neighbor_province = {
+							NOT = { owned_by = THIS }
+							NOT = { controlled_by = THIS }
+						}
+					}
+				}
+			}
+			
+			NOT = { has_country_flag = take_landlocked_provinces_fired }
+			
+        }
+
+        allow = {
+			war = no
+			is_vassal = no
+			NOT = { is_disarmed = yes }
+			has_recently_lost_war = no
+			NOT = { war_policy = pacifism }
+			OR = { ai = no war_policy = jingoism }
+			
+			#Target country conditions
+			any_neighbor_country = {
+				
+				is_vassal = no
+				NOT = { truce_with = THIS }
+				
+				OR = {
+					NOT = { stronger_army_than = THIS }
+					is_disarmed = yes
+					revolt_percentage = 0.25
+					THIS = { ai = no }
+				}
+				
+				any_owned_province = {
+					is_core = THIS
+					has_province_modifier = landlocked_province
+					NOT = { 
+						any_neighbor_province = {
+							NOT = { owned_by = THIS }
+							NOT = { controlled_by = THIS }
+						}
+					}
+				}
+
+			}
+		
+			OR = { ai = no NOT = { badboy = 0.8 } }
+			
+        }
+
+        effect = {
+		
+			set_country_flag = take_landlocked_provinces_fired
+			
+			badboy = 5
+		
+			random_country = {
+				limit = {
+				
+					neighbour = THIS
+					is_vassal = no
+					NOT = { truce_with = THIS }
+					
+					any_owned_province = {
+						is_core = THIS
+						has_province_modifier = landlocked_province
+						NOT = { 
+							any_neighbor_province = {
+								NOT = { owned_by = THIS }
+								NOT = { controlled_by = THIS }
+							}
+						}
+					}
+				}
+				country_event = 6016827
+			}
+        }
+        ai_will_do = { factor = 1 }
+    }
+
+}

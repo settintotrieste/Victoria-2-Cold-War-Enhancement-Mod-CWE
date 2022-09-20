@@ -1,0 +1,134 @@
+political_decisions = {
+
+	form_ottoman_empire = {
+		picture = "form_ottoman_empire"
+		potential = {
+			tag = TUR
+			NOT = { OR = { government = hms_government government = hms_government1 government = absolute_monarchy } }
+		}
+		
+		allow = {
+			is_vassal = no
+			war = no
+			election = no
+			
+			#Not a theocracy
+			NOT = { government = theocracy }
+			
+			#Traditionalist majority
+			ruling_party_ideology = traditionalist
+			pop_majority_ideology = traditionalist
+		}
+
+		effect = {
+			prestige = 50
+			
+			#Democracy becomes a Constitutional Monarchy
+			random_owned = {
+				limit = { 
+					owner = { 
+						OR = { 
+							government = socialist_democracy 
+							government = democracy 
+							government = democracy1 
+							government = hms_government 
+							government = hms_government1 
+							government = sar_government 
+							government = colonial_government 
+							government = mandate_government 
+						} 
+					} 
+				}
+				owner = { 
+					government = hms_government
+				}
+			}
+			
+			#Dictatorship becomes an absolute monarchy
+			random_owned = {
+				limit = { 
+					owner = { 
+						NOT = {
+							OR = { 
+								government = socialist_democracy 
+								government = democracy 
+								government = democracy1 
+								government = hms_government 
+								government = hms_government1 
+								government = sar_government 
+								government = colonial_government 
+								government = mandate_government 
+							} 
+						}
+					} 
+				}
+				owner = { 
+					government = absolute_monarchy
+				}
+			}
+			
+			#Rename Istanbul
+			capital = 860
+			860 = { change_province_name = "Constantinople" }
+			
+			#Militancy
+			any_pop = {
+				scaled_militancy = { factor = -10 ideology = traditionalist }
+				scaled_militancy = { factor = -5 ideology = conservative }
+				scaled_militancy = { factor = 10 ideology = liberal }
+				scaled_militancy = { factor = 5 ideology = big_tent }
+				scaled_militancy = { factor = 10 ideology = progressive }
+				scaled_militancy = { factor = 5 ideology = socialist }
+				scaled_militancy = { factor = 10 ideology = communist }
+				scaled_militancy = { factor = 10 ideology = communist_social }
+				scaled_militancy = { factor = -10 ideology = nationalist }
+				scaled_militancy = { factor = -5 ideology = populist }
+			}
+			
+		}
+
+		ai_will_do = {
+			factor = 1
+			modifier = { factor = 0 has_recently_lost_war = no }
+			modifier = { factor = 0 NOT = { average_militancy = 7 } }
+		}
+	}
+	
+	reclaim_the_levant_TUR = {
+		picture = "reclaim_the_levant_TUR"
+		potential = {
+			tag = TUR
+			
+			#Ottoman Empire
+			OR = { government = hms_government government = hms_government1 government = absolute_monarchy }
+			
+			NOT = { has_global_flag = reclaim_the_levant }
+		}
+		allow = {
+			war = no
+			is_vassal = no
+			election = no
+			
+			#Reactionary Government
+			OR = { ruling_party_ideology = traditionalist ruling_party_ideology = nationalist ruling_party_ideology = populist }
+		}
+		effect = {
+			prestige = 70
+			badboy = 15
+			
+			set_global_flag = reclaim_the_levant
+			
+			IRQ = { all_core = { add_core = THIS } }
+			SYR = { all_core = { add_core = THIS } }
+			ISR = { all_core = { add_core = THIS } }
+			PAL = { all_core = { add_core = THIS } }
+			JOR = { all_core = { add_core = THIS } }
+			LEB = { all_core = { add_core = THIS } }
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = { factor = 0 NOT = { badboy = 0.2 } }
+		}
+	}
+
+}

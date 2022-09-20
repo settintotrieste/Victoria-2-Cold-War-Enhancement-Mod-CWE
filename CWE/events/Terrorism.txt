@@ -26,6 +26,15 @@ country_event = {
 	option = {
 		name = EVT_1511100_A # "Terrorists beware!"
 		set_global_flag = 1963_un_terror_convention
+		
+		set_country_flag = 1963_un_terror_convention
+		add_country_modifier = { name = terrorists_definition duration = -1 }
+		any_country = {
+			set_country_flag = 1963_un_terror_convention
+			any_pop = { militancy = -3 consciousness = -3 }
+			add_country_modifier = { name = terrorists_definition duration = -1 }
+		}
+		
 	}
 }
 
@@ -51,6 +60,13 @@ country_event = {
 	option = {
 		name = EVT_1511101_A
 		set_global_flag = 1970_un_terror_convention
+		
+		set_country_flag = 1970_un_terror_convention
+		any_country = {
+			set_country_flag = 1970_un_terror_convention
+			any_pop = { militancy = -3 consciousness = -3 }
+		}
+		
 	}
 }
 
@@ -76,6 +92,12 @@ country_event = {
 	option = {
 		name = EVT_1511102_A
 		set_global_flag = 1971_un_terror_convention
+		
+		set_country_flag = 1971_un_terror_convention
+		any_country = {
+			set_country_flag = 1971_un_terror_convention
+			any_pop = { militancy = -3 consciousness = -3 }
+		}
 	}
 }
 
@@ -101,6 +123,12 @@ country_event = {
 	option = {
 		name = EVT_1511103_A
 		set_global_flag = 1973_un_terror_convention
+		
+		set_country_flag = 1973_un_terror_convention
+		any_country = {
+			set_country_flag = 1973_un_terror_convention
+			any_pop = { militancy = -3 consciousness = -3 }
+		}
 	}
 }
 
@@ -126,6 +154,12 @@ country_event = {
 	option = {
 		name = EVT_1511104_A # "Hostage takers are pathetic cowards"
 		set_global_flag = 1979_un_terror_convention
+		
+		set_country_flag = 1979_un_terror_convention
+		any_country = {
+			set_country_flag = 1979_un_terror_convention
+			any_pop = { militancy = -3 consciousness = -3 }
+		}
 	}
 }
 
@@ -151,6 +185,12 @@ country_event = {
 	option = {
 		name = EVT_1511105_A
 		set_global_flag = 1988_un_terror_convention
+		
+		set_country_flag = 1988_un_terror_convention
+		any_country = {
+			set_country_flag = 1988_un_terror_convention
+			any_pop = { militancy = -3 consciousness = -3 }
+		}
 	}
 }
 
@@ -186,6 +226,12 @@ country_event = {
 		set_global_flag = 1979_un_terror_convention
 		set_global_flag = 1988_un_terror_convention
 		set_global_flag = 1991_un_terror_convention
+		
+		set_country_flag = 1991_un_terror_convention
+		any_country = {
+			set_country_flag = 1991_un_terror_convention
+			any_pop = { militancy = -3 consciousness = -3 }
+		}
 	}
 }
 
@@ -211,6 +257,12 @@ country_event = {
 	option = {
 		name = EVT_1511107_A # "Explosive news for the terrorists"
 		set_global_flag = 1997_un_terror_convention
+		
+		set_country_flag = 1997_un_terror_convention
+		any_country = {
+			set_country_flag = 1997_un_terror_convention
+			any_pop = { militancy = -3 consciousness = -3 }
+		}
 	}
 }
 
@@ -236,6 +288,12 @@ country_event = {
 	option = {
 		name = EVT_DESC_1511108
 		set_global_flag = 1999_un_terror_convention
+		
+		set_country_flag = 1999_un_terror_convention
+		any_country = {
+			set_country_flag = 1999_un_terror_convention
+			any_pop = { militancy = -3 consciousness = -3 }
+		}
 	}
 }
 
@@ -272,17 +330,19 @@ province_event = {
 	#picture = "un_counter_terrorism_committee"
 
 	trigger = {
-		owner = { NOT = { immigration_policy = nobody_gets_out } }
 		controlled_by_rebels = no
 		is_colonial = no
 		has_national_minority = yes
 		average_militancy = 3
+		
 		NOT = { has_province_modifier = terrorist_chaos }
 		NOT = { has_province_modifier = terror_strike_impending }
+		
+		owner = { NOT = { has_country_modifier = national_tragedy } }
 	}
 
 	mean_time_to_happen = {
-		months = 60
+		months = 365
 
 		#Decrease
 		modifier = {
@@ -326,20 +386,25 @@ province_event = {
 
 		#Reduce based on reforms
 		modifier = {
-			factor = 1.2
+			factor = 1.25
 			owner = { security_reform = security_service }
 		}
 		modifier = {
-			factor = 1.4
+			factor = 1.5
 			owner = { security_reform = security_data_cohesion }
 		}
 		modifier = {
-			factor = 1.6
+			factor = 2
 			owner = { security_reform = security_clearance_for_gov_services }
 		}
 		modifier = {
-			factor = 1.8
+			factor = 4
 			owner = { security_reform = preemptive_security_actions }
+		}
+		
+		modifier = {
+			factor = 2
+			owner = { NOT = { immigration_policy = nobody_gets_out } }
 		}
 
 		#Reduce based on year
@@ -606,6 +671,12 @@ province_event = {
 			factor = 1.1
 			owner = { nationalvalue = nv_order }
 		}
+		
+		#Increase, country specific conditions
+		modifier = {
+			factor = 0.2
+			owner = { has_country_modifier = years_of_lead }
+		}
 	}
 
 	option = {
@@ -666,17 +737,46 @@ province_event = {
 			}
 		}
 		add_province_modifier = { name = terrorist_chaos duration = 365 }
+				ai_chance = {
+					factor = 0.5
+					modifier = {
+						factor = 1.5
+						ruling_party_ideology = conservative
+						}
+					modifier = {
+						factor = 1.5
+						ruling_party_ideology = nationalist
+						}
+					modifier = {
+						factor = 1.5
+						ruling_party_ideology = traditionalist
+					}
+				}
 	}
 
 	option = {
 		name = "Guns kill people"
 		state_scope = { any_pop = {
-				dominant_issue = { value = pro_military factor = 0.05 }
+				dominant_issue = { value = pacifism factor = 0.05 }
 				militancy = 2
 				consciousness = -2
 			} }
 		add_province_modifier = { name = terrorist_chaos duration = 365 }
-		ai_chance = { factor = 0 }
+				ai_chance = {
+					factor = 0.5
+					modifier = {
+						factor = 1.5
+						ruling_party_ideology = socialist
+						}
+					modifier = {
+						factor = 1.5
+						ruling_party_ideology = communist
+						}
+					modifier = {
+						factor = 1.5
+						ruling_party_ideology = communist_social
+					}
+				}
 	}
 }
 
@@ -697,18 +797,25 @@ province_event = {
 
 	option = {
 		name = "Pay the ransom"
-		owner = { money = -5000 }
+		owner = { money = -100000 }
 		add_province_modifier = { name = terrorist_chaos duration = 365 }
 		owner = { country_event = { id = 1511120 days = 2 } }
+		ai_chance = {
+			factor = 0.2
+				modifier = {
+					factor = 0
+					NOT = { money = 100000 }
+				}
+		}
 	}
 
 	option = {
 		name = "Attempt a hostage rescue operation"
 		random_list = {
-			1 =	{ owner = { prestige = 10 } state_scope = { any_pop = { consciousness = -1 } } }
-			1 =	{ owner = { prestige = -20 } state_scope = { any_pop = { militancy = -1 } } owner = { country_event = { id = 1511120 days = 2 } } }
+			1 =	{ owner = { prestige = 10 } state_scope = { any_pop = { consciousness = -1 } } add_province_modifier = { name = terrorist_chaos duration = 274 } }
+			1 =	{ owner = { prestige = -20 } state_scope = { any_pop = { militancy = -1 } } add_province_modifier = { name = terrorist_chaos duration = 456 } owner = { country_event = { id = 1511120 days = 2 } } }
 		}
-		add_province_modifier = { name = terrorist_chaos duration = 365 }
+		ai_chance = { factor = 0.8 }
 	}
 }
 
@@ -733,8 +840,8 @@ province_event = {
 	option = {
 		name = "Oh, no"
 		owner = { prestige = -15 }
-		add_province_modifier = { name = terrorist_chaos duration = 450 }
-		owner = { add_country_modifier = { name = shipping_insecurity duration = 60 } }
+		add_province_modifier = { name = terrorist_chaos duration = 547 }
+		owner = { add_country_modifier = { name = shipping_insecurity duration = 90 } }
 		state_scope = { any_pop = { dominant_issue = { value = jingoism factor = 0.5 } } }
 	}
 
@@ -761,8 +868,8 @@ province_event = {
 	option = {
 		name = "Oh, no"
 		owner = { prestige = -15 }
-		add_province_modifier = { name = terrorist_chaos duration = 365 }
-		owner = { add_country_modifier = { name = shipping_insecurity duration = 30 } }
+		add_province_modifier = { name = terrorist_chaos duration = 547 }
+		owner = { add_country_modifier = { name = shipping_insecurity duration = 90 } }
 	}
 
 }
@@ -787,12 +894,20 @@ province_event = {
 		name = "We pray for the victims"
 		add_province_modifier = { name = terrorist_chaos duration = 365 }
 		state_scope = { any_pop = { dominant_issue = { value = moralism factor = 0.5 } militancy = -1.5 } }
+		ai_chance = {
+			factor = 0.5
+				modifier = {
+					factor = 1.5
+					war_policy = pacifism
+				}
+		}
 	}
 
 	option = {
 		name = "The community must come together"
 		add_province_modifier = { name = terrorist_chaos duration = 365 }
 		state_scope = { any_pop = { dominant_issue = { value = moralism factor = 0.25 } } }
+		ai_chance = { factor = 0.5 }
 	}
 }
 
@@ -816,6 +931,7 @@ province_event = {
 		name = "We pray for the deceased"
 		add_province_modifier = { name = terrorist_chaos duration = 365 }
 		state_scope = { any_pop = { dominant_issue = { value = moralism factor = 0.25 } } }
+		ai_chance = { factor = 0.5 }
 	}
 
 	option = {
@@ -823,6 +939,7 @@ province_event = {
 		add_province_modifier = { name = terrorist_chaos duration = 365 }
 		add_province_modifier = { name = were_all_republicans duration = 180 }
 		state_scope = { any_pop = { consciousness = -1 } }
+		ai_chance = { factor = 0.5 }
 	}
 }
 
@@ -895,6 +1012,7 @@ province_event = {
 			}
 		}
 		add_province_modifier = { name = terrorist_chaos duration = 365 }
+		ai_chance = { factor = 0.5 }
 	}
 
 	option = {
@@ -904,6 +1022,82 @@ province_event = {
 				militancy = 1
 			}
 		}
+		add_province_modifier = { name = terrorist_chaos duration = 365 }
+		ai_chance = { factor = 0.5 }
+	}
+}
+
+#Chemical attack
+province_event = {
+	id = 1511125
+	title = EVTNAME1511125
+	desc = EVTDESC1511125
+	#picture = "un_counter_terrorism_committee"
+
+	#major = yes
+	trigger = { has_province_modifier = terror_strike_impending
+				is_state_capital = yes
+	}
+	mean_time_to_happen = { days = 12 }
+
+	immediate = {
+		remove_province_modifier = terror_strike_impending
+		owner = { country_event = { id = 1511120 days = 2 } }
+	}
+
+	option = {
+		name = "This is horrible!"
+		add_province_modifier = { name = chemical_low duration = 30 }
+		add_province_modifier = { name = terrorist_chaos duration = 365 }
+	}
+}
+
+#Separatist attack
+province_event = {
+	id = 1511126
+	title = EVTNAME1511126
+	desc = EVTDESC1511126
+	#picture = "un_counter_terrorism_committee"
+
+	#major = yes
+	trigger = { has_province_modifier = terror_strike_impending
+				minorities = yes
+				is_capital = no
+	}
+	mean_time_to_happen = { days = 10 }
+
+	immediate = {
+		remove_province_modifier = terror_strike_impending
+		owner = { country_event = { id = 1511120 days = 2 } }
+	}
+
+	option = {
+		name = "We need to step up police presence in the area"
+		any_pop = {
+			limit = {
+				OR = {
+					is_primary_culture = no
+					is_accepted_culture = no
+				}
+			}
+			militancy = 2
+			consciousness = 2
+		}
+		flashpoint_tension = 30
+		add_province_modifier = { name = terrorist_chaos duration = 365 }
+	}
+	option = {
+		name = "We need to find a diplomatic solution to the conflict"
+		any_pop = {
+			limit = {
+				OR = {
+					is_primary_culture = no
+					is_accepted_culture = no
+				}
+			}
+			consciousness = 5
+		}
+		flashpoint_tension = 10
 		add_province_modifier = { name = terrorist_chaos duration = 365 }
 	}
 }
@@ -933,7 +1127,7 @@ province_event = {
 
 	option = {
 		name = "This is an attack on our culture"
-		owner = { prestige = -10 }
+		owner = { prestige = -15 }
 		add_province_modifier = { name = terrorist_chaos duration = 365 }
 		state_scope = { any_pop = { dominant_issue = { value = minorities_oppression factor = 0.15 } } } #effects lessened because capitals are generally liberal
 	}
@@ -962,7 +1156,7 @@ province_event = {
 
 	option = {
 		name = "This is an attack on democracy!"
-		owner = { prestige = -10 }
+		owner = { prestige = -30 }
 		add_province_modifier = { name = terrorist_chaos duration = 365 }
 		state_scope = { any_pop = { dominant_issue = { value = ruling_party_opinion factor = 0.15 } } }
 	}
@@ -986,6 +1180,22 @@ country_event = { #possibly disable this if missing free press?
 	option = {
 		name = EVT_1511120_A
 		prestige = -15
+		random_owned = { 
+			limit = { owner = { security_reform = police } }
+			owner = { social_reform = security_service }
+		}
+		random_owned = { 
+			limit = { owner = { security_reform = security_service } }
+			owner = { social_reform = security_data_cohesion }
+		}
+		random_owned = { 
+			limit = { owner = { security_reform = security_data_cohesion } }
+			owner = { social_reform = security_clearance_for_gov_services }
+		}
+		random_owned = { 
+			limit = { owner = { security_reform = security_clearance_for_gov_services } }
+			owner = { social_reform = preemptive_security_actions }
+		}
 		any_pop = {
 			ideology = {
 				value = conservative
@@ -1014,7 +1224,7 @@ country_event = { #possibly disable this if missing free press?
 					NOT = { immigration_policy = nobody_gets_out }
 					NOT = {
 						publishing_rights = censored_publishing
-						internet_infrastructure = quality_of_service
+						civil_service = politicised_service
 					}
 				}
 				country_event = 1511121
@@ -1029,7 +1239,7 @@ country_event = { #possibly disable this if missing free press?
 					NOT = { immigration_policy = nobody_gets_out }
 					NOT = {
 						publishing_rights = censored_publishing
-						internet_infrastructure = quality_of_service
+						civil_service = politicised_service
 					}
 				}
 				country_event = 1511121
@@ -1049,14 +1259,14 @@ country_event = { #possibly disable this if missing free press?
 		poor_strata = {
 			ideology = {
 				value = populist
-				factor = 0.05
+				factor = 0.02
 			}
 			consciousness = -2
 		}
 		middle_strata = {
 			ideology = {
 				value = populist
-				factor = 0.025
+				factor = 0.01
 			}
 			consciousness = -1
 		}
@@ -1069,7 +1279,7 @@ country_event = { #possibly disable this if missing free press?
 					NOT = { immigration_policy = nobody_gets_out }
 					NOT = {
 						publishing_rights = censored_publishing
-						internet_infrastructure = quality_of_service
+						civil_service = politicised_service
 					}
 				}
 				country_event = 1511121
@@ -1084,7 +1294,7 @@ country_event = { #possibly disable this if missing free press?
 					NOT = { immigration_policy = nobody_gets_out }
 					NOT = {
 						publishing_rights = censored_publishing
-						internet_infrastructure = quality_of_service
+						civil_service = politicised_service
 					}
 				}
 				country_event = 1511121
@@ -1106,13 +1316,13 @@ country_event = {
 		poor_strata = {
 			ideology = {
 				value = populist
-				factor = 0.03
+				factor = 0.02
 			}
 		}
 		middle_strata = {
 			ideology = {
 				value = populist
-				factor = 0.02
+				factor = 0.01
 			}
 		}
 	}

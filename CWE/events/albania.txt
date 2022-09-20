@@ -1,94 +1,100 @@
+#Albanian People's Republic
 country_event = {
-  id = 8000201
-  title = "EVT_GOVTCHANGE_NAME"
-  desc = "EVT_GOVTCHANGE_DESC"
-  picture = "nwo2_enver_hoxha"
-  fire_only_once = yes
+	id = 1512126
+	title = "$YEAR$ Albanian Constitution"
+	desc = EVTDESC1512126
+	picture = "alb_comm_start"
 
-  trigger = {
-    tag = ALB
-    year = 1944 NOT = { year = 1989 }
-    government = proletarian_dictatorship
-  }
+	fire_only_once = yes
 
-  mean_time_to_happen = { months = 2 }
+	trigger = {
+		tag = ALB
+		year = 1946
+		NOT = { year = 1990 }
+		
+		OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+		is_vassal = no
+		war = no
+		
+		ruling_party_ideology = communist
+		
+		has_global_flag = blocsenabled
+	}
+	
+	mean_time_to_happen = { 
+		months = 1
+	}
 
-  option = {
-    name = "OK"
-	random_state = { any_pop = { ideology = { value = communist factor = 0.9 } } }
-	define_general = { name = "Enver Hoxha" personality = energetic background = no_background }
-  }
+	option = {
+		name = "Join the Eastern Bloc"
+		
+		government = proletarian_dictatorship
+		country_event = 800052
+		
+		RUS = { country_event = 120003 } #Vassalise
+		
+		ai_chance = { factor = 0.95 }
+	}
+	
+	option = {
+		name = "Resist the Sovietisation of Albania"
+		
+		RUS = { country_event = 120002 } #War to vassalise
+		
+		ai_chance = { factor = 0.05 }
+	}
+
 }
-country_event = {
-  id = 8000202
-  title = EVT_GOVTCHANGE_NAME
-  desc = EVT_GOVTCHANGE_DESC
-  picture = "ppsh"
-  fire_only_once = yes
 
-  trigger = {
-    tag = ALB
-    year = 1989 NOT = { year = 1990 }
-    government = proletarian_dictatorship
-  }
-  mean_time_to_happen = { months = 2 }
-
-  option = {
-    name = OK
-	random_state = { any_pop = { ideology = { value = communist factor = 0.9 } } }
-	define_general = { name = "Ramiz Alia" personality = energetic background = no_background }
-  }
-}
-country_event = {
-  id = 8000203
-  title = EVT_GOVTCHANGE_NAME
-  desc = EVT_GOVTCHANGE_DESC
-  picture = "ppsh"
-  fire_only_once = yes
-
-  trigger = {
-    tag = ALB
-    year = 1990
-    government = proletarian_dictatorship
-  }
-  mean_time_to_happen = { months = 2 }
-
-  option = {
-    name = OK
-	random_state = { any_pop = { ideology = { value = communist factor = 0.1 } } }
-	define_general = { name = "Adil Carcani" personality = energetic background = no_background }
-  }
-}
+#Democratisation of Albania
 country_event = {
   id = 8000204
   title = EVT_8000204_NAME
-  desc = EVT_8000204_DESC;
+  desc = EVT_8000204_DESC
   picture = "fatos_nano"
   fire_only_once = yes
 
-  trigger = {
-    tag = ALB
-    year = 1980
-	is_vassal = no
-	NOT = { any_neighbor_country = { government = proletarian_dictatorship } }
-	government = proletarian_dictatorship
-  }
- 
-  mean_time_to_happen = { months = 2 }
+	trigger = {
+		tag = ALB
+		year = 1991
+		NOT = { has_global_flag = 1992_start_date_flag }
 
-  option = {
-    name = EVT_8000204_A
-	government = democracy country_event = 800054
-	random_state = { any_pop = { ideology = { value = communist factor = 0.9 } } }
-	election = yes
-	define_general = { name = "Fatos Nano" personality = energetic background = no_background }
-  }
-  option = {
-    name = EVT_8000204_B
-	any_pop = { militancy = 5.0 consciousness = 2 }
-	define_general = { name = "Fatos Nano" personality = energetic background = no_background }
-  }
+		OR = { 
+			NOT = { 
+				any_neighbor_country = { 
+					OR = { 
+						government = proletarian_dictatorship 
+						government = proletarian_dictatorship1 
+					}
+				}
+			}
+			RUS = { ruling_party_ideology = communist_social } 
+			NOT = { has_global_flag = blocsenabled }
+		}
+		
+		government = proletarian_dictatorship
+		
+		is_vassal = no
+		war = no
+	}
+ 
+	mean_time_to_happen = { months = 3 }
+
+	option = {
+		name = "Embrace democracy!"
+		government = democracy
+		country_event = 800054
+		election = yes
+		define_general = { name = "Fatos Nano" personality = energetic background = no_background }
+	}
+	option = {
+		name = "Communism will prevail!"
+		any_pop = { militancy = 5.0 consciousness = 2 }
+	}
+	
 }
+
+#Claims over Kosovo
 country_event = {
   id = 8000205
   title = "EVT_8000202_NAME"
@@ -96,30 +102,48 @@ country_event = {
   picture = "nwo2_kosovo_claims"
   fire_only_once = yes
 
-  trigger = {
-    tag = ALB
-    year = 1945
-	NOT = { owns = 802 }
-  }
-  mean_time_to_happen = { months = 33 }
+	trigger = {
+		tag = ALB
+		year = 1946
+		NOT = { owns = 802 }
+		NOT = { owns = 803 }
+		is_vassal = no
+	}
+	
+	mean_time_to_happen = { months = 6 }
 
-  option = {
-    name = "EVT_8000202_A"
-	ai_chance = { factor = 0.6 }
-	802 = { remove_core =  ALB }
-	803 = { remove_core =  ALB }
-	relation = { who = YUG value = 100 } 
-  }
+	option = {
+		name = "EVT_8000202_A"
+		prestige_factor = -0.05
+		
+		802 = { remove_core = ALB }
+		803 = { remove_core = ALB }
+		
+		random_country = {
+			limit = { OR = { tag = YUG tag = SER } }
+			relation = { who = THIS value = 100 }
+		}
+		
+		ai_chance = { factor = 0.6 }
+	}
 
-  option = {
-    name = "EVT_8000202_B"
-	ai_chance = { factor = 0.4 }
-	802 = { add_core =  ALB }
-	803 = { add_core =  ALB }
-	relation = { who = YUG value = -100 } 
-	badboy = 10 
-  }
+	option = {
+		name = "EVT_8000202_B"
+		802 = { add_core = ALB }
+		803 = { add_core = ALB }
+		
+		random_country = {
+			limit = { OR = { tag = YUG tag = SER } }
+			relation = { who = THIS value = -100 }
+		}
+
+		badboy = 10
+		ai_chance = { factor = 0.4 }
+	}
+
 }
+
+#Death of Enver Hoxha
 country_event = {
   id = 8022804
   title = EVT_8022804_NAME
@@ -127,120 +151,94 @@ country_event = {
   picture = "nwo2_enver_hoxha"
   fire_only_once = yes
 
-  trigger = {
-    tag = ALB
-    year = 1985 NOT = { year = 1990 }
-    
-	government = proletarian_dictatorship
-  }
+	trigger = {
+		tag = ALB
+		year = 1985 
+		NOT = { year = 1990 }
+		government = proletarian_dictatorship
+	}
 
-  mean_time_to_happen = { months = 11 }
+	mean_time_to_happen = { months = 4 }
 
-  option = {
-    name = OK
-	any_pop = { consciousness = 2.0 }
-  }
+	option = {
+		name = "A great Albanian has been lost"
+		any_pop = { consciousness = 2.0 }
+	}
+
 }
+
+#Soviet–Albanian split
 country_event = {
-  id = 8022805
-  title = EVT_8022805_NAME
-  desc = EVT_8022805_DESC
-  picture = "nwo2_albanian_kosovo"
-  fire_only_once = yes
+	id = 8022805
+	title = "The Soviet–Albanian Split"
+	desc = EVTDESC1512127
+	picture = "alb_rus_split"
 
-  trigger = {
-    tag = ALB
-    year = 1945 NOT = { year = 1990 }
-    exists = YUG
-    ALB = { government = proletarian_dictatorship }
-	RUS = { is_our_vassal = ALB }
-  }
+	fire_only_once = yes
 
-  mean_time_to_happen = { months = 11 }
+	trigger = {
+		tag = ALB
+		government = proletarian_dictatorship
+		RUS = { is_our_vassal = ALB government = proletarian_dictatorship has_country_flag = nikita_khrushchev }
+		war = no
+		year = 1960
+		NOT = { year = 1990 }
+		CHI = { is_greater_power = yes government = proletarian_dictatorship }
+		has_global_flag = blocsenabled
+	}
 
-  option = {
-    name = "EVT_8000202_A"
-	ai_chance = { factor = 0.8 }
-	802 = { remove_core =  ALB }
-	803 = { remove_core =  ALB }
-	relation = { who = YUG value = 100 } 
-  }
+	mean_time_to_happen = { 
+		months = 12
+	}
 
-  option = {
-    name = EVT_8022805_B #"We'd better keep our options"
-	ai_chance = { factor = 0.2 }
-	802 = { add_core =  ALB }
-	803 = { add_core =  ALB }
-	relation = { who = YUG value = -100 } 
-	badboy = 10 	
-	YUG = { country_event =  { id = 8216010 days = 1 }  }
-  }
+	option = {
+		name = "Side with Communist China"
+		RUS = { release_vassal = ALB }
+		RUS = { diplomatic_influence = { who = ALB value = -200 } }
+		CHI = { diplomatic_influence = { who = ALB value = 200 } prestige = 500 }
+		relation = { who = RUS value = -200 }
+		relation = { who = CHI value = 200 }
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "Stay with the Soviets"
+		prestige = -50
+		relation = { who = RUS value = 50 }
+		ai_chance = { factor = 0.2 }
+	}
+
 }
-country_event = {
-  id = 8022806
-  title = EVT_8022806_NAME
-  desc = EVT_8022806_DESC
-  picture = "hoxha_mao"
-  fire_only_once = yes
 
-  trigger = {
-    tag = ALB
-    year = 1958
-	is_vassal = no
-	has_country_flag = disabled_for_now
-    has_global_flag = de_stalinization # russia.txt
-    exists = CHI
-	CHI = { government = proletarian_dictatorship }
-	government = proletarian_dictatorship
-    
-  }
-
-  mean_time_to_happen = { months = 11 }
-
-  option = {
-    name = EVT_8022806_A
-	relation = { who = RUS value = -200 } 
-	relation = { who = CHI value = 200 }
-	diplomatic_influence = { who = CHI value = 200 }
-	diplomatic_influence = { who = RUS value = -100 }
-	any_pop = { consciousness = 1 }
-	ai_chance = { factor = 100 } 
-  }
-
-  option = {
-    name = EVT_8022806_B
-	any_pop = { militancy = 0.5 }
-	add_country_modifier = { name = great_depression duration = 365 }
-	ai_chance = { factor = 0 }
-  }
-}
+#Hoxa's Policies
 country_event = {
   id = 8022807
   title = EVT_8022807_NAME # Hoxha policies
   desc = EVT_8022807_DESC
-  picture = "nwo2_hoxha_tito"
+  picture = "nwo2_hoxha_policies"
   fire_only_once = yes
 
-  trigger = {
-    tag = ALB
-    year = 1967 NOT = { year = 1990 }
-	government = proletarian_dictatorship
-    
-  }
+	trigger = {
+		tag = ALB
+		year = 1976
+		NOT = { year = 1990 }
+		government = proletarian_dictatorship
+	}
 
-  mean_time_to_happen = { months = 11 }
+	mean_time_to_happen = { months = 11 }
 
-  option = {
-    name = EVT_8022807_A
-	random_state = { any_pop = { dominant_issue = { value = parties_allowed factor = 0.5 } } }
-	random_state = { any_pop = { dominant_issue = { value = free_opinion factor = 0.06 } } }
-	any_pop = { consciousness = 2 }
-	ai_chance = { factor = 100 }
-  }
+	option = {
+		name = "Autarky is the way forward!"
+		prestige = 100
+		add_country_modifier = { name = juche duration = -1 }
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8022807_B
-	any_pop = { consciousness = 1 }
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = "Maybe some market reforms are in order?"
+		money = 50000
+		ruling_party_ideology = communist_social
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.1 }
+	}
 }

@@ -4,30 +4,45 @@ political_decisions = {
 		picture = "gulag"
 		potential = {
 			tag = RUS
-			NOT = { year = 1956 }
+			government = proletarian_dictatorship
+			ruling_party_ideology = communist
+			NOT = { has_global_flag = de_stalinization } #post 1956
 			NOT = { has_country_modifier = forced_labour }
-			NOT = { has_country_modifier = in_bankrupcy }
-		    NOT = { check_variable = { which = soviet_control_cee value = 2 } }
 		}
 		allow = {
-			government = proletarian_dictatorship
 			war = no
-			NOT = { money = 10000 }
 		}
 		effect = {
-			add_country_modifier = { name = forced_labour duration = 350 }
-			change_variable  = { which = soviet_control_cee value = 1 }
-			treasury = 200000
-			random_owned = { limit = { owner = { coal = 0 } trade_goods = coal } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
-			random_owned = { limit = { owner = { timber = 0 } trade_goods = timber } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
-			random_owned = { limit = { owner = { petroleum = 0 } trade_goods = petroleum } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
-			random_owned = { limit = { owner = { gas = 0 } trade_goods = gas } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
-			random_owned = { limit = { owner = { iron = 0 } trade_goods = iron } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
-			random_owned = { limit = { owner = { copper = 0 } trade_goods = copper } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
-			random_owned = { limit = { owner = { bauxite = 0 } trade_goods = bauxite } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
-			random_owned = { limit = { owner = { other_minerals = 0 } trade_goods = other_minerals } add_province_modifier = { name = blood_and_iron_mine duration = 3500 } } 
+			badboy = 1
+			
+			any_pop = { militancy = -1 consciousness = -1 }
+			
+			#Lower literacy among forced labourers
+			any_pop = { 
+				limit = { 
+					type = slaves 
+					literacy = 0.01 
+				} 
+				literacy = -0.01 
+			}
+			
+			#One round of Gulag lasts 5 years
+			add_country_modifier = { name = forced_labour duration = 1825 }
+			
+			random_owned = { limit = { trade_goods = coal } add_province_modifier = { name = blood_and_iron_mine duration = 3650 } } 
+			random_owned = { limit = { trade_goods = timber } add_province_modifier = { name = blood_and_iron_mine duration = 3650 } } 
+			random_owned = { limit = { trade_goods = petroleum } add_province_modifier = { name = blood_and_iron_mine duration = 3650 } } 
+			random_owned = { limit = { trade_goods = natural_gas } add_province_modifier = { name = blood_and_iron_mine duration = 3650 } } 
+			random_owned = { limit = { trade_goods = iron } add_province_modifier = { name = blood_and_iron_mine duration = 3650 } } 
+			random_owned = { limit = { trade_goods = copper } add_province_modifier = { name = blood_and_iron_mine duration = 3650 } } 
+			random_owned = { limit = { trade_goods = bauxite } add_province_modifier = { name = blood_and_iron_mine duration = 3650 } } 
+			random_owned = { limit = { trade_goods = other_minerals } add_province_modifier = { name = blood_and_iron_mine duration = 3650 } } 
+			
 		}
-		ai_will_do = { factor = 1 modifier = { factor = 0 check_variable = { which = soviet_control_cee value = 5 } } }
+		ai_will_do = { 
+			factor = 1 
+			modifier = { factor = 0 badboy = 0.6 } 
+		}
 	}
 
 	comecon = {
@@ -51,10 +66,10 @@ political_decisions = {
 			}
 		}
 		effect = {
-	prestige = 25
-	add_country_modifier = { name = comecon duration = 3650 }
-	relation = { who = RUS value = 25 }
-	relation = { who = USA value = -50 }
+			prestige = 25
+			add_country_modifier = { name = comecon duration = 3650 }
+			relation = { who = RUS value = 25 }
+			relation = { who = USA value = -50 }
 		}
 		ai_will_do = { factor = 1 }
 	}
@@ -62,19 +77,19 @@ political_decisions = {
 	comecon_aid = {
 		picture = "comecon_aid"
 		potential = {
-has_global_flag = blocsenabled
-OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+			has_global_flag = blocsenabled
+			OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
 
-has_country_modifier = comecon
+			has_country_modifier = comecon
 
-NOT = { has_country_flag = comecon_decision_fired }
+			NOT = { has_country_flag = comecon_decision_fired }
 
-NOT = { has_country_modifier = comecon_excluded }
-RUS = { is_greater_power = yes OR = { government = proletarian_dictatorship government = socialist_democracy } }
+			NOT = { has_country_modifier = comecon_excluded }
+			RUS = { is_greater_power = yes OR = { government = proletarian_dictatorship government = socialist_democracy } money = 1000000 }
 
 			NOT = { tag = RUS }
 			NOT = { has_country_modifier = comecon_aid }
-		NOT = { has_country_modifier = comecon_aid_rejected }
+			NOT = { has_country_modifier = comecon_aid_rejected }
 		}
 		allow = {
 			OR = { 
@@ -85,8 +100,12 @@ RUS = { is_greater_power = yes OR = { government = proletarian_dictatorship gove
 				ruling_party_ideology = communist
 				ruling_party_ideology = communist_social
 			}
+			
+			#Must be past 1947 so the USSR doesn't get bankrupted so quickly
+			cold_war = 1
+			
 			NOT = { money = 10000 }
-			NOT = { war_with = RUS }
+			war = no
 		}
 		effect = {
 			set_country_flag = comecon_decision_fired
@@ -94,7 +113,7 @@ RUS = { is_greater_power = yes OR = { government = proletarian_dictatorship gove
 				limit = { 
 					is_greater_power = yes
 					tag = RUS
-					money = 220000
+					money = 1000000
 				}
 				country_event = 15610 
 			}

@@ -1,586 +1,837 @@
+#Batista Regime
 country_event = {
-  id = 8003808
-  title = "EVT_8003808_NAME"
-  desc = "EVT_8003808_DESC"
-  picture = "nwo2_castro_triumph"
-  is_triggered_only = yes
-  
-  option = {
-    name = "EVT_8003808_A"
-	any_pop = { militancy = -2.5 }
-	USA = { diplomatic_influence = { who = CUB value = -200 } }
-	government = proletarian_dictatorship 
-	ruling_party_ideology = communist 
-	country_event = 800042
-	clr_country_flag = castro_rebellion 
-	relation = { who = USA value = -100 } 
-	relation = { who = RUS value = 100 } 
-	RUS = { diplomatic_influence = { who = CUB value = 200 } }
-  }
-}
-country_event = {
-  id = 8003811
-  title = EVT_8003811_NAME
-  desc = EVT_8003811_DESC
-  picture = "nwo2_moncada_barracks"
-  fire_only_once = yes
+	id = 1410093
+	title = "Batista's Coup of $YEAR$"
+	desc = EVTDESC1410093
+	picture = "batista_regime"
+	
+	fire_only_once = yes
+	
+	trigger = { 
+		tag = CUB
+		year = 1952
+		NOT = { year = 1990 }
+		
+		government = democracy
+		OR = { vassal_of = USA is_vassal = no }
+		war = no
+		
+		#USA supported the coup
+		USA = { is_greater_power = yes government = democracy }
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
+	}
 
-  trigger = {
-    tag = CUB
-	year = 1953 NOT = { year = 1990 }
-	NOT = { government = proletarian_dictatorship }
-  }
+	mean_time_to_happen = { 
+		months = 6
+	}
 
-  mean_time_to_happen = { months = 2 }
-
-  option = {
-    name = EVT_8003811_A
-	any_pop = { militancy = 1.0 }
-	ai_chance = { factor = 0.50 }
-  }
-
-  option = {
-    name = EVT_8003811_B
-	any_pop = { consciousness = 2 }
-	set_country_flag = castro_rebellion 
-	ai_chance = { factor = 0.50 }
-  }
-}
-country_event = {
-  id = 8003812
-  title = EVT_8003812_NAME
-  desc = EVT_8003812_DESC
-  picture = "nwo2_castro_rebellion"
-
-  trigger = {
-    tag = CUB
-	year = 1954 NOT = { year = 1990 }
-    NOT = { government = proletarian_dictatorship }
-    OR = { AND = { year = 1956 NOT = { year = 1960 } } has_country_flag = castro_rebellion }
-  }
-
-  mean_time_to_happen = { months = 10 }
-
-  option = {
-    name = EVT_8003812_A
-	any_pop = { militancy = 1.0 consciousness = 1 }
-	ai_chance = { factor = 0.50 }	
-  }
-
-  option = {
-    name = EVT_8003812_B
-	country_event = 8003808
-	ai_chance = { factor = 0.75 }
-  }
-
-  option = {
-    name = EVT_8003812_C
-    	any_pop = { militancy = 2.0 consciousness = 1 }
-    	clr_country_flag = castro_rebellion 
-	country_event = 8003813
-	ai_chance = { factor = 0.25 }	
-  }
-  
-}
-country_event = {
-  id = 8003813
-  title = EVT_8003813_NAME
-  desc = EVT_8003813_DESC
-  picture = "nwo2_castro_rebellion"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8003813_A
-	#any_pop = { militancy = 2.0 consciousness = 1 }
-  }
-}
-country_event = {
-  id = 8003814
-  title = EVT_8003814_NAME
-  desc = EVT_8003814_DESC
-  picture = "nwo2_granma"
-  fire_only_once = yes
-
-  trigger = {
-    tag = CUB
-    year = 1953 NOT = { year = 1963 }
-    NOT = { has_country_flag = castro_rebellion }
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8003814_A
-	set_country_flag = castro_rebellion 
-  }
-
-  option = {
-    name = EVT_8003814_B
-	any_pop = { militancy = 0.5 consciousness = 1 }
-  }
-}
-country_event = {
-  id = 8003815
-  title = EVT_8003815_NAME
-  desc = EVT_8003815_DESC
-  picture = "nwo2_bay_of_pigs_invasion"
-  fire_only_once = yes
-
-  trigger = {
-    tag = USA
-    year = 1953 NOT = { year = 1990 }
-	CUB = { government = proletarian_dictatorship }
-  }
-
-  mean_time_to_happen = { months = 1  }
-  
-  immediate = { release_vassal = CUB }
-
-  option = {
-    name = EVT_8003815_A
-	any_pop = { consciousness = 1 }
-	badboy = 5 
-	random_list = {
-		9= {
-			CUB = { country_event =  { id = 8003817 days = 10 } } 
-			country_event =  { id = 8003818 days = 10 } 
+	option = {
+		name = "Viva la Batista!"
+		
+		set_country_flag = batista_regime
+		
+		government = presidential_dictatorship
+		country_event = 800050
+		ruling_party_ideology = conservative
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = -5
+			consciousness = -5
+			ideology = { factor = 0.25 value = conservative }
 		}
-		1 = {
-			CUB = { country_event =  { id = 8003819 days = 10 } } 
-			country_event =  { id = 8003820 days = 10 }
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = 6
+			consciousness = 6
+			ideology = { factor = 0.05 value = socialist }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = 3
+			consciousness = 3
+			ideology = { factor = 0.10 value = communist }
+		}
+		
+		#USA gains influence and relations
+		USA = { 
+			relation = { who = CUB value = 100 }
+			diplomatic_influence = { who = CUB value = 50 }
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Viva la Democracy!"
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = 5
+			consciousness = 5
+			ideology = { factor = 0.10 value = nationalist }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			consciousness = 4
+			ideology = { factor = 0.05 value = progressive }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			consciousness = 2
+			ideology = { factor = 0.10 value = socialist }
+		}
+		
+		#USA loses influence and relations
+		USA = { 
+			relation = { who = CUB value = -100 }
+			diplomatic_influence = { who = CUB value = -50 }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+#Attack on the Moncada Barracks - 1953
+country_event = {
+	id = 8003811
+	title = "Attack on Moncada Barracks"
+	desc = EVT_8003811_DESC
+	picture = "nwo2_moncada_barracks"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = CUB
+		year = 1953 
+		NOT = { year = 1990 }
+		
+		government = presidential_dictatorship
+		OR = { vassal_of = USA is_vassal = no }
+		war = no
+		
+		#Batista
+		ruling_party_ideology = conservative
+	}
+
+	mean_time_to_happen = { months = 7 }
+
+	option = {
+		name = "Will this lead to a socialist revolution?"
+		prestige = -50
+		
+		set_country_flag = moncada_barracks_attack
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			ideology = { factor = 0.05 value = conservative }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			consciousness = 3
+			ideology = { factor = 0.05 value = socialist }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = 3
+			consciousness = 3
+			ideology = { factor = 0.10 value = communist }
 		}
 	}
-	ai_chance = { factor = 100 }
-  }
 
-  option = {
-    name = EVT_8003815_B
-	relation = { who = CUB value = 50 } 
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8003817
-  title = EVT_8003817_NAME
-  desc = EVT_8003817_DESC
-  picture = "nwo2_bay_of_pigs_invasion"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8003817_A
-	any_pop = { militancy = -1.0 consciousness = -1 }
-	relation = { who = USA value = -100 } relation = { who = RUS value = 100 } 
-	USA = { country_event =  { id = 8003818 days = 10 } } 
-  }
-}
-country_event = {
-  id = 8003818
-  title = EVT_8003818_NAME
-  desc = EVT_8003818_DESC
-  picture = "nwo2_bay_of_pigs_invasion"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8003818_A
-	any_pop = { militancy = 0.5 consciousness = 1 }
-	relation = { who = CUB value = -100 } 
-	relation = { who = RUS value = -100 }
-	prestige = -20	
-  }
-}
-country_event = {
-  id = 8003819
-  title = EVT_8003819_NAME
-  desc = EVT_8003819_DESC
-  picture = "nwo2_bay_of_pigs_invasion"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8003819_A
-	any_pop = { militancy = 1.5 consciousness = 2 }
-	relation = { who = USA value = 200 } 
-	relation = { who = RUS value = -200 } 
-	government = presidential_dictatorship  country_event = 800050
-	diplomatic_influence = { who = USA value = 200 }
-	diplomatic_influence = { who = RUS value = -200 }
-	USA = { country_event =  { id = 8003820 days = 10 } } 
-  }
-}
-country_event = {
-  id = 8003820
-  title = EVT_8003820_NAME
-  desc = EVT_8003820_DESC
-  picture = "nwo2_bay_of_pigs_invasion"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8003820_A
-	any_pop = { militancy = -0.5 }
-	create_vassal = CUB 
-  }
 }
 
-### Cuba at Crossroads
-
-# 8003821: Visit in the USA
-# 8003822: Agrarian Reform
-# 8003823: Antagonizing Urrutia
-# 8003824: General Assembly of UN
-# 8003825: Integrated Revolutionary Organizations
-# 8003826: Nationalization of Refineries
-# 8003830: Cuban alignment is decided
-# 8003831: USA reacts to Cuban alignment
-# 8003832: SOV reacts to Cuban alignment
-
+#The Granma landing - 1956
 country_event = {
-  id = 8003821
-  title = EVT_8003821_NAME
-  desc = EVT_8003821_DESC
-  picture = "nwo2_castro_laying_wreath"
-  fire_only_once = yes
+	id = 8003814
+	title = "The Granma Landing"
+	desc = EVT_8003814_DESC
+	picture = "nwo2_granma"
+	
+	fire_only_once = yes
 
-  trigger = {
-    tag = CUB
-	year = 1959 NOT = { year = 1960 }
-    exists = USA
-	government = proletarian_dictatorship
-	is_vassal = no
-    war = no
-  }
+	trigger = {
+    	tag = CUB
+		year = 1956 
+		NOT = { year = 1990 }
+		
+		government = presidential_dictatorship
+		OR = { vassal_of = USA is_vassal = no }
+		war = no
+		
+		#Batista
+		ruling_party_ideology = conservative
 
-  mean_time_to_happen = { months = 1  }
+		#Moncada attacked occurred
+		has_country_flag = moncada_barracks_attack
+	}
 
-  option = {
-    name = EVT_8003821_A
-	any_pop = { consciousness = 2 }
-	badboy = -5 
-	relation = { who = USA value = 75 } 
-	relation = { who = RUS value = -25 } 
-	ai_chance = { factor = 100 }
-  }
+	mean_time_to_happen = { months = 11 }
 
-  option = {
-    name = EVT_8003821_B
-	relation = { who = USA value = -50 } 
-	relation = { who = RUS value = 15 } 
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = "We must find Fidel Castro and eliminate him!"
+		badboy = 5
+		
+		set_country_flag = castro_rebellion 
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			ideology = { factor = 0.05 value = conservative }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			consciousness = 3
+			ideology = { factor = 0.05 value = socialist }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = 3
+			consciousness = 3
+			ideology = { factor = 0.10 value = communist }
+		}
+	}
+
 }
+
+#THavana Presidential Palace Attack, 1957
 country_event = {
-  id = 8003822
-  title = EVT_8003822_NAME
-  desc = EVT_8003822_DESC
-  picture = "nwo2_cuban_agrarian_reform"
-  fire_only_once = yes
+	id = 8003812
+	title = "Havana Presidential Palace Attack"
+	desc = EVT_8003812_DESC
+	picture = "nwo2_castro_rebellion"
 
-  trigger = {
-    tag = CUB
-	year = 1959 NOT = { year = 1960 }
-    government = proletarian_dictatorship
-    war = no
-  }
+	fire_only_once = yes
 
-  mean_time_to_happen = { months = 1  }
+	trigger = {
+    	tag = CUB
+		year = 1957
+		NOT = { year = 1990 }
+		
+		government = presidential_dictatorship
+		OR = { vassal_of = USA is_vassal = no }
+		war = no
+		
+		#Batista
+		ruling_party_ideology = conservative
 
-  option = {
-    name = EVT_8003822_A
-	any_pop = { consciousness = 2 }
-	relation = { who = USA value = -50 } 
-	relation = { who = RUS value = 25 } 
-	ai_chance = { factor = 100 }
-  }
+		#Granma Landing occurred
+		has_country_flag = castro_rebellion
+	}
 
-  option = {
-    name = EVT_8003822_B
-	any_pop = { militancy = 0.6 }
-	relation = { who = USA value = 25 } 
-	relation = { who = RUS value = -60 } 
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8003823
-  title = EVT_8003823_NAME
-  desc = EVT_8003823_DESC
-  picture = "nwo2_manuel_urrutia"
-  fire_only_once = yes
+	mean_time_to_happen = { months = 3 }
 
-  trigger = {
-    tag = CUB
-	year = 1959 NOT = { year = 1960 }
-    government = proletarian_dictatorship
-    war = no
-  }
+	option = {
+		name = "We shall fight the rebels until we win!"
+		badboy = 2.5
 
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8003823_A
-	relation = { who = USA value = -25 } 
-	relation = { who = RUS value = 40 } 
-	ai_chance = { factor = 100 }
-  }
-
-  option = {
-    name = EVT_8003823_B
-	relation = { who = USA value = 25 } 
-	relation = { who = RUS value = -25 } 
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8003824
-  title = EVT_8003824_NAME
-  desc = EVT_8003824_DESC
-  picture = "nwo2_hotel_theresa"
-  fire_only_once = yes
-
-  trigger = {
-    tag = CUB
-	year = 1960 NOT = { year = 1961 }
-    exists = USA
-	government = proletarian_dictatorship
-    war = no
-  }
-
-  mean_time_to_happen = { months = 3 }
-
-  option = {
-    name = EVT_8003824_A
-	relation = { who = USA value = -25 } 
-	relation = { who = RUS value = 40 } 
-	ai_chance = { factor = 100 }
-  }
-
-  option = {
-    name = EVT_8003824_B
-	relation = { who = USA value = 25 } 
-	relation = { who = RUS value = -25 } 
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8003825
-  title = EVT_8003825_NAME
-  desc = EVT_8003825_DESC
-  picture = "nwo2_cuban_communist_party"
-  fire_only_once = yes
-
-  trigger = {
-    tag = CUB
-	year = 1959 NOT = { year = 1960 }
-	government = proletarian_dictatorship
-    war = no
-  }
-
-  mean_time_to_happen = { months = 10 }
-
-  option = {
-    name = EVT_8003825_A
-	relation = { who = USA value = -50 }
- 	relation = { who = RUS value = 50 } 
-	ai_chance = { factor = 100 }
-  }
-
-  option = {
-    name = EVT_8003825_B
-	relation = { who = USA value = 50 } 
-	relation = { who = RUS value = -25 } 
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8003826
-  title = EVT_8003826_NAME
-  desc = EVT_8003826_DESC
-  picture = "nwo2_cuban_oil_industry"
-  fire_only_once = yes
-
-  trigger = {
-    tag = CUB
-	year = 1960 NOT = { year = 1961 }
-	government = proletarian_dictatorship
-    war = no
-  }
-
-  mean_time_to_happen = { months = 2  }
-
-  option = {
-    name = EVT_8003826_A
-	relation = { who = USA value = -100 } 
-	relation = { who = RUS value = 10 } 
-	nationalize = yes
-	ai_chance = { factor = 100 }
-  }
-
-  option = {
-    name = EVT_8003826_B
-	any_pop = { militancy = 1.0 consciousness = 1 }
-	relation = { who = USA value = 20 } 
-	relation = { who = RUS value = -25 } 
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8003830
-  title = EVT_8003830_NAME
-  desc = EVT_8003830_DESC
-  picture = "nwo2_fidel_castro_thinking"
-  fire_only_once = yes
-
-  trigger = {
-    tag = CUB
-	year = 1960 NOT = { year = 1970 }
-    can_nationalize = no # we already did it!
-	government = proletarian_dictatorship
-    war = no
-  }
-
-  mean_time_to_happen = { months = 11  }
-
-  option = {
-    name = EVT_8003830_A
-	USA = { country_event = 8003831 }
-	ai_chance = { factor = 0 }
-  }
-
-  option = {
-    name = EVT_8003830_B
-	RUS = { country_event = 8003832 }
-	ai_chance = { factor = 100 }
-  }
-
-  option = {
-    name = EVT_8003830_C
-    any_pop = { militancy = 1.0 consciousness = 2 }
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8003831
-  title = EVT_8003831_NAME
-  desc = EVT_8003831_DESC
-  picture = "nwo2_american_cuba"
-  is_triggered_only = yes # USA
-
-  option = {
-    name = EVT_8003831_A
-	badboy = 5 
-	CUB = { country_event = 8003833 }
-	ai_chance = { factor = 100 }
-  }
-
-  option = {
-    name = EVT_8003831_B
-	CUB = { country_event = 8003834 }
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8003832
-  title = EVT_8003832_NAME
-  desc = EVT_8003832_DESC
-  picture = "nwo2_soviet_cuba"
-  is_triggered_only = yes # RUS
-
-  option = {
-    name = EVT_8003832_A
-	CUB = { country_event = 8003835 }
-	ai_chance = { factor = 100 }
-  }
-
-  option = {
-    name = EVT_8003832_B
-	CUB = { country_event = 8003836 }
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8003833
-  title = EVT_8003833_NAME
-  desc = EVT_8003833_DESC
-  picture = "nwo2_american_cuba"
-  is_triggered_only = yes # CUB
-
-  option = {
-    name = EVT_8003833_A
-	relation = { who = USA value = 150 } 
-	relation = { who = RUS value = -50 } 
-  }
-}
-country_event = {
-  id = 8003834
-  title = EVT_8003834_NAME
-  desc = EVT_8003834_DESC
-  picture = "nwo2_american_cuba"
-  is_triggered_only = yes # CUB
-
-  option = {
-    name = EVT_8003834_A
-	relation = { who = USA value = -50 } 
-	relation = { who = RUS value = -150 } 
-  }
-}
-country_event = {
-  id = 8003835
-  title = EVT_8003835_NAME
-  desc = EVT_8003835_DESC
-  picture = "nwo2_soviet_cuba"
-  is_triggered_only = yes # CUB
-
-  option = {
-    name = EVT_8003835_A
-	any_pop = { consciousness = 1 }
-	relation = { who = USA value = -150 } 
-	relation = { who = RUS value = 150 } 
-  }
-}
-country_event = {
-  id = 8003836
-  title = EVT_8003836_NAME
-  desc = EVT_8003836_DESC
-  picture = "nwo2_soviet_cuba"
-  is_triggered_only = yes # CUB
-
-  option = {
-    name = EVT_8003836_A
-	any_pop = { militancy = 1.0 }
-	relation = { who = USA value = -150 } 
-	relation = { who = USA value = -50 } 
-  }
-}
-country_event = {
-  id = 8003837
-  title = EVT_8003837_NAME
-  desc = EVT_8003837_DESC
-  picture = "fidel_castro_death"
-  fire_only_once = yes
-
-  trigger = {
-    tag = CUB
-	year = 2016
-	government = proletarian_dictatorship
-    war = no
-  }
+		set_country_flag = castro_rebellion_open_war
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			ideology = { factor = 0.05 value = conservative }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			consciousness = 3
+			ideology = { factor = 0.05 value = socialist }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = 3
+			consciousness = 3
+			ideology = { factor = 0.10 value = communist }
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Make some concessions to stop further attacks"
+		prestige_factor = -0.25
+		
+		ruling_party_ideology = socialist
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = 5
+			consciousness = 5
+			ideology = { factor = 0.10 value = nationalist }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			consciousness = 4
+			ideology = { factor = 0.05 value = progressive }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			consciousness = 2
+			ideology = { factor = 0.10 value = socialist }
+		}
+		
+		#USA loses influence and relations
+		USA = { 
+			relation = { who = CUB value = -100 }
+			diplomatic_influence = { who = CUB value = -50 }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
   
-  mean_time_to_happen = { months = 5 }
+}
 
-  option = {
-    name = EVT_8003837_A
-	any_pop = { militancy = 0.1 consciousness = 0.1 }
-	prestige = -5
-	relation = { who = USA value = 10 }
-	ai_chance = { factor = 0.60 } 
-  }
+#The Cuban Revolution
+country_event = {
+	id = 8003808
+	title = "The Cuban Revolution"
+	desc = "EVT_8003808_DESC"
+	picture = "nwo2_castro_triumph"
+	
+	fire_only_once = yes
+  
+	trigger = {
+		tag = CUB
+		year = 1959 
+		NOT = { year = 1990 }
+		
+		government = presidential_dictatorship
+		OR = { vassal_of = USA is_vassal = no }
+		war = no
+		
+		#Batista
+		ruling_party_ideology = conservative
 
-  option = {
-    name = "Begin reforming the Cuban State"
-	government = socialist_democracy
-	country_event = 800054
-	ruling_party_ideology = communist_social
-	prestige_factor = -0.8
-	relation = { who = USA value = 50 } 
-	ai_chance = { factor = 0.40 }
-  }
+		#Havana Presidential Palace Attack occurred
+		has_country_flag = castro_rebellion_open_war
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
+	}
+
+	mean_time_to_happen = { months = 1 }
+  
+	option = {
+		name = "President Batista flees Cuba!"
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = 10
+			consciousness = 10
+			ideology = { factor = 0.10 value = conservative }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = -5
+			consciousness = 10
+			ideology = { factor = 0.10 value = socialist }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = -10
+			consciousness = 5
+			ideology = { factor = 0.10 value = communist }
+		}
+		
+		#Leader flees to USA
+		USA = { country_event = 1412164 }
+		
+		#USA loses influence and relations
+		USA = { 
+			relation = { who = CUB value = -100 }
+			diplomatic_influence = { who = CUB value = -100 }
+		}
+		
+		#USSR gains influence
+		RUS = { 
+			relation = { who = CUB value = 100 }
+			diplomatic_influence = { who = CUB value = 100 }
+		}
+		
+		#Cuba breaks free of USA
+		overlord = { release_vassal = CUB }
+
+		#Provisional Government of Cuba
+		government = socialist_democracy
+		ruling_party_ideology = communist 
+		
+		political_reform = democratic_opinion
+		political_reform = universal_voting
+		political_reform = parties_only_nominated
+		political_reform = state_controlled_unions
+		
+		#1959 Cuban General Election
+		election = yes
+		
+		#Mass reprisals against the Batista regime's members
+		add_country_modifier = { name = dirty_war duration = 1825 }
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "We shall fight to the death!"
+		prestige_factor = -0.05
+		badboy = 5
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = -10
+			consciousness = -10
+			ideology = { factor = 0.05 value = conservative }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = 10
+			consciousness = 10
+			ideology = { factor = 0.10 value = socialist }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = 10
+			consciousness = 10
+			ideology = { factor = 0.10 value = communist }
+		}
+		
+		#Rebellion
+		any_owned = {
+			limit = { is_capital = no }
+			change_controller = REB
+		}
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Agarian Reform, 1959
+country_event = {
+	id = 8003822
+	title = "Agrarian Reforms in Cuba"
+	desc = EVT_8003822_DESC
+	picture = "nwo2_cuban_agrarian_reform"
+	
+	fire_only_once = yes
+
+	trigger = {
+    	tag = CUB
+		year = 1959 
+		NOT = { year = 1990 }
+		
+    	OR = { government = socialist_democracy government = proletarian_dictatorship }
+		is_vassal = no
+    	war = no
+		
+		#Castro
+		ruling_party_ideology = communist 
+	}
+
+	mean_time_to_happen = { months = 5 }
+
+	option = {
+		name = "Begin the land reforms!"
+		
+		#Socialist reforms
+		social_reform = good_public_housing
+		social_reform = unlimited_education
+		social_reform = good_health_care
+		social_reform = good_pensions
+		social_reform = citizen_salary 
+		social_reform = six_hours
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = 10
+			consciousness = 10
+			ideology = { factor = 0.05 value = conservative }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = -5
+			consciousness = -5
+			ideology = { factor = 0.05 value = socialist }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = -10
+			consciousness = -10
+			ideology = { factor = 0.05 value = communist }
+		}
+		
+		#Superpower relations
+		random_country = {
+			limit = { tag = USA has_global_flag = blocsenabled }
+			relation = { who = THIS value = -25 }
+		}
+		random_country = {
+			limit = { tag = RUS has_global_flag = blocsenabled }
+			relation = { who = THIS value = 25 }
+		}
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Now is not the time"
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = -5
+			consciousness = -5
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = 5
+			consciousness = 5
+			ideology = { factor = 0.10 value = progressive }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = 10
+			consciousness = 10
+			ideology = { factor = 0.10 value = nationalist }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Nationalization of Refineries, 1960
+country_event = {
+	id = 8003826
+	title = "Nationalisation of US Property in Cuba"
+	desc = EVT_8003826_DESC
+	picture = "nwo2_cuban_oil_industry"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = CUB
+		year = 1960 
+		NOT = { year = 1990 }
+		
+		government = socialist_democracy
+		is_vassal = no
+		war = no
+		
+		#Castro
+		ruling_party_ideology = communist
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
+	}
+
+	mean_time_to_happen = { months = 8 }
+
+	option = {
+		name = "It's our property now!"
+		prestige = 50
+		badboy = 2.5
+	
+		set_country_flag = CUB_nationalised_US_property_flag
+		
+		#Perform nationalisation
+		nationalize = yes
+		money = 500000
+	
+		#US reaction
+		relation = { who = USA value = -100 }
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = 10
+			consciousness = 10
+			ideology = { factor = 0.05 value = conservative }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = -5
+			consciousness = -5
+			ideology = { factor = 0.05 value = socialist }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = -10
+			consciousness = -10
+			ideology = { factor = 0.05 value = communist }
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "We don't need to take US property"
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = -5
+			consciousness = -5
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = 5
+			consciousness = 5
+			ideology = { factor = 0.10 value = progressive }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = 10
+			consciousness = 10
+			ideology = { factor = 0.10 value = nationalist }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+#Bay of Pigs Invasion - US Choice
+country_event = {
+	id = 8003815
+	title = "The Bay of Pigs Invasion"
+	desc = EVT_8003815_DESC
+	picture = "nwo2_bay_of_pigs_invasion"
+	
+	fire_only_once = yes
+
+	trigger = {
+    	tag = USA
+    	year = 1961 
+		NOT = { year = 1990 }
+		
+		government = democracy
+		is_greater_power = yes
+		NOT = { war_with = CUB }
+		
+		NOT = { war_policy = pacifism }
+		
+		#Cuba is socialist
+		CUB = { 
+			government = socialist_democracy
+			is_vassal = no 
+			war = no
+			
+			ruling_party_ideology = communist 
+		}
+		
+		#Cuba nationalised US property
+		CUB = { has_country_flag = CUB_nationalised_US_property_flag }
+		
+		#Cold War
+		has_global_flag = blocsenabled
+	}
+
+	mean_time_to_happen = { months = 4 }
+
+	option = {
+		name = "Try to instigate a counter-revolution!"
+		badboy = 5
+		
+		#Domestic reaction
+		any_pop = { consciousness = 3 }
+		
+		#USSR reaction
+		relation = { who = RUS value = -50 }
+
+		#Cuban reaction
+		CUB = { country_event = 8003817 }
+		diplomatic_influence = { who = CUB value = -50 }
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Accept the new Cuban government"
+		prestige_factor = -0.05
+		
+		set_global_flag = us_accepted_castro
+		
+		relation = { who = CUB value = 50 } 
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Bay of Pigs Invasion - CUB
+country_event = {
+	id = 8003817
+	title = "The Bay of Pigs Invasion"
+	desc = EVT_8003817_DESC
+	picture = "nwo2_bay_of_pigs_invasion"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "Outrageous!"
+		
+		set_country_flag = bay_of_pigs_invasion_flag
+		
+		relation = { who = USA value = -100 }
+
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = 10
+			consciousness = 10
+			ideology = { factor = 0.2 value = conservative }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = 10
+			consciousness = 10
+			ideology = { factor = 0.2 value = liberal }
+		}
+	}
+
+}
+
+#Integrated Revolutionary Organizations
+country_event = {
+	id = 8003825
+	title = "Embrace Democratic Centralism?"
+	desc = EVT_8003825_DESC
+	picture = "nwo2_cuban_communist_party"
+	
+	fire_only_once = yes
+
+	trigger = {
+    	tag = CUB
+		year = 1961
+		NOT = { year = 1990 }
+		
+		government = socialist_democracy
+		is_vassal = no
+    	war = no
+		
+		#USA tried to overthrow the Cuban government
+		has_country_flag = bay_of_pigs_invasion_flag
+		
+		#Cold War
+		has_global_flag = blocsenabled
+	}
+
+	mean_time_to_happen = { months = 7 }
+
+	option = {
+		name = "We shall be a Leninist state!"
+		government = proletarian_dictatorship
+		
+		#Dictatorship
+		political_reform = ruling_party_opinion
+		political_reform = parties_not_allowed
+		political_reform = none_voting
+		
+		#Superpower relations
+		relation = { who = USA value = -50 }
+		relation = { who = RUS value = 50 } 
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "A little democracy doesn't hurt"
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			ideology = { factor = 0.1 value = liberal }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.2 value = liberal }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			ideology = { factor = 0.1 value = liberal }
+		}
+		
+		#Superpower relations
+		relation = { who = USA value = 50 }
+		relation = { who = RUS value = -50 } 
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+### Move on to the Cuban Missile Crisis chain ###
+
+#Death of Fidel Castro, 2016
+country_event = {
+	id = 8003837
+	title = "Death of $MONARCHTITLE$ Fidel Castro"
+	desc = EVT_8003837_DESC
+	picture = "fidel_castro_death"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = CUB
+		year = 2016
+		
+		government = proletarian_dictatorship
+		war = no
+	}
+  
+	mean_time_to_happen = { months = 5 }
+
+	option = {
+		name = "A great revolutionary has left us!"
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = 5
+			consciousness = 5
+			ideology = { factor = 0.1 value = liberal }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = -5
+			consciousness = -5
+			ideology = { factor = 0.2 value = liberal }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = -10 
+			consciousness = -10
+			ideology = { factor = 0.1 value = liberal }
+		}
+		
+		ai_chance = { factor = 0.8 } 
+	}
+
+	option = {
+		name = "Begin reforming the Cuban State"
+		prestige_factor = -0.25
+		
+		government = socialist_democracy
+		country_event = 800054
+		ruling_party_ideology = communist_social
+	
+		ai_chance = { factor = 0.2 }
+	}
 
 }

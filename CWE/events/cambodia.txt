@@ -1,246 +1,450 @@
+#Abdication of Norodom Sihanouk
 country_event = {
   id = 8003110
-  title = "EVT_8003110_NAME"
-  desc = "EVT_8003110_DESC"
-  picture = "nwo2_govt_change"
-  fire_only_once = yes
+  title = "The Abdication of Norodom Sihanouk"
+  desc = EVTDESC8003110
+  picture = "nwo2_sihanouk_abdication"
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = CAM
-	is_vassal = no
-	year = 1954 
-	NOT = { year = 1955 }
-	OR = { government = democracy government = absolute_monarchy }
-  }
+	trigger = {
+		tag = CAM
+		year = 1954 
+		NOT = { year = 1990 }
+		
+		OR = { government = hms_government government = hms_government1 government = absolute_monarchy }
+		is_vassal = no
+		war = no
+		
+		NOT = { ruling_party_ideology = socialist }
+	}
 
-  mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 2 }
 
-  option = {
-    name = "Embrace monarchism"
-	government = hms_government  
-	country_event = 800054
-	define_general = { name = "H.M. Norodom Suramarit" personality = energetic background = no_background }
-	ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = "Abdicate to enter politics!"
+		government = hms_government
+		country_event = 800054
+		ruling_party_ideology = socialist
+		
+		set_country_flag = sihanouk_abdication_flag
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = "Embrace republicanism"
-	government = democracy
-	country_event = 800054
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Stick to the status quo"
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.1 }
+	}
 
 }
+
+#Sihanouk's dictatorship
 country_event = {
   id = 8003114
-  title = "EVT_8003114_NAME"
+  title = "Sihanouk's Consolidation of Power"
   desc = "EVT_8003114_DESC"
-  picture = "nwo2_death"
-  fire_only_once = yes
+  picture = "nwo2_sihanouk_dictator"
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = CAM
-	is_vassal = no
-	year = 1959 
-	NOT = { year = 1960 }
-	government = hms_government
-  }
+	trigger = {
+		tag = CAM
+		year = 1960
+		NOT = { year = 1990 }
+		
+		OR = { government = hms_government government = hms_government1 }
+		is_vassal = no
+		war = no
+		
+		#No King
+		has_country_flag = sihanouk_abdication_flag
+	}
 
-  mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 4 }
 
-  option = {
-    name = "OK"
-	government = absolute_monarchy  
-	country_event = 800050
-	ai_chance = { factor = 0.9 }
-  }
-  option = {
-    name = "Stick to the status quo"
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Sihanouk shall become the Head of State!"
+		government = absolute_monarchy
+		country_event = 800050
+		ruling_party_ideology = socialist
+		
+		#Regency
+		add_country_modifier = { name = regency_government duration = 3650 }
+		set_country_flag = time_to_select_new_king
+		
+		ai_chance = { factor = 0.9 }
+	}
+	option = {
+		name = "Sihanouk becomes the King again"
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ruling_party_ideology = big_tent
+		ai_chance = { factor = 0.1 }
+	}
 }
+
+#The Khmer Rouge
 country_event = {
   id = 8003123
-  title = EVT_8003123_NAME
-  desc = EVT_8003123_DESC
+  title = "The Khmer Rouge Regime"
+  desc = EVTDESC8003123
   picture = "nwo2_democratic_kampuchea"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = CAM
-	is_vassal = no
-	year = 1975 NOT = { year = 1980 }
-	DAI = { government = proletarian_dictatorship } 
-    NOT = { government = proletarian_dictatorship } 
-  }
+	trigger = {
+		tag = CAM
+		year = 1975 
+		NOT = { year = 1980 }
+		
+		government = presidential_dictatorship
+		is_vassal = no
+		war = no
+		
+		has_country_flag = sihanouk_abdication_flag
+		
+		ruling_party_ideology = conservative
+		
+		#North Vietnam
+		DAI = { ruling_party_ideology = communist is_vassal = no } 
+		CHI = { ruling_party_ideology = communist is_vassal = no } 
+	}
 
-  mean_time_to_happen = { months = 4 }
+	mean_time_to_happen = { months = 4 }
 
-  option = {
-    name = EVT_8003123_A
-    define_general = { name = "Pol Pot" personality = energetic background = no_background }
-	government = proletarian_dictatorship
-	ruling_party_ideology = communist
-	country_event = 800042
-	country_event =  { id = 8003124 days = 360 }
-	leave_alliance = USA
-	any_greater_power = { limit = { tag = CHI } diplomatic_influence = { who = CAM value = 200 } }
-	ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = "Turn Cambodia communist!"
+		government = proletarian_dictatorship
+		ruling_party_ideology = communist
+		country_event = 800042
+		
+		#Cambodian genocide
+		set_country_flag = ethnic_cleansed
+		country_event = 1512037
+		clr_country_flag = discovered_genocide 
+		clr_country_flag = discovered_genocide1
+		add_country_modifier = { name = ethnic_cleansing duration = -1 }
+		
+		#PRC influence in Cambodia
+		any_greater_power = { 
+			limit = { tag = CHI } 
+			relation = { who = CAM value = 200 }
+			diplomatic_influence = { who = CAM value = 200 } 
+		}
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8003123_B
-	any_pop = { militancy = 5.0 consciousness = 2 }
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "The war continues!"
+		
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = 10
+			consciousness = 10
+			ideology = { value = communist factor = 0.25 } 
+		}
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.1 }
+	}
 }
-country_event = {
-  id = 8003124
-  title = EVT_8003124_NAME
-  desc = EVT_8003124_DESC
-  picture = "nwo2_pol_pot"
-  is_triggered_only = yes
 
-  option = {
-    name = EVT_8003124_A
-	any_pop = { militancy = 2.5  consciousness = 2 }
-	add_country_modifier = { name = ethnic_cleansing duration = 365 }
-	add_country_modifier = { name = war_torn duration = 365 }
-  }
-}
+#War with Vietnam
 country_event = {
   id = 8003125
-  title = EVT_8003125_NAME
-  desc = EVT_8003125_DESC
+  title = "The Cambodian–Vietnamese War"
+  desc = EVTDESC8003125
   picture = "nwo2_killing_fields"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-	is_vassal = no
-	OR = { tag = DAI tag = SVI }
-	owns = 1380 # Saigon
-	CAM = { has_country_modifier = ethnic_cleansing }
-  }
-
-  mean_time_to_happen = { months = 5 }
-
-  option = {
-    name = EVT_8003125_A
-	any_country = { 
-		limit = { tag = THIS government = proletarian_dictatorship }
-		casus_belli = { target = CAM type = make_puppet months = 12 }
-		war = { target = CAM attacker_goal = { casus_belli = make_puppet } defender_goal = { casus_belli = humiliate } }
+	trigger = {
+		tag = CAM
+		year = 1978
+		NOT = { year = 1992 }
+		
+		government = proletarian_dictatorship
+		war = no
+		is_vassal = no
+		
+		ruling_party_ideology = communist
+		
+		#Vietnam united
+		owns = 1380 # Saigon
+		
+		#Appropriate international situation
+		DAI = { ruling_party_ideology = communist is_vassal = no } 
+		CHI = { ruling_party_ideology = communist is_vassal = no } 
+		RUS = { ruling_party_ideology = communist is_vassal = no }
 	}
-	any_neighbor_country = { 
-		limit = { tag = THIS NOT = { government = proletarian_dictatorship } }
-		casus_belli = { target = CAM type = install_democracy months = 12 }
-		war = { target = CAM attacker_goal = { casus_belli = install_democracy } defender_goal = { casus_belli = humiliate } }
+
+	mean_time_to_happen = { months = 12 }
+
+	option = {
+		name = "Fight the Vietnamese!"
+		
+		set_country_flag = CAM_DAI_1978_war_flag
+		
+		#Start the war
+		war = { 
+			target = DAI 
+			attacker_goal = { casus_belli = make_puppet } 
+			defender_goal = { casus_belli = make_puppet } 
+			call_ally = no
+		}
+		DAI = { badboy = -10 }
+		ai_chance = { factor = 0.9 }
 	}
-  }
+	option = {
+		name = "Stick to the status quo"
+		prestige_factor = -0.1
+		any_pop = { militancy = 5 }
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.1 }
+	}
 }
+
+#The end of Kampuchea, after Vietnamese invasion and end of cold war
 country_event = {
   id = 8003128
-  title = EVT_8003128_NAME
-  desc = EVT_8003128_DESC
+  title = "The Return of Sihanouk"
+  desc = EVTDESC8003128
   picture = "nwo2_cambodia"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = CAM
-	is_vassal = no
-	war = no
-	year = 1993
-	government = proletarian_dictatorship
-  }
+	trigger = {
+		tag = CAM
+		year = 1993
+		
+		government = proletarian_dictatorship1 #Democratic Kampuchea
+		OR = { is_vassal = no vassal_of = DAI }
+		war = no
+		
+		#Cold War over
+		NOT = { has_global_flag = blocsenabled }
+	}
 
-  mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 9 }
 
-  option = {
-    name = EVT_8003128_A
-	any_pop = { militancy = -5 consciousness = 5 }
-	government = hms_government 
-	country_event = 800054
-	ai_chance = { factor = 0.7 }
-  }
+	option = {
+		name = "Restore the monarchy"
+		
+		overlord = { release_vassal = CAM }
+		
+		any_pop = { militancy = -5 consciousness = 5 }
+		
+		government = hms_government 
+		country_event = 800054
+		ruling_party_ideology = conservative
+		
+		ai_chance = { factor = 0.7 }
+	}
 
-  option = {
-    name = "Return to republican rule"
-	any_pop = { militancy = -5 consciousness = 5 }
-	government = democracy1
-	country_event = 800054
-	ai_chance = { factor = 0.2 }
-  }
+	option = {
+		name = "Create a republic instead!"
+		
+		overlord = { release_vassal = CAM }
+		
+		any_pop = { militancy = -5 consciousness = 5 }
+		
+		government = democracy1
+		country_event = 800054
+		ruling_party_ideology = liberal
+		
+		ai_chance = { factor = 0.2 }
+	}
 
-  option = {
-    name = EVT_8003128_B
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Stick to the status quo"
+		
+		overlord = { release_vassal = CAM }
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
+#The Khmer Republic
 country_event = {
   id = 8003129
   title = "Overthrow of Sihanouk"
   desc = EVTDESC8003129
   picture = "cam_coup"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = CAM
-   is_vassal = no
-   year = 1970
-NOT = { year = 1990 }
-NOT = { OR = { government = democracy government = proletarian_dictatorship government = presidential_dictatorship } }
-  }
+	trigger = {
+		tag = CAM
+		year = 1970
+		NOT = { year = 1990 }
+		
+		government = absolute_monarchy
+		is_vassal = no
+		war = no
+		
+		ruling_party_ideology = socialist
+		
+		#Cold War
+		has_global_flag = blocsenabled
+	}
 
-  mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 3 }
 
-  option = {
-    name = "The coup fails!"
-   any_pop = { militancy = 5 consciousness = 2 ideology = { value = socialist factor = 0.2 } }
-   ai_chance = { factor = 0.1 }
-  }
-
-  option = {
-    name = "The Monarchy falls - The Khmer Republic is born!"
-   government = presidential_dictatorship
-   any_pop = { militancy = 5 consciousness = 2 ideology = { value = communist factor = 0.2 } }
-   country_event = 800050
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-   ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = "The Monarchy falls - The Khmer Republic is born!"
+		government = presidential_dictatorship
+		country_event = 800050
+		ruling_party_ideology = conservative
+   
+   		#Remove regency
+		remove_country_modifier = regency_government
+		clr_country_flag = time_to_select_new_king
+		
+		relation = { who = USA value = 200 }
+		USA = { diplomatic_influence = { who = USA value = 200 } }
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "The coup fails"
+	
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+	
+		any_pop = { 
+			militancy = 5 
+			consciousness = 2 
+		}
+		
+		#US sponsored coup
+		relation = { who = USA value = -200 }
+		USA = { diplomatic_influence = { who = USA value = -200 } }
+		
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
+#GRUNK
 country_event = {
   id = 8003130
   title = "GRUNK"
   desc = EVTDESC8003130
   picture = "grunk"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = CAM
-   is_vassal = no
-   year = 1970
-NOT = { year = 1990 }
-   government = presidential_dictatorship
-  }
+	trigger = {
+		tag = CAM
+		year = 1970
+		NOT = { year = 1990 }
+		
+		government = presidential_dictatorship
+		is_vassal = no
+		
+		has_country_flag = sihanouk_abdication_flag
+		
+		#Cold War
+		has_global_flag = blocsenabled
+	}
+	
+	mean_time_to_happen = { months = 6 }
 
-  option = {
-    name = "We are under threat from all sides!"
-       any_pop = {
-           limit = {
-               pop_majority_ideology = traditionalist
-           }
-           militancy = 5
-           consciousness = 3
-           ideology = { value = communist factor = 0.3 }
-           ideology = { value = socialist factor = 0.5 }
-       }
-  }
+	option = {
+		name = "We are under threat from all sides!"
+		
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = 5 
+			consciousness = 2 
+			ideology = { value = conservative factor = 0.25 } 
+		}
+		
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = 5 
+			consciousness = 2 
+			ideology = { value = socialist factor = 0.25 } 
+		}
+		
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = 5 
+			consciousness = 2 
+			ideology = { value = communist factor = 0.25 } 
+		}
+	}
+}
+
+#Vietnamese Occupation of Cambodia
+country_event = {
+  id = 8003131
+  title = "The People's Republic of Kampuchea"
+  desc = EVTDESC8003131
+  picture = "DAI_CAM_victory"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = DAI
+		
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+		is_vassal = no
+		war = no
+		
+		CAM = {
+			has_country_flag = CAM_DAI_1978_war_flag
+		
+			government = proletarian_dictatorship
+			vassal_of = DAI
+			war = no
+		}
+	}
+
+	option = {
+		name = "Long live the new Kamupchea! (Path to Cambodian independence)"
+		prestige = 50
+		
+		badboy = -5
+		
+		relation = { who = RUS value = 100 }
+		relation = { who = CHI value = -100 }
+		
+		#USSR gains influence over Cambodia
+		RUS = { diplomatic_influence = { who = CAM value = 200 } }
+		
+		CAM = {
+			government = proletarian_dictatorship1
+			ruling_party_ideology = communist_social 
+			relation = { who = DAI value = 200 }
+			any_pop = {
+				limit = {
+					is_primary_culture = yes
+				}
+				consciousness = 5 
+				militancy = 2
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Only remove Pol Pot and keep Cambodia"
+		
+		badboy = 5
+		
+		relation = { who = RUS value = -100 }
+		relation = { who = CHI value = 100 }
+		
+		CAM = { 
+			ruling_party_ideology = communist_social 
+			add_country_modifier = { name = revolution_chaos duration = 3650 }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
 }

@@ -1,28 +1,217 @@
 political_decisions = {
 
-extraordinary_session = {
-		picture = "extraordinary_session"
-	potential = {
-		is_greater_power = yes
-NOT = { has_country_flag = extraord }
-OR = { government = proletarian_dictatorship government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship }
-				}
+	renovate_capital = {
+		picture = "renovate_capital"
+		potential = {
+			OR = { is_greater_power = yes is_secondary_power = yes }
+			NOT = { capital_scope = { has_province_modifier = new_capital } }
+			NOT = { has_country_flag = germania }
+			NOT = { has_country_modifier = germania }
+			
+			#Special
+			NOT = {
+				tag = RUS
+				government = proletarian_dictatorship
+				has_country_flag = ussr_not_rebuild_moscow
+			}
+		}
 
-	allow = {
-		war = no
-		money = 5000000	
-seventies_subcultures = 1
-NOT = { average_militancy = 2 }
-					}
+		allow = {
+			prestige = 1000
+			war = no
+			money = 5000000
+			is_disarmed = no	
+			capital_scope = { has_building = railroad }
+		}
 
 		effect = {
-set_country_flag = extraord
-money = -1000000
-country_event = 1412227
+			money = -2000000
+			money = -2000000
+			add_country_modifier = { name = germania duration = 3650 }
+			set_country_flag = germania
+			any_owned = { limit = { is_capital = no has_province_modifier = new_capital } life_rating = 5 remove_province_modifier = new_capital }
 		}
+		
 		ai_will_do = { 
 			factor = 1
+		}
+		
+	}
+
+	the_cult_of_personality = {
+		picture = the_cult_of_personality
+		potential = {
+		
+			OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship }			
+
+			NOT = { has_country_modifier = cult_of_personality }
+			
+		}
+		
+		allow = {
+			war = no
+			NOT = { num_of_revolts = 1 }
+			NOT = { has_country_modifier = law_changed_by_force }
+			has_country_flag = president_for_life
+		}
+		
+		effect = {
+			plurality = -25
+			add_country_modifier = {
+				name = cult_of_personality
+				duration = -1
 			}
+			add_country_modifier = {
+				name = law_changed_by_force
+				duration = 1216
+			}
+			any_pop = { limit = { agree_with_ruling_party = 0.40 } militancy = -3 consciousness = -6 }
+		}
+		
+		ai_will_do = { factor = 1 }
+	}
+	
+	#Reverts back dictatorship reforms
+	president_for_life_dictatorship = {
+		picture = "president_for_life"
+		potential = {
+		
+			NOT = { has_country_flag = president_for_life }
+
+			OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship government = theocracy }
+
+		}
+
+		allow = {
+			OR = { prestige = 1000 is_greater_power = yes is_secondary_power = yes }
+			war = no
+			NOT = { is_disarmed = yes }
+			has_recently_lost_war = no
+			NOT = { has_country_modifier = amended_constitution }
+			NOT = { has_country_modifier = transition_to_democracy }
+			
+			#Personality of dictator
+			NOT = {
+				OR = {
+					has_country_modifier = man_of_the_people
+					has_country_modifier = great_statesman
+					has_country_modifier = great_reformer
+					has_country_modifier = visionary_thinker
+				}
+			}
+			
+			OR = {
+				ai = no
+				
+				has_country_modifier = military_man
+				has_country_modifier = lord_admiral
+				has_country_modifier = raving_loon
+				has_country_modifier = backroom_boy
+				has_country_modifier = gauche_buffoon
+				has_country_modifier = imperious_autocrat
+				has_country_modifier = prince_of_terror
+				has_country_modifier = efficient_sociopath
+				has_country_modifier = ambitious_union_boss
+				
+			}
+			
+			#AI selects only if country is stable
+			OR = { ai = no NOT = { average_militancy = 4 } }
+			
+			NOT = { has_country_modifier = power_vacuum }
+			NOT = { has_country_modifier = factionalism }
+			NOT = { has_country_modifier = government_consensus }
+		}
+
+		effect = {
+			prestige_factor = 0.01
+			
+			political_reform = ruling_party_opinion
+			
+			add_country_modifier = { name = amended_constitution duration = 3650 }
+
+			set_country_flag = president_for_life
+			
+			any_pop = { 
+				limit = { strata = middle }
+				militancy = 2
+				ideology = { factor = 0.15 value = liberal }
+			}
+			
+			any_pop = { 
+				limit = { 
+					NOT = { OR = { strata = rich type = bureaucrats type = officers } } 
+				}
+				militancy = 3
+			}
+			
+		}
+		
+		ai_will_do = { 
+			factor = 1
+		}
+
+	}
+
+	#Initiate the transition from a communist dictatorship to a democracy
+	reform_politburo = {
+		picture = "reform_politburo"
+		potential = {
+			OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+			political_opinions = ruling_party_opinion
+			NOT = { AND = { tag = RUS has_global_flag = blocsenabled } }
+		}
+
+		alert = no
+
+		allow = {
+			prestige = 600
+			war = no
+			NOT = { is_disarmed = yes }
+			is_vassal = no
+			
+			OR = { 
+			
+				ai = no
+				
+				#Dictator has no choice
+				average_militancy = 8 
+				
+				#Personality of the dictator
+				has_country_modifier = man_of_the_people
+				has_country_modifier = great_statesman
+				has_country_modifier = great_reformer
+				has_country_modifier = visionary_thinker
+
+			}
+			
+			NOT = { has_country_modifier = law_changed_by_force }
+		}
+
+		effect = {
+			political_reform = regulated_opinion
+			any_pop = { limit = { OR = { type = bureaucrats type = officers } } militancy = 10 }
+
+			any_pop = { limit = { NOT = { OR = { type = bureaucrats type = officers } } } militancy = -6 }
+
+			upper_house = { ideology = conservative value = 0.30 }
+			upper_house = { ideology = big_tent value = 0.30 }
+			upper_house = { ideology = liberal value = 0.30 }
+
+			add_country_modifier = { name = law_changed_by_force duration = 730 }
+			
+		}
+
+		ai_will_do = { 
+			factor = 1
+			
+			#Communists follow historical route if cold war is still ongoing
+			modifier = { factor = 0 has_global_flag = blocsenabled }
+			
+			#AI does not take it if neoliberalism is not researched
+			modifier = { factor = 0 NOT = { neoliberalism = 1 } }
+		}
+		
 	}
 
 }

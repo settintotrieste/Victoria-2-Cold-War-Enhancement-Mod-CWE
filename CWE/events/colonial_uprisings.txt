@@ -94,7 +94,10 @@ country_event  = {
 	trigger = {
 		colonial_nation = yes
 		NOT = {	
-			economic_policy = laissez_faire
+			OR = {
+				economic_policy = laissez_faire
+				economic_policy = planned_economy
+			}
 		}
 		liberal = 0.05
 	}
@@ -733,6 +736,7 @@ province_event = {
 		}
 	}
 }
+
 #$STATENAME$ Emergency
 province_event = {
 	id = 14620
@@ -740,55 +744,114 @@ province_event = {
 	desc = "EVTDESC14620"
 	
 	trigger = {
-		is_colonial = yes
-		average_militancy = 4
-	}
-	
-	mean_time_to_happen = {
-		months = 1000
-		modifier = {
+        is_colonial = yes
+        OR = { 
+			average_militancy = 4 
+			AND = { 
+				owner = { has_global_flag = blocsenabled }
+				OR = { 
+					pop_majority_ideology = communist 
+					pop_majority_ideology = communist_social 
+				}
+			}
+		}
+		NOT = { has_province_modifier = colonial_mismanagement }
+    }
+
+    mean_time_to_happen = {
+        months = 1000
+        modifier = {
+            factor = 0.9
+            average_militancy = 5
+        }
+        modifier = {
+            factor = 0.9
+            average_consciousness = 5
+        }
+        modifier = {
+            factor = 1.5
+            NOT = { average_consciousness = 5 }
+        }
+       modifier = {
 			factor = 0.9
-			average_militancy = 5
+			NOT = {
+				owner = { administration_spending = 0.3 }
+			}
 		}
 		modifier = {
-			factor = 0.9
-			average_consciousness = 5
-		}
-		modifier = {
-			factor = 0.9
-			owner = {
-				new_world_order = 1
+			factor = 0.8
+			NOT = {
+				owner = { administration_spending = 0.2 }
 			}
 		}
 		modifier = {
 			factor = 1.5
-			NOT = {
-				average_consciousness = 5
-			}
+			owner = { administration_spending = 0.4 }
 		}
-	}
-	
-	option = {
-		name = "EVTOPTA14620"
-		state_scope = {
-			any_pop = {
-				reduce_pop = 0.95
-				militancy = -1
-				consciousness = 1
+    }
+
+    option = {
+        name = "EVTOPTA14620"
+        state_scope = {
+			any_owned = {
+				add_province_modifier = { name = colonial_mismanagement duration = 1095 }
 			}
-		}	
-	}
-	
-	option = {
-		name = "EVTOPTB14620"
-		state_scope = {
-			any_pop = {
-				reduce_pop = 0.80
-				militancy = -2
+            any_pop = {
+                limit = { militancy = 4 }
+                militancy = -1
+                consciousness = 1
+            }
+            any_pop = {
+                limit = {
+					militancy = 4
+                    OR = {
+                        type = bureaucrats
+                        type = clergymen
+                        type = officers
+                    }
+                }
+                reduce_pop = 0.95
+            }
+            any_pop = {
+                limit = {
+                    type = soldiers
+                }
+                reduce_pop = 0.98
+            }
+        }
+    }
+
+    option = {
+        name = "EVTOPTB14620"
+        state_scope = {
+			any_owned = {
+				add_province_modifier = { name = colonial_mismanagement duration = 1825 }
 			}
-		}
-	}
+            any_pop = {
+                limit = { militancy = 4 }
+                militancy = -3
+            }
+            any_pop = {
+                limit = {
+					militancy = 4
+                    OR = {
+                        type = bureaucrats
+                        type = clergymen
+                        type = officers
+                    }
+                }
+                reduce_pop = 0.9
+            }
+            any_pop = {
+                limit = {
+                    type = soldiers
+                }
+                reduce_pop = 0.94
+            }
+        }
+    }
 }
+
 #Colonial Mismanagement
 country_event = {
 	id = 14630
@@ -854,6 +917,7 @@ country_event = {
 		}
 	}
 }
+
 # Colonial Disturbance
 country_event = {
 	id = 14640
@@ -1064,7 +1128,7 @@ country_event = {
 	
 	trigger = {
 		colonial_nation = yes
-		molecular_biology = 1
+		wars_of_national_liberation = 1
 		prestige = 50
 	}
 	
@@ -1430,16 +1494,16 @@ country_event = {
 # Model Colony
 country_event = {
 	id = 14740
-	title = "EVTNAME14740"
-	desc = "EVTDESC14740"
+	title = "EVTNAME_14740"
+	desc = "EVTDESC_14740"
 	news = yes
 	news_desc_long = "EVTDESC14740_NEWS_LONG"
 	news_desc_medium = "EVTDESC14740_NEWS_MEDIUM"
 	news_desc_short = "EVTDESC14740_NEWS_SHORT"
-	#major = yes
+	
 	
 	trigger = {
-		colonial_nation = yes
+		NOT = { average_militancy = 3 }
 		administration_spending = 0.6
 		education_spending = 0.6
 		military_spending = 0.6
@@ -1513,6 +1577,8 @@ country_event = {
 		OR = {
 			government = hms_government
 			government = democracy
+			government = hms_government1
+			government = democracy1
 		}
 	}
 	

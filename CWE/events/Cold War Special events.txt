@@ -1,80 +1,176 @@
 #Cold War Turns Hot USA first strike
 country_event = {
 	id = 19821928
-	title = "The USA declares war on the USSR"
+	title = "The USA Declares War on the USSR"
 	desc = EVTDESC19821928
 	picture = "coldwarhot"
 
-is_triggered_only = yes
-major = yes
+	major = yes
+
+	is_triggered_only = yes
+
 	option = {
-	name = "The Cold War has turned hot!"
-	war = { target = RUS attacker_goal = { casus_belli = dismantle_cb
- } defender_goal = { casus_belli = dismantle_cb } world_war = yes call_ally = yes }
-			}
+		name = "The Cold War has turned hot!"
+		
+		#Gain consciousness and pacifism
+		any_pop = { 
+			consciousness = 3
+			militancy = 1
+			dominant_issue = { value = pacifism factor = 0.05 }
 		}
+		
+		war = { 
+			target = RUS 
+			attacker_goal = { casus_belli = free_dismantle_cb } 
+			defender_goal = { casus_belli = free_dismantle_cb }
+			call_ally = yes 
+		}
+	}
+	
+}
+
 #Cold War Turns Hot USSR first strike
 country_event = {
 	id = 19831938
-	title = "The USSR declares war on the USA"
+	title = "The USSR Declares War on the USA"
 	desc = EVTDESC19831938
+	picture = "coldwarhot"
 	
+	major = yes
 
-is_triggered_only = yes
-major = yes
+	is_triggered_only = yes
+
 	option = {
-	name = "The Cold War has turned hot!"
-		war = { target = USA attacker_goal = { casus_belli = dismantle_cb
- } defender_goal = { casus_belli = dismantle_cb } world_war = yes call_ally = yes }
-			}
+		name = "The Cold War has turned hot!"
+		
+		#Gain consciousness and pacifism
+		any_pop = { 
+			consciousness = 3 
+			militancy = 1
+			dominant_issue = { value = pacifism factor = 0.05 }
 		}
-#Israel War to restore Palestine
+		
+		war = { 
+			target = USA 
+			attacker_goal = { casus_belli = free_dismantle_cb } 
+			defender_goal = { casus_belli = free_dismantle_cb } 
+			call_ally = yes 
+		}
+	}
+	
+}
+
+#Detente system for AI superpowers
 country_event = {
 	id = 19831939
-	title = "$YEAR$ Intifada"
-	desc = "Palestine is trying to break free from Israel"
+	title = "AI: Superpower Relations"
+	desc = "This event serves to make the AI Superpower more willing to seek better relations with opposing superpower under certain conditions."
+	picture = "coldwarhot"
 	
-trigger = {
-tag = PAL
-
-ai = yes
-ai = no
-
-year = 1967
-NOT = { ISR = { is_our_vassal = THIS } }
-ISR = { exists = yes }
-NOT = { has_country_flag = israelwarpalestine }
-}
-
-major = yes
-option = {
-	name = "We must defend ourself!"
-	set_country_flag = israelwarpalestine
-	war = { target = ISR attacker_goal = { casus_belli = become_independent } defender_goal = { } }
+	trigger = {
+	
+		#AI only
+		ai = yes
+	
+		#GP
+		is_greater_power = yes
+		
+		#Is a superpower
+		OR = { 
+			#Generic superpower
+			has_country_modifier = un_king1 
+			has_country_modifier = un_king2 
+			
+			#Cold War superpower
+			has_country_modifier = communist_bloc_leader 
+			has_country_modifier = democratic_bloc_leader
+		}
+		
+		#Has a rival superpower
+		OR = {
+			AND = { has_country_modifier = un_king1 any_greater_power = { has_country_modifier = un_king2 } }
+			AND = { has_country_modifier = un_king2 any_greater_power = { has_country_modifier = un_king1 } }
+			
+			AND = { has_country_modifier = communist_bloc_leader any_greater_power = { has_country_modifier = democratic_bloc_leader } }
+			AND = { has_country_modifier = democratic_bloc_leader any_greater_power = { has_country_modifier = communist_bloc_leader } }
+		}
+		
+		#Not at war
+		war = no
+		
+		#This event only goes to a max relation level
+		OR = {
+			#High tensions
+			any_greater_power = { 
+				OR = { has_country_modifier = un_king1 has_country_modifier = un_king2 has_country_modifier = communist_bloc_leader has_country_modifier = democratic_bloc_leader } 
+				OR = { has_country_modifier = world_high has_country_modifier = cold_war_high }
+				NOT = { relation = { who = THIS value = 0 } }
+				
+				#Will not seek better relations if infamy is high
+				NOT = { badboy = 1 }
+			}
+		
+			#Medium tensions
+			any_greater_power = { 
+				OR = { has_country_modifier = un_king1 has_country_modifier = un_king2 has_country_modifier = communist_bloc_leader has_country_modifier = democratic_bloc_leader } 
+				OR = { has_country_modifier = world_medium has_country_modifier = cold_war_medium }
+				NOT = { relation = { who = THIS value = 25 } }
+				
+				#Will not seek better relations if infamy is high
+				NOT = { badboy = 0.8 }
+			}
+			
+			#Low tensions
+			any_greater_power = { 
+				OR = { has_country_modifier = un_king1 has_country_modifier = un_king2 has_country_modifier = communist_bloc_leader has_country_modifier = democratic_bloc_leader } 
+				OR = { has_country_modifier = world_low has_country_modifier = cold_war_low }
+				NOT = { relation = { who = THIS value = 75 } }
+				
+				#Will not seek better relations if infamy is high
+				NOT = { badboy = 0.6 }
 			}
 		}
-#Israel War to restore Palestine - ISR wins
-country_event = {
-	id = 19831940
-	title = "$YEAR$ Intifada fails"
-	desc = "Palestine has failed to break free from Israel!"
-	
-trigger = {
-tag = PAL
-ai = yes
-ai = no
-is_vassal = yes
-ISR = { is_our_vassal = THIS }
-ISR = { exists = yes }
-has_country_flag = israelwarpalestine
-NOT = { has_country_flag = palestinianauthrouty }
-}
+		
+		#Jingoist will never improve relations
+		NOT = { war_policy = jingoism }
+		
+		#Triggers for seeking better relations
+		OR = {
+			war_policy = pacifism
+			has_recently_lost_war = no
+			is_disarmed = yes
+			war_exhaustion = 25
+			unemployment = 0.25
+			revolt_percentage = 0.25
+			has_country_modifier = in_bankrupcy
+		}
 
-major = yes
-	option = {
-	
-	name = "Damn"
-	set_country_flag = palestinianauthrouty
-	government = sar_government
 	}
+
+	mean_time_to_happen = { 
+		months = 6
+	}
+
+	option = {
+		name = "We must defend ourself!"
+		
+		#Boost relation with rival superpower
+		random_country = {
+			limit = {
+				is_greater_power = yes
+				OR = { 
+					#Generic superpower
+					has_country_modifier = un_king1 
+					has_country_modifier = un_king2 
+			
+					#Cold War superpower
+					has_country_modifier = communist_bloc_leader 
+					has_country_modifier = democratic_bloc_leader
+				} 
+			}
+			relation = { who = THIS value = 25 }
+		}
+		
+	}
+	
 }

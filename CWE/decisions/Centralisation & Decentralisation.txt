@@ -3,115 +3,184 @@ political_decisions = {
 changecentral = {
 		picture = "changecentral"
 		potential = {
-		NOT = { has_country_modifier = changecentral }
-	OR = { has_country_modifier = centralhigh
+			num_of_cities = 2
+			NOT = { has_country_modifier = changecentral }
+			OR = { has_country_modifier = centralhigh
 			has_country_modifier = centralmedium
 			has_country_modifier = centrallow }
-			}
-alert = no
+		}
+		
+		alert = no
+		
 		allow = {
 			war = no
-election = no
-OR = { ai = no AND = { ai = yes OR = { 
-
-AND = { has_country_modifier = centralhigh NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = nationalist_dictatorship government = presidential_dictatorship government = populist_dictatorship government = theocracy } } } 
-
-AND = { has_country_modifier = centralmedium NOT = { OR = { government = hms_government government = absolute_monarchy government = hms_government1 government = sar_government } } } 
-
-AND = { has_country_modifier = centrallow NOT = { OR = { government = democracy government = democracy1 government = colonial_government government = mandate_government government = socialist_democracy } } } 
-
-} } } 
+			election = no
+			
+			#Upper House
+			
+			OR = {
+				
+				#Right Wing Coalition
+				AND = {
+					OR = { ruling_party_ideology = traditionalist ruling_party_ideology = conservative }
+					OR = {
+						upper_house = { ideology = traditionalist value = 0.50 }
+						upper_house = { ideology = conservative value = 0.50 }
+					}
 				}
-	effect = {			
+				
+				#Left Wing Coalition
+				AND = {
+					OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social ruling_party_ideology = socialist }
+					OR = {
+						upper_house = { ideology = socialist value = 0.50 }
+						upper_house = { ideology = communist value = 0.50 }
+						upper_house = { ideology = communist_social value = 0.50 }
+					}
+				}
+				
+				#Liberal Coalition
+				AND = {
+					OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive ruling_party_ideology = big_tent }
+					OR = {
+						upper_house = { ideology = liberal value = 0.50 }
+						upper_house = { ideology = progressive value = 0.50 }
+						upper_house = { ideology = big_tent value = 0.50 }
+					}
+				}
+				
+				#Nationalist and Populist Coalition
+				AND = {
+					OR = { ruling_party_ideology = populist ruling_party_ideology = nationalist }
+					OR = {
+						upper_house = { ideology = populist value = 0.50 }
+						upper_house = { ideology = nationalist value = 0.50 }
+					}
+				}
+			
+			}
+			
+			#AI factors
+			
+			OR = { ai = no AND = { ai = yes OR = { 
+
+				AND = { has_country_modifier = centralhigh NOT = { OR = { ruling_party_ideology = nationalist ruling_party_ideology = traditionalist ruling_party_ideology = communist ruling_party_ideology = communist_social } } } 
+
+				AND = { has_country_modifier = centralmedium NOT = { OR = { ruling_party_ideology = conservative ruling_party_ideology = populist ruling_party_ideology = socialist } } } 
+
+				AND = { has_country_modifier = centrallow NOT = { OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive ruling_party_ideology = big_tent } } } 
+
+			} } } 
+			
+		}
+		
+		effect = {			
 			remove_country_modifier = centralhigh
 			remove_country_modifier = centralmedium
 			remove_country_modifier = centrallow
 			clr_country_flag = centralhigh
 			clr_country_flag = centralmedium
 			clr_country_flag = centrallow
+
 		}
 		ai_will_do = { 
 			factor = 100 
-			}
+		}
 	}
 
 centralhigh = {
 		picture = "centralhigh"
 
 		potential = {
-OR = { government = presidential_dictatorship government = proletarian_dictatorship government = proletarian_dictatorship1 government = nationalist_dictatorship government = populist_dictatorship government = theocracy }
-		NOT = { OR = { has_country_modifier = centralhigh
-			has_country_modifier = centralmedium
-			has_country_modifier = centrallow } }
-			}
-		allow = {
-			war = no
-		NOT = { AND = { has_country_modifier = centralhigh
-			has_country_modifier = centralmedium
-			has_country_modifier = centrallow } }
-	OR = { ai = no AND = { ai = yes OR = { government = presidential_dictatorship government = proletarian_dictatorship government = proletarian_dictatorship1 government = nationalist_dictatorship government = populist_dictatorship government = theocracy } } }
-				}
-		effect = {
-add_country_modifier = { name = changecentral duration = 365 }
-add_country_modifier = { name = centralhigh duration = -1 }
-			
+			NOT = { OR = { has_country_modifier = centralhigh has_country_modifier = centralmedium has_country_modifier = centrallow } }
 		}
-		ai_will_do = { 
-			factor = 1 
-			}
-	}
-centralmedium = {
-		picture = "centralmedium"
-
-		potential = {
-			
-NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } 
-
-		NOT = { OR = { has_country_modifier = centralhigh
-			has_country_modifier = centralmedium
-			has_country_modifier = centrallow } }
-			}
+		
 		allow = {
 			war = no
 			NOT = { AND = { has_country_modifier = centralhigh
 			has_country_modifier = centralmedium
 			has_country_modifier = centrallow } }
-OR = { ai = no AND = { ai = yes OR = { government = hms_government government = absolute_monarchy government = hms_government1 government = sar_government } } }
-				}
+			OR = { ai = no AND = { ai = yes OR = { ruling_party_ideology = nationalist ruling_party_ideology = traditionalist ruling_party_ideology = communist ruling_party_ideology = communist_social } } }
+		}
+		
 		effect = {
-add_country_modifier = { name = changecentral duration = 365 }
-add_country_modifier = { name = centralmedium duration = -1 }
+			add_country_modifier = { name = changecentral duration = 365 }
+			add_country_modifier = { name = centralhigh duration = -1 }
+			
+				#Remove devolved government
+				any_owned = { 
+					limit = { has_province_modifier = devolved_local_government } 
+					remove_province_modifier = devolved_local_government 
+					any_pop = { limit = { is_primary_culture = no } militancy = 4 } 
+				}
+				
 		}
 		ai_will_do = { 
 			factor = 1 
+		}
+	}
+centralmedium = {
+		picture = "centralmedium"
+
+		potential = {
+			NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } 
+			NOT = { OR = { has_country_modifier = centralhigh has_country_modifier = centralmedium has_country_modifier = centrallow } }
+		}
+		
+		allow = {
+			war = no
+			NOT = { AND = { has_country_modifier = centralhigh
+			has_country_modifier = centralmedium
+			has_country_modifier = centrallow } }
+			OR = { ai = no AND = { ai = yes OR = { ruling_party_ideology = conservative ruling_party_ideology = populist ruling_party_ideology = socialist } } }
+		}
+		
+		effect = {
+			add_country_modifier = { name = changecentral duration = 365 }
+			add_country_modifier = { name = centralmedium duration = -1 }
+
+			#Remove devolved government
+			any_owned = { 
+				limit = { has_province_modifier = devolved_local_government } 
+				remove_province_modifier = devolved_local_government 
+				any_pop = { limit = { is_primary_culture = no } militancy = 4 }
 			}
+
+		}
+		
+		ai_will_do = { 
+			factor = 1 
+		}
 	}
 centrallow = {
 		picture = "centrallow"
 
 		potential = {
+
+			num_of_cities = 2
+
 			NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
 
-		NOT = { OR = { has_country_modifier = centralhigh
-			has_country_modifier = centralmedium
-			has_country_modifier = centrallow } }
-			}
+			NOT = { OR = { has_country_modifier = centralhigh has_country_modifier = centralmedium has_country_modifier = centrallow } }
+		}
+		
 		allow = {
 			war = no
-		NOT = { AND = { has_country_modifier = centralhigh
+			NOT = { AND = { has_country_modifier = centralhigh
 			has_country_modifier = centralmedium
 			has_country_modifier = centrallow } }
-OR = { ai = no AND = { ai = yes OR = { government = democracy government = democracy1 government = colonial_government government = mandate_government government = socialist_democracy } } }
-
-				}
-		effect = {
-add_country_modifier = { name = changecentral duration = 365 }
-add_country_modifier = { name = centrallow duration = -1 }
+			OR = { ai = no AND = { ai = yes OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive ruling_party_ideology = big_tent } } }
 
 		}
+		
+		effect = {
+			add_country_modifier = { name = changecentral duration = 365 }
+			add_country_modifier = { name = centrallow duration = -1 }
+		}
+		
 		ai_will_do = { 
 			factor = 1 
-			}
+		}
 	}
 
 }

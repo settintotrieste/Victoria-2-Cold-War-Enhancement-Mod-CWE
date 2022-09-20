@@ -1,157 +1,326 @@
+#Bangladesh Liberation War
 country_event = {
   id = 8017040
-  title = EVT_8017040_NAME
-  desc = EVT_8017040_DESC
-  picture = "nwo2_bangladesh"
-  fire_only_once = yes
-
-  trigger = {
-    tag = PAK
-	exists = PAK
-    year = 1971
-	NOT = { year = 1975 }
-    NOT = { exists = BNG }
-    war = no
-	HND = { war = no }
-  }
-
-  mean_time_to_happen = { months = 4  }
-
-  option = {
-    name = EVT_8017040_A
-any_pop = { limit = { culture = bengali } militancy = 2.5 consciousness = 3 }
-	remove_accepted_culture = bengali
-	HND = { country_event =  8017050 } 
-	ai_chance = { factor = 0.9 }
-  }
-
-  option = {
-    name = EVT_8017040_B
-	any_pop = { consciousness = 1.0 }
-	add_accepted_culture = bengali
-	release_vassal = BNG
-	BNG = { government = democracy country_event = 800054 }
-sphere_owner = { diplomatic_influence = { who = BNG value = 200 } }
-	ai_chance = { factor = 0.1 }
-  }
-}
-country_event = {
-  id = 8017050
-  title = EVT_8017050_NAME
-  desc = EVT_8017050_DESC
-  picture = "nwo2_indo_pakistani_war_1971"
-  is_triggered_only = yes
+  title = "The Bangladesh Liberation War"
+  desc = EVTDESC8017040
+  picture = "nwo2_bangladesh_war_of_indy"
   
-  option = {
-    name = EVT_8017050_A
-	set_country_flag = 1971_war_hnd_bng
-	PAK = { war = { target = HND attacker_goal = { casus_belli = acquire_core_state state_province_id = 1225 } defender_goal = { casus_belli = liberate_country country = BNG } } }
-	ai_chance = { factor = 0.9 }
-  }
+	fire_only_once = yes
 
-  option = {
-    name = EVT_8017050_B
-	ai_chance = { factor = 0.1 }
-  }
+	trigger = {
+		tag = PAK
+		year = 1971
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		
+		#Awami blocked
+		has_country_flag = 1970_PAK_historical_option
+		
+		#Owns Bangladesh
+		is_possible_vassal = BNG
+		
+		HND = { 
+			war = no 
+			is_vassal = no 
+		}
+	}
+
+	mean_time_to_happen = { months = 4 }
+
+	option = {
+		name = "Fight to keep East Pakistan!"
+		prestige = 50
+		
+		#Insurgency in Bangladesh
+		any_owned = { 
+			limit = { is_core = BNG } 
+			add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+			
+			#Boost nationalist support
+			any_pop = {
+				militancy = 10
+				ideology = {
+					factor = 0.25
+					value = nationalist
+				}
+			}
+			
+		}
+		
+		#BNG is released
+		release = BNG
+		BNG = { 
+			government = democracy 
+			country_event = 800054 
+			ruling_party_ideology = nationalist 
+		}
+		war = { 
+			target = BNG
+			attacker_goal = { casus_belli = civil_war }
+			defender_goal = { casus_belli = become_independent }
+		}
+		
+		#Choice for Indian intervention
+		HND = { country_event = 8017041 }
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Accept Bangladeshi independence"
+		prestige_factor = -0.1
+		
+		#Boost nationalist support
+		any_pop = {
+			militancy = 7
+			ideology = {
+				factor = 0.25
+				value = nationalist
+			}
+		}
+		
+		#Release BNG
+		release = BNG
+		BNG = { 
+			government = democracy 
+			country_event = 800054 
+			ruling_party_ideology = nationalist 
+		}
+		sphere_owner = { diplomatic_influence = { who = BNG value = 200 } }
+		
+		ai_chance = { factor = 0.1 }
+	}
 }
+
+#Indian choice to fight with Bangladesh
 country_event = {
-  id = 8017051
-  title = EVT_8017051_NAME
-  desc = EVT_8017051_DESC
+  id = 8017041
+  title = "The Indo-Pakistani War of $YEAR$"
+  desc = EVTDESC8017041
   picture = "nwo2_indo_pakistani_war_1971"
-  fire_only_once = yes
+  
+	is_triggered_only = yes
+  
+	option = {
+		name = "Fight to free Bangladesh!"
+	
+		#Pakistan goes to war with HND
+		PAK = { 
+			war = { 
+				target = HND
+				attacker_goal = { casus_belli = acquire_any_state state_province_id = 1224 }
+				attacker_goal = { casus_belli = territorial_dispute_internal }
+				defender_goal = { casus_belli = cut_down_to_size }
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
 
-  trigger = {
-    tag = PAK
-    year = 1972
-    NOT = { exists = BNG }
-    war = no
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8017051_A
-	any_pop = { militancy = -1.5  consciousness = 2}
-	HND = { country_event = 8017052 }
-  }
+	option = {
+		name = "Stay out of the crisis"
+		prestige_factor = -0.03
+		
+		relation = { who = PAK value = 50 }
+		
+		ai_chance = { factor = 0.1 }
+	}
 }
-country_event = {
-  id = 8017052
-  title = EVT_8017052_NAME
-  desc = EVT_8017052_DESC
-  picture = "nwo2_indo_pakistani_war_1971"
-  is_triggered_only = yes
 
-  option = {
-    name = EVT_8017052_A
-	any_pop = { consciousness = 0.5 }
-  }
+#The 1975 Coup - Rahman
+country_event = {
+  id = 8017042
+  title = "The $YEAR$ Coup by Sheikh Mujibur Rahman"
+  desc = EVTDESC8017042
+  picture = "nwo2_bangladesh"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = BNG
+		year = 1975
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		
+		government = democracy
+		ruling_party_ideology = socialist
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "Create a one party socialist state!"
+		
+		government = presidential_dictatorship
+		country_event = 800050
+		ruling_party_ideology = socialist
+		
+		add_country_modifier = { name = political_strife duration = 1825 }
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Keep the status quo"
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.1 }
+	}
 }
 
+#The 1975 Coup - Abu Sadat Mohammad Sayem
 country_event = {
-  id = 8017053
-  title = EVT_8017053_NAME
-  desc = EVT_8017053_DESC
-  picture = "nwo2_indo_pakistani_war_1971"
-  fire_only_once = yes
+  id = 8017043
+  title = "Rule by the Chief Martial Law Administrator"
+  desc = EVTDESC8017043
+  picture = "nwo2_bangladesh_1975"
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = PAK
-    year = 1972
-    war_with = HND
-  }
+	trigger = {
+		tag = BNG
+		year = 1975
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		
+		government = presidential_dictatorship
+		ruling_party_ideology = socialist
+	}
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 10 }
 
-  option = {
-    name = EVT_8017053_A
-	any_owned = { limit = { is_core = BNG } any_pop = { militancy = 3 consciousness = 2 } } 
- }
+	option = {
+		name = "Down with the traitors!"
+		ruling_party_ideology = nationalist
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "The attempt was foiled"
+		
+		any_pop = {
+			limit = { type = officers }
+			militancy = 10
+		}
+		
+		any_owned = { 
+			limit = { is_state_capital = no } 
+			change_controller = REB 
+		}
+		
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
+		
+		ai_chance = { factor = 0.1 }
+	}
 }
+
+#The 1977 return to democracy
 country_event = {
-  id = 8017054
-  title = EVT_8017054_NAME
-  desc = EVT_8017054_DESC
-  picture = "nwo2_indo_pakistani_war_1971"
-  fire_only_once = yes
+  id = 8017044
+  title = "The Return of Democracy"
+  desc = EVTDESC8017044
+  picture = "nwo2_bangladesh_1977"
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = HND
-    year = 1972
-	NOT = { year = 1979 }
-	war = no
-	has_country_flag = 1971_war_hnd_bng
-	BNG = { exists = yes is_vassal = no }
-  }
+	trigger = {
+		tag = BNG
+		year = 1977
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		
+		government = presidential_dictatorship
+		ruling_party_ideology = nationalist
+	}
 
-  mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 4 }
 
-  option = {
-    name = EVT_8017054_A
-	relation = { who = BNG value = 200 }
-	diplomatic_influence = { who = BNG value = 200 }
-  }
+	option = {
+		name = "We welcome the new civilian government"
+		
+		government = democracy
+		country_event = 800054
+		ruling_party_ideology = conservative
+		
+		#Semi Presidential Republic
+		clr_country_flag = presidential_system_republic
+		clr_country_flag = semi_presidential_system_republic
+		clr_country_flag = parliamentary_system_republic
+		
+		set_country_flag = semi_presidential_system_republic
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "The time is not ripe for a democracy yet"
+		
+		#Boost liberal support
+		any_pop = {
+			militancy = 6
+			ideology = {
+				factor = 0.10
+				value = liberal
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
 }
+
+#The 1982 Bangladeshi Military Coup
 country_event = {
-  id = 8017055
-  title = EVT_8017055_NAME
-  desc = EVT_8017055_DESC
-  picture = "nwo2_indo_pakistani_war_1971"
-  fire_only_once = yes
+  id = 8017045
+  title = "The $YEAR$ Bangladeshi Military Coup"
+  desc = EVTDESC8017045
+  picture = "nwo2_bangladesh_1982"
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = PAK
-    year = 1972
-	NOT = { year = 1979 }
-	war = no
-	BNG = { exists = yes NOT = { vassal_of = PAK } }
-  }
+	trigger = {
+		tag = BNG
+		year = 1982
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		
+		government = democracy
+		NOT = { ruling_party_ideology = nationalist }
+	}
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 4 }
 
-  option = {
-    name = EVT_8017055_A
-	any_pop = { militancy = 1.5 consciousness = 2 }
-  }
+	option = {
+		name = "The people cannot handle a democracy"
+		
+		government = presidential_dictatorship
+		country_event = 800050
+		ruling_party_ideology = nationalist
+		
+		#Parliamentary Republic once democratised
+		clr_country_flag = presidential_system_republic
+		clr_country_flag = semi_presidential_system_republic
+		clr_country_flag = parliamentary_system_republic
+		
+		set_country_flag = parliamentary_system_republic
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "There are better things to do than overthrowing governments"
+		
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
+		
+		ai_chance = { factor = 0.1 }
+	}
 }

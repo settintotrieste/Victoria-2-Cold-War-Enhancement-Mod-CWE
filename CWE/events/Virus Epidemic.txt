@@ -1,0 +1,1127 @@
+#World Epidemic Start
+country_event = {
+	id = 1412014
+	title = "A Mysterious New Virus"
+	desc = EVTDESC1412014
+	picture = "new_virus"
+
+	trigger = {
+		any_owned_province = { 
+			OR = { 
+				has_province_modifier = dev_1 
+				has_province_modifier = dev_2
+				has_province_modifier = dev_3
+			} 
+		}
+		NOT = { any_owned_province = { has_province_modifier = virus_outbreak } }
+		NOT = { any_owned_province = { has_province_modifier = virus_outbreak_deadly } }
+		year = 1955
+		number_of_states = 2
+		NOT = { has_global_flag = epidemic_start }
+		NOT = { has_country_modifier = vaccine_created }
+		
+		#Delay Pandemics if it was fired recently
+		NOT = { has_country_modifier = virus_timer }
+		NOT = { has_country_modifier = pandemic_delay_timer }
+		NOT = { any_greater_power = { has_country_modifier = pandemic_delay_timer } }
+	}
+	
+	mean_time_to_happen = { 
+		months = 3650
+
+		modifier = { health_care = trinket_health_care factor = 1.5 }
+		modifier = { health_care = low_health_care factor = 2 }
+		modifier = { health_care = acceptable_health_care factor = 3 }
+		modifier = { health_care = good_health_care factor = 3 }
+
+		modifier = { safety_regulations = balanced_regulations factor = 1.5 }
+		modifier = { safety_regulations = restrictive_regulations factor = 2 }
+		modifier = { safety_regulations = strict_regulations factor = 2.5 }
+		modifier = { safety_regulations = rigid_regulations factor = 3 }
+
+		modifier = { NOT = { any_greater_power = { globalization = 1 } } factor = 3 }
+		
+	}
+	
+	option = {
+		name = "We will have to watch this closely - and report it to the WHO"
+		
+		prestige_factor = -0.05
+		
+		set_global_flag = epidemic_start
+		
+		set_country_flag = virus_originator_country
+		
+		set_country_flag = enable_virus_controls
+		
+		set_country_flag = who_alerted_to_new_virus
+		
+		add_country_modifier = { name = virus_timer duration = 180 }
+		
+		any_country = {
+			limit = { exists = yes }
+			add_country_modifier = { name = virus_timer duration = 180 }
+		}
+		
+		#Allow virus controls
+		any_country = {
+			limit = { exists = yes }
+			country_event = 14120142
+		}
+		
+		#5% chance of a deadly virus
+		random = {
+			chance = 5
+			set_country_flag = deadly_epidemic_setting
+		}
+		
+	}
+	
+	option = {
+		name = "Cover it up!"
+		
+		set_global_flag = epidemic_start
+		
+		set_country_flag = virus_originator_country
+		
+		set_country_flag = enable_virus_controls
+		
+		add_country_modifier = { name = virus_timer duration = 180 }
+		
+		any_country = {
+			limit = { exists = yes }
+			add_country_modifier = { name = virus_timer duration = 180 }
+		}
+		
+		#5% chance of a deadly virus
+		random = {
+			chance = 5
+			set_country_flag = deadly_epidemic_setting
+		}
+		
+	}
+	
+}
+
+#Virus spreading to different states
+province_event = {
+	id = 14120141
+	title = "Virus Epidemic Spreads to $STATENAME$"
+	desc = EVTDESC14120141
+
+	trigger = {
+	
+		#Virus epidemic must be ongoing
+		owner = { has_global_flag = epidemic_start }
+	
+		#Province does not have virus
+		NOT = { 
+			OR = { 
+				has_province_modifier = virus_outbreak 
+				has_province_modifier = virus_outbreak_deadly 
+			} 
+		}
+		
+		#Spread from internal borders
+		owner = { 
+			any_owned_province = { 
+				OR = { 
+					has_province_modifier = virus_outbreak 
+					has_province_modifier = virus_outbreak_deadly 
+				}
+			}
+		}
+		
+		#Internal spread stops when there is a vaccine
+		owner = {
+			NOT = { has_country_modifier = vaccine_created }
+		}
+		
+		#Virus must not have been contained
+		owner = { NOT = { has_country_flag = epidemic_controlled } }
+		
+		#Originator can only fire after first reported epidemic
+		owner = {
+			NOT = {
+				AND = { 
+					has_country_flag = virus_originator_country
+					NOT = { has_country_flag = first_city_epidemic } 
+				}
+			}
+		}
+		
+	}
+
+	mean_time_to_happen = { 
+		months = 14
+
+		modifier = {
+			factor = 1.25
+			owner = { has_country_flag = virusno }
+		}
+		modifier = {
+			factor = 2
+			owner = { has_country_modifier = virusmedium }
+		}
+		modifier = {
+			factor = 4
+			owner = { has_country_modifier = virushigh }
+		}
+		modifier = {
+			factor = 1.5
+			owner = { has_country_flag = who_alerted_to_new_virus }
+		}
+
+	}
+
+	option = {
+		name = "Downplay the issue"
+		
+		#Add war exhaustion if at war
+		owner = {
+			random_owned = {
+				limit = { 
+					owner = { war = yes } 
+				}
+				owner = { war_exhaustion = 1 }
+			}
+		}
+
+		#Mild Virus
+		state_scope = { 
+			any_owned = { 
+				limit = { owner = { NOT = { has_global_flag = deadly_epidemic } } }
+				add_province_modifier = { name = virus_outbreak duration = 365 }
+			}
+		}
+
+		#Deadly Virus
+		state_scope = { 
+			any_owned = { 
+				limit = { owner = { has_global_flag = deadly_epidemic } } 
+				add_province_modifier = { name = virus_outbreak_deadly duration = 365 }
+			}
+		}
+		
+		ai_chance = { factor = 0.6 }
+
+	}
+	
+	option = {
+		name = "Lockdown $STATENAME$!"
+		
+		owner = {
+			money = -5000 
+			prestige_factor = -0.003
+		}
+		
+		#Add war exhaustion if at war
+		owner = {
+			random_owned = {
+				limit = { 
+					owner = { war = yes } 
+				}
+				owner = { war_exhaustion = 2 }
+			}
+		}
+
+		#Mild Virus
+		state_scope = {
+			any_owned = { 
+				limit = { owner = { NOT = { has_global_flag = deadly_epidemic } } }
+				add_province_modifier = { name = virus_outbreak duration = 183 }
+			}
+		}
+
+		#Deadly Virus
+		state_scope = { 
+			any_owned = { 
+				limit = { owner = { has_global_flag = deadly_epidemic } } 
+				add_province_modifier = { name = virus_outbreak_deadly duration = 183 }
+			}
+		}
+		
+		#Chance of containing the spread
+		owner = {
+			random_owned = {
+				limit = {
+					owner = { has_country_modifier = virusmedium }
+				}
+				random = {
+					chance = 5
+					owner = { set_country_flag = epidemic_controlled }
+				}
+			}
+		}
+		
+		owner = {
+			random_owned = {
+				limit = {
+					owner = { has_country_modifier = virushigh }
+				}
+				random = {
+					chance = 15
+					owner = { set_country_flag = epidemic_controlled }
+				}
+			}
+		}
+		
+		ai_chance = { factor = 0.4 }
+
+	}
+
+}
+
+#Enable virus controls
+country_event = {
+	id = 14120142
+	title = "A Mysterious New $FROMCOUNTRY_ADJ$ Virus"
+	desc = EVTDESC14120142
+	picture = "new_virus"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "We will look at this very strongly!"
+		set_country_flag = enable_virus_controls
+		any_pop = { consciousness = 4 }
+	}
+
+}
+
+#First viral epidemic
+country_event = {
+	id = 14120143
+	title = "Viral Epidemic Reported"
+	desc = EVTDESC14120143
+	picture = "first_viral_epidemic"
+
+	trigger = {
+		has_global_flag = epidemic_start
+		has_country_flag = virus_originator_country
+		NOT = { has_country_flag = first_city_epidemic }
+	}
+	
+	mean_time_to_happen = {
+		months = 1
+		modifier = { factor = 3 has_country_modifier = virushigh }
+		modifier = { factor = 2 has_country_modifier = virusmedium }
+	}
+
+	option = {
+		name = "Widespread infections have begun"
+		set_country_flag = first_city_epidemic
+		random_owned = {
+			limit = {
+				owner = { NOT = { has_country_flag = deadly_epidemic_setting } }
+				OR = { 
+					has_province_modifier = dev_1 
+					has_province_modifier = dev_2
+					has_province_modifier = dev_3
+				}
+			}
+			owner = { clr_country_flag = deadly_epidemic_setting }
+			add_province_modifier = { name = virus_outbreak duration = 730 }
+		}
+		
+		random_owned = {
+			limit = {
+				owner = { has_country_flag = deadly_epidemic_setting }
+				OR = { 
+					has_province_modifier = dev_1 
+					has_province_modifier = dev_2
+					has_province_modifier = dev_3
+				}
+			}
+			any_pop = { reduce_pop = 0.98 }
+			owner = { 
+				clr_country_flag = deadly_epidemic_setting 
+				set_global_flag = deadly_epidemic 
+			}
+			add_province_modifier = { name = virus_outbreak_deadly duration = 730 }
+		}
+	}
+
+}
+
+#Full blown epidemic in $COUNTRY$ - If all cored state_capitals have the virus
+country_event = {
+	id = 1412015
+	title = "Full Blown Epidemic in $COUNTRY$"
+	desc = EVTDESC1412015
+	picture = "new_virus_spreads"
+
+	trigger = {
+	
+		any_owned_province = {
+			OR = { 
+				has_province_modifier = virus_outbreak 
+				has_province_modifier = virus_outbreak_deadly 
+			}
+		}
+	
+		NOT = {
+			any_owned_province = {
+				is_state_capital = yes
+				is_core = THIS
+				NOT = {
+					OR = {
+						has_province_modifier = virus_outbreak 
+						has_province_modifier = virus_outbreak_deadly 
+					}
+				}
+			}
+		}
+		
+		NOT = { has_country_flag = full_blown_epidemic }
+		
+	}
+
+	option = {
+		name = "This reflects badly on the government!"
+		
+		set_country_flag = full_blown_epidemic
+		
+		add_country_modifier = { name = local_epidemic duration = 1825 }
+		
+		prestige_factor = -0.01
+
+		#Reduce government support
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = conservative } }
+			owner = { any_pop = { ideology = { factor = -0.05 value = conservative } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = big_tent } }
+			owner = { any_pop = { ideology = { factor = -0.05 value = big_tent } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = socialist } }
+			owner = { any_pop = { ideology = { factor = -0.05 value = socialist } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = traditionalist } }
+			owner = { any_pop = { ideology = { factor = -0.05 value = traditionalist } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = populist } }
+			owner = { any_pop = { ideology = { factor = -0.05 value = populist } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = nationalist } }
+			owner = { any_pop = { ideology = { factor = -0.05 value = nationalist } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = progressive } }
+			owner = { any_pop = { ideology = { factor = -0.05 value = progressive } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = liberal } }
+			owner = { any_pop = { ideology = { factor = -0.05 value = liberal } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = communist } }
+			owner = { any_pop = { ideology = { factor = -0.05 value = communist } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = communist_social } }
+			owner = { any_pop = { ideology = { factor = -0.05 value = communist_social } } }
+		}
+
+	}
+
+}
+
+#Economy Paralysed by Viral Epidemic!
+country_event = {
+	id = 1412016
+	title = "Economy Paralysed by Viral Epidemic!"
+	desc = EVTDESC1412016
+	picture = "new_virus_spreads1"
+
+	trigger = {
+		any_owned_province = {
+			OR = { 
+				has_province_modifier = virus_outbreak 
+				has_province_modifier = virus_outbreak_deadly 
+			}
+		}
+		OR = { has_country_modifier = virushigh has_country_modifier = virusmedium }
+		has_country_flag = full_blown_epidemic
+	}
+
+	mean_time_to_happen = {
+		months = 6
+		modifier = { factor = 0.5 has_country_modifier = virushigh } 
+	}
+
+	option = {
+		name = "Maintain the lockdown measures until it is safe to reopen"
+		
+		#Economic crash
+		add_country_modifier = { name = stock_market_crash duration = 183 }
+		add_country_modifier = { name = great_recession duration = 365 }
+		
+		ai_chance = { factor = 0.6 }
+	}
+	option = {
+		name = "The cure cannot be worse than the virus - OPEN UP!"
+		prestige_factor = -0.01
+		
+		set_country_flag = epidemic_controlled
+		
+		#Reduce government support
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = conservative } }
+			owner = { any_pop = { ideology = { factor = -0.025 value = conservative } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = big_tent } }
+			owner = { any_pop = { ideology = { factor = -0.025 value = big_tent } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = socialist } }
+			owner = { any_pop = { ideology = { factor = -0.025 value = socialist } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = traditionalist } }
+			owner = { any_pop = { ideology = { factor = -0.025 value = traditionalist } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = populist } }
+			owner = { any_pop = { ideology = { factor = -0.025 value = populist } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = nationalist } }
+			owner = { any_pop = { ideology = { factor = -0.025 value = nationalist } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = progressive } }
+			owner = { any_pop = { ideology = { factor = -0.025 value = progressive } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = liberal } }
+			owner = { any_pop = { ideology = { factor = -0.025 value = liberal } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = communist } }
+			owner = { any_pop = { ideology = { factor = -0.025 value = communist } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = communist_social } }
+			owner = { any_pop = { ideology = { factor = -0.025 value = communist_social } } }
+		}
+		
+		ai_chance = { factor = 0.4 }
+	}
+	
+}
+
+#Virus arrives from another country
+country_event = {
+	id = 1412017
+	title = "Foreign Virus spreads to $COUNTRY$"
+	desc = EVTDESC1412017
+	picture = "new_virus_spreads2"
+
+	trigger = {
+	
+		#No virus in current country
+		NOT = {
+			any_owned_province = {
+				OR = { 
+					has_province_modifier = virus_outbreak 
+					has_province_modifier = virus_outbreak_deadly 
+				}
+			}
+		}
+		
+		#Do not have closed borders
+		NOT = { immigration_policy = nobody_gets_out }
+		
+		OR = {
+			#Neighbouring country has virus and does not have closed borders
+			any_neighbor_country = { 
+				NOT = { immigration_policy = nobody_gets_out }
+				any_owned_province = {
+					OR = { 
+						has_province_modifier = virus_outbreak 
+						has_province_modifier = virus_outbreak_deadly 
+					}
+				}
+			}
+			
+			#Any GP have virus and does not have closed borders
+			any_greater_power = { 
+				NOT = { immigration_policy = nobody_gets_out }
+				any_owned_province = {
+					OR = { 
+						has_province_modifier = virus_outbreak 
+						has_province_modifier = virus_outbreak_deadly 
+					}
+				}
+			}
+		}
+		
+		#THIS has not already created a vaccine
+		NOT = { has_country_modifier = vaccine_created }
+		
+		#Has global virus flag
+		has_global_flag = epidemic_start
+
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+		modifier = { factor = 2 has_country_modifier = virusmedium }
+		modifier = { factor = 4 has_country_modifier = virushigh }
+	}
+
+	option = {
+		name = "Report it to the WHO!"
+		prestige_factor = -0.025
+		set_country_flag = who_alerted_to_new_virus
+		
+		#Add war exhaustion if at war
+		random_owned = {
+			limit = { 
+				owner = { war = yes } 
+			}
+			owner = { war_exhaustion = 5 }
+		}
+		
+		#Random state gets the virus
+		random_owned = {
+			limit = { is_state_capital = yes }
+			
+			#Mild Virus
+			state_scope = { 
+				any_owned = { 
+					limit = { owner = { NOT = { has_global_flag = deadly_epidemic } } }
+					add_province_modifier = { name = virus_outbreak duration = 365 }
+				}
+			}
+
+			#Deadly Virus
+			state_scope = { 
+				any_owned = { 
+					limit = { owner = { has_global_flag = deadly_epidemic } } 
+					add_province_modifier = { name = virus_outbreak_deadly duration = 365 }
+				}
+			}
+		
+		}
+		
+		#Any uninformed countries get informed
+		any_country = {
+			limit = { 
+				NOT = { has_country_flag = enable_virus_controls } 
+				exists = yes
+			}
+			country_event = 14120142
+		}
+		
+		ai_chance = { factor = 0.7 }
+	}
+	
+	option = {
+		name = "Try to cover it up"
+		
+		#Add war exhaustion if at war
+		random_owned = {
+			limit = { 
+				owner = { war = yes } 
+			}
+			owner = { war_exhaustion = 2 }
+		}
+		
+		#Random state gets the virus
+		random_owned = {
+			limit = { is_state_capital = yes }
+			
+			#Mild Virus
+			state_scope = { 
+				any_owned = { 
+					limit = { owner = { NOT = { has_global_flag = deadly_epidemic } } }
+					add_province_modifier = { name = virus_outbreak duration = 365 }
+				}
+			}
+
+			#Deadly Virus
+			state_scope = { 
+				any_owned = { 
+					limit = { owner = { has_global_flag = deadly_epidemic } } 
+					add_province_modifier = { name = virus_outbreak_deadly duration = 365 }
+				}
+			}
+		
+		}
+		
+		ai_chance = { factor = 0.7 }
+	}
+	
+}
+
+#People angry with poor virus controls
+country_event = {
+	id = 1412018
+	title = "Virus Epidemic Response Criticised"
+	desc = EVTDESC1412018
+	picture = "new_virus_spreads3"
+
+	trigger = {
+	
+		#Event not already fired
+		NOT = { has_country_flag = virus_response_criticised }
+	
+		#Has virus controls
+		has_country_flag = enable_virus_controls
+	
+		#Has virus in country
+		any_owned_province = {
+			OR = { 
+				has_province_modifier = virus_outbreak 
+				has_province_modifier = virus_outbreak_deadly 
+			}
+		}
+		
+		OR = {
+			#Do not have strong virus controls
+			NOT = {
+				OR = {
+					has_country_modifier = virusmedium
+					has_country_modifier = virushigh
+				}
+			}
+			
+			#Full blown epidemic and minimal virus controls
+			AND = {
+				has_country_flag = virusno
+				has_country_flag = full_blown_epidemic
+			}
+			
+			#Did not inform WHO
+			NOT = { has_country_flag = who_alerted_to_new_virus }
+		}
+		
+		has_global_flag = epidemic_start
+		
+	}
+
+	mean_time_to_happen = { 
+		months = 2
+		modifier = { publishing_rights = firewall_publishing factor = 3 }
+		modifier = { publishing_rights = censored_publishing factor = 6 }
+	}
+
+	option = {
+		name = "We are already trying our best!"
+		
+		set_country_flag = who_alerted_to_new_virus
+		
+		set_country_flag = virus_response_criticised
+		
+		#Add war exhaustion if at war
+		random_owned = {
+			limit = { 
+				owner = { war = yes } 
+			}
+			owner = { war_exhaustion = 5 }
+		}
+		
+		prestige_factor = -0.025
+		
+		#Reduce government support
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = conservative } }
+			owner = { any_pop = { ideology = { factor = -0.05 value = conservative } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = big_tent } }
+			owner = { any_pop = { ideology = { factor = -0.05 value = big_tent } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = socialist } }
+			owner = { any_pop = { ideology = { factor = -0.05 value = socialist } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = traditionalist } }
+			owner = { any_pop = { ideology = { factor = -0.05 value = traditionalist } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = populist } }
+			owner = { any_pop = { ideology = { factor = -0.05 value = populist } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = nationalist } }
+			owner = { any_pop = { ideology = { factor = -0.05 value = nationalist } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = progressive } }
+			owner = { any_pop = { ideology = { factor = -0.05 value = progressive } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = liberal } }
+			owner = { any_pop = { ideology = { factor = -0.05 value = liberal } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = communist } }
+			owner = { any_pop = { ideology = { factor = -0.05 value = communist } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = communist_social } }
+			owner = { any_pop = { ideology = { factor = -0.05 value = communist_social } } }
+		}
+		
+	}
+
+}
+
+#Announce WHO aid
+country_event = {
+	id = 1410104
+	title = "$COUNTRY$ seeks WHO help to combat Virus"
+	desc = EVTDESC1410104
+	picture = "world_health_o_aid"
+	is_triggered_only = yes
+	
+	option = {
+		name = "We shall overcome this challenge together"
+		
+		#Reduce government support
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = conservative } }
+			owner = { any_pop = { ideology = { factor = 0.025 value = conservative } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = big_tent } }
+			owner = { any_pop = { ideology = { factor = 0.025 value = big_tent } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = socialist } }
+			owner = { any_pop = { ideology = { factor = 0.025 value = socialist } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = traditionalist } }
+			owner = { any_pop = { ideology = { factor = 0.025 value = traditionalist } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = populist } }
+			owner = { any_pop = { ideology = { factor = 0.025 value = populist } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = nationalist } }
+			owner = { any_pop = { ideology = { factor = 0.025 value = nationalist } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = progressive } }
+			owner = { any_pop = { ideology = { factor = 0.025 value = progressive } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = liberal } }
+			owner = { any_pop = { ideology = { factor = 0.025 value = liberal } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = communist } }
+			owner = { any_pop = { ideology = { factor = 0.025 value = communist } } }
+		}
+
+		random_owned = { 
+			limit = { owner = { ruling_party_ideology = communist_social } }
+			owner = { any_pop = { ideology = { factor = 0.025 value = communist_social } } }
+		}
+		
+		
+		
+	}
+}
+
+#Full blown epidemic in COUNTRY contained
+country_event = {
+	id = 1410105
+	title = "Viral Epidemic Contained in $COUNTRY$"
+	desc = EVTDESC1410105
+	picture = "viral_epidemic_contained"
+	
+	trigger = { 
+		
+		any_owned_province = {
+			is_state_capital = yes
+			is_core = THIS
+			NOT = {
+				OR = {
+					has_province_modifier = virus_outbreak 
+					has_province_modifier = virus_outbreak_deadly 
+				}
+			}
+		}
+		
+		has_country_flag = full_blown_epidemic
+	}
+	
+	mean_time_to_happen = { 
+		months = 3
+	}
+	
+	option = {
+		name = "The worst is now behind us!"
+		clr_country_flag = virus_response_criticised
+		clr_country_flag = full_blown_epidemic
+		remove_country_modifier = local_epidemic
+	}
+
+}
+
+#End World Epidemic - clear all, average MTTH is 36 months but can be sped up by GPs having a vaccine
+country_event = {
+	id = 14101051
+	title = "Viral Epidemic Over"
+	desc = EVTDESC14101051
+	picture = "oic_chairman"
+	
+	major = yes
+	
+	trigger = {
+
+		OR = { 
+			has_country_flag = virus_originator_country
+			AND = { is_greater_power = yes has_country_modifier = vaccine_created }
+		}
+		
+		has_global_flag = epidemic_start
+		
+		NOT = { has_country_modifier = virus_timer }
+		
+		NOT = { has_country_flag = full_blown_epidemic }
+
+	}
+	
+	mean_time_to_happen = {
+		months = 36
+		modifier = { 
+			factor = 0.75 
+			has_country_modifier = vaccine_created
+		}
+		modifier = { 
+			factor = 0.50 
+			any_greater_power = { has_country_modifier = vaccine_created }
+		}
+		modifier = { 
+			factor = 0.25 
+			NOT = { 
+				any_greater_power = { 
+					NOT = { has_country_modifier = vaccine_created } 
+				}
+			}
+		}
+		modifier = { 
+			factor = 10
+			has_global_flag = biological_weapon_induced_epidemic
+		}
+	}
+	
+	option = {
+		name = "Either we were smart or we were lucky"
+		
+		#Pandemics don't appear too often
+		add_country_modifier = { name = pandemic_delay_timer duration = 3650 }
+		any_country = {
+			limit = { is_greater_power = yes }
+			add_country_modifier = { name = pandemic_delay_timer duration = 3650 }
+		}
+		
+		#Global flags
+		
+		clr_global_flag = mild_epidemic
+		clr_global_flag = deadly_epidemic
+		clr_global_flag = epidemic_start
+		
+		#Flags for THIS
+		
+		clr_country_flag = virus_originator_country
+		clr_country_flag = enable_virus_controls
+		clr_country_flag = who_alerted_to_new_virus
+		clr_country_flag = deadly_epidemic_setting
+		
+		clr_country_flag = epidemic_controlled
+		clr_country_flag = first_city_epidemic
+		
+		clr_country_flag = virus_response_criticised
+		
+		remove_country_modifier = who_aid
+		
+		remove_country_modifier = virushigh
+		remove_country_modifier = virusmedium
+		clr_country_flag = virusno
+		
+		clr_country_flag = vaccine_development
+		remove_country_modifier = vaccine_development
+		remove_country_modifier = vaccine_created
+		
+		#Flags for everyone else
+		any_country = {
+		
+			clr_country_flag = virus_originator_country
+			clr_country_flag = enable_virus_controls
+			clr_country_flag = who_alerted_to_new_virus
+			clr_country_flag = deadly_epidemic_setting
+			
+			clr_country_flag = epidemic_controlled
+			clr_country_flag = first_city_epidemic
+			
+			clr_country_flag = virus_response_criticised
+			
+			remove_country_modifier = who_aid
+			
+			remove_country_modifier = virushigh
+			remove_country_modifier = virusmedium
+			clr_country_flag = virusno
+			
+			clr_country_flag = vaccine_development
+			remove_country_modifier = vaccine_development
+			remove_country_modifier = vaccine_created
+			
+		}
+
+	}
+
+}
+
+#Vaccine developed
+country_event = {
+	id = 1412065
+	title = "Vaccine for Viral Epidemic Created"
+	desc = "EVTDESC1412065"
+	picture = "biological_weapons_cure"
+
+	trigger = {
+		has_country_flag = vaccine_development
+		NOT = { has_country_modifier = vaccine_development }
+	}
+
+	option = {
+		name = "That's a relief!"
+		prestige_factor = 0.05
+		clr_country_flag = vaccine_development
+		remove_country_modifier = biological_attack
+		add_country_modifier = { name = vaccine_created duration = 1825 }
+		clr_global_flag = biological_weapon_induced_epidemic
+	}
+
+}
+
+#National Leader gets the Virus
+country_event = {
+	id = 14120651
+	title = "The $MONARCHTITLE$ is Infected"
+	desc = "EVTDESC14120651"
+	picture = "virus_president_infected"
+
+	trigger = {
+		
+		#Has virus controls
+		has_country_flag = enable_virus_controls
+		
+		#Only democracies are affected, dictators don't have to mingle with the masses
+		OR = { 
+			government = socialist_democracy 
+			government = democracy 
+			government = democracy1 
+			government = hms_government 
+			government = hms_government1 
+			government = sar_government 
+		}
+	
+		#Has virus in country
+		any_owned_province = {
+			OR = { 
+				has_province_modifier = virus_outbreak 
+				has_province_modifier = virus_outbreak_deadly 
+			}
+		}
+		
+		OR = {
+			#Do not have strong virus controls
+			NOT = {
+				OR = {
+					has_country_modifier = virusmedium
+					has_country_modifier = virushigh
+				}
+			}
+			
+			#Full blown epidemic and minimal virus controls
+			AND = {
+				has_country_flag = virusno
+				has_country_flag = full_blown_epidemic
+			}
+		}
+		
+		has_global_flag = epidemic_start
+		
+		#Has a leader
+		NOT = { has_country_modifier = headless_chicken }
+		NOT = { has_country_modifier = leader_cooldown }
+		NOT = { has_country_modifier = power_vacuum }
+		NOT = { has_country_flag = leadership_election }
+		
+	}
+	
+	mean_time_to_happen = {
+		months = 10
+	}
+
+	option = {
+		name = "He's a big strong guy so he'll be fine?"
+		
+		any_pop = { 
+			militancy = 2 
+			consciousness = 5 
+		}
+		
+		#Chance of leader dying
+		random_list = {
+			90 = { add_country_modifier = { name = power_vacuum duration = 30 } }
+			10 = { country_event = 111222 } #New leader
+		}
+	}
+
+}

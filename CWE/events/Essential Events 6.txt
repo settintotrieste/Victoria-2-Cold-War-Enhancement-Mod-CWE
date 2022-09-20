@@ -49,6 +49,7 @@ tag = XPI
 tag = XEA
 tag = XTC
 tag = XUM
+tag = XIO
 }
 }
 
@@ -90,41 +91,13 @@ tag = XPI
 tag = XEA
 tag = XTC
 tag = XUM
+tag = XIO
 } }
 }
 
 option = {
 name = "A new beginning for $COUNTRY$"
 clr_country_flag = superstate_integration_boost
-		}
-
-}
-
-#Collapse of Ruanda-Urundi
-country_event = {
-	id = 1412113
-title = "Collapse of Ruanda-Urundi"
-	desc = "The tensions between the Hutu and Tutsi has become so great that it is no longer possible to maintain the union of $COUNTRY$."
-	picture = "rwanda_independence"
-
-fire_only_once = yes
-
-trigger = {
-tag = RWA
-BRN = { exists = no }
-is_vassal = no
-owns = 2035
-}
-mean_time_to_happen = { months = 3 }
-
-option = {
-name = "It's the end of the $COUNTRY_ADJ$ union"
-release = BRN
-government = nationalist_dictatorship
-country_event = 800050
-BRN = { government = nationalist_dictatorship
-country_event = 800050 }
-prestige = -25
 		}
 
 }
@@ -159,7 +132,7 @@ country_event = {
 #Opening of the UN Headquarters
 country_event = {
 	id = 1412125
-	title = "United Nations Headquarters constructed"
+	title = "New United Nations Headquarters"
 	desc = EVTDESC1412125
 	picture = "un_hq"
 
@@ -371,8 +344,45 @@ prestige_factor = -0.10
 ruling_party_ideology = communist
 government = proletarian_dictatorship
 country_event = 800050
-relation = { who = RUS value = 100 }
+overlord = { relation = { who = THIS value = 100 } }
+ai_chance = { factor = 1 }
 		}
+
+option = {
+name = "Defy our communist overlords!"
+overlord = { release_vassal = THIS country_event = 14121341 }
+ai_chance = { factor = 0 }
+		}
+
+}
+
+#SOVIETISATION OF NEW PUPPETS - Overlord response
+country_event = {
+	id = 14121341
+title = "$FROMCOUNTRY$ Deviates from Communism"
+	desc = EVTDESC14121341
+	picture = "hungarian_communist_gov_change"
+	
+is_triggered_only = yes
+
+option = {
+name = "Restore order in $FROMCOUNTRY$"
+badboy = 5
+war = {
+	target = FROM
+	attacker_goal = { casus_belli = make_puppet }
+	defender_goal = { casus_belli = become_independent }
+}
+ai_chance = { factor = 1 }
+		}
+
+option = {
+name = "Let them go"
+prestige_factor = -0.05
+relation = { who = FROM value = 100 }
+ai_chance = { factor = 0 }
+		}
+
 }
 
 #Strategic Bombardment
@@ -382,16 +392,12 @@ title = "Strategic Bombardment by $FROMCOUNTRY$"
 	desc = EVTDESC1412135
 	picture = "strategic_bombardment"
 	
-trigger = { 
-OR = { any_greater_power = { war_with = THIS has_country_flag = strategic_bombardment } any_neighbor_country = { war_with = THIS has_country_flag = strategic_bombardment } }
-NOT = { any_owned_province = { has_province_modifier = aerial_bombed } }
-}
-
-mean_time_to_happen = { months = 1 }
+is_triggered_only = yes
 
 option = {
 name = "Oh the humanity!"
 prestige = -25
+war_exhaustion = 10
 any_owned = { limit = { total_pops = 125000 } add_province_modifier = { name = aerial_bombed duration = 1095 } }
 		}
 }
@@ -569,8 +575,8 @@ any_country = { limit = { NOT = { OR = { government = proletarian_dictatorship g
 option = {
 name = "Encourage economic aid to the third world"
 prestige = 25
-any_country = { limit = { economic_policy = intervention } relation = { who = THIS value = 20 } }
-any_country = { limit = { trade_policy = laissez_faire } relation = { who = THIS value = -20 } }
+any_country = { limit = { economic_policy = interventionism } relation = { who = THIS value = 20 } }
+any_country = { limit = { economic_policy = laissez_faire } relation = { who = THIS value = -20 } }
 add_country_modifier = { name = wef_2 duration = 2190 }
 any_country = { limit = { NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } } add_country_modifier = { name = wef_2 duration = 2190 } }
 		}
@@ -594,36 +600,61 @@ country_event = {
 	title = "Diplomatic neutrality violated"
 	desc = "Neutral $COUNTRY$'s diplomatic immunity has been violated. All nations at war with $COUNTRY$ will be punished by the international community."
 	picture = "arctic_r_lose"
+	
 	major = yes
 
 	trigger = {
-		any_neighbor_country = { war_with = THIS }
-		war = yes
-	NOT = { has_country_flag = declared_neutrality_active }
+		#Country is neutral
 		has_country_flag = neutrality
+		
+		#Country has been attacked
+		war = yes
+		
+		#Only fires if the country is really neutral - no alliances at the time of this event
+		NOT = { num_of_allies = 1 }
+		
+		#Event has not already fired
+		NOT = { has_country_flag = declared_neutrality_active }
+		
+		#Not fighting a civil war
 		NOT = { 
-		OR = { 
-		war_with = R01 
-		war_with = R02
-		war_with = R03
-		war_with = R04
-		war_with = R05
-		war_with = R06
-		war_with = R07
-		war_with = R08
-		war_with = R09
-		war_with = R10
+			OR = { 
+				war_with = R01 
+				war_with = R02
+				war_with = R03
+				war_with = R04
+				war_with = R05
+				war_with = R06
+				war_with = R07
+				war_with = R08
+				war_with = R09
+				war_with = R10
 			} 
 		}
 	}
 
-mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 1 }
 
 	option = {
 		name = "We need their support"
 		set_country_flag = declared_neutrality_active
+		
+		#Option for aggressor to seek peace or face a potential coaliation against them
 		any_country = { limit = { war_with = THIS } country_event = 1412144 }
-		any_country = { limit = { NOT = { has_country_flag = neutrality } has_country_modifier = united_nations_ga_member relation = { who = THIS value = 0 } exists = yes NOT = { war_with = THIS } } create_alliance = THIS relation = { who = THIS value = 50 } }
+		
+		#Form global UN alliance with THIS
+		any_country = { 
+			limit = { 
+				NOT = { has_country_flag = neutrality } 
+				is_vassal = no 
+				has_country_modifier = united_nations_ga_member 
+				relation = { who = THIS value = 50 } 
+				exists = yes 
+				NOT = { war_with = THIS } 
+			} 
+			create_alliance = THIS 
+			relation = { who = THIS value = 50 } 
+		}
 	}
 
 }

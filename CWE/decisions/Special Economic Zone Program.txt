@@ -1,118 +1,188 @@
 political_decisions = {
 
-spez_participate = {
+	spez_participate = {
 		picture = "spez_participate"
 		potential = {
-			NOT = { any_owned_province = { has_province_modifier = spez } }
-			NOT = { has_country_modifier = spez_gp }
-			NOT = { has_country_modifier = spez_participate_member }
+		
+			NOT = { has_country_flag = spez_country }
+			
 			OR = { 
-				government = presidential_dictatorship 
 				government = proletarian_dictatorship 
 				government = proletarian_dictatorship1 
-				government = theocracy 
-				government = nationalist_dictatorship 
 				government = populist_dictatorship 
+				government = nationalist_dictatorship 
+				government = presidential_dictatorship 
+				government = theocracy 
+				government = absolute_monarchy 
 			}
+			
+			#Sufficiently large nation
+			number_of_states = 3
+			
+			#Has good infrastructure states
+			any_state = {
+				any_owned_province = {
+					is_core = THIS
+					has_building = naval_base
+					has_building = railroad
+				}
+				any_owned_province = {
+					total_pops = 250000
+					is_capital = no
+					NOT = { has_province_modifier = spez }
+					is_state_capital = yes
+				}
+			}
+			
 			OR = { 
+				#Market socialists
 				ruling_party_ideology = communist_social
-				economic_policy = state_capitalism 
+				
+				#Has autarky
+				has_country_modifier = juche
 			}
+			
 		}
 		allow = {
 			war = no
 			capitalism = 1
+			NOT = { revolt_percentage = 0.05 }
 		}
 		effect = {
-			add_country_modifier = { name = spez_gp duration = -1 }
-			prestige = 10
-			any_country = { 
-				limit = { 
-					NOT = { 
-						OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } } relation = { who = THIS value = 20 } }
-
-any_country = { limit = { ruling_party_ideology = communist_social } relation = { who = THIS value = 50 } }
-
-any_country = { limit = { ruling_party_ideology = communist NOT = { has_country_flag = market_communism }} relation = { who = THIS value = -100 } }
-
-
-move_issue_percentage = { 
-	from = planned_economy
-	to = state_capitalism
-	value = 0.1
-				}
-	
-			}
+			set_country_flag = spez_country
+		}
 
 		ai_will_do = { 
-			factor = 100 
+			factor = 1
+		}
+	}
+	
+	stop_spez_participate = {
+		picture = "stop_spez_participate"
+		potential = {
+		
+			has_country_flag = spez_country
+			
+			NOT = {
+				OR = { 
+					#Market socialists
+					ruling_party_ideology = communist_social
+				
+					#Has autarky
+					has_country_modifier = juche
+				}
 			}
+			
+		}
+		allow = {
+			election = no
+		}
+		effect = {
+			clr_country_flag = spez_country
+			
+			#Remove spez province modifier
+			any_owned = {
+				limit = { has_province_modifier = spez }
+				owner = { money = 25000 }
+				remove_province_modifier = spez
+			}
+			
+		}
+
+		ai_will_do = { 
+			factor = 1
+		}
 	}
 
-
-
 	spez_participate_member = {
-		picture = "spez_participate_member"
+		picture = "spez_participate_stop"
 		potential = {
-			NOT = { any_owned_province = { has_province_modifier = spez } }
+			NOT = { has_country_modifier = spez_participate_member }
 			OR = { 
 				any_neighbor_country = { 
-					any_owned_province = { NOT = { has_province_modifier = spez } }  
-					has_country_modifier = spez_gp 
+					has_country_flag = spez_country
+					
+					#Has good infrastructure states
+					any_state = {
+						any_owned_province = {
+							is_core = THIS
+							has_building = naval_base
+							has_building = railroad
+						}
+						any_owned_province = {
+							total_pops = 250000
+							is_capital = no
+							NOT = { has_province_modifier = spez }
+							is_state_capital = yes
+						}
+					}
+					
 					relation = { who = THIS value = 50 } 
-				} 
+				}
 				any_greater_power = { 
-					any_owned_province = { NOT = { has_province_modifier = spez } } 
-					has_country_modifier = spez_gp 
+					has_country_flag = spez_country
+					
+					#Has good infrastructure states
+					any_state = {
+						any_owned_province = {
+							is_core = THIS
+							has_building = naval_base
+							has_building = railroad
+						}
+						any_owned_province = {
+							total_pops = 250000
+							is_capital = no
+							NOT = { has_province_modifier = spez }
+							is_state_capital = yes
+						}
+					}
+					
 					relation = { who = THIS value = 50 } 
 				}
 			}
-			NOT = { has_country_modifier = spez_participate_member }
 		}
 		allow = {
 			war = no
 			election = no
+			
 			capitalism = 1
+			
 			money = 1000000
+			
 			trade_policy = free_trade
-			OR = { 
-				economic_policy = laissez_faire 
-				economic_policy = interventionism 
-			}
+			NOT = { economic_policy = laissez_faire }
 		}
 		effect = {
-			add_country_modifier = { name = spez_participate_member duration = -1 }
-			money = -100000
-			any_neighbor_country = { 
-				limit = { 
-					has_country_modifier = spez_gp 
-					relation = { who = THIS value = 50 } 
-				} 
-				random_owned = { 
-					limit = { 
-						NOT = { has_province_modifier = spez } 
-						is_colonial = no 
-					} 
-					add_province_modifier = { name = spez duration = -1 } 
-				}
-			}
+			add_country_modifier = { name = spez_participate_member duration = 730 }
+			money = -200000
+			
 			random_country = { 
 				limit = { 
-					is_greater_power = yes 
-					has_country_modifier = spez_gp 
-					relation = { who = THIS value = 50 } 
-				} 
-				random_owned = { 
-					limit = { 
-						NOT = { has_province_modifier = spez }
-						is_colonial = no 
-					} 
-					add_province_modifier = { name = spez duration = -1 } 
+					has_country_flag = spez_country
+					relation = { who = THIS value = 50 }
+					
+					#Has good infrastructure states
+					any_state = {
+						any_owned_province = {
+							is_core = THIS
+							has_building = naval_base
+							has_building = railroad
+						}
+						any_owned_province = {
+							total_pops = 250000
+							is_capital = no
+							NOT = { has_province_modifier = spez }
+							is_state_capital = yes
+						}
+					}
+					
 				}
+				relation = { who = THIS value = 50 }
+				country_event = 1410125
 			}
 		}
 		ai_will_do = { 
-			factor = 100 
+			factor = 1
 		}
 	}
 }

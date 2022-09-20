@@ -1,34 +1,81 @@
 political_decisions = {
-
-	us_israel_relations = {
-		picture = "us_israel_relations"
-		# us_israel_relations_title;Israel–United States relations
-		# us_israel_relations_desc;Bilateral relations have evolved from an initial US policy of sympathy and support for the creation of a Jewish homeland in 1948 to an unusual partnership that links a small but militarily powerful Israel, dependent on the United States for its economic and military strength, with the American superpower trying to balance other competing interests in the region. Others maintain that Israel is a strategic ally, and that US relations with Israel strengthen the US presence in the Middle East.[1] Israel is one of the United States' two original major non-NATO allies in the Middle East. The main expression of Congressional support for Israel has been foreign aid. . We shall foster a good relation with the US and lobby the congress for support.
+	
+	semitic_federation = {
+		picture = "levantine_federation"
 		potential = {
+		
 			tag = ISR
-			USA = { has_country_modifier = support_zionism }
-			NOT = { has_country_modifier = us_israel_relations }
+		
+			PAL = { exists = no }
+			LEV = { exists = no }
+			
 		}
+
 		allow = {
-			USA = { money = 90000 }
-			OR = { relation = { who = USA value = 150 } AND = { ai = yes USA = { ai = yes } } }
-			government = democracy
-			OR = { 
-				AND = { compulsory_secondary_education = 1 NOT = { year = 1950 } }
-				AND = { tripartite_system = 1 NOT = { year = 1960 } }
-				AND = { comprehensive_education = 1 NOT = { year = 1970 } }
-				AND = { telephone_exchange = 1 NOT = { year = 1980 } }
-				AND = { preschool_education = 1 NOT = { year = 1990 } }
-				AND = { global_enrollment = 1 NOT = { year = 2000 } }
-				AND = { informatization_education = 1 NOT = { year = 2010 } }
-			}
+			war = no
+			is_vassal = no
+			election = no
+			has_recently_lost_war = no
+			NOT = { is_disarmed = yes }
+
+			wars_of_national_liberation = 1
+			
+			OR = { is_greater_power = yes is_secondary_power = yes }
+
+			ruling_party_ideology = populist
+			
+			#Must have applicable annexees
+			OR = { is_our_vassal = LEB is_sphere_leader_of = LEB }
+			OR = { is_our_vassal = JOR is_sphere_leader_of = JOR }
+			OR = { is_our_vassal = SYR is_sphere_leader_of = SYR }
+			OR = { is_our_vassal = ALW is_sphere_leader_of = ALW }
+			OR = { is_our_vassal = DRZ is_sphere_leader_of = DRZ }
+
 		}
+
 		effect = {
-			prestige = 10
-			add_country_modifier = { name = us_israel_relations duration = 1750 } # 5 years
-			USA = { country_event = 44201 }
+		
+			#Become Levantine Federation
+			change_tag = LEV
+			
+			#Annexation event
+			any_country = {
+				limit = {
+					OR = {
+						tag = LEB
+						tag = JOR
+						tag = SYR
+						tag = ALW
+						tag = DRZ
+						tag = PAL
+					}
+					OR = {
+						vassal_of = THIS
+						in_sphere = THIS
+					}
+				}
+				country_event = 11101
+			}
+		
+			#Add cores
+			LEB = { all_core = { add_core = LEV } }
+			JOR = { all_core = { add_core = LEV } }
+			SYR = { all_core = { add_core = LEV } }
+			ALW = { all_core = { add_core = LEV } }
+			DRZ = { all_core = { add_core = LEV } }
+			ISR = { all_core = { add_core = LEV } }
+			PAL = { all_core = { add_core = LEV } }
+			
+			#Add accepted cultures
+			add_accepted_culture = palestinian
+			add_accepted_culture = syrian
+			add_accepted_culture = jordanian
+			add_accepted_culture = lebanese
+			
 		}
+		
 		ai_will_do = { factor = 1 }
+		
 	}
 	
 	form_palestine = {
@@ -37,8 +84,12 @@ political_decisions = {
 			NOT = { tag = GAZ }
 			NOT = { tag = PAL }
 			NOT = { tag = UAR }
+			NOT = { tag = XAL }
 			PAL = { exists = no }
-			primary_culture = sunni_arab
+			NOT = { tag = ISR }
+
+			OR = { primary_culture = arab accepted_culture = arab }
+
 			OR = {
 				owns = 918 # West Bank
 				owns = 919 # Tel Aviv
@@ -48,28 +99,26 @@ political_decisions = {
 		}
 		allow = {
 			war = no
-			ISR = { exists = no }
+			AND = {
+				owns = 918 # West Bank
+				owns = 919 # Tel Aviv
+				OR = { owns = 920 GAZ = { exists = yes } } # Gaza
+				owns = 917 # Jerusalem
+			}
 		}
 		effect = {
-			prestige = 10
-			any_owned = {
-				limit = { is_core = PAL }
-				secede_province = PAL
-			}
-			random_country = { 
-				limit = { 
-					NOT = { exists = PAL } 
-					tag = THIS 
-				} 
-				release_vassal = PAL
-			}
-
+			prestige = 100
+			badboy = -10
+			release = PAL
+			PAL = { inherit = GAZ }
+			relation = { who = PAL value = 200 }
+			diplomatic_influence = { who = PAL value = 200 }
+			sphere_owner = { diplomatic_influence = { who = PAL value = 200 } }
 		}
-		ai_will_do = { factor = 1 modifier = { factor = 0 exists = PAL owns = 917 } }
+		ai_will_do = { factor = 1 }
 	}
 
-
-claims_conference = {
+	claims_conference = {
 		picture = "claims_conference"
 
 		potential = {
@@ -90,42 +139,109 @@ claims_conference = {
 		}
           
         ai_will_do = { factor = 1 }
-}
+	}
 
-capital_of_israel = {
-	picture = "capital_of_israel"
-	potential = {
-		tag = ISR
-		NOT = { capital = 917 } # Jerusalem
-		owns = 917
-		OR = {
-			917 = { is_core = THIS }
-			JOR = { exists = no }
+	israel_palestine = {
+		picture = "israel_palestine"
+		potential = {
+			
+			#Either Palestine or Israel can initiate
+			OR = { tag = ISR tag = PAL }
+			
+			ISP = { exists = no }
+
+		}
+
+		allow = {
+		
+			war = no
+			is_vassal = no
+			election = no
+			has_recently_lost_war = no
+			NOT = { is_disarmed = yes }
+			
+			neoliberalism = 1
+
+			#Ruling party
+			OR = {
+				AND = { ruling_party_ideology = progressive pop_majority_ideology = progressive }
+				ruling_party_ideology = communist
+				ruling_party_ideology = communist_social
+			}
+
+			#Puppet or Sphere or conquest route
+			OR = { is_our_vassal = PAL is_sphere_leader_of = PAL owns = 918 } # West Bank, PA capital
+			OR = { is_our_vassal = ISR is_sphere_leader_of = ISR owns = 919 } # Tel Aviv, ISR capital
+			OR = { is_our_vassal = GAZ is_sphere_leader_of = GAZ owns = 920 } # Gaza, GAZ capital
+			OR = { is_our_vassal = JRU is_sphere_leader_of = JRU owns = 917 } # Jerusalem, Everyone's favourite capital
+		
+		}
+		effect = {
+		
+			badboy = -10
+		
+			PAL = { all_core = { add_core = ISP } }
+			ISR = { all_core = { add_core = ISP } }
+			change_tag = ISP
+			
+			#Annex the other state
+			random_country = {
+				limit = { 
+					OR = { tag = ISR tag = PAL } 
+				}
+				country_event = 11101
+			}
+			
+			#Current constituents get angry for accepting another culture
+			any_owned = { limit = { OR = { is_core = PAL is_core = ISR } } add_province_modifier = { name = nationalist_agitation duration = 3650 } }
+			
+			#Add Palestinian culture
+			add_accepted_culture = palestinian
+			
+			#Add jewish cultures if PAL formed the bi national state
+			add_accepted_culture = jewish
+			add_accepted_culture = haredim_jewish
+			add_accepted_culture = druze
+
+		}
+		
+	}
+
+
+	capital_of_israel = {
+		picture = "capital_of_israel"
+		potential = {
+			tag = ISR
+			NOT = { capital = 917 } # Jerusalem
+			owns = 917
+			OR = {
+				917 = { is_core = THIS }
+				JOR = { exists = no }
+			}
+		}
+
+		allow = {
+			war = no
+			is_vassal = no
+			election = no
+			NOT = { religious_policy = pro_atheism }
+		}
+
+		effect = {
+			prestige = 100
+			badboy = 5
+			capital = 917
+			917 = { remove_core = JOR }
+			any_country = { limit = { OR = { pop_majority_religion = sunni pop_majority_religion = shiite } capital_scope = { continent = mena } } relation = { who = THIS value = -50 } }
+		}	
+
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				badboy = 0.8
+			}
 		}
 	}
-
-	allow = {
-		war = no
-		is_vassal = no
-		election = no
-		NOT = { religious_policy = pro_atheism }
-	}
-
-	effect = {
-		prestige = 50
-		badboy = 5
-		capital = 917
-		917 = { remove_core = JOR }
-		any_country = { limit = { OR = { pop_majority_religion = sunni pop_majority_religion = shiite } capital_scope = { continent = mena } } relation = { who = THIS value = -50 } }
-	}
-
-	ai_will_do = {
-		factor = 1
-		modifier = {
-			factor = 0
-			badboy = 0.8
-		}
-	}
-}
 
 }

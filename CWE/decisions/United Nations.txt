@@ -1,54 +1,217 @@
 political_decisions = {
 
+	host_un_hq = {
+		picture = "host_un_hq"
+		potential = {
+			has_country_modifier = united_nations
+			has_country_modifier = united_nations_ga_member
+			has_global_flag = host_un_hq
+			NOT = { has_country_flag = un_hq_host_country }
+			is_greater_power = yes
+		}
+		
+		allow = {
+			war = no
+			is_vassal = no
+			NOT = { badboy = 0.2 }
+			money = 3000000
+
+			NOT = {
+				any_owned_province = { has_province_modifier = un_headquarters }
+
+				#Cities in country must be unblemished
+				any_owned_province = { 
+					OR = { 
+					
+						#Occupied by enemy forces
+						AND = { NOT = { controlled_by = THIS } controlled_by_rebels = no }
+
+						#UN HQ was struck by nukes
+						has_province_modifier = nuke_accident 
+						has_province_modifier = nuke_high 
+						has_province_modifier = nuke_medium 
+						has_province_modifier = nuke_low 
+						has_province_modifier = tactical_nuked
+
+						#UN HQ was struck by chemical bombs
+						has_province_modifier = chemical_high
+						has_province_modifier = chemical_medium
+						has_province_modifier = chemical_low 
+					}
+				}
+			}
+		}
+		
+		effect = {
+			clr_global_flag = host_un_hq
+			set_country_flag = un_hq_host_country
+			prestige = 500
+			money = -2000000
+			random_owned = { limit = { is_capital = yes } add_province_modifier = { name = un_headquarters duration = -1 } }
+		}
+		ai_will_do = { 
+			factor = 1 
+		}
+	}
+
+	rebuild_un_hq = {
+		picture = "rebuild_un_hq"
+		potential = {
+			has_country_flag = un_hq_host_country 
+			NOT = { any_owned_province = { has_province_modifier = un_headquarters } }
+		}
+		
+		allow = {
+			war = no
+			money = 2000000
+		}
+		
+		effect = {
+			money = -1500000
+			random_owned = { limit = { is_capital = yes } add_province_modifier = { name = un_headquarters duration = -1 } }
+		}
+		
+		ai_will_do = { 
+			factor = 1 
+		}
+	}
+
 	jointheunga = {
 		picture = "united_nations_general_assembly"
 		potential = {
 			has_country_modifier = united_nations
 			NOT = { has_country_modifier = united_nations_ga_member }
 		}
+		
 		allow = {
 			war = no
-OR = { is_vassal = no overlord = { tag = RUS has_global_flag = blocsenabled } }
+			
+			#Various situations
+			OR = { 
+			
+				#Cold War is over
+				NOT = { has_global_flag = blocsenabled }
+				
+				#Detente
+				has_country_modifier = cold_war_low
+			
+				#Good relations with UNSC members because of the Veto
+				NOT = { 
+					any_greater_power = { 
+						has_country_modifier = unsc_permanent_member 
+						NOT = { relation = { who = THIS value = -150 } } 
+					} 
+				}
+				
+			}
+			
+			#Divided nations
+			NOT = {
+				OR = {
+				
+					#East and West Germany
+					AND = { tag = GER DDR = { exists = yes } NOT = { has_country_modifier = cold_war_low } has_global_flag = blocsenabled }
+					AND = { tag = DDR GER = { exists = yes } NOT = { has_country_modifier = cold_war_low } has_global_flag = blocsenabled }
+					
+					#North and South Korea
+					AND = { tag = NKO SKO = { exists = yes } NOT = { has_country_modifier = cold_war_low } has_global_flag = blocsenabled }
+					AND = { tag = SKO NKO = { exists = yes } NOT = { has_country_modifier = cold_war_low } has_global_flag = blocsenabled }
+					
+					#North and South Vietnam
+					AND = { tag = DAI SVI = { exists = yes } NOT = { has_country_modifier = cold_war_low } has_global_flag = blocsenabled }
+					AND = { tag = SVI DAI = { exists = yes } NOT = { has_country_modifier = cold_war_low } has_global_flag = blocsenabled }
+					
+					#North and South Yemen
+					AND = { tag = YEM SYE = { exists = yes } NOT = { has_country_modifier = cold_war_low } has_global_flag = blocsenabled }
+					AND = { tag = SYE YEM = { exists = yes } NOT = { has_country_modifier = cold_war_low } has_global_flag = blocsenabled }
+					
+					#East and West Austria
+					AND = { tag = AUS ROA = { exists = yes } NOT = { has_country_modifier = cold_war_low } has_global_flag = blocsenabled }
+					AND = { tag = ROA AUS = { exists = yes } NOT = { has_country_modifier = cold_war_low } has_global_flag = blocsenabled }
+					
+					#North and South Greece
+					AND = { tag = GRE UGR = { exists = yes } NOT = { has_country_modifier = cold_war_low } has_global_flag = blocsenabled }
+					AND = { tag = UGR GRE = { exists = yes } NOT = { has_country_modifier = cold_war_low } has_global_flag = blocsenabled }
+					
+					#China (The other China is independent and is in the UNSC)
+					AND = { tag = KMT CHI = { exists = yes is_vassal = no has_country_modifier = unsc_permanent_member } }
+					AND = { tag = CHI KMT = { exists = yes is_vassal = no has_country_modifier = unsc_permanent_member } }
+					
+				}
+			}
+			
+			#Not a vassal
+			OR = { 
+				is_vassal = no 
+				
+				#Warsaw Pact nations can join the GA
+				AND = { is_vassal = yes overlord = { tag = RUS has_global_flag = blocsenabled } }
+			}
+
+			#One China policy blocks ROC from joining the UNGA
+			NOT = { 
+				AND = { 
+					tag = KMT 
+					has_country_modifier = one_china_policy 
+					CHI = { 
+						exists = yes 
+						has_country_modifier = one_china_policy 
+					} 
+				} 
+			}
+
 		}
+		
 		effect = {
 			prestige = 20
 			add_country_modifier = { name = united_nations_ga_member duration = -1 }
-
-add_country_modifier = { name = newly_independent_country duration = 365 }
-
+			add_country_modifier = { name = newly_independent_country duration = 365 }
 		}
+		
 		ai_will_do = { 
 			factor = 1 
 		}
 	}
+	
 	jointheunsc = {
 		picture = "united_nations_security_council"
 		potential = {
 			has_country_modifier = united_nations
+			has_country_modifier = united_nations_ga_member
 			OR = {
-
 				tag = ENG
 				tag = USA
 				tag = RUS
 				tag = FRA 
+				
+				#China
 
-AND = { tag = CHI year = 1992 NOT = { KMT = { has_country_modifier = unsc_permanent_member } } }
-
-AND = { tag = KMT NOT = { year = 1991 } NOT = { CHI = { has_country_modifier = unsc_permanent_member } } }
+				#Other China is annexed or our puppet
+				AND = { tag = CHI KMT = { OR = { exists = no vassal_of = CHI } } }
+				AND = { tag = KMT CHI = { OR = { exists = no vassal_of = KMT } } }
+				
+				#Other China is not in the UNSC
+				AND = { tag = KMT CHI = { exists = yes NOT = { has_country_modifier = unsc_permanent_member } } }
+				AND = { tag = CHI KMT = { exists = yes NOT = { has_country_modifier = unsc_permanent_member } } }
 
 			}
 			NOT = { has_country_modifier = unsc_permanent_member }
 		}
+		
 		allow = {
 			war = no
 			is_vassal = no
+			NOT = { is_disarmed = yes }
+			is_greater_power = yes
 		}
+		
 		effect = {
 			prestige = 50
 			country_event = 1512261
+			clr_country_flag = not_participating_UNSC
 			add_country_modifier = { name = unsc_permanent_member duration = -1 }
-			232 = { add_province_modifier = { name = un_headquarters duration = -1 } } #NYC
 		}
+		
 		ai_will_do = { 
 			factor = 1 
 		}

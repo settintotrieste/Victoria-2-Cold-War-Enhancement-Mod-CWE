@@ -1,325 +1,1156 @@
+#Preparation for Libyan independence - ENG
 country_event = {
 	id = 1008600
-	title = EVT_1008601_NAME
+	title = "Preparation for Libyan Independence?"
 	desc = EVT_1008601_DESC
 	picture = "king_idris_of_libya"
+	
 	fire_only_once = yes
 
 	trigger = {
-		year = 1946 NOT = { year = 1990 }
 		tag = ENG
-		owns = 1731 # Tripoli
-		NOT = { has_country_flag = king_idris_of_libya }
+		year = 1947
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		government = hms_government
+		is_vassal = no
+		war = no
+		
+		#Owns Libya
+		is_possible_vassal = LBY
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "Libya shall be an independent kingdom!"
+		prestige = 25
+		badboy = -2.5
+		
+		#Arab monarchies welcome this move
+		any_country = {
+			limit = { 
+				exists = yes
+				OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 }
+				OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+			}
+			relation = { who = THIS value = 50 }
+		}
+		
+		set_country_flag = king_idris_of_libya
+		
+		ai_chance = { factor = 0.80 }
+	}
+	
+	option = {
+		name = "Libya shall be an independent republic!"
+		prestige = 50
+		
+		#Traditionalist Arab pops are not happy
+		any_pop = {
+			limit = {
+				OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 }
+				location = { is_core = LBY }
+			}
+			scaled_consciousness = { 
+				factor = 5 
+				ideology = conservative
+			}
+			scaled_militancy = { 
+				factor = 5 
+				ideology = conservative
+			}
+			
+			scaled_consciousness = { 
+				factor = 10
+				ideology = traditionalist
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = traditionalist
+			}
+		}
+		
+		#Arab republics welcome this move
+		any_country = {
+			limit = { 
+				exists = yes
+				OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 }
+				OR = { government = democracy government = democracy1 }
+			}
+			relation = { who = THIS value = 50 }
+		}
+		
+		set_country_flag = republican_libya_flag
+		
+		ai_chance = { factor = 0.15 }
+	}
+
+	option = {
+		name = "We have other plans for Libya!"
+		badboy = 5
+		
+		#Arab pops are not happy
+		any_pop = {
+			limit = {
+				OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 }
+				location = { is_core = LBY }
+			}
+			
+			add_province_modifier = { name = occupied_province duration = -1 }
+			
+			militancy = 10
+			consciousness = 10
+			
+			ideology  = { factor = 0.10 value = nationalist }
+		}
+
+		#Arab countries hate this move
+		any_country = {
+			limit = { 
+				exists = yes
+				OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 }
+			}
+			relation = { who = THIS value = -100 }
+		}
+		
+		set_country_flag = colonial_libya_flag
+		
+		ai_chance = { factor = 0.05 }
+	}
+
+}
+
+#Tripoli goes to Italy
+country_event = {
+	id = 10086001
+	title = "The Future of Occupied Libya"
+	desc = EVT_10086001_DESC
+	picture = "TRI_tripoli_mandate"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = ENG
+		year = 1948
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		government = hms_government
+		is_vassal = no
+		war = no
+		
+		#Owns Libya
+		is_possible_vassal = LBY
+		is_possible_vassal = TRI
+		
+		#Italy exists and is a democracy
+		ITA = {
+			exists = yes
+			
+			OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
+			is_vassal = no
+			war = no
+		}
+		
+		#AH selected
+		has_country_flag = colonial_libya_flag
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+	
+	option = {
+		name = "Libya shall be mandated to Italy!"
+		prestige = 50
+
+		#Form the Mandate of Tripoli
+		any_owned = { limit = { is_core = TRI } secede_province = ITA }
+		ITA = { release_vassal = TRI }
+		TRI = {
+			government = mandate_government
+			country_event = 800054
+			ruling_party_ideology = big_tent
+		}
+		
+		#TRI is in the British sphere
+		diplomatic_influence = { who = TRI value = 200 }
+		
+		#UK gains relations with Italy
+		relation = { who = ITA value = 100 }
+		diplomatic_influence = { who = ITA value = 100 }
+		
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "Libya shall be a British protectorate!"
+		badboy = 5
+		
+		#Arab pops are not happy
+		any_pop = {
+			limit = {
+				OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 }
+				location = { is_core = LBY }
+			}
+			
+			add_province_modifier = { name = occupied_province duration = -1 }
+			
+			militancy = 10
+			consciousness = 10
+			
+			ideology  = { factor = 0.10 value = nationalist }
+		}
+
+		#Arab countries hate this move
+		any_country = {
+			limit = { 
+				exists = yes
+				OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 }
+			}
+			relation = { who = THIS value = -100 }
+		}
+		
+		ai_chance = { factor = 0.2 }
+	}
+	
+}
+
+#Preparation for Libyan independence - FRA
+country_event = {
+	id = 1008601
+	title = "Preparation for Libyan Independence"
+	desc = EVT_1008601_DESC
+	picture = "king_idris_of_libya"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = FRA
+		year = 1947 
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		government = democracy
+		is_vassal = no
+		#war = no
+		
+		#Owns Fezzan
+		is_possible_vassal = FEZ
+		
+		#UK opted to free Libya
+		ENG = {
+			OR = { 
+				has_country_flag = king_idris_of_libya 
+				has_country_flag = republican_libya_flag
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 6
+	}
+
+	option = {
+		name = "We agree to grant Libya independence"
+		prestige = 50
+		badboy = -4
+		
+		random_owned = {
+			limit = { owner = { has_country_flag = king_idris_of_libya } }
+			owner = {
+				#Arab monarchies welcome this move
+				any_country = {
+					limit = { 
+						exists = yes
+						OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 }
+						OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+					}
+					relation = { who = THIS value = 50 }
+				}
+			}
+		}
+		random_owned = {
+			limit = { owner = { has_country_flag = republican_libya_flag } }
+			owner = {
+				#Arab monarchies welcome this move
+				any_country = {
+					limit = { 
+						exists = yes
+						OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 }
+						OR = { government = democracy government = democracy1 }
+					}
+					relation = { who = THIS value = 50 }
+				}
+			}
+		}
+		
+		set_country_flag = FRA_indepedent_libya_agree_flag
+		
+		ai_chance = { factor = 0.8 }
+	}
+	
+	option = {
+		name = "Create a separate Fezzan state instead"
+		prestige = 25
+		
+		#Release Fezzan
+		release_vassal = FEZ
+		FEZ = {
+			government = mandate_government
+			country_event = 800054
+			ruling_party_ideology = conservative
+		}
+		diplomatic_influence = { who = FEZ value = 200 }
+
+		ai_chance = { factor = 0.1 }
+	}
+	
+	option = {
+		name = "Keep French Libya"
+		
+		badboy = 10
+		
+		#Arab pops are not happy
+		any_pop = {
+			limit = {
+				OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 }
+				location = { is_core = LBY }
+			}
+			
+			add_province_modifier = { name = occupied_province duration = -1 }
+			
+			militancy = 10
+			consciousness = 10
+			
+			ideology  = { factor = 0.10 value = nationalist }
+		}
+
+		#Arab countries hate this move
+		any_country = {
+			limit = { 
+				exists = yes
+				OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 }
+			}
+			relation = { who = THIS value = -100 }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Emirate of Cyrenaica
+country_event = {
+	id = 1412172
+	title = "The Emirate of Cyrenaica"
+	desc = EVTDESC1412172
+	picture = "cyrenaica"
+
+	fire_only_once = yes
+
+	trigger = { 
+		tag = ENG
+		year = 1949
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		government = hms_government
+		is_vassal = no
+		war = no
+		
+		#Owns Cyrenaica
+		is_possible_vassal = CYR
+		
+		#Libya is still occupied
+		LBY = { exists = no }
+		
+		#UK opted to make a monarchist Libya
+		has_country_flag = king_idris_of_libya
+	}
+
+	mean_time_to_happen = { 
+		months = 3
+	}
+
+	option = {
+		name = "Establish the Emirate"
+		prestige = 20
+		
+		#Release CYR
+		release = CYR
+		CYR = {
+			government = absolute_monarchy
+			country_event = 800050
+			ruling_party_ideology = traditionalist
+		}
+		relation = { who = CYR value = 200 }
+		diplomatic_influence = { who = CYR value = 200 }
+
+		#Option for France to release Fezzan if they have not already done so
+		random_country = {
+			limit = { 
+				tag = FRA 
+				is_vassal = no 
+				is_possible_vassal = FEZ 
+			}
+			country_event = 1412173
+		}
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "There is no need"
+		
+		badboy = 3
+		
+		#Arab pops are not happy
+		any_pop = {
+			limit = {
+				OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 }
+				location = { is_core = CYR }
+			}
+			
+			militancy = 10
+			consciousness = 10
+			
+			ideology  = { factor = 0.10 value = nationalist }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Fezzan
+country_event = {
+	id = 1412173
+	title = "The Emirate of Fezzan-Ghadames?"
+	desc = EVTDESC1412173
+	picture = "fezzan"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Aim for a united Libya"
+		
+		#Arab pops are not happy
+		any_pop = {
+			limit = {
+				OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 }
+				location = { is_core = FEZ }
+			}
+			
+			militancy = 10
+			consciousness = 10
+			
+			ideology  = { factor = 0.10 value = nationalist }
+		}
+		
+		set_country_flag = FRA_indepedent_libya_agree_flag
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Establish the independent Kingdom"
+		prestige = 10
+		badboy = 5
+		
+		#Release Fezzan
+		release = FEZ
+		FEZ = {
+			government = absolute_monarchy
+			country_event = 800050
+			ruling_party_ideology = traditionalist
+		}
+		diplomatic_influence = { who = FEZ value = 200 }
+
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Independence of Libya
+country_event = {
+	id = 1008602
+	title = "Independence of Libya"
+	desc = EVT_1008602_DESC
+	picture = "TRI_1951_indy"
+	fire_only_once = yes
+
+	trigger = {
+		tag = ENG
+		year = 1951 
+		NOT = { year = 1990 }
+		
+		OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
+		is_vassal = no
+		war = no
+		
+		#Owns Libya
+		is_possible_vassal = LBY
+		
+		
+		#UK opted to make Libya independent
+		OR = { 
+			has_country_flag = king_idris_of_libya 
+			has_country_flag = republican_libya_flag
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 11
+	}
+
+	option = {
+		name = "Set them free!"
+		prestige = 50
+		
+		#Release Libya
+		release = LBY
+		random_owned = {
+			limit = { owner = { has_country_flag = king_idris_of_libya } }
+			owner = {
+				LBY = { 
+					government = hms_government
+					country_event = 800054
+					ruling_party_ideology = traditionalist
+				} 
+				THIS = {
+					relation = { who = LBY value = 200 }
+					diplomatic_influence = { who = LBY value = 200 }
+				}
+			}
+		}
+		random_owned = {
+			limit = { owner = { has_country_flag = republican_libya_flag } }
+			owner = {
+				LBY = { 
+					government = democracy
+					country_event = 800054
+					ruling_party_ideology = conservative
+				} 
+				THIS = {
+					relation = { who = LBY value = 200 }
+					diplomatic_influence = { who = LBY value = 200 }
+				}
+			}
+		}
+		
+		#Annex FEZ and puppet CYR
+		random_country = {
+			limit = { 
+				tag = FRA 
+				is_vassal = no
+				is_possible_vassal = FEZ 
+				has_country_flag = FRA_indepedent_libya_agree_flag
+			}
+			release = FEZ
+			LBY = { inherit = FEZ }
+		}
+		random_country = {
+			limit = { 
+				tag = CYR
+				is_vassal = no
+				war = no
+				in_sphere = ENG
+			}
+			LBY = { 
+				inherit = CYR 
+				release_vassal = CYR
+			}
+		}
+		
+		#Arab nations are happy
+		random_owned = {
+			limit = { owner = { has_country_flag = king_idris_of_libya } }
+			owner = {
+				#Arab monarchies welcome this move
+				any_country = {
+					limit = { 
+						exists = yes
+						OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 }
+						OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+					}
+					relation = { who = THIS value = 50 }
+				}
+			}
+		}
+		random_owned = {
+			limit = { owner = { has_country_flag = republican_libya_flag } }
+			owner = {
+				#Arab monarchies welcome this move
+				any_country = {
+					limit = { 
+						exists = yes
+						OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 }
+						OR = { government = democracy government = democracy1 }
+					}
+					relation = { who = THIS value = 50 }
+				}
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "They must first be a protectorate"
+		badboy = 5
+
+		#Release Libya as a vassal
+		release_vassal = LBY
+		random_owned = {
+			limit = { owner = { has_country_flag = king_idris_of_libya } }
+			owner = {
+				LBY = { 
+					government = hms_government
+					country_event = 800054
+					ruling_party_ideology = traditionalist
+				} 
+				THIS = {
+					relation = { who = LBY value = 200 }
+					diplomatic_influence = { who = LBY value = 200 }
+				}
+			}
+		}
+		random_owned = {
+			limit = { owner = { has_country_flag = republican_libya_flag } }
+			owner = {
+				LBY = { 
+					government = democracy
+					country_event = 800054
+					ruling_party_ideology = nationalist
+				} 
+				THIS = {
+					relation = { who = LBY value = 200 }
+					diplomatic_influence = { who = LBY value = 200 }
+				}
+			}
+		}
+		
+		#Annex FEZ and puppet CYR
+		random_country = {
+			limit = { 
+				tag = FRA 
+				is_vassal = no
+				is_possible_vassal = FEZ 
+				has_country_flag = FRA_indepedent_libya_agree_flag
+			}
+			release = FEZ
+			LBY = { inherit = FEZ }
+		}
+		random_country = {
+			limit = { 
+				tag = CYR
+				is_vassal = no
+				war = no
+				in_sphere = ENG
+			}
+			LBY = { 
+				inherit = CYR 
+				release_vassal = CYR
+			}
+		}
+		
+		#Libyans become very nationalistic
+		LBY = {
+			any_pop = {
+				limit = { OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 } }
+				militancy = 10
+				consciousness = 10
+				ideology  = { factor = 0.30 value = nationalist }
+			}
+		}
+		
+		#Arab countries hate this move
+		any_country = {
+			limit = { 
+				exists = yes
+				OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 }
+			}
+			relation = { who = THIS value = -100 }
+		}
+
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#United Libya - annex Cyrenaica
+country_event = {
+	id = 1412174
+	title = "The United Kingdom of Libya"
+	desc = EVTDESC1412174
+	picture = "united_king_libya"
+
+	fire_only_once = yes
+
+	trigger = { 
+		tag = LBY
+		year = 1951
+		NOT = { year = 1990 }
+		
+		OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+		is_vassal = no
+		war = no
+		
+		#CYR was a separate state
+		is_our_vassal = CYR
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "Create a federal monarchy!"
+		prestige = 50
+
+		#Rise in populist support
+		any_pop = {
+			limit = { 
+				OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 } 
+				location = { NOT = { OR = { is_core = FEZ is_core = CYR } } }
+			}
+			militancy = 5
+			consciousness = 5
+			ideology  = { factor = 0.10 value = populist }
+		}
+		
+		#Release the Kingdom of Fezzan
+		random_owned = {
+			limit = { owner = { is_possible_vassal = FEZ } }
+			owner = { 
+				release_vassal = FEZ
+				FEZ = { 
+					government = sar_government
+					country_event = 800054
+					ruling_party_ideology = traditionalist
+				} 
+				THIS = {
+					sphere_owner = {
+						relation = { who = FEZ value = 200 }
+						diplomatic_influence = { who = FEZ value = 200 }
+					}
+				}
+			}
+		}
+		
+		#Cyrenaica becomes an SAR government
+		CYR = { 
+			government = sar_government
+			country_event = 800054
+			ruling_party_ideology = traditionalist
+		} 
+		sphere_owner = {
+			relation = { who = CYR value = 200 }
+			diplomatic_influence = { who = CYR value = 200 }
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Libya shall be unitary instead!"
+		badboy = 5
+		
+		inherit = CYR
+	
+		#Rise in socialist support
+		any_pop = {
+			limit = { 
+				OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 } 
+				location = { OR = { is_core = FEZ is_core = CYR } }
+			}
+			militancy = 5
+			consciousness = 5
+			ideology  = { factor = 0.20 value = socialist }
+		}
+		
+		#Anger in CYR and FEZ provinces
+		any_owned = {
+			limit = { OR = { is_core = FEZ is_core = CYR } }
+			add_province_modifier = { name = nationalist_agitation duration = 3650 }
+		}
+	
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#King Idris seizes power
+country_event = {
+	id = 8008615
+	title = "Abolition of the Federal Government"
+	desc = EVTDESC8008615
+	picture = "nwo2_1963_TRI_unitary_gov"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = LBY
+		year = 1963
+		NOT = { year = 1990 }
+		
+		OR = { government = hms_government government = hms_government1 }
+		is_vassal = no
+		war = no
+		
+		#Federal government
+		OR = {
+			is_our_vassal = CYR
+			is_our_vassal = FEZ
+		}
+	}
+
+	mean_time_to_happen = { months = 4 }
+
+	option = {
+		name = "Become a unitary state with a strong King!"
+		prestige = 50
+		badboy = 4
+		
+		government = absolute_monarchy
+		country_event = 800050
+		ruling_party_ideology = traditionalist
+		
+		#Annex federal entities
+		random_country = {
+			limit = { tag = CYR vassal_of = LBY }
+			annex_to = THIS
+		}
+		random_country = {
+			limit = { tag = FEZ vassal_of = LBY }
+			annex_to = THIS
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Leave it be!"
+
+		#Inefficient form of government
+		add_country_modifier = { name = economic_malaise duration = 3650 }
+
+		#Rise in populist support
+		any_pop = {
+			limit = { 
+				OR = { is_culture_group = arabic is_culture_group = regional_arabic_1 } 
+				location = { NOT = { OR = { is_core = FEZ is_core = CYR } } }
+			}
+			militancy = 5
+			consciousness = 5
+			ideology  = { factor = 0.10 value = populist }
+		}
+
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#The al-Fateh Revolution
+country_event = {
+	id = 8008616
+	title = "The al-Fateh Revolution"
+	desc = EVT_8008616_DESC
+	picture = "nwo2_muammar_gaddafi_1969"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = LBY
+		year = 1969 
+		NOT = { year = 1990 }
+		
+		government = absolute_monarchy
+		is_vassal = no
+		war = no
+		
+		#Federal government was the cause of the unrest
+		NOT = {
+			OR = {
+				is_our_vassal = CYR
+				is_our_vassal = FEZ
+			}
+		}
+	}
+
+	mean_time_to_happen = { months = 9 }
+
+	option = {
+		name = "Hail to the colonel! Or... Brotherly Leader and Guide!"
+		
+		government = populist_dictatorship 
+		country_event = 800050
+		ruling_party_ideology = nationalist
+		
+		sphere_owner = { 
+			relation = { who = LBY value = -200 } 
+			diplomatic_influence = { who = LBY value = -200 } 
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Crush the revolutionaries!"
+		badboy = 5
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		#Anger in CYR and FEZ provinces
+		any_owned = {
+			limit = { OR = { is_core = FEZ is_core = CYR } }
+			add_province_modifier = { name = nationalist_agitation duration = 3650 }
+		}
+		any_pop = {
+			limit = { strata = poor }
+			ideology = { factor = 0.10 value = socialist }
+			scaled_militancy = { 
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = { 
+				factor = 10
+				ideology = communist_social
+			}
+			scaled_militancy = { 
+				factor = 5
+				ideology = socialist
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#The Jamahirya, 1977
+country_event = {
+	id = 8008625
+	title = "The Jamahirya"
+	desc = EVT_8008625_DESC
+	picture = "nwo2_muammar_gaddafi"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = LBY
+		year = 1977 
+		NOT = { year = 1990 }
+		
+		government = populist_dictatorship
+		is_vassal = no
 		war = no
 	}
 
-	mean_time_to_happen = {
-		months = 6
+	mean_time_to_happen = { months = 3 }
+
+	option = {
+		name = "It's all in this green book..."
+		
+		government = nationalist_dictatorship
+		ruling_party_ideology = socialist
+		
+		#Some dilution of power
+		political_reform = regulated_opinion
+		political_reform = limited_meetings
+		political_reform = state_controlled_unions
+		political_reform = firewall_publishing
+		
+		#Domestic
+		any_pop = { 
+			limit = { strata = rich }
+			ideology = { factor = 0.2 value = socialist }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = 5 
+			consciousness = 5
+			ideology = { factor = 0.1 value = liberal }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = -5 
+			consciousness = -5
+			ideology = { factor = 0.1 value = socialist }
+		}
+		
+		#USSR gains influence in Libya
+		random_country = { 
+			limit = { 
+				tag = RUS 
+				government = proletarian_dictatorship 
+				is_greater_power = yes 
+			} 
+			relation = { who = LBY value = 200 } 
+			diplomatic_influence = { who = LBY value = 200 } 
+		}
+		
+		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
-		name = EVT_1008601_A 
-		ai_chance = { factor = 100 }
-		any_country = {
-			limit = { primary_culture = sunni_arab government = absolute_monarchy }
-			relation = { who = THIS value = 50 }
+		name = "A dictator should be upfront with his powers!"
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		#Domestic
+		any_pop = { 
+			limit = { strata = rich }
+			ideology = { factor = 0.1 value = nationalist }
 		}
-		prestige = 2
-		set_country_flag = king_idris_of_libya
-	}
-	
-	option = {
-		name = EVT_1008601_B 
-		ai_chance = { factor = 0 }
-		any_pop = {
-			limit = {
-				culture = sunni_arab
-			}
-			consciousness = 1
-			militancy = 2
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = 10 
+			consciousness = 10
+			ideology = { factor = 0.2 value = liberal }
 		}
-		any_country = {
-			limit = { primary_culture = sunni_arab }
-			relation = { who = THIS value = -50 }
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = 5 
+			consciousness = 5
+			ideology = { factor = 0.1 value = liberal }
 		}
-		badboy = 0.5
-	}
-
-}
-country_event = {
-	id = 1008601
-	title = EVT_1008601_NAME
-	desc = EVT_1008601_DESC
-	picture = "king_idris_of_libya"
-	fire_only_once = yes
-
-	trigger = {
-		year = 1946 NOT = { year = 1990 }
-		owns = 1743 # Fezzan / Ghat
-		tag = FRA
-		NOT = { has_country_flag = king_idris_of_libya }
-		# war = no
-	}
-
-	mean_time_to_happen = {
-		months = 6
-	}
-
-	option = {
-		name = EVT_1008601_A 
-		ai_chance = { factor = 100 }
-		any_country = {
-			limit = { primary_culture = sunni_arab government = absolute_monarchy }
-			relation = { who = THIS value = 50 }
-		}
-		prestige = -2
-		set_country_flag = king_idris_of_libya
-	}
-	
-	option = {
-		name = EVT_1008601_B 
-		ai_chance = { factor = 0 }
-		any_pop = {
-			limit = {
-				culture = sunni_arab
-			}
-			consciousness = 1
-			militancy = 2
-		}
-		any_country = {
-			limit = { primary_culture = sunni_arab }
-			relation = { who = THIS value = -50 }
-		}
-		badboy = 0.5
+		
+		ai_chance = { factor = 0.1 }
 	}
 
 }
 
-country_event = {
-	id = 1008602
-	title = EVT_1008602_NAME
-	desc = EVT_1008602_DESC
-	picture = "king_idris_of_libya"
-	fire_only_once = yes
-
-	trigger = {
-		tag = ENG
-		year = 1951 NOT = { year = 1990 }
-		has_country_flag = king_idris_of_libya
-		NOT = { exists = TRI }
-		CYR = { exists = no }
-		FEZ = { exists = no } 
-		1731 = { controlled_by = ENG }
-	}
-
-	mean_time_to_happen = {
-		months = 1 
-	}
-
-	option = {
-		name = EVT_1008602_A 
-		ai_chance = { factor = 100 }
-		badboy = -1
-		release = TRI
-		diplomatic_influence = { who = TRI value = 100 }
-		TRI = { government = absolute_monarchy country_event = 800050 } 
-	}
-	
-	option = {
-		name = EVT_1008602_B 
-		ai_chance = { factor = 0 }
-		clr_country_flag = king_idris_of_libya
-		any_pop = {
-			limit = {
-				culture = sunni_arab
-			}
-			consciousness = 1
-			militancy = 2
-		}
-		any_country = {
-			limit = { primary_culture = sunni_arab }
-			relation = { who = THIS value = -50 }
-		}
-		badboy = 1.5
-	}
-
-}
-
-country_event = {
-	id = 1008603
-	title = EVT_1008603_NAME
-	desc = EVT_1008603_DESC
-	picture = "king_idris_of_libya"
-	fire_only_once = yes
-	
-	trigger = {
-		tag = FRA
-		has_country_flag = king_idris_of_libya
-		exists = TRI
-		1743 = { controlled_by = FRA }
-	}
-
-	option = {
-		name = EVT_1008603_A 
-		ai_chance = { factor = 100 }
-		badboy = -1
-		release = TRI
-		diplomatic_influence = { who = TRI value = 100 }
-		clr_country_flag = king_idris_of_libya
-	}
-	
-	option = {
-		name = EVT_1008603_B 
-		ai_chance = { factor = 0 }
-		any_pop = {
-			limit = {
-				culture = sunni_arab
-			}
-			consciousness = 1
-			militancy = 2
-		}
-		any_country = {
-			limit = { primary_culture = sunni_arab }
-			relation = { who = THIS value = -50 }
-		}
-	}
-
-}
-
+#Libyan Civil War, 2011
 country_event = {
 	id = 1008604
-
-	title = EVT_1008604_NAME
+	title = "The Fall of Muammar Gaddafi"
 	desc = EVT_1008604_DESC
+	picture = "2011_TRI_gaddafi_fall"
+
+	fire_only_once = yes
+	
+	trigger = {
+		tag = LBY
+		year = 2011
+		NOT = { year = 2021 }
+		
+		government = nationalist_dictatorship
+		is_vassal = no
+		war = no
+		
+		#Gaddafi
+		ruling_party_ideology = socialist
+		
+		#USA is a democratic GP in NATO
+		USA = {
+			government = democracy
+			is_greater_power = yes
+			NOT = { war_policy = pacifism }
+			OR = { has_country_modifier = alliance_nato has_country_modifier = nato_leader }
+		}
+		
+		#Arab spring commenced
+		has_global_flag = arab_spring
+	}
+	
+	mean_time_to_happen = { months = 3 }
+
+	option = {
+		name = "The dictator falls!"
+		prestige = 100
+		
+		government = democracy
+		country_event = 800054
+		ruling_party_ideology = big_tent
+		
+		#Gaddafi loyalists
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = 10 
+			consciousness = 10
+			ideology = { factor = 0.3 value = nationalist }
+		}
+		
+		#Domestic
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.2 value = liberal }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = 5 
+			consciousness = 5
+			ideology = { factor = 0.2 value = traditionalist }
+		}
+		
+		set_country_flag = libya_civil_war_flag
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "The dictator succeeds!"
+		badboy = 10
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		#Domestic
+		any_pop = { 
+			limit = { strata = rich }
+			ideology = { factor = 0.1 value = socialist }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = 10 
+			consciousness = 10
+			ideology = { factor = 0.2 value = liberal }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = 5 
+			consciousness = 5
+			ideology = { factor = 0.1 value = liberal }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+#Libyan Civil War - Part 2
+country_event = {
+	id = 1610029
+	title = "The Libyan Civil War"
+	desc = EVTDESC1610029
 	picture = "libya_civil_war"
 
 	fire_only_once = yes
-	
+
 	trigger = {
-		tag = USA
-		TRI = { has_global_flag = arab_spring }
-		exists = TRI
+		tag = LBY
+		has_country_flag = libya_civil_war_flag
+		
+		OR = { government = democracy government = democracy1 }
+		is_vassal = no
 		war = no
 	}
 
-	option = {
-		name = EVT_1008604_OPTA
-		ai_chance = { factor = 100 }
-		TRI = { badboy = 10 }
-		random_country = {
-			limit = { tag = EGY in_sphere = THIS ai = yes }
-			create_alliance = THIS
-		}
-		casus_belli = {
-			target = TRI
-			type = install_democracy
-			months = 12
-		}
-		casus_belli = {
-			target = TRI
-			type = add_to_sphere
-			months = 12
-		}
-		war = {
-			target = TRI
-			attacker_goal = {
-				casus_belli = install_democracy
-			}
-			defender_goal = {
-				casus_belli = status_quo
-			}
-		}
-		badboy = 5
+	mean_time_to_happen = { 
+		months = 1
 	}
+
 	option = {
-		name = EVT_1008604_OPTB
-		ai_chance = { factor = 0 }
+		name = "We need to restore order!"
+		any_owned = { 
+			limit = { OR = { is_core = FEZ is_core = CYR } } 
+			change_controller = REB 
+		}
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
 	}
-	
 
-}
-country_event = {
-  id = 8008616
-  title = EVT_8008616_NAME
-  desc = EVT_8008616_DESC
-  picture = "nwo2_muammar_gaddafi"
-  fire_only_once = yes
-
-  trigger = {
-    tag = TRI
-	is_vassal = no
-    year = 1969 NOT = { year = 1990 }
-	OR = { government = hms_government government = absolute_monarchy government = democracy }
-	war = no
-  }
-
-  mean_time_to_happen = { months = 2 }
-
-  option = {
-    name = EVT_8008616_A
-	government = populist_dictatorship 
-	country_event = 800050
-	ruling_party_ideology = traditionalist
-sphere_owner = { diplomatic_influence = { who = TRI value = -200 } }
-	ai_chance = { factor = 0.9 }
- }
-option = {
-    name = "Crush the revolutionaries!"
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-	ai_chance = { factor = 0.1 }
-	 }
-
-}
-country_event = {
-  id = 8008625
-  title = EVT_8008625_NAME
-  desc = EVT_8008625_DESC
-  picture = "nwo2_muammar_gaddafi"
-  fire_only_once = yes
-
-  trigger = {
-    tag = TRI
-	government = populist_dictatorship
-	is_vassal = no
-    year = 1977 NOT = { year = 1990 }
-  }
-
-  mean_time_to_happen = { months = 2  }
-
-  option = {
-    name = EVT_8008625_A
-government = nationalist_dictatorship
-ruling_party_ideology = socialist
-random_country = { limit = { tag = RUS government = proletarian_dictatorship } diplomatic_influence = { who = TRI value = 200 } }
-	any_pop = { militancy = -1.0  consciousness = 1 }
-	ai_chance = { factor = 0.9 }
-  }
-
-option = {
-    name = "Reject Gaddafism"
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-	ai_chance = { factor = 0.1 }
-  }
-
-}
-country_event = {
-  id = 8008626
-  title = EVT_8008626_NAME
-  desc = EVT_8008626_DESC
-  picture = "nwo2_great_manmade_river"
-  fire_only_once = yes
-
-  trigger = {
-    tag = TRI
-    year = 1984 NOT = { year = 1990 }
-	government = nationalist_dictatorship 
-	money = 2500 
-  }
-
-  mean_time_to_happen = { months = 5 }
-
-  option = {
-    name = EVT_8008626_A
-	treasury = -25000 
-  }
 }

@@ -1,58 +1,214 @@
-country_event = { # Independence of Nigeria
+country_event = { # Independence of Nigeria - NGE exists
+	id = 8010506
+	title = EVT_8010507_NAME
+	desc = EVT_8010507_DESC
+	picture = "nwo2_independence_of_nigeria"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = ENG
+		year = 1960 
+		NOT = { year = 1990 }
+		
+		government = hms_government
+		is_vassal = no
+		war = no
+		
+		is_our_vassal = NGE
+	}
+
+	mean_time_to_happen = { months = 10 }
+
+	option = {
+		name = EVT_8010507_A
+		prestige = 25
+		
+		#Nigeria becomes independent
+		release_vassal = NGE
+		NGE = { 
+			government = hms_government1 
+			country_event = 800054
+			ruling_party_ideology = conservative
+		}
+		diplomatic_influence = { who = NGE value = 200 }
+		create_alliance = NGE
+		
+		#Partition off ABZ from Colony of Nigeria
+		NGE = { all_core = { limit = { is_core = ABZ } remove_core = NGE } }
+		
+		#Nigeria absorbs any separate colonies in Nigeria
+		random_owned = { limit = { owner = { is_our_vassal = YOR } } owner = { NGE = { inherit = YOR } } }
+		random_owned = { limit = { owner = { is_our_vassal = BIF } } owner = { NGE = { inherit = BIF } } }
+
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = EVT_8010507_B
+		prestige = -50
+		
+		#Turmoil in Nigeria
+		NGE = { 
+			all_core = { 
+				any_pop = { limit = { OR = { culture = yoruba culture = fula } } militancy = 8 consciousness = 4 }
+				add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+			}
+			add_country_modifier = { name = revolution_chaos duration = 3650 }
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+country_event = { # Independence of Nigeria - NGE does not exist
 	id = 8010507
 	title = EVT_8010507_NAME
 	desc = EVT_8010507_DESC
 	picture = "nwo2_independence_of_nigeria"
+	
 	fire_only_once = yes
 
 	trigger = {
-		capital_scope = { continent = europe } # ENG or FBU
-		year = 1960 NOT = { year = 1990 }
+		tag = ENG
+		year = 1960 
+		NOT = { year = 1990 }
+		
+		government = hms_government
+		is_vassal = no
+		war = no
+		
 		is_possible_vassal = NGE
-		exists = GHA
-		GHA = { is_vassal = no }
 	}
 
-	mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 10 }
 
 	option = {
 		name = EVT_8010507_A
 		prestige = 10
+		
+		#Release Nigeria as an independent state
 		release = NGE
+		NGE = { 
+			government = hms_government1 
+			country_event = 800054 
+			ruling_party_ideology = conservative 
+		}
 		diplomatic_influence = { who = NGE value = 200 }
 		create_alliance = NGE
-NGE = { government = hms_government1 country_event = 800054 }
-		NGE = {
-			define_general = { name = "Dr. Nnamdi Azikiwe" personality = energetic background = no_background }
-			all_core = { limit = { is_core = ABZ } remove_core = NGE }
-		}
-		ai_chance = { factor = 0.7 }
+		
+		#Partition off ABZ from Colony of Nigeria
+		NGE = { all_core = { limit = { is_core = ABZ } remove_core = NGE } }
+		
+		#Nigeria absorbs any separate colonies in Nigeria
+		random_owned = { limit = { owner = { is_our_vassal = YOR } } owner = { NGE = { inherit = YOR } } }
+		random_owned = { limit = { owner = { is_our_vassal = BIF } } owner = { NGE = { inherit = BIF } } }
+		
+		ai_chance = { factor = 0.8 }
 	}
+	
 	option = {
 		name = "Prepare Nigeria for eventual independence"
 		prestige = 10
+		
+		#Release Nigeria as a dominion
 		release_vassal = NGE
-		diplomatic_influence = { who = NGE value = 200 }
-		create_alliance = NGE
 		NGE = {
 			government = colonial_government
 			country_event = 800054
 			ruling_party_ideology = conservative
-			define_general = { name = "Dr. Nnamdi Azikiwe" personality = energetic background = no_background }
-					}
-		ai_chance = { factor = 0.2 }
-	}
-	option = {
-		name = EVT_8010507_B
-		prestige = -10
-		any_pop = { limit = { OR = { culture = yoruba culture = fula } } militancy = 8 consciousness = 4 }
-		any_owned = { limit = { is_core = NGE } add_province_modifier = { name = nationalist_agitation duration = 1095 } }
+		}
+		diplomatic_influence = { who = NGE value = 200 }
+		create_alliance = NGE
 		
 		ai_chance = { factor = 0.1 }
 	}
-# TODO there should be a divide-and-rule option
-
+	
+	option = {
+		name = "Divide and Rule"
+		prestige = -10
+		badboy = 5
+		
+		random_owned = {
+			limit = { owner = { is_possible_vassal = YOR } }
+			owner = {
+				THIS = {
+					release_vassal = YOR
+					YOR = {
+						government = colonial_government
+						country_event = 800054
+						ruling_party_ideology = conservative
+					}
+					diplomatic_influence = { who = YOR value = 200 }
+					create_alliance = YOR
+				}
+			}
+		}
+		
+		random_owned = {
+			limit = { owner = { is_possible_vassal = BIF } }
+			owner = {
+				THIS = {
+					release_vassal = BIF
+					BIF = {
+						government = colonial_government
+						country_event = 800054
+						ruling_party_ideology = conservative
+					}
+					diplomatic_influence = { who = BIF value = 200 }
+					create_alliance = BIF
+				}
+			}
+		}
+		
+		random_owned = {
+			limit = { owner = { is_possible_vassal = ABZ } }
+			owner = {
+				THIS = {
+					release_vassal = ABZ
+					ABZ = {
+						government = colonial_government
+						country_event = 800054
+						ruling_party_ideology = conservative
+					}
+					diplomatic_influence = { who = ABZ value = 200 }
+					create_alliance = ABZ
+				}
+			}
+		}
+		
+		#Release Nigeria as a dominion
+		release_vassal = NGE
+		NGE = {
+			government = colonial_government
+			country_event = 800054
+			ruling_party_ideology = conservative
+		}
+		diplomatic_influence = { who = NGE value = 200 }
+		create_alliance = NGE
+		
+		#Partition off ABZ from Colony of Nigeria
+		NGE = { all_core = { limit = { is_core = ABZ } remove_core = NGE } }
+		
+		ai_chance = { factor = 0.05 }
+	}
+	
+	option = {
+		name = EVT_8010507_B #refuse independence
+		prestige = -50
+		badboy = 10
+		
+		any_owned = { 
+			limit = { is_core = NGE } 
+			add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+			any_pop = { limit = { OR = { culture = yoruba culture = fula } } militancy = 8 consciousness = 4 }
+		}
+		
+		ai_chance = { factor = 0.05 }
+	}
+	
 }
+
 country_event = {
 	id = 8010508
 	title = EVT_8010508_NAME
@@ -62,180 +218,330 @@ country_event = {
 
 	trigger = {
 		tag = NGE
-		year = 1966 NOT = { year = 1974 }
+		year = 1966 
+		NOT = { year = 1990 }
+		
 		government = democracy
+		is_vassal = no
+		war = no
 	}
 
 	mean_time_to_happen = { months = 2 }
 
 	option = {
-		name = EVT_8010508_A
-		government = presidential_dictatorship country_event = 800050
-		random_state = { any_pop = { dominant_issue = { value = parties_allowed factor = 0.3 } } }
-
+		name = "The military shall rule Nigeria"
+		government = presidential_dictatorship
+		country_event = 800050
+		ruling_party_ideology = nationalist
+		
 		ai_chance = { factor = 0.9 }
 	}
+	
 	option = {
-		name = "Preserve democracy!"
-add_country_modifier = { name = revolution_chaos duration = 3650 }
+		name = "Preserve Democracy!"
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
 		ai_chance = { factor = 0.1 }
-			}
-
+	}
+	
 }
+
 country_event = {
 	id = 8010515
 	title = EVT_8010515_NAME
 	desc = EVT_8010515_DESC
 	picture = "nwo2_republic_of_biafra"
+	
 	fire_only_once = yes
 
 	trigger = {
 		tag = NGE
-		is_vassal = no
 		year = 1967 
 		NOT = { year = 1990 }
-		NOT = { exists = BIF }
-		any_owned_province = { is_core = BIF }
+		
+		government = presidential_dictatorship #Caused by military coup
+		is_vassal = no
+		war = no
+		
+		ruling_party_ideology = nationalist
+		
+		#NGE owns BIF
+		is_possible_vassal = BIF
 	}
 
 	mean_time_to_happen = { months = 6 }
 
 	option = {
 		name = EVT_8010515_A
+		badboy = 5
+		
+		#War with Biafra
 		release = BIF
-		war = { target = BIF attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } }
+		BIF = {
+			government = democracy
+			country_event = 800054
+			ruling_party_ideology = nationalist
+		}
+		war = { 
+			target = BIF 
+			attacker_goal = { casus_belli = annex_core_country } 
+			defender_goal = { casus_belli = status_quo } 
+		}
+		
 		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
 		name = EVT_8010515_B
+		prestige = -50
+		
+		#Release Biafra as an independent country
 		release = BIF
-		any_pop = { militancy = 2.0 consciousness = 2 }
+		BIF = {
+			government = democracy
+			country_event = 800054
+			ruling_party_ideology = nationalist
+		}
+		
+		any_pop = { militancy = 4 consciousness = 2 }
 		ai_chance = { factor = 0.1 }
 	}
+	
 }
-country_event = {
+
+country_event = { # Boko Haram
 	id = 8010516
-	title = EVT_8010516_NAME
-	desc = EVT_8010516_DESC
-	picture = "nwo2_republic_of_biafra"
-	fire_only_once = yes
-
-	trigger = {
-		tag = BIF
-	}
-
-	mean_time_to_happen = { months = 1  }
-
-	option = {
-		name = EVT_8010516_A
-	}
-}
-country_event = {
-	id = 8010517
-	title = EVT_8010517_NAME
-	desc = EVT_8010517_DESC
-	picture = "nwo2_republic_of_biafra"
+	title = EVT_8010520_NAME
+	desc = EVT_8010520_DESC
+	picture = "boko_haram"
+	
 	fire_only_once = yes
 
 	trigger = {
 		tag = NGE
-		year = 1936 NOT = { year = 1990 }
-		exists = BIF
+		year = 2014
+		
+		NOT = { government = theocracy }
+		is_vassal = no
 		war = no
+		
+		NOT = { ruling_party_ideology = traditionalist }
+		
+		has_global_flag = arab_spring # caused by Middle Eastern instability
+		
+		#ISIS exists in the Middle East
+		ISI = { exists = yes is_vassal = no }
+		
+		NOT = { has_country_flag = islamist_revolution_in_progress }
 	}
 
-	mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 12 }
 
 	option = {
-		name = EVT_8010517_A
-		any_pop = { militancy = 2.0 consciousness = 2 }
+		name = "Fight them!"
+		
+		set_country_flag = islamist_revolution_in_progress
+		
+		any_pop = { 
+			limit = { has_pop_religion = sunni } 
+			ideology = { factor = 0.2 value = traditionalist } 
+			militancy = 5 
+			consciousness = 5 
+		}
+		
+		#increase Islamist support in the northeast
+		any_owned = { 
+			limit = { OR = { province_id = 1951 province_id = 1953 } } 
+			any_pop = { 
+				limit = { has_pop_religion = sunni } 
+				ideology = { factor = 0.3 value = traditionalist } 
+				militancy = 3 
+				consciousness = 3 
+			} 
+			add_core = NNG
+		}
+		
+		#NGE to fight NNG
+		any_owned = { limit = { is_core = NNG } secede_province = NNG }
+		NNG = {
+			war = {
+				target = NGE
+				attacker_goal = { casus_belli = civil_war }
+				defender_goal = { casus_belli = civil_war }
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
 	}
+
+	option = {
+		name = "Give in to Sharia"
+		
+		#set path towards civil war
+		set_country_flag = NGE_accepted_sharia
+		
+		government = theocracy
+		country_event = 800050
+		ruling_party_ideology = traditionalist
+		
+		add_country_modifier = { name = sharia duration = 3650 }
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		#Muslims are happy, non-Muslims want to revolt
+		any_pop = { limit = { has_pop_religion = sunni } ideology = { factor = 0.4 value = traditionalist } militancy = -8 consciousness = -8 }
+		any_pop = { limit = { NOT = { has_pop_religion = sunni } } ideology = { factor = 0.4 value = liberal } militancy = 9 consciousness = 9 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
 }
 
 # hypothetic future civil war when nigeria becomes muslim majority
 country_event = {
-  id = 8010518
-  title = EVT_8010518_NAME
-  desc = EVT_8010518_DESC
-  picture = "nigeria_civil_war"
-  fire_only_once = yes
-
-  trigger = {
-    tag = NGE
-    	NOT = { exists = YOR }
-	NOT = { exists = BIF }
-	pop_majority_religion = sunni
-	OR = { year = 2020 government = democracy government = hms_government government = hms_government1 }
-    war = no
-	is_vassal = no
-	average_militancy = 6
-  }
-
-  mean_time_to_happen = { months = 12 }
-
-  option = {
-    name = EVT_8010518_A # Give the south autonomy
-
-	any_pop = { militancy = 1.0 consciousness = 1 }
-
-	release = YOR
-
-	create_vassal = YOR
-
-	release_vassal = BIF
-
-any_owned = { limit = { is_core = YOR } secede_province = YOR }
-
-	  }
-
-  option = {
-
-    name = EVT_8010518_B # Defend the unity of Nigeria
-
-	any_pop = { limit = { religion = protestant } militancy = 2.0 consciousness = 2 }
-
-	release = YOR
-	casus_belli = { target = YOR type = annex_core_country months = 12 }
-
-	war = { target = YOR attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } }
+	id = 8010518
+	title = EVT_8010518_NAME
+	desc = EVT_8010518_DESC
+	picture = "nigeria_civil_war"
 	
-		release = BIF
-
-casus_belli = { target = BIF 
-type = annex_core_country months = 12 }
-
-war = { 
-target = BIF 
-attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } 
-	} 
-
-	}
-}
-
-country_event = { # Boko Haram
-	id = 8010520
-	title = EVT_8010520_NAME
-	desc = EVT_8010520_DESC
-	picture = "boko_haram"
 	fire_only_once = yes
 
 	trigger = {
-		has_country_flag = islamist_revolution_in_progress
+		tag = NGE
+		OR = { pop_majority_religion = sunni has_country_flag = NGE_accepted_sharia }
+		
+		NOT = { government = theocracy }
+		is_vassal = no
+		war = no
+		
+		NOT = { ruling_party_ideology = traditionalist }
+		
+		#High militancy
+		average_militancy = 6
+		
+		#NGE owns the South
+		is_possible_vassal = YOR
+		is_possible_vassal = BIF
+		
+		#NGE owns NNG provinces (Cores added by Boko Haram event)
+		is_possible_vassal = NNG
 	}
 
-	mean_time_to_happen = { months = 12  }
+	mean_time_to_happen = { months = 12 }
 
 	option = {
-		name = EVT_8010520_A # Supress them
-		any_pop = { limit = { religion = sunni } militancy = 2.0 consciousness = 0.5 }
-		ai_chance = { factor = 0.5 }
+		name = EVT_8010518_A # Give the south autonomy
+		any_pop = { militancy = 3 consciousness = 3 }
+		
+		release_vassal = YOR
+		YOR = {
+			government = sar_government 
+			country_event = 800054 
+			ruling_party_ideology = nationalist
+			set_country_flag = former_devolved_nation
+		}
+		sphere_owner = { diplomatic_influence = { who = YOR value = 200 } }
+		diplomatic_influence = { who = YOR value = 200 }
+		
+		release_vassal = BIF
+		BIF = {
+			government = sar_government 
+			country_event = 800054 
+			ruling_party_ideology = nationalist
+			set_country_flag = former_devolved_nation
+		}
+		sphere_owner = { diplomatic_influence = { who = BIF value = 200 } }
+		diplomatic_influence = { who = BIF value = 200 }
+		
+		ai_chance = { 
+			factor = 0.7
+			
+			#Jingoist ruling party will fight!
+			modifier = {
+				factor = 0
+				war_policy = jingoism
+			}
+		}
+		
 	}
 
 	option = {
-		name = EVT_8010520_B # Accept Sharia in the North
-		any_pop = { limit = { religion = sunni } militancy = -0.5 consciousness = -0.1 }
-		any_pop = { limit = { NOT = { religion = sunni } } militancy = 1.0 consciousness = 0.5 }
-		ai_chance = { factor = 0.5 }
+		name = "Bring sharia to the south!"
+		
+		government = theocracy
+		country_event = 800050
+		ruling_party_ideology = traditionalist
+
+		#Muslims are happy, non-Muslims want to revolt
+		any_pop = { limit = { has_pop_religion = sunni } ideology = { factor = 0.4 value = traditionalist } militancy = -8 consciousness = -8 }
+		any_pop = { limit = { NOT = { has_pop_religion = sunni } } ideology = { factor = 0.4 value = liberal } militancy = 9 consciousness = 9 }
+		
+		#War with the South
+		release = YOR
+		YOR = {
+			government = democracy
+			country_event = 800054 
+			ruling_party_ideology = big_tent
+		}
+		war = { 
+			target = YOR 
+			attacker_goal = { casus_belli = annex_core_country } 
+			defender_goal = { casus_belli = status_quo } 
+		}
+		
+		release = BIF
+		BIF = {
+			government = democracy
+			country_event = 800054 
+			ruling_party_ideology = big_tent
+		}
+		war = { 
+			target = BIF 
+			attacker_goal = { casus_belli = annex_core_country } 
+			defender_goal = { casus_belli = status_quo } 
+		}
+		
+		ai_chance = { 
+			factor = 0.2
+			
+			#Pacifists will never fight
+			modifier = {
+				factor = 0
+				war_policy = pacifism
+			}
+		}
 	}
+
+	option = { #Nigeria is reduced to the south and Abuja while NNG takes the north in full
+		name = "Liberate Nigeria from the terrorists!"
+
+		#Muslims are angry
+		any_pop = { limit = { has_pop_religion = sunni } militancy = 8 consciousness = 8 }
+		
+		#Set up NNG presence in Nigeria
+		any_owned = { 
+			limit = { OR = { province_id = 1936 province_id = 1937 province_id = 1938 province_id = 1939 province_id = 1940 province_id = 1942 province_id = 1943 province_id = 1944 province_id = 1945 province_id = 1946 province_id = 1947 province_id = 1948 province_id = 1949 province_id = 1950 province_id = 1951 province_id = 1952 province_id = 1953 } } 
+			add_core = NNG
+			secede_province = NNG
+		}
+		
+		#War with NNG
+		NNG = {
+			war = {
+				target = NGE
+				attacker_goal = { casus_belli = civil_war }
+				defender_goal = { casus_belli = civil_war }
+			}
+		}
+		
+		ai_chance = { 
+			factor = 0.1 
+			
+			#Left-wing and Right-wing will fight the terrorists
+			modifier = {
+				factor = 4
+				OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist ruling_party_ideology = communist ruling_party_ideology = communist_social }
+			}
+			
+		}
+	}
+	
 }

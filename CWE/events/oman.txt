@@ -15,14 +15,14 @@ country_event = {
     name = EVT_8010802_A
 	any_pop = { dominant_issue = { value = moralism factor = 0.55 } }
 	any_pop = { consciousness = 2  }
-	ai_chance = { factor = 80 }
+	ai_chance = { factor = 0.8 }
   }
 
   option = {
     name = EVT_8010802_B
 	any_pop = { militancy = 1.0 }
 	country_event =  { id = 8010803 days = 300 } 
-	ai_chance = { factor = 20 }
+	ai_chance = { factor = 0.2 }
   }
 }
 country_event = {
@@ -52,6 +52,8 @@ country_event = {
   trigger = {
     tag = OMA
 	year = 1970 NOT = { year = 1990 }
+	war = no
+	government = hms_government
   }
   mean_time_to_happen = { months = 8 }
 
@@ -59,4 +61,140 @@ country_event = {
     name = EVT_8010804_A
 	add_country_modifier = { name = economic_boom duration = 350 }
   }
+}
+
+#Dhofar Rebellion - start
+country_event = {
+	id = 8010805
+	title = "The Dhofar Rebellion"
+	desc = EVTDESC8010805
+	picture = "dhofar_rebellion"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = OMA
+		OR = { government = hms_government government = hms_government1 government = absolute_monarchy }
+		war = no
+		is_vassal = no
+		year = 1962
+		NOT = { year = 1990 }
+		has_global_flag = blocsenabled
+		SYE = { exists = yes ruling_party_ideology = communist }
+		OR = { in_sphere = ENG in_sphere = FBU }
+		owns = 1174
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "We do not tolerate separatism!"
+		release = DHO
+		DHO = { government = proletarian_dictatorship country_event = 800052 ruling_party_ideology = communist }
+		war = {
+			target = DHO
+			attacker_goal = { casus_belli = annex_core_country }
+			defender_goal = { casus_belli = humiliate }
+			call_ally = no
+		}
+		
+		#Call for UK assistance
+		random_country = {
+			limit = { OR = { is_sphere_leader_of = THIS alliance_with = THIS } OR = { tag = ENG tag = FBU } NOT = { ruling_party_ideology = communist } NOT = { ruling_party_ideology = communist_social } }
+			country_event = 8010806
+		}
+		
+		#Call for RUS or CHI assistance
+		random_country = {
+			limit = { OR = { tag = RUS tag = CHI } government = proletarian_dictatorship is_greater_power = yes }
+			country_event = 8010807
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Accept their demand for independence"
+		prestige = -50
+		release = DHO
+		DHO = { government = proletarian_dictatorship country_event = 800052 ruling_party_ideology = communist }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Dhofar Rebellion - UK intervention
+country_event = {
+	id = 8010806
+	title = "The Dhofar Rebellion"
+	desc = EVTDESC8010805
+	picture = "dhofar_rebellion"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Support the Sultan of Oman!"
+		money = -500000
+		relation = { who = DHO value = -200 }
+		relation = { who = OMA value = 200 }
+		diplomatic_influence = { who = OMA value = 100 }
+		OMA = {
+			money = 250000
+			small_arms = 1000
+			weaponry = 1000
+			ships = 25
+			aeroplanes = 250 
+		}
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Don't get involved"
+		prestige = -50
+		relation = { who = DHO value = 100 }
+		relation = { who = OMA value = -100 }
+		diplomatic_influence = { who = OMA value = -100 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Dhofar Rebellion - CHI or RUS intervention
+country_event = {
+	id = 8010807
+	title = "The Dhofar Rebellion"
+	desc = EVTDESC8010805
+	picture = "dhofar_rebellion"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Support the Dhofari rebels!"
+		money = -500000
+		relation = { who = DHO value = 200 }
+		relation = { who = OMA value = -200 }
+		diplomatic_influence = { who = OMA value = -100 }
+		diplomatic_influence = { who = DHO value = 100 }
+		DHO = {
+			money = 250000
+			small_arms = 1000
+			weaponry = 1000
+			ships = 25
+			aeroplanes = 250 
+			any_pop = { ideology = { factor = 0.15 value = communist } }
+		}
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Don't get involved"
+		prestige = -50
+		relation = { who = DHO value = -100 }
+		relation = { who = OMA value = 100 }
+		diplomatic_influence = { who = DHO value = -50 }
+		ai_chance = { factor = 0.1 }
+	}
+
 }

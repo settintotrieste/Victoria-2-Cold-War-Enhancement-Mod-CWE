@@ -1,3 +1,4 @@
+#The first congo war
 country_event = {
 	id = 1003301
 	title = "EVT_1003301_NAME" # first Congo war
@@ -21,10 +22,9 @@ country_event = {
 	option = {
 		name = "EVT_1003301_B" # war with Rwanda
 		badboy = 10
-		add_country_modifier = { name = very_easy_ai duration = 900 }
 		any_owned = { limit = { pop_majority_culture = swahili } change_controller = REB }
 		war = { target = RWA attacker_goal = { casus_belli = humiliate } defender_goal = { casus_belli = install_democracy } }
-		ai_chance = { factor = 100 }
+		ai_chance = { factor = 1 }
 	}
 	
 }
@@ -83,7 +83,7 @@ country_event = {
 		FROM = { relation = { who = THIS value = 100 } }
 		relation = { who = ITU value = -200 }
 		create_alliance = FROM
-		ai_chance = { factor = 100 }
+		ai_chance = { factor = 1 }
 	}
 	
 	option = {
@@ -93,393 +93,903 @@ country_event = {
 	}
 	
 }
-country_event = { # Lipanda
-  id = 8003300
-  title = EVT_8003300_NAME
-  desc = EVT_8003300_DESC
-  picture = "lipanda"
 
-  trigger = {
-    tag = BEL
-	NOT = { exists = CNG }
-	year = 1960 NOT = { year = 1990 }
-	owns = 1982 # Kinshasa Leopoldville
-OR = { year = 1958 exists = ROC } # usually released as vassal 1958
-	war = no
-  }
-
-  mean_time_to_happen = { months = 6 }
-
-  option = {
-    name = EVT_8003300_A
-	prestige = 20
-	release = CNG
-	CNG = { government = democracy1 country_event = 800054 }
-	ai_chance = { factor = 100 }
-  }
-  option = {
-    name = EVT_8003300_B
-	any_pop = { limit = { location = { is_colonial = yes } } militancy = 2.0 }
-	any_pop = { limit = { location = { is_colonial = yes } } consciousness = 1.0 }
-	prestige = -10
-	badboy = 1.0
-	ai_chance = { factor = 0 }
-  }
-}
+#The Independence of Congo
 country_event = {
-  id = 8003309
-  title = EVT_8003309_NAME
-  desc = EVT_8003309_DESC
-  picture = "nwo2_mobutu_sese_seko"
-  fire_only_once = yes
+	id = 8003300
+	title = "The Independence of Congo"
+	desc = EVTDESC8003300
+	picture = "CNG_indy_1960"
+	
+	fire_only_once = yes
 
-  trigger = {
-	exists = CNG
-    tag = CNG
-	war = no
-NOT = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social ruling_party_ideology = socialist } }
-	year = 1965 NOT = { year = 1970 }
-  }
+	trigger = {
+		tag = BEL
+		year = 1960 
+		NOT = { year = 1990 }
+		
+		war = no
+		is_vassal = no
+		
+		#Owns Congo
+		OR = { is_possible_vassal = CNG is_our_vassal = CNG }
+	}
 
-  mean_time_to_happen = { months = 5  }
+	mean_time_to_happen = { months = 6 }
 
-  option = {
-    name = EVT_8003309_A
-	relation  = { who = USA value = 200 }
-	USA = { diplomatic_influence = { who = CNG value = 200 } }
-	any_pop = { militancy = -3.0 }
-	any_pop = { consciousness = 1.0 }
-  }
+	option = {
+		name = "Set them free"
+		prestige_factor = -0.05
+		
+		random_owned = {
+			limit = { owner = { is_possible_vassal = CNG } }
+			owner = { 
+				release = CNG
+				CNG = { 
+					government = democracy1 
+					country_event = 800054 
+					ruling_party_ideology = nationalist
+				}
+			}
+		}
+		
+		random_owned = {
+			limit = { owner = { is_our_vassal = CNG } }
+			owner = { 
+				release_vassal = CNG
+				CNG = { 
+					government = democracy1 
+					country_event = 800054 
+					ruling_party_ideology = nationalist
+				}
+			}
+		}
+		
+		relation = { who = CNG value = 50 }
+		diplomatic_influence = { who = CNG value = 200 }
+		
+		#Set CNG's government type
+		CNG = {
+			clr_country_flag = presidential_system_republic
+			clr_country_flag = semi_presidential_system_republic
+			clr_country_flag = parliamentary_system_republic
+			
+			set_country_flag = semi_presidential_system_republic
+			
+			political_reform = first_past_the_post
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	option = {
+		name = "No way!"
+		
+		badboy = 5
+		
+		#Increase Nationalist support
+		CNG = {
+			#Nationalism increases
+			any_pop = {
+				ideology = {
+					factor = 0.125
+					value = nationalist
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = nationalist
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = traditionalist
+				}
+			}
+			all_core = { add_province_modifier = { name = nationalist_agitation duration = 3650 } }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
 }
+
+#Mobutu's dictatorship 1965
 country_event = {
   id = 8003311
-  title = EVT_8003311_NAME
-  desc = EVT_8003311_DESC
+  title = "The Rise of Mobutu Sese Seko"
+  desc = EVTDESC8003311
   picture = "nwo2_mobutu_sese_seko"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-	exists = CNG
-    tag = CNG
-	war = no
-	year = 1971 NOT = { year = 1990 }
-  }
+	trigger = {
+		tag = CNG
+		year = 1965 
+		NOT = { year = 1990 }
+		
+		government = democracy
+		
+		#Cold War and had Congo Crisis
+		has_global_flag = congo_crisis
+		has_global_flag = blocsenabled
+		
+		is_vassal = no
+	}
 
-  mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 11 }
 
-  option = {
-    name = EVT_8003311_A
-	government = populist_dictatorship  
-	country_event = 800050
-	ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = "We want him!"
+		government = presidential_dictatorship
+		country_event = 800050
+		ruling_party_ideology = nationalist
+		ai_chance = { factor = 0.9 }
+	}
 
-option = {
-	  name = "No thanks"
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-	  ai_chance = { factor = 0.1 }
-    }
+	option = {
+		name = "No thanks"
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		#Communism increases
+		any_pop = {
+			ideology = {
+				factor = 0.15
+				value = communist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist_social
+			}
+		}
+		ai_chance = { factor = 0.1 }
+	}
 
 }
+
+#Zaire 1971
+country_event = {
+  id = 8003312
+  title = "The Zairianisation of Congo"
+  desc = EVTDESC8003312
+  picture = "zaire_mobutu_sese_seko"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = CNG
+		year = 1971
+		NOT = { year = 1990 }
+		
+		government = presidential_dictatorship
+		ruling_party_ideology = nationalist
+		
+		#Cold War and had Congo Crisis
+		has_global_flag = congo_crisis
+		has_global_flag = blocsenabled
+		
+		is_vassal = no
+		war = no
+	}
+
+	mean_time_to_happen = { months = 11 }
+
+	option = {
+		name = "Embrace the new Congo!"
+		government = populist_dictatorship
+		ruling_party_ideology = traditionalist
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "We are fine with who we are"
+		
+		#Liberal support increases
+		any_pop = {
+			ideology = {
+				factor = 0.10
+				value = liberal
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = liberal
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist_social
+			}
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+### The Congo Crisis ###
+#Stanleyville
 country_event = {
   id = 8003329
-  title = EVT_8003329_NAME
-  desc = EVT_8003329_DESC
-  picture = "nwo2_patrice_lumumba"
-  fire_only_once = yes
+  title = "The Congo Crisis"
+  desc = EVTDESC8003329
+  picture = "nwo2_congo_crisis"
+  
+	fire_only_once = yes
 
-  trigger = {
-	exists = CNG
+	trigger = {
     	tag = CNG
-	is_vassal = no
-	year = 1950 NOT = { year = 1990 }
-	war = no
-  }
+		year = 1950 
+		NOT = { year = 1990 }
+		
+		#International conditions
+		has_global_flag = blocsenabled
+		BEL = { exists = yes is_vassal = no }
+		
+		OR = { government = democracy government = democracy1 }
+		OR = {
+			war_with = KAT
+			war_with = SKA
+		}
+		is_vassal = no
+		
+		has_global_flag = lumuba_has_been_executed
+		has_global_flag = congo_crisis
+	}
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 2 }
 
-  option = {
-    name = EVT_8003329_A
-	relation = { who = BEL value = -100 } 
-	small_arms = 1000 clothes = 1000 
-	any_pop = { militancy = 0.5 consciousness = 1 }
-	country_event = { id = 8003330 days = 60 }
-  }
+	option = {
+		name = "It is every man for themselves!"
+		set_global_flag = congo_crisis
+		
+		relation = { who = BEL value = -100 }
+		
+		any_pop = { 
+			militancy = 5 
+			consciousness = 5 
+		}
+		
+		#Begin the war
+		
+		#Release Stanleyville
+		all_core = { add_core = UCS }
+		any_owned = { 
+			limit = { 
+				OR = { 
+					region = BEL_1996 
+					region = BEL_1990 
+					province_id = 1989 
+					province_id = 1992 
+				} 
+			} 
+			secede_province = UCS 
+		}
+		
+		UCS = {
+			capital = 1996
+			war = { 
+				target = CNG 
+				attacker_goal = { casus_belli = civil_war } 
+				defender_goal = { casus_belli = civil_war } 
+			} 
+		}
+		
+		#Stanleyville is also at war with KAT and SKA
+		random_owned = {
+			limit = { 
+				owner = { 
+					exists = KAT 
+					is_vassal = no 
+				} 
+			}
+			owner = { 
+				UCS = {
+					war = { 
+						target = KAT 
+						attacker_goal = { casus_belli = civil_war } 
+						defender_goal = { casus_belli = territorial_dispute } 
+					} 
+				}
+			}
+		}
+		random_owned = {
+			limit = { 
+				owner = { 
+					exists = SKA
+					is_vassal = no 
+				} 
+			}
+			owner = { 
+				UCS = {
+					war = { 
+						target = SKA
+						attacker_goal = { casus_belli = civil_war } 
+						defender_goal = { casus_belli = territorial_dispute } 
+					} 
+				}
+			}
+		}
+	
+	}
+  
 }
+
+#USA intervention
 country_event = {
   id = 8003330
-  title = EVT_8003330_NAME
-  desc = EVT_8003330_DESC
+  title = "The Congo Crisis"
+  desc = EVTDESC8003329
   picture = "nwo2_congo_crisis"
-  is_triggered_only = yes
+  
+	fire_only_once = yes
 
-  option = {
-    name = EVT_8003330_A
-	any_pop = { militancy = 2.0 }
-	set_global_flag = congo_crisis
-	country_event = 8003332
-  }
+	trigger = {
+		tag = USA
+		year = 1960 
+		NOT = { year = 1990 }
+		
+		has_global_flag = blocsenabled
+		
+    	exists = CNG
+		exists = UCS
+		UCS = { war_with = CNG }
+	}
+  
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "We shall get involved!"
+		money = -200000
+		
+		badboy = 5
+		
+		create_alliance = CNG
+		relation = { who = CNG value = 100 }
+		diplomatic_influence = { who = CNG value = 200 }
+		CNG = {
+			money = 100000
+			
+			#Military Goods
+			ammunition = 500
+			small_arms = 250
+			weaponry = 125
+			automobiles = 100
+			aeroplanes = 50
+		}
+		
+		relation = { who = RUS value = -50 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Don't get involved"
+		prestige_factor = -0.025
+		ai_chance = { factor = 0.1 }
+	}
 }
+
+#RUS intervention
 country_event = {
   id = 8003331
-  title = EVT_8003331_NAME
-  desc = EVT_8003331_DESC
+  title = "The Congo Crisis"
+  desc = EVTDESC8003329
   picture = "nwo2_congo_crisis"
-  fire_only_once = yes
-
-  trigger = {
-    tag = RUS
-	has_global_flag = blocsenabled
-	year = 1960 
-	NOT = { year = 1990 }
-	has_global_flag = congo_crisis
-    	exists = CNG
-	exists = UCS
-	UCS = { war_with = CNG }
-    
-  }
   
-  mean_time_to_happen = { months = 1 }
+	fire_only_once = yes
 
-  option = {
-    name = EVT_8003331_A
-	money = -200000
-	prestige = 10
-	badboy = 5
-	diplomatic_influence = { who = UCS value = 200 }
-	USA = { diplomatic_influence = { who = CNG value = 200 } }
-	UCS = { money = 10000 small_arms = 400 clothes = 200 }
-	create_alliance = UCS
-	ai_chance = { factor = 0.9 }
-  }
+	trigger = {
+		tag = RUS
+		year = 1960 
+		NOT = { year = 1990 }
+		
+		has_global_flag = blocsenabled
+		
+    	exists = CNG
+		exists = UCS
+		UCS = { war_with = CNG }
+	}
+  
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8003331_B
-	ai_chance = { factor = 0.1 }
-	prestige = -10
-  }
+	option = {
+		name = "We shall get involved!"
+		money = -200000
+		
+		badboy = 5
+		
+		create_alliance = UCS
+		relation = { who = UCS value = 100 }
+		diplomatic_influence = { who = UCS value = 200 }
+		UCS = {
+			money = 100000
+			
+			#Military Goods
+			ammunition = 500
+			small_arms = 250
+			weaponry = 125
+			automobiles = 100
+			aeroplanes = 50
+		}
+		
+		relation = { who = USA value = -50 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Don't get involved"
+		prestige_factor = -0.025
+		ai_chance = { factor = 0.1 }
+	}
 }
-country_event = {
-  id = 8003332
-  title = EVT_8003332_NAME
-  desc = EVT_8003332_DESC
-  picture = "nwo2_congo_crisis"
-  is_triggered_only = yes # CNG
 
-  option = {
-    name = EVT_8003332_A
-	all_core = { add_core = UCS }
-	any_owned = { limit = { OR = { region = BEL_1996 region = BEL_1990 province_id = 1989 province_id = 1992 } } secede_province = UCS }
-	release = KAT
-	UCS = { capital = 1996 }
-	war = { target = UCS attacker_goal = { casus_belli = civil_war } defender_goal = { casus_belli = civil_war } }
-	country_event = 8003334
-  }
-}
+#Belgian intervention
 country_event = {
   id = 8003333
-  title = EVT_8003333_NAME
-  desc = EVT_8003333_DESC
+  title = "The Congo Crisis"
+  desc = EVTDESC8003329
   picture = "nwo2_congo_crisis"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = BEL
-	year = 1960 NOT = { year = 1990 }
-	has_global_flag = congo_crisis
-    exists = CNG
-	exists = KAT
-    
-  }
+	trigger = {
+		tag = BEL
+		year = 1960 
+		NOT = { year = 1990 }
+		
+		has_global_flag = blocsenabled
+		
+		is_vassal = no
+		
+		exists = CNG
+		exists = KAT
+		exists = SKA
+		
+		CNG = { 
+			war_with = KAT
+			war_with = SKA
+		}
+		
+	}
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8003333_A
-	money = -200000
-	KAT = { money = 10000 small_arms = 400 clothes = 200 }
-	prestige = 10
-	badboy = 5
-	ai_chance = { factor = 100 }
-  }
+	option = {
+		name = "Support the separatists!"
+		
+		set_global_flag = BEL_CNG_intervention
+		
+		relation = { who = RUS value = -50 }
+		relation = { who = USA value = 50 }
+		relation = { who = CNG value = -50 }
+		
+		badboy = 5
+		money = -100000
+		
+		relation = { who = KAT value = 200 }
+		diplomatic_influence = { who = KAT value = 200 }
+		KAT = { 
+			money = 50000 
+			
+			#Military Goods
+			ammunition = 200
+			small_arms = 100
+			weaponry = 50
+			automobiles = 50
+			aeroplanes = 25
+		}
+		
+		relation = { who = SKA value = 200 }
+		diplomatic_influence = { who = SKA value = 200 }
+		SKA = { 
+			money = 50000 
+			
+			#Military Goods
+			ammunition = 200
+			small_arms = 100
+			weaponry = 50
+			automobiles = 50
+			aeroplanes = 25
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8003333_B
-	prestige = -50
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = "Don't get involved"
+		prestige = -50
+		ai_chance = { factor = 0.1 }
+	}
 }
+
+#Succession of Katanga
 country_event = {
   id = 8003334
-  title = EVT_8003334_NAME
+  title = "The Secession of Katanga"
   desc = EVT_8003334_DESC
   picture = "nwo2_congo_crisis"
-  is_triggered_only = yes
+  
+	fire_only_once = yes
 
-  option = {
-    name = EVT_8003334_A
-	war = { target = KAT attacker_goal = { casus_belli = civil_war } defender_goal = { casus_belli = territorial_dispute } }
-  }
+	trigger = {
+    	tag = CNG
+		year = 1950 
+		NOT = { year = 1990 }
+		
+		#International conditions
+		has_global_flag = blocsenabled
+		BEL = { exists = yes is_vassal = no }
+		
+		is_vassal = no
+		
+		is_possible_vassal = KAT
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "Crush the separatists!"
+		
+		relation = { who = BEL value = -50 }
+		
+		release = KAT
+		KAT = { 
+			government = populist_dictatorship
+			country_event = 800050
+			ruling_party_ideology = nationalist
+		}
+		
+		war = { 
+			target = KAT 
+			attacker_goal = { casus_belli = civil_war } 
+			defender_goal = { casus_belli = territorial_dispute } 
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+  
+    option = {
+		name = "Federalise to avoid further conflict"
+		
+		relation = { who = BEL value = 50 }
+		
+		any_pop = { 
+			militancy = 2.5
+			consciousness = 2.5
+		}
+		
+		random_owned = {
+			limit = { owner = { is_possible_vassal = KAT } }
+			owner = { 
+				release_vassal = KAT 
+				KAT = {
+					government = sar_government
+					country_event = 800054
+					ruling_party_ideology = nationalist
+					set_country_flag = former_devolved_nation
+					
+					any_pop = {
+						ideology = {
+							factor = 0.15
+							value = nationalist
+						}
+					}
+				}
+				sphere_owner = { diplomatic_influence = { who = KAT value = 200 } }
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
 }
+
+#Succession of South Kasai
+country_event = {
+  id = 8003344
+  title = "The Secession of South Kasai"
+  desc = EVT_8003344_DESC
+  picture = "south_kasai"
+  
+	fire_only_once = yes
+
+	trigger = {
+    	tag = CNG
+		year = 1950 
+		NOT = { year = 1990 }
+		
+		#International conditions
+		has_global_flag = blocsenabled
+		BEL = { exists = yes is_vassal = no }
+		
+		is_vassal = no
+		
+		is_possible_vassal = SKA
+	}
+
+	mean_time_to_happen = { months = 2 }
+
+	option = {
+		name = "Crush the separatists!"
+		
+		relation = { who = BEL value = -50 }
+		
+		release = SKA
+		SKA = { 
+			government = populist_dictatorship
+			country_event = 800050
+			ruling_party_ideology = populist
+		}
+		
+		war = { 
+			target = SKA 
+			attacker_goal = { casus_belli = civil_war } 
+			defender_goal = { casus_belli = territorial_dispute } 
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+  
+    option = {
+		name = "Federalise to avoid further conflict"
+		
+		relation = { who = BEL value = -50 }
+		
+		any_pop = { 
+			militancy = 2.5
+			consciousness = 2.5
+		}
+		
+		random_owned = {
+			limit = { owner = { is_possible_vassal = SKA } }
+			owner = { 
+				release_vassal = SKA 
+				SKA = {
+					government = sar_government
+					country_event = 800054
+					ruling_party_ideology = nationalist
+					set_country_flag = former_devolved_nation
+					
+					any_pop = {
+						ideology = {
+							factor = 0.15
+							value = nationalist
+						}
+					}
+				}
+				sphere_owner = { diplomatic_influence = { who = SKA value = 200 } }
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+  
+}
+
+#The Execution of Lumumba
 country_event = {
   id = 8003335
-  title = EVT_8003335_NAME
-  desc = EVT_8003335_DESC
-  picture = "nwo2_congo_crisis"
-  fire_only_once = yes
+  title = "The Execution of Lumumba"
+  desc = EVTDESC8003335
+  picture = "nwo2_lumumba_death"
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = CNG
-	year = 1960 
-	NOT = { year = 1960 }
-  }
+	trigger = {
+		tag = CNG
+		year = 1960
+		NOT = { year = 1990 }
+		
+		#International conditions
+		has_global_flag = blocsenabled
+		
+		#Belgium is involved
+		BEL = { exists = yes is_vassal = no }
+		has_global_flag = BEL_CNG_intervention
+		
+		#Succession crisis with Katanga
+		war_with = KAT
+		
+		OR = { government = democracy government = democracy1 }
+		war = yes
+		is_vassal = no
+		
+		OR = {
+			war_with = KAT
+			war_with = SKA
+		}
+		
+	}
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 2 }
 
-  option = {  # Lumumba is removed and soon will be killed
-    name = EVT_8003335_A 
-	government = presidential_dictatorship  
-	country_event = 800050
-	small_arms = 1000 clothes = 1000 
-	relation = { who = USA value = 200 } 
-	relation = { who = RUS value = -200 } 
-	KAT = { country_event = 8003336 }
-	ai_chance = { factor = 0.8 }
-  }
+	option = {
+		name = "President Kasa-Vubu is now in charge"
 
-  option = {
-    name = EVT_8003335_B
-	relation = { who = USA value = -200 } 
-	relation = { who = RUS value = 200 }   
-	country_event = 800054
-	ruling_party_ideology = socialist
-	ai_chance = { factor = 0.2 }
-  }
+		ruling_party_ideology = big_tent
+		
+		set_global_flag = lumuba_has_been_executed
+		set_global_flag = congo_crisis
+		
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "He survives!"
+		
+		set_global_flag = congo_crisis
+		
+		ruling_party_ideology = communist
+		
+		relation = { who = BEL value = -200 }
+		relation = { who = USA value = -200 }
+		USA = { diplomatic_influence = { who = CNG value = -200 } }
+		
+		relation = { who = RUS value = 200 }
+		RUS = { diplomatic_influence = { who = CNG value = 200 } }
+		
+		ai_chance = { factor = 0.2 }
+	}
 }
-country_event = {
-  id = 8003336
-  title = EVT_8003336_NAME
-  desc = EVT_8003336_DESC
-  picture = "nwo2_patrice_lumumba"
-  is_triggered_only = yes
- 
-  option = {
-    name = EVT_8003336_A
-	government = presidential_dictatorship  
-country_event = 800050
-	any_pop = { consciousness = 1 }
-  }
-}
-country_event = {
-  id = 8003337
-  title = EVT_8003337_NAME
-  desc = EVT_8003337_DESC
-  picture = "nwo2_congo_crisis"
-  fire_only_once = yes
 
-  trigger = {
-    tag = CNG
-	year = 1961 NOT = { year = 1962 }
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8003337_A
-	any_pop = { consciousness = 1 }
-  }
-}
+#Death of UNSG Dag Hammerskjoeld
 country_event = {
   id = 8003338
-  title = EVT_8003338_NAME
-  desc = EVT_8003338_DESC
+  title = "Death of UNSG Dag Hammarskjold"
+  desc = EVTDESC8003338
   picture = "nwo2_dag_hammarskjoeld"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-	exists = CNG
-    	ai = no
-	war = yes
-	CNG = { war = yes }
-	year = 1961 NOT = { year = 1970 }
-  }
+	trigger = {
+		tag = CNG
+		CNG = { war_with = UCS }
+		year = 1961 
+		NOT = { year = 1970 }
+		
+		has_global_flag = blocsenabled
+		has_global_flag = lumuba_has_been_executed
+		has_global_flag = congo_crisis
+	}
 
-  mean_time_to_happen = { months = 3 }
+	mean_time_to_happen = { months = 9 }
 
-  option = {
-    name = EVT_8003338_A
-	any_pop = { consciousness = 1 }
-  }
+	option = {
+		name = "A tragedy!"
+		prestige = -50
+		any_pop = { 
+			consciousness = 2 
+			dominant_issue = {
+				value = pacifism
+				factor = 0.025
+			}
+		}
+		
+		#Notify the world
+		UNO = { country_event = 80033381 }
+	}
 }
+
+#Death of UNSG - UNO
+country_event = {
+  id = 80033381
+  title = "Death of Secretary General Dag Hammarskjold"
+  desc = EVTDESC8003338
+  picture = "nwo2_dag_hammarskjoeld"
+  
+	is_triggered_only = yes
+  
+	major = yes
+
+	option = {
+		name = "Rest in Peace"
+		
+		USA = { relation = { who = RUS value = -50 } }
+		
+		any_country = { 
+			any_pop = { 
+				consciousness = 2 
+				dominant_issue = {
+					value = pacifism
+					factor = 0.01
+				}
+			}
+		}
+	}
+}
+
+#The 1964 Referendum
 country_event = {
   id = 8003339
-  title = EVT_8003339_NAME
-  desc = EVT_8003339_DESC
-  picture = "nwo2_congo_crisis"
-  fire_only_once = yes
+  title = "The Democratic Republic of Congo"
+  desc = EVTDESC8003339
+  picture = "nwo2_congo_1964_referendum"
+  
+	fire_only_once = yes
 
-  trigger = {
+	trigger = {
     	tag = CNG
-	war = yes
-	year = 1964 
-	government = democracy1
-	NOT = { year = 1967 }
-  }
+		year = 1964 
+		NOT = { year = 1971 }
+		
+		government = democracy1
+		is_vassal = no
+		
+		has_global_flag = congo_crisis
+	}
 
-  mean_time_to_happen = { months = 6 }
+	mean_time_to_happen = { months = 6 }
 
-  option = {
-    name = EVT_8003339_A
+	option = {
+		name = "Embrace a more federalist government"
 
-	government = democracy
+		government = democracy
 
-	# war with with South Kasi
-  }
+		#Set CNG's government type
+		clr_country_flag = presidential_system_republic
+		clr_country_flag = semi_presidential_system_republic
+		clr_country_flag = parliamentary_system_republic
+			
+		set_country_flag = presidential_system_republic
+			
+		political_reform = proportional_representation
+		political_reform = open_opinion
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Stay on the course to prosperity?"
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
+		
+		#Communism increases
+		any_pop = {
+			ideology = {
+				factor = 0.05
+				value = communist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist_social
+			}
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
 }
-country_event = {
-  id = 8003340
-  title = EVT_8003340_NAME
-  desc = EVT_8003340_DESC
-  picture = "nwo2_congo_crisis"
-  fire_only_once = yes
 
-  trigger = {
-	exists = UCS
-    tag = UCS
-	war = no
-	year = 1963 NOT = { year = 1975 }
-	exists = KAT
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8003340_A
-	war = { target = KAT attacker_goal = { casus_belli = civil_war } defender_goal = { casus_belli = status_quo } }
-  }
-}
+#Stanleyville wins the Congo War
 country_event = {
   id = 8003341
-  title = EVT_8003341_NAME
+  title = "Congo-Stanleyville is Victorious"
   desc = EVT_8003341_DESC
   picture = "nwo2_congo_crisis"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-	NOT = { exists = CNG }
+	trigger = {
     	tag = UCS
-	year = 1963 NOT = { year = 1990 }
-	war = no
-	owns = 1987
-  }
+		year = 1963
+		NOT = { year = 1990 }
+		
+		war = no
+		NOT = { exists = CNG }
+		owns = 1987
+	}
 
-  mean_time_to_happen = { months = 6 }
+	mean_time_to_happen = { months = 6 }
 
-  option = {
-    name = EVT_8003341_A
-	capital = 1982 # Leopoldville
-	change_tag = CNG
-	ruling_party_ideology = socialist
-	prestige = 100
-  }
+	option = {
+		name = EVT_8003341_A
+		change_tag = CNG
+		prestige = 100
+		capital = 1982 # Leopoldville
+	}
 }

@@ -1,71 +1,120 @@
-country_event = { # Malta Independence
+# Malta Independence
+country_event = {
   id = 8004200
   title = EVT_8004200_NAME
   desc = EVT_8004200_DESC
   picture = "malta_independence"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = ENG
-government = hms_government
-    year = 1964 
-	NOT = { year = 1990 }
-	NOT = { exists = MAL }
-	owns = 854 # Malta
-  }
+	trigger = {
+		tag = ENG
+		government = hms_government
+		year = 1964 
+		NOT = { year = 1990 }
+		
+		is_possible_vassal = MAL
+		
+		is_vassal = no
+	}
 
-  mean_time_to_happen = { months = 9 }
+	mean_time_to_happen = { months = 9 }
 
-  option = {
-    name = EVT_8004200_A
-	prestige = 10
-	release = MAL
-	MAL = { set_country_flag = full_independance }
-MAL = { government = hms_government1 country_event = 800054 }
-	ENG = { diplomatic_influence = { who = MAL value = 200 } }
-	ai_chance = { factor = 0.7 }
-  }
+	option = {
+		name = "Grant them independence"
+		prestige = 25
+		release = MAL
+		MAL = { set_country_flag = full_independance }
+		MAL = { government = hms_government1 country_event = 800054 }
+		ENG = { diplomatic_influence = { who = MAL value = 200 } }
+		ai_chance = { factor = 0.8 }
+	}
 
-  option = {
-    name = "Follow through with the plan to integrate Malta"
-	prestige = -25
-	any_pop = { limit = { culture = maltese } militancy = 5 consciousness = 6 }
-	add_accepted_culture = maltese
-	854 = { add_core = ENG }
-	ai_chance = { factor = 0.3 }
-  }
+	option = {
+		name = "Follow through with the plan to integrate Malta"
+		
+		any_pop = { 
+			limit = { culture = maltese } 
+			militancy = 5 
+			consciousness = 6 
+			ideology = { factor = 0.15 value = nationalist }
+		}
+		
+		#All British pops become nationalist and angry with Maltese joining the UK
+		any_pop = { 
+			limit = { 
+				OR = { 
+					is_primary_culture = yes
+					is_accepted_culture = yes
+				}
+			} 
+			militancy = 2
+			consciousness = 3
+			ideology = { factor = 0.05 value = nationalist }
+		}
+		
+		add_accepted_culture = maltese
+		854 = { add_core = ENG }
+		
+		#To turn Malta into a state
+		release = MAL
+		inherit = MAL
+		ai_chance = { factor = 0.2 }
+	}
   
 }
-country_event = { # Malta Republic
+
+#The Republic of Malta
+country_event = {
   id = 8004201
   title = EVT_8004201_NAME
   desc = EVT_8004201_DESC
-  picture = "malta_independence"
-  fire_only_once = yes
+  picture = "malta_republic"
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = MAL
-    year = 1974 
-	is_vassal = no
-OR = { government = hms_government government = hms_government1 }
-	NOT = { year = 1990 }
-	exists = MAL
-	OR = { ruling_party_ideology = socialist ruling_party_ideology = communist }
-  }
+	trigger = {
+		tag = MAL
+		year = 1974 
+		NOT = { year = 1990 }
+		is_vassal = no
+		OR = { government = hms_government government = hms_government1 }
+		OR = { ruling_party_ideology = socialist ruling_party_ideology = communist }
+	}
 
-  mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 2 }
 
-  option = {
-    name = EVT_8004201_A
-	government = democracy 
-	country_event = 800054
-	ai_chance = { factor = 0.8 }
-  }
+	option = {
+		name = "Embrace republicanism!"
+		prestige = 50
+		government = democracy
+		
+		random_country = {
+			limit = { 
+				tag = ENG 
+				government = hms_government 
+				is_vassal = no 
+			}
+			diplomatic_influence = { who = THIS value = -50 }
+			relation = { who = THIS value = -50 }
+		}
+		
+		ai_chance = { factor = 0.8 }
+	}
 
-  option = {
-    name = EVT_8004201_B
-	government = hms_government1
-	ai_chance = { factor = 0.2 }
-  }
+	option = {
+		name = "Stay loyal to the British Crown"
+		government = hms_government1
+		random_country = {
+			limit = { 
+				tag = ENG 
+				government = hms_government 
+				is_vassal = no 
+			}
+			diplomatic_influence = { who = THIS value = 50 }
+			relation = { who = THIS value = 100 }
+		}
+		ai_chance = { factor = 0.2 }
+	}
   
 }

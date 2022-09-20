@@ -1,0 +1,1443 @@
+####								####
+####	Leadup to the Civil War		####
+####								####
+
+#White Terror
+country_event = {
+	id = 8941014
+	title = "White Terror"
+	desc = EVTDESC8941014
+	picture = "white_terror_greece"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Turn a blind eye to these attacks."
+		badboy = 2
+		
+		set_country_flag = gre_white_terror
+		
+		UGR = {
+			country_event = 8941015
+		}
+
+		#Northern Greece
+		any_owned = {
+			limit = { 
+				OR = { 
+					region = TUR_832
+					region = TUR_823
+					region = TUR_805
+				} 
+			}
+			any_pop = {
+				limit = { strata = poor }
+				ideology = { factor = 0.05 value = conservative }
+				militancy = 4
+				consciousness = 4
+				reduce_pop = 0.99
+			}
+			any_pop = {
+				limit = { strata = middle }
+				ideology = { factor = 0.15 value = conservative }
+				militancy = -6
+				consciousness = -6
+			}
+		}
+
+		#Southern Greece
+		any_owned = {
+			limit = { 
+				OR = { 
+					region = EGY_843
+					region = GRE_837
+					region = GRE_826
+				} 
+			}
+			any_pop = {
+				limit = { culture = greek strata = middle }
+				ideology = { factor = 0.15 value = conservative }
+				militancy = -6
+				consciousness = -6
+			}
+		}
+		
+		ai_chance = {
+			factor = 0.9
+		}
+	}
+
+	option = {
+		name = "Punish the worst offenders and prevent further attacks."
+		prestige = -50
+		
+		add_country_modifier = { name = revolution_chaos duration = 1365 }
+		
+		#Northern Greece
+			#Moderate leftist support grows, nationalist support grows among the wealthy
+		any_owned = {
+			limit = { 
+				OR = { 
+					region = TUR_832
+					region = TUR_823
+					region = TUR_805
+				} 
+			}
+			any_pop = {
+				limit = { strata = middle }
+				ideology = { factor = 0.15 value = socialist }
+				militancy = -4
+				consciousness = -4
+			}
+			any_pop = {
+				limit = { culture = greek strata = rich }
+				ideology = { factor = 0.15 value = nationalist }
+				militancy = 6
+				consciousness = 6
+			}
+		}
+
+		#Southern Greece
+		any_owned = {
+			limit = { 
+				OR = { 
+					region = EGY_843
+					region = GRE_837
+					region = GRE_826
+				} 
+			}
+			any_pop = {
+				limit = { culture = greek strata = middle }
+				ideology = { factor = 0.15 value = socialist }
+				militancy = -6
+				consciousness = -6
+			}
+			any_pop = {
+				limit = { culture = greek strata = rich }
+				ideology = { factor = 0.15 value = nationalist }
+				militancy = 6
+				consciousness = 6
+			}
+		}
+		
+		ai_chance = {
+			factor = 0.1
+		}
+	}
+}
+
+
+#KKE Response to White Terror
+country_event = {
+	id = 8941015
+	title = "White Terror"
+	desc = EVTDESC8941015
+	picture = "white_terror_greece"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "We knew this was coming."
+
+		any_pop = {
+			limit = { strata = poor }
+			ideology = { factor = 0.15 value = communist }
+			militancy = -2
+			consciousness = 2
+		}
+	}
+	
+}
+
+#Election Campaigning
+country_event = {
+	id = 8941016
+	title = "Election Preparations in $CAPITAL$"
+	desc = EVTDESC8941016
+	picture = "gre_election_46"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = GRE
+		year = 1946
+		NOT = { year = 1950 }
+		
+		government = hms_government
+		
+		election = no
+	}
+
+	mean_time_to_happen = { months = 1 }
+	
+	immediate = { set_country_flag = gre_election_46_prep }
+
+	option = {
+		name = "Support the Monarchist cause."
+		
+		#Greek White Terror
+		country_event = 8941014
+		
+		any_pop = { 
+			limit = { culture = greek }
+			ideology = { factor = 0.15 value = conservative }
+		}
+		ai_chance = { 
+			factor = 0.7 
+		}
+	}
+
+	option = {
+		name = "Republicans up their propaganda efforts."
+		
+		any_pop = {
+			limit = { culture = greek }
+			ideology = { factor = 0.15 value = liberal }
+		}
+		ai_chance = { 
+			factor = 0.2 
+		}
+	}
+
+	option = {
+		name = "Allow the EAM to campaign in Greece."
+		
+		any_pop = { 
+			limit = { culture = greek NOT = { strata = rich } }
+			ideology = { factor = 0.15 value = socialist }
+		}
+		ai_chance = { 
+			factor = 0.1 
+		}
+	}
+	
+}
+
+
+#1946 Greek Elections
+country_event = {
+	id = 8941017
+	title = "$YEAR$ Greek Elections"
+	desc = EVTDESC8941017
+	picture = "gre_election_46"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = GRE
+		year = 1946
+		NOT = { year = 1950 }
+		
+		government = hms_government
+		
+		election = no
+		
+		has_country_flag = gre_election_46_prep
+	}
+
+	mean_time_to_happen = { months = 3 }
+
+	option = {
+		name = "Monarchist parties win a majority of seats."
+		
+		ruling_party_ideology = conservative
+		
+		any_pop = { 
+			limit = { culture = greek }
+			ideology = { factor = 0.2 value = conservative }
+		}
+		
+		ai_chance = { 
+			factor = 0.8
+		}
+	}
+
+	option = {
+		name = "Liberal Republicans win the elections."
+		
+		ruling_party_ideology = liberal
+		
+		add_country_modifier = { name = revolution_chaos duration = 1365 }
+		
+		any_pop = { 
+			limit = { culture = greek }
+			ideology = { factor = 0.2 value = liberal }
+		}
+		
+		ai_chance = { 
+			factor = 0.15
+		}
+	}
+
+	option = {
+		name = "A coalition of Left parties win."
+		
+		ruling_party_ideology = socialist
+		
+		add_country_modifier = { name = revolution_chaos duration = 1365 }
+		
+		any_pop = { 
+			limit = { culture = greek NOT = { strata = rich } }
+			ideology = { factor = 0.2 value = socialist }
+		}
+		
+		ai_chance = { 
+			factor = 0.05
+		}
+	}
+	
+}
+
+#1946 Greek Monarchy Referendum
+country_event = {
+	id = 1512342
+	title = "Referendum on the Greek Monarchy"
+	desc = EVTDESC1512342
+	picture = "greek_king_question"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = GRE
+		year = 1946
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		government = hms_government
+		is_vassal = no
+		
+		OR = { ruling_party_ideology = conservative ruling_party_ideology = liberal }
+	}
+
+	mean_time_to_happen = { months = 9 }
+
+	option = {
+		name = "The monarchy will remain in place."
+		prestige = 10
+		
+		any_pop = { 
+			limit = { culture = greek }
+			ideology = { factor = 0.2 value = conservative }
+		}
+		
+		random_country = { 
+			limit = { tag = ENG government = hms_government is_greater_power = yes } 
+			relation = { who = THIS value = 50 } 
+			diplomatic_influence = { who = THIS value = 50 } 
+		}
+		
+		random_country = { limit = { tag = UGR } country_event = 8941019 }
+		
+		ai_chance = { 
+			factor = 0.9 
+			modifier = {
+				factor = 0.2
+				NOT = { pop_majority_ideology = conservative }
+			}
+		}
+	}
+
+	option = {
+		name = "Republicans sway the results in favor of abolition."
+		
+		government = democracy1
+		
+		add_country_modifier = { name = revolution_chaos duration = 365 }
+		
+		any_pop = { 
+			limit = { culture = greek }
+			ideology = { factor = 0.2 value = liberal }
+		}
+		
+		random_country = { 
+			limit = { tag = ENG government = hms_government is_greater_power = yes } 
+			relation = { who = THIS value = -50 } 
+			diplomatic_influence = { who = THIS value = -50 } 
+		}
+		
+		random_country = { limit = { tag = UGR } country_event = 8941020 }
+		
+		ai_chance = { 
+			factor = 0.1
+			modifier = {
+				factor = 3
+				NOT = { pop_majority_ideology = conservative }
+			}
+		}
+	}
+
+}
+
+#Greece Keeps the Monarchy, response
+country_event = {
+	id = 8941019
+	title = "Monarchists Win Greek Referendum"
+	desc = EVTDESC8941019
+	picture = "gre_monarchist_propaganda"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Unsurprising."
+		any_pop = {
+			ideology = { factor = 0.02 value = communist }
+			militancy = -2
+			consciousness = 2
+		}
+	}
+	
+}
+
+#Greece Proclaims a Republic, response
+country_event = {
+	id = 8941020
+	title = "Republicans Win Greek Referendum"
+	desc = EVTDESC8941020
+	picture = "dse_celebration"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "A shocking result, everything considered."
+		any_pop = {
+			ideology = { factor = 0.02 value = socialist }
+			militancy = -2
+			consciousness = 2
+		}
+	}
+	
+}
+
+####						####
+####	Civil War Events	####
+####						####
+
+#Operation Torch
+country_event = {
+	id = 8941021
+	title = "Operation Torch"
+	desc = EVTDESC8941021
+	picture = "hellenic_army_2"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = GRE
+		year = 1949
+		has_global_flag = greek_civil_war
+		NOT = { has_country_flag = gre_civil_war_victory }
+		
+		is_vassal = no
+		war_with = UGR
+		
+		controls = 837
+		controls = 836
+		controls = 835
+	}
+
+	mean_time_to_happen = { months = 8 }
+
+	option = {
+		name = "The Tide Turns."
+		prestige = 50
+		
+		any_pop = {
+			militancy = -2
+			consciousness = -2
+		}
+		
+		money = 50000
+		
+		small_arms = 100
+		weaponry = 100
+		aeroplanes = 100
+		ammunition = 100
+		automobiles = 100
+	}
+	
+}
+
+
+#The UK Provides Support
+country_event = {
+	id = 8941022
+	title = "The British Send Aid!"
+	desc = EVTDESC8941022
+	picture = "gre_foreign_aid"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "We thank our British allies!"
+		money = 250000
+		
+		small_arms = 100
+		weaponry = 100
+		aeroplanes = 100
+		ammunition = 100
+		automobiles = 100
+		
+		add_country_modifier = { name = support_government duration = 530 } 
+	}
+	
+}
+
+#The US Provides Support
+country_event = {
+	id = 8941023
+	title = "The Americans Send Aid!"
+	desc = EVTDESC8941023
+	picture = "truman_doctrine"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "The Yanks have our backs!"
+		money = 250000
+		
+		small_arms = 100
+		weaponry = 100
+		aeroplanes = 100
+		ammunition = 100
+		automobiles = 100
+		
+		add_country_modifier = { name = support_government duration = 530 } 
+	}
+	
+}
+
+####						####
+####	Alternative Events	####
+####						####
+
+#### Kingdom ####
+
+#Matters of National Unity
+country_event = {
+	id = 8941028
+	title = "Matters of National Unity"
+	desc = EVTDESC8941028
+	picture = "varikiza"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = GRE
+		year = 1947
+		NOT = { year = 1990 }
+		
+		government = hms_government
+		is_vassal = no
+		war = no
+		
+		OR = { ruling_party_ideology = conservative ruling_party_ideology = liberal }
+		
+		UGR = {
+			exists = yes
+			
+			government = proletarian_dictatorship
+			is_vassal = no
+			war = no
+		}
+		
+		UGR = { has_country_flag = UGR_peaceful_outcome_flag }
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "Make a final offer for peace."
+		
+		prestige = 10
+		
+		UGR = { country_event = 8941029 }
+		
+		any_pop = {
+			limit = { culture = greek strata = middle }
+			ideology = { factor = 0.05 value = liberal }
+			militancy = -6
+			consciousness = -6
+		}
+		any_pop = {
+			limit = { culture = greek strata = rich }
+			ideology = { factor = 0.05 value = conservative }
+			militancy = 6
+			consciousness = 6
+		}
+		
+		ai_chance = { 
+			factor = 0.9
+			modifier = {
+				factor = 0.2
+				NOT = { pop_majority_ideology = conservative }
+			}
+		}
+	}
+
+	option = {
+		name = "Continue preparations for an inevitable civil war."
+		
+		add_country_modifier = { name = revolution_chaos duration = 365 }
+		
+		any_pop = {
+			limit = { culture = greek strata = middle }
+			ideology = { factor = 0.05 value = socialist }
+			militancy = -6
+			consciousness = -6
+		}
+		
+		any_pop = {
+			limit = { culture = greek strata = rich }
+			ideology = { factor = 0.05 value = conservative }
+			militancy = 6
+			consciousness = 6
+		}
+		
+		#UGR choice to declare war
+		UGR = { set_country_flag = kke_election_boycott }
+		
+		ai_chance = { 
+			factor = 0.1
+			modifier = {
+				factor = 3
+				pop_majority_ideology = conservative
+			}
+		}
+	}
+	
+}
+
+#A Proposal from Greece
+country_event = {
+	id = 8941029
+	title = "A United Greece?"
+	desc = EVTDESC8941029
+	picture = "varikiza"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "Decline the offer to reunite."
+		badboy = 2
+		GRE = { country_event = 8941030 }
+		ai_chance = { 
+			factor = 0.9
+		}
+	}
+
+	option = {
+		name = "We will work towards a united Greece. (Game Over)"
+		GRE = { country_event = 8941031 }
+		ai_chance = { 
+			factor = 0.1 
+		}
+	}
+	
+}
+
+
+#Peace declined
+country_event = {
+	id = 8941030
+	title = "The Communists Decline Our Proposal"
+	desc = EVTDESC8941030
+	picture = "dse_3"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "War is all but assured..."
+		
+		any_pop = {
+			limit = { culture = greek }
+			consciousness = 3
+		}
+		
+		#UGR choice to declare war
+		UGR = { set_country_flag = kke_election_boycott }
+	}
+	
+}
+
+
+#Peace accepted #Leads to Domper's Events
+country_event = {
+	id = 8941031
+	title = "The Communists Accept Our Proposal!"
+	desc = EVTDESC8941031
+	picture = "gre_gcw_victory"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "The Kingdom is united once again!"
+		
+		prestige = 25
+		
+		inherit = UGR
+		
+		all_core = {
+			limit = { is_core = UGR }
+			remove_core = UGR
+			add_core = GRE
+		}
+		
+		any_pop = {
+			limit = { culture = greek }
+			ideology = { factor = 0.02 value = conservative }
+			consciousness = 3
+		}
+	}
+	
+}
+
+
+#### Republic ####
+
+#Negotiated Peace, Republic
+country_event = {
+	id = 8941032
+	title = "A United Republic"
+	desc = EVTDESC8941032
+	picture = "varkiza"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = GRE
+		year = 1946
+		NOT = { year = 1990 }
+		
+		government = democracy1
+		is_vassal = no
+		war = no
+		
+		OR = { ruling_party_ideology = conservative ruling_party_ideology = liberal }
+		
+		UGR = {
+			exists = yes
+			
+			government = proletarian_dictatorship
+			is_vassal = no
+			war = no
+		}
+		
+		UGR = { has_country_flag = UGR_peaceful_outcome_flag }
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "Let us strive for a united Greece."
+		prestige = 10
+		
+		UGR = { country_event = 8941033 }
+		
+		any_pop = {
+			limit = { culture = greek strata = middle }
+			ideology = { factor = 0.05 value = liberal }
+			militancy = -6
+			consciousness = -6
+		}
+		
+		any_pop = {
+			limit = { culture = greek strata = rich }
+			ideology = { factor = 0.05 value = conservative }
+			militancy = 6
+			consciousness = 6
+		}
+		
+		ai_chance = { 
+			factor = 0.9 
+			modifier = {
+				factor = 0.2
+				NOT = { pop_majority_ideology = liberal }
+			}
+		}
+	}
+
+	option = {
+		name = "Continue preparations for an inevitable civil war."
+		
+		add_country_modifier = { name = revolution_chaos duration = 365 }
+		
+		any_pop = {
+			limit = { culture = greek strata = middle }
+			ideology = { factor = 0.05 value = socialist }
+			militancy = -6
+			consciousness = -6
+		}
+		
+		any_pop = {
+			limit = { culture = greek strata = rich }
+			ideology = { factor = 0.05 value = liberal }
+			militancy = 6
+			consciousness = 6
+		}
+		
+		ai_chance = { 
+			factor = 0.1 
+			modifier = {
+				factor = 3
+				NOT = { pop_majority_ideology = liberal }
+			}
+		}
+	}
+	
+}
+
+#Negotiated Peace, Republic Response
+country_event = {
+	id = 8941033
+	title = "A United Republic?"
+	desc = EVTDESC8941033
+	picture = "varkiza"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Decline the offer for reunification."
+		badboy = 2
+		
+		GRE = { country_event = 8941034 }
+		
+		ai_chance = { 
+			factor = 0.8
+			modifier = {
+				factor = 0.2
+				NOT = { has_country_flag = kke_election_boycott }
+			}
+		}
+	}
+
+	option = {
+		name = "We will work towards a united Greece. (Game Over)"
+		
+		GRE = { country_event = 8941035 }
+		
+		ai_chance = { 
+			factor = 0.2 
+			modifier = {
+				factor = 3
+				NOT = { has_country_flag = kke_election_boycott }
+			}
+		}
+	}
+	
+}
+
+#Peace declined
+country_event = {
+	id = 8941034
+	title = "The Communists Decline Our Proposal"
+	desc = EVTDESC8941034
+	picture = "dse_3"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "War is all but assured..."
+		any_pop = {
+			limit = { culture = greek }
+			consciousness = 3
+		}
+		
+		war = {
+			target = FROM
+			attacker_goal = { casus_belli = civil_war }
+			defender_goal = { casus_belli = civil_war }
+			call_ally = no
+		}
+	}
+	
+}
+
+#Peace accepted #Leads to Domper's Events
+country_event = {
+	id = 8941035
+	title = "The Communists Accept Our Proposal!"
+	desc = EVTDESC8941035
+	picture = "gre_gcw_victory"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "Greece will move forward as a united republic!"
+		prestige = 25
+		
+		inherit = UGR
+		
+		all_core = {
+			limit = { is_core = UGR }
+			remove_core = UGR
+			add_core = GRE
+		}
+		
+		any_pop = {
+			limit = { culture = greek }
+			ideology = { factor = 0.02 value = liberal }
+			consciousness = 3
+		}
+	}
+}
+
+
+#### Socialist ####
+
+#Socialists Abolish the Monarchy
+country_event = {
+	id = 8941036
+	title = "Referendum on the Monarchy"
+	desc = EVTDESC8941036
+	picture = "gre_election_46"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = GRE
+		year = 1946
+		NOT = { year = 1990 }
+		
+		government = hms_government
+		is_vassal = no
+		war = no
+		
+		election = no
+		
+		ruling_party_ideology = socialist
+		
+		UGR = {
+			exists = yes
+			
+			government = proletarian_dictatorship
+			is_vassal = no
+			war = no
+		}
+	}
+
+	mean_time_to_happen = { months = 9 }
+
+	option = {
+		name = "A landslide victory for Republicanism in Greece!"
+		government = democracy1
+		
+		UGR = { country_event = 8941020 }
+		
+		add_country_modifier = { name = revolution_chaos duration = 365 }
+		
+		any_pop = { 
+			limit = { strata = poor }
+			ideology = { factor = 0.2 value = socialist }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.1 value = socialist }
+		}
+	}
+	
+}
+
+
+#A Path to Peace - Triggered by Greece becoming socialist and overthrowing the monarchy
+country_event = {
+	id = 8941037
+	title = "A Path to Peace"
+	desc = EVTDESC8941037
+	picture = "eam_poster"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = GRE
+		year = 1946
+		NOT = { year = 1990 }
+		
+		government = democracy1
+		is_vassal = no
+		
+		
+		election = no
+		
+		OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social }
+		
+		UGR = {
+			exists = yes
+			
+			government = proletarian_dictatorship
+			is_vassal = no
+			
+		}
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "Make an offer for a united government to the KKE."
+		
+		prestige = 10
+		
+		UGR = { country_event = 8941038 }
+		
+		any_pop = {
+			limit = { culture = greek strata = middle }
+			ideology = { factor = 0.05 value = socialist }
+			militancy = -6
+			consciousness = -6
+		}
+		
+		any_pop = {
+			limit = { culture = greek strata = rich }
+			ideology = { factor = 0.05 value = conservative }
+			militancy = 6
+			consciousness = 6
+		}	
+		
+		ai_chance = { 
+			factor = 0.9 
+			modifier = {
+				factor = 0.2
+				NOT = { pop_majority_ideology = socialist }
+			}
+		}
+	}
+
+	option = {
+		name = "We will not compromise with the radicals."
+		badboy = 5
+		
+		add_country_modifier = { name = revolution_chaos duration = 365 }
+		
+		#War to annex UGR if GRE is currently not at war
+		random_country = {
+			limit = { 
+				tag = UGR 
+				NOT = { war_with = THIS } 
+			}
+			war = {
+				target = THIS
+				attacker_goal = { casus_belli = civil_war }
+				defender_goal = { casus_belli = civil_war }
+				call_ally = no
+			}
+		}
+		
+		any_pop = {
+			limit = { culture = greek strata = middle }
+			ideology = { factor = 0.05 value = socialist }
+			militancy = 6
+			consciousness = 6
+		}
+		
+		any_pop = {
+			limit = { culture = greek strata = rich }
+			ideology = { factor = 0.05 value = conservative }
+			militancy = -6
+			consciousness = -6
+		}
+		
+		ai_chance = { 
+			factor = 0.1 
+			modifier = {
+				factor = 3
+				NOT = { pop_majority_ideology = socialist }
+			}
+		}
+	}
+	
+}
+
+
+#A Path to Peace, Response
+country_event = {
+	id = 8941038
+	title = "A Path to Peace?"
+	desc = EVTDESC8941038
+	picture = "eam_poster"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "We wholly accept the offer to create a People's Democracy!"
+		badboy = -2
+		
+		end_war = FROM
+		
+		any_owned = {
+			limit = { is_core = GRE }
+			add_core = UGR
+			remove_core = GRE
+		}
+		
+		#Player is GRE
+		random_owned = {
+			limit = { 
+				owner = { GRE = { ai = no } } 
+			}
+			owner = { 
+				GRE = { 
+					government = socialist_democracy
+					country_event = 800054
+					ruling_party_ideology = socialist
+					
+					capital = 834
+					
+					set_country_flag = ugr_eam_coalition
+					
+					inherit = UGR 
+				} 
+			}
+		}
+		
+		#Player is UGR
+		random_owned = {
+			limit = { 
+				owner = { UGR = { ai = no } } 
+			}
+			owner = { 
+				UGR = { 
+					government = socialist_democracy
+					country_event = 800054
+					ruling_party_ideology = socialist
+					
+					capital = 834
+					
+					set_country_flag = ugr_eam_coalition
+					
+					inherit = GRE
+					
+					change_tag = GRE
+				}
+			}
+		}
+		
+		#Both are AI - GRE
+		random_owned = {
+			limit = { 
+				owner = { 
+					GRE = { ai = yes } 
+					UGR = { ai = yes } 
+				} 
+			}
+			owner = { 
+				GRE = { 
+					government = socialist_democracy
+					country_event = 800054
+					ruling_party_ideology = socialist
+					
+					capital = 834
+					
+					set_country_flag = ugr_eam_coalition
+					
+					inherit = UGR
+				}
+			}
+		}
+		
+	}
+
+}
+
+
+#Post Unification Elections #Leads to Domper's Events
+country_event = {
+	id = 8941039
+	title = "United Greek Elections"
+	desc = EVTDESC8941039
+	picture = "gre_election_46"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = GRE
+		year = 1946
+		NOT = { year = 1990 }
+		
+		government = socialist_democracy
+		
+		war = no
+		
+		election = no
+		
+		ruling_party_ideology = socialist
+		
+		has_country_flag = ugr_eam_coalition
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "The Left-Coalition retains its power."
+		
+		any_pop = {
+			limit = { culture = greek strata = poor }
+			ideology = { factor = 0.05 value = socialist }
+		}
+
+		ai_chance = {
+			factor = 0.7
+		}
+	}
+
+	option = {
+		name = "The KKE's Pro-Tito faction emerges with a majority."
+	   
+		set_country_flag = ugr_tito
+
+		ruling_party_ideology = communist_social
+		
+		random_country = { limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes } relation = { who = THIS value = -25 } diplomatic_influence = { who = THIS value = -50 } }
+		random_country = { limit = { tag = YUG government = proletarian_dictatorship is_vassal = no } relation = { who = THIS value = 25 } }
+
+		ai_chance = {
+			factor = 0.2
+		}
+	}
+
+	option = {
+		name = "Pro-Moscow elements of the KKE surge to power."
+	   
+		set_country_flag = ugr_moscow
+
+		ruling_party_ideology = communist
+	   
+		random_country = { limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes } relation = { who = THIS value = 25 } diplomatic_influence = { who = THIS value = 50 } }
+		random_country = { limit = { tag = YUG government = proletarian_dictatorship is_vassal = no } relation = { who = THIS value = -25 } }
+
+		ai_chance = {
+			factor = 0.1
+		}
+	}
+	
+}
+
+####							####
+####	Aftermath and Cleanup	####
+####							####
+
+#Victory in the Civil War #Leads to Domper's Events
+country_event = {
+	id = 8941042
+	title = "Victory in the Greek Civil War"
+	desc = EVTDESC8941042
+	picture = "gre_gcw_victory"
+
+  	fire_only_once = yes
+
+	trigger = {
+		tag = GRE
+		year = 1946
+		NOT = { year = 1990 }
+		
+		NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } }
+		
+		UGR = { exists = no }
+		
+		has_global_flag = greek_civil_war
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "Greece can finally recover from the shadow of war."
+		
+		set_country_flag = gre_civil_war_victory
+		
+		prestige = 100
+		
+		all_core = {
+			limit = { is_core = UGR }
+			remove_core = UGR
+			add_core = GRE
+		}
+		
+		any_pop = { 
+			militancy = -8
+			consciousness = -8
+		}
+	}
+	
+}
+
+#Post-War White Terror
+country_event = {
+	id = 8941043
+	title = "Second White Terror"
+	desc = EVTDESC8941043
+	picture = "white_terror_greece"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = GRE
+		year = 1946
+		NOT = { year = 1990 }
+		
+		OR = { government = democracy government = democracy1 government = hms_government }
+		
+		war = no
+		
+		OR = { ruling_party_ideology = conservative ruling_party_ideology = liberal }
+		
+		UGR = { exists = no }
+		
+		#Had first white terror
+		has_country_flag = gre_white_terror
+	}
+
+	mean_time_to_happen = { months = 3 }
+
+	option = {
+		name = "Fully support these campaigns!"
+		badboy = 5
+
+		#Northern Greece
+		any_owned = {
+			limit = { 
+				OR = { 
+					region = TUR_832
+					region = TUR_823
+					region = TUR_805
+				} 
+			}
+			any_pop = {
+				limit = { culture = greek strata = poor }
+				ideology = { factor = 0.10 value = conservative }
+				militancy = 4
+				consciousness = 4
+				reduce_pop = 0.98
+			}
+			any_pop = {
+				limit = { culture = greek strata = middle }
+				ideology = { factor = 0.15 value = conservative }
+				militancy = -6
+				consciousness = -6
+			}
+		}
+
+		#Southern Greece
+		any_owned = {
+			limit = { 
+				OR = { 
+					region = EGY_843
+					region = GRE_837
+					region = GRE_826
+				} 
+			}
+			any_pop = {
+				limit = { culture = greek strata = poor }
+				ideology = { factor = 0.10 value = conservative }
+				militancy = 4
+				consciousness = 4
+				reduce_pop = 0.99
+			}
+			any_pop = {
+				limit = { culture = greek strata = middle }
+				ideology = { factor = 0.15 value = conservative }
+				militancy = -6
+				consciousness = -6
+			}
+		}
+		
+		ai_chance = {
+			factor = 0.9
+		}
+	}
+
+	option = {
+		name = "Focus on reconstruction and reconciliation instead."
+		prestige = 10
+		add_country_modifier = { name = revolution_chaos duration = 1365 }
+		
+		#Northern Greece
+		any_owned = {
+			limit = { 
+				OR = { 
+					region = TUR_832
+					region = TUR_823
+					region = TUR_805
+				} 
+			}
+			any_pop = {
+				limit = { strata = middle }
+				ideology = { factor = 0.05 value = socialist }
+				militancy = -4
+				consciousness = -4
+			}
+			any_pop = {
+				limit = { culture = greek strata = rich }
+				ideology = { factor = 0.05 value = nationalist }
+				militancy = 6
+				consciousness = 6
+			}
+		}
+
+		#Southern Greece
+		any_owned = {
+			limit = { 
+				OR = { 
+					region = EGY_843
+					region = GRE_837
+					region = GRE_826
+				} 
+			}
+			any_pop = {
+				limit = { culture = greek strata = middle }
+				ideology = { factor = 0.05 value = socialist }
+				militancy = -6
+				consciousness = -6
+			}
+			any_pop = {
+				limit = { culture = greek strata = rich }
+				ideology = { factor = 0.05 value = nationalist }
+				militancy = 6
+				consciousness = 6
+			}
+		}
+		
+		ai_chance = {
+			factor = 0.1
+		}
+	}
+	
+}
+
+#Holdouts in Crete (lasted until 1974)
+country_event = {
+	id = 8941044
+	title = "Holdouts in Crete"
+	desc = EVTDESC8941044
+	picture = "dse_fighters"
+
+  	fire_only_once = yes
+
+	trigger = {
+		tag = GRE
+		year = 1946
+		NOT = { year = 1990 }
+		
+		OR = { government = democracy government = democracy1 government = hms_government }
+		
+		UGR = { exists = no }
+		
+		#Crete
+		owns = 847
+		
+		has_global_flag = greek_civil_war
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "We will continue to fight the communists it seems..."
+		847 = {
+			any_pop = {
+				limit = { culture = greek strata = poor }
+				ideology = { factor = 0.05 value = communist }
+				militancy = 6
+				consciousness = 6
+			}
+			change_controller = REB
+		}
+	}
+	
+}

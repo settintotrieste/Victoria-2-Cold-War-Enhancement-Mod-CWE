@@ -1,26 +1,97 @@
+#Start of the Lebanese Civil War
 country_event = {
   id = 8008751
   title = EVT_8008751_NAME
   desc = EVT_8008751_DESC
   picture = "nwo2_lebanese_civil_war"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-	tag = LEB
-	year = 1975 NOT = { year = 1990 }
-	government = democracy
-  }
+	trigger = {
+		tag = LEB
+		year = 1975 
+		NOT = { year = 1990 }
+		
+		government = democracy
+		is_vassal = no
+		war = no
 
-  mean_time_to_happen = { months = 11 }
+		PAL = { exists = no }
+		ISR = { exists = yes }
+	}
 
-  option = {
-	name = EVT_8008751_A
-	any_pop = { militancy = 5.0  consciousness = 4 }
-	any_owned = { limit = { is_capital  = no } change_controller = REB }
-	random_country = { limit = { NOT = { exists = PAL } tag = ISR } country_event = { id = 8008752 days = 60 } } # israel.txt
-  }
+	mean_time_to_happen = { months = 4 }
+
+	option = {
+		name = EVT_8008751_A
+
+		set_global_flag = lebanese_civil_war
+
+		add_country_modifier = { name = revolution_chaos duration = 7300 }
+
+		any_pop = { militancy = 5.0 consciousness = 4 }
+		any_owned = { limit = { is_capital = no } change_controller = REB }
+
+		relation = { who = ISR value = -200 }
+
+		random_country = { limit = { tag = ISR } country_event = 8008752 } # israel.txt
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Surrender to the rebels"
+		prestige_factor = -0.25
+		government = nationalist_dictatorship
+		ruling_party_ideology = traditionalist
+		ISR = { country_event = 80087511 }
+
+		add_accepted_culture = palestinian
+
+		#Break relations
+		sphere_owner = { 
+			diplomatic_influence = { who = THIS value = -200 } 
+		}
+		any_country = { 
+			limit = { NOT = { OR = { ruling_party_ideology = traditionalist ruling_party_ideology = socialist } } } 
+			leave_alliance = THIS
+		}
+
+		ai_chance = { factor = 0.1 }
+	}
+
 }
 
+#Israeli intervention - ahistorical
+country_event = {
+  id = 80087511
+  title = EVT_8008751_NAME
+  desc = EVT_8008751_DESC
+  picture = "nwo2_lebanese_civil_war"
+  is_triggered_only = yes
+
+  option = {
+	name = "Eliminate the Palestinian threat"
+	war = {
+		target = FROM
+	attacker_goal = { casus_belli = make_puppet }
+	defender_goal = { casus_belli = status_quo } 
+	}
+	ai_chance = { factor = 0.9 }
+  }
+
+  option = {
+	name = "Leave it be"
+	prestige_factor = -0.2
+	badboy = -5
+	relation = { who = FROM value = 100 }
+add_country_modifier = { name = revolution_chaos duration = 1825 }
+	ai_chance = { factor = 0.1 }
+  }
+
+}
+
+#Israeli intervention in the Lebanese Civil War - historical
 country_event = {
   id = 8008753
   title = EVT_8008753_NAME # Operation Litani
@@ -38,34 +109,265 @@ country_event = {
   }
 }
 
+#Syrian occupation of Lebanon
 country_event = {
-  id = 8008754
-  title = EVT_8008754_NAME # May 17 Agreement
-  desc = EVT_8008754_DESC # With the civil war over, Israel, assisted by the UN, has proposed a treaty. If we agree to end our state of war with Israel, one that has lasted since the Arab-Israeli war, they will withdraw from South Lebabon. This will pave the way to further diplomacy with Israel.
+  id = 80087533
+  title = "Siege of Tel al-Zaatar"
+  desc = EVTDESC80087533
   picture = "nwo2_lebanese_civil_war"
   fire_only_once = yes
 
   trigger = {
-	ISR = { owns = 915 }
-	915 = { is_core = THIS }
-	any_owned_province = { NOT = { controlled_by = REB } }
-	primary_culture = christian_arab
+	tag = SYR
+	is_vassal = no
+	war = no
+	year = 1976 NOT = { year = 1990 }
+	neighbour = LEB
+OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship }
+	LEB = { exists = yes war = no is_vassal = no }
+	LEB = { owns = 912 owns = 914 }
+	PAL = { exists = no }
+	ISR = { exists = yes }
+	has_global_flag = lebanese_civil_war
+  }
+
+  mean_time_to_happen = { months = 4 }
+
+  option = {
+	name = "Occupy Lebanon"
+	badboy = 5
+	relation = { who = LEB value = -100 }
+	LEB = { country_event = 80087534 }
+	ai_chance = { factor = 0.9 }
   }
 
   option = {
-	name = EVT_8008754_A #Sign the treaty
-	ISR = {
-		country_event = 8008755
-		relation = { who = THIS value = 50 }
+	name = "Don't get involved"
+	prestige_factor = -0.2
+	relation = { who = LEB value = 100 }
+	ai_chance = { factor = 0.1 }
+  }
+
+}
+
+#Syrian occupation of Lebanon - LEB reaction
+country_event = {
+  id = 80087534
+  title = "Syrian Occupation of Lebanon"
+  desc = EVTDESC80087533
+
+is_triggered_only = yes
+
+  option = {
+	name = "We can't do anything"
+	prestige = -50
+	912 = { secede_province = SYR }
+	914 = { secede_province = SYR }
+	ai_chance = { factor = 0.9 }
+  }
+
+  option = {
+	name = "Resist the occupation"
+	prestige = 100
+	SYR = {
+	war = {
+		target = LEB
+	attacker_goal = { casus_belli = support_insurgency }
+	defender_goal = { casus_belli = status_quo } 	
 	}
-	ai_chance = { factor = 0.95 }
+		}
+	ai_chance = { factor = 0.1 }
+  }
+
+}
+
+#May 17 Agreement, 1983
+country_event = {
+  id = 8008754
+  title = EVT_8008754_NAME
+  desc = EVTDESC8008754
+  picture = "nwo2_lebanese_civil_war"
+  fire_only_once = yes
+
+  trigger = {
+	tag = LEB
+	is_vassal = no
+	war = no
+	year = 1983 NOT = { year = 1990 }
+	ISR = { owns = 915 is_vassal = no war = no }
+	915 = { is_core = THIS }
+	OR = { truce_with = ISR war_with = ISR }
+	has_global_flag = lebanese_civil_war
+  }
+
+mean_time_to_happen = { months = 5 }
+
+  option = {
+	name = "We must end the Israeli occupation of Lebanon"
+	prestige = 50
+
+	set_global_flag = lebanese_civil_war_may_17
+
+	ai_chance = { factor = 0.9 }
   }
   
   option = {
-	name = EVT_8008754_B #That land is more trouble than it's worth
-	prestige = -30
+	name = "Concede South Lebanon for a permanent peace"
+	prestige = -50
+	relation = { who = ISR value = 100 }
 	915 = { remove_core = THIS }
-	any_pop = { consciousness = 1 }
-	ai_chance = { factor = 0.05 modifier = { factor = 0 relation = { who = ISR value = 0 } } }
+	any_pop = { consciousness = 5 }
+add_country_modifier = { name = economic_boom duration = 3650 }
+	ai_chance = { factor = 0.1 }
   }
+
+}
+
+#United Nations Security Council Resolution 1559, 2005
+country_event = {
+  id = 8008756
+  title = "UNSC Resolution 1559"
+  desc = EVTDESC8008756
+  picture = "unsc_1559"
+  fire_only_once = yes
+
+  trigger = {
+	tag = SYR
+	is_vassal = no
+	war = no
+	year = 2005
+	OR = { owns = 912 owns = 914 }
+	LEB = { exists = yes is_vassal = no war = no }
+	has_global_flag = lebanese_civil_war
+	has_global_flag = lebanese_civil_war_taif
+  }
+
+mean_time_to_happen = { months = 4 }
+
+  option = {
+	name = "Return the land begrudgingly"
+	prestige_factor = -0.1
+any_owned = { limit = { is_core = LEB } secede_province = LEB }
+	relation = { who = LEB value = 100 }
+	ai_chance = { factor = 0.9 }
+  }
+  
+  option = {
+	name = "Over my dead body!"
+badboy = 5
+relation = { who = LEB value = -50 }
+any_owned = { limit = { is_core = LEB } add_province_modifier = { name = occupied_province duration = -1 } }
+	ai_chance = { factor = 0.1 }
+  }
+
+}
+
+#Israeli Withdrawal from South Lebanon
+country_event = {
+  id = 8008757
+  title = "Withdrawal from South Lebanon?"
+  desc = EVTDESC8008757
+  picture = "isr_withdrawal_LEB"
+  fire_only_once = yes
+
+  trigger = {
+	tag = ISR
+	is_vassal = no
+	war = no
+	year = 2000
+	owns = 915
+	915 = { is_core = LEB }
+	LEB = { is_vassal = no war = no exists = yes }
+	has_global_flag = lebanese_civil_war
+	has_global_flag = lebanese_civil_war_may_17
+  }
+
+mean_time_to_happen = { months = 5 }
+
+  option = {
+	name = "Abandon South Lebanon"
+	prestige = -50
+	badboy = -5
+
+915 = { any_pop = { limit = { OR = { culture = jewish culture = haredim_jewish } } move_pop = 916 } }
+915 = { secede_province = LEB }
+
+915 = { add_province_modifier = { name = nationalist_agitation duration = 3650 } }
+
+relation = { who = LEB value = 50 }
+
+	ai_chance = { factor = 0.9 }
+  }
+  
+  option = {
+	name = "Continue the occupation!"
+
+relation = { who = LEB value = -100 }
+
+badboy = 10
+
+915 = { any_pop = { limit = { OR = { NOT = { culture = jewish } NOT = { culture = haredim_jewish } } } militancy = 10 consciousness = 8 } }
+
+915 = { add_province_modifier = { name = occupied_province duration = -1 } }
+
+	ai_chance = { factor = 0.1 }
+  }
+
+}
+
+#Taif Agreement, 1989 - SYR
+country_event = {
+  id = 8008758
+  title = "Taif Agreement"
+  desc = EVTDESC8008758
+  picture = "taif_agreement"
+  fire_only_once = yes
+
+  trigger = {
+	tag = SYR
+	is_vassal = no
+	war = no
+	year = 1989 NOT = { year = 1992 }
+	owns = 912 
+	owns = 914
+	LEB = { is_vassal = no war = no exists = yes }
+	has_global_flag = lebanese_civil_war
+  }
+
+mean_time_to_happen = { months = 10 }
+
+  option = {
+	name = "Sign the agreement"
+	prestige = 50
+	set_global_flag = lebanese_civil_war_taif
+	relation = { who = LEB value = 50 }
+	LEB = { country_event = 8008759 }
+	ai_chance = { factor = 0.9 }
+  }
+  
+  option = {
+	name = "No compromises!"
+	badboy = 5
+	relation = { who = LEB value = -50 }
+any_owned = { limit = { is_core = LEB } add_province_modifier = { name = occupied_province duration = -1 } }
+	ai_chance = { factor = 0.1 }
+  }
+
+}
+
+#Taif Agreement, 1989 - LEB notice
+country_event = {
+  id = 8008759
+  title = "Taif Agreement"
+  desc = EVTDESC8008758
+  picture = "taif_agreement"
+
+is_triggered_only = yes
+
+  option = {
+	name = "Rejoice!"
+	prestige = 50
+	remove_country_modifier = revolution_chaos
+  }
+
 }

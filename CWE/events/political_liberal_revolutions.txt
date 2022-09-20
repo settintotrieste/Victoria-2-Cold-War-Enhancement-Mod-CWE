@@ -2,39 +2,99 @@
 country_event = {
 	id = 10001
 	title = "EVTNAME10001"
-	desc = "EVTDESC10001"
-		picture = "Administration"
-
+	desc = "EVTDESC100011"
+	picture = "1986_phi_democracy"
+	
 	trigger = {
 		civilized = yes
-		has_country_flag = not_disabled
-		literacy = 0.3
-		vote_franschise = none_voting
+		NOT = { has_global_flag = blocsenabled }
+		has_global_flag = cold_warusa
+		
+		OR = {
+overlord = { has_country_flag = liberal_revolution_in_progress }
+			is_vassal = no
+			AND = {
+				culture_has_union_tag = yes
+				cultural_union = { exists = no }
+			}
+		}
+		OR = {
+			is_greater_power = yes
+			is_secondary_power = yes
+			literacy = 0.3
+		}
+
 		NOT = {
 			OR = {
-				has_country_flag = liberal_revolution_in_progress
-				has_country_flag = liberal_revolution_fired
-				has_country_flag = had_liberal_revolution
+			has_country_flag = liberal_revolution_in_progress
+			has_country_flag = liberal_revolution_fired
+			has_country_flag = had_liberal_revolution
 			}
-			#is_ideology_enabled = socialist now enabled by default
+			vote_franschise = promoted_voting
+			vote_franschise = universal_voting
+OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 government = socialist_democracy }
 		}
 		NOT = {
-			has_global_flag = liberal_revolutions_should_now_fire
+		has_global_flag = liberal_revolution_should_now_fire
 		}
 	}
 
 	mean_time_to_happen = {
-		months = 540
+		months = 96
 		modifier = {
-			factor = 0.1
-			has_global_flag = liberal_revolution_somewhere
+			factor = 0.5
+			any_neighbor_country = { has_country_flag = liberal_revolution_in_progress }
 		}
 		modifier = {
-			factor = 0.1
-			year = 1990
+			factor = 0.8
+			unemployment = 0.05
+		}
+		modifier = {
+			factor = 0.5
+			nationalvalue = nv_liberty
+		}
+		modifier = {
+			factor = 0.75
+			nationalvalue = nv_equality
+		}
+		modifier = {
+			factor = 1.25
+			nationalvalue = nv_order
+		}
+		modifier = {
+			factor = 1.5
+			NOT = { industrial_score = 100 }
+		}
+		modifier = {
+			factor = 1.5
+			immigration_policy = nobody_gets_out
+		}
+		modifier = {
+			factor = 1.5
+			publishing_rights = censored_publishing
+		}
+		modifier = {
+			factor = 1.25
+			publishing_rights = firewall_publishing
+		}
+		modifier = {
+			factor = 1.25
+			public_meetings = no_meetings
+		}
+		modifier = {
+			factor = 0.8
+			public_meetings = limited_meetings
+		}
+		modifier = {
+			factor = 0.6
+			public_meetings = free_meetings
+		}
+		modifier = {
+			factor = 0.8
+			publishing_rights = unregulated_publishing
 		}
 	}
-
+	
 	option = {
 		name = "EVTOPTA10001"
 		add_country_modifier = {
@@ -43,47 +103,53 @@ country_event = {
 		}
 		any_pop = {
 			limit = {
-				location = {
-					is_colonial = no
-				}
+				location = { is_colonial = no }
 			}
 			ideology = {
 				value = liberal
 				factor = 0.05
 			}
-			consciousness = 1
+			scaled_consciousness = {
+				ideology = liberal
+				factor = 4
+			}
 		}
 		set_global_flag = liberal_revolution_somewhere
 		set_country_flag = liberal_revolution_in_progress
 	}
 }
 
+
 #Springtime of Nations
 country_event = {
 	id = 10000
 	title = "EVTNAME10000"
-	desc = "EVTDESC10000"
+	desc = "EVTDESC100001"
 	picture = "Revolution"
-
+	
 	trigger = {
 		has_country_flag = liberal_revolution_in_progress
 		OR = {
-			liberal = 10
-			any_owned_province = {
-				has_province_modifier = liberal_agitation
+			liberal = 15
+			average_militancy = 2
+		}
+		NOT = {
+			OR = {
+				vote_franschise = promoted_voting
+				vote_franschise = universal_voting
 			}
 		}
 	}
 
 	mean_time_to_happen = {
-		months = 1000
+		months = 120
 		modifier = {
 			factor = 0.04
-			has_global_flag = liberal_revolutions_should_now_fire
+		has_global_flag = liberal_revolutions_should_now_fire
 		}
 		modifier = {
-			factor = 0.9
-			liberal = 5
+			factor = 1.5
+			NOT = { liberal = 10 }
 		}
 		modifier = {
 			factor = 0.9
@@ -102,12 +168,12 @@ country_event = {
 			average_consciousness = 5
 		}
 		modifier = {
-			factor = 0.9
-			average_militancy = 4
+			factor = 1.5
+			NOT = { average_militancy = 2 }
 		}
 		modifier = {
 			factor = 0.9
-			average_militancy = 5
+			average_militancy = 4
 		}
 		modifier = {
 			factor = 0.9
@@ -116,6 +182,18 @@ country_event = {
 		modifier = {
 			factor = 0.9
 			political_reform_want = 0.09
+		}
+		modifier = {
+			factor = 0.9
+			political_reform_want = 0.11
+		}
+		modifier = {
+			factor = 0.9
+			political_reform_want = 0.13
+		}
+		modifier = {
+			factor = 0.9
+			political_reform_want = 0.15
 		}
 		modifier = {
 			factor = 0.9
@@ -143,13 +221,7 @@ country_event = {
 		}
 		modifier = {
 			factor = 1.1
-			not = {
-				political_reform_want = 0.05
-			}
-		}
-		modifier = {
-			factor = 0.1
-			year = 1848
+			not = { political_reform_want = 0.05 }
 		}
 	}
 	option = {
@@ -162,7 +234,7 @@ country_event = {
 		any_owned = {
 			limit = {
 				OR = {
-					has_province_modifier = liberal_agitation
+				has_province_modifier = liberal_agitation
 					liberal = 20
 					average_consciousness = 4
 				}
@@ -170,10 +242,9 @@ country_event = {
 			any_pop = {
 				scaled_militancy = {
 					ideology = liberal
-					factor = 6
+					factor = 9
 				}
 			}
-			remove_province_modifier = liberal_agitation
 		}
 		set_global_flag = liberal_revolutions_should_now_fire
 		clr_country_flag = liberal_revolution_in_progress
@@ -181,95 +252,129 @@ country_event = {
 	}
 }
 
+
 #End of The Liberal Revolution
 country_event = {
 	title = "EVTNAME10050"
 	desc = "EVTDESC10050"
 	picture = "Riot"
-
+	
 	id = 10051
-
+	
 	trigger = {
-		has_country_flag = liberal_revolution_in_progress
 		OR = {
-			vote_franschise = universal_weighted_voting
+			has_country_flag = liberal_revolution_in_progress
+			has_country_flag = liberal_revolution_fired
+		}
+		OR = {
 			vote_franschise = promoted_voting
+			vote_franschise = universal_voting
 		}
-		NOT = {
-			num_of_revolts = 1
-		}
+		NOT = { num_of_revolts = 1 }
 	}
 
 	mean_time_to_happen = {
-		months = 2
+		months = 12
+		modifier = {
+			factor = 1.5
+			vote_franschise = promoted_voting
+		}
+		modifier = {
+			factor = 1.5
+			NOT = { public_meetings = free_meetings }
+		}
+		modifier = {
+			factor = 1.5
+NOT = { OR = { publishing_rights = responsible_publishing publishing_rights = unregulated_publishing } }
+		}
+		modifier = {
+			factor = 1.5
+			NOT = {
+				OR = {
+		political_parties = parties_restrict_non_democratic
+		political_parties = parties_promote_democratic
+		political_parties = parties_allowed
+				}
+			}
+		}
+		modifier = {
+			factor = 0.1
+			vote_franschise = universal_voting
+			public_meetings = free_meetings
+OR = { publishing_rights = responsible_publishing publishing_rights = unregulated_publishing }
+			OR = {
+		political_parties = parties_restrict_non_democratic
+		political_parties = parties_promote_democratic
+		political_parties = parties_allowed
+			}
+		}		
 	}
-
+	
 	option = {
 		name = "EVTOPTA10050"
 		any_owned = {
-			limit = {
-				is_colonial = no
-			}
+			limit = { is_colonial = no }
 			any_pop = {
 				scaled_militancy = {
 					ideology = liberal
-					factor = -4
+					factor = -6
 				}
 				scaled_consciousness = {
 					ideology = liberal
 					factor = -4
 				}
+				scaled_militancy = {
+					ideology = conservative
+					factor = -6
+				}
+				scaled_consciousness = {
+					ideology = conservative
+					factor = -4
+				}
 			}
+			remove_province_modifier = liberal_agitation
 		}
+		any_neighbor_country = {
+			limit = {
+				NOT = {
+				vote_franschise = promoted_voting
+				vote_franschise = universal_voting
+				}
+			}
+			scaled_militancy = {
+				ideology = liberal
+				factor = 3
+			}
+		}								
 		remove_country_modifier = global_liberal_agitation
+		remove_country_modifier = springtime_of_nations
 		clr_country_flag = liberal_revolution_in_progress
+		clr_country_flag = liberal_revolution_fired
 		set_country_flag = had_liberal_revolution
 		prestige = 5
 	}
 }
-
+	
+	
 #End of The Liberal Revolution Part 2
 country_event = {
 	title = "EVTNAME10050"
 	desc = "EVTDESC10050"
 	picture = "Riot"
-
+	
 	id = 10050
-
+	
 	trigger = {
-		NOT = {
-			has_country_flag = had_liberal_revolution
-		}
-		OR = {
-			AND = {
-				NOT = {
-					has_country_modifier = springtime_of_nations
-				}
-				has_country_flag = liberal_revolution_fired
-				NOT = {
-					num_of_revolts = 1
-				}
-			}
-			AND = {
-				OR = {
-					has_country_flag = liberal_revolution_in_progress
-					has_country_flag = liberal_revolution_fired
-				}
-				OR = {
-					vote_franschise = universal_weighted_voting
-					vote_franschise = promoted_voting
-				}
-				NOT = {
-					num_of_revolts = 1
-				}
-			}
-		}
+		has_country_flag = liberal_revolution_fired
+		NOT = { has_country_flag = had_liberal_revolution }
+		NOT = { has_country_modifier = springtime_of_nations }
+		NOT = { num_of_revolts = 1 }
 	}
 
 	mean_time_to_happen = {
-		months = 2
+		months = 1
 	}
-
+	
 	option = {
 		name = "EVTOPTA10050"
 		any_owned = {
@@ -279,19 +384,24 @@ country_event = {
 			any_pop = {
 				scaled_militancy = {
 					ideology = liberal
-					factor = -4
+					factor = -6
+				}
+				scaled_militancy = {
+					ideology = conservative
+					factor = -6
 				}
 				scaled_consciousness = {
-					ideology = liberal
+					ideology = conservative
 					factor = -4
 				}
 			}
+			remove_province_modifier = liberal_agitation
 		}
 		remove_country_modifier = global_liberal_agitation
 		clr_country_flag = liberal_revolution_fired
 		clr_country_flag = liberal_revolution_in_progress
 		set_country_flag = had_liberal_revolution
-		prestige = 15
+		prestige = 10
 	}
 }
 
@@ -722,26 +832,33 @@ province_event = {
 	}
 }
 
-#Banquet Campaign
-province_event = {
+# Banquet Campaign
+country_event = {
 	title = "EVTNAME10160"
-	desc = "EVTDESC10160"
+	desc = "EVTDESC10160_NEW"
 	id = 10160
-	
-	#is_triggered_only = yes
+	picture = "banquet"
 
 	trigger = {
-		owner = {
-			has_country_flag = liberal_revolution_in_progress
-			internet_infrastructure = quality_of_service
+		has_country_flag = liberal_revolution_in_progress
+		public_meetings = no_meetings
+		any_state = {
+			is_colonial = no
+			any_owned_province = {
+		NOT = { has_province_modifier = liberal_agitation }
+			}
 		}
-		is_colonial = no
 	}
+
 	mean_time_to_happen = {
-		months = 90
+		months = 20
 		modifier = {
 			factor = 0.9
 			average_consciousness = 4
+		}
+		modifier = {
+			factor = 1.5
+			NOT = { liberal = 5 }
 		}
 		modifier = {
 			factor = 0.9
@@ -749,36 +866,151 @@ province_event = {
 		}
 		modifier = {
 			factor = 0.9
+			liberal = 10
+		}
+		modifier = {
+			factor = 0.9
+			liberal = 15
+		}
+		modifier = {
+			factor = 0.9
 			average_militancy = 3
 		}
 		modifier = {
 			factor = 1.5
-			NOT = {
-				average_consciousness = 4
+			NOT = { average_consciousness = 4 }
+		}
+		modifier = {
+			factor = 0.75
+			OR = {
+				nationalvalue = nv_liberty
+				nationalvalue = nv_equality
 			}
 		}
 	}
+
 	option = {
-		name = "EVTOPTA10160"
-		state_scope = {
-			any_pop = {
-				militancy = 2
-				consciousness = 1
-				ideology = {
-					factor = 0.05
-					value = liberal
+		name = "EVTOPTA10160" # Crack down
+		upper_house = {
+			ideology = traditionalist
+			value = 0.1
+		}
+		any_pop = {
+			limit = { traditionalist = 20 }
+			consciousness = -3
+			dominant_issue = {
+				value = no_meetings
+				factor = 0.10
+			}
+		}
+		any_pop = {
+			limit = { pop_majority_ideology = conservative }
+			consciousness = -1
+			dominant_issue = {
+				value = no_meetings
+				factor = 0.05
+			}
+		}
+		random_state = {
+			limit = {
+				is_colonial = no
+				any_owned_province = {
+		NOT = { has_province_modifier = liberal_agitation }
 				}
 			}
-		}
-	}
-	option = {
-		name = "EVTOPTB10160"
-		state_scope = {
 			any_owned = {
 				add_province_modifier = {
 					name = liberal_agitation
 					duration = 730
 				}
+			}
+		}
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 1.2
+				ruling_party_ideology = traditionalist
+			}
+			modifier = {
+				factor = 1.2
+				government = absolute_monarchy
+			}
+			modifier = {
+				factor = 1.2
+				NOT = { average_militancy = 2 }
+			}
+			modifier = {
+				factor = 0.8
+				average_militancy = 2
+			}
+			modifier = {
+				factor = 0.8
+				average_militancy = 4
+			}
+			modifier = {
+				factor = 0.8
+				average_militancy = 6
+			}
+			modifier = {
+				factor = 0.5
+				num_of_revolts = 1
+			}
+		}
+	}
+
+	option = {
+		name = "EVTOPTB10160" # Leave them be
+		random_state = {
+			limit = {
+				is_colonial = no
+				any_owned_province = {
+					NOT = { has_province_modifier = liberal_agitation }
+				}
+			}
+			any_pop = {
+				ideology = {
+					value = liberal
+					factor = 0.05
+				}
+				scaled_consciousness = {
+					ideology = liberal
+					factor = 4
+				}
+				dominant_issue = {
+					value = free_meetings
+					factor = 0.1
+				}
+			}
+		}
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 1.2
+				ruling_party_ideology = liberal
+			}
+			modifier = {
+				factor = 1.2
+OR = { government = hms_government government = hms_government1 }
+			}
+			modifier = {
+				factor = 0.8
+				NOT = { average_militancy = 2 }
+			}
+			modifier = {
+				factor = 1.2
+				average_militancy = 2
+			}
+			modifier = {
+				factor = 1.2
+				average_militancy = 4
+			}
+			modifier = {
+				factor = 1.2
+				average_militancy = 6
+			}
+			modifier = {
+				factor = 1.5
+				num_of_revolts = 1
 			}
 		}
 	}
@@ -930,7 +1162,8 @@ country_event = {
 	id = 10230
 
 	trigger = {
-		civilized = no
+		#civilized = no
+		health_care = no_health_care
 		NOT = {
 			poor_strata_everyday_needs = 0.95
 		}
@@ -1581,7 +1814,7 @@ country_event = {
 		}
 		modifier = {
 			factor = 2
-			internet_infrastructure = quality_of_service
+			public_meetings = no_meetings
 		}
 		modifier = {
 			factor = 1.4

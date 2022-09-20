@@ -1,0 +1,283 @@
+#Won the War of Independence
+
+country_event = { # The Fate of Azerbaijan
+	id = 9001506
+	title = "The Fate of Azerbaijan"
+	desc = EVT_9001506_DESC
+	picture = "azerbaijan_communist_1945"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = SZB
+		year = 1946
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+
+		government = proletarian_dictatorship1
+		is_vassal = no
+		war = no
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
+	}
+	
+	mean_time_to_happen = { months = 1 }
+	
+	option = {
+		name = "Stay loyal to the USSR... in exchange for territory."
+		
+		RUS = { country_event = 9001508 }
+
+		ai_chance = { factor = 0.8 }
+	}
+	
+	option = {
+		name = "Apply for re-integration into the USSR."
+		
+		RUS = { country_event = 9001507 }
+
+		ai_chance = { factor = 0.15 }
+	}
+	
+	option = {
+		name = "Stay independent from the USSR."
+		
+		RUS = { country_event = 9001509 }
+		
+		ai_chance = { factor = 0.05 }
+	}
+	
+}
+
+country_event = { # Azerbaijan wants to join the USSR
+	id = 9001507
+	title = "Azerbaijan wants to join the USSR"
+	desc = EVT_9001507_DESC
+	picture = "azerbaijan_communist_1945"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "They shall be a satellite state instead."
+		
+		badboy = 2
+		
+		#USSR loses influence with Iran
+		relation = { who = PER value = -100 }
+		diplomatic_influence = { who = PER value = -100 }
+		
+		#SZB shall become a satellite state
+		create_vassal = SZB
+		any_owned = { limit = { is_core = SZB NOT = { is_core = RUS } } secede_province = SZB }
+		SZB = { 
+			government = proletarian_dictatorship1 
+			country_event = 800052 
+			ruling_party_ideology = communist 
+			create_alliance = THIS 
+		}
+		
+		#Western powers are not happy
+		any_country = {
+			limit = { 
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+				is_greater_power = yes 
+				war = no 
+			}
+			relation = { who = THIS value = -100 }
+		}
+		
+		ai_chance = { factor = 0.8 }
+	}
+	
+	option = {
+		name = "Let's accept the offer."
+		prestige = 50
+		
+		badboy = 5
+		
+		inherit = SZB
+		
+		#USSR loses influence with Iran
+		relation = { who = PER value = -200 }
+		diplomatic_influence = { who = PER value = -200 }
+		
+		#Western powers are not happy
+		any_country = {
+			limit = { 
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+				is_greater_power = yes 
+				war = no 
+			}
+			relation = { who = THIS value = -200 }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+	option = {
+		name = "We refuse."
+		
+		#USSR loses influence with Azerbaijan
+		relation = { who = SZB value = -100 }
+		diplomatic_influence = { who = SZB value = -100 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+country_event = { # Azerbaijan asks for a favor from the USSR
+	id = 9001508
+	title = "Azerbaijan asks for a favor from the USSR"
+	desc = EVT_9001508_DESC
+	picture = "azerbaijan_communist_1945"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Let's accept their offer."
+		prestige = -50
+		
+		#USSR loses influence with Iran
+		relation = { who = PER value = -100 }
+		diplomatic_influence = { who = PER value = -100 }
+		
+		#SZB shall become a satellite state
+		create_vassal = SZB
+		any_owned = { limit = { is_core = AZB } secede_province = SZB } # USSR returns all AZB cores to SZB, then turns SZB into AZB
+		SZB = { 
+			government = proletarian_dictatorship1 
+			country_event = 800052 
+			ruling_party_ideology = communist 
+			create_alliance = THIS 
+			change_tag = AZB
+		}
+		
+		#Western powers are not happy
+		any_country = {
+			limit = { 
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+				is_greater_power = yes 
+				war = no 
+			}
+			relation = { who = THIS value = -100 }
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "We will integrate them instead."
+		
+		#War of conquest
+		war = {
+			target = SZB
+			attacker_goal = { casus_belli = conquest }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = no
+		}
+		
+		#USSR loses influence with Iran
+		relation = { who = PER value = -200 }
+		diplomatic_influence = { who = PER value = -200 }
+		
+		#Western powers are not happy
+		any_country = {
+			limit = { 
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+				is_greater_power = yes 
+				war = no 
+			}
+			relation = { who = THIS value = -200 }
+		}
+		
+		ai_chance = { factor = 0.05 }
+	}
+	
+	option = {
+		name = "We refuse."
+		prestige = 50
+		
+		#USSR loses influence with Azerbaijan
+		relation = { who = AZB value = -100 }
+		diplomatic_influence = { who = AZB value = -100 }
+		
+		ai_chance = { factor = 0.05 }
+	}
+	
+}
+
+country_event = { # Azerbaijan wants to remain independent from the USSR
+	id = 9001509
+	title = "Azerbaijan seeks independence from the USSR"
+	desc = EVT_9001509_DESC
+	picture = "azerbaijan_communist_1945"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Install a puppet regime."
+		prestige_factor = -0.025
+		
+		#USSR loses influence with Iran
+		relation = { who = PER value = -200 }
+		diplomatic_influence = { who = PER value = -200 }
+		
+		#War of control
+		war = {
+			target = SZB
+			attacker_goal = { casus_belli = make_puppet }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = no
+		}
+		
+		#Western powers are not happy
+		any_country = {
+			limit = { 
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+				is_greater_power = yes 
+				war = no 
+			}
+			relation = { who = THIS value = -100 }
+		}
+		
+		ai_chance = { factor = 0.6 }
+	}
+	
+	option = {
+		name = "We shall conquer them."
+		
+		#USSR loses influence with Iran
+		relation = { who = PER value = -200 }
+		diplomatic_influence = { who = PER value = -200 }
+		
+		#War of conquest
+		war = {
+			target = SZB
+			attacker_goal = { casus_belli = conquest }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = no
+		}
+		
+		#Western powers are not happy
+		any_country = {
+			limit = { 
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+				is_greater_power = yes 
+				war = no 
+			}
+			relation = { who = THIS value = -200 }
+		}
+		
+		ai_chance = { factor = 0.35 }
+	}
+	
+	option = {
+		name = "Okay, no problem!"
+		prestige_factor = -0.05
+		badboy = -5
+		ai_chance = { factor = 0.05 }
+	}
+	
+}

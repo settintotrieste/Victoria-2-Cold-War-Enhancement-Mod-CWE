@@ -1,0 +1,216 @@
+#Officer Led Coup - Permit coups to fire
+country_event = {
+  id = 100100
+  title = "Stirrings of a $COUNTRY_ADJ$ Coup d'etat"
+  desc = EVTDESC152009872
+  picture = "alberto_fujimori_coup"
+
+	trigger = {
+
+		#Special gov types do not have independent militaries
+		NOT = { government = sar_government }
+		NOT = { government = colonial_government }
+		NOT = { government = mandate_government }
+
+		#Country has a military
+		total_amount_of_divisions = 1
+		is_disarmed = no
+		
+		#Country is not at war
+		war = no
+
+		#Event has not already fired recently
+		NOT = { has_country_modifier = military_strife }
+
+		#Political situation is poor
+		OR = { 
+			has_country_modifier = coup_risk 
+			
+			#Power vacuum
+			has_country_modifier = power_vacuum
+
+			#Officers are angry
+			any_owned_province = {
+				is_core = THIS
+				any_pop = { 
+					type = officers 
+					militancy = 8 
+				} 
+			}
+			
+			#There is a need for law and order
+			has_country_modifier = mass_riots
+			
+			#Country is broke
+			has_country_modifier = in_bankrupcy
+			
+			#There is a civil war ongoing
+			has_country_flag = civil_war_in_country
+		}
+		
+		#Low military loyalty
+		OR = { 
+			has_country_modifier = coup_risk
+			
+			has_country_modifier = military_loyalty_low
+			AND = { has_country_modifier = military_loyalty_medium has_recently_lost_war = yes }
+		}
+	}
+
+	mean_time_to_happen = { 
+		months = 3 
+		modifier = { factor = 0.5 has_country_flag = civil_war_in_country }
+	}
+
+	option = {
+		name = EVT152009872OPTA
+		add_country_modifier = { name = military_strife duration = 1825 }
+		
+		add_country_modifier = { name = coup_risk duration = 1825 }
+		
+		#Military becomes agitated
+		any_pop = { 
+			limit = { 
+				OR = { is_primary_culture = yes is_accepted_culture = yes } 
+				OR = { type = officers type = soldiers } 
+			}
+			ideology = {
+				value = nationalist
+				factor = 0.25
+			}
+			dominant_issue = {
+				value = jingoism
+				factor = 0.25
+			}
+			militancy = 6
+			consciousness = -5
+		}
+  	}
+
+}
+
+#Coup is in event 1412009
+
+#Army Defection - Initate
+country_event = {
+  id = 100102
+  title = "Factionalism in the $COUNTRY_ADJ$ Army"
+  desc = EVTDESC100102
+  picture = "1989_phi_coup"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "We must kill the traitors!"
+
+		prestige_factor = -0.05
+
+		#Release rebel tag
+		any_country = { 
+			limit = {
+				exists = no
+				OR = { tag = R01 tag = R02 tag = R03 tag = R04 tag = R05 tag = R06 tag = R07 tag = R08 tag = R09 tag = R10 }
+			} 
+			country_event = 1400072 
+		}
+	}
+
+}
+
+#Army Defection - rebel tag
+country_event = {
+  id = 100103
+  title = "$COUNTRY_ADJ$ Warlords!"
+  desc = "A rogue general has declared himself independent of the $FROMCOUNTRY_ADJ$ government and has committed to toppling it."
+  picture = "civil_war"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "We will win!"
+
+		primary_culture = FROM
+
+		country_event = 100104
+
+		FROM = {
+			any_owned = { limit = { is_capital = no is_core = FROM average_militancy = 7 } secede_province = THIS }
+		}			
+
+		add_country_modifier = { name = rebel_nation duration = -1 }
+
+		FROM = {
+			war = {
+				target = THIS
+				attacker_goal = { casus_belli = civil_war }
+				defender_goal = { casus_belli = civil_war }
+			}
+		}
+
+	}
+
+}
+
+#Army Defection - Initate
+country_event = {
+  id = 100104
+  title = "Rebel Government"
+  desc = EVTDESC100102
+  picture = "1989_phi_coup"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "We must kill the traitors!"
+
+		#Socialist Dictatorship
+		random_owned = { 
+			limit = { 
+				owner = { pop_majority_ideology = socialist }
+			}
+			owner = {
+				government = presidential_dictatorship
+				ruling_party_ideology = socialist
+				country_event = 800050
+			}
+		}
+
+		#Conservative Dictatorship
+		random_owned = { 
+			limit = { 
+				owner = { OR = { pop_majority_ideology = traditionalist pop_majority_ideology = conservative pop_majority_ideology = big_tent pop_majority_ideology = liberal pop_majority_ideology = progressive } }
+			}
+			owner = {
+				government = presidential_dictatorship
+				ruling_party_ideology = conservative
+				country_event = 800050
+			}
+		}
+
+		#Nationalist Dictatorship
+		random_owned = { 
+			limit = { 
+				owner = { OR = { pop_majority_ideology = nationalist pop_majority_ideology = populist } }
+			}
+			owner = {
+				government = populist_dictatorship
+				ruling_party_ideology = nationalist
+				country_event = 800050
+			}
+		}
+
+		#Communist Dictatorship
+		random_owned = { 
+			limit = { 
+				owner = { OR = { pop_majority_ideology = communist pop_majority_ideology = communist_social } }
+			}
+			owner = {
+				government = proletarian_dictatorship
+				ruling_party_ideology = communist
+				country_event = 800052
+			}
+		}
+	
+	}
+
+}

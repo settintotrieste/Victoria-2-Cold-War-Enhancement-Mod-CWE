@@ -1,379 +1,618 @@
-country_event = {
-  id = 8011006
-  title = EVT_8011006_NAME
-  desc = EVT_8011006_DESC
-  picture = "nwo2_independence_of_pakistan"
-  fire_only_once = yes
-
-  trigger = {
-    tag = PAK
-	exists = PAK
-	NOT = { year = 1984 }
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8011006_A
-	prestige = 100
-  }
-}
+#The Leadership of Ali Jinnah
 country_event = {
   id = 8011007
-  title = EVT_8011007_NAME
-  desc = EVT_8011007_DESC
+  title = "The Objectives Resolution"
+  desc = EVTDESC8011007
   picture = "nwo2_mohammed_ali_jinnah"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = PAK
-    year = 1948
-	NOT = { year = 1984 }
-	exists = PAK
-  }
+	trigger = {
+		tag = PAK
+		year = 1949
+		NOT = { year = 1990 }
+		
+		OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+		is_vassal = no
+		war = no
+	}
 
-  mean_time_to_happen = { months = 10 }
+	mean_time_to_happen = { months = 10 }
 
-  option = {
-    name = EVT_8011007_A
-	any_pop = { consciousness = -3 }
-  }
+	option = {
+		name = "We shall be an Islamic state!"
+		ruling_party_ideology = conservative
+		
+		political_reform = minorities_oppression
+		
+		#Boost conservative support
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			ideology = {
+				factor = 0.20
+				value = conservative
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "We shall be an secular state!"
+		
+		political_reform = minorities_equal_rights
+		
+		#Boost populist support
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			militancy = 6
+			ideology = {
+				factor = 0.20
+				value = populist
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
 }
+
+#The Coup of 1958
 country_event = {
-  id = 8011017
-  title = EVT_8011017_NAME
-  desc = EVT_8011017_DESC
-  picture = "nwo2_pakistani_coup_1977"
-  fire_only_once = yes
+  id = 8011008
+  title = "$YEAR$ Pakistani Coup d'etat"
+  desc = EVTDESC8011008
+  picture = "nwo2_pakistani_coup_1958"
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = PAK
-    year = 1976 NOT = { year = 1984 }
-	government = democracy
-	is_vassal = no
-  }
+	trigger = {
+		tag = PAK
+		year = 1958
+		NOT = { year = 1977 }
+		
+		government = democracy
+		
+		has_country_flag = parliamentary_system_republic
+		
+		war = no
+		is_vassal = no
+	}
 
-  mean_time_to_happen = { months = 2 }
+	mean_time_to_happen = { months = 10 }
 
-  option = {
-    name = EVT_8011017_A
-	any_pop = { militancy = 0.7 consciousness = 2 }
-	government = presidential_dictatorship 
-	country_event = 800050
-	ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = "We want a strong government!"
+		government = presidential_dictatorship 
+		country_event = 800050
+		ruling_party_ideology = conservative
+		
+		#Presidential Republic
+		clr_country_flag = presidential_system_republic
+		clr_country_flag = semi_presidential_system_republic
+		clr_country_flag = parliamentary_system_republic
+		
+		set_country_flag = presidential_system_republic
+		
+		#Economic Boom
+		add_country_modifier = { name = economic_boom duration = 1825 }
+		
+		ai_chance = { factor = 0.9 }
+	}
 
-option = {
-    name = "Stick to the status quo"
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Stick to the status quo"
+		
+		#Boost traditionalist support
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			militancy = 6
+			ideology = {
+				factor = 0.10
+				value = traditionalist
+			}
+		}
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.1 }
+	}
 
 }
+
+#1970 Pakistani general election
+country_event = {
+  id = 80110081
+  title = "$YEAR$ Pakistani General Election"
+  desc = EVTDESC80110081
+  picture = "nwo2_pakistani_coup_1970"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = PAK
+		year = 1970
+		NOT = { year = 1990 }
+		
+		government = presidential_dictatorship
+		
+		war = no
+		is_vassal = no
+		
+		#Owns Bangladesh
+		is_possible_vassal = BNG
+	}
+
+	mean_time_to_happen = { months = 11 }
+
+	option = {
+		name = "Annul the election results!"
+		badboy = 5
+		
+		#Boost nationalist support
+		any_pop = {
+			limit = { culture = bengali }
+			militancy = 10
+			ideology = {
+				factor = 0.10
+				value = nationalist
+			}
+		}
+		
+		set_country_flag = 1970_PAK_historical_option
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Accept the results"
+	
+		#Return of democracy
+		government = democracy
+		country_event = 800054
+		
+		#Awami League wins
+		ruling_party_ideology = progressive
+	
+		#Boost socialist support in west pakistan
+		any_pop = {
+			limit = { 
+				location = { 
+					is_core = PAK 
+					NOT = { is_core = BNG } 
+				} 
+			}
+			militancy = 7
+			ideology = {
+				factor = 0.10
+				value = socialist
+			}
+		}
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Zulfikar Ali Bhutto
+country_event = {
+  id = 8011009
+  title = "Zulfikar Ali Bhutto's Regime"
+  desc = EVTDESC8011009
+  picture = "nwo2_pakistani_coup_1971"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = PAK
+		year = 1971
+		NOT = { year = 1990 }
+		
+		has_country_flag = 1970_PAK_historical_option
+		
+		government = presidential_dictatorship 
+		ruling_party_ideology = conservative
+		
+		war = no
+		is_vassal = no
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "The PPP is now in charge!"
+		ruling_party_ideology = socialist
+		
+		#Parliamentary Republic
+		clr_country_flag = presidential_system_republic
+		clr_country_flag = semi_presidential_system_republic
+		clr_country_flag = parliamentary_system_republic
+		
+		set_country_flag = parliamentary_system_republic
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Stick to the status quo"
+		
+		#Boost socialist support
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			militancy = 6
+			ideology = {
+				factor = 0.15
+				value = socialist
+			}
+		}
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#The Coup of 1977
+country_event = {
+  id = 8011010
+  title = "$YEAR$ Pakistani Coup d'etat"
+  desc = EVTDESC8011010
+  picture = "nwo2_pakistani_coup_1977"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = PAK
+		year = 1977
+		NOT = { year = 1990 }
+		
+		government = presidential_dictatorship
+		ruling_party_ideology = socialist
+		
+		war = no
+		is_vassal = no
+		
+		#Lost the 1971 war
+		HND = { exists = yes is_vassal = no } 
+		BNG = { exists = yes is_vassal = no }
+	}
+
+	mean_time_to_happen = { months = 7 }
+
+	option = {
+		name = "Remove the leftists!"
+		country_event = 800050
+		ruling_party_ideology = traditionalist
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Stick to the status quo"
+		
+		#Boost traditionalist support
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			militancy = 6
+			ideology = {
+				factor = 0.10
+				value = traditionalist
+			}
+		}
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Benazir Bhutto
+country_event = {
+  id = 8011011
+  title = "Benazir Bhutto's Regime"
+  desc = EVTDESC8011011
+  picture = "nwo2_pakistani_coup_1988"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = PAK
+		year = 1988
+		NOT = { has_global_flag = 1992_start_date_flag }
+		
+		government = presidential_dictatorship
+		ruling_party_ideology = traditionalist
+		
+		war = no
+		is_vassal = no
+	}
+
+	mean_time_to_happen = { months = 7 }
+
+	option = {
+		name = "The PPP is back!"
+		ruling_party_ideology = socialist
+		
+		#Boost socialist support
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			militancy = 6
+			ideology = {
+				factor = 0.05
+				value = socialist
+			}
+		}
+		
+		#Back to a democracy
+		government = democracy
+		country_event = 800054
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Stick to the status quo"
+		
+		#Boost liberal support
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			militancy = 6
+			ideology = {
+				factor = 0.10
+				value = liberal
+			}
+		}
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#The 1990 election
+country_event = {
+  id = 8011012
+  title = "The $YEAR$ General Election"
+  desc = EVTDESC8011012
+  picture = "nwo2_pakistani_coup_1990"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = PAK
+		year = 1990
+		NOT = { has_global_flag = 1992_start_date_flag }
+		
+		government = democracy
+		ruling_party_ideology = socialist
+		
+		war = no
+		is_vassal = no
+	}
+
+	mean_time_to_happen = { months = 7 }
+
+	option = {
+		name = "Rig the election to remove the PPP"
+		ruling_party_ideology = conservative
+		
+		#Boost socialist support
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			militancy = 3
+			ideology = {
+				factor = 0.10
+				value = socialist
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Stick to the status quo"
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#The Assassination of Benazir Bhutto
+country_event = {
+  id = 8011013
+  title = "The Assassination of Benazir Bhutto"
+  desc = EVTDESC8011013
+  picture = "nwo2_PAK_2007_assassination"
+  
+	fire_only_once = yes
+
+	trigger = {
+		tag = PAK
+		year = 2007
+		NOT = { year = 2012 }
+		
+		government = democracy
+		ruling_party_ideology = conservative
+		
+		war = no
+		is_vassal = no
+	}
+
+	mean_time_to_happen = { months = 12 }
+
+	option = {
+		name = "A tragedy!"
+		prestige = -50
+		
+		#Boost socialist support
+		any_pop = {
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			militancy = 3
+			ideology = {
+				factor = 0.05
+				value = socialist
+			}
+		}
+		
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
+	}
+
+}
+
+#Capital of Pakistan
 country_event = {
   id = 8011021
-  title = EVT_8011021_NAME
+  title = "The Capital of Pakistan"
   desc = EVT_8011021_DESC
   picture = "nwo2_islamabad"
-  is_triggered_only = yes
+  
+	is_triggered_only = yes
 
-  option = {
-    name = EVT_8011021_A
-	capital = 1230 
-	1230 = { change_province_name = "Islamabad" }
-	prestige = 50
-	money = -500000 
-	ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = EVT_8011021_A
+		capital = 1230 
+		1230 = { change_province_name = "Islamabad" }
+		prestige = 50
+		money = -500000 
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8011021_B
-	capital = 1229 
-	1229 = { change_province_name = "Islamabad" }
-	prestige = 10
-	money = -100000
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = EVT_8011021_B
+		capital = 1229 
+		1229 = { change_province_name = "Islamabad" }
+		prestige = 10
+		money = -100000
+		ai_chance = { factor = 0.1 }
+	}
 
-  option = {
-    name = EVT_8011021_C
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = EVT_8011021_C
+		ai_chance = { factor = 0 }
+	}
 }
-country_event = {
-  id = 8011022
-  title = EVT_8011022_NAME
-  desc = EVT_8011022_DESC
-  picture = "nwo2_independence_of_pakistan"
-  fire_only_once = yes
 
-  trigger = {
-    tag = PAK
-    year = 1947 NOT = { year = 1984 }
-	exists = PAK
-  }
-
-  mean_time_to_happen = { months = 15 }
-
-  option = {
-    name = EVT_8011022_A
-	any_pop = { militancy = 0.5 consciousness = 1 }
-  }
-}
-country_event = {
-  id = 8011023
-  title = EVT_8011023_NAME
-  desc = EVT_8011023_DESC
-  picture = "nwo2_independence_of_pakistan"
-  fire_only_once = yes
-
-  trigger = {
-    tag = PAK
-    year = 1948 
-	NOT = { year = 1984 }
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8011023_A
-	add_tax_relative_income = 2
-  }
-}
+#US-Pakistan Mutual Defence Pact, 1954
 country_event = {
   id = 8011024
   title = EVT_8011024_NAME
   desc = EVT_8011024_DESC
-  picture = "nwo2_independence_of_pakistan"
+  picture = "1954_USA_PAK_Pact"
 
-  fire_only_once = yes
+	fire_only_once = yes
 
-  trigger = {
-    tag = PAK
-	government = democracy
-	is_vassal = no
-    year = 1954 
-	NOT = { year = 1984 }
-  }
+	trigger = {
+    	tag = PAK
+		year = 1954
+		NOT = { year = 1990 }
+		
+		ruling_party_ideology = conservative
+		is_vassal = no
+		war = no
+		
+		#Cold War
+		has_global_flag = blocsenabled
+		
+		#INC India
+		HND = { 
+			exists = yes 
+			is_vassal = no 
+			ruling_party_ideology = socialist 
+		}
+		
+		#Kashmir problem
+		is_possible_vassal = JAK
+		
+		#USA is ai
+		USA = { ai = yes }
+	}
 
-  mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 5 }
 
-  option = {
-    name = EVT_8011024_A
-	relation = { who = USA value = 100 } 
-	relation = { who = HND value = -50 } 
-	relation = { who = RUS value = -25 } 
-	relation = { who = EGY value = -25 } 
-	relation = { who = CHI value = -25 } 
-	any_pop = { militancy = 0.5 consciousness = 1 }
-	ai_chance = { factor = 0.9 }
-  }
-  option = {
-    name = "We prefer to be non aligned"
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "The Yankees are our friends!"
+		relation = { who = USA value = 200 }
+		create_alliance = USA
+		
+		#Join the US sphere
+		USA = { diplomatic_influence =  { who = PAK value = 200 } }
+		ai_chance = { factor = 0.9 }
+	}
+	option = {
+		name = "We prefer to be non aligned"
+		prestige = 50
+		ai_chance = { factor = 0.1 }
+	}
 }
-country_event = {
-  id = 8011025
-  title = EVT_8011025_NAME
-  desc = EVT_8011025_DESC
-  picture = "nwo2_independence_of_pakistan"
-  fire_only_once = yes
 
-  trigger = {
-    tag = PAK
-    year = 1957
-	government = democracy
-	is_vassal = no 
-	NOT = { year = 1960 }
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8011025_A
-	any_pop = { militancy = 0.5 }
-	relation = { who = HND value = -50 } 
-	relation = { who = EGY value = -15 } 
-	relation = { who = CHI value = -20 } 
-	relation = { who = RUS value = -15 } 
-	USA = { military_access = THIS } 
-	add_tax_relative_income = 5.0
-	ai_chance = { factor = 0.9 }
-  }
-  option = {
-    name = "We prefer to be non aligned"
-	ai_chance = { factor = 0.1 }
-  }
-}
-country_event = {
-  id = 8011026
-  title = EVT_8011026_NAME
-  desc = EVT_8011026_DESC
-  picture = "nwo2_independence_of_pakistan"
-  fire_only_once = yes
-
-  trigger = {
-    tag = PAK
-	government = democracy
-	is_vassal = no
-    year = 1960 
-	NOT = { year = 1961 }
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8011026_A
-	any_pop = { militancy = 0.5 consciousness = 1 }
-	USA = { end_military_access = THIS } 
-	relation = { who = RUS value = -75 } 
-	relation = { who = HND value = -25 } 
-	relation = { who = USA value = -50 }
-	ai_chance = { factor = 0.9 } 
-  }
-  option = {
-    name = "We prefer to be non aligned"
-	ai_chance = { factor = 0.1 }
-  }
-
-}
-country_event = {
-  id = 8011027
-  title = EVT_8011027_NAME
-  desc = EVT_8011027_DESC
-  picture = "nwo2_aksai_chin"
-  fire_only_once = yes
-
-  trigger = {
-    tag = PAK
-	government = democracy
-	is_vassal = no
-    year = 1963 
-	NOT = { year = 1964 }
-    exists = CHI
-	war = no
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8011027_A
-	3281 = { remove_core = PAK } # remove claim to Akasi Chin
-	relation = { who = CHI value = 125 } 
-	relation = { who = HND value = -40 } 
-	relation = { who = USA value = -40 } 
-	ai_chance = { factor = 0.6 }
-  }
-  option = {
-    name = "Aksai Chin will forever be Pakistani!"
-	prestige = 50
-	relation = { who = CHI value = -200 } 
-	ai_chance = { factor = 0.4 }
-  }
-
-}
-country_event = {
-  id = 8011028
-  title = EVT_8011028_NAME
-  desc = EVT_8011028_DESC
-  picture = "nwo2_bangladesh"
-  fire_only_once = yes
-
-  trigger = {
-    tag = PAK
-    year = 1948 NOT = { year = 1950 }
-    exists = PAK
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8011028_A
-	any_pop = { militancy = 0.5 consciousness = 2 }
-	ai_chance = { factor = 100 }
-  }
-
-  option = {
-    name = EVT_8011028_B
-	any_pop = { militancy = 1.0 consciousness = 0.5 }
-	country_event = 8011029 
-	ai_chance = { factor = 0 }
-  }
-}
-country_event = {
-  id = 8011029
-  title = EVT_8011029_NAME
-  desc = EVT_8011029_DESC
-  picture = "nwo2_bangladesh"
-  fire_only_once = yes
-
-  trigger = {
-    tag = PAK
-    year = 1952 NOT = { year = 1962 }
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8011029_A
-	any_pop = { militancy = 1.0 consciousness = 1 }
-  }
-}
-country_event = {
-  id = 8011030
-  title = EVT_8011030_NAME
-  desc = EVT_8011030_DESC
-  picture = "nwo2_bangladesh"
-  fire_only_once = yes
-
-  trigger = {
-    tag = PAK
-    year = 1954 
-	NOT = { year = 1962 }
-  }
-
-  mean_time_to_happen = { months = 2 }
-
-  option = {
-    name = EVT_8011030_A
-	any_pop = { limit = { culture = bengali } militancy = -0.5 consciousness = 2 }
-  }
-}
+### Bangladesh ###
+#The 6 point movement
 country_event = {
   id = 8011031
-  title = EVT_8011031_NAME
+  title = "The 6 Point Movement"
   desc = EVT_8011031_DESC
   picture = "6_point_movement"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = PAK
-	government = democracy
-	is_vassal = no
-    year = 1968
-	any_owned_province = { is_core = BNG }
-	NOT = { year = 1990 }
-	BNG = { exists = no }
-  }
+	trigger = {
+		tag = PAK
+		year = 1966
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+	
+		#Owns Bangladesh
+		is_possible_vassal = BNG
+	}
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 2 }
 
-  option = {
-    name = "Accept the proposal"
-	add_accepted_culture = bengali
-	any_pop = { limit = { type = soldiers } militancy = 8.0 }
-	release_vassal = BNG
-	BNG = { government = sar_government country_event = 800054 }
-sphere_owner = { diplomatic_influence = { who = BNG value = 200 } }
-	ai_chance = { factor = 0.2 }
-  }
-
-  option = {
-    name = "Reject any attempts to break-up Pakistan!"
-any_owned = { limit = { is_core = BNG } add_province_modifier = { name = nationalist_agitation duration = 3650 } }
-any_pop = { limit = { NOT = { culture = bengali } } 
-militancy = 1.0 consciousness = 2 }
-	ai_chance = { factor = 0.8 }
-  }
+	option = {
+		name = "Reject any attempts to break-up Pakistan!"
+		any_owned = { 
+			limit = { is_core = BNG } 
+			add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+			
+			#Boost nationalist support
+			any_pop = {
+				militancy = 10
+				ideology = {
+					factor = 0.25
+					value = nationalist
+				}
+			}
+			
+		}
+		ai_chance = { factor = 0.9 }
+	}
+  
+  	option = {
+		name = "Accept the proposal"
+		prestige_factor = -0.2
+		
+		any_pop = { limit = { type = soldiers } militancy = 8.0 }
+		
+		#Boost nationalist support
+		any_pop = {
+			limit = { OR = { type = officers type = aristocrats } }
+			militancy = 10
+			ideology = {
+				factor = 0.25
+				value = nationalist
+			}
+		}
+		
+		#Release BNG
+		release_vassal = BNG
+		
+		BNG = { 
+			government = sar_government 
+			country_event = 800054 
+			ruling_party_ideology = nationalist 
+		}
+		
+		sphere_owner = { diplomatic_influence = { who = BNG value = 200 } }
+		ai_chance = { factor = 0.1 }
+	}
+	
 }

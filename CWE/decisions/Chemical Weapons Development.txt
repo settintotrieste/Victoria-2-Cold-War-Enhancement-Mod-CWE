@@ -1,176 +1,201 @@
 political_decisions = {
 
-develop_chemical_bomb = {
+	develop_chemical_bomb = {
 		picture = "chemical_bomb"
 
-potential = {
-is_disarmed = no
-NOT = { has_country_modifier = develop_chemical_bomb }
-NOT = { has_country_modifier = chemical_nation }	
-is_vassal = no
-NOT = { has_country_modifier = chemical_weapons_convention }
-NOT = { has_country_flag = chemical_bomb_developed }
-part_of_sphere = no
-cold_war_doctrine = 1
-}
-alert = no
-allow = {
+		potential = {
 
-NOT = { AND = { tag = JAP government = hms_government } }
+			NOT = { OR = { tag = R01 tag = R02 tag = R03 tag = R04 tag = R05 tag = R06 tag = R07 tag = R08 tag = R09 tag = R10 } }
 
-election = no
-
-OR = { 
-ai = no
-AND = { 
-ai = yes
-NOT = { badboy = 0.56 }
-year = 1949
-money = 1000000
-NOT = { has_country_modifier = chemical_weapons_convention }
-NOT = { government = sar_government }
-NOT = { government = colonial_government }
-has_country_modifier = defcon4
-OR = { war_policy = jingoism government = proletarian_dictatorship government = proletarian_dictatorship1 }
-}
-
-AND = { ai = no money = 500000 }
-
-}
-
-war = no
+			NOT = { has_country_modifier = develop_chemical_bomb }
+			NOT = { has_country_modifier = chemical_nation }
+			
+			is_vassal = no
+			
+			NOT = { has_country_modifier = chemical_weapons_convention }
+			NOT = { has_country_flag = chemical_bomb_developed }
+			
+			cold_war_doctrine = 1
 		}
+		
+		alert = no
+		
+		allow = {
 
-effect = {
-add_country_modifier = { name = develop_chemical_bomb duration = 1460 }
-set_country_flag = chemical_bomb_developed
-prestige = 25
-badboy = 10
-money = -500000
+			OR = { is_secondary_power = yes is_greater_power = yes military_score = 400 }
+
+			NOT = { has_country_modifier = wmd_removed }
+
+			war = no
+			election = no
+			NOT = { is_disarmed = yes }
+			NOT = { part_of_sphere = yes }
+			
+			money = 600000
+
+			OR = { 
+				ai = no
+				AND = { 
+					ai = yes
+					NOT = { badboy = 0.2 }
+					year = 1949
+					money = 1000000
+					NOT = { has_country_modifier = chemical_weapons_convention }
+					has_country_modifier = defcon4
+					OR = { war_policy = jingoism government = proletarian_dictatorship government = proletarian_dictatorship1 }
+				}
+			}
+			
 		}
-	}
-
-choking_bomb = {
-picture = "choking_bomb"
-potential = {
-heavy_tanks = 1
-has_country_modifier = chemical_nation
-NOT = { has_country_modifier = choking_bomb }
-		}
-
-allow = {
-heavy_tanks = 1
-has_country_modifier = chemical_nation
-money = 500000
-NOT = { has_country_modifier = choking_bomb }
-
-	}
 
 		effect = {
-add_country_modifier = { name = choking_bomb duration = -1 }
+			add_country_modifier = { name = develop_chemical_bomb duration = 1460 }
+			set_country_flag = chemical_bomb_developed
+			prestige = 25
+			badboy = 10
+			money = -500000
+		}
+		
+		ai_will_do = { 
+			factor = 1
+			
+			#AI only builds chemical weapons when world tensions are high and past 1950
+			modifier = { 
+				factor = 0
+				OR = {
+					has_country_modifier = cold_war_medium
+					has_country_modifier = cold_war_low
+					
+					has_country_modifier = world_medium
+					has_country_modifier = world_low
+				}
+			}
+			
+			#Francoist Spain does not build chemical weapons until after 1980
+			modifier = {
+				factor = 0
+				AND = {
+					tag = SPA
+					NOT = { second_cold_war = 1 }
+					government = populist_dictatorship
+				}
+			}
 		}
 	}
 
-blister_bomb = {
-picture = "blister_bomb"
-potential = {
-has_country_modifier = chemical_nation
-NOT = { has_country_modifier = blister_bomb }
-
-main_battle_tank = 1
-
+	choking_bomb = {
+		picture = "choking_bomb"
+		potential = {
+			heavy_tanks = 1
+			has_country_modifier = chemical_nation
+			NOT = { has_country_flag = choking_bomb }
 		}
 
-allow = {
-has_country_modifier = chemical_nation
-NOT = { has_country_modifier = blister_bomb }
-main_battle_tank = 1
-money = 750000
-	}
-
-effect = {
-add_country_modifier = { name = blister_bomb duration = -1 }
-}
-	}
-
-nerve_bomb = {
-picture = "nerve_bomb"
-potential = {
-has_country_modifier = chemical_nation
-NOT = { has_country_modifier = nerve_bomb }
-missile_armed_tanks = 1
+		allow = {
+			money = 500000
 		}
 
-allow = {
-has_country_modifier = chemical_nation
-NOT = { has_country_modifier = nerve_bomb }
-missile_armed_tanks = 1
-money = 1000000
+		effect = {
+			set_country_flag = choking_bomb
+		}
 	}
 
-effect = {
-add_country_modifier = { name = nerve_bomb duration = -1 }		}
-}
-
-reset_chemical_bomb = {
-picture = "reset_chemical_bomb"
-alert = no
-potential = {
-has_country_modifier = chemical_nation
-OR = { has_country_modifier = nerve_bomb
-has_country_modifier = blister_bomb has_country_modifier = choking_bomb }
+	blister_bomb = {
+		picture = "blister_bomb"
+		potential = {
+			main_battle_tank = 1
+			has_country_modifier = chemical_nation
+			NOT = { has_country_flag = blister_bomb }
 		}
 
-allow = {
-election = no
-
-OR = { ai = no 
-
-AND = { ai = yes NOT = { money = 1000000 } has_country_modifier = nerve_bomb }
-
-AND = { ai = yes NOT = { money = 750000 } 
-has_country_modifier = blister_bomb }
-
-}
-	}
-
-effect = {
-remove_country_modifier = nerve_bomb
-remove_country_modifier = choking_bomb
-remove_country_modifier = blister_bomb
-}
-
-}
-
-disarm_chemical_bomb = {
-picture = "disarm_chemical_bomb"
-potential = {
-has_country_modifier = chemical_nation
-has_country_modifier = chemical_sanctions
+		allow = {
+			money = 750000
 		}
 
-allow = {
-war = no
-election = no
-OR = { ai = no AND = { ai = yes NOT = { government = proletarian_dictatorship } } }
+		effect = {
+			set_country_flag = blister_bomb
+		}
 	}
 
-effect = {
-add_country_modifier = { name = chemical_weapons_convention duration = 1825 }
-remove_country_modifier = nerve_bomb
-remove_country_modifier = blister_bomb
-remove_country_modifier = choking_bomb
-sphere_owner = { relation = { who = THIS value = 100 } }
-remove_country_modifier = chemical_sanctions
-remove_country_modifier = chemical_nation
-remove_country_modifier = develop_chemical_bomb 
-clr_country_flag = chemical_bomb_developed
-country_event = 1131439
-prestige = -25
-}
+	nerve_bomb = {
+		picture = "nerve_bomb"
+		potential = {
+			has_country_modifier = chemical_nation
+			NOT = { has_country_flag = nerve_bomb }
+			missile_armed_tanks = 1
+		}
 
-}
+		allow = {
+			money = 1000000
+		}
 
+		effect = {
+			set_country_flag = nerve_bomb
+		}
 
+	}
+
+	reset_chemical_bomb = {
+		picture = "reset_chemical_bomb"
+		potential = {
+			has_country_modifier = chemical_nation
+			OR = { has_country_flag = nerve_bomb has_country_flag = blister_bomb has_country_flag = choking_bomb }
+		}
+		
+		alert = no
+
+		allow = {
+			election = no
+			war = no
+
+			OR = { 
+				ai = no 
+
+				AND = { NOT = { money = 1000000 } has_country_flag = nerve_bomb }
+
+				AND = { NOT = { money = 750000 } has_country_flag = blister_bomb }
+			}
+			
+		}
+
+		effect = {
+			clr_country_flag = nerve_bomb
+			clr_country_flag = choking_bomb
+			clr_country_flag = blister_bomb
+		}
+
+	}
+
+	disarm_chemical_bomb = {
+		picture = "disarm_chemical_bomb"
+		potential = {
+			has_country_modifier = chemical_nation
+			has_country_modifier = chemical_sanctions
+		}
+
+		allow = {
+			war = no
+			election = no
+			OR = { 
+				ai = no 
+				NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } 
+			}
+		}
+
+		effect = {
+			add_country_modifier = { name = chemical_weapons_convention duration = -1 }
+			clr_country_flag = nerve_bomb
+			clr_country_flag = blister_bomb
+			clr_country_flag = choking_bomb
+			sphere_owner = { relation = { who = THIS value = 100 } }
+			remove_country_modifier = chemical_sanctions
+			remove_country_modifier = chemical_nation
+			remove_country_modifier = develop_chemical_bomb 
+			clr_country_flag = chemical_bomb_developed
+			country_event = 1131439
+			prestige = -25
+		}
+
+	}
 
 }

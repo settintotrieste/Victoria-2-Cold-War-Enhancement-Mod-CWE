@@ -1,115 +1,132 @@
+#Start Tajikistan Civil War
 country_event = {
-  id = 8008010
-  title = EVT_8008010_NAME
-  desc = EVT_8008010_DESC
-  picture = "tajikistan_civil_war"
-  fire_only_once = yes
+	id = 8008010
+	title = EVT_8008010_NAME
+	desc = EVT_8008010_DESC
+	picture = "tajikistan_civil_war"
+	
+	fire_only_once = yes
 
-  trigger = {
-    tag = TAJ
-	year = 1992
-	is_vassal = no
-	government = proletarian_dictatorship
-	AFG = { government = theocracy }
-	war = no
-	NOT = { exists = GOB }
-  }
+	trigger = {
+		tag = TAJ
+		year = 1992
+		NOT = { year = 2002 }
+		
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+		is_vassal = no
+		war = no
 
-  mean_time_to_happen = { months = 4  }
+		AFG = { government = theocracy }
+		
+		is_possible_vassal = GOB
+	}
 
-  option = {
-    name = EVT_8008010_A
-	any_owned = {
-		limit = {
-			region = CHI_1594
+	mean_time_to_happen = { months = 4  }
+  
+	option = {
+		name = "Fight the United Tajik Opposition!"
+		
+		set_country_flag = tajikistan_civil_war_fired
+		
+		badboy = 5
+		
+		government = presidential_dictatorship
+		country_event = 800050
+		ruling_party_ideology = socialist
+		
+		#Release Rebels
+		release = GOB
+		1207 = { change_controller = GOB }
+		GOB = {
+			capital = 1208
+			
+			government = democracy
+			country_event = 800054
+			ruling_party_ideology = big_tent
+			
+			any_pop = {
+				consciousness = -5
+				militancy = -5
+			}
 		}
-		secede_province = GOB
-	}
-	1207 = { change_controller = GOB }
-	GOB = {
-		capital = 1208
-		any_pop = {
-			consciousness = -5
-			militancy = -5
+		
+		#War with Rebels
+		war = { 
+			target = GOB 
+			attacker_goal = { casus_belli = civil_war } 
+			defender_goal =  { casus_belli = civil_war } 
 		}
-	}
-	soldiers = { militancy = 8 }
-	war = { target = GOB attacker_goal = { casus_belli = civil_war } defender_goal =  { casus_belli = civil_war } }
-	change_tag_no_core_switch = GOB
-  }
-  option = {
-    name = EVT_8008010_B
-	any_owned = {
-		limit = {
-			region = CHI_1594
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich } 
+			militancy = -4
 		}
-		secede_province = GOB
-	}
-	1207 = { change_controller = GOB }
-	GOB = {
-		capital = 1208
-		any_pop = {
-			consciousness = -5
-			militancy = -5
+		any_pop = { 
+			limit = { strata = middle } 
+			militancy = 8
 		}
+		any_pop = { 
+			limit = { strata = poor } 
+			militancy = 4
+		}
+		
+		ai_chance = { factor = 0.9 }
 	}
-	soldiers = { militancy = 8 }
-	war = { target = GOB attacker_goal = { casus_belli = civil_war } defender_goal =  { casus_belli = civil_war } }
-  }
+	
+	option = {
+		name = "Give in to the Opposition"
+		prestige_factor = -0.1
+		
+		government = democracy
+		country_event = 800054
+		ruling_party_ideology = big_tent
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich } 
+			militancy = 8
+		}
+		any_pop = { 
+			limit = { strata = middle } 
+			militancy = -8
+		}
+		any_pop = { 
+			limit = { strata = poor } 
+			militancy = -4
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+  
 }
 
+#GOB becomes TAJ
 country_event = {
-  id = 8008011
-  title = EVT_8008011_NAME
-  desc = EVT_8008011_DESC
-  picture = "tajikistan_civil_war"
-  fire_only_once = yes
-
-  mean_time_to_happen = { months = 4  }
+	id = 8008011
+	title = EVT_8008011_NAME
+	desc = EVT_8008011_DESC
+	picture = "tajikistan_civil_war"
+	
+	fire_only_once = yes
   
-  trigger = {
-    tag = GOB
-	NOT = { exists = TAJ }
-	owns = 1201 # Dushanbe
-  }
+	trigger = {
+		tag = GOB
+		NOT = { exists = TAJ }
+		
+		war = no
+	}
+	
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8008011_A
-	change_tag = TAJ
-	add_accepted_culture = pamir
-	capital = 1201 # Dushanbe
-	ai_chance = { factor = 1 }
-  }
-  
-}
-
-country_event = {
-  id = 8008012
-  title = EVT_8008012_NAME
-  desc = EVT_8008012_DESC
-  picture = "tajikistan_civil_war"
-  fire_only_once = yes
-
-  mean_time_to_happen = { months = 24  }
-  
-  trigger = {
-    tag = TAJ
-	war = no
-	NOT = { exists = GOB }
-	year = 1992
-  }
-
-  option = {
-    name = EVT_8008012_A
-	any_pop = { militancy = 1.0 } 
-	ai_chance = { factor = 0.1 }
-  }
-  
-  option = {
-    name = EVT_8008012_B
-	government = presidential_dictatorship 
-	country_event = 800050
-	ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = EVT_8008011_A
+		change_tag = TAJ
+		
+		add_accepted_culture = pamir
+		capital = 1201 # Dushanbe
+		
+		GOB = { all_core = { remove_core = GOB } }
+	}
   
 }

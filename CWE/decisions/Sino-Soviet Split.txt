@@ -1,81 +1,109 @@
 political_decisions = {
 
-align_ussr = {
-		picture = "align_ussr"
+	restoration_ussr_china = {
+		picture = "restoring_soviet_china"
 		potential = {
-			has_global_flag = unkingset
-		NOT = { has_country_modifier = un_king1 }
-		NOT = { has_country_modifier = un_king2 }
-		NOT = { has_country_modifier = king_timer }
-		NOT = { OR = { tag = RUS tag = CHI } }
-		is_vassal = no
-
-AND = { 
-has_global_flag = blocsenabled
-has_global_flag = sino_soviet_split
-CHI = { owns = 2221 ruling_party_ideology = communist }
-RUS = { ruling_party_ideology = communist } 
-OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
-}
-
+			tag = RUS
+			government = proletarian_dictatorship
+			
+			#CHI is communist
+			CHI = {
+				government = proletarian_dictatorship
+				is_vassal = no
+				war = no
+			}
+			
+			#Cold War
+			has_global_flag = blocsenabled
+			
+			#Has not completed the chain
+			CHI = {
+				NOT = {
+					has_country_flag = mao_nixon
+					has_global_flag = restoration_done
+				}
+			}
+			
+			#Sino-Soviet Split ongoing
+			has_global_flag = sino_soviet_split 
+			
+			#Fall of Khrushchev triggers a review of
+			has_global_flag = fall_of_nikita_khrushchev
+			
+			#Has not already fired decision
+			NOT = { has_global_flag = reach_out_to_PRC_flag }
 		}
-		
 		allow = {
-		OR = { ai = no relation = { who = RUS value = 0 } }
-OR = { ai = no NOT = { relation = { who = CHI value = 0 } } }
+			war = no
 		}
-		
 		effect = {
-	add_country_modifier = { name = king_timer duration = 730 }
-	relation = { who = RUS value = 50 }
-	relation = { who = CHI value = -50 }
-	RUS = { diplomatic_influence = { who = THIS value = 25 } }
-	CHI = { diplomatic_influence = { who = THIS value = -25 } }
+			prestige_factor = -0.01
+			badboy = -5
+			relation = { who = CHI value = 50 }
+			
+			any_pop = { consciousness = 5 }
+			
+			set_global_flag = reach_out_to_PRC_flag
 		}
-
 		ai_will_do = { 
 			factor = 1 
+			
+			#USSR doesn't reach out if it is no.1
+			modifier = { factor = 0 rank = 1 }
 		}
-	
 	}
-
-align_china = {
-		picture = "align_china"
+	
+	restoration_ussr_1985 = {
+		picture = "restoring_soviet_china"
 		potential = {
-			has_global_flag = unkingset
-		NOT = { has_country_modifier = un_king1 }
-		NOT = { has_country_modifier = un_king2 }
-		NOT = { has_country_modifier = king_timer }
-		NOT = { OR = { tag = RUS tag = CHI } }
-		is_vassal = no
-
-AND = { 
-has_global_flag = blocsenabled
-has_global_flag = sino_soviet_split
-CHI = { ruling_party_ideology = communist }
-RUS = { ruling_party_ideology = communist } 
-OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
-}
-
-		}
+			tag = RUS
+			year = 1985
+			
+			government = proletarian_dictatorship
+			is_vassal = no
 		
+			#CHI is communist
+			CHI = {
+				government = proletarian_dictatorship
+				is_vassal = no
+				war = no
+			}
+		
+			#Cold War
+			has_global_flag = blocsenabled
+			
+			#Sino-Soviet Split
+			has_global_flag = sino_soviet_split
+			
+			#Various scenarios
+			NOT = {
+				has_country_flag = full_split
+				has_country_flag = oleg_appointed
+				has_global_flag = restoration_win
+			}
+			OR = {
+				has_country_flag = vladimir_scherbitsky
+				has_country_flag = grigori_romanov
+				has_country_flag = andrei_gromyko
+				has_country_flag = egor_ligatchev
+			}
+		}
 		allow = {
-		OR = { ai = no relation = { who = CHI value = 0 } }
-OR = { ai = no NOT = { relation = { who = RUS value = 0 } } }
+			war = no
+			NOT = { has_country_modifier = restoration_fail }
 		}
-		
 		effect = {
-	add_country_modifier = { name = king_timer duration = 730 }
-	relation = { who = CHI value = 50 }
-	relation = { who = RUS value = -50 }
-	CHI = { diplomatic_influence = { who = THIS value = 25 } }
-	RUS = { diplomatic_influence = { who = THIS value = -25 } }
+			prestige_factor = -0.01
+			badboy = -5
+			relation = { who = CHI value = 25 }
+			
+			set_country_flag = oleg_appointed
 		}
-
 		ai_will_do = { 
 			factor = 1 
+			
+			#USSR doesn't reach out if it is no.1
+			modifier = { factor = 0 rank = 1 }
 		}
-	
 	}
-
 }

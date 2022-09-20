@@ -1,245 +1,156 @@
+#Salafism
 country_event = {
-	id = 101930
-	title = "EVT_101930_NAME"
-	desc = "EVT_101930_DESC"
-	picture = "arab_league"
-	
-	trigger = {
-		OR = {
-			primary_culture = sunni_arab
-			capital_scope = { pop_majority_culture = sunni_arab }
-		}
-		NOT = { has_country_flag = arab_league }
-	}
-
-	mean_time_to_happen = {
-		months = 6
-	}
-	
-	option = {
-		name = "EVT_101930_A"
-		set_country_flag = arab_league
-		prestige = 2
-	}
-}
-country_event = {
-	id = 101929
-	title = "EVT_101929_NAME"
-	desc = "EVT_101929_DESC"
-	picture = "independence_of_palestine"
-
-	is_triggered_only = yes
-	
-	option = {
-		name = "EVT_101929_A"
-		add_country_modifier = {
-			name = denied_independence
-			duration = 1750
-		}
-	}
-}
-
-# Arab Spring
-
-country_event = {
-	id = 101933
-	title = "EVT_101933_NAME"
-	desc = "EVT_101933_DESC"
-	picture = "arab_spring"
-
-	trigger = {
-		year = 2010
-		OR = { primary_culture = sunni_arab primary_culture = shia_arab }
-		NOT = { has_country_flag = arab_spring }
-		NOT = { government = democracy government = hms_government }
-	}
-	
-	mean_time_to_happen = {
-		months = 2
-	}
-	
-	option = {
-		name = "EVT_101933_OPTA"
-		ai_chance = { factor = 100 }
-		set_country_flag = arab_spring
-		any_pop = { 
-			limit = { religion = sunni }
-			consciousness = 1 
-			militancy = 5
-			dominant_issue = {
-				value = moralism
-				factor = 0.1
-			}
-		}
-		any_pop = { 
-			scaled_militancy = { factor = 0.5 ideology = progressive } 
-			scaled_militancy = { factor = 0.5 ideology = liberal } 
-		}
-	}
-}
-
-country_event = {
-	id = 101934
-	title = "wahhabism"
-	desc = "wahhabism_desc"
-	picture = "wahhabism"
-
-	is_triggered_only = yes # decision saudi_arabia.txt
-	
-	option = {
-		name = "wahhabism_opta"
-		any_pop = { 
-			limit = { religion = sunni }
-			dominant_issue = {
-				value = moralism
-				factor = 0.1
-			}
-			ideology = { factor = 0.1 value = traditionalist }
-		}
-		ai_chance = { factor = 0 }
-	}
-	option = {
-		name = "wahhabism_optb"
-		any_pop = { 
-			limit = { religion = sunni }
-			dominant_issue = {
-				value = moralism
-				factor = 0.1
-			}
-			scaled_militancy = { factor = 0.5 ideology = traditionalist } 
-		}
-		ai_chance = { factor = 100 }
-	}
-}
-
-province_event = {
 	id = 101935
-	title = EVT_101935_NAME
-	# EVT_101935_NAME;Salafi movement
+	title = "The Salafi Movement"
 	desc = EVT_101935_DESC
-	# EVT_101935_DESC;The Salafi movement or Salafist movement is an ultra-conservative orthodoxical movement within Sunni Islam that references the doctrine known as Salafism. The doctrine can be summed up as taking "a fundamentalist approach to Islam, emulating the Prophet Muhammad and his earliest followers—al-salaf al-salih, the 'pious forefathers'...They reject religious innovation, or bida, and support the implementation of sharia (Islamic law)."
 	picture = "salafi_movement"
 	
 	trigger = {
+		pop_majority_religion = sunni #Sunni state
 		year = 1972
-		pop_majority_religion = sunni 
-		owner = { NOT = { government = theocracy }  OR = { NOT = { government = democracy government = hms_government } tag = NGE } }
-		NOT = { is_core = ISI } # 1014840 in isis.txt completes the ISI core
-		NOT = { has_province_modifier = salafi_supressed }
-		NOT = { has_province_modifier = salafi_movement }
+		NOT = { literacy = 0.15 } #High education shifts focus elsewhere
+		
+		NOT = { government = theocracy }
+		war = no
+		election = no
+		
+		NOT = { ruling_party_ideology = traditionalist }
+		
+		any_core = { pop_majority_religion = sunni NOT = { has_province_modifier = salafi_movement } }
+		
+		#Has substantial traditionalist support
+		traditionalist = 10
 	}
 
 	mean_time_to_happen = {
-		months = 400
-		modifier = { OR = { is_core = IDO is_core = MSY is_core = BNG } factor = 5 }
+		months = 12
 	}
 	
 	option = {
-		name = EVT_101935_A
-		# EVT_101935_A;Avoid confrontation
+		name = "We must watch this"
+		
+		#Pops in our country become more traditionalist
 		any_pop = { 
 			limit = { religion = sunni }
-			dominant_issue = {
-				value = moralism
-				factor = 0.03
-			}
-			ideology = { factor = 0.04 value = traditionalist }
+			dominant_issue = { factor = 0.05 value = moralism }
+			ideology = { factor = 0.05 value = traditionalist }
+			scaled_militancy = { factor = 5 ideology = traditionalist }
 		}
-		add_province_modifier = { name = salafi_movement duration = -1 }
-		ai_chance = { factor = 0 }
-	}
-	option = {
-		name = EVT_101935_B
-		# EVT_101935_B;Suppress the movement
-		any_pop = { 
-			limit = { religion = sunni }
-			dominant_issue = {
-				value = moralism
-				factor = 0.03
+		
+		#Affect the rest of the world
+		any_country = {
+			limit = { exists = yes }
+			
+			#Pops  become more traditionalist
+			any_pop = { 
+				limit = { religion = sunni }
+				dominant_issue = { factor = 0.01 value = moralism }
+				ideology = { factor = 0.01 value = traditionalist }
+				scaled_militancy = { factor = 1 ideology = traditionalist }
 			}
-			scaled_militancy = { factor = 0.5 ideology = traditionalist } 
 		}
-		add_province_modifier = { name = salafi_supressed duration = -1 }
-		ai_chance = { factor = 100 }
-	}
-}
-
-province_event = {
-	id = 101936
-	title = EVT_101936_NAME
-	# EVT_101936_NAME;Islamism
-	desc = EVT_101936_DESC
-	# EVT_101936_DESC;Islamism, also known as Political Islam, is a set of ideologies holding that "Islam should guide social and political as well as personal life." Islamism is a controversial concept not just because it posits a political role for Islam but also because its most extreme advocates believe their Islamic views are superior to all others', and that the contrary idea that Islam is, or can be, apolitical is an error.[citation needed] Islamists can have varying interpretations on various Quranic suras and ayahs. Islamist views emphasize the implementation of Sharia (Islamic law); of pan-Islamic political unity; and of the selective removal of non-Muslim, particularly Western military, economic, political, social, or cultural influences in the Muslim world that they believe to be incompatible with Islam.
-	picture = "salafi_political_movement"
-	
-	trigger = {
-		year = 1972
-		pop_majority_religion = sunni 
-		owner = { NOT = { government = theocracy } OR = { NOT = { government = democracy government = hms_government } tag = NGE } }
-		NOT = { is_core = ISI } # 1014840 in isis.txt complets the ISI core
-		has_province_modifier = salafi_supressed
-	}
-
-	mean_time_to_happen = {
-		months = 400
-		modifier = { OR = { is_core = IDO is_core = MSY is_core = BNG } factor = 5 }
-	}
-	
-	option = {
-		name = EVT_101936_A
-		# EVT_101936_A;This is worrisome
-		any_pop = { 
-			limit = { religion = sunni }
-			dominant_issue = {
-				value = moralism
-				factor = 0.03
-			}
-			ideology = { factor = 0.04 value = traditionalist }
+		
+		#Add salafi_movement
+		all_core = {
+			limit = { pop_majority_religion = sunni }
+			add_province_modifier = { name = salafi_movement duration = 3650 }
 		}
-		add_province_modifier = { name = salafi_movement duration = -1 }
-		remove_province_modifier = salafi_supressed
 	}
 
 }
 
+#The Arab Spring
 country_event = {
-  id = 101937
-  title = "EVT_101937_NAME"
-  # EVT_101937_NAME;Arab Spring
-  desc = "EVT_101937_DESC"
-  # EVT_101937_DESC;The Arab Spring was a revolutionary wave of demonstrations and protests (both non-violent and violent), riots, and civil wars in the Arab world that began on 18 December 2010 in Tunisia with the Tunisian Revolution, and spread throughout the countries of the Arab League and its surroundings. While the wave of initial revolutions and protests faded by mid-2012, some started to refer to the succeeding and still ongoing large-scale discourse conflicts in the Middle East and North Africa as the Arab Winter.
-  picture = "egyptian_crisis"
-  fire_only_once = yes
+	id = 101937
+	title = "The Arab Spring"
+	desc = "EVT_101937_DESC"
+	picture = "egyptian_crisis"
 
-  trigger = {
-	primary_culture = sunni_arab
-    NOT = { tag = EGY tag = SYR tag = IRQ tag = SAA tag = QAT tag = UAE tag = OMA tag = ALG } # country events
-	has_country_flag = arab_spring
-	OR = { government = presidential_dictatorship government = absolute_monarchy }
-	
-  }
+	trigger = {
+		capital_scope = { continent = mena } #Arab nations
+		year = 2011
+		NOT = { year = 2020 }
+		NOT = { has_country_flag = arab_spring_country_flag }
 
-  mean_time_to_happen = { months = 6 }
-
-  option = {
-    name = "EVT_101937_A"
-	# EVT_101937_A;Crack down
-	any_pop = {
-		limit = {
-			OR = { culture = sunni_arab culture = shia_arab }
+		OR = { 
+			government = presidential_dictatorship 
+			government = absolute_monarchy 
+			government = proletarian_dictatorship 
+			government = populist_dictatorship 
+			government = nationalist_dictatorship 
 		}
-		consciousness = 2
-		militancy = 2
+		is_vassal = no
+		war = no
+		
+		OR = { average_militancy = 3 has_global_flag = arab_spring ai = yes }
 	}
-	ai_chance = { factor = 0.5 modifier = { factor = 10 tag = BHR } }
-  }
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+    	name = "There is no need for reform"
+		
+		#Demonstrations against the government - start civil war chain
+		country_event = 1412002
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = -10
+			consciousness = -10
+			ideology = { factor = 0.30 value = conservative }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = 10
+			consciousness = 10
+			ideology = { factor = 0.30 value = liberal }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = 5
+			consciousness = 5
+			ideology = { factor = 0.1 value = liberal }
+			ideology = { factor = 0.1 value = traditionalist }
+		}
+		
+		
+		
+		set_global_flag = arab_spring
+		set_country_flag = arab_spring_country_flag
+		ai_chance = { factor = 0.9 }
+	}
   
-  option = {
-    name = "EVT_101937_B"
-	# EVT_101937_B;Government reforms
-	random_country = { limit = { tag = THIS NOT = { government = absolute_monarchy } } government = democracy country_event = 800054 }
-	random_country = { limit = { tag = THIS government = absolute_monarchy } government = hms_government country_event = 800054 }
-	ai_chance = { factor = 0.5 }
-  }
+	option = {
+    	name = "Accept the people's request for reforms"
+		prestige_factor = -0.25
+		
+		#Liberalisation
+		country_event = 800054
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = 10
+			consciousness = 10
+			ideology = { factor = 0.25 value = nationalist }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = -10
+			consciousness = -10
+			ideology = { factor = 0.1 value = liberal }
+		}
+		any_pop = { 
+			limit = { strata = poor }
+			militancy = -5
+			consciousness = -5
+			ideology = { factor = 0.2 value = traditionalist }
+		}
+		
+		set_global_flag = arab_spring
+		set_country_flag = arab_spring_country_flag
+		ai_chance = { factor = 0.1 }
+	}
   
 }

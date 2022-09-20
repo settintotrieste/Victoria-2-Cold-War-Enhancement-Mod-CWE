@@ -1,0 +1,517 @@
+#UNSC Veto Option
+country_event = {
+	id = 1412013
+	title = "UN Peace Resolution: The $FROMCOUNTRY_ADJ$ Conflict"
+	desc = "$FROMCOUNTRY$ is currently facing an war with another country and has requested the United Nation's intervention to stop the war. As a Permanent Member of the UNSC, should we let the resolution pass?"
+	picture = "unsc_vote"
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "Support the Resolution!"
+
+		any_country = { 
+			limit = { NOT = { alliance_with = FROM } war_policy = pacifism }
+			relation = { who = THIS value = 10 } 
+		}
+
+		any_country = { 
+			limit = { alliance_with = FROM } 
+			relation = { who = THIS value = 50 } 
+		}
+
+		any_country = { 
+			limit = { war_with = FROM } 
+			relation = { who = THIS value = -50 } 
+		}
+
+		any_pop = {
+			dominant_issue = {
+				value = pacifism
+				factor = 0.01
+			}
+		}
+
+		relation = { who = FROM value = 50 }
+
+		ai_chance = { 
+			factor = 1 
+			modifier = { 
+				factor = 0 
+				NOT = { relation = { who = FROM value = 0 } }
+			}
+		}
+	}
+
+	option = {
+		name = "Abstain from voting!"
+
+		relation = { who = FROM value = -50 }
+
+		any_country = { 
+			limit = { 
+				NOT = { alliance_with = FROM } 
+				war_policy = pacifism 
+			}
+			relation = { who = THIS value = -10 } 
+		}
+
+		any_country = { 
+			limit = { alliance_with = FROM } 
+			relation = { who = THIS value = -50 } 
+		}
+
+		any_country = { 
+			limit = { war_with = FROM } 
+			relation = { who = THIS value = 50 } 
+		}
+
+		ai_chance = { 
+			factor = 1 
+			modifier = { 
+				factor = 0 
+				OR = { NOT = { relation = { who = FROM value = -150 } } relation = { who = FROM value = 0 } }
+			}
+		}
+	}
+
+	option = {
+		name = "Veto the Resolution!"
+
+		#UN initiator get UNSC gets vetoed
+		FROM = { add_country_modifier = { name = resolution_vetoed_unsc duration = 730 } }
+
+		#All other simultaneous resolutions are vetoed
+		any_country = { 
+			limit = { 
+				war_with = THIS 
+				has_country_modifier = called_allies_un 
+			} 
+			add_country_modifier = { name = resolution_vetoed_unsc duration = 730 } 
+		}
+		
+		#Inform FROM of Veto
+		FROM = { country_event = 2020102 }
+
+		#Relations
+		relation = { who = FROM value = -100 }
+
+		any_country = { 
+			limit = { NOT = { alliance_with = FROM } war_policy = pacifism }
+			relation = { who = THIS value = -20 } 
+		}
+
+		any_country = { 
+			limit = { alliance_with = FROM } 
+			relation = { who = THIS value = -100 } 
+		}
+
+		any_country = { 
+			limit = { war_with = FROM } 
+			relation = { who = THIS value = 100 } 
+		}
+
+		any_pop = {
+			dominant_issue = {
+				value = jingoism
+				factor = 0.01
+			}
+		}
+
+		ai_chance = { 
+			factor = 1 
+			modifier = { factor = 0 NOT = { relation = { who = FROM value = -150 } } }
+		}
+	}
+
+}
+
+#UN Peace Resolution Passes
+country_event = {
+	id = 1410098
+	title = "UN Peace Resolution Passes"
+	desc = "Our request to end the current conflict that we are involved in has been accepted by the United Nations Security Council. The UN will now demand all warring parties to reach an armistice or face international intervention."
+	picture = "unsc_vote"
+
+	trigger = {
+		war = yes
+		
+		#UNSC is in session
+		has_country_modifier = called_allies_un
+		
+		#No veto of the UNSC resolution
+		NOT = { has_country_modifier = resolution_vetoed_unsc }
+		
+		#Block further UN action for a while
+		NOT = { has_country_modifier = stop_un_spam }
+		
+		#Cold war going hot kills the UN
+		NOT = { has_country_modifier = cold_war_hot }
+	}
+	
+	mean_time_to_happen = { 
+		months = 3
+	}
+	
+	option = {
+		name = "May peace come soon!"
+		prestige = 30
+		
+		#Inform the world of pass
+		UNO = { country_event = 2020101 }
+		
+		#Send threat to warring nations
+		any_country = { 
+			limit = { 
+				is_vassal = no 
+				exists = yes 
+				NOT = { tag = REB } 
+				war_with = THIS 
+			} 
+			
+			#UN will demand each warring party to seek peace
+			set_country_flag = UN_demands_peace_flag
+			
+			country_event = 1410099 
+		}
+		
+		#Remove UNSC resolution modifier
+		remove_country_modifier = called_allies_un
+		remove_country_modifier = resolution_vetoed_unsc
+		
+		#UN armistice starter
+		set_country_flag = country_that_UN_demands_peace_flag
+		
+		add_country_modifier = { name = stop_un_spam duration = 730 }
+	}
+	
+}
+
+#UN Peace Resolution Passes (Warring Parties)
+country_event = {
+	id = 1410099
+	title = "UN Peace Resolution Passes"
+	desc = "$FROMCOUNTRY$'s request to end the current conflict that we are involved in has been accepted by the United Nations Security Council. The UN will now demand all warring parties to reach an armistice or face international intervention."
+	picture = "unsc_vote"
+
+	trigger = {
+		war = yes
+		is_vassal = no 
+		
+		#UN demands peace
+		has_country_flag = UN_demands_peace_flag
+	}
+	
+	mean_time_to_happen = { 
+		months = 0.1
+	}
+
+	option = {
+		name = "Withdraw to pre-war lines!"
+		
+		#End war with the initiator of the UN peace
+		any_country = {
+			limit = { 
+				has_country_flag = country_that_UN_demands_peace_flag 
+				war_with = THIS 
+				exists = yes
+				NOT = { tag = REB } 
+			}
+			end_war = THIS
+			
+			add_country_modifier = { name = un_armistice duration = 1825 } 
+			set_country_flag = un_armistice 
+		}
+		
+		prestige_factor = -0.10
+		badboy = -5
+		
+		add_country_modifier = { name = un_armistice duration = 1825 }
+		set_country_flag = un_armistice
+		
+		#Inform the world of armistice signed
+		UNO = { country_event = 2020103 }
+		clr_country_flag = UN_demands_peace_flag
+		
+		ai_chance = { 
+			factor = 0.5 
+			modifier = { factor = 0 war_policy = jingoism } 
+			modifier = { factor = 0 is_greater_power = yes } 
+		}
+	}
+
+	option = {
+		name = "Propose an armistice to each warring party!"
+		
+		#Send armistice offer to UN initiator at war with THIS
+		any_country = {
+			limit = { 
+				has_country_flag = country_that_UN_demands_peace_flag 
+				war_with = THIS 
+				exists = yes
+				NOT = { tag = REB } 
+			}
+			country_event = 1512251
+		}
+		
+		clr_country_flag = UN_demands_peace_flag
+
+		prestige_factor = -0.05
+		
+		ai_chance = { 
+			factor = 0.4 
+			modifier = { factor = 0 war_policy = pacifism } 
+		}
+	}
+
+	option = {
+		name = "Reject the UN led armistice!"
+		
+		badboy = 26
+		add_country_modifier = { name = unsanctionslevel1 duration = 730 }
+		
+		clr_country_flag = UN_demands_peace_flag
+		
+		ai_chance = { 
+			factor = 0.1 
+			modifier = { factor = 0 war_policy = pacifism } 
+		}
+	}
+
+}
+
+#UN Armistice - UN initiator
+country_event = {
+	id = 1512251
+	title = "$FROMCOUNTRY$ Proposes an Armistice"
+	desc = EVTDESC1512251
+	picture = "un_armistice_land"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Sign the UN backed armistice"
+		prestige_factor = -0.05
+		
+		#THIS
+		add_country_modifier = { name = un_armistice duration = 1825 } 
+		set_country_flag = un_armistice 
+		
+		#FROM
+		FROM = { 
+			add_country_modifier = { name = un_armistice duration = 1825 } 
+			set_country_flag = un_armistice 
+		}
+
+		#Transfer occupied lands to THIS
+		FROM = {
+			any_owned = { 
+				limit = { 
+				
+					#Not a transferred province
+					NOT = { has_province_modifier = occupied_province }
+				
+					#Stop border gore
+					any_neighbor_province = { 
+						OR = { 
+							owned_by = THIS 
+							owner = { vassal_of = THIS alliance_with = THIS in_sphere = THIS } 
+						} 
+					}
+					
+					#Don't touch the capital
+					is_capital = no 
+				
+					#Controlled by this
+					controlled_by = THIS 
+				} 
+				secede_province = THIS 
+				change_controller = FROM 
+				add_province_modifier = { name = occupied_province duration = -1 } 
+			} 
+		}
+		
+		#Transfer occupied lands to FROM
+		any_owned = { 
+			limit = { 
+			
+				#Not a transferred province
+				NOT = { has_province_modifier = occupied_province }
+				
+				#Stop border gore
+				any_neighbor_province = { 
+					OR = { 
+						owned_by = FROM
+						owner = { vassal_of = FROM alliance_with = FROM in_sphere = FROM } 
+					} 
+				}
+					
+				#Don't touch the capital
+				is_capital = no 
+				
+				#Controlled by enemy
+				controlled_by = FROM
+			} 
+			secede_province = FROM
+			change_controller = THIS
+			add_province_modifier = { name = occupied_province duration = -1 } 
+		}
+
+		#Apply occupied provinces modifiers
+
+		#any_owned = { 
+			#limit = { is_capital = no controlled_by = FROM } 
+			#add_province_modifier = { name = occupied_province duration = -1 } 
+			#change_controller = THIS 
+		#}
+
+		#FROM = { 
+			#any_owned = { 
+				#limit = { is_capital = no controlled_by = THIS } 
+				#add_province_modifier = { name = occupied_province duration = -1 } 
+				#change_controller = FROM 
+			#} 
+		#}
+
+		#End the war
+		end_war = FROM
+		
+		#Send the offer to other enemies
+		any_country = { 
+			limit = { 
+				exists = yes 
+				war_with = THIS 
+				NOT = { tag = REB } 
+				
+				#War with the country that initiated the UN peace
+				has_country_flag = UN_demands_peace_flag
+			}
+			country_event = 1512251
+		}
+		
+		#Inform the world of armistice signed
+		#UNO = { country_event = 2020103 }
+
+		ai_chance = { factor = 0.7 }
+
+	}
+
+	option = {
+		name = "Reject the armistice!"
+		
+		clr_country_flag = UN_demands_peace_flag
+		
+		badboy = 10
+		add_country_modifier = { name = unsanctionslevel1 duration = 730 }
+		ai_chance = { 
+			factor = 0.3 
+			modifier = { factor = 0 badboy = 0.6 } 
+		}
+	}
+
+}
+
+#UN Peace Treaty to remove occupied provinces modifier
+country_event = {
+	id = 1512252
+	title = "Replace the UN Armistice with a Peace Treaty?"
+	desc = EVTDESC1512252
+	picture = "treaty"
+
+	trigger = {
+		war = no
+		is_vassal = no
+
+		any_neighbor_country = { any_core = { owned_by = THIS has_province_modifier = occupied_province } }
+
+		NOT = { has_country_modifier = delay_occupied_territories }
+
+		any_owned_province = { has_province_modifier = occupied_province }
+		NOT = { has_country_modifier = un_armistice_stall }
+	}
+
+	mean_time_to_happen = { months = 60 }
+
+	option = {
+		name = "Propose the Peace Treaty"
+		prestige = 50
+		badboy = -5
+		any_country = { 
+			limit = { 
+				exists = yes 
+				NOT = { has_country_modifier = delay_occupied_territories } 
+				any_core = { owned_by = THIS has_province_modifier = occupied_province } 
+			} 
+			country_event = 1512253 
+		}
+		ai_chance = { 
+			factor = 0.2 
+			modifier = { factor = 0 war_policy = jingoism }
+			modifier = { factor = 0.5 war_policy = pro_military } 
+		}
+	}
+
+	option = {
+		name = "No compromise with our enemies"
+		badboy = 5
+		prestige = -50
+		add_country_modifier = { name = un_armistice_stall duration = 365 }
+		ai_chance = { 
+			factor = 0.8
+			modifier = { factor = 0 war_policy = pacifism } 
+			modifier = { factor = 0 badboy = 0.8 }
+		}
+	}
+
+}
+
+#UN Peace Treaty - Receiver
+country_event = {
+	id = 1512253
+	title = "Formal Peace Treaty with $FROMCOUNTRY$?"
+	desc = EVTDESC1512252
+	picture = "treaty"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Sign the Peace Treaty"
+		prestige = 50
+		badboy = -5
+
+		FROM = { any_owned = { limit = { is_core = THIS has_province_modifier = occupied_province } secede_province = THIS } }
+
+		any_owned = { limit = { is_core = FROM has_province_modifier = occupied_province } secede_province = FROM }
+
+		relation = { who = FROM value = 100 }
+
+		remove_country_modifier = un_armistice_stall
+		remove_country_modifier = un_armistice 
+		clr_country_flag = un_armistice 
+
+		FROM = {
+			remove_country_modifier = un_armistice_stall
+			remove_country_modifier = un_armistice 
+			clr_country_flag = un_armistice
+		}
+
+		ai_chance = { 
+			factor = 0.2 
+			modifier = { factor = 0 war_policy = jingoism }
+			modifier = { factor = 0.5 war_policy = pro_military } 
+		}
+	}
+
+	option = {
+		name = "No compromise with our enemies"
+		badboy = 5
+		prestige = -50
+		add_country_modifier = { name = un_armistice_stall duration = 365 }
+		ai_chance = { 
+			factor = 0.8
+			modifier = { factor = 0 war_policy = pacifism } 
+			modifier = { factor = 0 badboy = 0.8 }
+		}
+	}
+
+}

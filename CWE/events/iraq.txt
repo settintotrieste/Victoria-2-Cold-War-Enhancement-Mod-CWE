@@ -1,3 +1,4 @@
+#14th July Revolution
 country_event = {
   id = 8007514
   title = EVT_8007514_NAME
@@ -5,41 +6,66 @@ country_event = {
   picture = "nwo2_14_july_revolution"
   fire_only_once = yes
 
-  trigger = {
-    tag = IRQ
-	year = 1958 NOT = { year = 1990 }
-	OR = { government = hms_government government = absolute_monarchy }
-  }
-
-  mean_time_to_happen = { months = 6  }
-
-  option = {
-    name = EVT_8007514_A
-	government = presidential_dictatorship 
-	country_event = 800050
-	ruling_party_ideology = socialist
-sphere_owner = { diplomatic_influence = { who = THIS value = -200 } }
-
-	overlord = { release_vassal = THIS add_casus_belli = { target = THIS type = make_puppet months = 24 } } 
-	release_vassal = JOR 
-	any_owned = { limit = { is_core = PAL } secede_province = JOR }
-	ai_chance = { factor = 0.8 }
-  }
-  
-  option = {
-    name = EVT_8007514_B
-	any_pop = { militancy = 2.0 }
-	any_pop = { consciousness = 2.0 }
-
-	random = {
-	chance = 50
-	country_event = 1512001
+	trigger = {
+    	tag = IRQ
+		year = 1958 NOT = { year = 1990 }
+		OR = { government = hms_government government = absolute_monarchy government = mandate_government }
+		war = no
+		OR = { is_vassal = no government = mandate_government }
 	}
 
-	ai_chance = { factor = 0.2 }
-  }
+	mean_time_to_happen = { months = 6  }
+
+	option = {
+		name = EVT_8007514_A
+		government = presidential_dictatorship 
+		country_event = 800050
+		ruling_party_ideology = socialist
+		sphere_owner = { diplomatic_influence = { who = THIS value = -200 } }
+
+		overlord = { release_vassal = THIS add_casus_belli = { target = THIS type = make_puppet months = 24 } } 
+
+		random_owned = { 
+			limit = { 
+				owner = { JOR = { vassal_of = IRQ } } 
+			}
+			owner = { release_vassal = JOR } 
+		}
+
+		random_owned = { 
+			limit = { 
+				owner = { JOR = { exists = no } } 
+			}
+			owner = { release = JOR } 
+		}
+
+		any_owned = { limit = { is_core = PAL } secede_province = JOR }
+		
+
+		#Qasim's communist-aligned Iraq showed a fair amount of equality to Assyrian peoples, this later ended under Sadam
+		#This should be removed when Iraq is reworked, and made into separate events focused exclusively on social aspects of Qasim's Iraq
+		add_accepted_culture = assyrian
+
+		ai_chance = { factor = 0.8 }
+	}
+  
+	option = {
+		name = EVT_8007514_B
+		any_pop = { militancy = 2.0 }
+		any_pop = { consciousness = 2.0 }
+
+		random = {
+			chance = 50
+			country_event = 1512001
+		}
+
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.2 }
+	}
   
 }
+
+#Dictatorship of Saddam Hussein, 1979
 country_event = {
   id = 8007520
   title = EVT_8007520_NAME
@@ -48,29 +74,35 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-    tag = IRQ
+    	tag = IRQ
 	year = 1979 NOT = { year = 1990 }
+	is_vassal = no
+	war = no
   }
 
   mean_time_to_happen = { months = 8 }
 
   option = {
     name = EVT_8007520_A
-	government = nationalist_dictatorship country_event = 800050
+	government = nationalist_dictatorship 
+	country_event = 800050
 	ruling_party_ideology = socialist
-	prestige = 10
-	ai_chance = { factor = 100 }
+	remove_accepted_culture = assyrian
+	prestige = 50
+	ai_chance = { factor = 0.9 }
   }
   option = {
     name = EVT_8007520_B
 	any_pop = { militancy = 2.0 }
 	any_pop = { consciousness = 2.0 }
-	prestige = -10
-	ai_chance = { factor = 0 }
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+	ai_chance = { factor = 0.1 }
   }
 
   
 }
+
+#Form the Arab Federation of Iraq and Jordan
 country_event = {
   id = 8007522
   title = EVT_8007522_NAME
@@ -79,28 +111,33 @@ country_event = {
   fire_only_once = yes
 
   trigger = { # for ai = no use decition iraq.txt
-    tag = IRQ
+    	tag = IRQ
 	year = 1958 NOT = { year = 1959 }
-	OR = { government = hms_government government = absolute_monarchy }
-    EGY = { government = presidential_dictatorship }
-    exists = JOR
-	ai = yes
+	OR = { government = hms_government1 government = hms_government government = absolute_monarchy }
+    	EGY = { government = presidential_dictatorship }
+    	exists = JOR
+	JOR = { is_vassal = no war = no }
+	is_vassal = no
+	war = no
   }
 
-  mean_time_to_happen = { months = 1  }
+  mean_time_to_happen = { months = 1 }
 
   option = {
     name = EVT_8007522_A
 	JOR = { country_event = 8007523 }
-	ai_chance = { factor = 100 }
+	ai_chance = { factor = 0.9 }
   }
 
   option = {
     name = EVT_8007522_B
-	any_pop = {  consciousness = 2 }
-	ai_chance = { factor = 0 }
+	prestige = 25
+	any_pop = { consciousness = 2 }
+	ai_chance = { factor = 0.1 }
   }
 }
+
+#Arab Federation - Jordan's response
 country_event = {
   id = 8007523
   title = EVT_8007523_NAME
@@ -111,15 +148,19 @@ country_event = {
   option = {
     name = EVT_8007523_A
 	IRQ = { country_event = 8007524 }
-	ai_chance = { factor = 100 }
+	ai_chance = { factor = 0.9 }
   }
 
   option = {
     name = EVT_8007523_B
-	any_pop = {  consciousness = 2 }
-	ai_chance = { factor = 0 }
+	any_pop = { consciousness = 2 }
+	IRQ = { prestige = -50 }
+	relation = { who = IRQ value = -100 }
+	ai_chance = { factor = 0.1 }
   }
 }
+
+#Arab Federation - Jordan accepts
 country_event = {
   id = 8007524
   title = EVT_8007524_NAME
@@ -129,41 +170,98 @@ country_event = {
 
   option = {
     name = EVT_8007524_A
-	create_vassal = JOR 
+	prestige = 50
+	create_vassal = JOR
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+JOR = { add_country_modifier = { name = revolution_chaos duration = 3650 } }
   }
 }
+
+#Independence of Iraq
 country_event = {
   id = 8007525
-  title = EVT_8007525_NAME
+  title = "British Occupation of Iraq Ends"
   desc = EVT_8007525_DESC
   picture = "nwo2_iraq"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = ENG
-	year = 1947 
-	NOT = { year = 1963 }
-	is_our_vassal = IRQ
-  }
+	trigger = {
+    	tag = ENG
+		year = 1947 
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		government = hms_government
+		war = no
+		is_vassal = no
+		
+		is_our_vassal = IRQ
+	}
 
-  mean_time_to_happen = { months = 8 }
+	mean_time_to_happen = { months = 10 }
 
-  option = {
-    name = EVT_8007525_A
-	release_vassal = IRQ
-	IRQ = { ruling_party_ideology  = socialist }
-	ai_chance = { factor = 0.9 }
-  }
-  option = {
-    name = "Continue the occupation of Iraq"
-	prestige = -100
-	badboy = 5
-	IRQ = { government = mandate_government }
-	IRQ = { ruling_party_ideology  = nationalist }
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Leave behind a pro-British government!"
+		
+		#Set Iraq free
+		release_vassal = IRQ
+		IRQ = { 
+			government = absolute_monarchy
+			country_event = 800050
+			ruling_party_ideology = conservative 
+			
+			#Free Officer's Movement
+			any_pop = {
+				limit = { type = officers }
+				consciousness = 10
+				militancy = 10
+				ideology = { factor = 0.40 value = socialist }
+			}
+			any_pop = {
+				limit = { type = soldiers }
+				consciousness = 5
+				militancy = 5
+				ideology = { factor = 0.20 value = socialist }
+			}
+			any_pop = {
+				limit = { type = clergymen }
+				consciousness = 5
+				militancy = 2.5
+				ideology = { factor = 0.25 value = progressive }
+			}
+			any_pop = {
+				limit = { type = clerks }
+				consciousness = 5
+				militancy = 2.5
+				ideology = { factor = 0.25 value = liberal }
+			}
+		}
+		
+		#UK retains influence
+		diplomatic_influence = { who = IRQ value = 50 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+	option = {
+		name = "Continue the occupation of Iraq"
+		prestige = -100
+		badboy = 5
+		IRQ = { 
+			government = mandate_government 
+			any_pop = {
+				consciousness = 10
+				militancy = 10
+				ideology = { factor = 0.25 value = nationalist }
+			}
+			add_country_modifier = { name = revolution_chaos duration = 3650 }
+		}
+		ai_chance = { factor = 0.1 }
+	}
   
 }
+
+#Kurdish insurgency - start
 country_event = {
   id = 8007530
   title = EVT_8007530_NAME
@@ -172,26 +270,39 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-    tag = IRQ
-	year = 1961 NOT = { year = 1970 }
-    NOT = { exists = KUR }
+    	tag = IRQ
+	year = 1961 NOT = { year = 1990 }
+    	NOT = { exists = KRQ }
+	NOT = { OR = { government = democracy government = democracy1 } }
+	is_vassal = no
+	any_owned_province = { is_core = KRQ }
+	war = no
   }
 
-  mean_time_to_happen = { months = 1  }
+  mean_time_to_happen = { months = 1 }
 
   option = {
     name = EVT_8007530_A
-	any_pop = { militancy = 2.5 }
-	ai_chance = { factor = 100 }
+	
+	badboy = 5
+
+	any_owned = { 
+	limit = { is_core = KRQ } 
+	add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+	}
+
+	ai_chance = { factor = 1 }
   }
 
   option = {
     name = EVT_8007530_B
-	release = KUR 
-	any_pop = { militancy = 1.0 }
+	prestige = -50
+	release = KRQ
 	ai_chance = { factor = 0 }
   }
 }
+
+#Kurdish insurgency - continuing
 country_event = {
   id = 8007531
   title = EVT_8007531_NAME
@@ -200,61 +311,74 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-    tag = IRQ
-	year = 1974 NOT = { year = 1975 }
-    NOT = { exists = KUR }
+    	tag = IRQ
+	year = 1974 NOT = { year = 1990 }
+    	NOT = { exists = KRQ }
+	NOT = { OR = { government = democracy government = democracy1 } }
+	is_vassal = no
+	any_owned_province = { is_core = KRQ }
+	war = no
   }
 
-  mean_time_to_happen = { months = 1  }
+  mean_time_to_happen = { months = 1 }
 
   option = {
     name = EVT_8007531_A
-	any_pop = { limit = { culture = kurdish } militancy = 5  consciousness = 2 }
-	ai_chance = { factor = 100 }
+	badboy = 5
+	any_pop = { limit = { culture = kurdish } militancy = 10  consciousness = 10 }
+	ai_chance = { factor = 1 }
   }
 
   option = {
     name = EVT_8007531_B
-	release = KUR 
-	any_pop = { militancy = 1.5 }
+	prestige = -50
+	release = KRQ
 	ai_chance = { factor = 0 }
   }
+
 }
+
+#Iran-Iraq War - Start
 country_event = {
   id = 8007540
   title = EVT_8007540_NAME
   desc = EVT_8007540_DESC
   picture = "nwo2_qadisiyyah"
-  fire_only_once = yes
+  
+	fire_only_once = yes
 
-  trigger = {
-    tag = IRQ
-	year = 1980 NOT = { year = 1988 }
-    exists = PER
-    war = no
-	is_vassal = no
-    PER = { is_vassal = no owns = 1132 }
-OR = { government = presidential_dictatorship government = nationalist_dictatorship government = populist_dictatorship } 
-	PER = { government = theocracy }
-  }
+	trigger = {
+		tag = IRQ
+		year = 1980 NOT = { year = 1999 }
+		
+		OR = { government = presidential_dictatorship government = nationalist_dictatorship government = populist_dictatorship } 
+		war = no
+		is_vassal = no
+		
+		PER = { exists = yes government = theocracy is_vassal = no owns = 1132 has_country_flag = nojeh_coup_fired }
+		
+		NOT = { has_global_flag = iran_iraq_war_flag }
+	}
 
-  mean_time_to_happen = { months = 1  }
+	mean_time_to_happen = { months = 2 }
 
-  option = {
-    name = EVT_8007540_A
-	PER = { country_event = 8007541 }
-	any_pop = { militancy = -1.0 }
-	badboy = 10 
-	1132 = { add_core = THIS }
-	ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = EVT_8007540_A
+		PER = { country_event = 8007541 }
+		any_pop = { militancy = -1.0 }
+		badboy = 10 
+		1132 = { add_core = THIS }
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8007540_B
-	any_pop = { consciousness = 2 }
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = EVT_8007540_B
+		any_pop = { consciousness = 2 }
+		ai_chance = { factor = 0.1 }
+	}
 }
+
+#Iran-Iraq War - Iran choice
 country_event = {
   id = 8007541
   title = EVT_8007541_NAME
@@ -267,11 +391,13 @@ country_event = {
 	# infamy unsanctioned
 
 	IRQ = { 
-war = { target = PER attacker_goal = { casus_belli = acquire_core_state state_province_id = 1132 } defender_goal = { casus_belli = territorial_dispute } } 
-		}
+war = { target = PER attacker_goal = { casus_belli = acquire_core_state state_province_id = 1132 } defender_goal = { casus_belli = install_theocratic_regime } } 
+	}
+
+	set_global_flag = iran_iraq_war_flag
 
 	any_pop = { militancy = 3.0 }
-	ai_chance = { factor = 100 }
+	ai_chance = { factor = 1 }
   }
 
   option = {
@@ -280,7 +406,10 @@ war = { target = PER attacker_goal = { casus_belli = acquire_core_state state_pr
 	any_pop = {  consciousness = 2 }
 	ai_chance = { factor = 0 }
   }
+
 }
+
+#Iran-Iraq War - Iraq wins
 country_event = {
   id = 8007542
   title = EVT_8007542_NAME
@@ -289,17 +418,20 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-    tag = IRQ
-	year = 1981 NOT = { year = 1988 }
-	has_recently_lost_war  = no
-    owns = 1132
+    	tag = IRQ
+	year = 1981
+	has_recently_lost_war = no
+	PER = { has_recently_lost_war = yes truce_with = IRQ }
+    	owns = 1132
 	war = no
+	has_global_flag = iran_iraq_war_flag
   }
 
   mean_time_to_happen = { months = 1  }
 
   option = {
     name = EVT_8007542_A
+	prestige = 100
 	any_pop = { militancy = -2.0  consciousness = -1 }
 	PER = { country_event = 8007543 }
   }
@@ -313,9 +445,11 @@ country_event = {
   
   option = {
     name = EVT_8007543_A
-	any_pop = { militancy = 2.5  consciousness = 2 }
+	any_pop = { militancy = 2.5 consciousness = 2 }
   }
 }
+
+#Iran-Iraq War - Stalemate
 country_event = {
   id = 8007544
   title = EVT_8007544_NAME
@@ -324,10 +458,11 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-    tag = IRQ
-	year = 1981 NOT = { year = 1988 }
-    NOT = { owns = 1132 }
+    	tag = IRQ
+	year = 1981
+    	NOT = { owns = 1132 }
 	war = no
+	has_global_flag = iran_iraq_war_flag
   }
 
   mean_time_to_happen = { months = 1  }
@@ -337,6 +472,8 @@ country_event = {
 	1132 = { remove_core =  THIS }
   }
 }
+
+#Iran-Iraq War - Iran Wins
 country_event = {
   id = 8007545
   title = EVT_8007545_NAME
@@ -345,17 +482,20 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-    tag = PER
-	year = 1981 NOT = { year = 1988 }
+   	tag = PER
+	year = 1981
 	owns = 1132
-	has_recently_lost_war  = no 
-	IRQ = { NOT = { government = nationalist_dictatorship } }
+	has_recently_lost_war = no 
+	IRQ = { has_recently_lost_war = yes truce_with = PER }
+	war = no
+	has_global_flag = iran_iraq_war_flag
   }
 
   mean_time_to_happen = { months = 1  }
 
   option = {
     name = EVT_8007545_A
+	prestige = 100
 	any_pop = { militancy = -3.0  consciousness = -1 }
 	IRQ = { country_event = 8007546 }
   }
@@ -373,6 +513,8 @@ country_event = {
 	any_pop = { militancy = 2.5  consciousness = 2 }
   }
 }
+
+#Gulf War, 1990 - start
 country_event = {
   id = 8007550
   title = EVT_8007550_NAME
@@ -380,40 +522,116 @@ country_event = {
   picture = "nwo2_invasion_of_kuwait"
   fire_only_once = yes
 
-  trigger = {
-    tag = IRQ
-	year = 1990 NOT = { year = 1991 }
+	trigger = {
+    	tag = IRQ
+		year = 1990
+		NOT = { has_global_flag = 1990_gulf_war_fired_flag }
+		NOT = { has_global_flag = 1992_start_date_flag }
 
-    NOT = { government = democracy }
+		OR = { 
+			government = presidential_dictatorship 
+			government = populist_dictatorship 
+			government = nationalist_dictatorship 
+		}
 
-	is_vassal = no
-	KUW = { is_vassal = no }
+		war = no
+		is_vassal = no
+		KUW = { is_vassal = no }
 
-	#NOT = { KUW = { alliance_with = USA } }
-    	#NOT = { KUW = { alliance_with = ENG } }
-    	#NOT = { KUW = { alliance_with = RUS } }
+    	exists = KUW
+	}
 
-    exists = KUW
-  }
+	mean_time_to_happen = { months = 8 }
 
-  mean_time_to_happen = { months = 8 }
+	option = {
+		name = "We shall annex Kuwait!"
+		any_pop = { consciousness = 2 }
+		935 = { add_core =  THIS }
+		set_global_flag = 1990_gulf_war_fired_flag
+		
+		#If USSR is not available
+		random_owned = {
+			limit = { 
+				owner = {
+					RUS = { 
+						NOT = {
+							is_greater_power = yes 
+							OR = { is_sphere_leader_of = IRQ alliance_with = IRQ } 
+						}
+					}
+				}
+			}
+			owner = {
+				war = { target = KUW attacker_goal = { casus_belli = conquest } defender_goal = { casus_belli  = status_quo } }
+			}
+		}
+		
+		#If USSR is available
+		random_country = {
+			limit = { 
+				tag = RUS 
+				is_greater_power = yes 
+				OR = { is_sphere_leader_of = IRQ alliance_with = IRQ } 
+			}
+			country_event = 80075501 #Choice to support IRQ
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = EVT_8007550_A
-	badboy = 20 
-	war = { target = KUW attacker_goal = { casus_belli = conquest } defender_goal = { casus_belli  = status_quo } }
-	any_pop = { consciousness = 2 }
-	935 = { add_core =  THIS }
-	set_global_flag = 1990_gulf_war_fired_flag
-ai_chance = { factor = 0.9 }
-  }
-
-  option = {
-    name = EVT_8007550_B
-	relation = { who = KUW value = 20 } 
-ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = EVT_8007550_B
+		relation = { who = KUW value = 25 } 
+		ai_chance = { factor = 0.1 }
+	}
 }
+
+#Gulf War, 1990 - RUS choice to support
+country_event = {
+  id = 80075501
+  title = EVT_8007550_NAME
+  desc = EVT_8007550_DESC
+  picture = "nwo2_invasion_of_kuwait"
+ 
+	is_triggered_only = yes
+
+	option = {
+		name = "Do not support Iraq's aggression"
+		badboy = -10
+		relation = { who = IRQ value = -200 }
+		diplomatic_influence = { who = IRQ value = -200 }
+		leave_alliance = IRQ
+		IRQ = { 
+			war = { 
+				target = KUW 
+				attacker_goal = { casus_belli = conquest } 
+				defender_goal = { casus_belli = status_quo } 
+				call_ally = no
+			}
+		}
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Support Iraq!"
+		prestige = 100
+		relation = { who = IRQ value = 100 }
+		diplomatic_influence = { who = IRQ value = 100 }
+		create_alliance = IRQ
+		IRQ = { 
+			war = { 
+				target = KUW 
+				attacker_goal = { casus_belli = conquest } 
+				defender_goal = { casus_belli = status_quo } 
+				call_ally = yes
+			} 
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#UN Coalition against Iraq in the Gulf War 1991 - Start
 country_event = {
   id = 8007551
   title = EVT_8007551_NAME
@@ -421,34 +639,55 @@ country_event = {
   picture = "nwo2_invasion_of_kuwait_victory"
   fire_only_once = yes
 
-  trigger = {
-    tag = IRQ
-	year = 1991 NOT = { year = 1999 }
-	NOT = { government = democracy }
-    any_owned_province = { province_id = 935 }  
-  }
+	trigger = {
+    	tag = IRQ
+		year = 1990
+		NOT = { has_global_flag = 1992_start_date_flag }
+		is_vassal = no
 
-  mean_time_to_happen = { months = 1 }
+		OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship }
 
-  option = {
-    name = EVT_8007551_A
-	random = {
-	chance = 75
-	leave_alliance = RUS
-RUS = { diplomatic_influence = { who = IRQ value = -200 } }
-	relation = { who = RUS value = -150 }
+		#Gulf War event accepted
+		has_global_flag = 1990_gulf_war_fired_flag
+
+		#US is a democratic GP
+		USA = { government = democracy is_greater_power = yes }
+
+		#Owns Kuwait
+		any_owned_province = { province_id = 935 }  
 	}
-	any_pop = { militancy = -1.5 }
-	relation = { who = USA value = -150 } 
-	relation = { who = ENG value = -100 } 
-	relation = { who = FRA value = -100 } 
-	relation = { who = ISR value = -100 } 
-	relation = { who = SAA value = -150 } 
-	relation = { who = EGY value = -50 }
-	set_global_flag = 1990_gulf_war_kuw_annexed
-	USA = { country_event = 8007560 }
-  }
+
+	mean_time_to_happen = { months = 0.1 }
+
+	option = {
+		name = EVT_8007551_A
+
+		any_country = {
+			limit = { 
+				is_vassal = no 
+				exists = yes 
+				OR = { 
+					government = democracy 
+					government = democracy1 
+					government = hms_government 
+					government = hms_government1 
+				} 
+				neighbour = THIS
+			}
+			relation = { who = THIS value = -100 }
+		}
+
+		any_pop = { militancy = -4 }
+
+		set_global_flag = 1990_gulf_war_kuw_annexed
+
+		#Get USA involved
+		USA = { country_event = 8007560 }
+	}
+
 }
+
+#UN Coalition against Iraq in the Gulf War 1991 - US choice
 country_event = {
   id = 8007560
   title = EVT_8007560_NAME
@@ -456,25 +695,72 @@ country_event = {
   picture = "nwo2_desert_storm"
   is_triggered_only = yes
   
-  option = {
-    name = EVT_8007560_A
-	casus_belli = { target = KUW type = liberate_country months = 12 }
-	war = { target = IRQ attacker_goal = { casus_belli = liberate_country country = KUW } defender_goal = { casus_belli = humiliate } }
-	SAA = { country_event = 8007561 } 
-	IRQ = { release = KUR }
+	option = {
+		name = "We shall lead this coalition against Iraq!"
 
-any_country = { limit = { NOT = { alliance_with = IRQ } OR = { tag = NET tag = USA tag = TUR tag = AST tag = FRA tag = ENG } } create_alliance = KUR }
+		casus_belli = { target = IRQ type = liberate_country months = 12 }
+	
+		#Saudi event
+		random_country = {
+			limit = { 
+				tag = SAA 
+				is_vassal = no 
+				OR = { government = absolute_monarchy government = hms_government government = hms_government1 government = democracy government = democracy1 government = socialist_democracy } 
+			}
+			country_event = 8007561 #Call to war!
+		}
+		
+		#If SAA is not available
+		random_owned = {
+			limit = { 
+				owner = {
+					SAA = { 
+						NOT = {
+							exists = yes
+							is_vassal = no
+							OR = { government = absolute_monarchy government = hms_government government = hms_government1 government = democracy government = democracy1 government = socialist_democracy }
+						}
+					}
+				}
+			}
+			owner = {
+				IRQ = { 
+					war = { 
+						target = THIS
+						defender_goal = { casus_belli = liberate_country country = KUW } 
+						attacker_goal = { casus_belli = humiliate } 
+					}
+				}
+			}
+		}
 
+		#Kurdistan uprising
+		IRQ = { release = KRQ }
 
-	ai_chance = { factor = 100 }
-  }
+		#NATO allies
+		any_country = { limit = { alliance_with = USA NOT = { alliance_with = IRQ } OR = { tag = NET tag = USA tag = TUR tag = AST tag = FRA tag = ENG } } create_alliance = KRQ }
 
-  option = {
-    name = EVT_8007560_B
-	random_state = { any_pop = { dominant_issue = { value = jingoism factor = 0.6 } } }
-	ai_chance = { factor = 0 }
-  }
+		IRQ = {
+			war = { 
+				target = KRQ
+				attacker_goal = { casus_belli = annex_core_country } 
+				defender_goal = { casus_belli = status_quo } 
+			}
+		}
+
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = EVT_8007560_B
+		prestige_factor = -0.1
+		random_state = { any_pop = { dominant_issue = { value = jingoism factor = 0.6 } } }
+		ai_chance = { factor = 0 }
+	}
+
 }
+
+#UN Coalition against Iraq in the Gulf War 1991 - SAA choice
 country_event = {
   id = 8007561
   title = EVT_8007561_NAME
@@ -482,21 +768,34 @@ country_event = {
   picture = "nwo2_desert_storm"
   is_triggered_only = yes
 
-  option = {
-    name = EVT_8007561_A
-	create_alliance = USA 
-	relation = { who = USA value = 150 }
-	casus_belli = { target = KUW type = liberate_country months = 12 }
-	war = { target = IRQ attacker_goal = { casus_belli = liberate_country country = KUW } defender_goal = { casus_belli = humiliate } }
-	ai_chance = { factor = 100 }
-  }
+	option = {
+		name = "Form the coalition against Iraq"
+		create_alliance = USA 
+		relation = { who = USA value = 200 }
+		casus_belli = { target = IRQ type = liberate_country months = 12 }
 
-  option = {
-    name = EVT_8007561_B
-	relation = { who = USA value = -100 } 
-	ai_chance = { factor = 0 }
-  }
+		IRQ = { 
+			war = { 
+				target = SAA
+				defender_goal = { casus_belli = liberate_country country = KUW } 
+				attacker_goal = { casus_belli = humiliate } 
+			}
+		}
+
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = EVT_8007561_B
+		prestige_factor = -0.1
+		relation = { who = USA value = -100 }
+		relation = { who = IRQ value = 50 } 
+		ai_chance = { factor = 0 }
+	}
+
 }
+
+#Operation Desert Storm - US victory
 country_event = {
   id = 8007562
   title = EVT_8007562_NAME
@@ -508,11 +807,16 @@ country_event = {
 	tag = USA
 	is_greater_power = yes
 	government = democracy
-	year = 1991 NOT = { year = 1992 }
+
+#Gulf War event accepted
+has_global_flag = 1990_gulf_war_fired_flag
+
+	war = no
+	IRQ = { war = no truce_with = USA }
 	exists = KUW
   }
 
-  mean_time_to_happen = { months = 1  }
+  mean_time_to_happen = { months = 2 }
 
   option = {
     name = EVT_8007562_A
@@ -522,6 +826,8 @@ country_event = {
 	SAA = { country_event = 8007564 }
   }
 }
+
+#Iraq desert storm - Iraq defeat
 country_event = {
   id = 8007563
   title = EVT_8007563_NAME
@@ -531,9 +837,14 @@ country_event = {
 
   option = {
     name = EVT_8007563_A
+	badboy = -100
+	badboy = 10
+add_country_modifier = { name = revolution_chaos duration = 3650 }
 	any_pop = { militancy = 2.5 }
   }
 }
+
+#Saudi desert storm response - Saudi victory
 country_event = {
   id = 8007564
   title = EVT_8007564_NAME
@@ -543,15 +854,17 @@ country_event = {
 
   option = {
     name = EVT_8007564_A
-	any_pop = { militancy = -1.0  consciousness = 2 }
+	prestige = 100
+	any_pop = { militancy = -5.0  consciousness = 2 }
   }
 }
 
+#2003 Iraq War - Start
 country_event = {
 	id = 8007565
 	title = EVT_8007565_NAME
 	desc = EVT_8007565_DESC
-	picture = "saddam_hussein"
+	picture = "2003_iraq_war"
 	fire_only_once = yes
 
 	trigger = {
@@ -560,8 +873,11 @@ country_event = {
 		government = democracy
 		year = 2003
 		war = no
+
+		has_global_flag = war_on_terror
+
 		IRQ = { 
-			NOT = { government = democracy }
+			OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship government = theocracy }
 			part_of_sphere = no
 			is_vassal = no
 		}
@@ -572,33 +888,145 @@ country_event = {
 	}
 	
 	option = {
-		name = EVT_8007565_OPTA
-		ai_chance = { factor = 0.9 }
-		IRQ = { badboy = 20 }
-		set_global_flag = iraq_war
-
-SAA = { military_access = USA create_alliance = USA relation = { who = USA value = 200 } }
-KUW = { military_access = USA create_alliance = USA relation = { who = USA value = 200 } }
-SYR = { military_access = USA relation = { who = USA value = 100 } }
-ISR = { military_access = USA create_alliance = USA relation = { who = USA value = 200 } }
-JOR = { military_access = USA relation = { who = USA value = 100 } }
-
-		war = {
-			target = IRQ
-		attacker_goal = { casus_belli = make_puppet }
-		defender_goal = { casus_belli = status_quo }
-			call_ally = yes
-		}
+		name = "Demand regime change in Iraq (War if Iraq refuses)"
+		
 		badboy = 5
+		
+		#Option for Iraq to surrender
+		IRQ = { country_event = 80075652 }
+		
+		ai_chance = { factor = 0.9 }
 	}
+
 	option = {
-		name = EVT_8007565_OPTB
-		prestige = -500
+		name = "There are no weapons of mass destruction"
+		prestige_factor = -0.05
 		ai_chance = { factor = 0.1 }
 	}
 	
 }
 
+#2003 Iraq War - kurdistan breaks free?
+country_event = {
+	id = 80075651
+	title = EVT_8007565_NAME
+	desc = EVT_8007565_DESC
+	picture = "2003_iraq_war"
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "Join the coalition forces!"
+		
+		IRQ = { release_vassal = THIS }
+		
+		war = {
+			target = IRQ
+			attacker_goal = { casus_belli = become_independent }
+			defender_goal = {  }
+			call_ally = no
+		}
+		
+		set_global_flag = KUR_joins_2003_coalition
+
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Remain loyal (Annexation by Iraq)"
+		IRQ = { inherit = KRQ }
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+#2003 Iraq War - Iraq option to avoid war
+country_event = {
+	id = 80075652
+	title = EVT_8007565_NAME
+	desc = EVT_8007565_DESC
+	picture = "2003_iraq_war"
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "Fight the US coalition!"
+		
+		set_global_flag = iraq_war
+		
+		#Kurdistan breaks free?
+		random_country = {
+			limit = { tag = KRQ vassal_of = IRQ }
+			country_event = 80075651
+		}
+
+		any_country = { 
+			limit = { 
+				OR = { tag = SAA tag = KUW tag = SYR tag = ISR tag = JOR tag = ENG } 
+				alliance_with = USA 
+			}
+			military_access = USA
+		}
+
+		USA = {
+
+			war = {
+				target = IRQ
+				attacker_goal = { casus_belli = make_puppet }
+				defender_goal = { casus_belli = status_quo }
+				call_ally = yes
+			}
+		
+		}
+
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "Surrender to the United States"
+		prestige_factor = -0.8
+		
+		random_owned = {
+			limit = { owner = { is_our_vassal = KUR } }
+			owner = { release_vassal = KUR }
+		}
+		
+		USA = { create_vassal = IRQ }
+		
+		government = mandate_government
+		country_event = 800054
+		ruling_party_ideology = big_tent
+		
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		any_pop = { militancy = 10 }
+		
+		ai_chance = { factor = 0 }
+	}
+	
+}
+
+#2003 Iraq War - restablish the Kurdistan Regional Government
+country_event = {
+	id = 80075653
+	title = "Kurdistan Regional Government"
+	desc = EVTDESC1512002
+	picture = "kurdisatn_sar"
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "They may get independence one day"
+		badboy = -5
+		create_vassal = KRQ
+		KRQ = { government = sar_government country_event = 800054 }
+		any_owned = { limit = { is_core = KRQ } secede_province = KRQ }
+		USA = { diplomatic_influence = { who = KRQ value = 200 } }
+	}
+	
+}
+
+#Iraq War - USA wins, form the Coalition Authority
 country_event = {
 	id = 8008013
 	title = EVT_8008013_NAME
@@ -619,28 +1047,108 @@ country_event = {
 	}
 
 	mean_time_to_happen = {
-		months = 24
+		months = 0.1
+	}
+
+	option = {
+		name = "EVT_8008013_A"
+		IRQ = { government = mandate_government ruling_party_ideology = big_tent }
+		IRQ = { add_country_modifier = { name = revolution_chaos duration = 1825 } }
+		diplomatic_influence = { who = IRQ value = 200 }
+		any_pop = { consciousness = 3 }
+		badboy = 5
+		
+		#Create Kurdistan Regional Government if KUR joined coalition
+		random_owned = {
+			limit = { 
+				owner = { 
+					has_global_flag = KUR_joins_2003_coalition 
+					KRQ = { exists = yes is_vassal = no }
+				} 
+			}
+			owner = {
+				IRQ = { end_war = KRQ }
+				IRQ = { country_event = 80075653 }
+			}
+		}
+
+		#Kurdistan Regional Government
+		IRQ = { 
+			random_owned = { 
+				limit = { owner = { KRQ = { vassal_of = IRQ } } }
+				owner = { KRQ = { government = sar_government } }
+			} 
+		}
+
+		#Kurdistan Regional Government - if KUR was annexed
+		IRQ = {
+			random_owned = { 
+				limit = { 
+					owner = { KRQ = { exists = no } any_owned_province = { is_core = KUR } } 
+				}
+				owner = { release_vassal = KRQ KRQ = { government = sar_government } }
+			} 
+		}
+
+		ai_chance = { factor = 0.9 }
 	}
 	
 	option = {
-		name = EVT_8008013_A
+		name = "Withdraw from Iraq immediately"
+		release_vassal = IRQ
+		IRQ = { release_vassal = KRQ }
+		IRQ = { government = democracy }
+		relation = { who = IRQ value = 200 }
+		IRQ = { add_country_modifier = { name = revolution_chaos duration = 3650 } }
+		IRQ = { end_war = KRQ }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Iraq War - End of the coalition authority
+country_event = {
+	id = 80080133
+	title = EVT_80080133_NAME
+	desc = EVT_80080133_DESC
+	picture = "2003_coalition_victory"
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		is_greater_power = yes
+		government = democracy
+		has_global_flag = iraq_war
+		IRQ = { 
+			government = mandate_government
+			vassal_of = USA
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 12
+	}
+	
+	option = {
+		name = EVT_80080133_A
 		ai_chance = { factor = 0.9 }
 		any_pop = { consciousness = 3 }
 		release_vassal = IRQ
-		IRQ = { release_vassal = KUR }
+		KRQ = { all_core = { add_province_modifier = { name = nationalist_agitation duration = 3650 } } }
 	}
 
 	option = {
 		name = "Continue the occupation"
 		ai_chance = { factor = 0.1 }
-		IRQ = { government = mandate_government }
 		any_pop = { consciousness = 3 }
 		prestige = -50
 		badboy = 5
+		KRQ = { all_core = { add_province_modifier = { name = nationalist_agitation duration = 7900 } } }
 	}
 
 }
 
+#Iraqi victory in the 2003 Iraq war
 country_event = {
 	id = 8008014
 	title = EVT_8008014_NAME
@@ -650,10 +1158,11 @@ country_event = {
 
 	trigger = {
 		tag = IRQ
-		government = nationalist_dictatorship
+		is_vassal = no
 		war = no
 		has_recently_lost_war = no
 		has_global_flag = iraq_war
+		truce_with = USA
 	}
 
 	mean_time_to_happen = {
@@ -662,17 +1171,17 @@ country_event = {
 	
 	option = {
 		name = EVT_8008014_A
-		ai_chance = { factor = 100 }
 		clr_country_flag = iraq_war
-		any_pop = { militancy = -2 consciousness = -4 }
-		prestige = 20
+		any_pop = { militancy = -5 consciousness = -4 }
+		prestige = 100
 		USA = { 
 			any_pop = { militancy = 2 consciousness = 4 }
-			prestige = -20
+			prestige_factor = -0.10
 		}
 	}
 }
 
+#Post US occupation unrest
 country_event = {
 	id = 8008015
 	title = EVT_8008015_NAME
@@ -693,12 +1202,12 @@ country_event = {
 	
 	option = {
 		name = EVT_8008015_A
-		ai_chance = { factor = 100 }
-		any_pop = { limit = { OR = { culture = sunni_arab } } militancy = 3.0  consciousness = 4 }
-		any_pop = { limit = { OR = { culture = shia_arab } } militancy = 2.0  consciousness = 3 }
+		any_pop = { militancy = 5.0 consciousness = 4 }
 	}
+
 }
 
+#2006 Iraq unrest
 country_event = {
 	id = 8008016
 	title = EVT_8008016_NAME
@@ -720,12 +1229,11 @@ country_event = {
 	
 	option = {
 		name = EVT_8008016_A
-		ai_chance = { factor = 100 }
-		any_pop = { limit = { OR = { culture = sunni_arab } } militancy = 5.0  consciousness = 6 }
-		any_pop = { limit = { OR = { culture = shia_arab } } militancy = 3.0  consciousness = 4 }
+any_pop = { militancy = 5.0 consciousness = 6 }
 	}
 }
 
+#Arab Spring in Iraq, 2011
 country_event = {
 	id = 8008017
 	title = EVT_8008017_NAME
@@ -740,6 +1248,7 @@ country_event = {
 		year = 2011
 		war = no
 		has_global_flag = iraq_war
+IRQ = { is_vassal = no OR = { government = democracy government = democracy1 } }
 	}
 
 	mean_time_to_happen = {
@@ -748,29 +1257,31 @@ country_event = {
 	
 	option = {
 		name = EVT_8008017_A
-		ai_chance = { factor = 100 }
-		any_pop = { militancy = -2.0  consciousness = 3.0 }
+		any_pop = { militancy = -2.0 consciousness = 3.0 }
 		clr_global_flag = iraq_war
 		set_global_flag = arab_spring
 		IRQ = { country_event = 8008018 }
 	}
 }
 
+#Uprisings in Iraq
 country_event = {
 	id = 8008018
 	title = EVT_8008018_NAME
 	desc = EVT_8008018_DESC
 	picture = "end_of_the_iraq_war"
-	fire_only_once = yes
+	
 is_triggered_only = yes
+
 	option = {
 		name = EVT_8008018_A
-		ai_chance = { factor = 100 }
-		any_pop = { limit = { OR = { culture = sunni_arab } } militancy = 3.0  consciousness = 4 }
+		any_pop = { militancy = 5.0 consciousness = 4 }
 		set_country_flag = iraqi_insurgency_2011_2014
 	}
+
 }
 
+#2014 Iraq Civil War, Formation of ISIS
 country_event = {
 	id = 8008019
 	title = EVT_8008019_NAME
@@ -783,6 +1294,8 @@ country_event = {
 		year = 2014
 		owns = 923 
 		war = no
+		is_vassal = no
+		NOT = { government = theocracy }
 		has_country_flag = iraqi_insurgency_2011_2014
 	}
 
@@ -792,45 +1305,55 @@ country_event = {
 
 	option = {
 		name = EVT_8008019_A
-		ai_chance = { factor = 100 }
-		any_owned = { limit = { pop_majority_culture = sunni_arab } add_core = ISI }
+		ai_chance = { factor = 1 }
+
+SYR = { all_core = { limit = { pop_majority_religion = sunni } add_core = ISI } }
+
+all_core = { limit = { pop_majority_religion = sunni } add_core = ISI }
+
 		set_global_flag = iraqi_civil_war
 		release = ISI
-		ISI = { 
-			capital = 923
-		}
-		war = {
-			target = ISI
-			attacker_goal = { casus_belli = acquire_core_state state_province_id = 923 } #Mosul
-			attacker_goal = { casus_belli = acquire_core_state state_province_id = 931 } #Rutbah/Anbar
-			attacker_goal = { casus_belli = acquire_core_state state_province_id = 927 } #Samarra
-			defender_goal = { casus_belli = civil_war }
-		}
-		prestige = -20
-	}
 
-
-	option = {
-		name = EVT_8008019_B
-		ai_chance = { factor = 0 }
-		any_owned = { limit = { pop_majority_culture = sunni_arab } add_core = ISI }
-		set_global_flag = iraqi_civil_war
-		prestige = -20
-		release = ISI
-		ISI = { 
-			capital = 923
-		}
-		war = {
-			target = ISI
-			attacker_goal = { casus_belli = acquire_core_state state_province_id = 923 } #Mosul
-			attacker_goal = { casus_belli = acquire_core_state state_province_id = 931 } #Rutbah/Anbar
-			attacker_goal = { casus_belli = acquire_core_state state_province_id = 927 } #Samarra
-			defender_goal = { casus_belli = civil_war }
-		}
-		prestige = -20
-	}
+KRQ = { 
+any_owned = { 
+limit = { is_capital = no is_core = ISI } 
+secede_province = ISI
+	} 
 }
 
+		ISI = { 
+			capital = 923
+		}
+		ISI = {
+		war = {
+		target = IRQ
+	defender_goal = { casus_belli = annex_core_country }
+	attacker_goal = { casus_belli = conquest }
+			}
+		}
+		prestige = -20
+	}
+
+	option = {
+		name = "Accept ISIS presence"
+		ai_chance = { factor = 0 }
+
+SYR = { all_core = { limit = { pop_majority_religion = sunni } add_core = ISI } }
+
+all_core = { limit = { pop_majority_religion = sunni } add_core = ISI }
+
+		#set_global_flag = iraqi_civil_war
+
+		release = ISI
+		ISI = { 
+			capital = 923
+		}
+		prestige = -50
+	}
+
+}
+
+#Victory in the Iraq Civil War
 country_event = {
 	id = 8008020
 	title = EVT_8008020_NAME
@@ -853,13 +1376,13 @@ country_event = {
 
 	option = {
 		name = EVT_8008020_A
-		ai_chance = { factor = 100 }
 		set_global_flag = the_future_of_iraq
-		any_pop = { militancy = -3.0  consciousness = -1 }
+		any_pop = { militancy = -3.0 consciousness = -1 }
 		prestige = 20
 	}
 }
 
+#ISIS victory
 country_event = {
 	id = 8008021
 	title = EVT_8008021_NAME
@@ -870,6 +1393,7 @@ country_event = {
 	trigger = {
 		tag = ISI
 		war = no
+		is_vassal = no
 		owns = 923
 		owns = 927
 		owns = 931
@@ -882,7 +1406,7 @@ country_event = {
 
 	option = {
 		name = EVT_8008021_A
-		ai_chance = { factor = 100 }
+		ai_chance = { factor = 1 }
 		capital = 925 #Baghdad
 		924 = { add_core = ISI }
 		926 = { add_core = ISI }
@@ -892,7 +1416,7 @@ country_event = {
 		933 = { add_core = ISI }
 		934 = { add_core = ISI }
 		badboy = 10
-		any_pop = { militancy = 3.0  consciousness = 4 }
+		any_pop = { militancy = 3.0 consciousness = 4 }
 		prestige = 25
 		casus_belli = { 
 			target = SAA
@@ -917,7 +1441,7 @@ country_event = {
 	}
 }
 
-
+#Independence of Kurdistan - Start
 country_event = {
 	id = 8008022
 	title = EVT_8008022_NAME
@@ -926,8 +1450,10 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-		tag = KUR
-		war = no
+		tag = KRQ
+		year = 2017
+		vassal_of = IRQ
+		IRQ = { is_vassal = no }
 		has_global_flag = the_future_of_iraq
 	}
 
@@ -937,56 +1463,66 @@ country_event = {
 
 	option = {
 		name = EVT_8008022_A
-		ai_chance = { factor = 95 }
 		IRQ = { country_event = 8008023 }
 		prestige = 10
+		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
 		name = EVT_8008022_B
-		ai_chance = { factor = 5 }
 		any_pop = { militancy = 2 consciousness = 4 }
 		prestige = -10
+		IRQ = { add_accepted_culture = kurdish }
+		IRQ = { inherit = THIS }
+		ai_chance = { factor = 0.1 }
 	}
+
 }
 
+#Independence of Kurdistan - Iraqi response
 country_event = {
 	id = 8008023
 	title = EVT_8008023_NAME
 	desc = EVT_8008023_DESC
 	picture = "kurdish_independence_referendum"
-	fire_only_once = yes
-is_triggered_only = yes
+	
+	is_triggered_only = yes
+
 	option = {
 		name = EVT_8008023_A
-		ai_chance = { factor = 70 }
+		ai_chance = { factor = 0.7 }
 		any_pop = { consciousness = 2 }
-		release_vassal = KUR
-		prestige = 5
+		release_vassal = KRQ
+		prestige = 25
 	}
 
 	option = {
 		name = EVT_8008023_B
-		ai_chance = { factor = 30 }
+		ai_chance = { factor = 0.3 }
 		925 = {
 			state_scope = {
 				flashpoint_tension = 30
 			}
 		}
+	KRQ = {
+		set_country_flag = former_devolved_nation 
 		war = {
-			target = KUR
+			target = IRQ
 			attacker_goal = {
 				casus_belli = become_independent
 			}
 			defender_goal = {
-				casus_belli = make_puppet
+				
 			}
 		}
+	}
 		prestige = 10
 		badboy = 8
 	}
+
 }
 
+#Mosul uprising after the ISIS uprising
 country_event = {
 	id = 8008024
 	title = EVT_8008024_NAME
@@ -998,6 +1534,7 @@ country_event = {
 		tag = IRQ
 		owns = 923
 		war = no
+		is_vassal = no
 		has_global_flag = the_future_of_iraq
 	}
 
@@ -1009,6 +1546,7 @@ country_event = {
 		name = EVT_8008024_A
 		ai_chance = { factor = 0.60 }
 		release_vassal = MSU
+MSU = { government = sar_government country_event = 800054 set_country_flag = former_devolved_nation }
 		prestige = 8
 	}
 
@@ -1026,12 +1564,14 @@ country_event = {
 			state_scope = {
 				flashpoint_tension = 30
 			}
+add_province_modifier = { name = nationalist_agitation duration = 3650 }
 		}
-		any_pop = { limit = { OR = { culture = sunni_arab } } militancy = 3.0  consciousness = 4 }
 		prestige = 10
 	}
+
 }
 
+#US intervention in the Iraqi Civil War
 country_event = {
 	id = 8008025
 	title = EVT_8008025_NAME
@@ -1041,7 +1581,10 @@ country_event = {
 
 	trigger = {
 		tag = USA
+		government = democracy
+		is_greater_power = yes
 		exists = ISI
+		ISI = { is_vassal = no }
 		has_global_flag = iraqi_civil_war
 	}
 
@@ -1051,31 +1594,30 @@ country_event = {
 
 	option = {
 		name = EVT_8008025_A
-		ai_chance = { factor = 100 }
+		ai_chance = { factor = 0.5 }
 		ISI = { add_country_modifier = { name = limited_military_intervention duration = 3500 } }
 		any_pop = { consciousness = -2 }
 		treasury = -1250
 		IRQ = { small_arms = 250 weaponry = 60 }
-		KUR = { small_arms = 40 weaponry = 15 }
+		KRQ = { small_arms = 40 weaponry = 15 }
 		relation = { who = IRQ value = 150 }
-		relation = { who = KUR value = 100 }
+		relation = { who = KRQ value = 100 }
 		prestige = 10
 	}
 
 	option = {
 		name = EVT_8008025_B
-		ai_chance = { factor = 0 }
+		ai_chance = { factor = 0.2 }
 		any_pop = { consciousness = -3 }
 		relation = { who = IRQ value = 150 }
-		relation = { who = KUR value = 150 }
+		relation = { who = KRQ value = 150 }
 		IRQ = { small_arms = 400 weaponry = 150 }
-		KUR = { small_arms = 200 weaponry = 75 }
+		KRQ = { small_arms = 200 weaponry = 75 }
 		treasury = -2250
 		war = {
 			target = ISI
 			attacker_goal = {
-				casus_belli = liberate_country
-				country = IRQ
+				casus_belli = free_allied_cores
 			}
 			defender_goal = {
 				casus_belli = status_quo
@@ -1083,15 +1625,16 @@ country_event = {
 		}		
 	}
 	option = {
-		name = EVT_8008025_A
-		ai_chance = { factor = 100 }
+		name = "Do nothing"
+		ai_chance = { factor = 0.3 }
 		any_pop = { consciousness = 4 }
 		relation = { who = IRQ value = -100 }
-		relation = { who = KUR value = -100 }
+		relation = { who = KRQ value = -100 }
 		prestige = -10
 	}
 }
 
+#Iranian intervention in the Iraqi Civil War
 country_event = {
 	id = 8008026
 	title = EVT_8008026_NAME
@@ -1101,7 +1644,10 @@ country_event = {
 
 	trigger = {
 		tag = PER
+		government = theocracy
+		is_vassal = no
 		exists = ISI
+		ISI = { is_vassal = no }
 		has_global_flag = iraqi_civil_war
 	}
 
@@ -1111,33 +1657,32 @@ country_event = {
 
 	option = {
 		name = EVT_8008026_A
-		ai_chance = { factor = 100 }
+		ai_chance = { factor = 0.5 }
 		ISI = { add_country_modifier = { name = limited_military_intervention duration = 3500 } }
 		diplomatic_influence = { who = IRQ value = 100 }
 		any_pop = { consciousness = -4 }
 		treasury = -1250
 		IRQ = { small_arms = 300 weaponry = 100 }
-		KUR = { small_arms = 100 weaponry = 33 }
+		KRQ = { small_arms = 100 weaponry = 33 }
 		relation = { who = IRQ value = 150 }
-		relation = { who = KUR value = 150 }
-		prestige = 10
+		relation = { who = KRQ value = 150 }
+		prestige = 50
 	}
 
 	option = {
 		name = EVT_8008026_B
-		ai_chance = { factor = 0 }
+		ai_chance = { factor = 0.2 }
 		any_pop = { consciousness = -5 }
 		diplomatic_influence = { who = IRQ value = 200 }
 		relation = { who = IRQ value = 200 }
-		relation = { who = KUR value = 150}
+		relation = { who = KRQ value = 150}
 		IRQ = { small_arms = 400 weaponry = 150 }
-		KUR = { small_arms = 200 weaponry = 75 }
+		KRQ = { small_arms = 200 weaponry = 75 }
 		treasury = -2250
 		war = {
 			target = ISI
 			attacker_goal = {
-				casus_belli = liberate_country
-				country = IRQ
+				casus_belli = free_allied_cores
 			}
 			defender_goal = {
 				casus_belli = status_quo
@@ -1145,11 +1690,12 @@ country_event = {
 		}		
 	}
 	option = {
-		name = EVT_8008026_A
-		ai_chance = { factor = 100 }
+		name = "Do nothing"
+		ai_chance = { factor = 0.3 }
 		any_pop = { consciousness = 5 }
 		relation = { who = IRQ value = -100 }
-		relation = { who = KUR value = -100}
+		relation = { who = KRQ value = -100 }
+		relation = { who = USA value = 100 }
 		prestige = -10
 	}
 }

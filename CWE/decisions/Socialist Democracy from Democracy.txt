@@ -1,47 +1,84 @@
 political_decisions = {
 
-transition_to_social_democracy = {
+	transition_to_social_democracy = {
 		picture = "transition_to_social_democracy"
-	potential = {
-OR = { government = democracy government = democracy1 }
-
-ruling_party_ideology = socialist
-
-			}
+		potential = {
+			OR = { government = democracy government = democracy1 }
+			ruling_party_ideology = socialist
+		}
 
 		allow = {
 
-wage_and_work_hours = six_hours
-unemployment_subsidies = citizen_salary
-pensions = good_pensions
-health_care = good_health_care
-education = unlimited_education
+			wage_and_work_hours = six_hours
+			unemployment_subsidies = citizen_salary
+			pensions = good_pensions
+			health_care = good_health_care
+			education = unlimited_education
 
-OR = { market_communism = 1 average_consciousness = 6 }
+			OR = { market_communism = 1 average_consciousness = 6 }
 
-NOT = { average_militancy = 3 }
+			#Corruption or high militancy encourages socialist democracy formation
+			OR = {
+				ai = no
+				has_country_modifier = massive_government_corruption
+				has_country_modifier = large_government_corruption
+				average_militancy = 4
+			}
+			
+			#Personality of leader determines if country goes down the path of dictatorship
+			OR = {
+				ai = no
+				has_country_modifier = imperious_autocrat
+				has_country_modifier = prince_of_terror
+				has_country_modifier = military_man
+				has_country_modifier = lord_admiral
+				has_country_modifier = efficient_sociopath
+				has_country_modifier = ambitious_union_boss
+			}
 
 			war = no
 			election = no
 			is_vassal = no
 			OR = {
-			communist_social = 50
-			communist = 60
-			socialist = 80
+				upper_house = { ideology = communist_social value = 0.66 }
+				upper_house = { ideology = communist value = 0.66 }
+				upper_house = { ideology = socialist value = 0.66 }
 			}
-					}
+			
+		}
 
 		effect = {
-		prestige = 50
-		government = socialist_democracy
-		country_event = 800054
-		political_reform = feminist
-		set_country_flag = disable_demo_event
+			prestige = 50
+			government = socialist_democracy
+			
+			#Socialist democracies are flawed democracies
+			political_reform = regulated_opinion
+			political_reform = universal_voting
+			political_reform = parties_restrict_non_democratic
+			
+			political_reform = free_trade_unions
+
+			any_pop = {
+				scaled_militancy = {
+					factor = 10
+					ideology = conservative
 				}
-		ai_will_do = { 
-			factor = 1 
-	modifier = { has_global_flag = blocsenabled factor = 0 }
+				scaled_militancy = {
+					factor = 10
+					ideology = traditionalist
+				}
+				scaled_militancy = {
+					factor = 10
+					ideology = liberal
+				}
 			}
+
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = { has_global_flag = blocsenabled factor = 0 }
+			modifier = { tag = RUS factor = 0 }
+		}
 	}
 
 }

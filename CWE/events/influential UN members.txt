@@ -1,68 +1,135 @@
-#Extremely Influential Members of the UN Rank 1
+#Rank 1 becomes a superpower
 country_event = {
 	id = 1500001
-	title = "$COUNTRY$'s clout in the UN has reached Foremost Superpower levels!"
-	desc = "Our immense hard and soft power has enabled us to be extremely influential in the international community."
+	title = "No.1 Superpower"
+	desc = EVTDESC1500001
 	picture = "united_nations_superpowers"
+	
+	major = yes
 
 	trigger = {
-	
-	rank = 1
-OR = { 
-NOT = { has_country_modifier = un_king1 }
-AND = { has_country_modifier = un_king1 has_country_modifier = un_king2 } 
-}
+		rank = 1
+		
+		#Not during a war
+		war = no
+		
+		#Not disarmed
+		is_disarmed = no
+		
+		NOT = { has_country_modifier = un_king1 }
 	}
 	
 	option = {
-	name = "We shall make the most of it!"
-prestige = 200
-set_global_flag = unkingset
-add_country_modifier = { name = un_king1 duration = -1 }
-remove_country_modifier = un_king2
-		}
-			}
-#Extremely Influential Members of the UN Rank 2
+		name = "We shall make the most of it!"
+		set_global_flag = unkingset
+		
+		remove_country_modifier = un_king2
+		
+		add_country_modifier = { name = un_king1 duration = -1 }
+		
+		add_country_modifier = { name = superpower duration = -1 }
+	}
+	
+}
+
+#Rank 2 becomes a superpower
 country_event = {
 	id = 1500002
-	title = "$COUNTRY$'s clout in the UN has reached Second Formost Superpower levels!"
+	title = "No.2 Superpower"
 	desc = "Our immense hard and soft power has enabled us to be extremely influential in the international community."
 	picture = "united_nations_superpowers"
+	
+	major = yes
 
 	trigger = {
-	NOT = { rank = 1 }
-	rank = 2
-OR = { 
-NOT = { has_country_modifier = un_king2 }
-AND = { has_country_modifier = un_king2 has_country_modifier = un_king1 } 
-}
+		NOT = { rank = 1 }
+		
+		#Not during a war
+		war = no
+		
+		#Not disarmed
+		is_disarmed = no
+		
+		#Potential unipolar world post cold war
+		OR = {
+		
+			#Post Cold War
+			AND = {
+				rank = 2
+				
+				#Military or Industrial Score is either equal or more than the rank 1 power
+				any_greater_power = { 
+					rank = 1 
+					OR = { 
+						NOT = { military_score = THIS } 
+						NOT = { industrial_score = THIS }
+					}
+				}
+			}
+			
+			#Cold War
+			AND = {
+				rank = 2
+				has_global_flag = blocsenabled
+				OR = { 
+					tag = RUS 
+					tag = CHI 
+					military_score = 2000 
+				}
+			}
+		}
+		
+		NOT = { has_country_modifier = un_king2 }
 	}
 	
 	option = {
-	name = "We shall make the most of it!"
-prestige = 150
-add_country_modifier = { name = un_king2 duration = -1 }
-remove_country_modifier = un_king1
-		}
-			}
-###Loss of extremely influential member of the UN status ###
+		name = "We shall make the most of it!"
+		set_global_flag = unkingset
+		
+		remove_country_modifier = un_king1
+		
+		add_country_modifier = { name = un_king2 duration = -1 }
+		
+		add_country_modifier = { name = superpower duration = -1 }
+	}
+	
+}
+			
+#Clear superpower status
 country_event = {
 	id = 1500003
-	title = "$COUNTRY$'s clout in the UN has diminished below superpower levels!"
-	desc = "Our diminished hard and soft power has no longer allowed us to be extremely influential in the international community."
+	title = "Superpower Status Lost"
+	desc = "Our diminished industrial and military score means that we are no longer influential enough to be considered a superpower in the eyes of international community."
 	picture = "united_nations_superpowers"
+	
+	major = yes
 
 	trigger = {
-	
-	NOT = { rank = 1 }
-	NOT = { rank = 2 }
-	OR = { has_country_modifier = un_king1 has_country_modifier = un_king2 }
+		NOT = { rank = 2 }
+		
+		#Rank 1 and 2 did not gain their rank through mobilisation or is disarmed
+		NOT = { 
+			any_greater_power = { 
+				rank = 2 
+				OR = { war = yes is_disarmed = yes }
+			}
+		}
+		
+		OR = { 
+			has_country_modifier = un_king1 
+			has_country_modifier = un_king2 
+			has_country_modifier = superpower 
+		}
 	}
 	
 	option = {
-	name = "This is horrible!"
-prestige = -100
-remove_country_modifier = un_king1
-remove_country_modifier = un_king2
-		}
-			}
+		name = "This is horrible!"
+		prestige_factor = -0.05
+		
+		remove_country_modifier = un_king1
+		remove_country_modifier = un_king2
+		
+		remove_country_modifier = superpower
+	}
+
+}

@@ -1,0 +1,103 @@
+political_decisions = {
+
+	fund_the_ira = {
+		picture = "fund_the_ira"
+		potential = {
+			tag = IRE
+
+			NOT = { OR = { government = hms_government government = hms_government1 government = absolute_monarchy } }
+
+			any_core = { 
+				NOT = { owned_by = IRE }
+				NOT = { has_province_modifier = instigating_rebels }
+			}
+
+			NOT = { has_global_flag = good_friday_agreement_done }
+		}
+
+		allow = {
+			money = 100000
+			OR = { ai = no NOT = { badboy = 0.5 } }
+			election = no
+			is_vassal = no
+			NOT = { OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive ruling_party_ideology = big_tent } }
+		}
+
+		effect = {
+
+			set_global_flag = ira_founded
+
+			money = -50000
+			badboy = 5
+
+			all_core = { 
+				limit = { NOT = { owned_by = IRE } } 
+				add_province_modifier = { name = instigating_rebels duration = 1825 }
+			}
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+
+	}
+
+	good_friday_agreement = {
+		picture = "good_friday_agreement"
+		potential = {
+			has_global_flag = ira_founded
+			OR = { tag = ENG tag = FBU tag = ENL tag = NIR }
+			any_owned_province = { is_core = IRE has_province_modifier = instigating_rebels }
+			exists = IRE
+			IRE = { is_vassal = no }
+		}
+
+		allow = {
+			NOT = { badboy = 0.5 }
+			election = no
+			war = no
+			is_vassal = no
+			OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive ruling_party_ideology = socialist ruling_party_ideology = big_tent }
+
+			cultural_imperialism = 1
+
+			IRE = { cultural_imperialism = 1 NOT = { OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist } } }
+
+			OR = { 
+				relation = { who = IRE value = 200 } 
+				AND = { ai = yes IRE = { ai = yes } } 
+			}
+
+		}
+
+		effect = {
+
+			clr_global_flag = ira_founded
+
+			set_global_flag = good_friday_agreement_done
+
+			#Good Friday Agreement event for Ireland
+			IRE = { country_event = 9 }
+
+			prestige = 50
+			add_accepted_culture = irish
+			any_pop = {
+				militancy = -3
+				consciousness = -2
+			}
+
+			any_owned = { 
+				limit = { is_core = IRE } 
+				remove_province_modifier = nationalist_agitation
+				remove_province_modifier = instigating_rebels
+			}
+
+		}
+
+		ai_will_do = {
+			factor = 1
+		}
+
+	}
+
+}

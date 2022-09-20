@@ -4,14 +4,42 @@ country_event = {
 	# EVT_8011433_NAME;Iranian-Saudi Cold War
 	desc = EVT_8011433_DESC
 	picture = "iranian_saudi_cold_war"
+	
 	fire_only_once = yes
 
 	trigger = {
 		tag = SAA
-		year = 2011 #consider replacing with appropriate cultural technology or flag, e.g. arab spring
+		has_global_flag = arab_spring #2011
+		
+		government = absolute_monarchy
+		is_vassal = no
+		war = no
+		
+		#Poor relations with Iran
+		OR = {
+			ai = yes #Backstop
+			NOT = { relation = { who = PER value = 0 } }
+		}
+		
+		#Iran
+		PER = {
+			exists = yes
+			
+			government = theocracy
+			is_vassal = no
+			war = no
+		}
+		
+		#Iran does not have any sway over SAA or vice versa
 		NOT = { in_sphere = PER }
 		NOT = { is_sphere_leader_of = PER }
-		IRQ = { primary_culture = shia_arab }
+		
+		#Iraq
+		IRQ = {
+			OR = { government = democracy government = democracy1 }
+			is_vassal = no
+			war = no 
+		}
 	}
 
 	mean_time_to_happen = {
@@ -19,18 +47,25 @@ country_event = {
 	}
 
 	option = {
-		name = EVT_8011433_A
-
-		ai_chance = { factor = 100 }
+		name = EVT_8011433_A #Vie for influence against Iran.
+		prestige = 100
+		
+		#Iranian reaction
 		PER = { country_event = 8011441 }
-		prestige = 20
-	}
-	option = {
-		name = EVT_8011433_B
 
-		ai_chance = { factor = 0 }
-		prestige = -20
+		ai_chance = { factor = 0.9 }
 	}
+	
+	option = {
+		name = EVT_8011433_B #Don't get involved.
+		
+		PER = { prestige = 100 }
+		
+		relation = { who = PER value = 25 }
+
+		ai_chance = { factor = 0.1 }
+	}
+	
 }
 
 country_event = {
@@ -39,21 +74,30 @@ country_event = {
 	# EVT_8011433_NAME;Iranian-Saudi Cold War
 	desc = EVT_8011433_DESC
 	picture = "iranian_saudi_cold_war"
+	
 	is_triggered_only = yes #PER
 
 	option = {
-		name = EVT_8011441_A
+		name = EVT_8011441_A #Vie for influence against Saudi Arabia.
+		prestige = 100
+		
+		set_global_flag = SAA_PER_cold_war_flag
 
-		ai_chance = { factor = 100 }
 		relation = { who = SAA value = -200 }
-		prestige = 20
+		
+		ai_chance = { factor = 0.9 }
 	}
+	
 	option = {
-		name = EVT_8011433_B
+		name = EVT_8011433_B #Don't get involved.
+		
+		FROM = { prestige = 100 }
+		
+		relation = { who = FROM value = 25 }
 
-		ai_chance = { factor = 0 }
-		prestige = -20
+		ai_chance = { factor = 0.1 }
 	}
+	
 }
 
 ###########################################################################
@@ -66,29 +110,36 @@ country_event = {
 	# EVT_8018220_NAME;Saudi Arabian-led intervention in Yemeni Civil War
 	desc = EVT_8018220_DESC
 	picture = "saudi_arabian_intervention_in_yemen"
+	
 	fire_only_once = yes
 
 	trigger = {
 		tag = SAA
+		has_global_flag = SAA_PER_cold_war_flag #2011
 
-		exists = HOU
-		exists = YEM
+		government = absolute_monarchy
+		is_vassal = no
 		war = no
+		
+		#Iran
+		PER = {
+			exists = yes
+			
+			government = theocracy
+			is_vassal = no
+		}
+		
+		#Iran does not have any sway over SAA or vice versa
 		NOT = { in_sphere = PER }
-		has_global_flag = yemeni_civil_war
+		NOT = { is_sphere_leader_of = PER }
+		
+		#2015 Yemen Civil War
+		YEM = { war_with = HOU }
+		has_global_flag = yemeni_civil_war #2015
 	}
 
 	mean_time_to_happen = {
 		months = 12
-
-		modifier = {
-			factor = 0.5
-			OR = { government = theocracy government = absolute_monarchy }
-		}
-		modifier = {
-			factor = 0.5
-			NOT = { relation = { who = PER value = 0 } }
-		}
 		modifier = {
 			factor = 0.5
 			is_secondary_power = yes
@@ -104,34 +155,78 @@ country_event = {
 	}
 
 	option = {
-		name = EVT_8018220_A
+		name = "Support the Yemeni Government!"
+		
+		set_country_flag = intervention_in_2015_YEM_civil_war_flag
 
-		ai_chance = { factor = 100 }
-		treasury = -600
-		small_arms = -600 weaponry = -50 petroleum = -50
-		YEM = { small_arms = 600 weaponry = 50 petroleum = 50 }
-		create_alliance = YEM #civil war CB means cannot be called in, so should be harmless
-		any_pop = { limit = { culture = shia_arab } militancy = 1.5  consciousness = 4 }
-		casus_belli = { target = YEM type = liberate_country months = 12 }
+		prestige = 50
+		
+		money = -50000
+		
+		#Domestic effect
+		any_pop = { 
+			limit = { is_primary_culture = yes } 
+			consciousness = 5
+			militancy = -5
+		}
+		
+		#Aid to YEM
+		create_alliance = YEM
+		YEM = {
+			money = 10000
+			small_arms = 50
+			weaponry = 50
+			aeroplanes = 50
+			ammunition = 50
+			automobiles = 50
+		}
+		
+		#Gain relations with Yemen
+		relation = { who = YEM value = 100 }
+		diplomatic_influence = { who = YEM value = 100 }
+		
+		#Weaken Houthis
 		war = {
 			target = HOU
 			attacker_goal = {
-				casus_belli = liberate_country
-				country = YEM
+				casus_belli = cut_down_to_size
 			}
 			defender_goal = {
-				casus_belli = status_quo
+				casus_belli = humiliate
 			}
 			call_ally = no
-		}	
+		}
+		
+		#Lose relations with Iran
+		random_country = {
+			limit = { tag = PER government = theocracy is_vassal = no }
+			relation = { who = THIS value = -50 }
+			THIS = { diplomatic_influence = { who = PER value = -50 } }
+		}
+		
+		#Gain relations with Western Powers
+		any_country = {
+			limit = { 
+				USA = { has_country_flag = 911 } #Western powers are concerned with terrorism
+				is_greater_power = yes
+				OR = { tag = USA tag = ENG tag = FRA }
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+			}
+			relation = { who = THIS value = 50 }
+		}
+		
+		ai_chance = { factor = 0.9 }
 	}
+	
 	option = {
-		name = EVT_8018220_B
-
-		ai_chance = { factor = 0 }
-		any_pop = { consciousness = 4 }
-		prestige = -10
+		name = "There is no need to interfere"
+		relation = { who = YEM value = -50 }
+		diplomatic_influence = { who = YEM value = -50 }
+		relation = { who = HOU value = 50 }
+		diplomatic_influence = { who = HOU value = 50 }
+		ai_chance = { factor = 0.1 }
 	}
+	
 }
 
 country_event = {
@@ -140,28 +235,36 @@ country_event = {
 	# EVT_8011434_NAME;Iranian involvement in the Yemeni Civil War
 	desc = EVT_8011434_DESC
 	picture = "iranian_involvement_yemeni_civil_war"
+	
 	fire_only_once = yes
 
 	trigger = {
 		tag = PER
+		has_global_flag = SAA_PER_cold_war_flag #2011
 
-		exists = HOU
-		exists = YEM
+		government = theocracy
+		is_vassal = no
+		war = no
+		
+		#Saudi Arabia
+		SAA = {
+			exists = yes
+			
+			government = absolute_monarchy
+			is_vassal = no
+		}
+		
+		#SAA does not have any sway over PER or vice versa
 		NOT = { in_sphere = SAA }
-		has_global_flag = yemeni_civil_war
+		NOT = { is_sphere_leader_of = SAA }
+		
+		#2015 Yemen Civil War
+		YEM = { war_with = HOU }
+		has_global_flag = yemeni_civil_war #2015
 	}
 
 	mean_time_to_happen = {
 		months = 12
-
-		modifier = {
-			factor = 0.5
-			OR = { government = theocracy government = absolute_monarchy }
-		}
-		modifier = {
-			factor = 0.5
-			NOT = { relation = { who = SAA value = 0 } }
-		}
 		modifier = {
 			factor = 0.5
 			is_secondary_power = yes
@@ -177,39 +280,76 @@ country_event = {
 	}
 
 	option = {
-		name = EVT_8011434_A
+		name = "Support the Houthis!"
+		
+		set_country_flag = intervention_in_2015_YEM_civil_war_flag
 
-		ai_chance = { factor = 100 }
-		treasury = -550
-		prestige = 15
-		small_arms = -500 weaponry = -100 petroleum = -100
-		HOU = { small_arms = 500 weaponry = 100 petroleum = 100 }
-		relation = { who = HOU value = 200 }
-		diplomatic_influence = { who = HOU value = 200 } #In case of GP
+		prestige = 50
+		
+		money = -50000
+		
+		#Domestic effect
+		any_pop = { 
+			limit = { is_primary_culture = yes } 
+			consciousness = 5
+			militancy = -5
+		}
+		
+		#Aid to HOU
 		create_alliance = HOU
-		random_country = { limit = { exists = yes tag = ALW } relation = { who = THIS value = 100 } }
-		relation = { who = YEM value = -200 }
-		relation = { who = SAA value = -150 }
-		relation = { who = UAE value = -100 }
-		relation = { who = BHR value = -100 }
-		relation = { who = KUW value = -100 }
-		relation = { who = QAT value = -100 }
+		HOU = {
+			money = 10000
+			small_arms = 50
+			weaponry = 50
+			aeroplanes = 50
+			ammunition = 50
+			automobiles = 50
+		}
+		
+		#Gain relations with Houthis
+		relation = { who = HOU value = 100 }
+		diplomatic_influence = { who = HOU value = 100 }
+		
+		#Lose relations with Saudi Arabia
+		random_country = {
+			limit = { tag = SAA government = absolute_monarchy is_vassal = no }
+			relation = { who = THIS value = -50 }
+			THIS = { diplomatic_influence = { who = SAA value = -50 } }
+		}
+		
+		#Lose relations with Western Powers
 		any_country = {
-			limit = {
-				primary_culture = sunni_arab
-				capital_scope = { continent = africa }
+			limit = { 
+				USA = { has_country_flag = 911 } #Western powers are concerned with terrorism
+				is_greater_power = yes
+				OR = { tag = USA tag = ENG tag = FRA }
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
 			}
 			relation = { who = THIS value = -50 }
 		}
-		relation = { who = JOR value = -50 }
+		
+		#Lose relations with Middle Eastern countries
+		any_country = {
+			limit = { 
+				capital_scope = { continent = mena }
+				is_vassal = no
+				OR = { government = absolute_monarchy government = democracy government = democracy1 government = hms_government government = hms_government1 }
+			}
+			relation = { who = THIS value = -50 }
+		}
+		
+		ai_chance = { factor = 0.9 }
 	}
+	
 	option = {
-		name = EVT_8011434_B
-
-		ai_chance = { factor = 0 }
-		any_pop = { consciousness = 4 }
-		prestige = -15
+		name = "There is no need to interfere"
+		relation = { who = YEM value = 50 }
+		diplomatic_influence = { who = YEM value = 50 }
+		relation = { who = HOU value = -50 }
+		diplomatic_influence = { who = HOU value = -50 }
+		ai_chance = { factor = 0.1 }
 	}
+	
 }
 
 country_event = {
@@ -218,19 +358,24 @@ country_event = {
 	# EVT_8011435_NAME;Our intervention in Yemen ends in disaster
 	desc = EVT_8011435_DESC
 	picture = "saa_yemeni_intervention_disaster"
+	
 	is_triggered_only = yes #SAA, evt 8018216 yemeni_civil_wars.txt
-
-	mean_time_to_happen = { months = 1 }
 
 	option = {
 		name = EVT_8011435_A
-
-		any_pop = { militancy = 2.5 consciousness = 4 }
+		prestige = -50
+		
+		any_pop = { militancy = 4 consciousness = 4 }
+		
 		relation = { who = YEM value = -150 }
-		relation = { who = PER value = -50 }
-		PER = { country_event = 8011438 }
-		prestige = -15
+		
+		random_country = {
+			limit = { tag = PER government = theocracy is_vassal = no }
+			country_event = 8011438
+			relation = { who = THIS value = -50 }
+		}
 	}
+	
 }
 
 country_event = {
@@ -239,17 +384,24 @@ country_event = {
 	# EVT_8011436_NAME;Our intervention in Yemen is a success
 	desc = EVT_8011436_DESC
 	picture = "hadi_government_victory"
+	
 	is_triggered_only = yes #SAA, evt 8018217 yemeni_civil_wars.txt
 
 	option = {
 		name = EVT_8011436_A
+		prestige = -50
+		
+		any_pop = { militancy = -4 consciousness = -4 }
 
-		ai_chance = { factor = 100 }
 		relation = { who = YEM value = 150 }
-		relation = { who = PER value = -50 }
-		PER = { country_event = 8011439 }
-		prestige = 15
+		
+		random_country = {
+			limit = { tag = PER government = theocracy is_vassal = no }
+			country_event = 8011439
+			relation = { who = THIS value = -50 }
+		}
 	}
+	
 }
 
 # Stalemate
@@ -259,19 +411,25 @@ country_event = {
 	# EVT_8011437_NAME;The Partition of Yemen
 	desc = EVT_8011437_DESC
 	picture = "iranian_involvement_yemeni_civil_war"
+	
 	is_triggered_only = yes #SAA, evt 8018219 yemeni_civil_wars.txt
 
 	option = {
 		name = EVT_8011437_A
+		prestige = -25
+		
+		any_pop = { militancy = -2 consciousness = -2 }
 
-		ai_chance = { factor = 100 }
 		relation = { who = YEM value = -150 }
 		relation = { who = SYE value = 150 }
-		relation = { who = PER value = -50 }
-		any_pop = { consciousness = -2 }
-		PER = { country_event = 8011440 }
-		prestige = 5
+		
+		random_country = {
+			limit = { tag = PER government = theocracy is_vassal = no }
+			country_event = 8011440
+			relation = { who = THIS value = -50 }
+		}
 	}
+	
 }
 
 country_event = {
@@ -280,16 +438,21 @@ country_event = {
 	# EVT_8011438_NAME;The Houthis have won the Yemeni civil war
 	desc = EVT_8011438_DESC
 	picture = "houthi_victory"
+	
 	is_triggered_only = yes #PER
 
 	option = {
 		name = EVT_8011438_A
-
-		ai_chance = { factor = 100 }
-		relation = { who = YEM value = 150 }
-		relation = { who = SAA value = -50 }
-		prestige = 15
+		prestige = 50
+		
+		relation = { who = HOU value = 150 }
+		
+		random_country = {
+			limit = { tag = SAA government = absolute_monarchy is_vassal = no }
+			relation = { who = THIS value = -50 }
+		}
 	}
+	
 }
 
 country_event = {
@@ -298,17 +461,23 @@ country_event = {
 	# EVT_8011439_NAME;The Houthis have lost the Yemeni Civil War
 	desc = EVT_8011439_DESC
 	picture = "hadi_government_victory"
+	
 	is_triggered_only = yes #PER
 
 	option = {
 		name = EVT_8011439_A
+		prestige = -50
+		
+		any_pop = { militancy = 4 consciousness = 4 }
 
-		ai_chance = { factor = 100 }
 		relation = { who = YEM value = -150 }
-		relation = { who = SAA value = -50 }
-		any_pop = { consciousness = 4 }
-		prestige = -15
+		
+		random_country = {
+			limit = { tag = SAA government = absolute_monarchy is_vassal = no }
+			relation = { who = THIS value = -50 }
+		}
 	}
+	
 }
 
 country_event = {
@@ -317,16 +486,24 @@ country_event = {
 	# EVT_8011440_NAME;The Partition of Yemen
 	desc = EVT_8011440_DESC
 	picture = "partition_of_yemen"
+	
 	is_triggered_only = yes #PER
 
 	option = {
 		name = EVT_8011440_A
+		prestige = 25
+		
+		any_pop = { militancy = -2 consciousness = -2 }
+		
 		relation = { who = YEM value = 150 }
 		relation = { who = SYE value = -150 }
-		relation = { who = SAA value = -50 }
-		any_pop = { consciousness = -2 }
-		prestige = 5
+		
+		random_country = {
+			limit = { tag = SAA government = absolute_monarchy is_vassal = no }
+			relation = { who = THIS value = -50 }
+		}
 	}
+	
 }
 
 ###########################################################################
@@ -334,91 +511,41 @@ country_event = {
 ###########################################################################
 
 country_event = {
-	id = 8011442
-	title = EVT_8011442_NAME
-	# EVT_8011442_NAME;Iranian involvement in the Syrian Civil War
-	desc = EVT_8011442_DESC
-	picture = "iranian_involvement_in_the_syrian_civil_war"
-	fire_only_once = yes
-
-	trigger = {
-		tag = PER
-		exists = USY #Syrian Interim Government
-		exists = SYR
-		NOT = { in_sphere = SAA }
-		has_global_flag = syrian_civil_war
-	}
-
-	mean_time_to_happen = {
-		months = 6
-
-		modifier = {
-			factor = 0.5
-			OR = { government = theocracy government = absolute_monarchy }
-		}
-		modifier = {
-			factor = 0.5
-			NOT = { relation = { who = SAA value = 0 } }
-		}
-		modifier = {
-			factor = 0.5
-			is_secondary_power = yes
-		}
-		modifier = {
-			factor = 0.1
-			is_greater_power = yes
-		}
-	}
-
-	option = {
-		name = EVT_8011442_A
-
-		ai_chance = { factor = 100 }
-		treasury = -250
-		prestige = 10
-		small_arms = -400 weaponry = -100 petroleum = -100
-		SYR = { small_arms = 400 weaponry = 100 petroleum = 100 }
-		relation = { who = SYR value = 150 }
-		diplomatic_influence = { who = SYR value = 150 }
-		relation = { who = USY value = -150 }
-		relation = { who = SAA value = -150 }
-	}
-
-	option = {
-		name = EVT_8011442_B
-
-		ai_chance = { factor = 0 }
-		prestige = -10	
-	}
-}
-
-country_event = {
 	id = 8011443
 	title = EVT_8011442_NAME
 	# EVT_8011442_NAME;Saudi Arabian involvement in the Syrian Civil War
 	desc = EVT_8011442_DESC
 	picture = "foreign_involvement_in_the_syrian_civil_war"
+	
 	fire_only_once = yes
 
 	trigger = {
 		tag = SAA
-		exists = USY
-		exists = SYR
+		has_global_flag = SAA_PER_cold_war_flag #2011
+
+		government = absolute_monarchy
+		is_vassal = no
+		war = no
+		
+		#Iran
+		PER = {
+			exists = yes
+			
+			government = theocracy
+			is_vassal = no
+		}
+		
+		#Iran does not have any sway over SAA or vice versa
 		NOT = { in_sphere = PER }
-		has_global_flag = syrian_civil_war
+		NOT = { is_sphere_leader_of = PER }
+		
+		#2011 Syrian Civil War
+		SYR = { war_with = USY }
+		has_global_flag = syrian_civil_war #2011
 	}
 
 	mean_time_to_happen = {
-		months = 6
-
-		modifier = {
-			factor = 0.5
-			OR = { government = theocracy government = absolute_monarchy }
-		}
-		modifier = {
-			factor = 0.5
-			NOT = { relation = { who = PER value = 0 } }
-		}
+		months = 12
 		modifier = {
 			factor = 0.5
 			is_secondary_power = yes
@@ -427,175 +554,256 @@ country_event = {
 			factor = 0.1
 			is_greater_power = yes
 		}
+		modifier = {
+			factor = 0.1
+			PER = { alliance_with = SYR } #They have already intervened
+		}
 	}
 
 	option = {
-   		name = EVT_8011443_A
-		ai_chance = { factor = 100 }
-		treasury = -250
-		prestige = 10
-		small_arms = -300 weaponry = -75 petroleum = -75
-		USY = { small_arms = 300 weaponry = 75 petroleum = 75 }
-		relation = { who = USY value = 150 }
-		diplomatic_influence = { who = USY value = 150 }
-		relation = { who = SYR value = -150 }
-		relation = { who = PER value = -150 }
-		relation = { who = RUS value = -150 }
-	}
+		name = "Support the Syrian Interim Government!"
+		
+		set_country_flag = intervention_in_2011_SYR_civil_war_flag
 
-	option = {
-   		name = EVT_8011443_B
-		ai_chance = { factor = 0 }
-		prestige = -10	
+		prestige = 50
+		
+		money = -50000
+		
+		#Domestic effect
+		any_pop = { 
+			limit = { is_primary_culture = yes } 
+			consciousness = 5
+			militancy = -5
+		}
+		
+		#Aid to USY
+		create_alliance = USY
+		USY = {
+			money = 10000
+			small_arms = 50
+			weaponry = 50
+			aeroplanes = 50
+			ammunition = 50
+			automobiles = 50
+		}
+		
+		#Gain relations with USY
+		relation = { who = USY value = 100 }
+		diplomatic_influence = { who = USY value = 100 }
+		
+		#Lose relations with Iran
+		random_country = {
+			limit = { tag = PER government = theocracy is_vassal = no }
+			relation = { who = THIS value = -50 }
+			THIS = { diplomatic_influence = { who = PER value = -50 } }
+		}
+		
+		#Gain relations with Western Powers
+		any_country = {
+			limit = {
+				is_greater_power = yes
+				OR = { tag = USA tag = ENG tag = FRA }
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+			}
+			relation = { who = THIS value = 50 }
+		}
+		
+		#Lose relations with Russia
+		random_country = {
+			limit = { tag = RUS is_greater_power = yes ruling_party_ideology = conservative }
+			relation = { who = THIS value = -50 }
+			RUS = { diplomatic_influence = { who = THIS value = -50 } }
+		}
+		
+		ai_chance = { factor = 0.9 }
 	}
+	
+	option = {
+		name = "There is no need to interfere"
+		relation = { who = SYR value = -50 }
+		diplomatic_influence = { who = SYR value = -50 }
+		relation = { who = USY value = 50 }
+		diplomatic_influence = { who = USY value = 50 }
+		ai_chance = { factor = 0.1 }
+	}
+	
 }
 
 country_event = {
+	id = 8011442
+	title = EVT_8011442_NAME
+	# EVT_8011442_NAME;Iranian involvement in the Syrian Civil War
+	desc = EVT_8011442_DESC
+	picture = "iranian_involvement_in_the_syrian_civil_war"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = PER
+		has_global_flag = SAA_PER_cold_war_flag #2011
+
+		government = theocracy
+		is_vassal = no
+		war = no
+		
+		#Saudi Arabia
+		SAA = {
+			exists = yes
+			
+			government = absolute_monarchy
+			is_vassal = no
+		}
+		
+		#SAA does not have any sway over PER or vice versa
+		NOT = { in_sphere = SAA }
+		NOT = { is_sphere_leader_of = SAA }
+		
+		#2011 Syrian Civil War
+		SYR = { war_with = USY }
+		has_global_flag = syrian_civil_war #2011
+	}
+
+	mean_time_to_happen = {
+		months = 12
+		modifier = {
+			factor = 0.5
+			is_secondary_power = yes
+		}
+		modifier = {
+			factor = 0.1
+			is_greater_power = yes
+		}
+		modifier = {
+			factor = 0.1
+			SAA = { alliance_with = USY } #They have already intervened
+		}
+	}
+
+	option = {
+		name = "Support the Syrian Government!"
+		
+		set_country_flag = intervention_in_2011_SYR_civil_war_flag
+
+		prestige = 50
+		
+		money = -50000
+		
+		#Domestic effect
+		any_pop = { 
+			limit = { is_primary_culture = yes } 
+			consciousness = 5
+			militancy = -5
+		}
+		
+		#Aid to SYR
+		create_alliance = SYR
+		SYR = {
+			money = 10000
+			small_arms = 50
+			weaponry = 50
+			aeroplanes = 50
+			ammunition = 50
+			automobiles = 50
+		}
+		
+		#Gain relations with SYR
+		relation = { who = SYR value = 100 }
+		diplomatic_influence = { who = SYR value = 100 }
+		
+		#Lose relations with Saudi Arabia
+		random_country = {
+			limit = { tag = SAA government = absolute_monarchy is_vassal = no }
+			relation = { who = THIS value = -50 }
+			THIS = { diplomatic_influence = { who = SAA value = -50 } }
+		}
+		
+		#Lose relations with Western Powers
+		any_country = {
+			limit = { 
+				USA = { has_country_flag = 911 } #Western powers are concerned with terrorism
+				is_greater_power = yes
+				OR = { tag = USA tag = ENG tag = FRA }
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+			}
+			relation = { who = THIS value = -50 }
+		}
+		
+		#Lose relations with democratic Middle Eastern countries
+		any_country = {
+			limit = { 
+				capital_scope = { continent = mena }
+				is_vassal = no
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+			}
+			relation = { who = THIS value = -50 }
+		}
+		
+		#Gain relations with Russia
+		random_country = {
+			limit = { tag = RUS is_greater_power = yes ruling_party_ideology = conservative }
+			relation = { who = THIS value = 50 }
+			RUS = { diplomatic_influence = { who = THIS value = 50 } }
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "There is no need to interfere"
+		relation = { who = SYR value = 50 }
+		diplomatic_influence = { who = SYR value = 50 }
+		relation = { who = USY value = -50 }
+		diplomatic_influence = { who = USY value = -50 }
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+#Iran won
+country_event = {
 	id = 8011444
-	title = EVT_8011444_NAME
+	title = "Syrian Government wins the Civil War"
 	# EVT_8011444_NAME;The Syrian government has won the Syrian Civil War
 	desc = EVT_8011444_DESC
 	picture = "saa_victory"
+	
 	is_triggered_only = yes #PER, evt 8007657 syrian_civil_war.txt
 
 	option = {
 		name = EVT_8011444_A
-
-		relation = { who = SYR value = 200 }
-		diplomatic_influence = { who = SYR value = 200 }
-		relation = { who = RUS value = 100}
-		relation = { who = USA value = -50 }
-		relation = { who = ENG value = -50 }
-		relation = { who = ISR value = -100 }
-		relation = { who = TUR value = -100 }
-		relation = { who = SAA value = -200 }
-		prestige = 15
+		prestige = 50
+		
+		#Domestic effect
+		any_pop = { 
+			limit = { is_primary_culture = yes } 
+			consciousness = -5
+			militancy = -5
+		}
+		
 	}
+	
 }
 
+#SAA lost
 country_event = {
 	id = 8011445
-	title = EVT_8011444_NAME
+	title = "Syrian Government wins the Civil War"
 	# EVT_8011444_NAME;The Syrian government has won the Syrian Civil War
 	desc = EVT_8011445_DESC
 	picture = "saa_victory"
+	
 	is_triggered_only = yes #SAA, evt 8007657 syrian_civil_war.txt
 
 	option = {
 		name = EVT_8011445_A
-
-		relation = { who = SYR value = -200 }
-		diplomatic_influence = { who = SYR value = -200 }
-		relation = { who = RUS value = -150 }
-		relation = { who = PER value = -150 }
-		any_pop = { consciousness = -4 }
-		prestige = -15
-	}
-}
-
-#Stalemate
-country_event = {
-	id = 8011446
-	title = EVT_8011446_NAME
-	# EVT_8011446_NAME;The Partition of Syria
-	desc = EVT_8011446_DESC
-	picture = "partition_of_syria"
-	fire_only_once = yes
-
-	trigger = {
-		tag = SAA
-		exists = SYR
-		exists = ALW
-		SYR = { primary_culture = sunni_arab }
-		war = no
-	}
-
-	mean_time_to_happen = { months = 1 }
-
-	option = {
-		name = EVT_8011446_A
-
-		relation = { who = ALW value = -200 }
-		relation = { who = SYR value = -200 }
-		relation = { who = RUS value = -125 }
-		relation = { who = PER value = -150 }
-		any_pop = { consciousness = 2 }
-		PER = { country_event = 8011447 }
-		prestige = 5
-	}
-}
-
-country_event = {
-	id = 8011447
-	title = EVT_8011446_NAME
-	# EVT_8011446_NAME;The Partition of Syria
-	desc = EVT_8011446_DESC
-	picture = "partition_of_syria"
-	is_triggered_only = yes #PER
-
-	option = {
-		name = EVT_8011446_A
-		ai_chance = { factor = 100 }
-		relation = { who = ALW value = 200 }
-		diplomatic_influence = { who = ALW value = 200 }
-		relation = { who = SYR value = -200 }
-		relation = { who = RUS value = 125 }
-		relation = { who = SAA value = -150 }
-		any_pop = { consciousness = 2 }
-		prestige = 5
-	}
-}
-
-country_event = {
-	id = 8011448
-	title = EVT_8011448_NAME
-	# EVT_8011448_NAME;The Syrian opposition has won the Syrian Civil War
-	desc = EVT_8011448_DESC
-	picture = "sig_victory"
-	fire_only_once = yes
-
-	trigger = {
-		tag = SAA
-		exists = SYR
-		has_global_flag = syrian_civil_war
-		SYR = { primary_culture = shia_arab }
-		NOT = { exists = USY }
-		SYR = {
-			owns = 897
-			owns = 902
-			owns = 905
+		prestige = -50
+		
+		#Domestic effect
+		any_pop = { 
+			limit = { is_primary_culture = yes } 
+			consciousness = 5
+			militancy = 5
 		}
-		NOT = { exists = ALW }
-		war = no
 	}
-
-	option = {
-		name = EVT_8011448_A
-		relation = { who = SYR value = 200 }
-		diplomatic_influence = { who = SYR value = 200 }
-		relation = { who = RUS value = -125 }
-		relation = { who = PER value = -150 }
-		PER = { country_event = 8011449 }
-		prestige = 15
-	}
-}
-
-country_event = {
-	id = 8011449
-	title = EVT_8011448_NAME
-	# EVT_8011448_NAME;The Syrian opposition has won the Syrian Civil War
-	desc = EVT_8011448_DESC
-	picture = "sig_victory"
-	is_triggered_only = yes #PER
-
-	option = {
-		name = EVT_8011449_A
-
-		any_pop = { militancy = 2.5 consciousness = 4 }
-		relation = { who = SYR value = -200 }
-		diplomatic_influence = { who = SYR value = -200 }
-		relation = { who = RUS value = 100 }
-		relation = { who = SAA value = -150 }
-		prestige = -15
-	}
+	
 }

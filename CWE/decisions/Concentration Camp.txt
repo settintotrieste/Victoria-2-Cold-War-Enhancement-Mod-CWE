@@ -1,25 +1,94 @@
 political_decisions = {
 
-establish_death_camp = {
+	establish_death_camp = {
 		picture = "death_camp"
 		potential = {
-any_owned_province = { total_pops = 500000 }
-NOT = { any_owned_province = { has_province_modifier = death_camp } }
-OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = theocracy government = nationalist_dictatorship government = populist_dictatorship }
-
-				}
-			alert = no
+			any_owned_province = { total_pops = 500000 }
+			NOT = { has_country_flag = death_camp_active }
+			OR = { 
+				government = proletarian_dictatorship 
+				government = proletarian_dictatorship1 
+				government = theocracy 
+				government = nationalist_dictatorship				
+				government = populist_dictatorship 
+				government = presidential_dictatorship 
+			}
+		}
+		
+		alert = no
+		
 		allow = {
 			war = no
-OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = nationalist_dictatorship government = populist_dictatorship }
-			election = no
-				}
-	effect = {
-prestige = -10
-any_owned = { limit = { total_pops = 500000 } add_province_modifier = { name = death_camp duration = -1 } }
+			NOT = { is_disarmed = yes }
 		}
-		ai_will_do = { 
-			factor = 100 
+		
+		effect = {
+			prestige = -10
+			set_country_flag = death_camp_active
+			any_owned = { 
+				limit = { total_pops = 500000 } 
+				add_province_modifier = { name = death_camp duration = -1 } 
 			}
+			add_country_modifier = { name = law_changed_by_force duration = 730 }
+		}
+		
+		ai_will_do = { 
+			factor = 1 
+		}
+	
 	}
+	
+	close_death_camp = {
+		picture = "close_death_camp"
+		potential = {
+			has_country_flag = death_camp_active
+		}
+		
+		alert = no
+		
+		allow = {
+			war = no
+			election = no
+			NOT = { has_country_modifier = law_changed_by_force }
+		}
+		
+		effect = {
+			clr_country_flag = death_camp_active
+			
+			random_owned = {
+				limit = {
+					owner = {
+						OR = { 
+							government = proletarian_dictatorship 
+							government = proletarian_dictatorship1 
+							government = theocracy 
+							government = nationalist_dictatorship				
+							government = populist_dictatorship 
+							government = presidential_dictatorship 
+						}
+					}
+				}
+				
+				owner = {
+					add_country_modifier = { name = revolution_chaos duration = 1825 }
+				}
+			
+			}
+			
+			any_owned = {
+				limit = { has_province_modifier = death_camp } 
+				remove_province_modifier = death_camp 
+			}
+			any_pop = { 
+				limit = { type = slaves } 
+				pop_type = farmers 
+			}
+		}
+		
+		ai_will_do = { 
+			factor = 0
+		}
+	
+	}
+
 }

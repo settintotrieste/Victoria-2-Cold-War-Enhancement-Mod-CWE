@@ -1,183 +1,233 @@
-country_event = { # Interim Government of India
+#Interim Government of India - kickstart independent of india chain
+country_event = {
 	id = 1214010
 	title = EVT_1214010_NAME
 	desc = EVT_1214010_DESC
 	picture = "independence_of_india"
 	
+	fire_only_once = yes
+	
 	trigger = {
-		tag = ENG 
+		tag = ENG
+		government = hms_government
+		year = 1946
 		NOT = { year = 1990 }
 		is_our_vassal = RAJ
 		exists = RAJ
 		NOT = { exists = HND }
 		war = no
-		year = 1947
 		RAJ = { owns = 1236 } # Delhi
 	}
 
 	mean_time_to_happen = {
-		months = 10
+		months = 1
 	}
 
 	option = {
-		name = EVT_1214010_A 
-		prestige = -2 
+		name = "Move towards a united India (Historical Option)"
 		RAJ = { 
 			any_pop = {
-				limit = {
-					culture = indian_muslim
-				}
-				consciousness = 1
-				militancy = 2
+				limit = { religion = sunni }
+				militancy = 10
 			}
-			country_event = 1214011
 		}
-		ai_chance = { factor = 0 }
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Move towards a partitioned India"
+		prestige = -50
+		set_global_flag = partioned_india_option
+		set_global_flag = partioned_india_option_fast
+		ai_chance = { factor = 0.05 }
 	}
 	
 	option = {
-		name = EVT_1214010_B 
+		name = "There shall be no independence"
+		prestige_factor = -0.05
+		badboy = 10
 		RAJ = { 
 			any_pop = {
-				limit = {
-					culture = indian
-				}
-				consciousness = 1
-				militancy = 1
+				militancy = 10
 			}
-			country_event = 1214011
+			add_country_modifier = { name = revolution_chaos duration = 3650 }
 		}
-		ai_chance = { factor = 100 }
-	}
-
-	option = {
-		name = EVT_1214010_C
-		RAJ = { 
-			any_pop = {
-				limit = {
-					OR = { culture = indian culture = indian_muslim }
-				}
-				militancy = 5
-			}
-		}
-		ai_chance = { factor = 0 }
+		ai_chance = { factor = 0.05 }
 	}
 
 }
 
+#Congress and Muslim League Negotiations - If united india was chosen
 country_event = {
 	id = 1214011
 
 	title = EVT_1214011_NAME
 	desc = EVT_1214011_DESC
 	picture = "ali_jinnah_negotiating"
-	is_triggered_only = yes # RAJ
 	
-	option = {
-		name = EVT_1214011_A 
-		ai_chance = { factor = 0.95 }
-		ENG = { country_event = 1214012 }
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ENG
+		government = hms_government
+		year = 1946
+		NOT = { year = 1990 }
+		is_our_vassal = RAJ
+		exists = RAJ
+		NOT = { exists = HND }
+		war = no
+		NOT = { has_global_flag = partioned_india_option }
+		NOT = { has_global_flag = united_india_option }
+	}
+
+	mean_time_to_happen = {
+		months = 8
+		modifier = { factor = 0 year = 1947 }
 	}
 	
 	option = {
-		name = EVT_1214011_B
-		ai_chance = { factor = 0.05 }
-		badboy = 1.0
-RAJ = { country_event = { id = 1412198 days = 90 } }
-		any_pop = {
-			limit = {
-				culture = indian
+		name = "Accept a partitioned India"
+		
+		RAJ = { 
+			any_pop = {
+				militancy = -3
 			}
-			militancy = 3
 		}
+		
+		set_global_flag = partioned_india_option
+		ai_chance = { factor = 0.1 }
+	}
+	
+	option = {
+		name = "Continue to push for a united India"
+		
+		RAJ = { 
+			any_pop = {
+				limit = { religion = sunni }
+				militancy = 3
+			}
+		}
+		
+		#Direct Action Day
+		set_global_flag = direct_action_day
+		
+		ai_chance = { factor = 0.9 }
 	}
 
 }
 
+#Direct Action Day
 country_event = {
 	id = 1214012
 	title = EVT_1214012_NAME
 	# EVT_1214012_NAME;Direct Action Day
 	desc = EVT_1214012_DESC
-	picture = "independence_of_india"
-	is_triggered_only = yes # ENG
+	picture = "direct_action_day"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ENG
+		government = hms_government
+		year = 1946
+		NOT = { year = 1990 }
+		is_our_vassal = RAJ
+		exists = RAJ
+		NOT = { exists = HND }
+		war = no
+		has_global_flag = direct_action_day
+	}
 
-	option = {
-		name = EVT_1214012_A 
-		ai_chance = { factor = 100 }
-		prestige = 2
-		release_vassal = RAJ
-
-		any_country = { limit = { OR = { tag = HYD tag = MNP tag = RAA tag = IND tag = GWA tag = BER tag = ORI tag = NAX tag = BOD tag = MYS tag = TRA tag = AZK tag = BLO tag = JAK tag = SIN tag = TIB tag = NEP tag = BHU tag = SIK } } country_event = 8214019 }
-		RAJ = { country_event = { id = 8214013 days = 10 } }
+	mean_time_to_happen = {
+		months = 1
 	}
 
 	option = {
-		name = EVT_1214012_B 
-		ai_chance = { factor = 0 }
-		prestige = -2
-		any_pop = {
-			limit = {
-				culture = indian
+		name = "Accept the partition plan"
+		set_global_flag = partioned_india_option
+		RAJ = { add_country_modifier = { name = revolution_chaos duration = 365 } }
+		RAJ = { 
+			any_pop = {
+				limit = { religion = sunni }
+				militancy = 3
 			}
-			consciousness = 1
-			militancy = 4
 		}
-		# country_event = { id = 1214010 days = 30 } 
-	}
-
-}
-
-country_event = { # Mountbatten Plan 
-	id = 8214013
-	title = EVT_8214013_NAME
-	desc = EVT_8214013_DESC
-	picture = "independence_of_india"
-	is_triggered_only = yes # RAJ
-
-	option = {
-		name = EVT_8214013_A 
-		ai_chance = { factor = 100 }
-		
-		any_pop = {
-			limit = { OR = { culture = indian culture = indian_muslim } }
-			consciousness = 2
-			militancy = -10
-		}		
-		prestige = -10
-		#release = PAK
-		primary_culture = indian
-		country_event = 8007205
+		ai_chance = { factor = 0.95 }
 	}
 	
 	option = {
-		name = EVT_8214013_B 
-		ai_chance = { factor = 0 }
-		ENG = { diplomatic_influence = { who = RAJ value = -100 } }
-		prestige = -20
-		any_pop = {
-			limit = {
-				culture = indian_muslim
+		name = "Press on with a united India!"
+		prestige_factor = -0.025
+		badboy = 5
+		RAJ = { add_country_modifier = { name = revolution_chaos duration = 1825 } }
+		RAJ = {
+			any_pop = {
+				limit = { religion = sunni }
+				militancy = 10
 			}
-			consciousness = 2
-			militancy = 5
 		}
-		any_pop = {
-			limit = {
-				culture = indian
-			}
-			consciousness = 2
-			militancy = -10
-		}		
-		any_owned = {
-			limit = { is_core = PAK }
-			add_core = HND
-		}
-		primary_culture = indian
-		country_event = 8007205
+		set_global_flag = united_india_option
+		ai_chance = { factor = 0.05 }
 	}
 
 }
+
+#Mountbatten Plan - Independence of India, ENG
+country_event = {
+	id = 8214013
+	title = EVT_8214013_NAME
+	desc = EVT_8214013_DESC
+	picture = "mountbatten_plan"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ENG
+		government = hms_government
+		OR = { year = 1947 has_global_flag = partioned_india_option_fast }
+		NOT = { year = 1990 }
+		is_our_vassal = RAJ
+		exists = RAJ
+		NOT = { exists = HND }
+		war = no
+		has_global_flag = partioned_india_option
+		NOT = { has_global_flag = united_india_option }
+	}
+
+	mean_time_to_happen = {
+		months = 8
+		modifier = { factor = 0.5 year = 1948 }
+	}
+
+	option = {
+		name = "Grant India and Pakistan independence"
+		
+		release_vassal = RAJ
+		
+		RAJ = { country_event = 8007205 }
+		
+		ai_chance = { factor = 1 }
+		
+	}
+	
+	option = {
+		name = "I've totally forgotten about independence!"
+		
+		prestige_factor = -0.05
+		badboy = 20
+		RAJ = {
+			any_pop = {
+				militancy = 10
+			}
+			add_country_modifier = { name = revolution_chaos duration = 3650 }
+		}
+
+		ai_chance = { factor = 0 }
+	}
+
+}
+
+#British influence on Princely states wanes
 country_event = {
 	id = 8214019
 	title = EVT_8214019_NAME
@@ -189,49 +239,81 @@ country_event = {
 	
 	option = {
 		name = EVT_8214019_A 
-FROM = { diplomatic_influence = { who = THIS value = -200 } }
-FROM = { relation = { who = THIS value = -200 } }
-FROM = { leave_alliance = THIS }
-		# EVT_8214019_A;We have to handle this new political environment!
+		FROM = { diplomatic_influence = { who = THIS value = -200 } }
+		FROM = { relation = { who = THIS value = -200 } }
+		FROM = { leave_alliance = THIS }
 	}
+	
 }
+
+#The independence of India event
 country_event = {
   id = 8007205
   title = EVT_8007205_NAME
   desc = EVT_8007205_DESC
-  picture = "nwo2_independence_of_india"
-  #is_triggered_only = yes # RAJ
+  picture = "union_of_india"
+  
+	fire_only_once = yes
 
-	trigger = { # either by trigger event call or if UK does not allow indian independance, when the RAJ becomes a GP
+	# when the RAJ becomes independent
+
+	trigger = {
 		tag = RAJ
-		exists = RAJ
 		is_vassal = no
 		war = no
-NOT = { has_country_flag = united_HND_PAK }
+		NOT = { has_country_flag = united_HND_PAK }
+		NOT = { has_country_flag = 8007205_fired }
 		RAJ = { owns = 1236 } # Delhi
 	}
 	
-  option = {
-    name = EVT_8007205_A
-any_owned = {
-					limit = { is_core = PAK }
-					secede_province = PAK
-				}
-	PAK = { government = hms_government }
-	PAK = { capital = 1288 }
-	ENG = { release_vassal = JAK }
-	ENG = { relation = { who = JAK value = -200 } }
-ENG = { diplomatic_influence = { who = JAK value = -200 } }
-	ENG = { leave_alliance = TIB }
-	ENG = { leave_alliance = JAK }
-	government = hms_government country_event = 800054
-	change_tag = HND
+	option = {
+		name = "We are finally free!"
+		
+		primary_culture = indian
+		
+		prestige = 500
 	
-	ENG = { relation = { who = PAK value = -300 } }
-	ENG = { leave_alliance = PAK }
+		set_country_flag = 8007205_fired
 	
-  }
+		#Release Pakistan
+		any_owned = {
+			limit = { is_core = PAK }
+			secede_province = PAK
+		}
+	
+		#New Pakistani Government
+		PAK = { government = hms_government }
+		PAK = { capital = 1288 }
+		
+		random_country = {
+			limit = { tag = ENG }
+			diplomatic_influence = { who = PAK value = 200 }
+			leave_alliance = PAK
+		}
+	
+		#British abandons Kashmir
+		ENG = { release_vassal = JAK }
+		ENG = { relation = { who = JAK value = -200 } }
+		ENG = { diplomatic_influence = { who = JAK value = -200 } }
+		ENG = { leave_alliance = TIB }
+		ENG = { leave_alliance = JAK }
+	
+		#New Indian Government
+		government = hms_government country_event = 800054
+		change_tag = HND
+	
+		#British influence on the princely states wanes
+		ENG = {
+			any_country = { 
+				limit = { OR = { tag = HYD tag = MNP tag = RAA tag = IND tag = GWA tag = BER tag = ORI tag = NAX tag = BOD tag = MYS tag = TRA tag = AZK tag = BLO tag = JAK tag = SIN tag = TIB tag = NEP tag = BHU tag = SIK } } 
+				country_event = 8214019 
+			}
+		}
+	
+	}
 }
+
+#Princely states get to decide who to join upon partition - HND princely states
 country_event = {
 	id = 8214016
 	title = EVT_8214016_NAME
@@ -240,13 +322,18 @@ country_event = {
 
 	trigger = {
 
-	exists = HND
-
+		exists = HND
 		
-			NOT = { year = 1960 }
-			
+		OR = { has_global_flag = partioned_india_option HND = { is_vassal = no } }
+
+		NOT = { has_country_flag = princely_states_decided }
+		NOT = { has_country_flag = princely_state_stay_independent }
+		
+		NOT = { has_country_flag = dismantled_before }
+		NOT = { has_global_flag = 1950_start_date_flag }
 		
 		vassal_of = ENG
+		
 		OR = {
 			tag = MNP tag = RAA tag = IND tag = GWA tag = BER tag = ORI tag = NAX tag = BOD tag = MYS tag = TRA
 			AND = { # AZK and BLO
@@ -256,37 +343,44 @@ country_event = {
 				NOT = { exists = PAK }
 			}
 		}
-		NOT = { has_country_flag = princely_state_stay_independent }
+		
 	}
 
-	mean_time_to_happen = {
-		months = 1
-		}
-
 	option = {
-		name = EVT_8214015_A
-		overlord = { relation = { who = THIS value = -200 } }
+		name = "Become independent!"
+		
+		overlord = { 
+			release_vassal = THIS 
+			relation = { who = THIS value = -200 }
+			leave_alliance = THIS 
+			diplomatic_influence = { who = THIS value = -200 } 
+		}
+		
 		set_country_flag = princely_state_stay_independent
-		ENG = { release_vassal = THIS }
-		ENG = { leave_alliance = THIS }
-		ENG = { diplomatic_influence = { who = THIS value = -100 } }
-		HND = { casus_belli = { target = THIS type = annex_core_country } }
-		# TODO inform HND about this
+		
+		relation = { who = HND value = -200 } 
+		
 		ai_chance = { factor = 0 }
 	}
 
 	option = {
-		name = EVT_8214015_C
+		name = "Join the Union of India!"
+		
+		set_country_flag = princely_states_decided
+		
 		random_country = {
 			limit = { tag = HND is_possible_vassal = PAK }
 			THIS = { all_core = { limit = { is_core = PAK } add_core = HND } }
 		}
+		
 		HND = { inherit = THIS }
-		# TODO inform HND about this
-		ai_chance = { factor = 100 }
+	
+		ai_chance = { factor = 1 }
 	}
 
 }
+
+#Princely states get to decide who to join upon partition - PAK princely states
 country_event = {
 	id = 8214017
 	title = EVT_8214016_NAME
@@ -294,54 +388,71 @@ country_event = {
 	picture = "independence_of_india"
 
 	trigger = { 
-		NOT = { year = 1960 }
+		
 		vassal_of = ENG 
 		capital_scope = { is_core = PAK } # AZK and BLO
 		NOT = { tag = JAK }
 		NOT = { tag = SIN }
 		exists = PAK
+		
+		OR = { has_global_flag = partioned_india_option PAK = { is_vassal = no } }
+		
+		NOT = { has_country_flag = princely_states_decided }
 		NOT = { has_country_flag = princely_state_stay_independent }
-	}
-	
-	mean_time_to_happen = {
-		months = 1
+		
+		NOT = { has_country_flag = dismantled_before }
+		NOT = { has_global_flag = 1950_start_date_flag }
+		
 	}
 
 	option = {
-		name = EVT_8214015_A
+		name = "Remain independent"
+		
+		set_country_flag = princely_state_stay_independent
+		
 		relation = { who = HND value = -200 }
 		relation = { who = PAK value = -200 }
-		set_country_flag = princely_state_stay_independent
-		ENG = { release_vassal = THIS } 
-		ENG = { leave_alliance = THIS }
-		ENG = { diplomatic_influence = { who = THIS value = -100 } }
+		
+		overlord = { 
+			release_vassal = THIS 
+			relation = { who = THIS value = -200 }
+			leave_alliance = THIS 
+			diplomatic_influence = { who = THIS value = -200 } 
+		}
+		
 		PAK = { casus_belli = { target = THIS type = annex_core_country } }
-		# TODO inform PAK about this
-		# TODO inform HND about this
+
 		ai_chance = { factor = 0 }
 	}
 
 	option = {
-		name = EVT_8214015_B 
+		name = "Join Pakistan!"
+		
+		set_country_flag = princely_states_decided
+		
 		PAK = { inherit = THIS }
+		
 		random_country = {
 			limit = { tag = HND is_core = 1230 } # Islamabad
 			THIS = { all_core = { limit = { is_core = PAK } add_core = HND } }
 		}
-		# TODO inform PAK about this
-		# TODO inform HND about this
-		ai_chance = { factor = 100 }
+
+		ai_chance = { factor = 0.99 }
 	}
 
 	option = {
-		name = EVT_8214015_C 
+		name = "Join the Union of India!"
+		
+		set_country_flag = princely_states_decided
+		
 		HND = { inherit = THIS }
-		# TODO inform PAK about this
-		# TODO inform HND about this
-		ai_chance = { factor = 0 }
+
+		ai_chance = { factor = 0.01 }
 	}
 
 }
+
+#Hyderabad union with India?
 country_event = {
 	id = 8214018
 	title = EVT_8214016_NAME
@@ -350,35 +461,62 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = { 
-		NOT = { year = 1960 }
-		vassal_of = ENG 
 		tag = HYD
+		vassal_of = ENG 
 		exists = HND
+		OR = { has_global_flag = partioned_india_option HND = { is_vassal = no } }
+		NOT = { has_country_flag = dismantled_before }
+		NOT = { has_global_flag = 1950_start_date_flag }
 	}
 	
 	mean_time_to_happen = {
-		months = 1
+		months = 0.1
 	}
 
 	option = {
-		name = EVT_8214015_A
-		relation = { who = HND value = -200 }
+		name = "Remain independent!"
+		
 		set_country_flag = princely_state_stay_independent
-		ENG = { release_vassal = THIS } 
-		relation = { who = ENG value = -200 }
-		ENG = { leave_alliance = THIS }
-		ENG = { diplomatic_influence = { who = THIS value = -200 } }
-		HND = { casus_belli = { target = THIS type = annex_core_country } }
-		# TODO inform HND about this # will trigger 8007229
-		ai_chance = { factor = 100 }
+		
+		prestige = 100
+		
+		overlord = { 
+			release_vassal = THIS 
+			leave_alliance = THIS 
+		}
+		
+		relation = { who = HND value = -50 }
+		
+		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
-		name = EVT_8214015_C 
+		name = "Join the Union of India!"
 		HND = { inherit = THIS }
-		# TODO inform HND about this
-		ai_chance = { factor = 0 }
+		ai_chance = { factor = 0.1 }
 	}
 
 }
 
+#Independence of India - Change primary culture of the Raj
+country_event = {
+	id = 82140181
+	title = "The End of the British Raj"
+	desc = EVTDESC8214019
+	picture = "change_RAJ_primary_culture"
+	
+	fire_only_once = yes
+
+	trigger = { 
+		OR = { tag = RAJ tag = HND }
+		is_vassal = no
+		primary_culture = british
+	}
+
+	option = {
+		name = "The Indian people are now masters of their fate again!"
+		prestige = 100
+		primary_culture = indian
+	}
+
+}

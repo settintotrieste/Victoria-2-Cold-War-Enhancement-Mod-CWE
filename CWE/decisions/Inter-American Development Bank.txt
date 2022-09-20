@@ -1,105 +1,211 @@
 political_decisions = {
-formtheiab = {
-	picture = "jointheiab"
-		potential = {
-		tag = USA
-		government = democracy
-		is_vassal = no
-		NOT = { has_country_modifier = iab_member }
-		}
-		allow = {
-		war = no
-		toyotism = 1
-		NOT = { government = proletarian_dictatorship }
-		NOT = { government = nationalist_dictatorship }
-		NOT = { government = populist_dictatorship }
-		}
-		effect = {
-		prestige = 25
-		set_global_flag = iabformed
-add_country_modifier = { name = iab_member duration = -1 }add_country_modifier = { name = iab_chairmanship duration = -1 }
-		}
-		ai_will_do = { 
-			factor = 100 
-			}
-	}
-jointheiab = {
+
+	formtheiab = {
 		picture = "jointheiab"
 		potential = {
-		OR = { 
-		government = democracy
-		government = democracy1
-		government = hms_government
-		government = hms_government1 
-		}
-		NOT = { has_country_modifier = iab_member }
-		has_global_flag = iabformed
-OR = { tag = MEX capital_scope = { continent = south_america } }
+			tag = USA
+			year = 1959
+			NOT = { has_country_modifier = iab_member }
+			NOT = { has_global_flag = iabformed }
 		}
 		allow = {
+			OR = { 
+				government = democracy
+				government = democracy1
+				government = hms_government
+				government = hms_government1 
+			}
+			is_greater_power = yes
+			
+			#At peace
 			war = no
+			NOT = { is_disarmed = yes }
+			NOT = { has_recently_lost_war = yes }
+			NOT = { badboy = 0.5 }
+			
+			election = no
+			
+			#Not LF or FPE
+			OR = {
+				economic_policy = planned_economy1
+				economic_policy = state_capitalism
+				economic_policy = interventionism
+			}
+			
+			trade_policy = free_trade
+			
+			multilateral_development_bank = 1
+		}
+		effect = {
+			prestige = 25
+			set_global_flag = iabformed
+			add_country_modifier = { name = iab_member duration = -1 }
+			add_country_modifier = { name = iab_chairmanship duration = -1 }
+		}
+		ai_will_do = { 
+			factor = 1
+		}
+	}
+	
+	jointheiab = {
+		picture = "jointheiab"
+		potential = {
+			OR = { tag = USA tag = MEX capital_scope = { continent = south_america } }
+			has_global_flag = iabformed
+
+			NOT = { has_country_modifier = iab_member }
+		}
+		allow = {
+			is_vassal = no
+			
+			#At peace
+			war = no
+			NOT = { is_disarmed = yes }
+			NOT = { has_recently_lost_war = yes }
+			NOT = { badboy = 0.5 }
+			
+			election = no
+			
+			#Not LF or FPE
+			OR = {
+				economic_policy = planned_economy1
+				economic_policy = state_capitalism
+				economic_policy = interventionism
+			}
+			
+			trade_policy = free_trade
+			
+			#Cannot join if bad relations with Chairman
+			NOT = {
+				any_greater_power = { 
+					has_country_modifier = iab_chairmanship 
+					NOT = { relation = { who = THIS value = 0 } }
 				}
+			}
+		}
 		effect = {
 			prestige = 10
-add_country_modifier = { name = iab_member duration = -1 }
+			add_country_modifier = { name = iab_member duration = -1 }
+			
+			#IAB Chairman gains influence in THIS
+			random_country = {
+				limit = { has_country_modifier = iab_chairmanship }
+				relation = { who = THIS value = 50 }
+				diplomatic_influence = { who = THIS value = 50 }
+			}
+			
+			#Gain relations with fellow members
+			any_country = {
+				limit = { 
+					exists = yes 
+					is_vassal = no
+					has_country_modifier = iab_member
+				}
+				relation = { who = THIS value = 25 }
+			}
+			
 		}
 		ai_will_do = { 
 			factor = 1 
-			}
+		}
 	}
-leavetheiab = {
+	
+	leavetheiab = {
 		picture = "jointheiab"
 		potential = {
-		NOT = { government = democracy }
-		NOT = { government = democracy1 }
-		NOT = { government = hms_government }
-		NOT = { government = hms_government1 }
 			has_country_modifier = iab_member
-			has_global_flag = iabformed
 		}
 		allow = {
-			war = no
+			OR = {
+			
+				#Vassals always leave
+				is_vassal = yes
+				
+				#Leave if bad relations with IAB Chairman
+				any_greater_power = { 
+					has_country_modifier = iab_chairmanship 
+					NOT = { relation = { who = THIS value = -100 } }
 				}
+				
+				#Leave if FPE
+				economic_policy = planned_economy
+			}
+			
+			#Can only leave if not at war
+			war = no
+			election = no
+			
+		}
 		effect = {
-			pretige = -20
-	remove_country_modifier = iab_member
-	remove_country_modifier = iabhigh
+		
+			#Appoint new chairman if none exists
+			random_owned = {
+				limit = { owner = { has_country_modifier = iab_chairmanship } }
+				owner = { 
+					any_country = { remove_country_modifier = iab_chairmanship }
+					random_country = {
+						limit = { is_vassal = no has_country_modifier = iab_member }
+						prestige = 100
+						add_country_modifier = { name = iab_chairmanship duration = -1 }
+					}
+				}
+			}
+		
+			prestige = -20
+			remove_country_modifier = iab_chairmanship
+			remove_country_modifier = iab_member
+			remove_country_modifier = iabhigh
 			remove_country_modifier = iabmedium
 			remove_country_modifier = iablow
 			clr_country_flag = iabhigh
 			clr_country_flag = iabmedium
 			clr_country_flag = iablow
+			
+			#IDB Chairman loses influence in THIS
+			random_country = {
+				limit = { has_country_modifier = iab_chairmanship }
+				relation = { who = THIS value = -50 }
+				diplomatic_influence = { who = THIS value = -50 }
+			}
+			
+			#Lose relations with fellow members
+			any_country = {
+				limit = { 
+					exists = yes 
+					is_vassal = no
+					has_country_modifier = iab_member
+				}
+				relation = { who = THIS value = -25 }
+			}
+			
 		}
 		ai_will_do = { 
 			factor = 1 
-			}
+		}
 	}
 
-
-
-
-changeiab = {
+	changeiab = {
 		picture = "jointheiab"
 		potential = {
 			has_country_modifier = iab_chairmanship
-	OR = { has_country_modifier = iabhigh_gp
-			has_country_modifier = iabmedium_gp
-			has_country_modifier = iablow_gp }
+			OR = { 
+				has_country_modifier = iabhigh_gp
+				has_country_modifier = iabmedium_gp
+				has_country_modifier = iablow_gp 
 			}
-alert = no
+		}
+		alert = no
 		allow = {
 			war = no
-OR = { ai = no AND = { ai = yes OR = { 
-
-AND = { has_global_flag = iabhigh NOT = { OR = { economic_policy = state_capitalism economic_policy = planned_economy } } } 
-
-AND = { has_global_flag = iabmedium NOT = { economic_policy = interventionism } } 
-
-AND = { has_global_flag = iablow NOT = { economic_policy = laissez_faire } } 
-
-} } } 
-				}
+			OR = { 
+				AND = { has_global_flag = iabhigh NOT = { OR = { economic_policy = state_capitalism economic_policy = planned_economy1 economic_policy = planned_economy } } } 
+				AND = { has_global_flag = iabmedium NOT = { economic_policy = interventionism } } 
+				AND = { has_global_flag = iablow NOT = { economic_policy = laissez_faire } } 
+			}
+			NOT = { has_country_modifier = international_change_timer }
+		}
 		effect = {
+			add_country_modifier = { name = international_change_timer duration = 365 }
 			remove_country_modifier = iabhigh_gp
 			remove_country_modifier = iabmedium_gp
 			remove_country_modifier = iablow_gp
@@ -109,101 +215,100 @@ AND = { has_global_flag = iablow NOT = { economic_policy = laissez_faire } }
 			clr_global_flag = iabhigh
 			clr_global_flag = iabmedium
 			clr_global_flag = iablow
-any_country = { limit = { has_country_modifier = iab_member } 
-			remove_country_modifier = iabhigh
-			remove_country_modifier = iabmedium
-			remove_country_modifier = iablow
-			clr_country_flag = iabhigh
-			clr_country_flag = iabmedium
-			clr_country_flag = iablow
-}
+			
+			any_country = { 
+				limit = { has_country_modifier = iab_member } 
+				remove_country_modifier = iabhigh
+				remove_country_modifier = iabmedium
+				remove_country_modifier = iablow
+				clr_country_flag = iabhigh
+				clr_country_flag = iabmedium
+				clr_country_flag = iablow
+			}
 		}
 		ai_will_do = { 
-			factor = 100 
-			}
+			factor = 1
+		}
 	}
 
-iabhigh = {
+	iabhigh = {
 		picture = "jointheiab"
-
 		potential = {
 			has_country_modifier = iab_chairmanship
-			NOT = { OR = { has_country_modifier = iabhigh_gp
-			has_country_modifier = iabmedium_gp
-			has_country_modifier = iablow_gp } }
+			NOT = { 
+				OR = { 
+					has_country_modifier = iabhigh_gp
+					has_country_modifier = iabmedium_gp
+					has_country_modifier = iablow_gp 
+				} 
 			}
+		}
 		allow = {
 			war = no
-			NOT = { AND = { has_country_modifier = iabhigh_gp
-			has_country_modifier = iabmedium_gp
-			has_country_modifier = iablow_gp } }
-	OR = { ai = no AND = { ai = yes economic_policy = state_capitalism } AND = { ai = yes economic_policy = planned_economy } }
-				}
+			OR = { economic_policy = state_capitalism economic_policy = planned_economy1 economic_policy = planned_economy }
+		}
 		effect = {
-add_country_modifier = { name = iabhigh_gp duration = -1 }
-any_country = { limit = { has_country_modifier = iab_member } add_country_modifier = { name = iabhigh duration = -1 } }
-
-any_country = { limit = { has_country_modifier = iab_member OR = { is_greater_power = no is_secondary_power = no } } relation = { who = THIS value = 50 } }
+			add_country_modifier = { name = iabhigh_gp duration = -1 }
+			any_country = { limit = { has_country_modifier = iab_member } add_country_modifier = { name = iabhigh duration = -1 } }
+			any_country = { limit = { has_country_modifier = iab_member OR = { is_greater_power = no is_secondary_power = no } } relation = { who = THIS value = 50 } }
 			set_global_flag = iabhigh
 		}
 		ai_will_do = { 
 			factor = 1 
-			}
+		}
 	}
-iabmedium = {
+	
+	iabmedium = {
 		picture = "jointheiab"
-
 		potential = {
 			has_country_modifier = iab_chairmanship
-			NOT = { OR = { has_country_modifier = iabhigh_gp
-			has_country_modifier = iabmedium_gp
-			has_country_modifier = iablow_gp } }
+			NOT = { 
+				OR = { 
+					has_country_modifier = iabhigh_gp
+					has_country_modifier = iabmedium_gp
+					has_country_modifier = iablow_gp 
+				} 
 			}
+		}
 		allow = {
 			war = no
-			NOT = { AND = { has_country_modifier = iabhigh_gp
-			has_country_modifier = iabmedium_gp
-			has_country_modifier = iablow_gp } }
-OR = { ai = no AND = { ai = yes economic_policy = interventionism } }
-				}
+			economic_policy = interventionism
+		}
 		effect = {
-add_country_modifier = { name = iabmedium_gp duration = -1 }
-any_country = { limit = { has_country_modifier = iab_member } add_country_modifier = { name = iabmedium duration = -1 } }
+			add_country_modifier = { name = iabmedium_gp duration = -1 }
+			any_country = { limit = { has_country_modifier = iab_member } add_country_modifier = { name = iabmedium duration = -1 } }
 			set_global_flag = iabmedium
 		}
 		ai_will_do = { 
 			factor = 1 
-			}
+		}
 	}
-iablow = {
+	
+	iablow = {
 		picture = "jointheiab"
-
 		potential = {
 			has_country_modifier = iab_chairmanship
-			NOT = { OR = { has_country_modifier = iabhigh_gp
-			has_country_modifier = iabmedium_gp
-			has_country_modifier = iablow_gp } }
+			NOT = { 
+				OR = { 
+					has_country_modifier = iabhigh_gp
+					has_country_modifier = iabmedium_gp
+					has_country_modifier = iablow_gp 
+				} 
 			}
+		}
 		allow = {
 			war = no
-			NOT = { AND = { has_country_modifier = iabhigh_gp
-			has_country_modifier = iabmedium_gp
-			has_country_modifier = iablow_gp } }
-OR = { ai = no AND = { ai = yes economic_policy = laissez_faire } }
-
-				}
+			economic_policy = laissez_faire
+		}
 		effect = {
-add_country_modifier = { name = iablow_gp duration = -1 }
-any_country = { limit = { has_country_modifier = iab_member } add_country_modifier = { name = iablow duration = -1 } }
-
-any_country = { limit = { has_country_modifier = iab_member OR = { is_greater_power = no is_secondary_power = no } } relation = { who = THIS value = -50 } }
+			add_country_modifier = { name = iablow_gp duration = -1 }
+			any_country = { limit = { has_country_modifier = iab_member } add_country_modifier = { name = iablow duration = -1 } }
+			any_country = { limit = { has_country_modifier = iab_member OR = { is_greater_power = no is_secondary_power = no } } relation = { who = THIS value = -50 } }
 			set_global_flag = iablow
 		}
 		ai_will_do = { 
 			factor = 1 
-			}
+		}
 	}
-
-
 
 }

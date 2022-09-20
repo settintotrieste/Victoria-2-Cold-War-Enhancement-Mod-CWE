@@ -1,0 +1,871 @@
+###################
+#Chinese Civil War
+
+#The USSR returns occupied Manchuria
+#USA and the USSR can intervene in the Civil War
+#KMT retreats to Taiwan
+#Tibet is annexed via a chain in tibet.txt
+#East Turkestan is annexed via a chain in east_turkestan.txt
+
+###################
+
+#Return Soviet occupied manchuria in 1946
+country_event = {
+  id = 8200000
+  title = "EVT_8200000_NAME"
+  desc = "EVT_8200000_DESC"
+  picture = "nwo2_manchurian_offensive"
+  
+  	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		year = 1946
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1992 }
+		
+		war = no
+
+		NOT = { exists = MCK }
+		NOT = { exists = IMN }
+
+		#Chinese Civil War ongoing
+		CHI = { 
+			exists = yes
+			#war_with = KMT
+			government = proletarian_dictatorship 
+		}
+		
+		#Owns Chinese provinces except Port Arthur
+		any_owned_province = { 
+			is_core = CHI 
+			NOT = { is_core = RUS } 
+			NOT = { province_id = 1481 }
+		}
+		
+		#Cold War
+		has_global_flag = blocsenabled
+	}
+
+	mean_time_to_happen = { 
+		months = 4 #Historical date of withdrawal was on 3 May 1946
+		
+		#Immediate return once China is not at war
+		modifier = { 
+			factor = 0 
+			CHI = { NOT = { war_with = KMT } } 
+		}
+	}
+
+	option = {
+		name = "Return the lands to the KMT but keep Port Arthur"
+		prestige = 50
+		badboy = -5
+		
+		#Relations boost and loss
+		relation = { who = MGL value = 25 } 
+		relation = { who = CHI value = -100 }
+		relation = { who = USA value = 100 }
+		
+		#Inform of return
+		KMT = { country_event = 8200001 }
+		
+		#Add cores
+		CHI_1552 = { add_core = MCK }
+		RUS_2589 = { add_core = MCK }
+		CHI_1479 = { add_core = MCK }
+		RUS_1072 = { add_core = MCK }
+		1533 = { add_core = IMN }
+		1002 = { add_core = IMN }
+		
+		#Secede all CHI cores, except Port Arthur, to the KMT
+		any_owned = { 
+			limit = { 
+				is_core = CHI 
+				NOT = { is_core = RUS } 
+				NOT = { province_id = 1481 } 
+			} 
+			secede_province = KMT
+		}
+		
+		#Apply Civil War borders
+		2613 = { change_controller = KMT } 
+		1479 = { change_controller = KMT } 
+		45 = { change_controller = KMT } 
+		1555 = { change_controller = KMT }
+		
+		1480 = { change_controller = CHI } 
+		44 = { change_controller = CHI } 
+		1554 = { change_controller = CHI } 
+		1553 = { change_controller = CHI }
+		
+		ai_chance = {
+			factor = 0.1
+		}
+	}
+
+	option = {
+		name = "Return the lands to the PRC but keep Port Arthur"
+		
+		#Relations boost and loss
+		relation = { who = MGL value = 25 } 
+		relation = { who = KMT value = -100 }
+		relation = { who = USA value = -50 }
+		
+		#Assist the PRC government
+		CHI = { add_country_modifier = { name = support_government duration = 1825 } } 
+		
+		#Inform of return
+		CHI = { country_event = 8200001 }
+		
+		#Add cores
+		CHI_1552 = { add_core = MCK }
+		RUS_2589 = { add_core = MCK }
+		CHI_1479 = { add_core = MCK }
+		RUS_1072 = { add_core = MCK }
+		1533 = { add_core = IMN }
+		1002 = { add_core = IMN }
+		
+		#Secede all CHI cores, except Port Arthur, to the CHI
+		any_owned = { 
+			limit = { 
+				is_core = CHI 
+				NOT = { is_core = RUS } 
+				NOT = { province_id = 1481 } 
+			} 
+			secede_province = CHI
+		}
+		
+		#Apply Civil War borders
+		2613 = { change_controller = KMT } 
+		1479 = { change_controller = KMT } 
+		45 = { change_controller = KMT } 
+		1555 = { change_controller = KMT }
+		
+		1480 = { change_controller = CHI } 
+		44 = { change_controller = CHI } 
+		1554 = { change_controller = CHI } 
+		1553 = { change_controller = CHI }
+		
+		ai_chance = {
+			factor = 0.8
+		}
+
+	}
+  
+	option = {
+		name = "Release Manchuria as a Soviet puppet"
+		prestige = -50
+		badboy = 5
+		
+		#Relations boost and loss
+		relation = { who = MGL value = -50 } 
+		relation = { who = CHI value = -100 }
+		relation = { who = KMT value = -100 }
+		relation = { who = USA value = -100 }
+		
+		#Add cores
+		CHI_1552 = { add_core = MCK }
+		RUS_2589 = { add_core = MCK }
+		CHI_1479 = { add_core = MCK }
+		RUS_1072 = { add_core = MCK }
+		1533 = { add_core = IMN }
+		1002 = { add_core = IMN }
+
+		#Create communist MCK puppet
+		release_vassal = MCK
+		MCK = { 
+			government = proletarian_dictatorship 
+			country_event = 800052 
+			ruling_party_ideology = communist 
+			
+			#Give back Port Arthur
+			1481 = { secede_province = RUS }
+		}
+		relation = { who = MCK value = 200 }
+		diplomatic_influence = { who = MCK value = 200 }
+		
+		#Secede all remaining CHI cores, except Port Arthur, to the CHI
+		any_owned = { 
+			limit = { 
+				is_core = CHI 
+				NOT = { is_core = RUS } 
+				NOT = { province_id = 1481 } 
+			} 
+			secede_province = CHI
+		}
+		
+		ai_chance = {
+			factor = 0.1
+		}
+	}
+
+	option = {
+		name = "Manchuria shall remain under Soviet rule"
+		prestige_factor = -0.04
+		badboy = 10
+		
+		#Relations boost and loss
+		relation = { who = MGL value = -100 } 
+		relation = { who = CHI value = -200 }
+		relation = { who = KMT value = -200 }
+		relation = { who = USA value = -200 }
+		
+		#Add cores
+		CHI_1552 = { add_core = MCK }
+		RUS_2589 = { add_core = MCK }
+		CHI_1479 = { add_core = MCK }
+		RUS_1072 = { add_core = MCK }
+		1533 = { add_core = IMN }
+		1002 = { add_core = IMN }
+		
+		#Militancy rises in Chinese provinces
+		any_owned = {
+			limit = { is_core = CHI }
+			any_pop = { 
+				limit = { is_culture_group = east_asian } 
+				militancy = 10 
+				consciousness = 10 
+				ideology = { factor = 0.25 value = nationalist }
+			}
+			add_province_modifier = { name = nationalist_agitation duration = 3650 }
+		}
+		ai_chance = { factor = 0 }
+	}
+  
+}
+
+#Return Soviet occupied manchuria in 1946 - Inform CHI of the return of Manchuria
+country_event = {
+  id = 8200001
+  title = "EVT_8200001_NAME"
+  desc = "EVT_8200001_DESC"
+  picture = "nwo2_manchurian_offensive"
+
+  	is_triggered_only = yes
+  
+	option = {
+		name = "We love the Russians!"
+		prestige = 100
+		relation = { who = FROM value = 50 }
+	}
+	
+}
+
+#Event to change provinces post Soviet withdrawal
+country_event = {
+  id = 8200005
+  title = "EVT_8200005_NAME"
+  desc = "EVT_8200005_DESC"
+  picture = "nwo2_manchurian_offensive"
+  
+	is_triggered_only = yes
+
+	option = {
+		name = "OK"
+		# Port Aurthur remains in Russian hands
+		1481 = { secede_province = RUS }
+		random_country = { limit = { exists = KMT tag = KMT war_with = THIS } 2613 = { change_controller = KMT } 1479 = { change_controller = KMT } 45 = { change_controller = KMT } 1555 = { change_controller = KMT } }
+		random_country = { limit = { exists = CHI tag = CHI war_with = THIS } 1480 = { change_controller = CHI } 44 = { change_controller = CHI } 1554 = { change_controller = CHI } 1553 = { change_controller = CHI } }
+		relation = { who = RUS value = 50 } 
+		relation = { who = MGL value = 25 } 
+	}
+}
+
+#The KMT flees to Taiwan - End the Chinese Civil War
+country_event = {
+	id = 90903
+	title = "The Retreat to Taiwan"
+	desc = "EVTDESC90903"
+	picture = "nwo2_kmt_flees_to_taiwan"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = KMT
+		year = 1947
+		NOT = { has_global_flag = 1950_start_date_flag }
+		war_with = CHI
+
+		OR = {
+			AND = { national_provinces_occupied = 0.35 USA = { NOT = { war_with = CHI } } } 
+			AND = { national_provinces_occupied = 0.75 USA = { war_with = CHI } }
+		}
+		
+		#Has not retreated to Formosa
+		is_our_vassal = TAI
+
+	}
+	
+	option = {
+		name = "We shall continue the fight from Taiwan!"
+		
+		#KMT loses huge prestige so they can't jump back to GP status later
+		prestige_factor = -0.5
+		
+		#End wars with East Turkestan and Tibet
+		end_war = ETS
+		end_war = TIB
+		
+		#Transfer provinces
+		any_owned = { 
+			limit = { controlled_by = CHI NOT = { province_id = 1485 } NOT = { province_id = 1499 } NOT = { province_id = 2576 } NOT = { province_id = 2562 } }
+			secede_province = CHI
+		}
+		any_owned = { 
+			limit = { NOT = { controlled_by = CHI } NOT = { province_id = 1485 } NOT = { province_id = 1499 } NOT = { province_id = 2576 } NOT = { province_id = 2562 } }
+			secede_province = CHI
+			change_controller = KMT
+		}
+		any_owned = { 
+			limit = { controlled_by = KMT province_id = 1485 }
+			owner = { capital = 1485 }
+		}
+		any_pop = { 
+			limit = { 
+				location = { 
+					OR = { 
+						province_id = 1545 
+						province_id = 1470 
+						province_id = 1604 
+						province_id = 1477 
+						province_id = 1538  
+						province_id = 1540 
+					} 
+				} 
+				OR = { type = officers type = soldiers } 
+			} 
+			move_pop = 1485 # Taibei
+		}
+		
+		KMT = { inherit = TAI }
+		
+		#Capital Taipei for the KMT
+		KMT = { capital = 1485 }
+		
+		#End War with PRC and create another war
+		end_war = CHI
+		
+		#War to retake Hainan
+		CHI = { country_event = 90904 }
+		set_global_flag = CHI_won_civil_war 
+		
+		ai_chance = { factor = 0.95 }
+	}
+	
+	option = {
+		name = "We shall die trying to kill the communists!"
+		
+		#Inherit Formosa to get a full reunification if PRC wins
+		inherit = TAI
+		ai_chance = { factor = 0.05 }
+	}
+	
+}
+
+#War to reclaim Hainan - CHI
+country_event = {
+	id = 90904
+	title = "The Hainan Campaign"
+	desc = "EVTDESC90904"
+	picture = "battle_of_hainan"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "Hainan shall be ours!"
+		
+		war = {
+			target = KMT
+			attacker_goal = {
+				casus_belli = acquire_core_state
+				state_province_id = 1499
+			}
+			defender_goal = {
+				casus_belli = civil_war
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }	
+	}
+
+	option = {				
+		name = "We are satisfied with what we got"
+		prestige_factor = -0.20
+		
+		#Communists are unhappy as they want full reunification
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }		
+	}
+
+}
+
+#The KMT wins the civil war
+country_event = {
+	id = 90907
+	title = "The Nationalists Win the Civil War"
+	desc = "EVT_90907_DESC"
+	picture = "kmt_victory"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = KMT
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		CHI = { exists = no }
+		war = no
+		
+		#Owns Beijing
+		owns = 1612
+	}
+
+	option = {				
+		name = "Long Live the KMT!"
+		
+		#KMT as China gets all claims it made previously and all KMT cores are removed.
+		all_core = { 
+			add_core = CHI 
+			remove_core = KMT
+		}
+		
+		#Add KMT claims
+		MGL = { all_core = { add_core = CHI } }
+		1469 = { add_core = CHI } # Tuva
+		1341 = { add_core = CHI } # Putao
+		
+		war_exhaustion = 50
+		
+		prestige = 1000
+		capital = 2221 #Nanjing
+		set_global_flag = KMT_won_civil_war
+		
+		#Inherit Taiwan
+		random_owned = {
+			limit = { owner = { is_our_vassal = TAI } }
+			owner = { inherit = TAI }
+		}
+		
+		#Become China
+		change_tag = CHI
+
+		#More KMT support
+		any_pop = { 
+			ideology = {
+				factor = 0.1
+				value = conservative
+			}
+		}
+	}
+
+}
+
+#US intervention in the Chinese Civil War
+country_event = {
+	id = 8200104
+	title = "The Chinese Civil War"
+	desc = EVTDESC8200104
+	picture = "nwo2_kmt_troops_in_shermans"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 1947
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		#Chinese Civil War ongoing
+		CHI = { war_with = KMT }
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
+	}
+
+	mean_time_to_happen = { 
+		months = 3
+	}
+
+	option = {
+		name = "Propose to help the KMT (50% chance of Soviet intervention)"
+		prestige = 100
+		relation = { who = RUS value = -200 }
+		relation = { who = KMT value = 200 }
+		
+		#Let KMT decide
+		KMT = { country_event = 8200105 }
+		
+		money = -200000
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+	option = {
+		name = "Stay out of Chinese affairs!"
+		relation = { who = RUS value = 50 }
+		ai_chance = { factor = 0.9 }
+	}
+
+}
+
+#US intervention in the Chinese Civil War - KMT's choice
+country_event = {
+	id = 8200105
+	title = "US Intervention in China"
+	desc = EVTDESC8200104
+	picture = "nwo2_kmt_troops_in_shermans"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Accept the US help!"
+		create_alliance = USA
+		relation = { who = RUS value = -200 }
+		relation = { who = USA value = 200 }
+		
+		#Accept US aid
+		money = 100000
+		small_arms = 100
+		weaponry = 100
+		aeroplanes = 100
+		ammunition = 500
+		automobiles = 100
+		
+		#Let the USSR choose to join the war
+		RUS = { country_event = 8200106 }
+		
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "Decline US assistance"
+		prestige = 500
+		relation = { who = RUS value = 50 }
+		ai_chance = { factor = 0 }
+	}
+
+}
+
+#US intervention in the Chinese Civil War - RUS's choice to intervene
+country_event = {
+	id = 8200106
+	title = "Soviet Intervention in China"
+	desc = EVTDESC8200106
+	picture = "nwo2_kmt_troops_in_shermans"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Intervene to protect Mao Zedong!"
+		create_alliance = CHI
+		relation = { who = CHI value = 200 }
+		relation = { who = KMT value = -200 }
+		
+		money = -200000
+		
+		#Give aid to the PRC
+		CHI = {
+			money = 100000
+			small_arms = 100
+			weaponry = 100
+			aeroplanes = 100
+			ammunition = 500
+			automobiles = 100
+		}
+		
+		#USA declares war on CHI
+		USA = { country_event = 1412238 }
+		
+		ai_chance = { factor = 0.5 }
+	}
+
+	option = {
+		name = "Avoid a clash with the United States"
+		prestige_factor = -0.1
+		relation = { who = USA value = 50 }
+		relation = { who = CHI value = -100 }
+		diplomatic_influence = { who = CHI value = -200 }
+		
+		#USA declares war on CHI
+		USA = { country_event = 1412238 }
+		
+		ai_chance = { factor = 0.5 }
+	}
+
+}
+
+#USA joins the Chinese Civil War
+country_event = {
+	id = 1412238
+	title = "The US Intervenes in the Civil War"
+	desc = "With the instrument of alliance between our two great nations concluded, we are now formally involved in the Chinese Civil War. We will get the port of Shanghai as base of operations in China."
+	picture = "ccw_usa_ally"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "We will stop the spread of communism in China"
+
+		prestige = 10
+
+		badboy = 5
+
+		relation = { who = RUS value = -100 }
+
+		KMT = { country_event = 1412239 }
+
+		war = {
+			target = CHI
+			attacker_goal = { casus_belli = cut_down_to_size }
+			defender_goal = { casus_belli = humiliate }
+			call_ally = yes
+		}
+
+	}
+}
+
+#USA occupies the Chinese ports
+country_event = {
+	id = 1412239
+	title = "Sino-American Joint GHQ"
+	desc = "The US forces need a staging ground to wage the war from so they have selected Shanghai to be the primary base of operations in China. We have no choice but to accept their demands."
+	picture = "ccw_shg_after"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "We will crush the communist insurgency together"
+
+		activate_technology = cold_war_doctrine
+		activate_technology = proxy_war
+		activate_technology = guerrilla
+		activate_technology = heavy_tanks
+		activate_technology = post_war_radar
+		activate_technology = infantry
+
+		prestige = -25
+
+		relation = { who = USA value = 200 }
+
+		military_access = USA
+
+		relation = { who = RUS value = -100 }
+
+		money = 100000
+
+		1538 = { naval_base = 2 }
+
+		1538 = { secede_province = USA }
+
+	}
+}
+
+#USA occupies Shanghai
+country_event = {
+	id = 1412240
+	title = "End of the Chinese Civil War"
+	desc = "With the end of the Chinese Civil War, we now have the question of what to do with the City of Shanghai which we used as a base during the war."
+	picture = "ccw_shg_after"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		
+		#KMT won the civil war
+		KMT = { exists = no }
+		CHI = { 
+			exists = yes
+			NOT = { government = proletarian_dictatorship } 
+			is_vassal = no 
+			war = no
+		}
+		
+		owns = 1538
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "Occupy Shanghai perpetuity in event of another communist insurgency"
+		prestige = -50
+		badboy = 5
+		relation = { who = CHI value = -50 }
+		ai_chance = { factor = 0.1 }
+	}
+
+	option = {
+		name = "Form an International Settlement to maintain US presence"
+		prestige = -25
+		badboy = 2.5
+		relation = { who = CHI value = -25 }
+		release_vassal = SHG
+		CHI = { diplomatic_influence = { who = SHG value = 200 } }
+		SHG = { 
+			government = mandate_government 
+			country_event = 800054 
+			ruling_party_ideology = conservative 
+		}
+		ai_chance = { factor = 0.6 }
+	}
+
+	option = {
+		name = "Return the City back to China"
+		prestige = 10
+		badboy = -1
+		relation = { who = CHI value = 100 }
+		1538 = { secede_province = CHI }
+		ai_chance = { factor = 0.3 }
+	}
+
+}
+
+#Return of Shanghai after Cold War
+country_event = {
+	id = 1412241
+	title = "Return of the International Settlements"
+	desc = "With the end of the Cold War, we no longer have the need to own International Settlements in China anymore so talks have been initated by China to reclaim the cities."
+	picture = "ccw_shg_return"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		NOT = { has_global_flag = blocsenabled }
+		
+		is_vassal = no
+		
+		#KMT won the civil war
+		KMT = { exists = no }
+		CHI = { 
+			exists = yes
+			NOT = { government = proletarian_dictatorship } 
+			is_vassal = no 
+			war = no
+		}
+		
+		OR = { owns = 1538 is_our_vassal = SHG is_our_vassal = QGD is_our_vassal = WEI }
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "Continue the occupation"
+		prestige_factor = -0.1
+		badboy = 10
+		relation = { who = CHI value = -200 }
+		ai_chance = { factor = 0.05 }
+	}
+
+	option = {
+		name = "Return Shanghai"
+		prestige = 10
+		badboy = -5
+		relation = { who = CHI value = 200 }
+		
+		#Cede Shanghai
+		random_owned = {
+			limit = { owner = { owns = 1538 } }
+			owner = { 1538 = { secede_province = CHI } }
+		}
+		
+		#Inherit Shanghai
+		random_owned = {
+			limit = { owner = { is_our_vassal = SHG } }
+			owner = { CHI = { inherit = SHG } }
+		}
+		
+		#Inherit Qingdao
+		random_owned = {
+			limit = { owner = { is_our_vassal = QGD } }
+			owner = { CHI = { inherit = QGD } }
+		}
+		
+		#Inherit Weihaiwei
+		random_owned = {
+			limit = { owner = { is_our_vassal = WEI } }
+			owner = { CHI = { inherit = WEI } }
+		}
+		
+		ai_chance = { factor = 0.95 }
+	}
+
+}
+
+#Return of the other International Settlements
+country_event = {
+	id = 1412242
+	title = "International Settlements in China"
+	desc = "As Shanghai has become an International Settlement once more, perhaps we should also offer the USA Qingdao and Weihai to allow them to have a greater presence in China to protect us from the USSR?"
+	picture = "ccw_shg_after"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = CHI
+		has_global_flag = blocsenabled
+		
+		is_vassal = no
+		war = no
+		
+		#KMT won the civil war
+		KMT = { exists = no }
+		NOT = { government = proletarian_dictatorship } 
+		
+		#USA owns Shanghai
+		USA = { is_our_vassal = SHG }
+		
+		#Have the required provinces
+		is_possible_vassal = QGD 
+		is_possible_vassal = WEI
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "Offer Qingdao and Weihai"
+		prestige = -100
+		money = 1000000
+		add_country_modifier = { name = economic_boom duration = 1825 }
+		
+		release = QGD
+		release = WEI
+		USA = { 
+			create_vassal = QGD 
+			create_vassal = WEI 
+		}
+		WEI = { government = mandate_government country_event = 800054 ruling_party_ideology = conservative }
+		QGD = { government = mandate_government country_event = 800054 ruling_party_ideology = conservative }
+		
+		relation = { who = USA value = 200 }
+		CHI = { 
+			diplomatic_influence = { who = WEI value = 200 } 
+			diplomatic_influence = { who = QGD value = 200 } 
+		}
+		ai_chance = { factor = 0.5 }
+	}
+
+	option = {
+		name = "One settlement is already too many"
+		prestige = 50
+		any_pop = { militancy = -5 }
+		ai_chance = { factor = 0.5 }
+	}
+
+}

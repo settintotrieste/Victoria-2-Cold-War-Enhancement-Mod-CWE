@@ -175,7 +175,7 @@ government = mandate_government
 
 country_event = 800054
 
-UNT = { sphere_owner = { diplomatic_influence = { who = THIS value = 200 } } }
+election = yes
 
 		}
 }
@@ -196,7 +196,7 @@ any_owned = { limit = { is_capital = no OR = { has_building = naval_base NOT = {
 
 }
 
-#Setting up the Trust - Grant diplomatic Infleunce
+#Setting up the Trust - Grant diplomatic Influence 1
 country_event = {
 	id = 10027
 title = "UN Trust Territories"
@@ -207,10 +207,57 @@ is_triggered_only = yes
 
 option = {
 name = "Our fate is sealed!"
-FROM = { diplomatic_influence = { who = THIS value = 200 } }
+
+any_owned = { limit = { has_building = fort } fort = -10 }
+any_owned = { limit = { has_building = naval_base } naval_base = -10 }
+
+random_country = { limit = { NOT = { tag = FROM } is_disarmed = no has_recently_lost_war = no NOT = { badboy = 0.8 } is_greater_power = yes war = no } country_event = 10028 }
 		}
 
 }
 
+#Setting up the Trust - Grant diplomatic Infleunce 2
+country_event = {
+	id = 10028
+title = "UN Trust Territory of $FROMCOUNTRY$"
+	desc = "We have been offered by the United Nations Trust Territories Council to co-manage $FROMCOUNTRY$."
+	picture = "un_trust_territory"
 
+is_triggered_only = yes
 
+option = {
+name = "Accept the mandate!"
+badboy = -5
+money = -500000
+FROM = { money = 500000 }
+diplomatic_influence = { who = FROM value = 200 }
+ai_chance = { factor = 0.9 modifier = { factor = 0 NOT = { money = 500000 } } }
+		}
+
+option = {
+name = "Decline the mandate!"
+prestige = -10
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Setting up the Trust - Grant diplomatic Influence 3
+country_event = {
+	id = 10029
+title = "UN Trust Territories"
+	desc = "The United Nations has placed $COUNTRY$ under the sphere of a great power."
+	picture = "un_trust_territory"
+
+trigger = {
+UNT = { part_of_sphere = yes }
+vassal_of = UNT
+part_of_sphere = no
+}
+
+option = {
+name = "Our fate is sealed!"
+UNT = { sphere_owner = { diplomatic_influence = { who = THIS value = 200 } } }
+		}
+
+}

@@ -459,6 +459,55 @@ country_event = {
 					}
 				}
 				NOT = { has_country_flag = post_colonial_country }
+				
+				NOT = { 
+					OR = {
+						tag = XGC
+						tag = XEF
+						tag = XEU
+						tag = XCC
+						tag = XAU
+						tag = XEW
+						tag = XEC
+						tag = XSA
+						tag = XSU
+						tag = XMS
+						tag = XAC
+						tag = XAL
+						tag = XMU
+						tag = XAN
+						tag = XCI
+						tag = XNA
+						tag = XPI
+						tag = XEA
+						tag = XTC
+						tag = XUM
+						tag = XIO
+						tag = UAR
+						tag = FBU
+						tag = YUG
+						tag = IBU
+						tag = KLM
+						tag = PBC
+						tag = GCL
+						tag = XME
+						tag = ENG
+						tag = BKF
+						
+						#Do not release special countries
+						tag = ICB
+						tag = JRU
+						tag = SCS
+						tag = DZG
+						tag = CYI
+						tag = SHG
+						tag = QGD
+						tag = WEI
+						tag = GAZ
+						tag = UNO
+					}
+				}
+				
 			}
 			country_event = 96012
 		}
@@ -499,6 +548,7 @@ country_event = {
 			is_greater_power = yes
 			is_secondary_power = yes
 			colonial_nation = yes
+			is_vassal = no
 		}
 		OR = {
 			has_country_flag = ultimatum_accepted
@@ -512,6 +562,10 @@ country_event = {
 
 	option = {
 		name = "EVTOPTA96010" #We welcome peace
+		
+		#Disable certain historical events
+		set_country_flag = dismantled_before
+		
 		clr_country_flag = dismantle_declared
 		clr_country_flag = in_great_war
 		clr_country_flag = calling_all_allies
@@ -525,7 +579,7 @@ country_event = {
 		remove_country_modifier = great_war3
 		war_exhaustion = 40
 
-		#if over the badboy limit, reduce infamy to 24.99, otherwise reduce infamy by 10
+		#if over the badboy limit, reduce infamy to 20, otherwise reduce infamy by 10
 		random_owned = {
 			limit = {
 				owner = { NOT = { badboy = 1 } }
@@ -539,8 +593,8 @@ country_event = {
 				owner = { badboy = 1 }
 			}
 			owner = {
-				random_country = { limit =  { tag = THIS } badboy = -1000 }
-				badboy = 24.99
+				badboy = -1000
+				badboy = 20
 			}
 		}
 
@@ -555,7 +609,8 @@ country_event = {
 		}
 
 		#prestige hit
-		prestige_factor = -0.5
+		prestige_factor = -0.9
+
 		#remove cores on overseas provinces
 		any_owned = {
 			limit = {
@@ -580,14 +635,16 @@ country_event = {
 			relation = { who = THIS value = 200 }
 		}
 		
-		#release all cores to anyone with a truce
+		#release all cores to anyone with a truce or has bad relations with THIS
 		any_country = {
 			limit = {
 				exists = yes
 				any_core = { owned_by = THIS }
 				NOT = { this_culture_union = THIS }
+				
 				OR = {
 					truce_with = THIS
+					NOT = { relation = { who = THIS value = 0 } }
 					AND = {
 						THIS = { has_country_modifier = international_pariah }
 						has_country_flag = coalition_member
@@ -601,7 +658,7 @@ country_event = {
 						NOT = { any_owned_province = { is_capital = yes } }
 					}
 				}
-				remove_core = THIS
+				#remove_core = THIS
 			}
 			country_event = 96014
 		}
@@ -642,37 +699,62 @@ country_event = {
 			country_event = 96012
 		}					
 
-		#release non-existing countries			
+		#release non-existing countries (that are not cultural unions)
 		any_country = {
 			limit = {
 				any_core = { owned_by = THIS }
 				exists = no
-NOT = { 
-OR = { 
-tag = XGC
-tag = XEF
-tag = XEU
-tag = XCC
-tag = XAU
-tag = XEW
-tag = XEC
-tag = XSA
-tag = XSU
-tag = XMS
-tag = XAC
-tag = XAL
-tag = XMU
-tag = XAN
-tag = XCI
-tag = XNA
-tag = XPI
-tag = XEA
-tag = XTC
-tag = XUM
-	} 
-}
+				
+				NOT = { 
+					OR = {
+						tag = XGC
+						tag = XEF
+						tag = XEU
+						tag = XCC
+						tag = XAU
+						tag = XEW
+						tag = XEC
+						tag = XSA
+						tag = XSU
+						tag = XMS
+						tag = XAC
+						tag = XAL
+						tag = XMU
+						tag = XAN
+						tag = XCI
+						tag = XNA
+						tag = XPI
+						tag = XEA
+						tag = XTC
+						tag = XUM
+						tag = XIO
+						tag = UAR
+						tag = FBU
+						tag = YUG
+						tag = IBU
+						tag = KLM
+						tag = PBC
+						tag = GCL
+						tag = XME
+						tag = ENG
+						tag = BKF
+						
+						#Do not release special countries
+						tag = ICB
+						tag = JRU
+						tag = SCS
+						tag = DZG
+						tag = CYI
+						tag = SHG
+						tag = QGD
+						tag = WEI
+						tag = GAZ
+						tag = UNO
+					}
+				}
 
 				is_cultural_union = no
+				
 				NOT = {
 					AND = {
 						is_primary_culture = THIS
@@ -688,10 +770,13 @@ tag = XUM
 						NOT = { any_owned_province = { is_capital = yes } }
 					}
 				}
+
 				#remove_core = THIS
+
 			}
 			country_event = 96012
 		}
+		
 		any_country = {
 			limit = {
 				any_core = { owned_by = THIS }
@@ -717,7 +802,7 @@ tag = XUM
 			country_event = 96013
 		}
 
-		#give colonies without cores to truce GP's
+		#give overseas colonies without cores to truce GP's
 		random_owned = {
 			limit = {
 				OR = {
@@ -782,12 +867,22 @@ tag = XUM
 				country_event = 96017
 			}
 		}
+		
+		#Remove old victor's list
+		any_country = {
+			clr_country_flag = great_war_dismantlement_winner
+		}
+		
+		#Identify new victors for mandates
+		any_country = {
+			limit = { truce_with = THIS is_disarmed = no war = no is_vassal = no }
+			set_country_flag = great_war_dismantlement_winner
+		}
 
 		#add fascism and punitive effects
 		random_owned = {
 			limit = {
 				owner = {
-					is_ideology_enabled = populist
 					NOT = { government = populist_dictatorship }
 				}
 			}
@@ -795,14 +890,14 @@ tag = XUM
 				soldiers = {
 					limit = { is_primary_culture = yes }
 					ideology = {
-						value = populist
+						value = nationalist
 						factor = 0.2
 					}
 				}
 				officers = {
 					limit = { is_primary_culture = yes }
 					ideology = {
-						value = populist
+						value = nationalist
 						factor = 0.4
 					}
 				}
@@ -817,12 +912,13 @@ tag = XUM
 						}
 					}
 					ideology = {
-						value = populist
+						value = nationalist
 						factor = 0.1
 					}
 				}
 			}
 		}
+		
 		add_country_modifier = {
 			name = punitive_effects
 			duration = 1825
@@ -900,16 +996,74 @@ country_event = {
 
 # Countries gaining independence as a result of dismantling
 country_event = {
-	
+
 	id = 96012
 	title = EVTNAME96012
 	desc = EVTDESC96012
 
 	is_triggered_only = yes
+	
+	immediate = {
+		
+		#Superstates get dismantled
+		FROM = {
+			random_owned = {
+				limit = {
+					owner = {
+						OR = {
+							tag = XGC
+							tag = XEF
+							tag = XEU
+							tag = XCC
+							tag = XAU
+							tag = XEW
+							tag = XEC
+							tag = XSA
+							tag = XSU
+							tag = XMS
+							tag = XAC
+							tag = XAL
+							tag = XMU
+							tag = XAN
+							tag = XCI
+							tag = XNA
+							tag = XPI
+							tag = XEA
+							tag = XTC
+							tag = XUM
+							tag = XIO
+							tag = UAR
+							tag = FBU
+							tag = YUG
+							tag = IBU
+							tag = KLM
+							tag = PBC
+							tag = GCL
+							tag = XME
+							tag = ENG
+							tag = BKF
+						}
+					}
+				}
+				owner = { 
+					release = THIS
+				}
+			}
+		}
+	
+	}
 
 	option = {
 		name = "EVTOPTA96031" #Great
-		FROM = {
+		
+		#FROM releases THIS
+		random_country = {
+			limit = { 
+				tag = FROM
+				
+				#This country is not released if the capital of FROM is a core of THIS
+				capital_scope = { NOT = { is_core = THIS } }
+			}
 			any_state = {
 				limit = {
 					any_owned_province = { is_core = THIS }
@@ -921,6 +1075,8 @@ country_event = {
 				}
 			}
 		}
+		
+		#Large countries get further dismantled
 		random_owned = {
 			limit = {
 				owner = { num_of_cities = 20 }
@@ -945,12 +1101,61 @@ country_event = {
 						is_culture_group = THIS
 					}
 					any_core = { owned_by = THIS }
+					
+					NOT = { OR = {
+						tag = XGC
+						tag = XEF
+						tag = XEU
+						tag = XCC
+						tag = XAU
+						tag = XEW
+						tag = XEC
+						tag = XSA
+						tag = XSU
+						tag = XMS
+						tag = XAC
+						tag = XAL
+						tag = XMU
+						tag = XAN
+						tag = XCI
+						tag = XNA
+						tag = XPI
+						tag = XEA
+						tag = XTC
+						tag = XUM
+						tag = XIO
+						tag = UAR
+						tag = FBU
+						tag = YUG
+						tag = IBU
+						tag = KLM
+						tag = PBC
+						tag = GCL
+						tag = XME
+						tag = ENG
+						tag = BKF
+						
+						#Do not release special countries
+						tag = ICB
+						tag = JRU
+						tag = SCS
+						tag = DZG
+						tag = CYI
+						tag = SHG
+						tag = QGD
+						tag = WEI
+						tag = GAZ
+						tag = UNO
+						
+					} }
+					
 				}
 				country_event = 96012
 			}
 		}
 		any_neighbor_country = {
 			limit = {
+				THIS = { exists = yes }
 				OR = {
 					truce_with = FROM
 					AND = {
@@ -963,6 +1168,7 @@ country_event = {
 		}
 		any_country = {
 			limit = {
+				THIS = { exists = yes }
 				OR = {
 					truce_with = FROM
 					AND = {
@@ -983,6 +1189,7 @@ country_event = {
 		}
 		any_country = {
 			limit = {
+				THIS = { exists = yes }
 				OR = {
 					truce_with = FROM
 					AND = {
@@ -997,7 +1204,11 @@ country_event = {
 				value = 100
 			}
 		}
-		FROM = {
+		random_country = {
+			limit = { 
+				tag = FROM
+				THIS = { exists = yes }
+			}
 			diplomatic_influence = {
 				who = THIS
 				value = -200
@@ -1008,7 +1219,36 @@ country_event = {
 			}
 		}
 		set_country_flag = newly_released_nation
+
+		#Possible UN Trusteeship for victors, if possible
+		random_country = { 
+			limit = { 
+			
+				#THIS was actually released
+				THIS = { exists = yes }
+				
+				#Potential UN trustee is a GP at peace, not disarmed and not have lost a war recently and not a badboy
+				is_greater_power = yes
+				war = no
+				
+				is_disarmed = no
+				has_recently_lost_war = no
+				NOT = { badboy = 1 }
+				
+				#Potential UN trustee is someone who either won any war recently against THIS or won the dismantle war against THIS
+				OR = { has_country_flag = great_war_dismantlement_winner truce_with = FROM }
+				
+				#Potential trustee must not be 'interested' in the mandate
+				NOT = { any_core = { is_core = THIS } }
+				
+				#Potential trustee is a member of the UN
+				has_country_modifier = united_nations_ga_member 
+			}
+			country_event = 1512327
+		}
+
 	}
+	
 }
 
 # Countries not involved in the Great War but unfriendly to the defeated country can get cores returned
@@ -1132,7 +1372,9 @@ country_event = {
 
 	option = {
 		name = "EVTOPTA96014" #We simply wish our lands back
+		prestige = 50
 	}
+	
 }
 
 # All vassals will automatically gain independence
@@ -1509,6 +1751,53 @@ country_event = {
 					is_cultural_union = no
 					NOT = { is_culture_group = FROM }
 					any_core = { owned_by = THIS }
+					
+					NOT = { OR = {
+						tag = XGC
+						tag = XEF
+						tag = XEU
+						tag = XCC
+						tag = XAU
+						tag = XEW
+						tag = XEC
+						tag = XSA
+						tag = XSU
+						tag = XMS
+						tag = XAC
+						tag = XAL
+						tag = XMU
+						tag = XAN
+						tag = XCI
+						tag = XNA
+						tag = XPI
+						tag = XEA
+						tag = XTC
+						tag = XUM
+						tag = XIO
+						tag = UAR
+						tag = FBU
+						tag = YUG
+						tag = IBU
+						tag = KLM
+						tag = PBC
+						tag = GCL
+						tag = XME
+						tag = ENG
+						tag = BKF
+						
+						#Do not release special countries
+						tag = ICB
+						tag = JRU
+						tag = SCS
+						tag = DZG
+						tag = CYI
+						tag = SHG
+						tag = QGD
+						tag = WEI
+						tag = GAZ
+						tag = UNO
+					} }
+					
 				}
 				country_event = 96012
 			}
@@ -1706,7 +1995,7 @@ country_event = {
 		random_owned = {
 			limit = {
 				owner = {
-					is_ideology_enabled = populist
+					is_ideology_enabled = nationalist
 					NOT = { government = populist_dictatorship }
 				}
 			}
@@ -1714,14 +2003,14 @@ country_event = {
 				soldiers = {
 					limit = { is_primary_culture = yes }
 					ideology = {
-						value = populist
+						value = nationalist
 						factor = 0.2
 					}
 				}
 				officers = {
 					limit = { is_primary_culture = yes }
 					ideology = {
-						value = populist
+						value = nationalist
 						factor = 0.4
 					}
 				}
@@ -1736,7 +2025,7 @@ country_event = {
 						}
 					}
 					ideology = {
-						value = populist
+						value = nationalist
 						factor = 0.1
 					}
 				}
@@ -1843,14 +2132,14 @@ country_event = {
 						}
 					}
 					AND = {
-						government = proletarian_dictatorship
-						THIS = { government = proletarian_dictatorship }
-						FROM = { NOT = { government = proletarian_dictatorship } }
+						OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+						THIS = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } }
+						FROM = { NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } }
 					}
 					AND = {
-						government = populist_dictatorship
-						THIS = { government = populist_dictatorship }
-						FROM = { NOT = { government = populist_dictatorship } }
+						OR = { government = populist_dictatorship government = nationalist_dictatorship }
+						THIS = { OR = { government = populist_dictatorship government = nationalist_dictatorship } }
+						FROM = { NOT = { OR = { government = populist_dictatorship government = nationalist_dictatorship } } }
 					}
 					AND = {
 						government = presidential_dictatorship
@@ -1860,18 +2149,28 @@ country_event = {
 					AND = {
 						OR = {
 							government = democracy
+							government = democracy1
 							government = hms_government
+							government = hms_government1
 						}
 						THIS = {
 							OR = {
 								government = democracy
+								government = democracy1
 								government = hms_government
+								government = hms_government1
 							}
 						}
 						FROM = {
 							OR = {
+								government = theocracy
+								
 								government = populist_dictatorship
+								government = nationalist_dictatorship
+								
 								government = proletarian_dictatorship
+								government = proletarian_dictatorship1
+								
 								badboy = 1
 							}
 						}
@@ -2034,12 +2333,16 @@ country_event = {
 				factor = 2
 				OR = {
 					government = democracy
+					government = democracy1
 					government = hms_government
+					government = hms_government1
 				}
 				FROM = {
 					OR = {
 						government = democracy
+						government = democracy1
 						government = hms_government
+						government = hms_government1
 					}
 				}
 				any_greater_power = {
@@ -2137,7 +2440,9 @@ country_event = {
 				factor = 1.5
 				OR = {
 					government = democracy
+					government = democracy1
 					government = hms_government
+					government = hms_government1
 				}
 				NOT = { ruling_party_ideology = communist }
 				FROM = { government = proletarian_dictatorship }
@@ -2146,9 +2451,11 @@ country_event = {
 				factor = 2
 				OR = {
 					government = democracy
+					government = democracy1
 					government = hms_government
+					government = hms_government1
 				}
-				NOT = { ruling_party_ideology = populist }
+				NOT = { ruling_party_ideology = nationalist }
 				FROM = { government = populist_dictatorship }
 			}
 			modifier = {
@@ -2157,7 +2464,9 @@ country_event = {
 				FROM = {
 					OR = {
 						government = democracy
+						government = democracy1
 						government = hms_government
+						government = hms_government1
 					}
 				}		
 			}
@@ -2177,7 +2486,9 @@ country_event = {
 				FROM = {
 					OR = {
 						government = democracy
+						government = democracy1
 						government = hms_government
+						government = hms_government1
 					}
 				}		
 			}
@@ -2250,7 +2561,9 @@ country_event = {
 			factor = 1.2
 			OR = {
 				government = democracy
+				government = democracy1
 				government = hms_government
+				government = hms_government1
 			}
 		}
 		modifier = {
@@ -2368,7 +2681,9 @@ country_event = {
 			factor = 1.2
 			OR = {
 				government = democracy
+				government = democracy1
 				government = hms_government
+				government = hms_government1
 			}
 		}
 		modifier = {
@@ -2979,6 +3294,10 @@ country_event = {
 				factor = 5
 			}
 			scaled_militancy = {
+				ideology = nationalist
+				factor = 5
+			}
+			scaled_militancy = {
 				ideology = populist
 				factor = 5
 			}
@@ -3015,6 +3334,10 @@ country_event = {
 			scaled_militancy = {
 				ideology = populist
 				factor = 8
+			}
+			scaled_militancy = {
+				ideology = nationalist
+				factor = 5
 			}
 		}
 	}

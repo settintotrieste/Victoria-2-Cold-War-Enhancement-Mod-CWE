@@ -34,28 +34,34 @@ political_decisions = {
 	imf_loan = {
 		picture = "imf_loan"
 		potential = {
-			year = 1947
-			election = no
-			war = no
+		
+			#In the IMF
+			has_country_modifier = imf_member
+			
+			#Did not take an IMF loan recently
 			NOT = { has_country_modifier = imf_loan_requested }
 			NOT = { has_country_modifier = imf_loan }
+			
+			#Not in a Currency Union
+			NOT = { capital_scope = { has_province_modifier = currency_union_province } }
 
-#NOT = { has_country_modifier = overlord_loan_requested }
-
-			NOT = { has_country_modifier = foreign_loan_requested }
-			NOT = { money = 55000 }
-			NOT = { badboy = 1 }
+			OR = { ai = no NOT = { money = 55000 } }
 		}
+
+		alert = no
+
 		allow = {
 			election = no
 			war = no
+			
+			#International parties do not help aggressors
+			NOT = { badboy = 0.5 }
 		}
 		effect = {
-			prestige = -25
+			prestige_factor = -0.03
 			money = 50000
-add_tax_relative_income = 50
+			add_tax_relative_income = 50
 			add_country_modifier = { name = imf_loan duration = 913 }
-
 		}
 		ai_will_do = {
 			factor = 1
@@ -69,32 +75,37 @@ add_tax_relative_income = 50
 	overlord_loan = {
 		picture = "overlord_loan"
 		potential = {
-			is_secondary_power = no
+			
+			#Has an overlord or sphere master
 			is_greater_power = no
 			OR = {
 				part_of_sphere = yes
 				is_vassal = yes
 			}
-			election = no
-			war = no
-
-#NOT = { has_country_modifier = imf_loan }
-
-NOT = { has_country_modifier = overlord_loan_requested }
-
-#NOT = { has_country_modifier = imf_loan_requested }
-
-#NOT = { has_country_modifier = foreign_loan_requested }
-
-			NOT = { money = 60000 }
-		}
-		allow = {
-			election = no
-			war = no
+			
+			#Overlord has enough money
 			OR = {
 				overlord = { NOT = { has_country_flag = stop_loan } AND = { is_vassal = no money = 1000000 } }
 				any_greater_power = { AND = { is_sphere_leader_of = THIS money = 1000000 } }
 			}
+
+			#Did not take an overlord loan recently
+			NOT = { has_country_modifier = overlord_loan_requested }
+			
+			#Not in a Currency Union
+			NOT = { capital_scope = { has_province_modifier = currency_union_province } }
+
+			OR = { ai = no NOT = { money = 60000 } }
+		}
+
+		alert = no
+
+		allow = {
+			election = no
+			war = no
+			
+			#International parties do not help aggressors
+			NOT = { badboy = 0.5 }
 		}
 		effect = {
 			random_country = { limit = { NOT = { has_country_flag = stop_loan } OR = { is_sphere_leader_of = THIS AND = { is_our_vassal = THIS is_vassal = no } } } country_event = 624912 }
@@ -113,30 +124,35 @@ NOT = { has_country_modifier = overlord_loan_requested }
 	foreign_loan = {
 		picture = "foreign_loan"
 		potential = {
-			year = 1947
-			election = no
-			is_greater_power = no
-			is_secondary_power = no
-			war = no
-NOT = { has_country_modifier = imf_loan }
+			
+			#There is at least 1 GP with enough money
+			any_greater_power = { money = 750000 }
+
+			#Did not take a foreign loan recently
 			NOT = { has_country_modifier = foreign_loan_requested }
-			NOT = { has_country_modifier = overlord_loan_requested }
-			NOT = { has_country_modifier = imf_loan_requested }
-			NOT = { money = 30000 }
-			NOT = { badboy = 1 }
+			
+			#Not in a Currency Union
+			NOT = { capital_scope = { has_province_modifier = currency_union_province } }
+			
+			#Independent nation
+			part_of_sphere = no
+			is_vassal = no
+
+			OR = { ai = no NOT = { money = 30000 } }
 		}
+
+		alert = no
+
 		allow = {
 			election = no
 			war = no
-			any_greater_power = { money = 750000 }
-			part_of_sphere = no
-			is_vassal = no
-			is_greater_power = no
-			is_secondary_power = no
+
+			#International parties do not help aggressors
+			NOT = { badboy = 0.5 }
 		}
 		effect = {
 			any_country = { limit = { NOT = { has_country_flag = stop_loan } has_country_modifier = creditor_nation } country_event = 624914 }
-			prestige = -20
+			prestige_factor = -0.025
 			add_country_modifier = { name = foreign_loan_requested duration = 913 }
 		}
 		ai_will_do = {
@@ -147,6 +163,54 @@ NOT = { has_country_modifier = imf_loan }
 			}
 		}
 	}
+	
+	superstate_bank_loan = {
+		picture = "superstate_bank_loan"
+		potential = {
+		
+			#In a Currency Union
+			capital_scope = { has_province_modifier = currency_union_province }
 
+			#Did not take a foreign loan recently
+			NOT = { has_country_modifier = superstate_bank_loan_requested }
+			
+			#Not a vassal
+			is_vassal = no
+
+			OR = { ai = no NOT = { money = 30000 } }
+		}
+
+		alert = no
+
+		allow = {
+			election = no
+			war = no
+
+			#International parties do not help aggressors
+			NOT = { badboy = 0.5 }
+		}
+		effect = {
+			prestige_factor = -0.02
+			money = 50000
+			add_tax_relative_income = 50
+			add_country_modifier = { name = superstate_bank_loan_requested duration = 913 }
+			
+			#Anti superstate sentiment grows amongst the poor
+			any_pop = { limit = { strata = poor } ideology = { factor = 0.04 value = populist } }
+			
+			#Pro superstate sentiment grows amongst the middle class
+			any_pop = { limit = { strata = middle } ideology = { factor = 0.02 value = liberal } }
+			
+			#Pro superstate sentiment grows amongst the upper class
+			any_pop = { limit = { strata = rich } ideology = { factor = 0.04 value = liberal } }
+		}
+		ai_will_do = {
+			factor = 1
+			modifier = {
+				factor = 0
+				money = 25000
+			}
+		}
+	}
 
 }

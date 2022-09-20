@@ -1,5 +1,137 @@
 political_decisions = {
 
+	form_colonial_vietnam = {
+		picture = "unite_vietnam_gp"
+		potential = {
+			NOT = { OR = { tag = DAI tag = SVI tag = ICU } }
+			OR = {
+				DAI = { exists = no }
+				SVI = { exists = no }
+			}
+			OR = {
+				owns = 1369 #Hanoi
+				owns = 1380 #Saigon
+				is_our_vassal = SVI
+				is_our_vassal = DAI
+			}
+			NOT = { 
+				AND = { 
+					DAI = { ai = no } 
+					SVI = { ai = no } 
+				}
+			}
+			
+		}
+		allow = {
+			war = no
+			election = no
+			is_vassal = no
+			
+			OR = {
+				AND = { is_our_vassal = DAI owns = 1380 }
+				AND = { is_our_vassal = SVI owns = 1369 }
+			}
+			
+		}
+		effect = {
+			
+			any_owned = { limit = { is_core = DAI } secede_province = DAI }
+			any_owned = { limit = { is_core = SVI } secede_province = SVI }
+			
+			#If DAI is player or AI and SVI is ai
+			random_owned = {
+				limit = { 
+					owner = { SVI = { ai = yes } } 
+				}
+				owner = { DAI = { inherit = SVI } }
+			}
+			
+			#If SVI is player controlled
+			random_owned = {
+				limit = { 
+					owner = { SVI = { ai = no } } 
+				}
+				owner = { 
+					SVI = { inherit = DAI }
+					SVI = { change_tag = DAI }
+				}
+			}
+			
+			#Change North Vietnam to Vietnam if communist
+			DAI = {
+				random_owned = { 
+					limit = { owner = { government = proletarian_dictatorship1 } }
+					owner = { government = proletarian_dictatorship }
+				}
+			}
+			
+			#Add diplomatic influence
+			diplomatic_influence = { who = DAI value = 200 }
+			
+			#Change government type according to unifying power
+			
+			##Communist
+			random_owned = { 
+				limit = { 
+					owner = { 
+						OR = { 
+							government = proletarian_dictatorship
+							government = proletarian_dictatorship1
+						} 
+					} 
+				}
+				owner = { DAI = { government = proletarian_dictatorship country_event = 800052 ruling_party_ideology = communist } }
+			}
+			
+			##democratic
+			random_owned = { 
+				limit = { 
+					owner = { 
+						OR = { 
+							government = hms_government
+							government = hms_government1
+							government = democracy
+							government = democracy1
+						} 
+					} 
+				}
+				owner = { DAI = { government = democracy country_event = 800054 ruling_party_ideology = conservative } }
+			}
+			
+			##socialist democracy
+			random_owned = { 
+				limit = { 
+					owner = { 
+						government = socialist_democracy
+					} 
+				}
+				owner = { DAI = { government = socialist_democracy country_event = 800054 ruling_party_ideology = socialist } }
+			}
+			
+			##Dictatorship
+			random_owned = { 
+				limit = { 
+					owner = { 
+						OR = { 
+							government = presidential_dictatorship
+							government = populist_dictatorship
+							government = absolute_monarchy
+							government = nationalist_dictatorship
+							government = theocracy
+						} 
+					} 
+				}
+				owner = { DAI = { government = presidential_dictatorship country_event = 800050 ruling_party_ideology = conservative } }
+			}
+			
+			create_vassal = DAI
+			
+		}
+		ai_will_do = { 
+			factor = 1 
+		}
+	}
+
 	form_indochina = {
 		picture = "form_indochina"
 		potential = {
@@ -21,21 +153,16 @@ political_decisions = {
 			war = no
 			prestige = 150
 			election = no
-OR = { is_greater_power = yes is_secondary_power = yes }
+			OR = { is_greater_power = yes is_secondary_power = yes }
 			detente = 1
 
 			NOT = { ruling_party_ideology = nationalist }
-
 			
-OR = { is_sphere_leader_of = CAM is_our_vassal = CAM tag = CAM }
-		
+			OR = { is_sphere_leader_of = CAM is_our_vassal = CAM tag = CAM }
 			
-			
-OR = { is_sphere_leader_of = LUA is_our_vassal = LUA tag = LUA }
+			OR = { is_sphere_leader_of = LUA is_our_vassal = LUA tag = LUA }
 
-
-OR = { is_sphere_leader_of = DAI is_our_vassal = DAI tag = DAI }
-							
+			OR = { is_sphere_leader_of = DAI is_our_vassal = DAI tag = DAI }
 		}
 		
 		effect = {
@@ -49,11 +176,11 @@ OR = { is_sphere_leader_of = DAI is_our_vassal = DAI tag = DAI }
 			add_accepted_culture = khmer
 			add_accepted_culture = lao
 			primary_culture = vietnamese
-			add_accepted_culture = vietnamese_christian
+			
 			any_country = {
 				limit = {
-					in_sphere = THIS
-				OR = { tag = CAM tag = LUA tag = DAI }
+					OR = { in_sphere = THIS vassal_of = THIS }
+					OR = { tag = CAM tag = LUA tag = DAI }
 				}
 				country_event = 11101
 			}

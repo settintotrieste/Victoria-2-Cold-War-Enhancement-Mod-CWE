@@ -54,6 +54,7 @@ title = "Hacking Incident of $YEAR$"
 
 
 trigger = {
+strd_internet = 1
 hacktivism = 1
 }
 
@@ -124,106 +125,158 @@ clr_country_flag = commerce_raiding
 #Announce embargo
 country_event = {
 	id = 1412150
-title = "$FROMCOUNTRY$ embargoing $COUNTRY$"
+	title = "The $FROMCOUNTRY_ADJ$ Embargo of $COUNTRY$"
 	desc = "Due to the recent deterioration in our relations with $FROMCOUNTRY$, they have decided to punish us by embargoing our nation. They hope that this will serve as a warning not to antagonise them and trigger a push to repair relations."
 	picture = "end_commerce_raiding"
 
-major = yes
+	major = yes
 
-is_triggered_only = yes
+	is_triggered_only = yes
 
-option = {
-name = "They will pay for this!"
-prestige = -25
+	option = {
+		name = "They will pay for this!"
+		prestige = -25
+		
+		random_owned = {
+			limit = { 
+				owner = { FROM = { is_greater_power = yes } } 
+			}
+			owner = { add_country_modifier = { name = embargoed_by_GP duration = 365 } }
 		}
-
-option = {
-name = "Seek dialogue!"
-prestige = -50
-relation = { who = FROM value = 25 }
+		
+		random_owned = {
+			limit = { 
+				owner = { FROM = { is_secondary_power = yes } } 
+			}
+			owner = { add_country_modifier = { name = embargoed_by_SP duration = 365 } }
 		}
+		
+		random_owned = {
+			limit = { 
+				owner = { FROM = { is_greater_power = no is_secondary_power = no } } 
+			}
+			owner = { add_country_modifier = { name = embargoed_by_minor_nation duration = 365 } }
+		}
+		
+		#Retaliate with our own embargo
+		random_owned = {
+			limit = { 
+				owner = { FROM = { has_country_flag = embargo_nation_flag } } 
+			}
+			owner = { FROM = { country_event = 1412150 } }
+		}
+		
+		FROM = { clr_country_flag = embargo_nation_flag }
+		
+	}
+
+	option = {
+		name = "Seek dialogue!"
+		prestige = -50
+		
+		relation = { who = FROM value = 25 }
+		
+		random_owned = {
+			limit = { 
+				owner = { FROM = { is_greater_power = yes } } 
+			}
+			owner = { add_country_modifier = { name = embargoed_by_GP duration = 365 } }
+		}
+		
+		random_owned = {
+			limit = { 
+				owner = { FROM = { is_secondary_power = yes } } 
+			}
+			owner = { add_country_modifier = { name = embargoed_by_SP duration = 365 } }
+		}
+		
+		random_owned = {
+			limit = { 
+				owner = { FROM = { is_greater_power = no is_secondary_power = no } } 
+			}
+			owner = { add_country_modifier = { name = embargoed_by_minor_nation duration = 365 } }
+		}
+		
+		FROM = { clr_country_flag = embargo_nation_flag }
+		
+	}
 
 }
 
-#Peaceful region
+#Region Check event
 country_event = {
 	id = 1412151
-title = "Peaceful Region"
-	desc = "Due to the relative stability of our region in the last few years, our area has boomed in regional trade and cultural vibrancy as investors and citizens alike feel a tide of peace sweeping through the region."
-	picture = "peace_region"
+	title = "Peaceful/Unstable Regions"
+	desc = EVTDESC1412151
+	picture = "region_system"
 
-trigger = { 
-
-NOT = { any_owned_province = { has_province_modifier = peace_region } }
-
-NOT = { 
-any_neighbor_country = { 
-OR = { 
-
-war_with = THIS
-
-AND = { war = yes national_provinces_occupied = 0.10 } 
-
-AND = { war = yes num_of_revolts = 1 }
-
+	trigger = { 
+		NOT = { has_country_modifier = region_timer }
 	} 
+
+	mean_time_to_happen = { 
+		months = 60
+		modifier = { factor = 0 any_owned_province = { NOT = { OR = { has_province_modifier = peace_region has_province_modifier = unstable_region } } } }
+		modifier = { factor = 0.1 war = yes }
+		modifier = { factor = 0.2 num_of_revolts = 1 }
+		modifier = { factor = 0 NOT = { any_owned_province = { OR = { has_province_modifier = peace_region has_province_modifier = unstable_region } } } }
+	}
+
+	option = {
+		name = "Who cares?"
+
+		add_country_modifier = { name = region_timer duration = 60 }
+
+		#Add Unstable Region
+		any_owned = { 
+			limit = { 
+				OR = { 
+					has_province_modifier = nuke_low 
+					has_province_modifier = nuke_medium 
+					has_province_modifier = nuke_high
+					has_province_modifier = tactical_nuked
+					controlled_by_rebels = yes  
+					NOT = { controlled_by = THIS }
+					is_blockaded = yes
+					average_militancy = 5
+					any_neighbor_province = { owner = { war = yes } }
+					any_neighbor_province = { controlled_by_rebels = yes }
 				} 
-	} 
-		}
+			}
+			remove_province_modifier = peace_region
+			add_province_modifier = { name = unstable_region duration = -1 }
+		} 
 
-mean_time_to_happen = { 
-months = 60
-}
+		#Add Stable Region
+		any_owned = { 
+			limit = { 
+				NOT = {
+					OR = { 
+						has_province_modifier = nuke_low 
+						has_province_modifier = nuke_medium 
+						has_province_modifier = nuke_high
+						has_province_modifier = tactical_nukes
+						controlled_by_rebels = yes  
+						NOT = { controlled_by = THIS }
+						is_blockaded = yes
+						average_militancy = 5
+						any_neighbor_province = { owner = { war = yes } }
+						any_neighbor_province = { controlled_by_rebels = yes }
+					} 
+				}
+			}
+			remove_province_modifier = unstable_region
+			add_province_modifier = { name = peace_region duration = -1 }
+		} 
 
-option = {
-name = "Great News!"
-any_owned = { remove_province_modifier = unstable_region }
-any_owned = { add_province_modifier = { name = peace_region duration = -1 } }
-		}
-
-}
-
-#Unstable region
-country_event = {
-	id = 1412152
-title = "Unstable Region"
-	desc = "Due to the presence of war and rebellions in our region, our area has declined in regional trade and cultural vibrancy as investors and citizens alike flee the tide of strife sweeping the region."
-	picture = "unstable_region"
-
-trigger = { 
-
-NOT = { any_owned_province = { has_province_modifier = unstable_region } }
-
-any_neighbor_country = { 
-OR = { 
-
-war_with = THIS
-
-AND = { war = yes national_provinces_occupied = 0.10 } 
-
-AND = { war = yes num_of_revolts = 1 }
-
-	} 
-				} 
-	
-		}
-
-mean_time_to_happen = { 
-months = 6
-}
-
-option = {
-name = "We must strive to stabilise the region!"
-any_owned = { remove_province_modifier = peace_region }
-any_owned = { add_province_modifier = { name = unstable_region duration = -1 } }
-		}
+	}
 
 }
 
 #Rank 1 Receive offer for Relations boost
 country_event = {
 	id = 1412153
-title = "$FROMCOUNTRY$ offers to host Summit Talks"
+title = "$FROMCOUNTRY_ADJ$ International Peace Summit?"
 	desc = EVTDESC1412153
 	picture = "crisis_talks"
 
@@ -247,7 +300,7 @@ ai_chance = { factor = 0.2 }
 #Rank 2 Receive offer for Relations boost
 country_event = {
 	id = 1412154
-title = "$FROMCOUNTRY$ offers us to join them in Summit Talks"
+title = "$FROMCOUNTRY_ADJ$ International Peace Summit?"
 	desc = EVTDESC1412154
 
 	picture = "crisis_talks"
@@ -275,7 +328,7 @@ ai_chance = { factor = 0.2 }
 #Failed Outcome
 country_event = {
 	id = 1412155
-title = "Superpowers reject offer to have Summit Talks"
+title = "International Peace Summit in $CAPITAL$ Collapses"
 	desc = "The superpowers have decided to reject our offer to host summit talks to soothe tensions between the superpowers as they are unable to reconcile their deep divisions at the moment."
 
 	picture = "crisis_talks"
@@ -286,13 +339,66 @@ option = {
 name = "Terrible!"
 prestige = -25
 relation = { who = FROM value = -50 }
+
+clr_country_flag = nobel_peace_prize_recipient
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = conservative } }
+owner = { any_pop = { ideology = { factor = -0.05 value = conservative } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = big_tent } }
+owner = { any_pop = { ideology = { factor = -0.05 value = big_tent } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = socialist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = socialist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = traditionalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = traditionalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = populist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = populist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = nationalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = nationalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = progressive } }
+owner = { any_pop = { ideology = { factor = -0.05 value = progressive } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = liberal } }
+owner = { any_pop = { ideology = { factor = -0.05 value = liberal } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist_social } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist_social } } }
+}
+
 		}
 }
 
 #Successful Outcome
 country_event = {
 	id = 1412156
-title = "Superpowers accept offer to have Summit Talks"
+title = "International Peace Summit in $CAPITAL$"
 	desc = "The superpowers have decided to accept our offer to host summit talks to soothe tensions between the superpowers. Our nation managed to get some limelight in the international scene for this, in addition to gaining more superpower goodwill."
 
 	picture = "crisis_talks"
@@ -306,6 +412,7 @@ name = "Tremendous!"
 prestige = 10
 random_country = { limit = { has_country_modifier = un_king1 } relation = { who = THIS value = 25 } badboy = -10 }
 random_country = { limit = { has_country_modifier = un_king2 } relation = { who = THIS value = 25 } badboy = -10 }
+set_country_flag = nobel_peace_prize_recipient
 		}
 }
 
@@ -351,29 +458,24 @@ add_country_modifier = { name = g77 duration = -1 }
 		}
 }
 
-#German Reunification
+#German Reunification - Historical
 country_event = {
 	id = 1412159
-title = "The reunification of Germany"
+	title = "The Reunification of Germany"
 	desc = EVTDESC1412159
 	picture = "nwo2_united_germany"
 
-trigger = {
-tag = GER
-exists = DDR
-DDR = { government = democracy }
-GER = { government = democracy }
-}
+	major = yes
 
-mean_time_to_happen = { 
-months = 2
-}
+	is_triggered_only = yes
 
-option = {
-name = "Deutschland Uber Alles!"
-inherit = DDR
-prestige = 50
-		}
+	option = {
+		name = "Deutschland Uber Alles!"
+		GER = { inherit = IAR }
+		GER = { inherit = ICB }
+		any_pop = { militancy = -10 }
+	}
+
 }
 
 #Return of Territories Giver
@@ -388,14 +490,27 @@ is_triggered_only = yes
 option = {
 name = "Return the territories!"
 prestige = 0.1
-badboy = -5
-diplomatic_influence = { who = FROM value = 200 }
+badboy = -10
+relation = { who = FROM value = 100 }
+diplomatic_influence = { who = FROM value = 100 }
 any_owned = { limit = { is_core = FROM } secede_province = FROM }
 FROM = { country_event = 1412161 }
 ai_chance = { factor = 1 
 
+modifier = { 
+factor = 0 
+NOT = { OR = { ruling_party_ideology = progressive ruling_party_ideology = liberal } } 
+}
+
+modifier = { 
+factor = 0 
+AND = { is_greater_power = yes NOT = { badboy = 1 } }
+AND = { is_secondary_power = yes NOT = { badboy = 0.75 } }
+}
+
 modifier = { factor = 0 FROM = { 
-OR = { has_country_flag = claim_greater_afghanistan
+OR = { 
+has_country_flag = claim_greater_afghanistan
 has_country_flag = claim_greater_albania
 has_country_flag = claim_greater_argentina
 has_country_flag = claim_greater_armenia
@@ -443,6 +558,7 @@ has_country_flag = claim_greater_africa
 has_country_flag = claim_greater_oceania
 has_country_flag = claim_greater_arabia
 has_country_flag = claim_greater_turkculuk
+has_country_flag = claim_greater_norway
 } 
 } }
 modifier = { factor = 0 any_owned_province = { is_core = THIS is_core = FROM } }
@@ -465,7 +581,7 @@ modifier = { factor = 2 OR = { ruling_party_ideology = populist ruling_party_ide
 #Return of Territories Success
 country_event = {
 	id = 1412161
-title = "$FROMCOUNTRY$ agrees to return our lands"
+title = "$FROMCOUNTRY$ Returns $COUNTRY_ADJ$ Lands"
 	desc = EVTDESC1412161
 	picture = "sovereignty_return"
 
@@ -481,7 +597,7 @@ any_pop = { militancy = -5 }
 #Return of Territories Failure
 country_event = {
 	id = 1412162
-title = "$FROMCOUNTRY$ refuses to return our lands"
+title = "$FROMCOUNTRY$ Refuses to Return $COUNTRY_ADJ$ Lands"
 	desc = "$FROMCOUNTRY$ finds that the time is not right yet to return our sacred and sovereign lands back to us. They cite reasons as disagreements over how to transfer the territories to us. We believe that it is an excuse to keep them in perpetuity."
 	picture = "sovereignty_talk"
 
@@ -743,6 +859,7 @@ trigger = {
 election = yes
 war = no
 social_networking = 1
+OR = { publishing_rights = unregulated_publishing publishing_rights = responsible_publishing }
 OR = { average_militancy = 3 average_consciousness = 3 }
 NOT = { has_country_modifier = media_conspiracy1 }
 NOT = { has_country_modifier = media_conspiracy2 }
@@ -758,102 +875,327 @@ prestige = -10
 any_pop = { militancy = 1 }
 any_pop = { consciousness = 3 }
 random_list = {
-50 = { add_country_modifier = { name = media_conspiracy1 duration = 365 } }
-50 = { add_country_modifier = { name = media_conspiracy2 duration = 365 } }
+50 = { 
+add_country_modifier = { name = media_conspiracy1 duration = 365 } 
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = conservative } }
+owner = { any_pop = { ideology = { factor = 0.05 value = conservative } } }
 }
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = big_tent } }
+owner = { any_pop = { ideology = { factor = 0.05 value = big_tent } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = socialist } }
+owner = { any_pop = { ideology = { factor = 0.05 value = socialist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = traditionalist } }
+owner = { any_pop = { ideology = { factor = 0.05 value = traditionalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = populist } }
+owner = { any_pop = { ideology = { factor = 0.05 value = populist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = nationalist } }
+owner = { any_pop = { ideology = { factor = 0.05 value = nationalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = progressive } }
+owner = { any_pop = { ideology = { factor = 0.05 value = progressive } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = liberal } }
+owner = { any_pop = { ideology = { factor = 0.05 value = liberal } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist } }
+owner = { any_pop = { ideology = { factor = 0.05 value = communist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist_social } }
+owner = { any_pop = { ideology = { factor = 0.05 value = communist_social } } }
+}
+
+	}
+50 = { 
+add_country_modifier = { name = media_conspiracy2 duration = 365 } 
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = conservative } }
+owner = { any_pop = { ideology = { factor = -0.05 value = conservative } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = big_tent } }
+owner = { any_pop = { ideology = { factor = -0.05 value = big_tent } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = socialist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = socialist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = traditionalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = traditionalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = populist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = populist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = nationalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = nationalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = progressive } }
+owner = { any_pop = { ideology = { factor = -0.05 value = progressive } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = liberal } }
+owner = { any_pop = { ideology = { factor = -0.05 value = liberal } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist_social } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist_social } } }
+}
+
+	}
+}
+
 		}
 
 }
 
-#Civil Defence - Nuke Protection
+#Civil Defence - Nuke Protection - Start
 country_event = {
 	id = 1412169
-title = "Nuclear Shelters Activated"
-	desc = "A significant part of the population in nuclear hit areas have managed to seek refuge in purpose built bunkers to tide through the nuclear fallout."
+	title = "Nuclear Shelters Activated"
+	desc = EVTDESC1412169
 	picture = "nuclear_shelter"
 
-trigger = { 
-	has_country_modifier = nuke_fallout
-OR = { has_country_modifier = cdhigh has_country_modifier = cdmedium has_country_modifier = cdlow }
-	NOT = { has_country_flag = nuke_protection }
-}
+	trigger = { 
+	
+		#Country has been hit by nuclear weapons
+		any_owned_province = { 
+			OR = { 
+				has_province_modifier = nuke_high 
+				has_province_modifier = nuke_medium 
+				has_province_modifier = nuke_low 
+			} 
+		}
+		
+		#Has some proper Civil Defence
+		OR = { 
+			has_country_modifier = cdhigh 
+			has_country_modifier = cdmedium 
+		}
+		
+		NOT = { has_country_flag = nuke_protection }
+	}
 
-option = {
-name = "A moment of silence for those who didn't make it"
+	option = {
+		name = "A moment of silence for those who didn't make it"
+		
+		set_country_flag = nuke_protection
 
-random_owned = { 
-
-limit = { owner = { has_country_modifier = cdhigh } } 
-
-owner = { 
-
-any_owned = { 
-
-limit = { OR = { has_province_modifier = nuke_high has_province_modifier = nuke_medium has_province_modifier = nuke_low } } 
-
-add_province_modifier = { name = nuke_pro_high duration = 18250 } 
-
-		} 
-	} 
-}
-
-random_owned = { 
-
-limit = { owner = { has_country_modifier = cdmedium } } 
-
-owner = { 
-
-any_owned = { 
-
-limit = { OR = { has_province_modifier = nuke_high has_province_modifier = nuke_medium has_province_modifier = nuke_low } } 
-
-add_province_modifier = { name = nuke_pro_medium duration = 18250 } 
-
-		} 
-	} 
-}
-
-
-random_owned = { 
-
-limit = { owner = { has_country_modifier = cdlow } } 
-
-owner = { 
-
-any_owned = { 
-
-limit = { OR = { has_province_modifier = nuke_high has_province_modifier = nuke_medium has_province_modifier = nuke_low } } 
-
-add_province_modifier = { name = nuke_pro_low duration = 18250 } 
-
-		} 
-	} 
-}
-
-set_country_flag = nuke_protection
+		#High Civil Defence
+		random_owned = { 
+			limit = { owner = { has_country_modifier = cdhigh } } 
+			owner = { 
+				any_owned = { 
+					limit = { has_province_modifier = nuke_low } 
+					remove_province_modifier = nuke_low
+					add_province_modifier = { name = nuke_low duration = 9125 } 
+				} 
+				any_owned = { 
+					limit = { has_province_modifier = nuke_medium } 
+					remove_province_modifier = nuke_medium
+					add_province_modifier = { name = nuke_low duration = 18250 } 
+				} 
+				any_owned = { 
+					limit = { has_province_modifier = nuke_high } 
+					remove_province_modifier = nuke_high
+					add_province_modifier = { name = nuke_medium duration = 18250 } 
+				} 
+			} 
+		}
+		
+		#Medium Civil Defence - Only protects against medium nuke damage at best
+		random_owned = { 
+			limit = { owner = { has_country_modifier = cdhigh } } 
+			owner = { 
+				any_owned = { 
+					limit = { has_province_modifier = nuke_low } 
+					remove_province_modifier = nuke_low
+					add_province_modifier = { name = nuke_low duration = 9125 } 
+				} 
+				any_owned = { 
+					limit = { has_province_modifier = nuke_medium } 
+					remove_province_modifier = nuke_medium
+					add_province_modifier = { name = nuke_low duration = 18250 } 
+				} 
+			} 
 		}
 
+	}
+
 }
 
-#Civil Defence - END Nuke Protection
+#Civil Defence - No Nuke Protection - Total Anarchy!
+country_event = {
+	id = 14121691
+	title = "Anarchy in $COUNTRY$"
+	desc = EVTDESC14121691
+	picture = "nuclear_fallout_anarchy"
+
+	trigger = { 
+	
+		#Country has been hit by nuclear weapons
+		any_owned_province = { 
+			OR = { 
+				has_province_modifier = nuke_high 
+				has_province_modifier = nuke_medium 
+				has_province_modifier = nuke_low 
+			} 
+		}
+		
+		#Has no Civil Defence
+		NOT = { 
+			OR = { 
+				has_country_modifier = cdhigh 
+				has_country_modifier = cdmedium 
+			}
+		}
+		
+		NOT = { has_country_flag = nuke_protection }
+	}
+
+	option = {
+		name = "A moment of silence for those who didn't make it"
+		
+		set_country_flag = nuke_protection
+
+		#All provinces get transferred to rebels
+		any_owned = {
+			limit = { controlled_by = THIS }
+			change_controller = REB
+		}
+
+	}
+
+}
+
+#Civil Defence - states occassionally fall to rebels
+country_event = {
+	id = 14121692
+	title = "Government Control Weakens"
+	desc = EVTDESC14121692
+	picture = "nuclear_fallout_anarchy_2"
+
+	trigger = { 
+	
+		#Country has been hit by nuclear weapons
+		any_owned_province = { 
+			OR = { 
+				has_province_modifier = nuke_high 
+				has_province_modifier = nuke_medium 
+				has_province_modifier = nuke_low 
+			} 
+			controlled_by = THIS
+			average_militancy = 9
+		}
+		
+		#Has weak civil defence
+		NOT = { has_country_modifier = cdhigh }
+		
+		#Post nuclear government
+		has_country_flag = nuke_protection
+	}
+	
+	mean_time_to_happen = { 
+		months = 6
+	}
+
+	option = {
+		name = "At this rate we might lose the whole country!"
+		prestige_factor = -0.01
+		
+		#Transfer states to rebels
+		any_owned = { 
+			limit = {
+				OR = { 
+					has_province_modifier = nuke_high 
+					has_province_modifier = nuke_medium 
+					has_province_modifier = nuke_low 
+				} 
+				controlled_by = THIS
+				average_militancy = 9
+			}
+			state_scope = {
+				any_owned = {
+					limit = { 
+						is_state_capital = no 
+						controlled_by = THIS 
+					}
+					change_controller = REB
+				}
+			}
+		}
+	}
+
+}
+
+#Civil Defence - ENL Nuke Protection
 country_event = {
 	id = 1412170
-title = "All clear to leave the Nuclear Shelters"
-	desc = "It is now safe to leave the nuclear shelters so our population is now slowly rebuilding the nuclear hit areas back to their glory days."
+	title = "Nuclear Fallout has Subsided"
+	desc = "It is now safe to leave the nuclear shelters, if there were any, so our population can start to slowly restore the nuclear hit wasteland back to its glory days."
 	picture = "nuclear_shelter_clear"
 
-trigger = { 
-	NOT = { has_country_modifier = nuke_fallout }
-	has_country_flag = nuke_protection
-}
-
-option = {
-name = "We will rebuild civilisation"
-clr_country_flag = nuke_protection
-any_owned = { remove_province_modifier = nuke_pro_high
-remove_province_modifier = nuke_pro_medium
-remove_province_modifier = nuke_pro_low }
+	trigger = { 
+	
+		#No more nuke damage
+		NOT = {
+			any_owned_province = { 
+				OR = { 
+					has_province_modifier = nuke_high 
+					has_province_modifier = nuke_medium 
+					has_province_modifier = nuke_low 
+				} 
+			}
 		}
+		
+		has_country_flag = nuke_protection
+	}
+
+	option = {
+		name = "We will rebuild the $COUNTRY_ADJ$ civilisation!"
+		clr_country_flag = nuke_protection
+		clr_country_flag = post_nuke_government
+	}
 
 }
 
@@ -932,119 +1274,6 @@ ai_chance = { factor = 0.1 modifier = { factor = 1 stronger_army_than = ISR } }
 
 }
 
-#Emirate of Cyrenaica
-country_event = {
-	id = 1412172
-title = "Emirate of Cyrenaica"
-	desc = EVTDESC1412172
-	picture = "cyrenaica"
-
-fire_only_once = yes
-
-trigger = { 
-year = 1949
-tag = ENG
-government = hms_government
-owns = 1735
-FRA = { owns = 1743 }
-TRI = { exists = no }
-CYR = { exists = no }
-FEZ = { exists = no }
-NOT = { year = 1990 }
-	}
-
-mean_time_to_happen = { 
-months = 3
-}
-
-option = {
-name = "Establish the Emirate"
-prestige = 10
-release = CYR
-diplomatic_influence = { who = CYR value = 200 }
-FRA = { country_event = { id = 1412173 days = 36 } }
-ai_chance = { factor = 0.9 }
-		}
-
-option = {
-name = "Aim for a united Libya"
-ai_chance = { factor = 0.1 }
-		}
-
-}
-
-#Fezzan
-country_event = {
-	id = 1412173
-title = "Independence of Fezzan-Ghadames"
-	desc = EVTDESC1412173
-	picture = "fezzan"
-
-is_triggered_only = yes
-
-option = {
-name = "Establish the Kingdom"
-prestige = 10
-release = FEZ
-diplomatic_influence = { who = FEZ value = 200 }
-ai_chance = { factor = 0.2 }
-		}
-
-option = {
-name = "Aim for a united Libya"
-ai_chance = { factor = 0.8 }
-		}
-
-}
-
-#United Libya
-country_event = {
-	id = 1412174
-title = "United Kingdom of Libya"
-	desc = EVTDESC1412174
-	picture = "united_king_libya"
-
-fire_only_once = yes
-
-trigger = { 
-year = 1951
-tag = ENG
-owns = 1731
-TRI = { exists = no }
-OR = { CYR = { exists = yes }
-FEZ = { exists = yes } }
-NOT = { year = 1990 }
-	}
-
-mean_time_to_happen = { 
-months = 5
-}
-
-option = {
-name = "Form a United Libya"
-prestige = 10
-release = TRI
-diplomatic_influence = { who = TRI value = 200 }
-TRI = { inherit = FEZ inherit = CYR }
-ai_chance = { factor = 0.9 }
-		}
-
-option = {
-name = "Create a Federation instead"
-ENG = { release = TRI }
-diplomatic_influence = { who = TRI value = 200 }
-TRI = { inherit = FEZ inherit = CYR }
-
-TRI = { release_vassal = FEZ } 
-TRI = { release_vassal = CYR }
-FRA = { diplomatic_influence = { who = FEZ value = 200 } }
-diplomatic_influence = { who = CYR value = 200 }
-
-ai_chance = { factor = 0.1 }
-		}
-
-}
-
 #UN Sanctions - Diplomatic
 country_event = {
 	id = 1412175
@@ -1054,6 +1283,9 @@ title = "Diplomatic Sanctions imposed on $COUNTRY$"
 
 trigger = { 
 	year = 1956
+	
+	#THIS is an aggressor
+	has_country_flag = this_is_aggressor
 
 NOT = { has_country_modifier = un_diplo_sanc }
 
@@ -1089,6 +1321,9 @@ title = "Political Sanctions imposed on $COUNTRY$"
 
 trigger = { 
 	year = 1956
+	
+	#THIS is an aggressor
+	has_country_flag = this_is_aggressor
 
 NOT = { has_country_modifier = un_polit_sanc }
 
@@ -1127,6 +1362,9 @@ title = "Economic Sanctions imposed on $COUNTRY$"
 
 trigger = { 
 	year = 1956
+	
+	#THIS is an aggressor
+	has_country_flag = this_is_aggressor
 
 NOT = { has_country_modifier = un_econ_sanc }
 
@@ -1191,48 +1429,184 @@ remove_country_modifier = un_diplo_sanc
 
 }
 
-#Soviet States Recognition
+#Add Soviet cores
 country_event = {
 	id = 1412179
-title = "Republics of the Soviet Union"
+	title = "Republics of the Soviet Union"
 	desc = EVTDESC1412179
 	picture = "ussr_cores"
 
-fire_only_once = yes
+	#fire_only_once = yes
 
-trigger = { 
-NOT = { year = 1990 }
-tag = RUS 
-government = proletarian_dictatorship
-has_country_flag = disabled_for_now
-has_country_modifier = united_nations_ga_member
+	trigger = { 
+		tag = RUS
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy }
+		is_vassal = no
+		war = no
+		
+		#Does not currently have claims over a former SSR's land
+		OR = {
+			UKR = { any_core = { NOT = { is_core = RUS } NOT = { is_core = CRI } } }
+			BYE = { any_core = { NOT = { is_core = RUS } } }
+			GEO = { any_core = { NOT = { is_core = RUS } } }
+			AZB = { any_core = { NOT = { is_core = RUS } NOT = { is_core = PER } } }
+			ARM = { any_core = { NOT = { is_core = RUS } } }
+			TKR = { any_core = { NOT = { is_core = RUS } } }
+			MOL = { any_core = { NOT = { is_core = RUS } } }
+			UZB = { any_core = { NOT = { is_core = RUS } } }
+			KYR = { any_core = { NOT = { is_core = RUS } } }
+			TAJ = { any_core = { NOT = { is_core = RUS } } }
+			KAZ = { any_core = { NOT = { is_core = RUS } } }
+			LIT = { any_core = { NOT = { is_core = RUS } } has_country_flag = USSR_baltic_claims_recognised }
+			LAT = { any_core = { NOT = { is_core = RUS } } has_country_flag = USSR_baltic_claims_recognised }
+			EST = { any_core = { NOT = { is_core = RUS } } has_country_flag = USSR_baltic_claims_recognised }
+		}
+	}
+	
+	mean_time_to_happen = { 
+		months = 1
 	}
 
-mean_time_to_happen = { 
-months = 1
-}
-
-option = {
-name = "Great!"
-
-any_owned = { 
-limit = { OR = { 
-	is_core = UKR 
-	is_core = BYE 
-	is_core = GEO 
-	is_core = AZB 
-	is_core = ARM 
-	is_core = TKR
-	is_core = MOL
-	is_core = UZB 
-	is_core = KYR 
-	is_core = TAJ 
-	is_core = KAZ 
-} } 
-add_core = RUS
-}
-
+	option = {
+		name = "Great!"
+		
+		#Ex-Soviet Republics will hate Russia
+		any_country = { 
+			limit = { 
+				exists = yes 
+				any_core = { is_core = RUS } 
+			}
+			relation = { who = THIS value = -100 }
 		}
+		
+		#Add USSR cores over former SSR lands
+		UKR = { all_core = { limit = { NOT = { is_core = RUS } NOT = { is_core = CRI } } add_core = RUS } }
+		BYE = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		GEO = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		AZB = { all_core = { limit = { NOT = { is_core = RUS } NOT = { is_core = PER } } add_core = RUS } }
+		ARM = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		TKR = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		MOL = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		UZB = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		KYR = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		TAJ = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		KAZ = { all_core = { limit = { NOT = { is_core = RUS } } add_core = RUS } }
+		LIT = { all_core = { limit = { owner = { has_country_flag = USSR_baltic_claims_recognised } NOT = { is_core = RUS } } add_core = RUS } }
+		LAT = { all_core = { limit = { owner = { has_country_flag = USSR_baltic_claims_recognised } NOT = { is_core = RUS } } add_core = RUS } }
+		EST = { all_core = { limit = { owner = { has_country_flag = USSR_baltic_claims_recognised } NOT = { is_core = RUS } } add_core = RUS } }
+		
+		#Reset THIS's option to keep USSR cores
+		clr_country_flag = USSR_cores_remain_option
+
+	}
+	
+}
+
+#Soviet States Recognition
+country_event = {
+	id = 14121799
+	title = "Renounce Soviet Borders?"
+	desc = EVTDESC14121799
+	picture = "relinquish_ussr_cores"
+
+	#fire_only_once = yes
+
+	trigger = { 
+		tag = RUS 
+		
+		#RUS is no longer the USSR or USS
+		NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } }
+		is_vassal = no
+		war = no
+		
+		#Currently have claims over a former SSR's land
+		OR = {
+			UKR = { any_core = { is_core = RUS NOT = { is_core = CRI } } }
+			BYE = { any_core = { is_core = RUS } }
+			GEO = { any_core = { is_core = RUS } }
+			AZB = { any_core = { is_core = RUS } }
+			ARM = { any_core = { is_core = RUS } }
+			TKR = { any_core = { is_core = RUS } }
+			MOL = { any_core = { is_core = RUS } }
+			UZB = { any_core = { is_core = RUS } }
+			KYR = { any_core = { is_core = RUS } }
+			TAJ = { any_core = { is_core = RUS } }
+			KAZ = { any_core = { is_core = RUS } }
+			LIT = { any_core = { is_core = RUS } }
+			LAT = { any_core = { is_core = RUS } }
+			EST = { any_core = { is_core = RUS } }
+		}
+		
+		#THIS did not previously choose to retain the USSR cores
+		NOT = { has_country_flag = USSR_cores_remain_option }
+		
+	}
+	
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "Renounce claims over the former Soviet territories"
+
+		badboy = -10
+
+		#Ex-Soviet Republics will like Russia
+		any_country = { 
+			limit = { 
+				exists = yes 
+				any_core = { is_core = RUS } 
+			}
+			relation = { who = THIS value = 50 }
+		}
+
+		#Remove cores
+		all_core = { 
+			limit = { 
+				OR = { 
+					AND = { is_core = UKR NOT = { is_core = CRI } }
+					is_core = BYE 
+					is_core = GEO 
+					is_core = AZB 
+					is_core = ARM 
+					is_core = TKR
+					is_core = MOL
+					is_core = UZB 
+					is_core = KYR 
+					is_core = TAJ 
+					is_core = KAZ 
+					is_core = LIT
+					is_core = LAT
+					is_core = EST
+				}
+			}
+			remove_core = RUS
+		}
+
+		ai_chance = { factor = 0.95 }
+
+	}
+
+	option = {
+		name = "Never!"
+		badboy = 10
+
+		#Baltic States
+		LAT = { all_core = { add_core = RUS } }
+		LIT = { all_core = { add_core = RUS } }
+		EST = { all_core = { add_core = RUS } }
+
+		#Ex-Soviet Republics will hate Russia
+		any_country = { 
+			limit = { any_core = { is_core = RUS } }
+			relation = { who = THIS value = -200 }
+		}
+		
+		set_country_flag = USSR_cores_remain_option
+
+		ai_chance = { factor = 0.05 }
+	}
+
 }
 
 #Bankruptcy
@@ -1252,7 +1626,7 @@ is_triggered_only = yes
 option = {
 name = "They will need to restructure their debt themselves!"
 
-FROM = { relation = { who = THIS value = -5 } }
+FROM = { relation = { who = THIS value = -25 } }
 
 FROM = { 
 add_country_modifier = { name = investor_flight duration = 730 }
@@ -1267,10 +1641,10 @@ add_country_modifier = { name = bankruptcy_flag duration = 3650 }
 option = {
 name = "We will grant them a bailout!"
 
-FROM = { relation = { who = THIS value = 5 } }
+FROM = { relation = { who = THIS value = 25 } }
 
 FROM = { 
-money = 2000
+money = 50000
 add_country_modifier = { name = investor_flight duration = 730 }
 add_country_modifier = { name = stockcrash duration = 365 }
 
@@ -1397,72 +1771,6 @@ remove_country_modifier = undhr_sanctions
 
 }
 
-#Division of Cyprus
-country_event = {
-	id = 1412185
-title = "The Cyprus Dispute"
-	desc = EVTDESC1412185
-	picture = "cyprus_division"
-
-trigger = { 
-tag = CYP
-year = 1975
-government = populist_dictatorship
-NOT = { exists = NCY }
-war = no
-is_vassal = no
-TUR = { exists = yes is_vassal = no }
-GRE = { exists = yes is_vassal = no }
-	}
-
-mean_time_to_happen = { 
-months = 8
-}
-
-option = {
-name = "Federate the Turkish and Greek Cypriots"
-government = democracy
-country_event = 800054
-release_vassal = NCY
-
-NCY = {
-government = democracy
-country_event = 800054
-}
-
-relation = { who = TUR value = 50 }
-relation = { who = GRE value = -50 }
-ai_chance = { factor = 0.1 }
-		}
-
-option = {
-name = "Maintain the status quo"
-prestige = -50
-any_pop = { militancy = 5 }
-release = NCY
-TUR = { create_vassal = NCY }
-
-NCY = { government = populist_dictatorship
-country_event = 800050 }
-
-relation = { who = TUR value = -50 }
-relation = { who = GRE value = -50 }
-ai_chance = { factor = 0.8 }
-		}
-
-option = {
-name = "Self-determination for the Turks"
-prestige = 10
-release = NCY
-badboy = -5
-any_pop = { militancy = -4 }
-relation = { who = TUR value = 50 }
-relation = { who = GRE value = 50 }
-ai_chance = { factor = 0.1 }
-		}
-
-}
-
 #Truman Doctrine
 country_event = {
 	id = 1412186
@@ -1583,7 +1891,7 @@ title = "Nuclear Accident"
 	picture = "nuclear_accident"
 
 trigger = { 
-has_country_flag = nuclear_power_ge
+OR = { has_country_flag = nuclear_power_ge any_owned_province = { has_building = nuclear_fuel_factory } }
 OR = { safety_regulations = some_regulations safety_regulations = balanced_regulations safety_regulations = restrictive_regulations }
 	}
 
@@ -1606,51 +1914,60 @@ random_province = { limit = { is_colonial = no NOT = { total_pops = 50000 } } ad
 #State Visit
 country_event = {
 	id = 1412191
-title = "State Visit by a major Geopolitical Power"
+	title = "Important State Visit in $CAPITAL$"
 	desc = EVTDESC1412191
 	picture = "state_visit"
 
-trigger = { 
-is_vassal = no
-war = no
-election = no
-NOT = { has_country_flag = stop_loan }
+	trigger = { 
+	
+		#Diplomacy focus
+		has_country_modifier = nprlow
+		
+		#Big powers dont waste time with irrelevant minors
+		rank = 45
+		
+		is_vassal = no
+		war = no
+		election = no
+		
+		#No visits if THIS doesn't give loans
+		NOT = { has_country_flag = stop_loan }
 	}
 
-mean_time_to_happen = { 
-months = 36
-modifier = { factor = 2 is_greater_power = no is_secondary_power = no }
-modifier = { factor = 1.5 badboy = 0.1 }
-modifier = { factor = 1.5 badboy = 0.2 }
-modifier = { factor = 1.5 badboy = 0.3 }
-modifier = { factor = 1.5 badboy = 0.4 }
-modifier = { factor = 1.5 badboy = 0.5 }
-modifier = { factor = 1.5 badboy = 0.6 }
-modifier = { factor = 1.5 badboy = 0.7 }
-modifier = { factor = 1.5 badboy = 0.8 }
-modifier = { factor = 1.5 badboy = 0.9 }
-modifier = { factor = 1.5 badboy = 1.0 }
-}
+	mean_time_to_happen = { 
+		months = 36
+		modifier = { factor = 2 is_greater_power = no is_secondary_power = no }
+		modifier = { factor = 1.5 badboy = 0.1 }
+		modifier = { factor = 1.5 badboy = 0.2 }
+		modifier = { factor = 1.5 badboy = 0.3 }
+		modifier = { factor = 1.5 badboy = 0.4 }
+		modifier = { factor = 1.5 badboy = 0.5 }
+		modifier = { factor = 1.5 badboy = 0.6 }
+		modifier = { factor = 1.5 badboy = 0.7 }
+		modifier = { factor = 1.5 badboy = 0.8 }
+		modifier = { factor = 1.5 badboy = 0.9 }
+		modifier = { factor = 1.5 badboy = 1.0 }
+	}
 
-option = {
-name = "Discuss deepening trade ties"
-prestige = 10
-random_country = { limit = { OR = { is_greater_power = yes is_secondary_power = yes } } relation = { who = THIS value = 10 } }
-add_country_modifier = { name = economic_boom duration = 730 }
-		}
+	option = {
+		name = "Discuss deepening trade ties"
+		prestige = 10
+		random_country = { limit = { OR = { is_greater_power = yes is_secondary_power = yes } } relation = { who = THIS value = 10 } }
+		add_country_modifier = { name = economic_boom duration = 730 }
+	}
 
-option = {
-name = "Discuss mutual interests"
-prestige = 5
-random_country = { limit = { OR = { is_greater_power = yes is_secondary_power = yes } } diplomatic_influence = { who = THIS value = 5 } relation = { who = THIS value = 25 } }
-		}
+	option = {
+		name = "Discuss mutual interests"
+		prestige = 5
+		random_country = { limit = { OR = { is_greater_power = yes is_secondary_power = yes } } diplomatic_influence = { who = THIS value = 5 } relation = { who = THIS value = 25 } }
+	}
 
 
-option = {
-name = "Discuss contentious issues"
-prestige = 30
-random_country = { limit = { OR = { is_greater_power = yes is_secondary_power = yes } } relation = { who = THIS value = -25 } }
-		}
+	option = {
+		name = "Discuss contentious issues"
+		prestige = 30
+		random_country = { limit = { OR = { is_greater_power = yes is_secondary_power = yes } } relation = { who = THIS value = -25 } }
+	}
 
 }
 
@@ -1776,278 +2093,154 @@ set_global_flag = future_age
 #Free City of Danzig
 country_event = {
 	id = 1412197
-title = "The Danzig Question"
+	title = "The Danzig Question"
 	desc = EVTDESC1412197
 	picture = "fcod"
 
-fire_only_once = yes
+	fire_only_once = yes
 
-trigger = { 
-NOT = { year = 1990 }
-tag = POL
-government = democracy
-is_vassal = no
-owns = 690
-DZG = { exists = no }
+	trigger = { 
+		tag = POL
+		year = 1946
+		NOT = { year = 1990 }
+
+		government = democracy
+		is_vassal = no
+		war = no
+		
+		is_possible_vassal = DZG
 	}
 
-mean_time_to_happen = { 
-months = 3
-}
+	mean_time_to_happen = { 
+		months = 3
+	}
+	
+	option = {
+		name = "Keep hold of the Danzig"
+		ai_chance = { factor = 0.9 }
+	}
 
-option = {
-name = "Restore the sovereignty of Danzig"
-690 = { remove_core = POL }
-release = DZG
-DZG = { government = democracy country_event = 800054 }
-prestige = 100
-ai_chance = { factor = 0.1 }
+	option = {
+		name = "Restore the sovereignty of Danzig"
+		prestige = 100
+		
+		690 = { remove_core = POL }
+		
+		release = DZG
+		DZG = { 
+			government = democracy 
+			country_event = 800054 
+			ruling_party_ideology = conservative 
 		}
-
-option = {
-name = "Grant partial autonomy to the Danzig"
-690 = { remove_core = POL }
-release_vassal = DZG
-DZG = { government = sar_government country_event = 800054 }
-prestige = 50
-set_global_flag = dzg_puppet
-ai_chance = { factor = 0.2 }
-		}
-
-option = {
-name = "Keep hold of the Danzig"
-ai_chance = { factor = 0.7 }
-		}
+		
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
 #United India Formation
 country_event = {
 	id = 1412198
-title = "The Union of India"
+	title = "The Union of India"
 	desc = EVTDESC1412198
 	picture = "union_of_india"
+	
+	major = yes
 
-is_triggered_only = yes
+	fire_only_once = yes
 
-option = {
-name = "We have finally ended British Rule"
-overlord = { release_vassal = THIS }
-prestige = 100
-government = hms_government1
-country_event = { id = 1412200 days = 10 }
-any_owned = { add_core = RAJ }
-primary_culture = indian
-remove_accepted_culture = indian_muslim
-add_accepted_culture = sikkim
-add_accepted_culture = sikh
-set_country_flag = united_HND_PAK
-		}
+	trigger = { 
+		tag = RAJ
+		war = no
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		vassal_of = ENG
+		has_global_flag = united_india_option
+	}
+
+	mean_time_to_happen = { 
+		months = 6
+	}
+
+	option = {
+		name = "We have finally ended British rule!"
+		
+		primary_culture = indian
+		
+		overlord = { release_vassal = THIS }
+		prestige = 100
+		government = hms_government1
+		country_event = { id = 1412200 days = 10 }
+		HND = { all_core = { add_core = RAJ } }
+		PAK = { all_core = { add_core = RAJ } }
+		primary_culture = indian
+		remove_accepted_culture = indian_muslim
+		add_accepted_culture = sikkim
+		add_accepted_culture = punjabi
+		set_country_flag = united_HND_PAK
+	}
+
 }
 
 #United India Formation Princely states
 country_event = {
 	id = 1412199
-title = "The Union of India"
+	title = "The Union of India"
 	desc = EVTDESC1412198
 	picture = "union_of_india"
 
-is_triggered_only = yes
+	is_triggered_only = yes
 
-option = {
-name = "Join the Union fully"
-any_owned = { add_core = RAJ }
-RAJ = { inherit = THIS }
-ai_chance = { factor = 0.75 }
+	option = {
+		name = "Join the Union fully"
+		any_owned = { add_core = RAJ }
+		RAJ = { inherit = THIS }
+		ai_chance = { factor = 0.75 }
+	}
+
+	option = {
+		name = "Declare independence"
+		ENG = { release_vassal = THIS relation = { who = THIS value = -200 } diplomatic_influence = { who = THIS value = -200 } leave_alliance = THIS }
+
+		RAJ = { relation = { who = THIS value = -200 } }
+
+		RAJ = { 
+			war = {
+				target = THIS
+				attacker_goal = { casus_belli = annex_core_country }
+				defender_goal = { casus_belli = status_quo }
+				call_ally = no
+			}
 		}
 
-option = {
-name = "Declare independence"
-ENG = { release_vassal = THIS 
-relation = { who = THIS value = -200 } diplomatic_influence = { who = THIS value = -200 } leave_alliance = THIS }
-
-RAJ = { relation = { who = THIS value = -200 } }
-
-RAJ = { 
-war = {
-	target = THIS
-	attacker_goal = { casus_belli = annex_core_country }
-	defender_goal = { casus_belli = status_quo }
-	call_ally = no
-}
-}
-
-ai_chance = { factor = 0.25 }
-		}
+		ai_chance = { factor = 0.25 }
+	}
 }
 
 #United India Formation Princely states
 country_event = {
 	id = 1412200
-title = "Question of the Princely States"
+	title = "Question of the Princely States"
 	desc = EVTDESC1412198
 	picture = "union_of_india"
 
-is_triggered_only = yes
+	is_triggered_only = yes
 
-option = {
-name = "Demand integration"
-any_country = { limit = { exists = yes OR = { tag = HYD tag = MNP tag = RAA tag = IND tag = GWA tag = BER tag = ORI tag = NAX tag = BOD tag = MYS tag = TRA tag = SIK tag = AZK tag = BLO tag = JAK tag = SIN } } country_event = 1412199 }
-ai_chance = { factor = 0.9 }
-		}
-
-option = {
-name = "Allow each Princely State self-autonomy"
-any_country = { limit = { vassal_of = ENG OR = { tag = HYD tag = MNP tag = RAA tag = IND tag = GWA tag = BER tag = ORI tag = NAX tag = BOD tag = MYS tag = TRA tag = SIK tag = AZK tag = BLO tag = JAK tag = SIN } } 
-
-country_event = 1512064
-
-}
-ai_chance = { factor = 0.1 }
-		}
-
-}
-
-#Set Development Levels
-country_event = {
-	id = 1412201
-title = "Developmental Levels"
-	desc = EVTDESC1412201
-	picture = "developmental_levels"
-
-trigger = { 
-any_owned_province = { NOT = { OR = { has_province_modifier = dev_1 has_province_modifier = dev_2 has_province_modifier = dev_3 has_province_modifier = dev_4 has_province_modifier = dev_5 } } }
+	option = {
+		name = "Demand integration"
+		any_country = { limit = { exists = yes OR = { tag = HYD tag = MNP tag = RAA tag = IND tag = GWA tag = BER tag = ORI tag = NAX tag = BOD tag = MYS tag = TRA tag = SIK tag = AZK tag = BLO tag = JAK tag = SIN } } country_event = 1412199 }
+		ai_chance = { factor = 0.9 }
 	}
 
-mean_time_to_happen = { 
-months = 1
-}
-
-option = {
-name = "Time to start developing our nation"
-
-add_country_modifier = { name = dev_timer duration = 730 }
-
-any_owned = { limit = { 
-
-total_pops = 15000
-
-NOT = { OR = { has_province_modifier = dev_1 has_province_modifier = dev_2 has_province_modifier = dev_3 has_province_modifier = dev_4 has_province_modifier = dev_5 } } 
-
-literacy = 0.20 } add_province_modifier = { name = dev_5 duration = -1 } }
-
-any_owned = { limit = { 
-
-total_pops = 15000
-
-NOT = { OR = { has_province_modifier = dev_1 has_province_modifier = dev_2 has_province_modifier = dev_3 has_province_modifier = dev_4 has_province_modifier = dev_5 } } 
-
-literacy = 0.15 } add_province_modifier = { name = dev_4 duration = -1 } }
-
-any_owned = { limit = { 
-
-total_pops = 15000
-
-NOT = { OR = { has_province_modifier = dev_1 has_province_modifier = dev_2 has_province_modifier = dev_3 has_province_modifier = dev_4 has_province_modifier = dev_5 } } 
-
-literacy = 0.10 } add_province_modifier = { name = dev_3 duration = -1 } }
-
-any_owned = { limit = { 
-
-total_pops = 15000
-
-NOT = { OR = { has_province_modifier = dev_1 has_province_modifier = dev_2 has_province_modifier = dev_3 has_province_modifier = dev_4 has_province_modifier = dev_5 } } 
-
-literacy = 0.05 } add_province_modifier = { name = dev_2 duration = -1 } }
-
-any_owned = { limit = { 
-
-OR = { NOT = { literacy = 0.05 } NOT = { total_pops = 15000 } }
-
-NOT = { OR = { has_province_modifier = dev_1 has_province_modifier = dev_2 has_province_modifier = dev_3 has_province_modifier = dev_4 has_province_modifier = dev_5 } } 
-
-} add_province_modifier = { name = dev_1 duration = -1 } }
-
+	option = {
+		name = "Allow each Princely State self-autonomy"
+		any_country = { 
+			limit = { vassal_of = ENG OR = { tag = HYD tag = MNP tag = RAA tag = IND tag = GWA tag = BER tag = ORI tag = NAX tag = BOD tag = MYS tag = TRA tag = SIK tag = AZK tag = BLO tag = JAK tag = SIN } } 
+			country_event = 1512064
 		}
-}
-
-#Developmental Levels Review
-country_event = {
-	id = 1412202
-title = "Developmental Levels Progress"
-	desc = EVTDESC1412201
-	picture = "developmental_levels"
-
-trigger = { 
-OR = { has_country_modifier = nprhigh has_country_modifier = nprmedium has_country_modifier = nprlow }
-NOT = { has_country_modifier = dev_timer }
-OR = { any_owned_province = { has_province_modifier = dev_1 }any_owned_province = { has_province_modifier = dev_2 }any_owned_province = { has_province_modifier = dev_3 }
-any_owned_province = { has_province_modifier = dev_4 }any_owned_province = { has_province_modifier = dev_5 } }
-
-any_owned_province = { NOT = { has_province_modifier = dev_5 } }
-
+		
+		ai_chance = { factor = 0.1 }
 	}
-
-mean_time_to_happen = { 
-months = 60
-
-modifier = { factor = 1.5 has_country_modifier = nprmedium }
-modifier = { factor = 2.0 has_country_modifier = nprlow }
-modifier = { factor = 0.5 is_greater_power = yes }
-modifier = { factor = 0.75 is_secondary_power = yes }
-
-}
-
-option = {
-name = "Press ahead with our nation's development"
-
-prestige = 20
-
-add_country_modifier = { name = dev_timer duration = 730 }
-
-any_owned = { remove_province_modifier = dev_5 remove_province_modifier = dev_4 remove_province_modifier = dev_3 remove_province_modifier = dev_2 remove_province_modifier = dev_1 }
-
-any_owned = { limit = { 
-
-OR = { total_pops = 35000 is_capital = yes }
-
-NOT = { OR = { has_province_modifier = dev_1 has_province_modifier = dev_2 has_province_modifier = dev_3 has_province_modifier = dev_4 has_province_modifier = dev_5 } } 
-
-literacy = 0.20 } add_province_modifier = { name = dev_5 duration = -1 } }
-
-any_owned = { limit = { 
-
-OR = { total_pops = 30000 is_capital = yes }
-
-NOT = { OR = { has_province_modifier = dev_1 has_province_modifier = dev_2 has_province_modifier = dev_3 has_province_modifier = dev_4 has_province_modifier = dev_5 } } 
-
-literacy = 0.15 } add_province_modifier = { name = dev_4 duration = -1 } }
-
-any_owned = { limit = { 
-
-OR = { total_pops = 25000 is_capital = yes }
-
-NOT = { OR = { has_province_modifier = dev_1 has_province_modifier = dev_2 has_province_modifier = dev_3 has_province_modifier = dev_4 has_province_modifier = dev_5 } } 
-
-literacy = 0.10 } add_province_modifier = { name = dev_3 duration = -1 } }
-
-any_owned = { limit = { 
-
-OR = { total_pops = 20000 is_capital = yes }
-
-NOT = { OR = { has_province_modifier = dev_1 has_province_modifier = dev_2 has_province_modifier = dev_3 has_province_modifier = dev_4 has_province_modifier = dev_5 } } 
-
-literacy = 0.05 } add_province_modifier = { name = dev_2 duration = -1 } }
-
-any_owned = { limit = { 
-
-OR = { NOT = { literacy = 0.05 } NOT = { total_pops = 20000 } }
-
-NOT = { OR = { has_province_modifier = dev_1 has_province_modifier = dev_2 has_province_modifier = dev_3 has_province_modifier = dev_4 has_province_modifier = dev_5 } } 
-
-} add_province_modifier = { name = dev_1 duration = -1 } }
-
-		}
 
 }
 
@@ -2138,40 +2331,82 @@ any_country = { limit = { alliance_with = THIS } leave_alliance = THIS relation 
 #Zimbabwe Name
 country_event = {
 	id = 1412207
-title = "Transition to Zimbabwe"
+	title = "Transition to Zimbabwe"
 	desc = EVTDESC1412207	
 	picture = "zimbabwe_name"
 
-fire_only_once = yes
+	fire_only_once = yes
 
-trigger = { 
-tag = ZIM
-government = democracy1
-war = no
-election = no
-is_vassal = no
-year = 1978
-}
-
-mean_time_to_happen = { 
-months = 12
+	trigger = { 
+		tag = ZIM
+		OR = { government = democracy1 government = hms_government government = hms_government1 }
+		war = no
+		election = no
+		OR = { 
+			is_vassal = no
+			
+			#Landcaster House Agreement
+			AND = {
+				has_country_flag = RHO_ENG_revert_flag
+				vassal_of = ENG
+			} 
+		}
+		
+		OR = { 
+			AND = { year = 1980 has_country_flag = RHO_ENG_revert_flag }
+			
+			#5 years slower if no British help
+			AND = { year = 1985 NOT = { has_country_flag = RHO_ENG_revert_flag } }
+		}
+		
+		NOT = { primary_culture = shona }
+		
+		NOT = { minorities_reform = minorities_oppression }
 	}
 
-option = {
-name = "Transition to Zimbabwe"
-government = democracy
-prestige = 10
-primary_culture = shona
-remove_accepted_culture = black_anglo
-any_pop = { militancy = -2 }
-ai_chance = { factor = 0.8 }
+	mean_time_to_happen = {
+		months = 4
+	}
+
+	option = {
+		name = "End white rule once and for all!"
+		
+		#If Landcaster House Agreement was accepted, option for ENG to grant independence
+		overlord = { country_event = 8012217 }
+		
+		government = democracy
+		prestige = 50
+		primary_culture = shona
+		add_accepted_culture = british
+		ruling_party_ideology = socialist
+		
+		any_pop = {
+			limit = { is_primary_culture = shona }
+			militancy = -10
+			ideology = { factor = 0.30 value = socialist }
 		}
 
-option = {
-name = "Stay as Zimbabwe-Rhodesia"
-any_pop = { militancy = 2 }
-ai_chance = { factor = 0.2 }
+		random_country = {
+			limit = { OR = { primary_culture = british accepted_culture = british } } 
+			diplomatic_influence = { who = THIS value = -50 }
 		}
+
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "Stay as Zimbabwe-Rhodesia"
+		any_pop = { limit = { is_primary_culture = no } militancy = 5 }
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+
+		random_country = { 
+			limit = { OR = { primary_culture = british accepted_culture = british } } 
+			relation = { who = THIS value = 50 }
+			diplomatic_influence = { who = THIS value = 25 }
+		}
+
+		ai_chance = { factor = 0.2 }
+	}
 
 }
 
@@ -2407,7 +2642,7 @@ title = "Dissolution of the United Kingdom"
 
 trigger = { 
 
-NOT = { exists = END }
+NOT = { exists = ENL }
 
 tag = ENG
 
@@ -2428,8 +2663,9 @@ months = 1
 option = {
 name = "It's the end of an era"
 prestige_factor = -0.25
-change_tag = END
-any_owned = { limit = { is_core = ENG } add_core = END }
+change_tag = ENL
+ENL = { primary_culture = english }
+any_owned = { limit = { is_core = ENG } add_core = ENL }
 		}
 
 }
@@ -2447,7 +2683,7 @@ trigger = {
 
 NOT = { exists = ENG }
 
-tag = END
+tag = ENL
 
 OR = { NOT = { exists = SCO } is_our_vassal = SCO }
 OR = { NOT = { exists = IRE } is_our_vassal = IRE }
@@ -2464,6 +2700,8 @@ option = {
 name = "Britishmen of the World unite!"
 prestige_factor = 0.1
 change_tag = ENG
+ENG = { primary_culture = british }
+add_accepted_culture = english
 inherit = SCO
 inherit = IRE
 inherit = WAE
@@ -2479,222 +2717,336 @@ name = "Remain English"
 #Faroe Independence Referendum 1946
 country_event = {
 	id = 1412215
-title = "Faroese Independence Referendum of $YEAR$"
+	title = "Faroese Independence Referendum of $YEAR$"
 	desc = EVTDESC1412215
 	picture = "far_indy"
 
-fire_only_once = yes
+	fire_only_once = yes
 
-trigger = {
+	trigger = {
+		tag = DEN
+		year = 1946
+		NOT = { year = 1990 }
+		
+		government = hms_government
+		war = no
+		is_vassal = no
 
-year = 1946
+		is_possible_vassal = FAR
 
-NOT = { year = 1990 } 
-
-tag = DEN
-
-NOT = { exists = FAR }
-
-owns = 253	
-
-}
-
-mean_time_to_happen = { 
-months = 9
 	}
 
-option = {
-name = "Grant Independence"
-prestige = 20
-release = FAR
-ai_chance = { factor = 0.1 }
-		}
+	mean_time_to_happen = { 
+		months = 9
+	}
 
-option = {
-name = "Refuse Independence"
-prestige = -20
-set_country_flag = far_dominion
-ai_chance = { factor = 0.9 }
-		}
+	option = {
+		name = "Refuse Independence"
+		prestige = -20
+		set_country_flag = far_dominion
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Grant Independence"
+		prestige = 20
+		release = FAR
+		FAR = { government = hms_government country_event = 800054 }
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
 #Faroe Islands Self-Rule
 country_event = {
 	id = 1412216
-title = "Home Rule for the Faroe Islands"
+	title = "Home Rule for the Faroe Islands"
 	desc = EVTDESC1412216
 	picture = "far_indy2"
 
-fire_only_once = yes
+	fire_only_once = yes
 
-trigger = {
+	trigger = {
+		tag = DEN
+		year = 1948
+		NOT = { year = 1990 } 
+		
+		OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
+		war = no
+		is_vassal = no
 
-year = 1948
+		is_possible_vassal = FAR
 
-NOT = { year = 1990 } 
+		has_country_flag = far_dominion
 
-tag = DEN
-
-NOT = { exists = FAR }
-
-has_country_flag = far_dominion
-
-owns = 253	
-
-}
-
-mean_time_to_happen = { 
-months = 6
 	}
 
-option = {
-name = "Grant Self-Rule"
-release_vassal = FAR
-FAR = { government = colonial_government 
-country_event = 800054 ruling_party_ideology = conservative
-any_pop = { 
-ideology = {
-	factor = 0.9
-	value = conservative
-	} 
-}
+	mean_time_to_happen = { 
+		months = 6
 	}
-ai_chance = { factor = 0.9 }
-		}
 
-option = {
-name = "Retain Direct Rule"
-prestige = 10
-ai_chance = { factor = 0.1 }
+	option = {
+		name = "Grant Self-Rule"
+		release_vassal = FAR
+		FAR = { 
+			government = sar_government 
+			set_country_flag = former_devolved_nation
+			country_event = 800054 
+			ruling_party_ideology = conservative
+			any_pop = { 
+				ideology = {
+					factor = 0.1
+					value = conservative
+				} 
+			}
 		}
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Retain Direct Rule"
+		prestige = 25
+		badboy = 5
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
 #Keep the Empire - All Colonial Provinces add modifier
 country_event = {
 	id = 1412217
-title = "Dissent amongst our Colonial Subjects"
+	title = "Dissent in the $COUNTRY_ADJ$ Colonies"
 	desc = EVTDESC1412217
 	picture = "colonial_dissent"
 
-trigger = {
+	trigger = {
+	
+		#Blocking decolonisation events
+		has_country_flag = decolonise_yes
 
-has_country_flag = decolonise_yes
+		#Oppressing minorities
+		minorities_reform = minorities_oppression
 
-minorities_reform = minorities_oppression
-
-any_owned_province = { pop_majority_ideology = nationalist is_colonial = yes NOT = { has_province_modifier = decolonise_yes } }
-
-}
-
-option = {
-name = "A necessary evil to preserve the empire"
-badboy = 1
-prestige = -10
-any_owned = { limit = { pop_majority_ideology = nationalist is_colonial = yes NOT = { has_province_modifier = decolonise_yes } } add_province_modifier = { name = decolonise_yes duration = -1 } }
+		#Has colonial provinces without the dissent province modifier
+		any_owned_province = { 
+			NOT = { is_core = THIS } 
+			is_colonial = yes 
+			NOT = { has_province_modifier = decolonise_yes } 
 		}
 
+	}
+
+	mean_time_to_happen = { 
+		months = 6
+	}
+
+	option = {
+		name = "A necessary evil to preserve the empire"
+		badboy = 1
+		prestige = -10
+		any_owned = { 
+			limit = { 
+				NOT = { is_core = THIS } 
+				
+				#Colonial provinces only
+				is_colonial = yes 
+				
+				#Province must not be majority accepted culture
+				is_primary_culture = no
+				is_accepted_culture = no
+				
+				NOT = { has_province_modifier = decolonise_yes } 
+			} 
+			add_province_modifier = { name = decolonise_yes duration = -1 } 
+		}
+	}
+
 }
 
-#Keep the Empire - Remove Province Modifier
-country_event = {
+#Keep the Empire - Remove Province Modifier (province event)
+province_event = {
 	id = 1412218
-title = "Colonial Dissent Review"
+	title = "Anti-Colonial Dissent Eases in $STATENAME$"
 	desc = EVTDESC1412218
 	picture = "dissant_reduce"
 
-trigger = {
+	trigger = {
+	
+		#Has colonial dissent modifier
+		has_province_modifier = decolonise_yes
 
-has_country_flag = decolonise_yes
-
-NOT = { minorities_reform = minorities_oppression }
-
-any_owned_province = { NOT = { pop_majority_ideology = nationalist } is_colonial = yes has_province_modifier = decolonise_yes }
-
-}
-
-mean_time_to_happen = { 
-months = 120
-	}
-
-option = {
-name = "Some colonial subjects are gradually accepting $COUNTRY_ADJ$ rule"
-any_owned = { limit = { NOT = { pop_majority_ideology = nationalist } has_province_modifier = decolonise_yes } remove_province_modifier = decolonise_yes }
+		#Owner blocking decolonisation events
+		owner = { has_country_flag = decolonise_yes }
+		
+		#Only fires in the state capital
+		is_state_capital = yes
+		
+		OR = {
+			#Owner is not oppressing minorities
+			owner = { NOT = { minorities_reform = minorities_oppression } }
+		
+			#Don't have a lot of radical natives sitting around
+			AND = {
+				is_primary_culture = no
+				is_accepted_culture = no
+				NOT = { populist = 0.10 }
+				NOT = { nationalist = 0.10 }
+				NOT = { traditionalist = 0.10 }
+				NOT = { socialist = 0.15 }
+				NOT = { communist = 0.10 }
+				NOT = { communist_social = 0.10 }
+			}
+			
+			#This province is no longer colonial
+			is_colonial = no
+			
+			#Natives have been diluted off from province
+			is_primary_culture = yes
+			is_accepted_culture = yes
 		}
 
+	}
+
+	mean_time_to_happen = { 
+		months = 400
+	}
+
+	option = {
+		name = "Excellent news!"
+		state_scope = { 
+			any_owned = { 
+				remove_province_modifier = decolonise_yes 
+				any_pop = { militancy = -5 consciousness = -5 }
+			} 
+		}
+	}
+
 }
 
-#Keep the Empire - Gain Legitimacy
+#Keep the Empire - Gain Legitimacy in province with primary or accepted pop as majority ideology
 country_event = {
 	id = 1412219
-title = "Colonial Legitimacy"
-	desc = "As we have ruled over some of our colonies for so long, the international community has now accepted our legitimacy to rule over those areas."
+	title = "Legitimacy Gained Over Certain Provinces"
+	desc = EVTDESC1412219
 	picture = "gain_colony_core"
 
-trigger = {
+	trigger = {
+	
+		#Active attempt to artificially core provinces
+		OR = { 
+			has_country_flag = pop_displacement_system_active 
+			has_country_flag = promote_colonial_migration_active
+		}
+	
+		is_vassal = no
+		war = no
+		
+		#THIS is not an international pariah
+		NOT = { badboy = 1 }
+		
+		#Has eligible provinces
+		any_owned_province = {
+		
+			#Not already a core of THIS
+			NOT = { is_core = THIS }
+		
+			#THIS controls the province
+			controlled_by = THIS
+			
+			#Province has either majority primary or accepted culture
+			OR = {
+				is_primary_culture = yes
+				is_accepted_culture = yes
+			}
+			
+		}
 
-minorities_reform = minorities_affirmative_action
-
-has_country_flag = decolonise_yes
-
-any_owned_province = { NOT = { is_core = THIS } NOT = { pop_majority_ideology = nationalist } NOT = { pop_majority_ideology = populist } is_colonial = yes NOT = { has_province_modifier = decolonise_yes } }
-
-}
-
-mean_time_to_happen = { 
-months = 240
 	}
 
-option = {
-name = "Our empire is finally gaining acceptance"
-any_owned = { limit = { NOT = { is_core = THIS } NOT = { pop_majority_ideology = nationalist } NOT = { pop_majority_ideology = populist } is_colonial = yes NOT = { has_province_modifier = decolonise_yes } } add_core = THIS }
+	mean_time_to_happen = { 
+		months = 12
+	}
+
+	option = {
+		name = "It's about time!"
+		prestige = 10
+		
+		#Add cores to uncored provinces
+		any_owned = {
+			limit = {
+				#Not already a core of THIS
+				NOT = { is_core = THIS }
+		
+				#THIS controls the province
+				controlled_by = THIS
+			
+				#Province has either majority primary or accepted culture
+				OR = {
+					is_primary_culture = yes
+					is_accepted_culture = yes
+				}
+			}
+			state_scope = { 
+				any_owned = { add_core = THIS }
+			}
 		}
+		
+	}
 
 }
 
 #Greenland Self-Rule
 country_event = {
 	id = 1412220
-title = "Home Rule for Greenland"
+	title = "Home Rule for Greenland"
 	desc = EVTDESC1412220
 	picture = "greenland_indy"
 
-fire_only_once = yes
+	fire_only_once = yes
 
-trigger = {
+	trigger = {
+		tag = DEN
+		year = 1979
+		NOT = { year = 1990 } 
 
-year = 1979
+		OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
+		war = no
+		is_vassal = no
 
-NOT = { year = 1990 } 
+		is_possible_vassal = GRN
 
-tag = DEN
-
-NOT = { exists = GRN }
-
-is_our_vassal = FAR
-
-owns = 251	
-
-}
-
-mean_time_to_happen = { 
-months = 6
+		#Previously released Faroe Islands as an SAR
+		is_our_vassal = FAR
 	}
 
-option = {
-name = "Grant Self-Rule"
-release_vassal = GRN
-GRN = { government = colonial_government 
-country_event = 800054 }
-ai_chance = { factor = 0.9 }
-		}
+	mean_time_to_happen = { 
+		months = 6
+	}
 
-option = {
-name = "Retain Direct Rule"
-prestige = 10
-ai_chance = { factor = 0.1 }
+	option = {
+		name = "Grant Self-Rule"
+		release_vassal = GRN
+		GRN = {
+			government = sar_government 
+			set_country_flag = former_devolved_nation
+			country_event = 800054 
+			ruling_party_ideology = conservative
+			any_pop = { 
+				ideology = {
+					factor = 0.1
+					value = conservative
+				}
+			}
 		}
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Retain Direct Rule"
+		prestige = 50
+		badboy = 5
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
@@ -2845,143 +3197,122 @@ add_province_modifier = { name = haze_in_effect duration = 120 }
 		}
 }
 
-#Martial Law Future decide
+#Martial Law Future decide - Non vassals
 country_event = {
 	id = 1412225
-title = "Provisional Government Conference"
+title = "Illegal State of Emergency"
 	desc = EVTDESC1412225
 	picture = "martial_law_choice"
 
 trigger = {
 
-NOT = { government = hms_government }
-
-NOT = { government = hms_government1 }
-
 war = no
 
-election = no
+OR = { election = yes NOT = { average_militancy = 3 } }
 
-has_country_modifier = martial_law	
+is_vassal = no
+
+has_country_modifier = martial_law
 
 }
 
 mean_time_to_happen = { 
-months = 3
+months = 12
+modifier = { factor = 0 election = yes }
 	}
 
 option = {
 name = "Return to democracy"
-remove_country_modifier = martial_law
 
-election = yes
+clr_country_flag = prolonged_state_of_emergency
 
-any_pop = {
-ideology = {
-	factor = 0.8
-	value = big_tent
-}
-	}
-
-ai_chance = { 
-factor = 1 
-modifier = { 
-factor = 0 
-OR = { ruling_party_ideology = populist ruling_party_ideology = traditionalist ruling_party_ideology = nationalist ruling_party_ideology = communist ruling_party_ideology = communist_social } 
-		} 
-}
-
-		}
-
-option = {
-name = "Extend the $MONARCHTITLE$'s term indefinitely"
-prestige_factor = -0.5
-
-remove_country_modifier = martial_law
-
-
-random_owned = { limit = { owner = { pop_majority_ideology = nationalist } } owner = { government = populist_dictatorship } }
-
-random_owned = { limit = { owner = { pop_majority_ideology = traditionalist } } owner = { government = theocracy } }
-
-random_owned = { limit = { owner = { pop_majority_ideology = populist } } owner = { government = nationalist_dictatorship } }
+add_country_modifier = { name = martial_law_timer duration = 365 }
 
 random_owned = { 
-
-limit = { 
-owner = { NOT = { OR = { pop_majority_ideology = nationalist pop_majority_ideology = traditionalist pop_majority_ideology = populist } } }
-} 
-
-owner = { government = presidential_dictatorship } }
-
-
-country_event = 800050
-
-
-ai_chance = { 
-factor = 1 
-
-modifier = { factor = 0 OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } }
-
-modifier = { 
-factor = 0 
-NOT = { OR = { ruling_party_ideology = populist ruling_party_ideology = traditionalist ruling_party_ideology = nationalist } }
-		} 
-}
-		}
-
-option = {
-name = "Embrace the proletarian revolution"
-prestige_factor = -0.75
-remove_country_modifier = martial_law
-government = proletarian_dictatorship
-country_event = 800050
-
-ai_chance = { 
-factor = 1 
-
-modifier = { factor = 0 NOT = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } }
-
-}
-		}
-
+limit = { owner = { NOT = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 government = socialist_democracy } } } }
+owner = { country_event = 800054 }
 }
 
-#Martial Law Future decide
-country_event = {
-	id = 1413225
-title = "Provisional Government Conference"
-	desc = EVTDESC1412225
-	picture = "martial_law_choice"
-
-trigger = {
-
-OR = { government = hms_government government = hms_government1 }
-
-war = no
-
-election = no
-
-has_country_modifier = martial_law	
-
-}
-
-mean_time_to_happen = { 
-months = 3
-	}
-
-option = {
-name = "Return to democracy"
 remove_country_modifier = martial_law
 
-election = yes
+#What meeting laws to revert back to
 
-any_pop = {
-ideology = {
-	factor = 0.8
-	value = big_tent
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_free_meetings } }
+owner = { political_reform = free_meetings clr_country_flag = return_to_free_meetings }
 }
-	}
+
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_limited_meetings } }
+owner = { political_reform = limited_meetings clr_country_flag = return_to_limited_meetings }
+}
+
+#What press laws to revert back to
+			
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_responsible_publishing  } }
+owner = { political_reform = responsible_publishing clr_country_flag = return_to_responsible_publishing }
+}
+
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_unregulated_publishing} }
+owner = { political_reform = unregulated_publishing clr_country_flag = return_to_unregulated_publishing }
+}
+
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_firewall_publishing } }
+owner = { political_reform = firewall_publishing clr_country_flag = return_to_firewall_publishing }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = conservative } }
+owner = { any_pop = { ideology = { factor = -0.05 value = conservative } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = big_tent } }
+owner = { any_pop = { ideology = { factor = -0.05 value = big_tent } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = socialist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = socialist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = traditionalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = traditionalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = populist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = populist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = nationalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = nationalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = progressive } }
+owner = { any_pop = { ideology = { factor = -0.05 value = progressive } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = liberal } }
+owner = { any_pop = { ideology = { factor = -0.05 value = liberal } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist_social } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist_social } } }
+}
 
 ai_chance = { 
 factor = 1 
@@ -2994,40 +3325,264 @@ OR = { ruling_party_ideology = populist ruling_party_ideology = traditionalist r
 		}
 
 option = {
-name = "Grant the King absolute power to stabilise the nation"
-prestige_factor = -0.5
+name = "I'll make it legal (become a dictatorship)"
+prestige_factor = -0.05
+
+clr_country_flag = prolonged_state_of_emergency
 remove_country_modifier = martial_law
 
-government = absolute_monarchy
+#No return to old meeting reform
+clr_country_flag = return_to_free_meetings
+clr_country_flag = return_to_limited_meetings
+
+#No return to old press reform
+clr_country_flag = return_to_responsible_publishing
+clr_country_flag = return_to_unregulated_publishing
+clr_country_flag = return_to_firewall_publishing
 
 country_event = 800050
 
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = conservative } }
+owner = { any_pop = { limit = { NOT = { pop_majority_ideology = conservative } } militancy = 10 } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = big_tent } }
+owner = { any_pop = { limit = { NOT = { pop_majority_ideology = big_tent } } militancy = 10 } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = socialist } }
+owner = { any_pop = { limit = { NOT = { pop_majority_ideology = socialist } } militancy = 10 } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = traditionalist } }
+owner = { any_pop = { limit = { NOT = { pop_majority_ideology = traditionalist } } militancy = 10 } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = populist } }
+owner = { any_pop = { limit = { NOT = { pop_majority_ideology = populist } } militancy = 10 } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = nationalist } }
+owner = { any_pop = { limit = { NOT = { pop_majority_ideology = nationalist } } militancy = 10 } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = progressive } }
+owner = { any_pop = { limit = { NOT = { pop_majority_ideology = progressive } } militancy = 10 } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = liberal } }
+owner = { any_pop = { limit = { NOT = { pop_majority_ideology = liberal } } militancy = 10 } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist } }
+owner = { any_pop = { limit = { NOT = { pop_majority_ideology = communist } } militancy = 10 } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist_social } }
+owner = { any_pop = { limit = { NOT = { pop_majority_ideology = communist_social } } militancy = 10 } }
+}
 
 ai_chance = { 
 factor = 1 
-
-modifier = { factor = 0 OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } }
 
 modifier = { 
 factor = 0 
-NOT = { OR = { ruling_party_ideology = populist ruling_party_ideology = traditionalist ruling_party_ideology = nationalist } }
+NOT = { OR = { ruling_party_ideology = populist ruling_party_ideology = traditionalist ruling_party_ideology = nationalist ruling_party_ideology = communist ruling_party_ideology = communist_social } }
 		} 
+
 }
 		}
 
-option = {
-name = "Embrace the proletarian revolution"
-prestige_factor = -0.75
-remove_country_modifier = martial_law
-government = proletarian_dictatorship
-country_event = 800050
+}
 
-ai_chance = { 
-factor = 1 
+#Martial Law Future decide - Vassal
+country_event = {
+	id = 1413225
+title = "Continuation of the State of Emergency?"
+	desc = EVTDESC1412225
+	picture = "martial_law_choice"
 
-modifier = { factor = 0 NOT = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } }
+trigger = {
+
+war = no
+
+election = no 
+
+OR = { election = yes NOT = { average_militancy = 3 } }
+
+is_vassal = yes
+
+has_country_modifier = martial_law
 
 }
+
+mean_time_to_happen = { 
+months = 3
+modifier = { factor = 0 election = yes }
+modifier = { factor = 3 has_country_flag = prolonged_state_of_emergency }
+	}
+
+option = {
+name = "Return to normality"
+remove_country_modifier = martial_law
+add_country_modifier = { name = martial_law_timer duration = 365 }
+
+clr_country_flag = prolonged_state_of_emergency
+
+#What meeting laws to revert back to
+
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_free_meetings } }
+owner = { political_reform = free_meetings clr_country_flag = return_to_free_meetings }
+			}
+
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_limited_meetings } }
+owner = { political_reform = limited_meetings clr_country_flag = return_to_limited_meetings }
+			}
+
+#What press laws to revert back to
+			
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_responsible_publishing  } }
+owner = { political_reform = responsible_publishing clr_country_flag = return_to_responsible_publishing }
+			}
+
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_unregulated_publishing} }
+owner = { political_reform = unregulated_publishing clr_country_flag = return_to_unregulated_publishing }
+			}
+
+random_owned = { 
+limit = { owner = { has_country_flag = return_to_firewall_publishing } }
+owner = { political_reform = firewall_publishing clr_country_flag = return_to_firewall_publishing }
+			}
+
+#Pop ideology support effects
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = conservative } }
+owner = { any_pop = { ideology = { factor = -0.05 value = conservative } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = big_tent } }
+owner = { any_pop = { ideology = { factor = -0.05 value = big_tent } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = socialist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = socialist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = traditionalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = traditionalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = populist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = populist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = nationalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = nationalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = progressive } }
+owner = { any_pop = { ideology = { factor = -0.05 value = progressive } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = liberal } }
+owner = { any_pop = { ideology = { factor = -0.05 value = liberal } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist_social } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist_social } } }
+}
+
+ai_chance = { factor = 1 }
+		}
+
+option = {
+name = "Prolong the State of emergency!"
+
+set_country_flag = prolonged_state_of_emergency
+
+add_country_modifier = { name = revolution_chaos duration = 365 }
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = conservative } }
+owner = { any_pop = { ideology = { factor = -0.05 value = conservative } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = big_tent } }
+owner = { any_pop = { ideology = { factor = -0.05 value = big_tent } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = socialist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = socialist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = traditionalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = traditionalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = populist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = populist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = nationalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = nationalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = progressive } }
+owner = { any_pop = { ideology = { factor = -0.05 value = progressive } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = liberal } }
+owner = { any_pop = { ideology = { factor = -0.05 value = liberal } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist_social } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist_social } } }
+}
+
+ai_chance = { factor = 0 }
 		}
 
 }
@@ -3072,53 +3627,45 @@ ai_chance = { factor = 0.5 }
 #Extra-Ordinary session
 country_event = {
 	id = 1412227
-title = "$YEAR$ $CAPITAL$ Rally"
+	title = "The Declaration of a New Order"
 	desc = EVTDESC1412227
 	picture = "special_session"
 
-is_triggered_only = yes
+	is_triggered_only = yes
 
-option = {
-name = "Long Live the $MONARCHTITLE$!"
-
-prestige = 50
-
-			random_owned = { 
-			limit = { owner = { ruling_party_ideology = communist } } owner = { any_pop = { ideology = { value = communist factor = 0.25 } } }
-			}
-
-			random_owned = { 
-				limit = { owner = { ruling_party_ideology = communist_social } } owner = { any_pop = { ideology = { value = communist_social factor = 0.25 } } }
-			}
-
-			random_owned = { 
-				limit = { owner = { ruling_party_ideology = populist } } owner = { any_pop = { ideology = { value = populist factor = 0.25 } } } 
-			}
-
-			random_owned = { 
-				limit = { owner = { ruling_party_ideology = conservative } } owner = { any_pop = { ideology = { value = conservative factor = 0.25 } } }
-			}
-
-			random_owned = { 
-				limit = { owner = { ruling_party_ideology = nationalist } } owner = { any_pop = { ideology = { value = nationalist factor = 0.25 } } }
-			}
-
-			random_owned = { 
-				limit = { owner = { ruling_party_ideology = traditionalist } } owner = { any_pop = { ideology = { value = traditionalist factor = 0.25 } } }
-			}
-
-ai_chance = { factor = 0.50 }
-}
-
-option = {
-name = "Rebuild $CAPITAL$ into a glorious city"
-prestige = 50
-money = -1000000
-add_country_modifier = { name = germania duration = 3650 }
-set_country_flag = germania
-ai_chance = { factor = 0.50 }
-}
+	option = {
+		name = "Democracy dies with thunderous applause!"
 		
+		remove_country_modifier = reform_legal_system_modifier
+		remove_country_modifier = extend_executive_functions_modifier
+
+		political_reform = none_voting
+		political_reform = ruling_party_opinion
+		political_reform = no_meetings
+		political_reform = censored_publishing
+		political_reform = parties_not_allowed
+
+		any_pop = { 
+
+			scaled_militancy = {
+				factor = 10
+				ideology = liberal
+			}
+
+			scaled_militancy = {
+				factor = 10
+				ideology = progressive
+			}
+			
+			scaled_militancy = {
+				factor = 10
+				ideology = big_tent
+			}
+
+		}
+		
+	}
+	
 }
 
 #Germania built
@@ -3136,7 +3683,7 @@ NOT = { has_country_modifier = germania }
 option = {
 name = "A city that will last a 1000 years"
 prestige = 1000
-random_owned = { limit = { is_capital = yes } add_province_modifier = { name = new_capital duration = -1 } }
+random_owned = { limit = { is_capital = yes } life_rating = 5 add_province_modifier = { name = new_capital duration = -1 } }
 clr_country_flag = germania
 		}
 }
@@ -3501,382 +4048,6 @@ ai_chance = { factor = 0.2 }
 
 }
 
-#USA joins the Chinese Civil War
-country_event = {
-	id = 1412238
-title = "Alliance with Nationalist China concluded"
-	desc = "With the instrument of alliance between our two great nations concluded, we are now formally involved in the Chinese Civil War. We will get the port of Shanghai as base of operations in China."
-	picture = "ccw_usa_ally"
-
-is_triggered_only = yes
-
-option = {
-name = "We will stop the spread of communism in China"
-
-prestige = 10
-
-badboy = 5
-
-relation = { who = RUS value = -100 }
-
-KMT = { country_event = 1412239 }
-
-war = {
-	target = CHI
-	attacker_goal = { casus_belli = cut_down_to_size }
-	defender_goal = { casus_belli = humiliate }
-	call_ally = yes
-}
-
-		}
-}
-
-#USA occupies the Chinese ports
-country_event = {
-	id = 1412239
-title = "America takes control of the war effort"
-	desc = "The US forces need a staging ground to wage the war from so they have selected Shanghai to be the primary base of operations in China. We have no choice but to accept their demands."
-	picture = "ccw_shg_after"
-
-is_triggered_only = yes
-
-option = {
-name = "We will crush the communist insurgency together"
-
-
-activate_technology = cold_war_doctrine
-activate_technology = proxy_war
-activate_technology = guerrilla
-activate_technology = heavy_tanks
-activate_technology = post_war_radar
-activate_technology = infantry
-
-
-prestige = -25
-
-relation = { who = USA value = 200 }
-
-military_access = USA
-
-relation = { who = RUS value = -100 }
-
-money = 100000
-
-1538 = { naval_base = 2 }
-
-1538 = { secede_province = USA }
-
-		}
-}
-
-#USA occupies Shanghai
-country_event = {
-	id = 1412240
-title = "End of the Chinese Civil War"
-	desc = "With the end of the Chinese Civil War, we now have the question of what to do with the City of Shanghai which we used as a base during the war."
-	picture = "ccw_shg_after"
-
-fire_only_once = yes
-
-trigger = {
-tag = USA
-CHI = { exists = no }
-KMT = { exists = yes }
-KMT = { war = no }
-KMT = { NOT = { government = proletarian_dictatorship } }
-NOT = { year = 1990 }
-owns = 1538
-}
-
-mean_time_to_happen = { 
-months = 1
-	}
-
-option = {
-name = "Occupy in perpetuity in event of another communist insurgency"
-prestige = -50
-badboy = 5
-relation = { who = KMT value = -50 }
-ai_chance = { factor = 0.1 }
-		}
-
-option = {
-name = "Convert into an International Settlement to maintain US presence"
-prestige = -25
-badboy = 2.5
-relation = { who = KMT value = -25 }
-release_vassal = SHG
-KMT = { diplomatic_influence = { who = SHG value = 200 } }
-SHG = { government = mandate_government country_event = 800054 }
-ai_chance = { factor = 0.6 }
-		}
-
-option = {
-name = "Return the City back to China"
-prestige = 10
-badboy = -1
-relation = { who = KMT value = 100 }
-1538 = { secede_province = KMT }
-ai_chance = { factor = 0.3 }
-		}
-
-}
-
-#Return of Shanghai after Cold War
-country_event = {
-	id = 1412241
-title = "Return of the International Settlements"
-	desc = "With the end of the Cold War, we no longer have the need to own International Settlements in China anymore so talks have been initated by China to reclaim the cities."
-	picture = "ccw_shg_return"
-
-fire_only_once = yes
-
-trigger = {
-tag = USA
-NOT = { has_global_flag = blocsenabled }
-CHI = { exists = no }
-KMT = { exists = yes }
-KMT = { war = no }
-KMT = { NOT = { government = proletarian_dictatorship } }
-OR = { owns = 1538 is_our_vassal = SHG is_our_vassal = QGD is_our_vassal = WEI }
-}
-
-mean_time_to_happen = { 
-months = 1
-	}
-
-option = {
-name = "Continue the occupation"
-prestige_factor = -0.1
-badboy = 10
-relation = { who = KMT value = -200 }
-ai_chance = { factor = 0.05 }
-		}
-
-option = {
-name = "Return Shanghai"
-prestige = 10
-badboy = -5
-relation = { who = KMT value = 200 }
-1538 = { secede_province = KMT }
-KMT = { inherit = SHG }
-KMT = { inherit = QGD }
-KMT = { inherit = WEI }
-ai_chance = { factor = 0.95 }
-		}
-
-}
-
-#Return of the other International Settlements
-country_event = {
-	id = 1412242
-title = "International Settlements in China"
-	desc = "As Shanghai has become an International Settlement once more, perhaps we should also offer the USA Qingdao and Weihai to allow them to have a greater presence in China to protect us from the USSR?"
-	picture = "ccw_shg_after"
-
-fire_only_once = yes
-
-trigger = {
-tag = KMT
-has_global_flag = blocsenabled
-CHI = { exists = no }
-KMT = { exists = yes }
-KMT = { war = no }
-KMT = { NOT = { government = proletarian_dictatorship } }
-USA = { is_our_vassal = SHG }
-}
-
-mean_time_to_happen = { 
-months = 1
-	}
-
-option = {
-name = "Offer Qingdao and Weihai"
-prestige = -100
-money = 1000000
-add_country_modifier = { name = economic_boom duration = 1825 }
-release = QGD
-release = WEI
-USA = { create_vassal = QGD create_vassal = WEI }
-WEI = { government = mandate_government country_event = 800054 }
-QGD = { government = mandate_government country_event = 800054 }
-KMT = { diplomatic_influence = { who = WEI value = 200 } }
-KMT = { diplomatic_influence = { who = QGD value = 200 } }
-ai_chance = { factor = 0.5 }
-		}
-
-option = {
-name = "One settlement is already too much"
-prestige = 10
-any_pop = { militancy = -5 }
-ai_chance = { factor = 0.5 }
-		}
-
-}
-
-#Form the Palestinian Authority
-country_event = {
-	id = 1412243
-title = "Palestinian National Authority"
-	desc = EVTDESC1412243
-	picture = "pal_authority"
-
-fire_only_once = yes
-
-trigger = {
-tag = ISR
-war = no
-PAL = { exists = no }
-year = 2005
-any_owned_province = { is_core = PAL }
-}
-
-mean_time_to_happen = { 
-months = 4
-	}
-
-option = {
-name = "Restore the Palestinian National Authority"
-prestige = 10
-badboy = -5
-
-918 = { remove_core = ISR }
-
-920 = { remove_core = ISR }
-
-918 = { secede_province = PAL }
-
-920 = { secede_province = PAL }
-
-create_vassal = PAL
-PAL = { government = sar_government country_event = 800054 } 
-ai_chance = { factor = 0.9 }
-		}
-
-option = {
-name = "Continue the occupation"
-prestige = -50
-badboy = 5
-any_pop = { militancy = 2 }
-ai_chance = { factor = 0.1 }
-		}
-
-}
-
-#Indonesian Civil War 1958
-country_event = {
-	id = 1412244
-title = "Indonesian Civil War of $YEAR$"
-	desc = EVTDESC1412244
-	picture = "ido_civil_war"
-
-fire_only_once = yes
-
-trigger = {
-tag = IDO
-NOT = { government = proletarian_dictatorship }
-war = no
-ATJ = { exists = no }
-year = 1958
-NOT = { year = 1990 }
-}
-
-mean_time_to_happen = { 
-months = 2
-	}
-
-option = {
-name = "Crush the rebels!"
-
-any_pop = { militancy = 3 }
-
-any_owned = { limit = { 
-
-OR = { 
-province_id = 1407
-province_id = 1406
-province_id = 1408
-province_id = 1409
-province_id = 1401
-province_id = 1400
-province_id = 1398
-province_id = 1410
-province_id = 1403
-province_id = 1399
-} 
-
-} 
-
-any_pop = { militancy = 10 }
-change_controller = REB
-
-}
-
-add_country_modifier = { name = revolution_chaos duration = 1825 }
-
-add_country_modifier = { name = stockcrash duration = 730 }
-
-ai_chance = { factor = 0.9 }
-		}
-
-option = {
-name = "Accede to the rebels"
-prestige = -100
-government = populist_dictatorship
-country_event = 800050
-ai_chance = { factor = 0.1 }
-		}
-
-}
-
-#Indonesian mass killings of 1965–1966
-country_event = {
-	id = 1412245
-title = "Indonesian mass killings of 1965–1966"
-	desc = EVTDESC1412245
-	picture = "ido_killings"
-
-fire_only_once = yes
-
-trigger = {
-tag = IDO
-war = no
-NOT = { government = proletarian_dictatorship }
-NOT = { government = presidential_dictatorship }
-year = 1965
-NOT = { year = 1990 }
-}
-
-mean_time_to_happen = { 
-months = 1
-	}
-
-option = {
-name = "Unleash the massacre!"
-prestige = -100
-badboy = 10
-
-add_country_modifier = { name = revolution_chaos duration = 1825 }
-
-any_owned = { add_province_modifier = { name = ethnic_cleansing duration = 365 } }
-
-ai_chance = { factor = 0.9 }
-		}
-
-option = {
-name = "Leave the communists alone"
-any_pop = { 
-militancy = 2
-ideology = {
-	factor = 2
-	value = communist
-}
-	}
-ai_chance = { factor = 0.1 }
-		}
-
-}
-
 #Integration of Sikkim
 country_event = {
 	id = 1412246
@@ -3922,450 +4093,374 @@ ai_chance = { factor = 0.1 }
 #Question of the Dutch East Indies
 country_event = {
 	id = 1412247
-title = "Question of the Dutch East Indies"
+	title = "Question of the Dutch East Indies"
 	desc = EVTDESC1412247
 	picture = "dutcheast_indies"
 
-fire_only_once = yes
+	fire_only_once = yes
 
-trigger = {
-tag = NET
-war = no
-is_our_vassal = IDO
-NOT = { year = 1990 }
-}
+	trigger = {
+		tag = NET
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		
+		#NET owns IDO
+		OR = { is_our_vassal = IDO is_possible_vassal = IDO }
+	}
 
-option = {
-name = "Reform the Dutch East Indies"
-prestige = 10
-IDO = { ruling_party_ideology = conservative government = colonial_government event = 800054 }
-any_owned = { limit = { is_core = IDO NOT = { is_core = WPA } } secede_province = IDO }
-ai_chance = { factor = 0.8 }
+	option = {
+		name = "Reform the Dutch East Indies"
+		prestige = 10
+		
+		#Clear up IDO tag, if it exists
+		inherit = IDO
+		
+		#Release IDO tag
+		release_vassal = IDO
+		IDO = { 
+			government = colonial_government 
+			event = 800054 
+			ruling_party_ideology = conservative 
+			
+			#IDO returns any WPA cores to NET
+			any_owned = { limit = { is_core = WPA } secede_province = NET }
 		}
+		
+		diplomatic_influence = { who = IDO value = 200 }
+		
+		ai_chance = { factor = 0.8 }
+	}
 
-option = {
-name = "Turn into the United States of Indonesia"
-IDO = { ruling_party_ideology = conservative government = democracy1 country_event = 800054 }
-
-any_owned = { limit = { is_core = IDO NOT = { is_core = WPA } } secede_province = IDO }
-
-IDO = { release_vassal = EID }
-IDO = { release_vassal = DYA }
-
-EID = { ruling_party_ideology = traditionalist }
-DYA = { ruling_party_ideology = traditionalist }
-
-NET = { diplomatic_influence = { who = IDO value = 200 } }
-NET = { diplomatic_influence = { who = EID value = 200 } }
-NET = { diplomatic_influence = { who = DYA value = 200 } }
-
-ai_chance = { factor = 0.2 }
+	option = {
+		name = "Reorganize into the United States of Indonesia"
+		
+		#Clear up IDO tag, if it exists
+		inherit = IDO
+		
+		#Release IDO tag
+		release_vassal = IDO
+		IDO = { 
+			government = democracy1 
+			country_event = 800054 
+			ruling_party_ideology = conservative
+			
+			#IDO returns any WPA cores to NET
+			any_owned = { limit = { is_core = WPA } secede_province = NET }
+			
+			release_vassal = EID
+			release_vassal = DYA
 		}
+		
+		EID = { government = democracy1 country_event = 800054 ruling_party_ideology = conservative }
+		DYA = { government = democracy1 country_event = 800054 ruling_party_ideology = conservative }
+		
+		diplomatic_influence = { who = IDO value = 200 }
+		diplomatic_influence = { who = EID value = 200 }
+		diplomatic_influence = { who = DYA value = 200 }
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+	option = {
+		name = "Maintain direct rule"
+		badboy = 10
+		
+		#Clear up IDO tag, if it exists
+		inherit = IDO
+		
+		any_owned = { 
+			limit = { is_core = IDO } 
+			remove_province_modifier = occupied_province 
+			add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
 #Austria Hungary - From Hungary
 country_event = {
 	id = 1412248
-title = "Desperate times call for desperate measures"
+	title = "Desperate times call for desperate measures"
 	desc = EVTDESC1412248
 	picture = "kuk_union"
 
-fire_only_once = yes
+	fire_only_once = yes
 
-trigger = {
-tag = HUN
-AUS = { is_vassal = no }
-AUS = { ai = yes }
-government = hms_government
-AUS = { exists = yes }
-AUS = { has_unclaimed_cores = no }
-AUS = { government = democracy }
-NOT = { year = 1990 }
-}
-
-mean_time_to_happen = { 
-months = 5
+	trigger = {
+		tag = HUN
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		government = hms_government
+		is_vassal = no
+		war = no
+		
+		AUS = { 
+			exists = yes 
+			
+			government = democracy
+			is_vassal = no 
+			war = no
+			
+			ai = yes 
+			
+			#Occupation of Austria has ended
+			owns = 619 
+			owns = 613 
+			owns = 612 
+			owns = 616
+		}
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
 	}
 
-option = {
-name = "Propose to Austria"
-AUS = { country_event = 1412249 }
-ai_chance = { factor = 0.9 }
-		}
+	mean_time_to_happen = { 
+		months = 5
+	}
 
-option = {
-name = "We are not interested"
-ai_chance = { factor = 0.1 }
-		}
+	option = {
+		name = "Propose to Austria (80% chance)"
+		AUS = { country_event = 1412249 }
+		ai_chance = { factor = 0.01 }
+	}
+
+	option = {
+		name = "We are not interested"
+		prestige = 100
+		ai_chance = { factor = 0.99 }
+	}
 
 }
 
 #Austria Hungary - 2
 country_event = {
 	id = 1412249
-title = "The Hungarian Proposal"
+	title = "The Hungarian Proposal"
 	desc = EVTDESC1412248
 	picture = "kuk_union"
 
-is_triggered_only = yes 
+	is_triggered_only = yes 
 
-option = {
-name = "Accept"
-HUN = { country_event = 1412250 }
-ai_chance = { factor = 0.8 }
-		}
+	option = {
+		name = "Accept"
+		HUN = { country_event = 1412250 }
+		ai_chance = { factor = 0.8 }
+	}
 
-option = {
-name = "Reject"
-prestige = 10
-relation = { who = HUN value = -50 }
-ai_chance = { factor = 0.2 }
-		}
+	option = {
+		name = "Reject"
+		prestige = 100
+		relation = { who = HUN value = -50 }
+		ai_chance = { factor = 0.2 }
+	}
 
 }
 
 #Austria Hungary - 3
 country_event = {
 	id = 1412250
-title = "Austria-Hungary"
+	title = "Austria-Hungary"
 	desc = EVTDESC1412250
 	picture = "kuk_union_2"
 
-is_triggered_only = yes 
+	is_triggered_only = yes 
 
-option = {
-name = "Long Live the King!"
-change_tag = KUK
-government = hms_government
-primary_culture = german
-add_accepted_culture = hungarian
-inherit = AUS
-any_owned = { limit = { OR = { is_core = AUS is_core = HUN } } add_core = KUK }
-capital = 619
+	option = {
+		name = "Long Live the King!"
+		
+		inherit = AUS
+		
+		#Become Austria Hungary
+		change_tag = KUK
+		
+		KUK = {
+			government = hms_government
+			primary_culture = austrian_german
+			add_accepted_culture = hungarian
+			add_accepted_culture = german
+
+			AUS = { all_core = { add_core = KUK } }
+			HUN = { all_core = { add_core = KUK } }
+			
+			capital = 619
 		}
-}
-
-#Indonesia wins the war
-country_event = {
-	id = 1412251
-title = "The Indonesian National Revolution succeeds"
-	desc = EVTDESC1412251
-	picture = "dutcheast_indies"
-
-fire_only_once = yes
-
-trigger = {
-tag = NET
-has_country_flag = is_disabled_for_now
-NOT = { war_with = IDO }
-IDO = { is_vassal = no }
-any_owned_province = { is_core = IDO NOT = { is_core = WPA } }
-NOT = { year = 1990 }
-}
-
-option = {
-name = "We have lost our colonial empire"
-prestige = -100
-relation = { who = IDO value = -100 }
-diplomatic_influence = { who = IDO value = -200 }
-any_owned = { limit = { is_core = IDO NOT = { is_core = WPA } } secede_province = IDO }
-		}
+		
+	}
 }
 
 #Vassals pay overlord
 country_event = {
 	id = 1412252
-title = "$COUNTRY$'s tax contribution"
+	title = "$COUNTRY$'s tax contribution"
 	desc = EVTDESC1412252
 	picture = "vts"
 
-
-
-trigger = {
-is_vassal = yes
-overlord = { has_country_flag = vtslow }
-NOT = { has_country_modifier = vts_default }
-NOT = { has_country_modifier = vts_timer }
-money = 250000
-NOT = { overlord = { ai = yes money = 20000000 } }
-}
-
-option = {
-name = "Pay the tax"
-
-add_country_modifier = { name = vts_timer duration = 365 }
-
-#250K to 500K
-random_owned = { 
-
-limit = { 
-owner = { money = 250000 NOT = { money = 500000 } } 
-} 
-
-
-
-owner = { money = -50000 overlord = { money = 50000 } }
-
-}
-
-#500K to 750K
-random_owned = { 
-
-limit = { 
-owner = { money = 500000 NOT = { money = 750000 } } 
-} 
-
-
-
-owner = { money = -75000 overlord = { money = 75000 } }
-
-}
-
-
-#750K to 1000K
-random_owned = { 
-
-limit = { 
-owner = { money = 750000 NOT = { money = 1000000 } } 
-} 
-
-
-
-owner = { money = -100000 overlord = { money = 100000 } }
-
-}
-
-### 1000K ###
-
-#1000K to 1250K
-random_owned = { 
-
-limit = { 
-owner = { money = 1000000 NOT = { money = 1250000 } } 
-} 
-
-
-
-owner = { money = -125000 overlord = { money = 125000 } }
-
-}
-
-#1250K to 1500K
-random_owned = { 
-
-limit = { 
-owner = { money = 1250000 NOT = { money = 1500000 } } 
-} 
-
-
-
-owner = { money = -150000 overlord = { money = 150000 } }
-
-}
-
-
-#1500K to 1750K
-random_owned = { 
-
-limit = { 
-owner = { money = 1500000 NOT = { money = 1750000 } } 
-} 
-
-
-
-owner = { money = -175000 overlord = { money = 175000 } }
-
-}
-
-#1750K to 2000K
-random_owned = { 
-
-limit = { 
-owner = { money = 1750000 NOT = { money = 2000000 } } 
-} 
-
-
-
-owner = { money = -200000 overlord = { money = 200000 } }
-
-}
-
-
-### 2000K ###
-
-#2000K to 2250K
-random_owned = { 
-
-limit = { 
-owner = { money = 2000000 NOT = { money = 2250000 } } 
-} 
-
-
-
-owner = { money = -225000 overlord = { money = 225000 } }
-
-}
-
-#2250K to 2500K
-random_owned = { 
-
-limit = { 
-owner = { money = 2250000 NOT = { money = 2500000 } } 
-} 
-
-
-
-owner = { money = -250000 overlord = { money = 250000 } }
-
-}
-
-
-#2500K to 2750K
-random_owned = { 
-
-limit = { 
-owner = { money = 2500000 NOT = { money = 2750000 } } 
-} 
-
-
-
-owner = { money = -275000 overlord = { money = 275000 } }
-
-}
-
-#2750K to 3000K
-random_owned = { 
-
-limit = { 
-owner = { money = 2750000 NOT = { money = 3000000 } } 
-} 
-
-
-
-owner = { money = -300000 overlord = { money = 300000 } }
-
-}
-
-### 3000K ###
-
-#3000K to 3250K
-random_owned = { 
-
-limit = { 
-owner = { money = 3000000 NOT = { money = 3250000 } } 
-} 
-
-
-
-owner = { money = -325000 overlord = { money = 325000 } }
-
-}
-
-#3250K to 3500K
-random_owned = { 
-
-limit = { 
-owner = { money = 3250000 NOT = { money = 3500000 } } 
-} 
-
-
-
-owner = { money = -350000 overlord = { money = 350000 } }
-
-}
-
-
-#3500K to 3750K
-random_owned = { 
-
-limit = { 
-owner = { money = 3500000 NOT = { money = 3750000 } } 
-} 
-
-
-
-owner = { money = -375000 overlord = { money = 375000 } }
-
-}
-
-#3750K to 4000K
-random_owned = { 
-
-limit = { 
-owner = { money = 3750000 NOT = { money = 4000000 } } 
-} 
-
-
-
-owner = { money = -400000 overlord = { money = 400000 } }
-
-}
-
-### 4000K ###
-
-#4000K to 4250K
-random_owned = { 
-
-limit = { 
-owner = { money = 4000000 NOT = { money = 4250000 } } 
-} 
-
-
-
-owner = { money = -425000 overlord = { money = 425000 } }
-
-}
-
-#4250K to 4500K
-random_owned = { 
-
-limit = { 
-owner = { money = 4250000 NOT = { money = 4500000 } } 
-} 
-
-
-
-owner = { money = -450000 overlord = { money = 450000 } }
-
-}
-
-
-#4500K to 4750K
-random_owned = { 
-
-limit = { 
-owner = { money = 4500000 NOT = { money = 4750000 } } 
-} 
-
-
-
-owner = { money = -475000 overlord = { money = 475000 } }
-
-}
-
-#4750K to 5000K
-random_owned = { 
-
-limit = { 
-owner = { money = 4750000 } 
-} 
-
-
-
-owner = { money = -500000 overlord = { money = 500000 } }
-
-}
-
-ai_chance = { factor = 1 }
+	trigger = {
+		is_vassal = yes
+		overlord = { has_country_flag = vtslow }
+		NOT = { has_country_modifier = vts_default }
+		NOT = { has_country_modifier = vts_timer }
+		money = 250000
+		NOT = { overlord = { ai = yes money = 20000000 } }
+	}
+
+	option = {
+		name = "Pay the tax"
+
+		add_country_modifier = { name = vts_timer duration = 365 }
+
+		#Send construction goods
+		random_owned = { limit = { owner = { copper_wire = 25 } } owner = { overlord = { copper_wire = 25 } } }
+		random_owned = { limit = { owner = { fuel = 25 } } owner = { overlord = { fuel = 25 } } }
+		random_owned = { limit = { owner = { lumber = 25 } } owner = { overlord = { lumber = 25 } } }
+		random_owned = { limit = { owner = { inorganic_chemicals = 25 } } owner = { overlord = { inorganic_chemicals = 25 } } }
+		random_owned = { limit = { owner = { plastics = 25 } } owner = { overlord = { plastics = 25 } } }
+		random_owned = { limit = { owner = { machine_parts = 25 } } owner = { overlord = { machine_parts = 25 } } }
+		random_owned = { limit = { owner = { aluminium = 25 } } owner = { overlord = { aluminium = 25 } } }
+		random_owned = { limit = { owner = { integrated_circuits = 25 } } owner = { overlord = { integrated_circuits = 25 } } }
+		random_owned = { limit = { owner = { electric_gear = 25 } } owner = { overlord = { electric_gear = 25 } } }
+		random_owned = { limit = { owner = { optics = 25 } } owner = { overlord = { optics = 25 } } }
+		random_owned = { limit = { owner = { cement = 25 } } owner = { overlord = { cement = 25 } } }
+
+		#250K to 500K
+		random_owned = { 
+			limit = { owner = { money = 250000 NOT = { money = 500000 } } } 
+			owner = { money = -50000 overlord = { money = 50000 } }
 		}
 
-option = {
-name = "Default on the payment"
-overlord = { relation = { who = THIS value = -50 } }
-add_country_modifier = { name = vts_default duration = 365 }
-ai_chance = { factor = 0 }
+		#500K to 750K
+		random_owned = { 
+			limit = { owner = { money = 500000 NOT = { money = 750000 } } } 
+			owner = { money = -75000 overlord = { money = 75000 } }
 		}
+
+
+		#750K to 1000K
+		random_owned = { 
+			limit = { owner = { money = 750000 NOT = { money = 1000000 } } } 
+			owner = { money = -100000 overlord = { money = 100000 } }
+		}
+
+		### 1000K ###
+
+		#1000K to 1250K
+		random_owned = { 
+			limit = { owner = { money = 1000000 NOT = { money = 1250000 } } } 
+			owner = { money = -125000 overlord = { money = 125000 } }
+		}
+
+		#1250K to 1500K
+		random_owned = { 
+			limit = { owner = { money = 1250000 NOT = { money = 1500000 } } } 
+			owner = { money = -150000 overlord = { money = 150000 } }
+		}
+
+		#1500K to 1750K
+		random_owned = { 
+			limit = { owner = { money = 1500000 NOT = { money = 1750000 } } } 
+			owner = { money = -175000 overlord = { money = 175000 } }
+		}
+
+		#1750K to 2000K
+		random_owned = { 
+			limit = { owner = { money = 1750000 NOT = { money = 2000000 } } } 
+			owner = { money = -200000 overlord = { money = 200000 } }
+		}
+
+		### 2000K ###
+
+		#2000K to 2250K
+		random_owned = { 
+			limit = { owner = { money = 2000000 NOT = { money = 2250000 } } } 
+			owner = { money = -225000 overlord = { money = 225000 } }
+		}
+
+		#2250K to 2500K
+		random_owned = { 
+			limit = { owner = { money = 2250000 NOT = { money = 2500000 } } } 
+			owner = { money = -250000 overlord = { money = 250000 } }
+		}
+
+		#2500K to 2750K
+		random_owned = { 
+			limit = { owner = { money = 2500000 NOT = { money = 2750000 } } } 
+			owner = { money = -275000 overlord = { money = 275000 } }
+
+		}
+
+		#2750K to 3000K
+		random_owned = { 
+			limit = { owner = { money = 2750000 NOT = { money = 3000000 } } } 
+			owner = { money = -300000 overlord = { money = 300000 } }
+		}
+
+		### 3000K ###
+
+		#3000K to 3250K
+		random_owned = { 
+			limit = { owner = { money = 3000000 NOT = { money = 3250000 } } } 
+			owner = { money = -325000 overlord = { money = 325000 } }
+		}
+
+		#3250K to 3500K
+		random_owned = { 
+			limit = { owner = { money = 3250000 NOT = { money = 3500000 } } } 
+			owner = { money = -350000 overlord = { money = 350000 } }
+		}
+
+		#3500K to 3750K
+		random_owned = { 
+			limit = { owner = { money = 3500000 NOT = { money = 3750000 } } } 
+			owner = { money = -375000 overlord = { money = 375000 } }
+		}
+
+		#3750K to 4000K
+		random_owned = { 
+			limit = { owner = { money = 3750000 NOT = { money = 4000000 } } } 
+			owner = { money = -400000 overlord = { money = 400000 } }
+
+		}
+
+		### 4000K ###
+
+		#4000K to 4250K
+		random_owned = { 
+			limit = { owner = { money = 4000000 NOT = { money = 4250000 } } } 
+			owner = { money = -425000 overlord = { money = 425000 } }
+		}
+
+		#4250K to 4500K
+		random_owned = { 
+			limit = { owner = { money = 4250000 NOT = { money = 4500000 } } } 
+			owner = { money = -450000 overlord = { money = 450000 } }
+		}
+
+		#4500K to 4750K
+		random_owned = { 
+			limit = { owner = { money = 4500000 NOT = { money = 4750000 } } } 
+			owner = { money = -475000 overlord = { money = 475000 } }
+		}
+
+		#4750K to 5000K
+		random_owned = { 
+			limit = { owner = { money = 4750000 } } 
+			owner = { money = -500000 overlord = { money = 500000 } }
+		}
+
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "Default on the payment"
+		overlord = { relation = { who = THIS value = -50 } }
+		add_country_modifier = { name = vts_default duration = 365 }
+		ai_chance = { factor = 0 }
+	}
 
 }
 

@@ -1,0 +1,1753 @@
+#Regency starts - triggered by king death event
+country_event = {
+	id = 201900
+	title = "EVTNAME201900"
+	desc = "EVTDESC201900"
+	picture = "regency"
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTA201900"
+		
+		#Remove any stray President for Life flags
+		clr_country_flag = president_for_life
+		
+		#Get new king after a regency
+		set_country_flag = time_to_select_new_king
+
+		#Remove King trait modifiers
+
+		remove_country_modifier = centrist_king #Big tent
+
+		remove_country_modifier = populist_king #Populist
+	
+		remove_country_modifier = socialist_king #Socialist
+
+		remove_country_modifier = traditional_king #Traditionalist
+
+		remove_country_modifier = nationalist_king #Nationalist
+
+		remove_country_modifier = conservative_king #Conservative
+		
+		#Add Regency modifier
+		clr_country_flag = 10_year_regency
+		clr_country_flag = 9_year_regency
+		clr_country_flag = 8_year_regency
+		clr_country_flag = 7_year_regency
+		clr_country_flag = 3_year_regency
+		
+		random_list = {
+			20 = { set_country_flag = 10_year_regency add_country_modifier = { name = regency_government duration = 3650 } } #10
+			20 = { set_country_flag = 9_year_regency add_country_modifier = { name = regency_government duration = 3285 } } #9
+			20 = { set_country_flag = 8_year_regency add_country_modifier = { name = regency_government duration = 2920 } } #8
+			20 = { set_country_flag = 7_year_regency add_country_modifier = { name = regency_government duration = 2555 } } #7
+			20 = { set_country_flag = 3_year_regency add_country_modifier = { name = regency_government duration = 1095 } } #3
+		}
+		
+		#Regency for all PUs
+		any_country = {
+			limit = {
+				OR = { 
+					#Puppet monarchies
+					vassal_of = THIS
+					
+					#Commonwealth
+					AND = { 
+						THIS = { has_country_modifier = commonwealthmembereng } #The British Monarch
+						OR = { primary_culture = afrikaaner primary_culture = black_anglo is_culture_group = british_cultures is_culture_group = canadian_cultures is_culture_group = new_zealand_cultures is_culture_group = australian_cultures }
+					}
+				}
+				OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+			}
+			country_event = 2019001
+		}
+	}
+}
+
+#Regency starts - triggered by king death event - PU
+country_event = {
+	id = 2019001
+	title = "The $FROMCOUNTRY_ADJ$ Regency"
+	desc = "EVTDESC201900"
+	picture = "regency"
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTA201900"
+		
+		#Remove any stray President for Life flags
+		clr_country_flag = president_for_life
+		
+		#Get new king after a regency
+		set_country_flag = time_to_select_new_king
+
+		#Remove King trait modifiers
+
+		remove_country_modifier = centrist_king #Big tent
+
+		remove_country_modifier = populist_king #Populist
+	
+		remove_country_modifier = socialist_king #Socialist
+
+		remove_country_modifier = traditional_king #Traditionalist
+
+		remove_country_modifier = nationalist_king #Nationalist
+
+		remove_country_modifier = conservative_king #Conservative
+		
+		#PUs follow the regency period of the FROM country
+		
+		clr_country_flag = 10_year_regency
+		clr_country_flag = 9_year_regency
+		clr_country_flag = 8_year_regency
+		clr_country_flag = 7_year_regency
+		clr_country_flag = 3_year_regency
+		
+		random_owned = { limit = { owner = { FROM = { has_country_flag = 10_year_regency } } } owner = { add_country_modifier = { name = regency_government duration = 3650 } } }
+		random_owned = { limit = { owner = { FROM = { has_country_flag = 9_year_regency } } } owner = { add_country_modifier = { name = regency_government duration = 3285 } } }
+		random_owned = { limit = { owner = { FROM = { has_country_flag = 8_year_regency } } } owner = { add_country_modifier = { name = regency_government duration = 2920 } } }
+		random_owned = { limit = { owner = { FROM = { has_country_flag = 7_year_regency } } } owner = { add_country_modifier = { name = regency_government duration = 2555 } } }
+		random_owned = { limit = { owner = { FROM = { has_country_flag = 3_year_regency } } } owner = { add_country_modifier = { name = regency_government duration = 1095 } } }
+
+	}
+}
+
+#Absolute Monarch dissolves the Upper House
+country_event = {
+	id = 201901
+	title = "EVTNAME201901"
+	desc = "EVTDESC201901"
+	picture = "dissolve_upper_house"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTA201901" #Liberal
+		random_owned = {
+			limit = {
+				owner = { has_country_flag = dissolving_parliament }
+			}
+			owner = {
+				upper_house = { ideology = liberal value = 0.8 }
+				any_pop = {
+					scaled_militancy = {
+						ideology = traditionalist
+						factor = 2
+					}
+					
+					scaled_consciousness = {
+						ideology = traditionalist
+						factor = 4
+					}
+					
+					scaled_militancy = {
+						ideology = liberal
+						factor = -1
+					}
+				}
+				clr_country_flag = dissolving_parliament
+			}
+		}
+	}
+	
+	option = {
+		name = "EVTOPTB201901" #Reactionary
+		random_owned = {
+			limit = {
+				owner = { has_country_flag = dissolving_parliament }
+			}
+			owner = {
+				upper_house = { ideology = traditionalist value = 0.8 }
+				any_pop = {
+					scaled_militancy = {
+						ideology = liberal
+						factor = 2
+					}
+					
+					scaled_consciousness = {
+						ideology = liberal
+						factor = 4
+					}
+					
+					scaled_militancy = {
+						ideology = traditionalist
+						factor = -1
+					}
+				}
+				random_owned = {
+					limit = { owner = { is_ideology_enabled = socialist } }
+					owner = {
+						any_pop = {
+							scaled_militancy = {
+								ideology = socialist
+								factor = 2
+							}
+							scaled_consciousness = {
+								ideology = socialist
+								factor = 4
+							}
+						}
+					}
+				}
+				clr_country_flag = dissolving_parliament
+			}
+		}
+	}
+	
+	option = {
+		name = "EVTOPTC201901" #Socialists
+		random_owned = {
+			limit = {
+				owner = {
+					is_ideology_enabled = socialist
+					has_country_flag = dissolving_parliament
+				}
+			}
+			owner = {
+				upper_house = {
+					ideology = socialist
+					value = 0.8
+				}
+				any_pop = {
+					scaled_militancy = {
+						ideology = liberal
+						factor = 2
+					}
+					
+					scaled_consciousness = {
+						ideology = liberal
+						factor = 4
+					}
+					
+					scaled_militancy = {
+						ideology = traditionalist
+						factor = 2
+					}
+					
+					scaled_consciousness = {
+						ideology = traditionalist
+						factor = 4
+					}
+					
+					scaled_militancy = {
+						ideology = socialist
+						factor = -1
+					}
+				}
+				clr_country_flag = dissolving_parliament
+			}
+		}
+	}
+}
+
+#Propaganda
+country_event = {
+	id = 201902
+	title = "EVTNAME201902"
+	desc = "EVTDESC201902"
+	picture = "propaganda_poster"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTA201902" #Jingoism
+			add_country_modifier = { name = war_propaganda duration = 730 }
+			random_owned = {
+				limit = {
+					owner = {
+						publishing_rights = censored_publishing
+						has_country_flag = propaganda_program
+					}
+				}
+				owner = {
+					any_pop = {
+						limit = { literacy = 0.15 }
+						dominant_issue = { value = jingoism factor = 0.01 }
+					}
+				}
+			}
+			
+			random_owned = {
+				limit = {
+					owner = {
+						political_opinions = ruling_party_opinion
+						has_country_flag = propaganda_program
+					}
+				}
+				owner = {
+					any_pop = {
+						limit = { literacy = 0.15 }
+						dominant_issue = { value = jingoism factor = 0.01 }
+					}
+				}
+			}
+			
+			random_owned = {
+				limit = {
+					owner = {
+						wars_of_national_liberation = 1
+						has_country_flag = propaganda_program
+					}
+				}
+				owner = {
+					any_pop = {
+						limit = { literacy = 0.15 }
+						dominant_issue = { value = jingoism factor = 0.01 }
+					}
+				}
+			}
+			
+			random_owned = {
+				limit = {
+					owner = {
+						has_country_flag = propaganda_program
+						OR = {
+							government = hms_government1
+							government = hms_government
+							government = democracy
+							government = democracy1
+							NOT = { wars_of_national_liberation = 1 }
+						}
+					}
+				}	
+				owner = {
+					any_pop = {
+						limit = {
+							literacy = 0.15
+							OR = {
+								is_primary_culture = yes
+								is_accepted_culture = yes
+							}
+						}
+						random = {
+							chance = 50
+							dominant_issue = { value = jingoism factor = 0.01 }
+						}
+						random = {
+							chance = 25
+							dominant_issue = { value = jingoism factor = 0.01 }
+						}
+						random = {
+							chance = 25
+							dominant_issue = { value = pacifism factor = 0.01 }
+						}
+					}
+					any_pop = {
+						limit = {
+							literacy = 0.15
+							NOT = {
+								is_primary_culture = yes
+								is_accepted_culture = yes
+							}
+						}
+						random = {
+							chance = 50
+							dominant_issue = { value = jingoism factor = 0.01 }
+						}
+						random = {
+							chance = 25
+							dominant_issue = { value = pacifism factor = 0.01 }
+						}
+					}
+				}
+			}
+			
+			random_owned = {
+				limit = {
+					owner = {
+						has_country_flag = propaganda_program
+						wars_of_national_liberation = 1
+						NOT = {
+							government = hms_government
+							government = hms_government1
+							government = democracy
+							government = democracy1
+						}
+					}
+				}	
+				owner = {
+					any_pop = {
+						limit = { literacy = 0.1 }
+						random = {
+							chance = 75
+							dominant_issue = { value = jingoism factor = 0.02 }
+						}
+						random = {
+							chance = 50
+							dominant_issue = { value = jingoism factor = 0.01 }
+						}
+						random = {
+							chance = 25
+							dominant_issue = { value = jingoism factor = 0.01 }
+						}
+					}
+				}
+			}
+			clr_country_flag = propaganda_program
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "EVTOPTB201902" #Ruling Party Support
+			add_country_modifier = { name = government_propaganda duration = 730 }
+			any_pop = {
+				limit = { literacy = 0.15 }
+				random = {
+					chance = 50
+					militancy = -1
+				}
+				random = {
+					chance = 50
+					consciousness = -1
+				}
+			}
+			random_owned = {
+				limit = {
+					owner = {
+						ruling_party_ideology = conservative
+						has_country_flag = propaganda_program
+					}
+				}
+				owner = {
+					random = {
+						chance = 50
+						upper_house = { ideology = conservative value = 0.05 }
+					}
+					random = {
+						chance = 25
+						upper_house = { ideology = conservative value = 0.05 }
+					}
+					random_owned = {
+						limit = { owner = { wars_of_national_liberation = 1 } }
+						owner = {
+							upper_house = { ideology = conservative value = 0.05 }
+							any_pop = {
+								limit = { literacy = 0.15 }
+								ideology = { factor = 0.05 value = conservative }
+							}
+						}
+					}
+					random_owned = {
+						limit = { owner = { publishing_rights = censored_publishing } }
+						owner = {
+							upper_house = { ideology = conservative value = 0.05 }
+							any_pop = {
+								imit = { literacy = 0.15 }
+								ideology = { factor = 0.05 value = conservative }
+							}
+						}
+					}
+				}
+			}
+			
+			random_owned = {
+				limit = {
+					owner = {
+						ruling_party_ideology = traditionalist
+						has_country_flag = propaganda_program
+					}
+				}
+				owner = {
+					random = {
+						chance = 50
+						upper_house = { ideology = traditionalist value = 0.05 }
+					}
+					random = {
+						chance = 25
+						upper_house = { ideology = traditionalist value = 0.05 }
+					}
+					random_owned = {
+						limit = { owner = { wars_of_national_liberation = 1 } }
+						owner = {
+							upper_house = { ideology = traditionalist value = 0.05 }
+							any_pop = {
+								limit = { literacy = 0.15 }
+								ideology = { factor = 0.05 value = traditionalist }
+							}
+						}
+					}
+					random_owned = {
+						limit = { owner = { publishing_rights = censored_publishing } }
+						owner = {
+							upper_house = { ideology = traditionalist value = 0.05 }
+							any_pop = {
+								limit = { literacy = 0.15 }
+								ideology = { factor = 0.05 value = traditionalist }
+							}
+						}
+					}
+				}
+			}
+			
+			random_owned = {
+				limit = {
+					owner = {
+						ruling_party_ideology = liberal
+						has_country_flag = propaganda_program
+					}
+				}
+				owner = {
+					random = {
+						chance = 50
+						upper_house = { ideology = liberal value = 0.05 }
+					}
+					random = {
+						chance = 25
+						upper_house = { ideology = liberal value = 0.05 }
+					}
+					random_owned = {
+						limit = { owner = { wars_of_national_liberation = 1 } }
+						owner = {
+							upper_house = { ideology = liberal value = 0.05 }
+							any_pop = {
+								limit = { literacy = 0.15 }
+								ideology = { factor = 0.05 value = liberal }
+							}
+						}
+					}
+					random_owned = {
+						limit = { owner = { publishing_rights = censored_publishing } }
+						owner = {
+							upper_house = { ideology = liberal value = 0.05 }
+							any_pop = {
+								limit = { literacy = 0.15 }
+								ideology = { factor = 0.05 value = liberal }
+							}
+						}
+					}
+				}
+			}
+			
+			random_owned = {
+				limit = {
+					owner = {
+						ruling_party_ideology = socialist
+						has_country_flag = propaganda_program
+					}
+				}
+				owner = {
+					random = {
+						chance = 50
+						upper_house = { ideology = socialist value = 0.05 }
+					}
+					random = {
+						chance = 25
+						upper_house = { ideology = socialist value = 0.05 }
+					}
+					random_owned = {
+						limit = { owner = { wars_of_national_liberation = 1 } }
+						owner = {
+							upper_house = { ideology = socialist value = 0.05 }
+							any_pop = {
+								limit = { literacy = 0.15 }
+								ideology = { factor = 0.05 value = socialist }
+							}
+						}
+					}
+					random_owned = {
+						limit = { owner = { publishing_rights = censored_publishing } }
+						owner = {
+							upper_house = { ideology = socialist value = 0.05 }
+							any_pop = {
+								limit = { literacy = 0.15 }
+								ideology = { factor = 0.05 value = socialist }
+							}
+						}
+					}
+				}
+			}
+			
+			random_owned = {
+				limit = {
+					owner = {
+						ruling_party_ideology = progressive
+						has_country_flag = propaganda_program
+					}
+				}
+				owner = {
+					random = {
+						chance = 50
+						upper_house = { ideology = progressive value = 0.05 }
+					}
+					random = {
+						chance = 25
+						upper_house = { ideology = progressive value = 0.05 }
+					}
+					random_owned = {
+						limit = { owner = { wars_of_national_liberation = 1 } }
+						owner = {
+							upper_house = { ideology = progressive value = 0.05 }
+							any_pop = {
+								limit = { literacy = 0.15 }
+								ideology = { factor = 0.05 value = progressive }
+							}
+						}
+					}
+					random_owned = {
+						limit = { owner = { publishing_rights = censored_publishing } }
+						owner = {
+							upper_house = { ideology = progressive value = 0.05 }
+							any_pop = {
+								limit = { literacy = 0.15 }
+								ideology = { factor = 0.05 value = progressive }
+							}
+						}
+					}
+				}
+			}
+			
+			random_owned = {
+				limit = {
+					owner = {
+						ruling_party_ideology = communist
+						has_country_flag = propaganda_program
+					}
+				}
+				owner = {
+					random = {
+						chance = 50
+						upper_house = { ideology = communist value = 0.05 }
+					}
+					random = {
+						chance = 25
+						upper_house = { ideology = communist value = 0.05 }
+					}
+					random_owned = {
+						limit = { owner = { wars_of_national_liberation = 1 } }
+						owner = {
+							upper_house = { ideology = communist value = 0.05 }
+							any_pop = {
+								limit = { literacy = 0.15 }
+								ideology = { factor = 0.05 value = communist }
+							}
+						}
+					}
+					random_owned = {
+						limit = { owner = { publishing_rights = censored_publishing } }
+						owner = {
+							upper_house = { ideology = communist value = 0.05 }
+							any_pop = {
+								limit = { literacy = 0.15 }
+								ideology = { factor = 0.05 value = communist }
+							}
+						}
+					}
+				}
+			}
+
+			random_owned = {
+				limit = {
+					owner = {
+						ruling_party_ideology = communist_social
+						has_country_flag = propaganda_program
+					}
+				}
+				owner = {
+					random = {
+						chance = 50
+						upper_house = { ideology = communist_social value = 0.05 }
+					}
+					random = {
+						chance = 25
+						upper_house = { ideology = communist_social value = 0.05 }
+					}
+					random_owned = {
+						limit = { owner = { wars_of_national_liberation = 1 } }
+						owner = {
+							upper_house = { ideology = communist_social value = 0.05 }
+							any_pop = {
+								limit = { literacy = 0.15 }
+								ideology = { factor = 0.05 value = communist_social }
+							}
+						}
+					}
+					random_owned = {
+						limit = { owner = { publishing_rights = censored_publishing } }
+						owner = {
+							upper_house = { ideology = communist_social value = 0.05 }
+							any_pop = {
+								limit = { literacy = 0.15 }
+								ideology = { factor = 0.05 value = communist_social }
+							}
+						}
+					}
+				}
+			}
+
+			random_owned = {
+				limit = {
+					owner = {
+						ruling_party_ideology = populist
+						has_country_flag = propaganda_program
+					}
+				}
+				owner = {
+					random = {
+						chance = 50
+						upper_house = { ideology = populist value = 0.05 }
+					}
+					random = {
+						chance = 25
+						upper_house = { ideology = populist value = 0.05 }
+					}
+					random_owned = {
+						limit = { owner = { wars_of_national_liberation = 1 } }
+						owner = {
+							upper_house = { ideology = populist value = 0.05 }
+							any_pop = {
+								limit = { literacy = 0.15 }
+								ideology = { factor = 0.05 value = populist }
+							}
+						}
+					}
+					random_owned = {
+						limit = { owner = { publishing_rights = censored_publishing } }
+						owner = {
+							upper_house = { ideology = populist value = 0.05 }
+							any_pop = {
+								limit = { literacy = 0.15 }
+								ideology = { factor = 0.05 value = populist }
+							}
+						}
+					}
+				}
+			}
+
+			random_owned = {
+				limit = {
+					owner = {
+					ruling_party_ideology = big_tent
+					has_country_flag = propaganda_program
+					}
+				}
+				owner = {
+					random = {
+						chance = 50
+						upper_house = { ideology = big_tent value = 0.05 }
+					}
+					random = {
+						chance = 25
+						upper_house = { ideology = big_tent value = 0.05 }
+					}
+					random_owned = {
+						limit = { owner = { wars_of_national_liberation = 1 } }
+						owner = {
+							upper_house = { ideology = big_tent value = 0.05 }
+							any_pop = {
+								limit = { literacy = 0.15 }
+								ideology = { factor = 0.05 value = big_tent }
+							}
+						}
+					}
+					random_owned = {
+						limit = { owner = { publishing_rights = censored_publishing } }
+						owner = {
+							upper_house = { ideology = big_tent value = 0.05 }
+							any_pop = {
+								limit = { literacy = 0.15 }
+								ideology = { factor = 0.05 value = big_tent }
+							}
+						}
+					}
+				}
+			}
+			
+			random_owned = {
+				limit = {
+					owner = {
+						ruling_party_ideology = nationalist
+						has_country_flag = propaganda_program
+					}
+				}
+				owner = {
+					random = {
+						chance = 50
+						upper_house = { ideology = nationalist value = 0.05 }
+					}
+					random = {
+						chance = 25
+						upper_house = { ideology = nationalist value = 0.05 }
+					}
+					random_owned = {
+						limit = { owner = { wars_of_national_liberation = 1 } }
+						owner = {
+							upper_house = { ideology = nationalist value = 0.05 }
+							any_pop = {
+								limit = { literacy = 0.15 }
+								ideology = { factor = 0.05 value = nationalist }
+							}
+						}
+					}
+					random_owned = {
+						limit = { owner = { publishing_rights = censored_publishing } }
+						owner = {
+							upper_house = { ideology = nationalist value = 0.05 }
+							any_pop = {
+								limit = { literacy = 0.15 }
+								ideology = { factor = 0.05 value = nationalist }
+							}
+						}
+					}
+				}
+			}
+		clr_country_flag = propaganda_program
+		ai_chance = { factor = 0 }
+	}
+}
+
+#Select new King - Big tent
+country_event = {
+	id = 201903
+	title = "Coronation of a Centrist King"
+	desc = "EVTDESC201903"
+	picture = "monarchy_cleanup"
+
+	trigger = {
+		OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+		
+		#Can select new king
+		NOT = { has_country_modifier = regency_government }
+		has_country_flag = time_to_select_new_king
+
+		NOT = { has_country_modifier = centrist_king } #Big tent
+
+		NOT = { has_country_modifier = populist_king } #Populist
+	
+		NOT = { has_country_modifier = socialist_king } #Socialist
+
+		NOT = { has_country_modifier = traditional_king } #Traditionalist
+
+		NOT = { has_country_modifier = nationalist_king } #Nationalist
+
+		NOT = { has_country_modifier = conservative_king } #Conservative
+		
+		#Vassals follow the King of the overlord
+		OR = {
+			is_vassal = no
+			overlord = { 
+				OR = { government = absolute_monarchy government = hms_government government = hms_government1 } 
+				has_country_modifier = centrist_king
+			}
+			overlord = { 
+				NOT = { OR = { government = absolute_monarchy government = hms_government government = hms_government1 } }
+			}
+		}
+	
+	}
+	
+	mean_time_to_happen = {
+		months = 1.5
+		modifier = { factor = 2 is_greater_power = no }
+	}
+	
+	option = {
+		name = "Long Live the King!"
+		prestige = 50
+		
+		clr_country_flag = time_to_select_new_king
+
+		#Monarchy
+
+		add_country_modifier = { name = centrist_king duration = -1 }
+
+		random_owned = {
+			limit = { owner = { is_vassal = no NOT = { has_country_flag = elective_monarchy } } }
+			owner = {
+				any_pop = {
+					limit = { is_culture_group = THIS }
+					ideology = {
+						factor = 0.10
+						value = big_tent
+					}
+				}
+			}
+		}
+		
+		random_owned = {
+			limit = { owner = { is_vassal = no has_country_flag = elective_monarchy } }
+			owner = {
+				any_pop = {
+					limit = { is_culture_group = THIS }
+					ideology = {
+						factor = 0.05
+						value = big_tent
+					}
+				}
+			}
+		}
+
+	}
+
+}
+
+#Select new King - populist
+country_event = {
+	id = 201904
+	title = "Coronation of a Populist King"
+	desc = "EVTDESC201903"
+	picture = "monarchy_cleanup"
+
+	trigger = {
+		OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+		
+		#Can select new king
+		NOT = { has_country_modifier = regency_government }
+		has_country_flag = time_to_select_new_king
+
+		NOT = { has_country_modifier = centrist_king } #Big tent
+
+		NOT = { has_country_modifier = populist_king } #Populist
+	
+		NOT = { has_country_modifier = socialist_king } #Socialist
+
+		NOT = { has_country_modifier = traditional_king } #Traditionalist
+
+		NOT = { has_country_modifier = nationalist_king } #Nationalist
+
+		NOT = { has_country_modifier = conservative_king } #Conservative
+		
+		#Vassals follow the King of the overlord
+		OR = {
+			is_vassal = no
+			overlord = { 
+				OR = { government = absolute_monarchy government = hms_government government = hms_government1 } 
+				has_country_modifier = populist_king
+			}
+			overlord = { 
+				NOT = { OR = { government = absolute_monarchy government = hms_government government = hms_government1 } }
+			}
+		}
+	
+	}
+	
+	mean_time_to_happen = {
+		months = 1.5
+		modifier = { factor = 2 is_greater_power = no }
+	}
+	
+	option = {
+		name = "Long Live the King!"
+		prestige = 50
+		
+		clr_country_flag = time_to_select_new_king
+
+		#Monarchy
+
+		add_country_modifier = { name = populist_king duration = -1 }
+
+		random_owned = {
+			limit = { owner = { is_vassal = no NOT = { has_country_flag = elective_monarchy } } }
+			owner = {
+				any_pop = {
+					limit = { is_culture_group = THIS }
+					ideology = {
+						factor = 0.10
+						value = populist
+					}
+				}
+			}
+		}
+		
+		random_owned = {
+			limit = { owner = { is_vassal = no has_country_flag = elective_monarchy } }
+			owner = {
+				any_pop = {
+					limit = { is_culture_group = THIS }
+					ideology = {
+						factor = 0.05
+						value = populist
+					}
+				}
+			}
+		}
+
+	}
+
+}
+
+#Select new King - socialist
+country_event = {
+	id = 201905
+	title = "Coronation of a Socialist King"
+	desc = "EVTDESC201903"
+	picture = "monarchy_cleanup"
+
+	trigger = {
+		OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+		
+		#Can select new king
+		NOT = { has_country_modifier = regency_government }
+		has_country_flag = time_to_select_new_king
+
+		NOT = { has_country_modifier = centrist_king } #Big tent
+
+		NOT = { has_country_modifier = populist_king } #Populist
+	
+		NOT = { has_country_modifier = socialist_king } #Socialist
+
+		NOT = { has_country_modifier = traditional_king } #Traditionalist
+
+		NOT = { has_country_modifier = nationalist_king } #Nationalist
+
+		NOT = { has_country_modifier = conservative_king } #Conservative
+		
+		#Vassals follow the King of the overlord
+		OR = {
+			is_vassal = no
+			overlord = { 
+				OR = { government = absolute_monarchy government = hms_government government = hms_government1 } 
+				has_country_modifier = socialist_king
+			}
+			overlord = { 
+				NOT = { OR = { government = absolute_monarchy government = hms_government government = hms_government1 } }
+			}
+		}
+	
+	}
+	
+	mean_time_to_happen = {
+		months = 1.5
+		modifier = { factor = 2 is_greater_power = no }
+	}
+	
+	option = {
+		name = "Long Live the King!"
+		prestige = 50
+		
+		clr_country_flag = time_to_select_new_king
+
+		#Monarchy
+
+		add_country_modifier = { name = socialist_king duration = -1 }
+
+		random_owned = {
+			limit = { owner = { is_vassal = no NOT = { has_country_flag = elective_monarchy } } }
+			owner = {
+				any_pop = {
+					limit = { is_culture_group = THIS }
+					ideology = {
+						factor = 0.10
+						value = socialist
+					}
+				}
+			}
+		}
+		
+		random_owned = {
+			limit = { owner = { is_vassal = no has_country_flag = elective_monarchy } }
+			owner = {
+				any_pop = {
+					limit = { is_culture_group = THIS }
+					ideology = {
+						factor = 0.05
+						value = socialist
+					}
+				}
+			}
+		}
+
+	}
+
+}
+
+#Select new King - traditionalist
+country_event = {
+	id = 201906
+	title = "Coronation of a Traditionalist King"
+	desc = "EVTDESC201903"
+	picture = "monarchy_cleanup"
+
+	trigger = {
+		OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+		
+		#Can select new king
+		NOT = { has_country_modifier = regency_government }
+		has_country_flag = time_to_select_new_king
+
+		NOT = { has_country_modifier = centrist_king } #Big tent
+
+		NOT = { has_country_modifier = populist_king } #Populist
+	
+		NOT = { has_country_modifier = socialist_king } #Socialist
+
+		NOT = { has_country_modifier = traditional_king } #Traditionalist
+
+		NOT = { has_country_modifier = nationalist_king } #Nationalist
+
+		NOT = { has_country_modifier = conservative_king } #Conservative
+		
+		#Vassals follow the King of the overlord
+		OR = {
+			is_vassal = no
+			overlord = { 
+				OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+				has_country_modifier = traditional_king
+			}
+			overlord = { 
+				NOT = { OR = { government = absolute_monarchy government = hms_government government = hms_government1 } }
+			}
+		}
+	
+	}
+	
+	mean_time_to_happen = {
+		months = 1.5
+		modifier = { factor = 2 is_greater_power = no }
+	}
+	
+	option = {
+		name = "Long Live the King!"
+		prestige = 50
+		
+		clr_country_flag = time_to_select_new_king
+
+		#Monarchy
+
+		add_country_modifier = { name = traditional_king duration = -1 }
+
+		random_owned = {
+			limit = { owner = { is_vassal = no NOT = { has_country_flag = elective_monarchy } } }
+			owner = {
+				any_pop = {
+					limit = { is_culture_group = THIS }
+					ideology = {
+						factor = 0.10
+						value = traditionalist
+					}
+				}
+			}
+		}
+		
+		random_owned = {
+			limit = { owner = { is_vassal = no has_country_flag = elective_monarchy } }
+			owner = {
+				any_pop = {
+					limit = { is_culture_group = THIS }
+					ideology = {
+						factor = 0.05
+						value = traditionalist
+					}
+				}
+			}
+		}
+
+	}
+
+}
+
+#Select new King - nationalist
+country_event = {
+	id = 201907
+	title = "Coronation of a Nationalist King"
+	desc = "EVTDESC201903"
+	picture = "monarchy_cleanup"
+
+	trigger = {
+		OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+		
+		#Can select new king
+		NOT = { has_country_modifier = regency_government }
+		has_country_flag = time_to_select_new_king
+
+		NOT = { has_country_modifier = centrist_king } #Big tent
+
+		NOT = { has_country_modifier = populist_king } #Populist
+	
+		NOT = { has_country_modifier = socialist_king } #Socialist
+
+		NOT = { has_country_modifier = traditional_king } #Traditionalist
+
+		NOT = { has_country_modifier = nationalist_king } #Nationalist
+
+		NOT = { has_country_modifier = conservative_king } #Conservative
+		
+		#Vassals follow the King of the overlord
+		OR = {
+			is_vassal = no
+			overlord = { 
+				OR = { government = absolute_monarchy government = hms_government government = hms_government1 } 
+				has_country_modifier = nationalist_king
+			}
+			overlord = { 
+				NOT = { OR = { government = absolute_monarchy government = hms_government government = hms_government1 } }
+			}
+		}
+	
+	}
+	
+	mean_time_to_happen = {
+		months = 1.5
+		modifier = { factor = 2 is_greater_power = no }
+	}
+	
+	option = {
+		name = "Long Live the King!"
+		prestige = 50
+		
+		clr_country_flag = time_to_select_new_king
+
+		#Monarchy
+
+		add_country_modifier = { name = nationalist_king duration = -1 }
+
+		random_owned = {
+			limit = { owner = { is_vassal = no NOT = { has_country_flag = elective_monarchy } } }
+			owner = {
+				any_pop = {
+					limit = { is_culture_group = THIS }
+					ideology = {
+						factor = 0.10
+						value = nationalist
+					}
+				}
+			}
+		}
+		
+		random_owned = {
+			limit = { owner = { is_vassal = no has_country_flag = elective_monarchy } }
+			owner = {
+				any_pop = {
+					limit = { is_culture_group = THIS }
+					ideology = {
+						factor = 0.05
+						value = nationalist
+					}
+				}
+			}
+		}
+
+	}
+
+}
+
+#Select new King - conservative
+country_event = {
+	id = 201908
+	title = "Coronation of a Conservative King"
+	desc = "EVTDESC201903"
+	picture = "monarchy_cleanup"
+
+	trigger = {
+		OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+		
+		#Can select new king
+		NOT = { has_country_modifier = regency_government }
+		has_country_flag = time_to_select_new_king
+
+		NOT = { has_country_modifier = centrist_king } #Big tent
+
+		NOT = { has_country_modifier = populist_king } #Populist
+	
+		NOT = { has_country_modifier = socialist_king } #Socialist
+
+		NOT = { has_country_modifier = traditional_king } #Traditionalist
+
+		NOT = { has_country_modifier = nationalist_king } #Nationalist
+
+		NOT = { has_country_modifier = conservative_king } #Conservative
+		
+		#Vassals follow the King of the overlord
+		OR = {
+			is_vassal = no
+			overlord = { 
+				OR = { government = absolute_monarchy government = hms_government government = hms_government1 } 
+				has_country_modifier = conservative_king
+			}
+			overlord = { 
+				NOT = { OR = { government = absolute_monarchy government = hms_government government = hms_government1 } }
+			}
+		}
+	
+	}
+	
+	mean_time_to_happen = {
+		months = 1.5
+		modifier = { factor = 2 is_greater_power = no }
+	}
+	
+	option = {
+		name = "Long Live the King!"
+		prestige = 50
+		
+		clr_country_flag = time_to_select_new_king
+
+		#Monarchy
+
+		add_country_modifier = { name = conservative_king duration = -1 }
+
+		random_owned = {
+			limit = { owner = { is_vassal = no NOT = { has_country_flag = elective_monarchy } } }
+			owner = {
+				any_pop = {
+					limit = { is_culture_group = THIS }
+					ideology = {
+						factor = 0.10
+						value = conservative
+					}
+				}
+			}
+		}
+		
+		random_owned = {
+			limit = { owner = { is_vassal = no has_country_flag = elective_monarchy } }
+			owner = {
+				any_pop = {
+					limit = { is_culture_group = THIS }
+					ideology = {
+						factor = 0.05
+						value = conservative
+					}
+				}
+			}
+		}
+
+	}
+
+}
+
+#Monarchy clean up - Remove monarchy modifiers if country becomes a Republic
+country_event = {
+	id = 201909
+	title = "End of the $COUNTRY_ADJ$ Monarchy"
+	desc = EVTDESC201909
+	picture = "end_of_king_clean_up"
+
+	trigger = {
+		NOT = { OR = { government = absolute_monarchy government = hms_government government = hms_government1 } }
+
+		OR = {
+			has_country_modifier = centrist_king #Big tent
+			has_country_modifier = populist_king #Populist
+			has_country_modifier = socialist_king #Socialist
+			has_country_modifier = traditional_king #Traditionalist
+			has_country_modifier = nationalist_king #Nationalist
+			has_country_modifier = conservative_king #Conservative
+			
+			has_country_modifier = regency_government
+		}
+	}
+
+	option = {
+		name = "Will the monarchy ever return?"
+		set_country_flag = pre_existing_monarchy
+		
+		clr_country_flag = time_to_select_new_king
+		
+		remove_country_modifier = regency_government
+		
+		remove_country_modifier = centrist_king #Big tent
+		remove_country_modifier = populist_king #Populist
+		remove_country_modifier = socialist_king #Socialist
+		remove_country_modifier = traditional_king #Traditionalist
+		remove_country_modifier = nationalist_king #Nationalist
+		remove_country_modifier = conservative_king #Conservative
+	}
+
+}
+
+#Monarchy change - Non elective
+country_event = {
+	id = 201910
+	title = "Death of the $COUNTRY_ADJ$ Monarch"
+	desc = EVTDESC201910
+	picture = "king_death"
+
+	trigger = {
+	
+		OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+		
+		#So it doesnt interfere with historical events
+		year = 1975
+		
+		#Event has not fired recently
+		NOT = { has_country_modifier = leader_cooldown_king }
+		
+		NOT = { has_country_flag = time_to_select_new_king }
+		
+		#Not in a regency
+		NOT = { has_country_modifier = regency_government }
+		
+		#Not an elective monarchy
+		NOT = { has_country_flag = elective_monarchy }
+		
+		#Has a king
+		OR = {
+			has_country_modifier = centrist_king #Big tent
+			has_country_modifier = populist_king #Populist
+			has_country_modifier = socialist_king #Socialist
+			has_country_modifier = traditional_king #Traditionalist
+			has_country_modifier = nationalist_king #Nationalist
+			has_country_modifier = conservative_king #Conservative
+		}
+		
+	}
+	
+	mean_time_to_happen = {
+		months = 600
+	}
+
+	option = {
+		name = "The King is dead. Long live the King!"
+		
+		add_country_modifier = { name = leader_cooldown_king duration = 365 }
+		
+		#Remove any stray President for Life flags
+		clr_country_flag = president_for_life
+		
+		set_country_flag = time_to_select_new_king
+		
+		#Clear existing monarchy stuff
+		
+		remove_country_modifier = regency_government
+		
+		remove_country_modifier = centrist_king #Big tent
+		remove_country_modifier = populist_king #Populist
+		remove_country_modifier = socialist_king #Socialist
+		remove_country_modifier = traditional_king #Traditionalist
+		remove_country_modifier = nationalist_king #Nationalist
+		remove_country_modifier = conservative_king #Conservative
+		
+		#Chance for a regency
+		random_list = {
+			25 = { country_event = 201900 } #Regency
+			75 = {
+			
+				#Death event for all personal unions (puppet monarchies and Commonwealth nations)
+				any_country = {
+					limit = {
+						OR = { 
+							#Puppet monarchies
+							vassal_of = THIS
+					
+							#Commonwealth
+							AND = { 
+								THIS = { has_country_modifier = commonwealthmembereng } #The British Monarch
+								OR = { primary_culture = afrikaaner primary_culture = black_anglo is_culture_group = british_cultures is_culture_group = canadian_cultures is_culture_group = new_zealand_cultures is_culture_group = australian_cultures }
+							}
+						}
+						OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+					}
+					country_event = 2019101
+				}
+				
+			}
+			
+		}
+		
+	}
+
+}
+
+#Monarchy change - Non elective - For Personal Unions
+country_event = {
+	id = 2019101
+	title = "Death of the $FROMCOUNTRY_ADJ$ Monarch"
+	desc = EVTDESC201910
+	picture = "king_death"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "The King is dead. Long live the King!"
+		
+		add_country_modifier = { name = leader_cooldown_king duration = 365 }
+		
+		set_country_flag = time_to_select_new_king
+		
+		#Clear existing monarchy stuff
+		
+		remove_country_modifier = regency_government
+		
+		remove_country_modifier = centrist_king #Big tent
+		remove_country_modifier = populist_king #Populist
+		remove_country_modifier = socialist_king #Socialist
+		remove_country_modifier = traditional_king #Traditionalist
+		remove_country_modifier = nationalist_king #Nationalist
+		remove_country_modifier = conservative_king #Conservative
+		
+	}
+
+}
+
+#Monarchy change - Elective
+country_event = {
+	id = 201911
+	title = "Elective Monarch's Term Expires"
+	desc = EVTDESC201911
+	picture = "king_elective"
+
+	trigger = {
+		OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+		
+		NOT = { has_country_modifier = leader_cooldown_king }
+		
+		NOT = { has_country_flag = time_to_select_new_king }
+		NOT = { has_country_modifier = regency_government }
+		
+		#Not an elective monarchy
+		has_country_flag = elective_monarchy
+		
+		#Has a king
+		OR = {
+			has_country_modifier = centrist_king #Big tent
+			has_country_modifier = populist_king #Populist
+			has_country_modifier = socialist_king #Socialist
+			has_country_modifier = traditional_king #Traditionalist
+			has_country_modifier = nationalist_king #Nationalist
+			has_country_modifier = conservative_king #Conservative
+		}
+	}
+	
+	mean_time_to_happen = {
+		months = 108
+	}
+
+	option = {
+		name = "Let's hope the new King is a good one"
+		
+		add_country_modifier = { name = leader_cooldown_king duration = 365 }
+		
+		set_country_flag = time_to_select_new_king
+		
+		#Clear existing monarchy stuff
+		
+		remove_country_modifier = regency_government
+		
+		remove_country_modifier = centrist_king #Big tent
+		remove_country_modifier = populist_king #Populist
+		remove_country_modifier = socialist_king #Socialist
+		remove_country_modifier = traditional_king #Traditionalist
+		remove_country_modifier = nationalist_king #Nationalist
+		remove_country_modifier = conservative_king #Conservative
+		
+		#New king event for all personal unions (puppet monarchies and Commonwealth nations)
+		any_country = {
+			limit = {
+				OR = { 
+					#Puppet monarchies
+					vassal_of = THIS
+					
+					#Commonwealth
+					AND = { 
+						THIS = { has_country_modifier = commonwealthmembereng } #The British Monarch
+						OR = { primary_culture = afrikaaner primary_culture = black_anglo is_culture_group = british_cultures is_culture_group = canadian_cultures is_culture_group = new_zealand_cultures is_culture_group = australian_cultures }
+					}
+				}
+				OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+			}
+			country_event = 2019111
+		}
+		
+	}
+
+}
+
+#Monarchy change - Elective - For Personal Unions
+country_event = {
+	id = 2019111
+	title = "$FROMCOUNTRY_ADJ$ Elective Monarch's Term Expires"
+	desc = EVTDESC201911
+	picture = "king_elective"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Let's hope the new King is a good one"
+		
+		add_country_modifier = { name = leader_cooldown_king duration = 365 }
+		
+		set_country_flag = time_to_select_new_king
+		
+		#Clear existing monarchy stuff
+		
+		remove_country_modifier = regency_government
+		
+		remove_country_modifier = centrist_king #Big tent
+		remove_country_modifier = populist_king #Populist
+		remove_country_modifier = socialist_king #Socialist
+		remove_country_modifier = traditional_king #Traditionalist
+		remove_country_modifier = nationalist_king #Nationalist
+		remove_country_modifier = conservative_king #Conservative
+		
+	}
+
+}
+
+#Monarchy change - Whenever there is a fresh monarchy
+country_event = {
+	id = 201912
+	title = "The $COUNTRY_ADJ$ Monarchy"
+	desc = EVTDESC201912
+	picture = "king_start_new"
+
+	trigger = {
+		OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+		
+		NOT = { has_country_flag = time_to_select_new_king }
+		
+		#Not under a Regency
+		NOT = { has_country_modifier = regency_government }
+		
+		NOT = {
+			OR = {
+				has_country_modifier = centrist_king #Big tent
+				has_country_modifier = populist_king #Populist
+				has_country_modifier = socialist_king #Socialist
+				has_country_modifier = traditional_king #Traditionalist
+				has_country_modifier = nationalist_king #Nationalist
+				has_country_modifier = conservative_king #Conservative
+			}
+		}
+	}
+
+	option = {
+		name = "We love the King!"
+		
+		add_country_modifier = { name = leader_cooldown_king duration = 365 }
+		
+		set_country_flag = time_to_select_new_king
+		
+		#Clear existing monarchy stuff
+		
+		remove_country_modifier = regency_government
+		
+		remove_country_modifier = centrist_king #Big tent
+		remove_country_modifier = populist_king #Populist
+		remove_country_modifier = socialist_king #Socialist
+		remove_country_modifier = traditional_king #Traditionalist
+		remove_country_modifier = nationalist_king #Nationalist
+		remove_country_modifier = conservative_king #Conservative
+		
+		#Clear Generic Leaders only if THIS is a absolute_monarchy
+		random_owned = {
+			limit = { owner = { government = absolute_monarchy } }
+			
+			owner = {
+
+				#If leader refused to leave via 'backbencher's plot' event
+				clr_country_flag = leader_refuses_to_leave
+
+				#Clear Generic Leaders
+				remove_country_modifier = expert_diplomat
+				remove_country_modifier = successful_industrialist
+				remove_country_modifier = ivory_tower_intellectual
+				remove_country_modifier = man_of_the_people
+				remove_country_modifier = landed_gentleman
+				remove_country_modifier = military_man
+				remove_country_modifier = lord_admiral
+				remove_country_modifier = raving_loon
+				remove_country_modifier = luddite
+				remove_country_modifier = great_statesman
+				remove_country_modifier = backroom_boy
+				remove_country_modifier = great_reformer
+				remove_country_modifier = gauche_buffoon
+				remove_country_modifier = administrative_genius
+				remove_country_modifier = visionary_thinker
+				remove_country_modifier = competent_placeholder
+				remove_country_modifier = imperious_autocrat
+				remove_country_modifier = prince_of_terror
+				remove_country_modifier = efficient_sociopath
+				remove_country_modifier = pig_headed_isolationist
+				remove_country_modifier = ambitious_union_boss
+				remove_country_modifier = dour_economist
+
+				clr_country_flag = right_set_up
+				clr_country_flag = far_right_set_up
+				clr_country_flag = centre_set_up
+				clr_country_flag = left_set_up
+				clr_country_flag = far_left_set_up
+			}
+		}
+	}
+
+}
+
+#Clear generic leaders modifiers for absolute monarchies
+country_event = {
+	id = 201913
+	title = "The $COUNTRY_ADJ$ Absolute Monarchy"
+	desc = EVTDESC201913
+	picture = "king_start"
+
+	trigger = {
+	
+		government = absolute_monarchy
+		
+		#Has generic modifiers to clear
+		OR = {
+			has_country_modifier = expert_diplomat
+			has_country_modifier = successful_industrialist
+			has_country_modifier = ivory_tower_intellectual
+			has_country_modifier = man_of_the_people
+			has_country_modifier = landed_gentleman
+			has_country_modifier = military_man
+			has_country_modifier = lord_admiral
+			has_country_modifier = raving_loon
+			has_country_modifier = luddite
+			has_country_modifier = great_statesman
+			has_country_modifier = backroom_boy
+			has_country_modifier = great_reformer
+			has_country_modifier = gauche_buffoon
+			has_country_modifier = administrative_genius
+			has_country_modifier = visionary_thinker
+			has_country_modifier = competent_placeholder
+			has_country_modifier = imperious_autocrat
+			has_country_modifier = prince_of_terror
+			has_country_modifier = efficient_sociopath
+			has_country_modifier = pig_headed_isolationist
+			has_country_modifier = ambitious_union_boss
+			has_country_modifier = dour_economist
+			has_country_modifier = power_vacuum
+		}
+	}
+
+	option = {
+		name = "All Hail the King!"
+
+		#If leader refused to leave via 'backbencher's plot' event
+		clr_country_flag = leader_refuses_to_leave
+
+		#Clear Generic Leaders
+		remove_country_modifier = expert_diplomat
+		remove_country_modifier = successful_industrialist
+		remove_country_modifier = ivory_tower_intellectual
+		remove_country_modifier = man_of_the_people
+		remove_country_modifier = landed_gentleman
+		remove_country_modifier = military_man
+		remove_country_modifier = lord_admiral
+		remove_country_modifier = raving_loon
+		remove_country_modifier = luddite
+		remove_country_modifier = great_statesman
+		remove_country_modifier = backroom_boy
+		remove_country_modifier = great_reformer
+		remove_country_modifier = gauche_buffoon
+		remove_country_modifier = administrative_genius
+		remove_country_modifier = visionary_thinker
+		remove_country_modifier = competent_placeholder
+		remove_country_modifier = imperious_autocrat
+		remove_country_modifier = prince_of_terror
+		remove_country_modifier = efficient_sociopath
+		remove_country_modifier = pig_headed_isolationist
+		remove_country_modifier = ambitious_union_boss
+		remove_country_modifier = dour_economist
+
+		clr_country_flag = right_set_up
+		clr_country_flag = far_right_set_up
+		clr_country_flag = centre_set_up
+		clr_country_flag = left_set_up
+		clr_country_flag = far_left_set_up
+		
+		#Clear PM modifiers
+		remove_country_modifier = economist_pm
+		remove_country_modifier = administrator_pm
+		remove_country_modifier = charismatic_pm
+		remove_country_modifier = ambitious_pm
+		remove_country_modifier = authoritarian_pm
+		
+		clr_country_flag = to_appoint_a_PM
+		remove_country_modifier = leader_cooldown_pm
+	}
+
+}

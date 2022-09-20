@@ -1,0 +1,457 @@
+#The Transfer of KaNgwane
+country_event = {
+	id = 5070
+	title = "The Transfer of KaNgwane"
+	desc = EVTDESC5070
+	picture = "land_swap_saf"
+	fire_only_once = yes
+
+    trigger = {
+		tag = SAF
+		year = 1982
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		
+        ZUL = { exists = yes }
+		
+		SWA = { exists = yes }
+		
+		NGW = { exists = yes }
+
+		AND = {
+			OR = {
+				government = democracy
+				government = democracy1
+				government = hms_government
+				government = hms_government1
+			}
+			OR = { 
+				primary_culture = british 
+				primary_culture = afrikaaner 
+			}
+			OR = {
+				citizenship_policy = residency
+				citizenship_policy = limited_citizenship
+			}
+		}
+	}
+	
+	option = {
+		name = "The negotiations fail" 
+		relation = { who = SWA value = -50 }
+		any_pop = { 
+			limit = { 
+				is_primary_culture = no 
+				is_accepted_culture = no 
+			} 
+			ideology = { factor = 0.05 value = socialist } 
+		}
+		
+		ai_chance = { factor = 0.7 }	
+	}
+	
+	option = {
+		name = "Swaziland welcomes back KaNgwane!"
+		SWA = {
+			prestige = 50 
+			inherit = NGW
+		}
+		
+		ZUL = { country_event = 5071 }
+
+		ai_chance = { factor = 0.3 }
+	}
+	
+}
+
+#Pretoria wants us to give away our land
+country_event = {
+	id = 5071
+	title = "Pretoria wants us to give away our land"
+	desc = EVTDESC5071
+	picture = "mangosuthu_buthelezi"
+	is_triggered_only = yes
+	
+	option = {
+		name = "Unacceptable" 
+		relation = { who = SAF value = -200 }
+		
+		2099 = { secede_province = SWA }
+		
+        war = {
+			target = SWA 
+			
+			attacker_goal = { 
+				casus_belli = acquire_core_state  
+				state_province_id = 2099
+			}
+
+			defender_goal = { casus_belli = status_quo }
+			
+        }
+  		
+		ai_chance = { factor = 0.2 }
+		
+	}
+	
+	option = {
+		name = "We can't afford this"
+		
+        ZUL = { prestige = -10 }
+		
+		2099 = { secede_province = SWA }
+		
+		ai_chance = { factor = 0.8 }
+
+	}
+
+}
+	
+#Operation Katzen
+country_event = {
+	id = 5072
+	title = "Operation Katzen"
+	desc = EVTDESC5072
+	picture = "operation_katzen"
+	fire_only_once = yes
+
+    trigger = {
+		tag = SAF
+		year = 1986
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		
+		CIS = { 
+			vassal_of = SAF
+			exists = yes 
+		}
+		
+		TRK = { 
+			vassal_of = SAF
+			exists = yes 
+		}
+	
+		AND = {
+			OR = {
+				government = democracy
+				government = democracy1
+				government = hms_government
+				government = hms_government1
+			}
+			OR = { 
+				primary_culture = british 
+				primary_culture = afrikaaner 
+			}
+			OR = {
+				citizenship_policy = residency
+				citizenship_policy = limited_citizenship
+			}
+		}
+	}
+	
+	option = {
+		name = "Authorize the Operation"  
+		CIS = { country_event = 5073 }	
+		badboy = 2
+		
+		ai_chance = { factor = 0.8 }
+	}
+	
+	option = {
+		name = "We can't afford this"
+		
+		any_pop = { 
+			limit = { 
+				is_primary_culture = no 
+				is_accepted_culture = no 
+			} 
+			ideology = { factor = 0.05 value = socialist } 
+		}
+
+		ai_chance = { factor = 0.2 }
+		
+	}
+	
+}
+
+#Transkeian Raids
+country_event = {
+	id = 5073
+	title = "Transkeian Raids"
+	desc = EVTDESC5073
+	picture = "saffie_raid"
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = "The Raid Fails" 
+		relation = { who = TRK value = -100 }
+		any_pop = { militancy = 2 consciousness = 3 }  
+		SAF = { prestige = -10 }
+		SAF = { country_event = 5074 }
+		
+		ai_chance = { factor = 0.8 }
+	}
+	
+	option = {
+		name = "Sebe has been kidnapped!"
+		any_pop = { militancy = 5 consciousness = 3 }		
+		TRK = { 
+			country_event = 5075 
+			inherit = CIS 
+		}
+
+		ai_chance = { factor = 0.2 }
+	}
+}
+
+#Operation Katzen fails?
+country_event = {
+	id = 5074
+	title = "Operation Katzen fails?"
+	desc = EVTDESC5074
+	picture = "pw_botha"
+	is_triggered_only = yes
+	
+	
+	option = {
+		name = "Cease all activities and apologise" 
+		relation = { who = TRK value = -50 }
+		prestige = -10
+		
+		any_pop = {
+			limit = { 
+				is_primary_culture = no 
+				is_accepted_culture = no 
+			} 
+			ideology = { factor = 0.10 value = socialist } 
+		}
+		
+		ai_chance = { factor = 0.9 }	
+		
+	}
+	
+	option = {
+		name = "The Operation must continue"
+		
+		any_pop = { 
+			militancy = 2 
+			consciousness = 2 
+		}
+		
+        SAF = { release_vassal = CIS }
+		
+		CIS = { 
+			government = democracy 
+			country_event = 800054 
+		}
+		
+		badboy = 5
+		
+		war = {
+			target = CIS 
+			attacker_goal = { casus_belli = annex_core_country } 
+			defender_goal = { casus_belli = status_quo }
+		}
+		
+		set_global_flag = operation_katzen_flag
+
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Operation Katzen Successful
+country_event = {
+	id = 5075
+	title = "Operation Katzen Successful"
+	desc = EVTDESC5075
+	picture = "xhosaland"
+	fire_only_once = yes
+	
+	trigger = {
+		tag = TRK
+		
+		#TRK is a bantustan of SAF
+		vassal_of = SAF
+		
+		#SAF annexed CIS in the war
+		SAF = { is_possible_vassal = CIS }
+		
+		has_global_flag = operation_katzen_flag
+	}
+	
+	option = {
+		name = "A Bright Future awaits Xhosaland and the Union of South Africa!" 
+		relation = { who = SAF value = 200 }
+		any_pop = { ideology = { factor = -0.5 value = socialist } } 
+	    prestige = 25
+		
+		#TRK annexes CIS territory
+		SAF = { release = CIS }
+		TRK = { inherit = CIS }
+		
+		change_tag = XHO
+
+		2098 = { add_core = XHO }
+		2100 = { add_core = XHO }
+		2672 = { add_core = XHO }
+		
+		#SAF releases XHO territories
+		SAF = {
+			any_owned = {
+				limit = { 
+					OR = { 
+						province_id = 2098 
+						province_id = 2672 
+					}
+				}
+				secede_province = XHO
+			}
+		}
+	}
+	
+}
+	
+#1994 Bophuthatswana Crisis - BOP
+country_event = {
+	id = 5076
+	title = "South Africa asks submission"
+	desc = EVTDESC5076
+	picture = "pw_botha"
+	is_triggered_only = yes
+	
+	option = {
+		name = "Bophuthatswana is and will remain an Independent Nation" 
+		relation = { who = FROM value = -100 }
+	    prestige = 10
+		any_pop = { militancy = 5 consciousness = 5 }	
+        FROM = { country_event = 5077 }	
+        FROM = { release_vassal = BOP }			
+	
+		ai_chance = { factor = 0.9 }	
+	
+	}
+	
+	option = {
+		name = "We can't afford this"
+		
+		#SAF annexes BOP
+		FROM = { inherit = THIS }
+
+		ai_chance = { factor = 0.1 }
+		
+	}
+}
+
+#1994 Bophuthatswana Crisis - SAF receiver
+country_event = {
+	id = 5077
+	title = "The 1994 Bophuthatswana Crisis"
+	desc = EVTDESC5077
+	picture = "1994_bop_crisis"
+	is_triggered_only = yes
+	
+	option = {
+		name = "Press Mangope to listen to the protestors"  
+        BOP = { country_event = 5078 }	 		
+		
+		ai_chance = { factor = 0.8 }	
+		
+	}
+	
+	option = {
+		name = "Respect Bophuthatswana's independence"
+		prestige = -10 
+		relation = { who = BOP value = 50 }
+		badboy = 2
+
+		ai_chance = { factor = 0.1 }
+		
+	}
+
+    option = {
+		name = "Intervene on the side of the protestors"
+		
+		badboy = 5
+		
+		war = {
+			target = BOP 
+			attacker_goal = { casus_belli = annex_core_country }
+			defender_goal = { casus_belli = status_quo }
+		}
+
+		ai_chance = { factor = 0.1 }
+		
+	}
+
+}
+
+#1994 Bophuthatswana Crisis - BOP response
+country_event = {
+	id = 5078
+	title = "The 1994 Bophuthatswana Crisis"
+	desc = EVTDESC5078
+	picture = "1994_bop_crisis"
+	is_triggered_only = yes
+	
+	option = {
+		name = "We will use any means possible to stay independent"  	
+        FROM = { country_event = 5079 }	
+        government = nationalist_dictatorship
+		country_event = 800050
+		ruling_party_ideology = nationalist
+		
+		ai_chance = { factor = 0.2 }	
+		
+	}
+	
+	option = {
+		name = "The AWB withdrawals and the Temporary Council Succeeds"
+		FROM = { 
+			prestige = 10 
+			inherit = BOP 
+		}
+
+		ai_chance = { factor = 0.8 }
+		
+	}
+}
+
+#1994 Bophuthatswana Crisis - SAF conclusion
+country_event = {
+	id = 5079
+	title = "Mangope doesn't back down"
+	desc = EVTDESC5079
+	picture = "operation_katzen"
+	is_triggered_only = yes
+	
+	option = {
+		name = "Bophuthatswana will by one way or another be incorporated"	
+        prestige = -15
+		
+		badboy = 5
+		
+        war = {
+			target = BOP
+			attacker_goal = { casus_belli = annex_core_country } 
+			defender_goal = { casus_belli = status_quo }
+		}
+		
+		ai_chance = { factor = 0.2 }	
+		
+	}
+	
+	option = {
+		name = "Maybe we should accept their will"
+		prestige = -10
+		any_pop = { militancy = 2 consciousness = 3 }		
+
+		ai_chance = { factor = 0.8 }
+		
+	}
+}

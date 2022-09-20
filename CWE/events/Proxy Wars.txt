@@ -1,68 +1,172 @@
+#Country to release all rebel tags
+country_event = {
+	id = 1400071
+	title = "$FROMCOUNTRY_ADJ$ Support for $COUNTRY_ADJ$ Rebels"
+	desc = EVTDESC1400071
+	picture = "crisis_internationalisation"
+	
+	is_triggered_only = yes
+	
+	immediate = { 
+		random_owned = { limit = { owner = { FROM = { OR = { ruling_party_ideology = conservative ruling_party_ideology = nationalist ruling_party_ideology = populist } } } } owner = { add_country_modifier = { name = target_proxy_involvement_conservative_dictatorship duration = 1825 } } }
+		random_owned = { limit = { owner = { FROM = { ruling_party_ideology = socialist } } } owner = { add_country_modifier = { name = target_proxy_involvement_socialist_dictatorship duration = 1825 } } }
+		random_owned = { limit = { owner = { FROM = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } } } owner = { add_country_modifier = { name = target_proxy_involvement_communist_dictatorship duration = 1825 } } }
+		random_owned = { limit = { owner = { FROM = { NOT = { government = absolute_monarchy } ruling_party_ideology = traditionalist } } } owner = { add_country_modifier = { name = target_proxy_involvement_theocracy duration = 1825 } } }
+		random_owned = { limit = { owner = { FROM = { government = absolute_monarchy ruling_party_ideology = traditionalist } } } owner = { add_country_modifier = { name = target_proxy_involvement_monarchy duration = 1825 } } }
+		random_owned = { limit = { owner = { FROM = { OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive ruling_party_ideology = big_tent } } } } owner = { add_country_modifier = { name = target_proxy_involvement_democracy duration = 1825 } } }
+		
+		#Release rebel tag
+		random_state = { limit = { NOT = { any_owned_province = { is_capital = yes } } } any_owned = { limit = { owner = { NOT = { exists = R01 } } controlled_by_rebels = yes } secede_province = R01 } }
+		random_state = { limit = { NOT = { any_owned_province = { is_capital = yes } } } any_owned = { limit = { owner = { NOT = { exists = R02 } } controlled_by_rebels = yes } secede_province = R02 } } 
+		random_state = { limit = { NOT = { any_owned_province = { is_capital = yes } } } any_owned = { limit = { owner = { NOT = { exists = R03 } } controlled_by_rebels = yes } secede_province = R03 } } 
+		random_state = { limit = { NOT = { any_owned_province = { is_capital = yes } } } any_owned = { limit = { owner = { NOT = { exists = R04 } } controlled_by_rebels = yes } secede_province = R04 } } 
+		random_state = { limit = { NOT = { any_owned_province = { is_capital = yes } } } any_owned = { limit = { owner = { NOT = { exists = R05 } } controlled_by_rebels = yes } secede_province = R05 } } 
+		random_state = { limit = { NOT = { any_owned_province = { is_capital = yes } } } any_owned = { limit = { owner = { NOT = { exists = R06 } } controlled_by_rebels = yes } secede_province = R06 } } 
+		random_state = { limit = { NOT = { any_owned_province = { is_capital = yes } } } any_owned = { limit = { owner = { NOT = { exists = R07 } } controlled_by_rebels = yes } secede_province = R07 } } 
+		random_state = { limit = { NOT = { any_owned_province = { is_capital = yes } } } any_owned = { limit = { owner = { NOT = { exists = R08 } } controlled_by_rebels = yes } secede_province = R08 } } 
+		random_state = { limit = { NOT = { any_owned_province = { is_capital = yes } } } any_owned = { limit = { owner = { NOT = { exists = R09 } } controlled_by_rebels = yes } secede_province = R09 } } 
+		random_state = { limit = { NOT = { any_owned_province = { is_capital = yes } } } any_owned = { limit = { owner = { NOT = { exists = R10 } } controlled_by_rebels = yes } secede_province = R10 } } 
+	}
 
+	option = {
+		name = "Tell the $COUNTRY_ADJ$ to F off!"
+		prestige = -50
+		relation = { who = FROM value = -50 }
+		FROM = { diplomatic_influence = { who = THIS value = -100 } }
 
-#Set up Rebel Tag
+		#Release rebel tag
+		any_country = { 
+			limit = {
+				exists = yes
+				OR = { tag = R01 tag = R02 tag = R03 tag = R04 tag = R05 tag = R06 tag = R07 tag = R08 tag = R09 tag = R10 }
+			} 
+			country_event = 1400072 
+		}
+	}
+
+}
+
+#Rebel tag is released on 4 random states
 country_event = {
 	id = 1400072
-	title = "Rebellion grows stronger"
-	desc = "$FROMCOUNTRY$ is supporting rebel groups in our country, allowing them to be much more organised and a much greater threat to our nation."
+	title = "Rebels form a Provisional Government"
+	desc = "The rebel groups in our country have organised themselves into a proto-state, allowing them to be much more organised and a much greater threat to our nation's central government."
 	picture = "crisis_starting"
 	
-is_triggered_only = yes
-
-option = {
-name = "Good"
-
-FROM = { any_owned = { limit = { is_capital = no controlled_by_rebels = yes } secede_province = THIS } }
-
-civilized = yes
-
-primary_culture = FROM
-
-relation = { who = FROM value = -200 }
-
-money = 500000
-weaponry = 100
-small_arms = 100
-FROM = {
-war = {
-	target = THIS
-	attacker_goal = { casus_belli = civil_war }
-	defender_goal = { casus_belli = civil_war }
-	call_ally = no
-}
-	}
+	is_triggered_only = yes
+	
+	immediate = {
+		FROM = { 
+			random_state = { 
+				limit = { NOT = { any_owned_province = { is_capital = yes } } }
+				any_owned = { 
+					limit = { controlled_by_rebels = yes } 
+					secede_province = THIS 
+				} 
+			} 
+			random_state = { 
+				limit = { NOT = { any_owned_province = { is_capital = yes } } }
+				any_owned = { 
+					limit = { controlled_by_rebels = yes } 
+					secede_province = THIS 
+				} 
+			} 
+			random_state = { 
+				limit = { NOT = { any_owned_province = { is_capital = yes } } }
+				any_owned = { 
+					limit = { controlled_by_rebels = yes } 
+					secede_province = THIS 
+				} 
+			} 
 		}
+	}
+	
+	option = {
+		name = "Good"
+		
+		primary_culture = FROM
+
+		civilized = yes
+
+		money = 500000
+		ammunition = 300
+		weaponry = 300
+		small_arms = 300
+		automobiles = 300
+		
+		#Default gov type
+		government = presidential_dictatorship
+		ruling_party_ideology = nationalist
+		political_reform = none_voting
+		political_reform = ruling_party_opinion
+		political_reform = parties_not_allowed
+		
+		#Set government
+		random_owned = { limit = { owner = { OR = { pop_majority_ideology = conservative pop_majority_ideology = nationalist pop_majority_ideology = populist } FROM = { has_country_modifier = target_proxy_involvement_conservative_dictatorship } } } owner = { government = presidential_dictatorship country_event = 800050 ruling_party_ideology = conservative } }
+		random_owned = { limit = { owner = { pop_majority_ideology = socialist FROM = { has_country_modifier = target_proxy_involvement_socialist_dictatorship } } } owner = { government = presidential_dictatorship country_event = 800050 ruling_party_ideology = socialist } }
+		random_owned = { limit = { owner = { OR = { pop_majority_ideology = communist pop_majority_ideology = communist_social } FROM = { has_country_modifier = target_proxy_involvement_communist_dictatorship } } } owner = { government = proletarian_dictatorship country_event = 800052 ruling_party_ideology = communist } }
+		random_owned = { limit = { owner = { pop_majority_ideology = traditionalist FROM = { has_country_modifier = target_proxy_involvement_theocracy } } } owner = { government = theocracy country_event = 800050 ruling_party_ideology = traditionalist } }
+		random_owned = { limit = { owner = { pop_majority_ideology = traditionalist FROM = { has_country_modifier = target_proxy_involvement_monarchy } } } owner = { government = hms_government1 country_event = 800054 ruling_party_ideology = traditionalist } }
+		random_owned = { limit = { owner = { OR = { pop_majority_ideology = liberal pop_majority_ideology = big_tent pop_majority_ideology = progressive } FROM = { has_country_modifier = target_proxy_involvement_democracy } } } owner = { government = democracy country_event = 800054 ruling_party_ideology = liberal } }
+		
+		#Set the appropriate war
+		random_owned = {
+			limit = { owner = { THIS = { exists = yes } } }
+			owner = {
+				FROM = {
+					war = {
+						target = THIS
+						attacker_goal = { casus_belli = rebel_civil_war }
+						defender_goal = { casus_belli = overthrow_gov_cb }
+						call_ally = no
+					}
+				}
+			}
+		}
+		
+		#Get international support
+		random_owned = {
+			limit = { owner = { THIS = { exists = yes } } }
+			owner = { THIS = { country_event = 1400076 } }
+		}
+		
+	}
 
 }
 
 #In the event Rebels are at peace
 country_event = {
 	id = 1400073
-title = "Peace"
-desc = "All countries will now be returned to normal"
+	title = "Peace"
+	desc = "Transfer of Power"
 	picture = "un_trust_territory"
 
-trigger = {
-exists = yes
-OR = { tag = R01 tag = R02 tag = R03 tag = R04 tag = R05 tag = R06 tag = R07 tag = R08 tag = R09 tag = R10 }
-war = no
-NOT = { has_country_modifier = stalemate }
-}
+	trigger = {
+		OR = { tag = R01 tag = R02 tag = R03 tag = R04 tag = R05 tag = R06 tag = R07 tag = R08 tag = R09 tag = R10 }
+		war = no
+	}
+	
+	mean_time_to_happen = { 
+		months = 0.1
+	}
 
-option = {
-name = "Set them free"
+	option = {
+		name = "Set them free"
 
-any_country = { 
-limit = { exists = no any_core = { owned_by = THIS } } 
-country_event = 1400074
-}
-
-any_country = { 
-limit = { exists = yes relation = { who = THIS value = 100 } any_core = { owned_by = THIS } } 
-country_event = { id = 1400075 days = 2 }
-}
-
+		#Release defeated country
+		any_country = { 
+			limit = { vassal_of = THIS } 
+			country_event = 1400075
 		}
+		
+		#Release all non-existent nations
+		any_country = { 
+			limit = { exists = no capital_scope = { owned_by = THIS } is_culture_group = no } 
+			country_event = 1400074
+		}
+
+	}
+	
 }
 
 #Independence for non existent countries
@@ -72,74 +176,381 @@ country_event = {
 	desc = "$FROMCOUNTRY$ is supporting rebel groups in our country, allowing them to be much more organised and a much greater threat to our nation."
 	picture = "crisis_internationalisation"
 	
-is_triggered_only = yes
+	is_triggered_only = yes
 
-option = {
-name = "Rejoice"
-
-FROM = { release = THIS }
-
-any_country = { limit = { neighbour = THIS exists = yes has_country_modifier = proxy_rebel } country_event = 1400080 }
-
-#Communists
-
-random_owned = { 
-limit = { owner = { FROM = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } } }
-owner = { government = proletarian_dictatorship country_event = 800052 ruling_party_ideology = communist }
-}
-
-#Theocracy
-
-random_owned = { 
-limit = { owner = { FROM = { government = theocracy } } }
-owner = { government = theocracy country_event = 800050 ruling_party_ideology = traditionalist }
-}
-
-#Nationalist
-
-random_owned = { 
-limit = { owner = { FROM = { government = populist_dictatorship } } }
-owner = { government = populist_dictatorship country_event = 800050 ruling_party_ideology = nationalist }
-}
-
-#Sectarian
-
-random_owned = { 
-limit = { owner = { FROM = { government = nationalist_dictatorship } } }
-owner = { government = nationalist_dictatorship country_event = 800050 ruling_party_ideology = nationalist }
-}
-
-#Absolute Monarchy
-
-random_owned = { 
-limit = { owner = { FROM = { government = absolute_monarchy } } }
-owner = { government = absolute_monarchy country_event = 800050 ruling_party_ideology = traditionalist }
-}
-
-#HM Monarchy
-
-random_owned = { 
-limit = { owner = { FROM = { OR = { government = hms_government government = hms_government1 } } } }
-owner = { government = hms_government1 country_event = 800054 ruling_party_ideology = conservative }
-}
-
-#Democracy
-
-random_owned = { 
-limit = { owner = { FROM = { OR = { government = democracy government = democracy1 } } } }
-owner = { government = democracy country_event = 800054 ruling_party_ideology = liberal }
-}
-
-#Socialist Democracy
-
-random_owned = { 
-limit = { owner = { FROM = { government = socialist_democracy } } }
-owner = { government = socialist_democracy country_event = 800054 ruling_party_ideology = communist_social }
-}
-
-FROM = { any_owned = { limit = { is_core = THIS } secede_province = THIS } }
-
-
+	option = {
+		name = "Rejoice"
+		FROM = { release = THIS }
+		
+		#Conservative
+		random_owned = { 
+			limit = { owner = { FROM = { government = presidential_dictatorship ruling_party_ideology = conservative } } }
+			owner = { government = presidential_dictatorship country_event = 800050 ruling_party_ideology = conservative }
+		}
+		
+		#Socialist
+		random_owned = { 
+			limit = { owner = { FROM = { government = presidential_dictatorship ruling_party_ideology = socialist } } }
+			owner = { government = presidential_dictatorship country_event = 800050 ruling_party_ideology = socialist }
+		}
+		
+		#Communists
+		random_owned = { 
+			limit = { owner = { FROM = { government = proletarian_dictatorship } } }
+			owner = { government = proletarian_dictatorship country_event = 800052 ruling_party_ideology = communist }
 		}
 
+		#Theocracy
+		random_owned = { 
+			limit = { owner = { FROM = { government = theocracy } } }
+			owner = { government = theocracy country_event = 800050 ruling_party_ideology = traditionalist }
+		}
+		
+		#Monarchist
+		random_owned = { 
+			limit = { owner = { FROM = { government = hms_government1 } } }
+			owner = { government = hms_government1 country_event = 800054 ruling_party_ideology = traditionalist }
+		}
+
+		#Democracy
+		random_owned = { 
+			limit = { owner = { FROM = { government = democracy } } }
+			owner = { government = democracy country_event = 800054 ruling_party_ideology = liberal }
+		}
+		
+		#Gain relations from supporters
+		any_country = {
+			limit = { exists = yes has_country_modifier = proxy_involvement_conservative_dictatorship THIS = { ruling_party_ideology = conservative } }
+			relation = { who = THIS value = 200 }
+			create_alliance = THIS
+			diplomatic_influence = { who = THIS value = 100 }
+			sphere_owner = { diplomatic_influence = { who = THIS value = 100 } }
+		}
+		any_country = {
+			limit = { exists = yes has_country_modifier = proxy_involvement_socialist_dictatorship THIS = { ruling_party_ideology = socialist } }
+			relation = { who = THIS value = 200 }
+			create_alliance = THIS
+			diplomatic_influence = { who = THIS value = 100 }
+			sphere_owner = { diplomatic_influence = { who = THIS value = 100 } }
+		}
+		any_country = {
+			limit = { exists = yes has_country_modifier = proxy_involvement_communist_dictatorship THIS = { ruling_party_ideology = communist } }
+			relation = { who = THIS value = 200 }
+			create_alliance = THIS
+			diplomatic_influence = { who = THIS value = 100 }
+			sphere_owner = { diplomatic_influence = { who = THIS value = 100 } }
+		}
+		any_country = {
+			limit = { exists = yes has_country_modifier = proxy_involvement_theocracy THIS = { government = theocracy ruling_party_ideology = traditionalist } }
+			relation = { who = THIS value = 200 }
+			create_alliance = THIS
+			diplomatic_influence = { who = THIS value = 100 }
+			sphere_owner = { diplomatic_influence = { who = THIS value = 100 } }
+		}
+		any_country = {
+			limit = { exists = yes has_country_modifier = proxy_involvement_monarchy THIS = { government = hms_government1 ruling_party_ideology = traditionalist } }
+			relation = { who = THIS value = 200 }
+			create_alliance = THIS
+			diplomatic_influence = { who = THIS value = 100 }
+			sphere_owner = { diplomatic_influence = { who = THIS value = 100 } }
+		}
+		any_country = {
+			limit = { exists = yes has_country_modifier = proxy_involvement_democracy THIS = { ruling_party_ideology = liberal } }
+			relation = { who = THIS value = 200 }
+			create_alliance = THIS
+			diplomatic_influence = { who = THIS value = 100 }
+			sphere_owner = { diplomatic_influence = { who = THIS value = 100 } }
+		}
+
+		FROM = { any_owned = { limit = { is_core = THIS } secede_province = THIS } }
+	}
+}
+
+#Independence for non existent countries
+country_event = {
+	id = 1400075
+	title = "$COUNTRY_ADJ$ Government Overthrown"
+	desc = "EVTDESC1400075"
+	picture = "crisis_internationalisation"
+	
+	major = yes
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "Rejoice"
+		FROM = { release_vassal = THIS }
+		
+		badboy = -10
+		
+		#Remove hostile rebel support modifier
+		random_owned = { limit = { owner = { OR = { ruling_party_ideology = conservative ruling_party_ideology = nationalist ruling_party_ideology = populist } } } owner = { remove_country_modifier = target_proxy_involvement_conservative_dictatorship duration = 1825 } }
+		random_owned = { limit = { owner = { ruling_party_ideology = socialist } } owner = { remove_country_modifier = target_proxy_involvement_socialist_dictatorship duration = 1825 } }
+		random_owned = { limit = { owner = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } } owner = { remove_country_modifier = target_proxy_involvement_communist_dictatorship duration = 1825 } }
+		random_owned = { limit = { owner = { NOT = { government = absolute_monarchy } ruling_party_ideology = traditionalist } } owner = { remove_country_modifier = target_proxy_involvement_theocracy duration = 1825 } }
+		random_owned = { limit = { owner = { government = absolute_monarchy ruling_party_ideology = traditionalist } } owner = { remove_country_modifier = target_proxy_involvement_monarchy duration = 1825 } }
+		random_owned = { limit = { owner = { OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive ruling_party_ideology = big_tent } } } owner = { remove_country_modifier = target_proxy_involvement_democracy duration = 1825 } }
+		
+		
+		#Conservative
+		random_owned = { 
+			limit = { owner = { FROM = { government = presidential_dictatorship ruling_party_ideology = conservative } } }
+			owner = { government = presidential_dictatorship country_event = 800050 ruling_party_ideology = conservative }
+		}
+		
+		#Socialist
+		random_owned = { 
+			limit = { owner = { FROM = { government = presidential_dictatorship ruling_party_ideology = socialist } } }
+			owner = { government = presidential_dictatorship country_event = 800050 ruling_party_ideology = socialist }
+		}
+		
+		#Communists
+		random_owned = { 
+			limit = { owner = { FROM = { government = proletarian_dictatorship } } }
+			owner = { government = proletarian_dictatorship country_event = 800052 ruling_party_ideology = communist }
+		}
+
+		#Theocracy
+		random_owned = { 
+			limit = { owner = { FROM = { government = theocracy } } }
+			owner = { government = theocracy country_event = 800050 ruling_party_ideology = traditionalist }
+		}
+		
+		#Monarchist
+		random_owned = { 
+			limit = { owner = { FROM = { government = hms_government1 } } }
+			owner = { government = hms_government1 country_event = 800054 ruling_party_ideology = traditionalist }
+		}
+
+		#Democracy
+		random_owned = { 
+			limit = { owner = { FROM = { government = democracy } } }
+			owner = { government = democracy country_event = 800054 ruling_party_ideology = liberal }
+		}
+		
+		#Gain relations from supporters
+		any_country = {
+			limit = { exists = yes has_country_modifier = proxy_involvement_conservative_dictatorship THIS = { ruling_party_ideology = conservative } }
+			relation = { who = THIS value = 200 }
+			create_alliance = THIS
+			diplomatic_influence = { who = THIS value = 200 }
+			sphere_owner = { diplomatic_influence = { who = THIS value = 200 } }
+		}
+		any_country = {
+			limit = { exists = yes has_country_modifier = proxy_involvement_socialist_dictatorship THIS = { ruling_party_ideology = socialist } }
+			relation = { who = THIS value = 200 }
+			create_alliance = THIS
+			diplomatic_influence = { who = THIS value = 200 }
+			sphere_owner = { diplomatic_influence = { who = THIS value = 200 } }
+		}
+		any_country = {
+			limit = { exists = yes has_country_modifier = proxy_involvement_communist_dictatorship THIS = { ruling_party_ideology = communist } }
+			relation = { who = THIS value = 200 }
+			create_alliance = THIS
+			diplomatic_influence = { who = THIS value = 200 }
+			sphere_owner = { diplomatic_influence = { who = THIS value = 200 } }
+		}
+		any_country = {
+			limit = { exists = yes has_country_modifier = proxy_involvement_theocracy THIS = { government = theocracy ruling_party_ideology = traditionalist } }
+			relation = { who = THIS value = 200 }
+			create_alliance = THIS
+			diplomatic_influence = { who = THIS value = 200 }
+			sphere_owner = { diplomatic_influence = { who = THIS value = 200 } }
+		}
+		any_country = {
+			limit = { exists = yes has_country_modifier = proxy_involvement_monarchy THIS = { government = hms_government1 ruling_party_ideology = traditionalist } }
+			relation = { who = THIS value = 200 }
+			create_alliance = THIS
+			diplomatic_influence = { who = THIS value = 200 }
+			sphere_owner = { diplomatic_influence = { who = THIS value = 200 } }
+		}
+		any_country = {
+			limit = { exists = yes has_country_modifier = proxy_involvement_democracy THIS = { ruling_party_ideology = liberal } }
+			relation = { who = THIS value = 200 }
+			create_alliance = THIS
+			diplomatic_influence = { who = THIS value = 200 }
+			sphere_owner = { diplomatic_influence = { who = THIS value = 200 } }
+		}
+		
+		inherit = FROM
+		
+	}
+}
+
+#Rebels gain international support
+country_event = {
+	id = 1400076
+	title = "Rebels Seek International Support"
+	desc = "EVTDESC1400075"
+	picture = "crisis_internationalisation"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "Rejoice"
+		
+		#Gain relations from supporters
+		any_country = {
+			limit = { exists = yes has_country_modifier = proxy_involvement_conservative_dictatorship THIS = { ruling_party_ideology = conservative } }
+			relation = { who = THIS value = 200 }
+			create_alliance = THIS
+			diplomatic_influence = { who = THIS value = 200 }
+			sphere_owner = { diplomatic_influence = { who = THIS value = 200 } }
+		}
+		any_country = {
+			limit = { exists = yes has_country_modifier = proxy_involvement_socialist_dictatorship THIS = { ruling_party_ideology = socialist } }
+			relation = { who = THIS value = 200 }
+			create_alliance = THIS
+			diplomatic_influence = { who = THIS value = 200 }
+			sphere_owner = { diplomatic_influence = { who = THIS value = 200 } }
+		}
+		any_country = {
+			limit = { exists = yes has_country_modifier = proxy_involvement_communist_dictatorship THIS = { ruling_party_ideology = communist } }
+			relation = { who = THIS value = 200 }
+			create_alliance = THIS
+			diplomatic_influence = { who = THIS value = 200 }
+			sphere_owner = { diplomatic_influence = { who = THIS value = 200 } }
+		}
+		any_country = {
+			limit = { exists = yes has_country_modifier = proxy_involvement_theocracy THIS = { government = theocracy ruling_party_ideology = traditionalist } }
+			relation = { who = THIS value = 200 }
+			create_alliance = THIS
+			diplomatic_influence = { who = THIS value = 200 }
+			sphere_owner = { diplomatic_influence = { who = THIS value = 200 } }
+		}
+		any_country = {
+			limit = { exists = yes has_country_modifier = proxy_involvement_monarchy THIS = { government = hms_government1 ruling_party_ideology = traditionalist } }
+			relation = { who = THIS value = 200 }
+			create_alliance = THIS
+			diplomatic_influence = { who = THIS value = 200 }
+			sphere_owner = { diplomatic_influence = { who = THIS value = 200 } }
+		}
+		any_country = {
+			limit = { exists = yes has_country_modifier = proxy_involvement_democracy THIS = { ruling_party_ideology = liberal } }
+			relation = { who = THIS value = 200 }
+			create_alliance = THIS
+			diplomatic_influence = { who = THIS value = 200 }
+			sphere_owner = { diplomatic_influence = { who = THIS value = 200 } }
+		}
+	}
+
+}
+
+#Government that is overthrown continues to fight until all rebel tags are annexed
+country_event = {
+	id = 1400077
+	title = "Civil War Continues in $COUNTRY$"
+	desc = "EVTDESC1400077"
+	picture = "civil_war_continues_REB"
+	
+	trigger = {
+		any_core = { 
+			owner = { 
+				OR = { tag = R01 tag = R02 tag = R03 tag = R04 tag = R05 tag = R06 tag = R07 tag = R08 tag = R09 tag = R10 } 
+				is_vassal = no 
+				war = no
+			} 
+		}
+		is_vassal = no
+	}
+	
+	mean_time_to_happen = { 
+		months = 0.1
+	}
+
+	option = {
+		name = "Rejoice!"
+		any_country = {
+			limit = { 
+				exists = yes
+				
+				OR = { tag = R01 tag = R02 tag = R03 tag = R04 tag = R05 tag = R06 tag = R07 tag = R08 tag = R09 tag = R10 } 
+				is_vassal = no 
+				war = no
+				
+				any_owned_province = { is_core = THIS }
+			}
+			country_event = 1400078
+		}
+	}
+	
+}
+
+#Government that is overthrown continues to fight until all rebel tags are annexed
+country_event = {
+	id = 1400078
+	title = "Civil War Continues in $FROMCOUNTRY$"
+	desc = "EVTDESC1400077"
+	picture = "civil_war_continues_REB"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "We shall win!"
+		FROM = {
+			war = {
+				target = THIS
+				attacker_goal = { casus_belli = rebel_civil_war }
+				defender_goal = { casus_belli = overthrow_gov_cb }
+				call_ally = no
+			}
+		}
+	}
+	
+}
+
+#Same government type unites
+country_event = {
+	id = 1400079
+	title = "Rebel Warlord Stands Down"
+	desc = "EVTDESC1400079"
+	picture = "rebels_give_up"
+	
+	trigger = {
+	
+		NOT = { OR = { tag = R01 tag = R02 tag = R03 tag = R04 tag = R05 tag = R06 tag = R07 tag = R08 tag = R09 tag = R10 } }
+		
+		war = yes
+		
+		war_countries = { 
+			OR = { tag = R01 tag = R02 tag = R03 tag = R04 tag = R05 tag = R06 tag = R07 tag = R08 tag = R09 tag = R10 }
+			OR = {
+				AND = { OR = { government = democracy government = democracy1 } THIS = { OR = { government = democracy government = democracy1 } } }
+				AND = { OR = { government = hms_government government = hms_government1 } THIS = { OR = { government = hms_government government = hms_government1 } } }
+				AND = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } THIS = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } }
+				AND = { government = socialist_democracy THIS = { government = socialist_democracy } }
+				AND = { government = absolute_monarchy THIS = { government = absolute_monarchy } }
+				AND = { government = theocracy THIS = { government = theocracy } }
+				AND = { government = populist_dictatorship THIS = { government = populist_dictatorship } }
+				AND = { government = nationalist_dictatorship THIS = { government = nationalist_dictatorship } }
+			}
+		}
+	
+	}
+	
+	mean_time_to_happen = { 
+		months = 0.1
+	}
+
+	option = {
+		name = "It's time to celebrate!"
+		war_exhaustion = -5
+		any_country = {
+			limit = {
+				OR = { tag = R01 tag = R02 tag = R03 tag = R04 tag = R05 tag = R06 tag = R07 tag = R08 tag = R09 tag = R10 }
+				OR = {
+					AND = { OR = { government = democracy government = democracy1 } THIS = { OR = { government = democracy government = democracy1 } } }
+					AND = { OR = { government = hms_government government = hms_government1 } THIS = { OR = { government = hms_government government = hms_government1 } } }
+					AND = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } THIS = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } }
+					AND = { government = socialist_democracy THIS = { government = socialist_democracy } }
+					AND = { government = absolute_monarchy THIS = { government = absolute_monarchy } }
+					AND = { government = theocracy THIS = { government = theocracy } }
+					AND = { government = populist_dictatorship THIS = { government = populist_dictatorship } }
+					AND = { government = nationalist_dictatorship THIS = { government = nationalist_dictatorship } }
+				}
+			}
+			annex_to = THIS
+		}
+	}
+	
 }

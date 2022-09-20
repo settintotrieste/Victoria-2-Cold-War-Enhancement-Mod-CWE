@@ -4,36 +4,85 @@ political_decisions = {
 		picture = "embargonow"
 		potential = {
 			is_vassal = no
-			NOT = { has_country_modifier = embargoing_nation }
-			any_neighbor_country = { NOT = { war_with = THIS } OR = { badboy = 0.6 war = yes } part_of_sphere = no is_greater_power = no NOT = { relation = { who = THIS value = -190 } } }
+			
+			#Must have a decent industry
+			industrial_score = 500
+			
+			any_neighbor_country = {
+			
+				#At peace with THIS
+				NOT = { war_with = THIS }
+				
+				#Some reason to embargo
+				OR = { 
+					badboy = 0.6 
+					war = yes 
+				}
+				
+				#Bad relation with THIS
+				NOT = { relation = { who = THIS value = -190 } }
+				
+				#Not already embargoed
+				NOT = { 
+					OR = { 
+						has_country_modifier = embargoed_by_GP
+						has_country_modifier = embargoed_by_SP
+						has_country_modifier = embargoed_by_minor_nation
+					}
+				}
+				
+				#Not in our sphere
+				in_sphere = THIS
+				
+			}
 		}
+		
 		alert = yes
+		
 		allow = {
-			NOT = { has_country_modifier = embargoing_nation }
-
-			any_neighbor_country = { part_of_sphere = no is_greater_power = no NOT = { relation = { who = THIS value = -190 } } }
-
+			election = no
 		}
 		effect = {
-			add_country_modifier = { name = embargoing_nation duration = 365 }
-badboy = 4
+			
+			set_country_flag = embargo_nation_flag
+			
+			badboy = 4
 			random_country = {
 				limit = {
-					NOT = { war_with = THIS }
+				
 					neighbour = THIS
-					part_of_sphere = no
-					OR = { badboy = 0.6 war = yes }
-					is_greater_power = no
+				
+					#At peace with THIS
+					NOT = { war_with = THIS }
+				
+					#Some reason to embargo
+					OR = { 
+						badboy = 0.6 
+						war = yes 
+					}
+				
+					#Bad relation with THIS
 					NOT = { relation = { who = THIS value = -190 } }
+				
+					#Not already embargoed
+					NOT = { 
+						OR = { 
+							has_country_modifier = embargoed_by_GP
+							has_country_modifier = embargoed_by_SP
+							has_country_modifier = embargoed_by_minor_nation
+						}
+					}
+				
+					#Not in our sphere
+					in_sphere = THIS
 				}
-				add_country_modifier = { name = embargo_nation duration = 365 }
-country_event = 1412150
+				country_event = 1412150
 			}	
 			
 		}
 		ai_will_do = { 
 			factor = 1
-	modifier = { badboy = 0.8 factor = 0 }
+			modifier = { badboy = 0.8 factor = 0 }
 		}
 	}
 

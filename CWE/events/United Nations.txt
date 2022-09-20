@@ -8,36 +8,75 @@ country_event = {
 
 	trigger = {
 		is_vassal = yes
-NOT = { overlord = { tag = RUS has_global_flag = blocsenabled } }
+		NOT = { overlord = { tag = RUS has_global_flag = blocsenabled } }
 		NOT = { has_country_modifier = united_nations_observer_member }
+		
+		#Joined the UN
+		has_country_modifier = united_nations
 	}
 
 	option = {
 		name = EVT_1971281_A
 		remove_country_modifier = newly_independent_country
+		
 		remove_country_modifier = united_nations_ga_member
 		remove_country_modifier = unsc_permanent_member
 		remove_country_modifier = unsc_member
+		
 		add_country_modifier = { name = united_nations_observer_member duration = -1 }
 
-random_list = {
+		#Nobel Peace Prize
+		clr_country_flag = nobel_peace_prize_recipient
 
-10 = { add_country_modifier = { name = independence_timer duration = 1095 } }
+		#Trade War
+		remove_country_modifier = trade_war_tariffs
 
-20 = { add_country_modifier = { name = independence_timer duration = 1460 } }
+		random_owned = { 
+			limit = { owner = { has_country_flag = trade_war_initiator } }
+			owner = {
+			
+				clr_country_flag = trade_war_initiator
+				clr_global_flag = trade_war
+			
+				any_country = { 
+					limit = { NOT = { has_country_modifier = juche } } 
+					country_event = 1512344 #Notify that Trade War Ended
+				}
+			}
+		}
 
-30 = { add_country_modifier = { name = independence_timer duration = 1825 } }
+		#In case more than one GP declared a Trade War
+		random_owned = {
+			owner = { 
+				any_country = { 
+					limit = { is_greater_power = yes has_country_flag = trade_war_initiator } 
+					set_global_flag = trade_war
+				} 
+			}
+		}
 
-20 = { add_country_modifier = { name = independence_timer duration = 2190 } }
+		#Generic Independence Chain
 
-10 = { add_country_modifier = { name = independence_timer duration = 2555 } }
+		random_list = {
 
-10 = { add_country_modifier = { name = independence_timer duration = 2920 } }
+			10 = { add_country_modifier = { name = independence_timer duration = 1095 } }
 
-}
+			20 = { add_country_modifier = { name = independence_timer duration = 1460 } }
+
+			30 = { add_country_modifier = { name = independence_timer duration = 1825 } }
+
+			20 = { add_country_modifier = { name = independence_timer duration = 2190 } }
+
+			10 = { add_country_modifier = { name = independence_timer duration = 2555 } }
+
+			10 = { add_country_modifier = { name = independence_timer duration = 2920 } }
+
+		}
 
 	}
+	
 }
+
 #Vassals get kicked out of the UN GA - reverse
 country_event = {
 	id = 1971282
@@ -55,19 +94,20 @@ country_event = {
 	option = {
 		name = EVT_1971282_A
 		prestige = 25
+		clr_country_flag = hold_independence_referendum
 		clr_country_flag = former_devolved_nation
-add_country_modifier = { name = chinese_nation duration = 3650 }
-	remove_country_modifier = united_nations_observer_member
+		add_country_modifier = { name = chinese_nation duration = 3650 }
+		remove_country_modifier = united_nations_observer_member
 	}
+	
 }
+
 #Select the non permanent member of the UNSC - choose new people
 country_event = {
 	id = 1971283
 	title = EVT_1971283_NAME
 	desc = EVT_1971283_DESC
 	picture = "united_nations"
-
-
 
 	trigger = {
 		has_country_flag = unsc_non_permanent_member
@@ -77,12 +117,11 @@ country_event = {
 	option = {
 		name = EVT_1971283_A
 
-
 		random_country = { limit = { AND = { NOT = { has_country_modifier = unsc_permanent_member } is_vassal = no NOT = { badboy = 20 } NOT = { has_country_modifier = unsc_non_permanent_member } has_country_modifier = united_nations_ga_member } } country_event = 1971284 add_country_modifier = { name = unsc_non_permanent_member duration = 730 } }
-
 
 		clr_country_flag = unsc_non_permanent_member
 	}
+	
 }
 #Select the non permanent member of the UNSC - choose new people
 country_event = {
@@ -98,6 +137,7 @@ country_event = {
 		set_country_flag = unsc_non_permanent_member
 
 	}
+
 }
 
 #Select the non permanent member of the UNSC - choose the first 10 people
@@ -118,26 +158,25 @@ country_event = {
 	option = {
 		name = EVT_1971285_A
 
+		random_country = { limit = { AND = { NOT = { has_country_modifier = unsc_permanent_member } is_vassal = no NOT = { badboy = 20 } NOT = { has_country_modifier = unsc_non_permanent_member } has_country_modifier = united_nations_ga_member } } add_country_modifier = { name = unsc_non_permanent_member duration = 730 } country_event = 1971284 }
+
+		random_country = { limit = { AND = { NOT = { has_country_modifier = unsc_permanent_member } is_vassal = no NOT = { badboy = 20 } NOT = { has_country_modifier = unsc_non_permanent_member } has_country_modifier = united_nations_ga_member } } add_country_modifier = { name = unsc_non_permanent_member duration = 730 } country_event = 1971284 }
 
 		random_country = { limit = { AND = { NOT = { has_country_modifier = unsc_permanent_member } is_vassal = no NOT = { badboy = 20 } NOT = { has_country_modifier = unsc_non_permanent_member } has_country_modifier = united_nations_ga_member } } add_country_modifier = { name = unsc_non_permanent_member duration = 730 } country_event = 1971284 }
 
 		random_country = { limit = { AND = { NOT = { has_country_modifier = unsc_permanent_member } is_vassal = no NOT = { badboy = 20 } NOT = { has_country_modifier = unsc_non_permanent_member } has_country_modifier = united_nations_ga_member } } add_country_modifier = { name = unsc_non_permanent_member duration = 730 } country_event = 1971284 }
 
-		random_country = { limit = { AND = { NOT = { has_country_modifier = unsc_permanent_member } is_vassal = no NOT = { infamy = 20 } NOT = { has_country_modifier = unsc_non_permanent_member } has_country_modifier = united_nations_ga_member } } add_country_modifier = { name = unsc_non_permanent_member duration = 730 } country_event = 1971284 }
+		random_country = { limit = { AND = { NOT = { has_country_modifier = unsc_permanent_member } is_vassal = no NOT = { badboy = 20 } NOT = { has_country_modifier = unsc_non_permanent_member } has_country_modifier = united_nations_ga_member } } add_country_modifier = { name = unsc_non_permanent_member duration = 730 } country_event = 1971284 }
 
-		random_country = { limit = { AND = { NOT = { has_country_modifier = unsc_permanent_member } is_vassal = no NOT = { infamy = 20 } NOT = { has_country_modifier = unsc_non_permanent_member } has_country_modifier = united_nations_ga_member } } add_country_modifier = { name = unsc_non_permanent_member duration = 730 } country_event = 1971284 }
+		random_country = { limit = { AND = { NOT = { has_country_modifier = unsc_permanent_member } is_vassal = no NOT = { badboy = 20 } NOT = { has_country_modifier = unsc_non_permanent_member } has_country_modifier = united_nations_ga_member } } add_country_modifier = { name = unsc_non_permanent_member duration = 730 } country_event = 1971284 }
 
-		random_country = { limit = { AND = { NOT = { has_country_modifier = unsc_permanent_member } is_vassal = no NOT = { infamy = 20 } NOT = { has_country_modifier = unsc_non_permanent_member } has_country_modifier = united_nations_ga_member } } add_country_modifier = { name = unsc_non_permanent_member duration = 730 } country_event = 1971284 }
+		random_country = { limit = { AND = { NOT = { has_country_modifier = unsc_permanent_member } is_vassal = no NOT = { badboy = 20 } NOT = { has_country_modifier = unsc_non_permanent_member } has_country_modifier = united_nations_ga_member } } add_country_modifier = { name = unsc_non_permanent_member duration = 730 } country_event = 1971284 }
 
-		random_country = { limit = { AND = { NOT = { has_country_modifier = unsc_permanent_member } is_vassal = no NOT = { infamy = 20 } NOT = { has_country_modifier = unsc_non_permanent_member } has_country_modifier = united_nations_ga_member } } add_country_modifier = { name = unsc_non_permanent_member duration = 730 } country_event = 1971284 }
+		random_country = { limit = { AND = { NOT = { has_country_modifier = unsc_permanent_member } is_vassal = no NOT = { badboy = 20 } NOT = { has_country_modifier = unsc_non_permanent_member } has_country_modifier = united_nations_ga_member } } add_country_modifier = { name = unsc_non_permanent_member duration = 730 } country_event = 1971284 }
 
-		random_country = { limit = { AND = { NOT = { has_country_modifier = unsc_permanent_member } is_vassal = no NOT = { infamy = 20 } NOT = { has_country_modifier = unsc_non_permanent_member } has_country_modifier = united_nations_ga_member } } add_country_modifier = { name = unsc_non_permanent_member duration = 730 } country_event = 1971284 }
+		random_country = { limit = { AND = { NOT = { has_country_modifier = unsc_permanent_member } is_vassal = no NOT = { badboy = 20 } NOT = { has_country_modifier = unsc_non_permanent_member } has_country_modifier = united_nations_ga_member } } add_country_modifier = { name = unsc_non_permanent_member duration = 730 } country_event = 1971284 }
 
-		random_country = { limit = { AND = { NOT = { has_country_modifier = unsc_permanent_member } is_vassal = no NOT = { infamy = 20 } NOT = { has_country_modifier = unsc_non_permanent_member } has_country_modifier = united_nations_ga_member } } add_country_modifier = { name = unsc_non_permanent_member duration = 730 } country_event = 1971284 }
-
-		random_country = { limit = { AND = { NOT = { has_country_modifier = unsc_permanent_member } is_vassal = no NOT = { infamy = 20 } NOT = { has_country_modifier = unsc_non_permanent_member } has_country_modifier = united_nations_ga_member } } add_country_modifier = { name = unsc_non_permanent_member duration = 730 } country_event = 1971284 }
-
-		random_country = { limit = { AND = { NOT = { has_country_modifier = unsc_permanent_member } is_vassal = no NOT = { infamy = 20 } NOT = { has_country_modifier = unsc_non_permanent_member } has_country_modifier = united_nations_ga_member } } add_country_modifier = { name = unsc_non_permanent_member duration = 730 } country_event = 1971284 }
+		random_country = { limit = { AND = { NOT = { has_country_modifier = unsc_permanent_member } is_vassal = no NOT = { badboy = 20 } NOT = { has_country_modifier = unsc_non_permanent_member } has_country_modifier = united_nations_ga_member } } add_country_modifier = { name = unsc_non_permanent_member duration = 730 } country_event = 1971284 }
 
 		set_country_flag = unsc_non_permanent_member_selected
 	}

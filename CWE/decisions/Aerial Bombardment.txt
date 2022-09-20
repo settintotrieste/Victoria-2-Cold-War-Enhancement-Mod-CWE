@@ -1,72 +1,105 @@
 political_decisions = {
 
 aerial_bombardment = {
-		picture = "aerial_bombardment"
-	potential = {
-strategic_bomber = 1
-NOT = { has_country_modifier = renounced_war_rights }
-NOT = { has_country_flag = aerial_bombardment_ability }
-OR = { is_secondary_power = yes is_greater_power = yes }
+	picture = "aerial_bombardment"
+		potential = {
+			strategic_bomber = 1
+			NOT = { has_country_modifier = renounced_war_rights }
+			NOT = { has_country_flag = aerial_bombardment_ability }
+			OR = { is_secondary_power = yes is_greater_power = yes }
 		}
-alert = no
-	allow = {
-is_disarmed = no
-NOT = { war_policy = pacifism }
-money = 5000000
-					}
+		alert = no
+		allow = {
+			NOT = { is_disarmed = yes }
+			NOT = { war_policy = pacifism }
+			money = 5000000
+			military_score = 750
+		}
 		effect = {
-money = -500000
-set_country_flag = aerial_bombardment_ability
+			money = -500000
+			set_country_flag = aerial_bombardment_ability
 		}
 		ai_will_do = { 
 			factor = 1
-			}
+		}
+	
 	}
 
 start_strategic_bombardment = {
-		picture = "strategic_bombardment"
-	potential = {
-war = yes
-is_vassal = no
-NOT = { has_country_flag = strategic_bombardment }
-has_country_flag = aerial_bombardment_ability
-		}
-alert = no
-	allow = {
-OR = { NOT = { war_policy = pacifism } war_exhaustion = 50 }
+	picture = "strategic_bombardment"
+		potential = {
+			war = yes
+			is_vassal = no
+			NOT = { has_country_flag = strategic_bombardment }
+			has_country_flag = aerial_bombardment_ability
+			
+			#Must have allies near the war country
+			war_countries = { 
+				neighbour = THIS 
+				any_neighbor_country = { 
+					OR = { 
+						in_sphere = THIS 
+						alliance_with = THIS 
+						military_access = THIS
+					} 
+				}
 			}
+		}
+		alert = no
+		allow = {
+			OR = { 
+				NOT = { war_policy = pacifism } 
+				war_exhaustion = 50 
+			}
+			military_score = 500
+		}
 
 		effect = {
-prestige = -25
-badboy = 5
-any_country = { limit = { war_with = THIS } country_event = 1412135 }
-set_country_flag = strategic_bombardment
+			prestige = -25
+			badboy = 5
+			set_country_flag = strategic_bombardment
+			
+			#Bomb a random country's capital
+			random_country = {
+				limit = { 
+					war_with = THIS 
+					capital_scope = { 
+						NOT = { has_province_modifier = aerial_bombed } 
+						NOT = { controlled_by = THIS }
+					}
+				}
+				country_event = 124101
+			}
+			
+			
 		}
 		ai_will_do = { 
 			factor = 1
-modifier = { factor = 0 badboy = 0.8 }
-			}
+			modifier = { factor = 0 badboy = 0.8 }
+		}
+		
 	}
 
 end_strategic_bombardment = {
-		picture = "end_strategic_bombardment"
-	potential = {
-war = yes
-has_country_flag = strategic_bombardment
-has_country_flag = aerial_bombardment_ability
+	picture = "end_strategic_bombardment"
+		potential = {
+			war = yes
+			has_country_flag = strategic_bombardment
+			has_country_flag = aerial_bombardment_ability
 		}
-alert = no
-	allow = {
-OR = { war_policy = pacifism badboy = 0.85 is_vassal = yes }
-			}
+		alert = no
+		allow = {
+			OR = { war_policy = pacifism badboy = 0.85 is_vassal = yes }
+		}
 
 		effect = {
-prestige = 5
-clr_country_flag = strategic_bombardment
+			prestige = 5
+			badboy = -1
+			clr_country_flag = strategic_bombardment
 		}
 		ai_will_do = { 
 			factor = 1
-			}
+		}
 	}
 
 }

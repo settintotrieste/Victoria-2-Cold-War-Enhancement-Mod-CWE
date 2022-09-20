@@ -1,3 +1,4 @@
+#Start the First Taiwan Straits Crisis
 country_event = {
   id = 8500401
   title = EVT_8500401_NAME
@@ -6,32 +7,45 @@ country_event = {
   fire_only_once = yes
 
   trigger = {
-    tag = CHI
-    year = 1954 NOT = { year = 1963 }
-    exists = KMT
-    has_global_flag = CHI_won_civil_war
+    	tag = CHI
+    	year = 1954 NOT = { year = 1973 }
+    	exists = KMT
+    	has_global_flag = CHI_won_civil_war
 	war = no
+	is_vassal = no
+	government = proletarian_dictatorship
+KMT = { owns = 3342 is_vassal = no NOT = { government = proletarian_dictatorship } }
   }
 
-  mean_time_to_happen = { months = 12  }
+  mean_time_to_happen = { months = 8 }
 
   option = {
     name = EVT_8500401_A
 	relation = { who = KMT value = -100 } 
-	any_pop = { militancy = -1 consciousness = -1 }
-	any_state = { any_pop = { dominant_issue = { value = jingoism factor = 0.1 } } }
-	ai_chance = { factor = 0.1 }
+	any_pop = { militancy = -3 consciousness = -4 }
+
+any_pop = { dominant_issue = { value = jingoism factor = 0.1 } }
+
+#Involve the US
+random_country = { 
+limit = { tag = USA exists = yes has_global_flag = blocsenabled }
+country_event = 8500402
+}
+
+	ai_chance = { factor = 0.9 }
   }
 
   option = {
     name = EVT_8500401_B
-	any_state = { any_pop = { dominant_issue = { value = jingoism factor = 0.15 } } }
-	relation = { who = KMT value = -50 } 
-	any_pop = { militancy = 3  consciousness = 1 }
-	USA = { country_event = 8500402 }
-	ai_chance = { factor = 0.9 }
+	prestige_factor = -0.1
+	relation = { who = KMT value = 50 } 
+	any_pop = { consciousness = 4 }
+	ai_chance = { factor = 0.1 }
   }
+
 }
+
+#US reaction to PRC bombardment
 country_event = {
   id = 8500402
   title = EVT_8500402_NAME
@@ -39,25 +53,32 @@ country_event = {
   picture = "taiwan_question"
   is_triggered_only = yes
 
-
   option = {
     name = EVT_8500402_A
 	relation = { who = CHI value = -200 } 
-	relation = { who = KMT value = 100 } 
-	any_state = { any_pop = { dominant_issue = { value = interventionism factor = 0.55 } } }
-	diplomatic_influence = { who = KMT value = 200 } 
+	relation = { who = KMT value = 200 } 
+	diplomatic_influence = { who = KMT value = 200 }
+any_pop = { dominant_issue = { value = jingoism factor = 0.1 } }
 	KMT = { country_event = 8500403 }
 	ai_chance = { factor = 0.9 }
   }
 
   option = {
     name = EVT_8500402_B
-	random_state = { any_pop = { dominant_issue = { value = jingoism factor = 0.1 } } }
-	relation = { who = CHI value = 100 } 
+	prestige_factor = -0.1
+any_pop = { dominant_issue = { value = pacifism factor = 0.1 } }
+	relation = { who = CHI value = 100 }
+	relation = { who = KMT value = -100 }
+
+	#Choice for China to declare war
+	CHI = { country_event = 8500404 }
+
 	ai_chance = { factor = 0.1 }
   }
 
 }
+
+#Notify KMT that US allies with KMT
 country_event = {
   id = 8500403
   title = EVT_8500403_NAME
@@ -67,241 +88,299 @@ country_event = {
 
   option = {
     name = EVT_8500403_A
-	relation = { who = USA value = 100 } 
+	relation = { who = USA value = 200 } 
 	create_alliance = USA
-	ai_chance = { factor = 100 }
+	money = 500000
+
+	#Choice for China to declare war
+	CHI = { country_event = 8500405 }
+
+	set_global_flag = us_kmt_defence_pact_choice
+
+	ai_chance = { factor = 1 }
   }
 
   option = {
     name = EVT_8500403_B
-	CHI = { country_event = { id = 8500404 days = 30 } }
-	any_pop = { militancy = 5  consciousness = 10 }
+	
+	#Choice for China to declare war
+	CHI = { country_event = 8500404 }
+	
 	ai_chance = { factor = 0 }
   }
+
 }
+
+#War with KMT without US help - CHI
 country_event = {
   id = 8500404
   title = EVT_8500404_NAME
   desc = EVT_8500404_DESC
-  picture = "nwo2_taiwan_strait"
+  picture = "nwo2_taiwan_strait_war"
   is_triggered_only = yes
 
   option = {
     name = EVT_8500404_A
 	relation = { who = USA value = -100 } 
-	casus_belli = { target = KMT type = annex_core_country months = 12 }
-	war = { target = KMT attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } } 
-	ai_chance = { factor = 1 }
+	
+war = { 
+target = KMT 
+attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo }
+call_ally = no
+} 
+
+	ai_chance = { factor = 0.9 }
+
   }
 
   option = {
     name = EVT_8500404_B
-	relation = { who = CHI value = 50 } 
-	any_pop = { militancy = 0.5  consciousness = 1.0 }
-	ai_chance = { factor = 0 }
+	prestige_factor = -0.05
+
+	war = {
+	target = KMT
+	attacker_goal = { casus_belli = acquire_core_state	state_province_id = 3342 }
+	defender_goal = { casus_belli = territorial_dispute }
+	call_ally = no
+		}
+	
+
+	any_pop = { consciousness = 5.0 }
+	ai_chance = { factor = 0.1 }
   }
+
 }
-country_event = { # Communists try an all-out war, American guarantee is in place
+
+#War with KMT with US help - CHI
+country_event = {
   id = 8500405
   title = EVT_8500405_NAME
   desc = EVT_8500405_DESC
-  picture = "nwo2_taiwan_strait"
-  fire_only_once = yes
-
-  trigger = {
-    tag = CHI
-    year = 1955 NOT = { year = 1963 }
-    exists = KMT
-	KMT = { alliance_with = USA }
-	war = no
-  }
-
-  mean_time_to_happen = { months = 1 }
+  picture = "nwo2_taiwan_strait_war"
+  
+is_triggered_only = yes
 
   option = {
     name = EVT_8500405_A
-	ai_chance = { factor = 0.95 }
+
+war = {
+target = KMT 
+attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo }
+call_ally = no
+}
+
+	ai_chance = { factor = 0.1 }
   }
 
   option = {
     name = EVT_8500405_B
-	casus_belli = { target = KMT type = annex_core_country months = 12 }
-	war = { target = KMT attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } } 
-	ai_chance = { factor = 0.05 }
+	prestige_factor = -0.05
+	badboy = -5
+	any_pop = { consciousness = 5.0 }
+	ai_chance = { factor = 0.9 }
   }
+
 }
+
+#Start the Second Taiwan Strait Crisis
 country_event = {
   id = 8500406
   title = EVT_8500406_NAME
   desc = EVT_8500406_DESC
-  picture = "nwo2_taiwan_strait"
+  picture = "nwo2_second_taiwan_strait"
   fire_only_once = yes
 
   trigger = {
-    tag = CHI
-    year = 1958 NOT = { year = 1963 }
-    exists = KMT
-    war = no
-  }
+    	tag = CHI
+    	year = 1958 NOT = { year = 1973 }
+    	exists = KMT
+    	has_global_flag = CHI_won_civil_war
+	war = no
+	is_vassal = no
+	government = proletarian_dictatorship
+KMT = { owns = 3342 is_vassal = no NOT = { government = proletarian_dictatorship } }
+	}
 
-  mean_time_to_happen = { months = 1  }
+  mean_time_to_happen = { months = 8 }
 
   option = {
     name = EVT_8500406_A
 	relation = { who = KMT value = -100 } 
-	relation = { who = USA value = -50 } 
-	KMT = { country_event = 8500407 }
-	ai_chance = { factor = 100 }
-  }
+	any_pop = { militancy = -3 consciousness = -4 }
 
-  option = {
-    name = EVT_8500406_B
-	any_pop = { militancy = 3  consciousness = 6.0 }
-	ai_chance = { factor = 0 }
-  }
+any_pop = { dominant_issue = { value = jingoism factor = 0.1 } }
 
-  option = {
-    name = EVT_8500406_C
-	casus_belli = { target = KMT type = annex_core_country months = 12 }
-	war = { target = KMT attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } } 
-	ai_chance = { factor = 0 }
-  }
+KMT = { country_event = 8500407 }
+
+#Involve the US
+random_country = { 
+limit = { tag = USA exists = yes has_global_flag = blocsenabled has_global_flag = us_kmt_defence_pact_choice }
+country_event = 8500411
 }
-country_event = {
-  id = 8500407
-  title = EVT_8500407_NAME
-  desc = EVT_8500407_DESC
-  picture = "nwo2_taiwan_strait"
-  is_triggered_only = yes
 
-  option = {
-    name = EVT_8500407_A
-	prestige = 5
-  }
+#Involve the USSR
+random_country = { 
+limit = { tag = RUS exists = yes has_global_flag = blocsenabled }
+country_event = 8500414
 }
-country_event = { # Mutual Defense Treaty for Taiwan - Communists attack
-  id = 8500411
-  title = EVT_8500411_NAME
-  desc = EVT_8500411_DESC
-  picture = "nwo2_taiwan_strait"
-  fire_only_once = yes
 
-  trigger = {
-    tag = USA
-    year = 1958 
-	NOT = { year = 1963 }
-    
-    CHI = { war_with = KMT }
-  }
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8500411_A
-	any_state = { any_pop = { dominant_issue = { value = jingoism factor = 0.4 } } }
-	ai_chance = { factor = 0 }
-  }
-
-  option = {
-    name = EVT_8500411_B
-	relation = { who = CHI value = -100 } 
-	relation = { who = KMT value = 100 } 
-	RUS = { country_event =  8500412 } 
-	ai_chance = { factor = 100 }
-  }
-}
-country_event = {
-  id = 8500412
-  title = EVT_8500412_NAME
-  desc = EVT_8500412_DESC
-  picture = "nwo2_taiwan_strait"
-  is_triggered_only = yes # RUS
-
-  mean_time_to_happen = { months = 1  }
-
-  option = {
-    name = EVT_8500412_A
-	relation = { who = USA value = 20 } 
-	KMT = { country_event = 8500415 }
 	ai_chance = { factor = 0.9 }
   }
 
   option = {
-    name = EVT_8500412_B
-	relation = { who = KMT value = -100 } 
-	relation = { who = CHI value = 100 } 
-	relation = { who = USA value = -50 } 
-	any_pop = { militancy = 1.5  consciousness = 3.0 }
-	badboy = 15 
-	USA = { country_event = 8500413 }
+    name = EVT_8500406_B
+	prestige_factor = -0.1
+	relation = { who = KMT value = 50 } 
+	any_pop = { consciousness = 4 }
 	ai_chance = { factor = 0.1 }
   }
+
 }
+
+#Notify KMT of China's shelling of Matsu
+country_event = {
+  id = 8500407
+  title = EVT_8500407_NAME
+  desc = EVT_8500407_DESC
+  picture = "nwo2_second_taiwan_strait"
+  is_triggered_only = yes
+
+  option = {
+    name = EVT_8500407_A
+	prestige_factor = 0.05
+	relation = { who = CHI value = -50 }
+	ai_chance = { factor = 0.9 }
+  }
+
+  option = {
+    name = EVT_8500407_A
+	prestige_factor = -0.1
+	relation = { who = CHI value = 50 }
+	3342 = { secede_province = CHI }
+	ai_chance = { factor = 0.1 }
+  }
+
+}
+
+#US choice to defend Taiwan
+country_event = {
+  id = 8500411
+  title = EVT_8500411_NAME
+  desc = EVT_8500411_DESC
+  picture = "nwo2_2nd_taiwan_strait_us"
+is_triggered_only = yes
+
+  option = {
+    name = EVT_8500411_A
+any_pop = { dominant_issue = { value = jingoism factor = 0.1 } }
+
+	create_alliance = KMT
+
+	relation = { who = CHI value = -100 }
+	relation = { who = KMT value = 100 }
+
+	#Choice for China to declare war
+	CHI = { country_event = 8500412 }
+
+	ai_chance = { factor = 0.9 }
+  }
+
+  option = {
+    name = EVT_8500411_B
+	relation = { who = CHI value = 50 } 
+	relation = { who = KMT value = -100 } 
+	
+	#Choice for China to declare war
+	CHI = { country_event = 8500413 }
+
+	ai_chance = { factor = 0.1 }
+  }
+
+}
+
+#Choice for China to declare war - US help
+country_event = {
+  id = 8500412
+  title = EVT_8500412_NAME
+  desc = EVT_8500412_DESC
+  picture = "nwo2_taiwan_strait_war"
+  is_triggered_only = yes
+
+  option = {
+    name = EVT_8500412_A
+
+war = {
+target = KMT 
+attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo }
+call_ally = no
+}
+
+	ai_chance = { factor = 0.1 }
+  }
+
+  option = {
+    name = EVT_8500412_B
+	prestige_factor = -0.05
+	badboy = -5
+	any_pop = { consciousness = 5.0 }
+	relation = { who = RUS value = 50 }
+	ai_chance = { factor = 0.9 }
+  }
+
+}
+
+#Choice for China to declare war - No US help
 country_event = {
   id = 8500413
   title = EVT_8500413_NAME
   desc = EVT_8500413_DESC
-  picture = "nwo2_taiwan_strait"
+  picture = "nwo2_taiwan_strait_war"
   is_triggered_only = yes
 
   option = {
     name = EVT_8500413_A
-	end_war = CHI 
-	any_pop = { militancy = 2.0  consciousness = 1.0 }
-	KMT = { country_event = 8500420 }
+
+war = {
+target = KMT 
+attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo }
+call_ally = no
+}
+
 	ai_chance = { factor = 0.1 }
   }
 
   option = {
     name = EVT_8500413_B
-	relation = { who = RUS value = -200 } 
-	RUS = { country_event = 8500414 }
+	prestige_factor = -0.2
+	badboy = -5
+	any_pop = { consciousness = 5.0 }
+	relation = { who = RUS value = 50 }
 	ai_chance = { factor = 0.9 }
   }
+
 }
+
+#USSR's response to the Second Taiwan Strait Crisis
 country_event = {
   id = 8500414
   title = EVT_8500414_NAME
   desc = EVT_8500414_DESC
-  picture = "nwo2_taiwan_strait"
+  picture = "nwo2_second_taiwan_strait"
   is_triggered_only = yes
 
   option = {
     name = EVT_8500414_A
-	country_event = 19831938
+	badboy = 5
+	relation = { who = USA value = 50 }
+	relation = { who = KMT value = 50 }
+	relation = { who = CHI value = -50 }
   }
 
   option = {
     name = EVT_8500414_B
-    any_pop = { militancy = 0.2  consciousness = 0.5 }
-  }
-}
-country_event = {
-  id = 8500415
-  title = EVT_8500415_NAME
-  desc = EVT_8500415_DESC
-  picture = "nwo2_taiwan_strait"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8500415_A
-	create_alliance = USA
+	prestige_factor = 0.05
+    	create_alliance = CHI
+	relation = { who = CHI value = 200 }
   }
 
-  option = {
-    name = EVT_8500415_B
-	any_pop = { militancy = 0.2  consciousness = 0.6 }
-  }
-}
-country_event = {
-  id = 8500420
-  title = EVT_8500420_NAME
-  desc = EVT_8500420_DESC
-  picture = "nwo2_taiwan_strait"
-  is_triggered_only = yes
-
-  option = {
-    name = EVT_8500420_A
-	any_pop = { militancy = 0.5  consciousness = 1.0 }
-  }
 }

@@ -63,6 +63,7 @@ country_event = { #The New Regime - populist or dictatorship
 			limit = { 
 				is_sphere_leader_of = THIS
 				NOT = { is_our_vassal = THIS }
+				THIS = { NOT = { has_country_flag = soi_demand_install } }
 			}
 			diplomatic_influence = {
 				who = THIS
@@ -77,7 +78,7 @@ country_event = { #The New Regime - populist or dictatorship
 			country_event = 800056
 		}
 		random_country = {
-			limit = { is_our_vassal = THIS }
+			limit = { is_our_vassal = THIS THIS = { NOT = { has_country_flag = soi_demand_install } } }
 			release_vassal = THIS
 			leave_alliance = THIS
 			diplomatic_influence = {
@@ -440,7 +441,7 @@ country_event = { # The New Regime - Communist
 		}
 		any_owned = {
 			remove_province_modifier = labor_union
-		remove_province_modifier = militant_trade_union
+			remove_province_modifier = militant_trade_union
 			remove_province_modifier = worker_union
 			remove_province_modifier = strike_solution
 			remove_province_modifier = province_strike
@@ -823,12 +824,12 @@ country_event = { #The New Regime - populist or dictatorship
 		political_reform = ruling_party_opinion
 		#removed
 		political_reform = censored_publishing
-		political_reform = gender_role_based
+		political_reform = no_trade_unions
 		political_reform = parties_not_allowed
 		political_reform = nobody_gets_out
 		political_reform = minorities_oppression
 		political_reform = no_meetings
-		political_reform = quality_of_service
+		political_reform = politicised_service
 		# end - from rebel_types
 		
 	}
@@ -854,11 +855,11 @@ country_event = { #The New Regime- traditionalist
 		political_reform = ruling_party_opinion
 		#removed
 		political_reform = censored_publishing
-		political_reform = gender_role_based
+		political_reform = no_trade_unions
 		political_reform = parties_not_allowed
 		political_reform = nobody_gets_out
 		political_reform = no_meetings
-		political_reform = quality_of_service
+		political_reform = politicised_service
 		political_reform = minorities_oppression
 		# end - from rebel_types		
 	}
@@ -878,12 +879,12 @@ country_event = { # The New Regime - Communist
 		political_reform = ruling_party_opinion
 		#removed
 		political_reform = censored_publishing
-		political_reform = gender_role_based
+		political_reform = no_trade_unions
 		political_reform = parties_not_allowed
 		political_reform = nobody_gets_out
 		political_reform = no_meetings
-		political_reform = quality_of_service
-		#nationalize = yes
+		political_reform = politicised_service
+		nationalize = yes
 		# end from rebel_types
 	}
 }
@@ -920,31 +921,41 @@ country_event = { # The New Regime - Democracy
 
 	title = "EVTNAME800054"  
 	desc = "EVTDESC800054"
-	picture = "Prosper"
+	picture = "liberal_democracy1"
 
 	option = {
 		name = "EVTOPTA800054"
 		
+		# To prevent instant reverts back to a dictatorship
+		upper_house = { ideology = liberal value = 95 }
+		
 		# remove ideology based modifiers 
-		remove_country_modifier = comecon remove_country_modifier = comecon_excluded
+		remove_country_modifier = comecon 
+		remove_country_modifier = comecon_excluded
+		
+		# Remove end of democracy modifiers
+		remove_country_modifier = reform_legal_system_modifier
+		remove_country_modifier = extend_executive_functions_modifier
+		clr_country_flag = president_for_life
 		
 		# from rebel_types
 
-random_owned = { limit = { owner = { vote_franschise = none_voting } } owner = { political_reform = registered_voting } }	
+		random_owned = { limit = { owner = { vote_franschise = none_voting } } owner = { political_reform = registered_voting } }	
 
-random_owned = { limit = { owner = { political_opinions = ruling_party_opinion } } owner = { political_reform = regulated_opinion } }	
+		random_owned = { limit = { owner = { political_opinions = ruling_party_opinion } } owner = { political_reform = regulated_opinion } }	
 
 
-random_owned = { limit = { owner = { public_meetings = no_meetings } } owner = { political_reform = limited_meetings } }	
+		random_owned = { limit = { owner = { public_meetings = no_meetings } } owner = { political_reform = limited_meetings } }	
 
-random_owned = { limit = { owner = { publishing_rights = censored_publishing } } owner = { political_reform = firewall_publishing } }
+		random_owned = { limit = { owner = { publishing_rights = censored_publishing } } owner = { political_reform = firewall_publishing } }
 		
-random_owned = { limit = { owner = { gender_rights = gender_role_based } } owner = { political_reform = gender_promotive } } 
+		random_owned = { limit = { owner = { union_rights = no_trade_unions } } owner = { political_reform = restricted_unions } } 
 
-random_owned = { limit = { owner = { political_parties = parties_not_allowed } } owner = { political_reform = parties_only_nominated } }
+		random_owned = { limit = { owner = { political_parties = parties_not_allowed } } owner = { political_reform = parties_only_nominated } }
 
 		# end - from rebel_types	
- }
+	}
+	
 }
 
 country_event = { # The New Regime Form of Government
@@ -958,20 +969,37 @@ country_event = { # The New Regime Form of Government
 	is_triggered_only = yes
 
 	option = {
-		name = "EVT_800060_A"
-		government = presidential_dictatorship country_event = 800050 
-		ai_chance = { factor = 100 }
+		name = "Become a Presidential Dictatorship"
+		government = presidential_dictatorship
+		country_event = 800050 
+		ai_chance = { factor = 1 }
 	}
 
 	option = {
-		name = "EVT_800060_B"
-		government = populist_dictatorship country_event = 800050 
+		name = "Become a Nationalist Dictatorship"
+		government = populist_dictatorship 
+		country_event = 800050 
 		ai_chance = { factor = 0 }
 	}
 
 	option = {
-		name = "EVT_800060_C"
-		government = nationalist_dictatorship country_event = 800050 
+		name = "Become a Sectarian Regime"
+		government = nationalist_dictatorship 
+		country_event = 800050 
+		ai_chance = { factor = 0 }
+	}
+
+	option = {
+		name = "Become an Absolute Monarchy"
+		government = absolute_monarchy 
+		country_event = 800051 
+		ai_chance = { factor = 0 }
+	}
+
+	option = {
+		name = "Become a Theocracy"
+		government = theocracy
+		country_event = 800051 
 		ai_chance = { factor = 0 }
 	}
 	
@@ -1427,7 +1455,7 @@ country_event = {
 			factor = 0.5
 			modifier = {
 				factor = 0.1
-OR = { government = hms_government government = democracy }
+OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
 			}
 			modifier = {
 				factor = 1.75

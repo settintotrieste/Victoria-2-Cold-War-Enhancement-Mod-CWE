@@ -1,0 +1,144 @@
+country_event = { # Give back our land!
+	id = 9001510
+	title = "The Question of Kurdish Lands"
+	desc = EVT_9001510_DESC
+	picture = "nwo2_republic_of_mahabad"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = KUR
+		year = 1946
+		NOT = { has_global_flag = 1950_start_date_flag }
+		
+		government = proletarian_dictatorship1
+		is_vassal = no
+		war = no
+		
+		#KUR cores are owned by these nations
+		any_core = { 
+			owned_by = TUR
+			owned_by = PER
+			owned_by = IRQ
+			owned_by = SYR
+		}
+		
+		#Those nations exists
+		TUR = {
+			exists = yes
+			is_vassal = no
+			war = no
+		}
+		PER = {
+			exists = yes
+			is_vassal = no
+			war = no
+		}
+		IRQ = {
+			exists = yes
+			is_vassal = no
+			war = no
+		}
+		SYR = {
+			exists = yes
+			is_vassal = no
+			war = no
+		}
+		
+		#KUR has good relations with those nations
+		relation = { who = TUR value = 175 }
+		relation = { who = PER value = 175 }
+		relation = { who = IRQ value = 125 }
+		relation = { who = SYR value = 125 }
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
+	}
+	
+	mean_time_to_happen = { months = 1 }
+	
+	option = {
+		name = "Let's renegotiate the Treaty of Lausanne"
+		
+		TUR = { country_event = 9001511 }
+		PER = { country_event = 9001511 }
+		IRQ = { country_event = 9001511 }
+		SYR = { country_event = 9001511 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Do nothing."
+		prestige_factor = -0.05
+		
+		any_pop = {
+			consciousness = 3
+			militancy = 3
+			ideology = { factor = 0.2 value = nationalist }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+country_event = { # The Kurdish Question
+	id = 9001511
+	title = "The Kurdish Question"
+	desc = EVT_9001511_DESC
+	picture = "bandung_conference"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "We shall return their lands!"
+		prestige = -50
+		badboy = -5
+		
+		#Return all Kurdish cores
+		any_owned = { 
+			limit = { is_core = KUR } 
+			secede_province = KUR 
+		}
+		
+		#Gain relations with KUR
+		relation = { who = KUR value = 200 }
+		
+		ai_chance = { 
+			factor = 0.9 
+			
+			#GPs and SPs are too proud to return land
+			modifier = { 
+				factor = 0 
+				OR = { is_greater_power = yes is_secondary_power = yes } 
+			}
+		}
+	}
+	
+	option = {
+		name = "We will not return their lands!"
+		
+		#Kurdistan is angry
+		relation = { who = KUR value = -200 }
+		KUR = { 
+			#Kurds are angry
+			any_pop = {
+				limit = { culture = kurdish }
+				consciousness = 2.5
+				militancy = 2.5
+				ideology = { factor = 0.05 value = nationalist }
+			}
+		}
+		
+		#Kurds in THIS are angry
+		any_pop = {
+			limit = { culture = kurdish }
+			consciousness = 10
+			militancy = 10
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}

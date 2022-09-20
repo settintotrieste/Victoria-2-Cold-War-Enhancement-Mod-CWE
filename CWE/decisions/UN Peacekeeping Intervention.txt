@@ -1,76 +1,135 @@
 political_decisions = {
-call_for_un_intervention = {
+	call_for_un_intervention = {
 		picture = "callun"
 		potential = {
-				war = yes
-	NOT = { has_country_modifier = uniting_for_peace }
-	has_country_modifier = united_nations_ga_member
-	NOT = { has_country_modifier = called_allies_un }
-	NOT = { has_country_modifier = called_allies }
-
-					}
-			alert = yes
-		allow = {
+		
+			is_vassal = no
 			war = yes
-
-NOT = { AND = { has_global_flag = blocsenabled USA = { war_with = RUS } } }
-
-NOT = { AND = { FRA = { ai = yes } AND = { tag = FRA war_with = ALG } } }
-
-
-OR = { 
-ai = no
-
-national_provinces_occupied = 0.75
-
-war_exhaustion = 50
-
-AND = { 
-OR = { 
-any_neighbor_country = { war_with = THIS stronger_army_than = THIS } 
-any_greater_power = { war_with = THIS stronger_army_than = THIS }
-	}
-war_policy = pacifism 
-NOT = { national_provinces_occupied = 0.25 }
-		} 
-
-	} 
-
-				}
-	effect = {
-prestige = -10
-add_country_modifier = { name = called_allies_un duration = 600 }
-any_country = { limit = { has_country_modifier = unsc_permanent_member } country_event = 1412013 }
-	}
-		ai_will_do = { 
-			factor = 100 
+			
+			#In the UNGA
+			has_country_modifier = united_nations_ga_member
+			
+			#Have not called the UN before
+			NOT = { has_country_modifier = called_allies_un }
+			NOT = { has_country_modifier = called_allies }
+			NOT = { has_country_modifier = stop_un_spam }
+			NOT = { has_country_modifier = resolution_vetoed_unsc }
+			
+			#Did not call for Uniting for Peace
+			NOT = { has_country_modifier = uniting_for_peace }
+			
+			#The UN is paralysed during a Hot Cold War
+			NOT = { AND = { has_global_flag = blocsenabled USA = { war_with = RUS } } }
+			
+			#Only 1 vote at a time in the war
+			war_countries = { NOT = { has_country_modifier = called_allies_un } }
+		}
+		alert = yes
+		allow = {
+			
+			#THIS is not an aggressor or war_policy is pacifism
+			OR = { 
+				NOT = { has_country_flag = this_is_aggressor } 
+				war_policy = pacifism 
 			}
+
+			#Situation is grave
+			OR = { 
+				ai = no
+
+				AND = { national_provinces_occupied = 0.75 NOT = { war_policy = jingoism } }
+
+				AND = { war_exhaustion = 50 NOT = { war_policy = jingoism } }
+
+				AND = { 
+					OR = { 
+						any_neighbor_country = { war_with = THIS stronger_army_than = THIS } 
+						any_greater_power = { war_with = THIS stronger_army_than = THIS }
+					}
+					war_policy = pacifism 
+					NOT = { national_provinces_occupied = 0.25 }
+				} 
+
+			} 
+
+		}
+		effect = {
+			prestige_factor = -0.02
+			
+			#Block spam
+			add_country_modifier = { name = called_allies_un duration = 730 }
+			
+			#Initiate UNSC vote
+			any_country = { 
+				limit = { has_country_modifier = unsc_permanent_member exists = yes } 
+				country_event = 1412013
+			}
+		}
+		ai_will_do = { 
+			factor = 1
+			
+			#Any Chinese Civil War will go for broke
+			modifier = { factor = 0 AND = { tag = KMT war_with = CHI } }
+			modifier = { factor = 0 AND = { tag = CHI war_with = KMT } }
+			
+			#Any Algerian War will go for broke
+			modifier = { factor = 0 AND = { tag = FRA war_with = ALG } }
+			modifier = { factor = 0 AND = { tag = ALG war_with = FRA } }
+			
+			#Superpowers do not peace out through the UN during the Cold War
+			modifier = { factor = 0 AND = { tag = USA war_with = RUS has_global_flag = blocsenabled } }
+			modifier = { factor = 0 AND = { tag = RUS war_with = USA has_global_flag = blocsenabled } }
+		}
 	}
 
-uniting_for_peace = {
+	uniting_for_peace = {
 		picture = "uniting_for_peace"
 		potential = {
+			is_vassal = no
 			year = 1953
 			war = yes
-	has_country_modifier = united_nations_ga_member
-	NOT = { has_country_modifier = uniting_for_peace }
-	has_country_modifier = called_allies_un
-	has_country_modifier = resolution_vetoed_unsc
-					}
-			alert = yes
+			has_country_modifier = united_nations_ga_member
+			NOT = { has_country_modifier = uniting_for_peace }
+			has_country_modifier = called_allies_un
+			has_country_modifier = resolution_vetoed_unsc
+		}
+		alert = yes
 		allow = {
-			war = yes
-NOT = { AND = { FRA = { ai = yes } AND = { tag = FRA war_with = ALG } } }
-OR = { ai = no AND = { war_policy = pacifism NOT = { national_provinces_occupied = 0.25 } } }
-				}
-	effect = {
-prestige = -10
-add_country_modifier = { name = uniting_for_peace duration = 365 }
-any_country = { limit = { is_vassal = no has_country_modifier = united_nations_ga_member is_secondary_power = yes NOT = { war_with = THIS } } country_event = 1412042 }
-	}
-		ai_will_do = { 
-			factor = 100 
+		
+			#THIS is not an aggressor or war_policy is pacifism
+			OR = { NOT = { has_country_flag = this_is_aggressor } war_policy = pacifism }
+			
+			OR = { ai = no AND = { war_policy = pacifism NOT = { national_provinces_occupied = 0.25 } } }
+		}
+		effect = {
+			prestige_factor = -0.01
+			add_country_modifier = { name = uniting_for_peace duration = 365 }
+			any_country = { 
+				limit = { 
+					exists = yes
+					is_vassal = no 
+					has_country_modifier = united_nations_ga_member 
+					is_secondary_power = yes 
+					NOT = { war_with = THIS } 
+				} 
+				country_event = 1412042
 			}
+		}
+		ai_will_do = { 
+			factor = 1
+			
+			#Any Chinese Civil War will go for broke
+			modifier = { factor = 0 AND = { tag = KMT war_with = CHI } }
+			modifier = { factor = 0 AND = { tag = CHI war_with = KMT } }
+			
+			#Any Algerian War will go for broke
+			modifier = { factor = 0 AND = { tag = FRA war_with = ALG } }
+			modifier = { factor = 0 AND = { tag = ALG war_with = FRA } }
+			
+			#Superpowers do not peace out through the UN during the Cold War
+			modifier = { factor = 0 AND = { tag = USA war_with = RUS has_global_flag = blocsenabled } }
+			modifier = { factor = 0 AND = { tag = RUS war_with = USA has_global_flag = blocsenabled } }
+		}
 	}
 
 }

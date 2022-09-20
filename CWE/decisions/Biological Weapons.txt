@@ -4,15 +4,22 @@ political_decisions = {
 		picture = "development_bio_weapons"
 		alert = no
 		potential = {
+
+			NOT = { OR = { tag = R01 tag = R02 tag = R03 tag = R04 tag = R05 tag = R06 tag = R07 tag = R08 tag = R09 tag = R10 } }
+
 			NOT = { has_country_modifier = develop_bio_weapons }
 			NOT = { has_country_modifier = bio_nation }
+			
 			is_vassal = no
-			part_of_sphere = no
 		}
 		allow = {
 			election = no
 			money = 500000
-			OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social ruling_party_ideology = traditionalist ruling_party_ideology = nationalist ruling_party_ideology = populist }
+			NOT = { is_disarmed = yes }
+			NOT = { part_of_sphere = yes }
+			NOT = { has_country_modifier = wmd_removed }
+			OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social ruling_party_ideology = traditionalist ruling_party_ideology = nationalist ruling_party_ideology = populist war_policy = jingoism }
+			OR = { is_secondary_power = yes is_greater_power = yes military_score = 300 }
 		}
 		effect = {
 			money = -400000
@@ -23,9 +30,33 @@ political_decisions = {
 		}
 		ai_will_do = {
 			factor = 1
+			
+			#Low infamy
 			modifier = {
 				factor = 0
-				badboy = 0.75
+				badboy = 0.2
+			}
+			
+			#AI only builds chemical weapons when world tensions are high and past 1950
+			modifier = { 
+				factor = 0
+				OR = {
+					has_country_modifier = cold_war_medium
+					has_country_modifier = cold_war_low
+					
+					has_country_modifier = world_medium
+					has_country_modifier = world_low
+				}
+			}
+			
+			#Francoist Spain does not build biological weapons until after 1980
+			modifier = {
+				factor = 0
+				AND = {
+					tag = SPA
+					NOT = { second_cold_war = 1 }
+					government = populist_dictatorship
+				}
 			}
 		}
 	}
@@ -42,7 +73,8 @@ political_decisions = {
 		allow = {
 			election = no
 			war = no
-			OR = { ruling_party_ideology = progressive ruling_party_ideology = liberal }
+			OR = { ruling_party_ideology = progressive ruling_party_ideology = liberal AND = { badboy = 1 is_disarmed = yes } is_vassal = yes }
+			NOT = { war_policy = jingoism }
 		}
 
 		effect = {
@@ -69,8 +101,21 @@ political_decisions = {
 		}
 
 		effect = {
-			any_country = { limit = { NOT = { tag = REB } war_with = THIS } country_event = 1412062 }
 			add_country_modifier = { name = bio_used duration = 365 }
+			
+			#Attack all hostile nations
+			any_country = { limit = { NOT = { tag = REB } war_with = THIS } country_event = 1412062 }
+			
+			#Chance of global pandemic
+			random = {
+				chance = 25
+				
+				prestige_factor = -0.05 
+				
+				badboy = 5
+
+				UNO = { country_event = 1412063 }
+			}
 		}
 		ai_will_do = {
 			factor = 1
@@ -78,34 +123,6 @@ political_decisions = {
 				factor = 0
 				NOT = { war_exhaustion = 80 }
 			}
-		}
-	}
-
-	develop_vaccine = {
-		picture = "develop_vaccine"
-		alert = yes
-		potential = {
-			OR = { has_country_flag = spreading_bio_weapon has_country_modifier = biological_attack
-				any_neighbor_country = { has_country_flag = spreading_bio_weapon has_country_modifier = biological_attack } }
-			NOT = { has_country_flag = vaccine_development }
-			NOT = { has_country_modifier = vaccine_development }
-		}
-
-		allow = {
-			money = 100000
-		}
-
-		effect = {
-			money = -50000
-			random_list = {
-				1 = { add_country_modifier = { name = vaccine_development duration = 800 } }
-				1 = { add_country_modifier = { name = vaccine_development duration = 900 } }
-				1 = { add_country_modifier = { name = vaccine_development duration = 1000 } }
-			}
-			set_country_flag = vaccine_development
-		}
-		ai_will_do = {
-			factor = 1
 		}
 	}
 
