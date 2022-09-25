@@ -30,6 +30,8 @@ political_decisions = {
 		potential = {
 			year = 1995
 			
+			NOT = { has_global_flag = blocenabled } #Cold War prevents WTO foundation
+			
 			OR = { 
 			
 				#THIS is a GP with Free Trade
@@ -191,47 +193,7 @@ political_decisions = {
 		}
 	}
 
-	changewto = {
-		picture = "changewto"
-		potential = {
-			has_country_modifier = wto_chairmanship
-			OR = { 
-				has_country_modifier = wtohigh
-				has_country_modifier = wtomedium
-				has_country_modifier = wtolow 
-			}
-			is_greater_power = yes
-		}
-		alert = no
-		allow = {
-			war = no
-			OR = { 
-				AND = { has_global_flag = wtohigh NOT = { trade_policy = protectionism } } 
-				AND = { has_global_flag = wtomedium NOT = { trade_policy = free_trade } } 
-				AND = { has_global_flag = wtolow NOT = { trade_policy = free_trade } } 
-			} 
-		}
-		effect = {
-			remove_country_modifier = wtohigh
-			remove_country_modifier = wtomedium
-			remove_country_modifier = wtolow
-			clr_global_flag = wtohigh
-			clr_global_flag = wtomedium
-			clr_global_flag = wtolow
-			
-			any_country = {
-				remove_country_modifier = wtohigh
-				remove_country_modifier = wtomedium
-				remove_country_modifier = wtolow
-				clr_global_flag = wtohigh
-				clr_global_flag = wtomedium
-				clr_global_flag = wtolow
-			}
-		}
-		ai_will_do = { 
-			factor = 1 
-		}
-	}
+	
 	changeimf = {
 		picture = "changeimf"
 		potential = {
@@ -254,8 +216,10 @@ political_decisions = {
 				AND = { has_global_flag = imfmedium NOT = { economic_policy = interventionism } } 
 				AND = { has_global_flag = imflow NOT = { economic_policy = laissez_faire } }
 			}
+			NOT = { has_country_modifier = international_change_timer }
 		}
 		effect = {
+			add_country_modifier = { name = international_change_timer duration = 365 }
 			remove_country_modifier = imfhigh
 			remove_country_modifier = imfmedium
 			remove_country_modifier = imflow
@@ -396,6 +360,50 @@ political_decisions = {
 			factor = 1 
 		}
 	}
+	
+	changewto = {
+		picture = "changewto"
+		potential = {
+			has_country_modifier = wto_chairmanship
+			OR = { 
+				has_country_modifier = wtohigh
+				has_country_modifier = wtomedium
+				has_country_modifier = wtolow 
+			}
+			is_greater_power = yes
+		}
+		alert = no
+		allow = {
+			war = no
+			OR = { 
+				AND = { has_global_flag = wtohigh NOT = { trade_policy = protectionism } } 
+				AND = { has_global_flag = wtomedium NOT = { AND = { trade_policy = free_trade NOT = { economic_policy = laissez_faire } } } }
+				AND = { has_global_flag = wtolow NOT = { AND = { trade_policy = free_trade economic_policy = laissez_faire } } }
+			} 
+			NOT = { has_country_modifier = international_change_timer }
+		}
+		effect = {
+			add_country_modifier = { name = international_change_timer duration = 365 }
+			remove_country_modifier = wtohigh
+			remove_country_modifier = wtomedium
+			remove_country_modifier = wtolow
+			clr_global_flag = wtohigh
+			clr_global_flag = wtomedium
+			clr_global_flag = wtolow
+			
+			any_country = {
+				remove_country_modifier = wtohigh
+				remove_country_modifier = wtomedium
+				remove_country_modifier = wtolow
+				clr_global_flag = wtohigh
+				clr_global_flag = wtomedium
+				clr_global_flag = wtolow
+			}
+		}
+		ai_will_do = { 
+			factor = 1 
+		}
+	}
 
 	wtohigh = {
 		picture = "wtohigh"
@@ -525,8 +533,10 @@ political_decisions = {
 				AND = { has_country_modifier = ibrdmedium_gp NOT = { economic_policy = interventionism } } 
 				AND = { has_country_modifier = ibrdlow_gp NOT = { economic_policy = laissez_faire } }
 			}
+			NOT = { has_country_modifier = international_change_timer }
 		}
 		effect = {
+			add_country_modifier = { name = international_change_timer duration = 365 }
 			remove_country_modifier = ibrdhigh_gp
 			remove_country_modifier = ibrdmedium_gp
 			remove_country_modifier = ibrdlow_gp
