@@ -3606,6 +3606,219 @@ liberal_rebels = {
 }
 
 ###################################
+# Anarchist Rebels
+###################################
+anarchist_rebels = {
+	icon = 4
+	
+	area = nation 					# Stays within the nation
+	break_alliance_on_win = yes
+	
+	# <this is the governement in the country> = <this is what the rebels want>
+	government = {
+		
+		socialist_democracy = presidential_dictatorship
+		colonial_government = socialist_democracy
+
+		democracy1 = socialist_democracy
+		hms_government1 = socialist_democracy
+		sar_government = socialist_democracy
+		mandate_government = socialist_democracy
+		nationalist_dictatorship = presidential_dictatorship
+		populist_dictatorship = presidential_dictatorship
+		presidential_dictatorship = presidential_dictatorship
+		theocracy = presidential_dictatorship
+		absolute_monarchy = presidential_dictatorship
+		hms_government = socialist_democracy
+		democracy = socialist_democracy
+		proletarian_dictatorship = socialist_democracy
+		proletarian_dictatorship1 = socialist_democracy
+	}
+	
+	
+	defection = none					# Will defect to the "best" alternative.
+	independence = none				# Does not strive for independence
+	defect_delay = 18
+	
+	ideology = anarchist
+	
+	allow_all_cultures = yes
+	allow_all_religions = yes
+	allow_all_ideologies = yes
+	
+	resilient = yes					# Disbands on retreat
+	reinforcing = yes				# Does not receive reinforcements
+	general = yes					# Does use generals
+	smart = yes						# Does not assault forts, tactically withdraw from battle, etc.
+	unit_transfer = no				# Units do not remain after enforcing demands.
+	
+	occupation_mult = 1.0			# The amount of strength this rebel gains from taking provinces	
+
+	# triggers a general rising, modifier will be multiplied with the countrys army strength and compared to the factions strenght
+	will_rise = 
+	{
+		factor = 0.5
+		
+		modifier = {
+			war = yes
+			factor = 0.8
+		}
+
+		modifier = {
+			factor = 1.2
+			has_country_flag = superpower_rebel_instigation_flag
+		}
+
+		modifier = {
+			has_country_flag = spy_medium_flag
+			factor = 0.5
+		}
+		
+		modifier = {
+			war_exhaustion = 4
+			factor = 0.95
+		}
+		
+		modifier = {
+			war_exhaustion = 6
+			factor = 0.95
+		}
+		
+		modifier = {
+			war_exhaustion = 8
+			factor = 0.95
+		}
+		
+		modifier = {
+			has_country_flag = president_for_life
+			factor = 2
+		}
+		
+	}
+	
+	# The rebel type with the highest modifier for this pop gets picked
+	spawn_chance = {
+		factor = 1.02
+		modifier = {
+			factor = 0.01
+			NOT = {
+				OR = {
+					pop_majority_ideology = anarchist
+					pop_majority_ideology = progressive
+				}
+			}
+		}
+		modifier = {
+			factor = 0
+				OR = {
+					political_movement = yes
+					social_movement = yes
+				}	
+		}
+		modifier = {
+			factor = 0
+			country = { civilized = no }
+		}
+		modifier = {
+			factor = 0
+			NOT = {
+				is_ideology_enabled = anarchist
+			}
+		}
+		
+		modifier = {
+			factor = 1.15
+			pop_majority_ideology = anarchist
+		}
+		
+		modifier = {
+			factor = 1.05
+			pop_majority_ideology = progressive
+		}
+
+		modifier = {
+			factor = 1.15
+			political_reform_want = 0.15
+			NOT = { social_reform_want = 0.05 }
+		}
+		
+		modifier = {
+			factor = 0.5
+			NOT = { is_culture_group = THIS }
+		}
+		
+		modifier = {
+			factor = 0.5
+			is_accepted_culture = no
+			is_primary_culture = no
+		}
+		modifier = {
+			factor = 0
+			country = { government = socialist_democracy }
+		}
+	}
+ 
+ 	#This is checked for EACH province in the Area of Operations
+	movement_evaluation = {
+		factor = 1
+		modifier = {
+			factor = 0.1
+			units_in_province = 1
+		}
+		modifier = {
+			factor = 0.001
+			controlled_by = REB
+		}
+		modifier = {
+			factor = 1.5
+			average_militancy = 4
+		}
+		modifier = {
+			factor = 1.5
+			average_militancy = 6
+		}
+		modifier = {
+			factor = 1.5
+			average_militancy = 8
+		}
+		modifier = {
+			factor = 2.0
+			is_capital = yes
+		}
+	}
+	
+ 	# Province Scope
+ 	siege_won_trigger = {
+		NOT = { has_province_modifier = war_torn }
+ 	}
+	
+	siege_won_effect = {
+		add_province_modifier = {
+			name = war_torn
+			duration = 365
+		}
+		owner = { war_exhaustion = 2.5 }
+	}	
+
+	# Country scope
+	demands_enforced_trigger = {
+		capital_scope = {
+			controlled_by = REB
+			province_control_days = 30
+		}
+	}
+	demands_enforced_effect = {
+		add_country_modifier = {
+			name = national_confusion
+			duration = 365
+		}
+		prestige_factor = -0.2
+		war_exhaustion = 50
+		country_event = 800044
+	}
+}
+
+###################################
 # Theocracy Rebels - General
 ###################################
 islamist_rebels = {
