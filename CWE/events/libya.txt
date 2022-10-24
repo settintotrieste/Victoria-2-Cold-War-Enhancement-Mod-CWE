@@ -1154,3 +1154,119 @@ country_event = {
 	}
 
 }
+
+#Federation of Arab Republics - start LBY
+country_event = {
+	id = 1512009
+	title = "Federation of Arab Republics"
+	desc = EVTDESC1512009
+	picture = "far_union_start"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = LBY
+		year = 1971
+		NOT = { year = 1991 }
+		
+		OR = { government = nationalist_dictatorship government = populist_dictatorship government = presidential_dictatorship }
+		war = no
+		is_vassal = no
+
+		OR = {
+			EGY = { exists = yes war = no is_vassal = no OR = { government = nationalist_dictatorship government = populist_dictatorship government = presidential_dictatorship } }
+
+			SUD = { exists = yes war = no is_vassal = no OR = { government = nationalist_dictatorship government = populist_dictatorship government = presidential_dictatorship } }
+
+			SYR = { exists = yes war = no is_vassal = no OR = { government = nationalist_dictatorship government = populist_dictatorship government = presidential_dictatorship } }
+
+			IRQ = { exists = yes war = no is_vassal = no OR = { government = nationalist_dictatorship government = populist_dictatorship government = presidential_dictatorship } }
+		}
+
+		UAR = { exists = no }
+
+	}
+
+	mean_time_to_happen = { 
+		months = 12
+	}
+
+	option = {
+		name = "Propose the Union"
+
+		any_country = { 
+			limit = { 
+				OR = { tag = EGY tag = SUD tag = SYR tag = IRQ } 
+				exists = yes 
+				war = no 
+				is_vassal = no 
+				OR = { government = nationalist_dictatorship government = populist_dictatorship government = presidential_dictatorship } 
+			} 
+			country_event = 1512010 
+		}
+
+		set_country_flag = far_union_flag
+		ai_chance = { factor = 0.5 }
+	}
+
+	option = {
+		name = "Preserve the uniqueness of Libya"
+		prestige = 50
+		ai_chance = { factor = 0.5 }
+	}
+
+}
+
+#Federation of Arab Republics - Receiver
+country_event = {
+	id = 1512010
+	title = "Federation of Arab Republics?"
+	desc = EVTDESC1512009
+	picture = "far_union_start"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Join the union fully"
+		
+		all_core = { add_core = UAR }
+
+		FROM = { 
+			set_country_flag = far_formed_flag 
+			inherit = THIS 
+		}
+
+		ai_chance = { factor = 0.1 }
+	}
+
+	option = {
+		name = "Reject the union"
+		prestige = 100
+		relation = { who = FROM value = -50 }
+		ai_chance = { factor = 0.9 }
+	}
+
+}
+
+#Federation of Arab Republics - Successful
+country_event = {
+	id = 151201000
+	title = "Foundation of the FAR"
+	desc = EVTDESC1512009
+	picture = "far_union_start"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = LBY
+		has_country_flag = far_formed_flag
+		UAR = { exists = no }
+	}
+
+	option = {
+		name = "This is a great day for the Arab World!"
+		change_tag = UAR
+		prestige = 500
+	}
+
+}

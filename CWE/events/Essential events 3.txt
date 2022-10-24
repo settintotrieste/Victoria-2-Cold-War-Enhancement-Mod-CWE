@@ -400,22 +400,34 @@ fire_only_once = yes
 
 	option = {
 		name = "Pivot towards Europe"
-any_country = {
-limit = { is_vassal = no capital_scope = { continent = europe } }
-relation = { who = THIS value = 50 }
-}
+		any_country = {
+			limit = { is_vassal = no capital_scope = { continent = europe } }
+			relation = { who = THIS value = 50 }
+		}
 		set_country_flag = british_europe_choice
-		ai_chance = { factor = 0.9 }
+		ai_chance = { 
+			factor = 0.9
+			modifier = {
+				factor = 0.1
+				OR = { ruling_party_ideology = populist ruling_party_ideology = traditionalist ruling_party_ideology = nationalist }
+			}
+		}
 	}
 
 	option = {
 		name = "Keep ties with the Commonwealth"
-any_country = {
-limit = { is_vassal = no in_sphere = THIS }
-relation = { who = THIS value = 50 }
-}
+		any_country = {
+			limit = { is_vassal = no in_sphere = THIS }
+			relation = { who = THIS value = 50 }
+		}
 		set_country_flag = british_empire_choice
-		ai_chance = { factor = 0.1 }
+		ai_chance = { 
+			factor = 0.1
+			modifier = {
+				factor = 10
+				OR = { ruling_party_ideology = populist ruling_party_ideology = traditionalist ruling_party_ideology = nationalist }
+			}
+		}
 	}
 
 }
@@ -577,208 +589,6 @@ NOT = { OR = { tag = IAR tag = TRE tag = DZG tag = SCS tag = UNT tag = TGZ tag =
 		}
 	}
 
-#Defcon 5 - Starting event, add defcon 5 to non ai countries
-country_event = {
-	id = 13000321
-	title = "DEFCON 5"
-	desc = "Lowest state of readiness, Normal readiness"
-	picture = "defcon"
-
-	trigger = {
-
-		ai = no
-		is_vassal = no
-
-		NOT = { has_country_modifier = defcon5 }
-		NOT = { has_country_modifier = defcon4 }
-		NOT = { has_country_modifier = defcon3 }
-		NOT = { has_country_modifier = defcon2 }
-		NOT = { has_country_modifier = defcon1 }
-
-	}
-	
-	option = {
-		name = "Peace has returned"
-		add_country_modifier = { name = defcon5 duration = -1 }
-		remove_country_modifier = defcon1
-		remove_country_modifier = defcon2
-		remove_country_modifier = defcon3
-		remove_country_modifier = defcon4
-	}
-	
-}
-
-#Defcon 5
-country_event = {
-	id = 1300032
-	title = "DEFCON 5"
-	desc = "Lowest state of readiness, Normal readiness"
-	picture = "defcon"
-
-	trigger = {
-
-		OR = { ai = yes is_vassal = yes }
-
-		war = no
-		
-		crisis_exist = no
-		
-		OR = { 
-			has_country_modifier = cold_war_low 
-			has_country_modifier = world_low 
-		}
-
-		OR = { 
-			NOT = { has_country_modifier = defcon5 }
-			has_country_modifier = defcon1
-			has_country_modifier = defcon2
-			has_country_modifier = defcon3 
-			has_country_modifier = defcon4
-		}
-	}
-	
-	option = {
-		name = "Peace has returned"
-		add_country_modifier = { name = defcon5 duration = -1 }
-		remove_country_modifier = defcon1
-		remove_country_modifier = defcon2
-		remove_country_modifier = defcon3
-		remove_country_modifier = defcon4
-	}
-	
-}
-#Defcon 4
-country_event = {
-	id = 1300033
-	title = "DEFCON 4"
-	desc = "Increased intelligence watch and strengthened security measures, Above normal readiness"
-	picture = "defcon"
-
-	trigger = {
-
-		OR = { ai = yes is_vassal = yes }
-
-		war = no
-
-		OR = { 
-			AND = { crisis_exist = no OR = { has_country_modifier = cold_war_medium has_country_modifier = world_medium } }
-
-			AND = { crisis_exist = yes NOT = { crisis_temperature = 35 } }
-		}
-		
-		NOT = { has_country_modifier = defcon4 }
-		
-	}
-	
-	option = {
-		name = "Up the ante on our enemies"
-		add_country_modifier = { name = defcon4 duration = -1 }
-		remove_country_modifier = defcon1
-		remove_country_modifier = defcon2
-		remove_country_modifier = defcon3
-		remove_country_modifier = defcon5
-	}
-	
-}
-#Defcon 3
-country_event = {
-	id = 1300034
-	title = "DEFCON 3"
-	desc = "Increase in force readiness above that required for normal readiness, Air Force ready to mobilize in 15 minutes"
-	picture = "defcon"
-
-	trigger = {
-
-		OR = { ai = yes is_vassal = yes }
-
-		war = no
-		
-		OR = { 
-			AND = { crisis_exist = no OR = { has_country_modifier = cold_war_high has_country_modifier = world_high } }
-
-			AND = { crisis_exist = yes crisis_temperature = 35 NOT = { crisis_temperature = 75 } }
-		}
-		
-		NOT = { has_country_modifier = defcon3 }
-	}
-	
-	option = {
-		name = "Up the ante on our enemies"
-		add_country_modifier = { name = defcon3 duration = -1 }
-		remove_country_modifier = defcon1
-		remove_country_modifier = defcon2
-		remove_country_modifier = defcon4
-		remove_country_modifier = defcon5
-	}
-	
-}
-#Defcon 2
-country_event = {
-	id = 1300035
-	title = "DEFCON 2"
-	desc = "Next step to nuclear war, Armed Forces ready to deploy and engage in less than 6 hours"
-	picture = "defcon"
-
-	trigger = {
-
-		OR = { ai = yes is_vassal = yes war = yes }
-
-		NOT = { AND = { has_country_modifier = defcon1 ai = no is_vassal = no } }
-
-		OR = { 
-			war = yes 
-			AND = { crisis_exist = no has_country_modifier = cold_war_hot }
-			AND = { crisis_exist = yes crisis_temperature = 75 }
-		}
-		
-		NOT = { national_provinces_occupied = 0.40 }
-		
-		NOT = { has_country_modifier = defcon2 }
-		
-	}
-	
-	option = {
-		name = "It's war!"
-		add_country_modifier = { name = defcon2 duration = -1 }
-		remove_country_modifier = defcon1
-		remove_country_modifier = defcon3
-		remove_country_modifier = defcon4
-		remove_country_modifier = defcon5
-	}
-	
-}
-#Defcon 1
-country_event = {
-	id = 1300036
-	title = "DEFCON 1"
-	desc = "Nuclear war is imminent, Maximum readiness"
-	picture = "defcon"
-
-	trigger = {
-
-		OR = { ai = yes is_vassal = yes }
-
-		NOT = { AND = { has_country_modifier = defcon2 ai = no is_vassal = no } }
-
-		OR = { war = yes has_country_modifier = cold_war_hot }
-		
-		national_provinces_occupied = 0.40
-		
-		NOT = { has_country_modifier = defcon1 }
-		
-	}
-	
-	option = {
-		name = "Let the bombs fly!"
-		add_country_modifier = { name = defcon1 duration = -1 }
-		remove_country_modifier = defcon2
-		remove_country_modifier = defcon3
-		remove_country_modifier = defcon4
-		remove_country_modifier = defcon5
-	}
-	
-}
-
 #End of the Capital of the Empire
 country_event = {
 	id = 1400012
@@ -867,13 +677,41 @@ country_event = {
 		name = "Begin the reforms!"
 		prestige = 10
 		ruling_party_ideology = communist_social
-		ai_chance = { factor = 0.9 }
+		ai_chance = { 
+			factor = 0.9
+			modifier = {
+				factor = 0.55
+				RUS = { AND = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } ruling_party_ideology = communist } }
+			}
+			modifier = {
+				factor = 2
+				RUS = { ruling_party_ideology = communist_social }
+			}
+			modifier = {
+				factor = 1.25
+				CHI = { ruling_party_ideology = communist_social }
+			}
+		}
 	}
 	
 	option = {
 		name = "Stick it to the old ways!"
 		prestige = -20
-		ai_chance = { factor = 0.1 }
+		ai_chance = {
+			factor = 0.1
+			modifier = {
+				factor = 10
+				RUS = { AND = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } ruling_party_ideology = communist } }
+			}
+			modifier = {
+				factor = 5.25
+				LUA = { AND = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } ruling_party_ideology = communist } }
+			}
+			modifier = {
+				factor = 5.25
+				CAM = { AND = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } vassal_of = DAI } }
+			}
+		}
 	}
 }
 
@@ -925,46 +763,6 @@ country_event = {
 		ai_chance = { factor = 0.1 }
 	}
 }
-
-#Unification of Yemen
-country_event = {
-	id = 1400017
-	title = "Unification of Yemen"
-	desc = EVTDESC1400017
-	picture = "uniteyemen"
-
-fire_only_once = yes
-
-	trigger = {
-has_country_flag = disabled_for_now
-		tag = YEM
-NOT = { has_country_flag = unite_yemen }
-SYE = { exists = yes }
-
-YEM = { is_vassal = no war = no }
-SYE = { is_vassal = no war = no }
-
-RUS = { NOT = { government = proletarian_dictatorship } }
-YEM = { NOT = { government = proletarian_dictatorship } }	
-		}
-
-mean_time_to_happen = { months = 6 }
-	
-	option = {
-	name = "Unite the Yemeni people!"
-		prestige = 20
-		inherit = SYE
-		set_country_flag = unite_yemen
-			}
-
-	option = {
-	name = "Form a federation!"
-		prestige = 20
-		inherit = SYE
-		set_country_flag = unite_yemen
-			}
-
-		}
 
 #Sterling Area - join
 country_event = {
@@ -1121,39 +919,7 @@ country_event = {
 	}
 	
 }
-#Laos Socialism with Market Characteristics
-country_event = {
-	id = 1400023
-	title = "New Economic Mechanism"
-	desc = EVTDESC1400023
-	picture = "laosmarketreforms"
-	
-	fire_only_once = yes
 
-	trigger = {
-		tag = LUA
-		year = 1960
-		NOT = { has_global_flag = 1992_start_date_flag }
-		NOT = { has_global_flag = blocsenabled }
-		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
-		NOT = { has_global_flag = blocsenabled }
-		ruling_party_ideology = communist
-	}
-	
-	option = {
-		name = "Begin the reforms!"
-		prestige = 50
-		ruling_party_ideology = communist_social
-		ai_chance = { factor = 1 }
-	}
-	
-	option = {
-		name = "Stop the reforms!"
-		prestige = -20
-		ai_chance = { factor = 0 }
-	}
-
-}
 #Central African Empire initiation
 country_event = {
 	id = 1400024
@@ -1318,29 +1084,6 @@ country_event = {
 		consciousness = -2
 		ai_chance = { factor = 0.2 }
 	}
-}
-
-#Election of Trump aka triggering the end of the world
-country_event = {
-	id = 1400029
-	title = "Election of a Populist President"
-	desc = EVTDESC1400029
-	picture = "trump"
-
-	fire_only_once = yes
-
-	trigger = {
-		tag = USA
-		year = 2000
-		ruling_party_ideology = populist
-		election = no
-	}
-
-	option = {
-	name = "It's time to Make America Great Again!"
-		set_country_flag = trump
-	}
-
 }
 
 #Franc Area - join
@@ -1734,28 +1477,7 @@ prestige = -50
 ai_chance = { factor = 0 }
 		}
 }
-#End of the Belgian Empire
-country_event = {
-	id = 1400053
-	title = "The End of the Belgian Empire"
-	desc = "With the loss of our african colonies, we cannot continue to claim to be a great power any more."
-	picture = "belgian_empire"
-	
-trigger = {
-tag = BEL
-NOT = { year = 1990 }
-exists = CNG
-NOT = { is_our_vassal = CNG }
-NOT = { has_global_flag = end_of_the_belgian_empire }
-}
 
-option = {
-name = "It is back to chocolates then?"
-set_global_flag = end_of_the_belgian_empire
-prestige_factor = -0.20
-ai_chance = { factor = 1 }
-		}
-}
 
 #ISS Construction
 country_event = {
@@ -1848,99 +1570,6 @@ remove_country_modifier = eib_principal_member
 		}
 }
 
-#Economic Malaise
-country_event = {
-	id = 1410070
-	title = "$COUNTRY_ADJ$ Economic Malaise"
-	desc = EVTDESC1410070
-	picture = "malaiase"
-	
-	trigger = { 
-
-		NOT = { has_country_flag = industrious_nation }
-
-		NOT = { has_country_flag = deng_xiaoping_selected }
-
-		#Higher Education rate prevents this
-		NOT = { literacy = 0.15 }
-
-		#License Raj removed
-		NOT = { has_country_flag = removed_license_raj }
-
-		OR = { 
-
-			tag = BRZ tag = PHI tag = THI tag = BNG tag = BUR tag = ETH tag = NGE tag = MEX 
-
-			AND = { tag = OG4 is_vassal = yes has_global_flag = blocsenabled }
-
-		}
-
-		NOT = { has_country_modifier = economic_malaise }
-		NOT = { has_country_flag = economic_malaise }
-	}
-
-	option = {
-		name = "We have to shake them out of their laziness!"
-
-		set_country_flag = economic_malaise
-		clr_country_flag = industrious_nation
-	}
-
-}
-
-#Economic Malaise Fades
-country_event = {
-	id = 14100700
-	title = "$COUNTRY_ADJ$ Economic Malaise Fades"
-	desc = EVTDESC14100700
-	picture = "malaiase_fades"
-	
-	trigger = { 
-
-		NOT = { has_country_flag = industrious_nation }
-
-		#Higher Education rate prevents this
-		literacy = 0.15
-		NOT = { literacy = 0.30 }
-
-		has_country_flag = economic_malaise
-	}
-
-	option = {
-		name = "We are on the road to prosperity!"
-		remove_country_modifier = economic_malaise
-		clr_country_flag = economic_malaise
-	}
-
-}
-
-#Post Cold War Russian Economic Malaise
-country_event = {
-	id = 1410071
-	title = "$COUNTRYCULTURE$ Economic Malaise"
-	desc = "Due to years of Communist rule, our workforce has become lazy and inefficient. It will take time before they can get off the Vodka and be productive again."
-	picture = "cw_malaiase"
-	
-	fire_only_once = yes
-	
-	trigger = { 
-		tag = RUS
-		NOT = { government = proletarian_dictatorship }
-		
-		#Higher Education rate prevents this
-		NOT = { literacy = 0.15 }
-		
-		NOT = { has_country_modifier = economic_malaise }
-	}
-
-	option = {
-		name = "We have to shake them out of their laziness!"
-		prestige_factor = -0.05
-		
-		set_country_flag = economic_malaise
-		add_country_modifier = { name = economic_malaise duration = 7300 }
-	}
-}
 
 #Pietro Badoglio War Trials
 country_event = {
@@ -2892,31 +2521,6 @@ prestige = 20
 set_country_flag = thai_comm_end
 remove_country_modifier = thai_emergency
 		}
-}
-
-#Election of George Wallace
-country_event = {
-	id = 1410097
-	title = "Election of a populist President"
-	desc = EVTDESC1410097
-	picture = "wallace"
-	
-	fire_only_once = yes
-	
-	trigger = {
-		tag = USA
-		NOT = { year = 2000 }
-		
-		government = democracy
-		
-		ruling_party_ideology = populist
-		
-		NOT = { has_country_flag = wallace }
-	}
-	option = {
-		name = "It's time to Stand Up for America!"
-		set_country_flag = wallace
-	}
 }
 
 #Rotating Chairmanship of the OIC
@@ -4601,88 +4205,6 @@ ai_chance = { factor = 0 }
 
 }
 
-#Great Wall of America Criticism
-country_event = {
-	id = 1410165
-	title = "Protests over the Great Wall"
-	desc = EVTDESC1410165
-	picture = "wall_anger"
-	
-is_triggered_only = yes
-
-option = {
-name = "The Wall just got 10 feet higher!"
-prestige = -50
-MEX = { country_event = 1410166 } 
-		}
-}
-
-#Great Wall of America Criticism
-country_event = {
-	id = 1410166
-	title = "Should we pay for The Great Wall of America?"
-	desc = EVTDESC1410166
-	picture = "wall_mexico"
-	
-is_triggered_only = yes
-
-option = {
-name = "Pay the idiot President"
-money = -1000000
-prestige = -100
-USA = { country_event = 1410168 }
-ai_chance = { factor = 0 }
-		}
-
-option = {
-name = "HELL NO!"
-prestige = 20
-USA = { country_event = 1410167 }
-ai_chance = { factor = 1 }
-		}
-
-}
-
-#Great Wall of America Criticism
-country_event = {
-	id = 1410167
-	title = "Mexico refuses to pay for The Wall"
-	desc = EVTDESC1410167
-	picture = "wall_mexico"
-	
-is_triggered_only = yes
-
-option = {
-name = "Let the BAD HOMBRES pass"
-prestige = -100
-ai_chance = { factor = 0 }
-		}
-
-option = {
-name = "Impose tarrifs on Mexican products!"
-MEX = { add_country_modifier = { name = tarrifs duration = 3650 } }
-relation = { who = MEX value = -100 }
-ai_chance = { factor = 1 }
-		}
-}
-
-#Great Wall of America Criticism
-country_event = {
-	id = 1410168
-	title = "Mexico accepts to pay for The Wall"
-	desc = EVTDESC1410168
-	picture = "wall_mexico"
-	
-is_triggered_only = yes
-
-option = {
-name = "Mexico is a tremendous country, truly tremendous!"
-prestige = 100
-relation = { who = MEX value = 100 }
-		}
-
-}
-
 #Push for Superstate Union
 country_event = {
 	id = 1410169
@@ -4820,51 +4342,6 @@ remove_country_modifier = closer_union_push
 
 }
 
-#Hyderabad Integration
-country_event = {
-	id = 1410171
-	title = "Integration of Hyderabad"
-	desc = EVTDESC1410171
-	picture = "hyderabad_annexation_reform"
-	
-	
-	trigger = {
-		year = 1946
-		tag = HND
-		has_country_flag = not_disabled
-		controls = 1283
-		NOT = { year = 1990 }
-		NOT = { exists = HYD }
-		NOT = { has_country_flag = hyderabad_integration }
-
-	}
-	
-	option = {
-	name = "Great"
-		release_vassal = HYD
-		HYD = { civilized = no }
-		HYD = { country_event = { id = 1410172 days = 10 } }
-		prestige = 10
-		set_country_flag = hyderabad_integration
-		}
-}
-
-#Hyderabad Integration
-country_event = {
-	id = 1410172
-	title = "Integration of Hyderabad"
-	desc = EVTDESC1410171
-	picture = "hyderabad_annexation_reform"
-	
-	is_triggered_only = yes
-		
-	option = {
-	name = "Bad"
-		any_owned = { secede_province = HND }
-		HYD = { civilized = yes }
-		}
-}
-
 #Gurkha Treaty
 country_event = {
 	id = 1410173
@@ -4913,234 +4390,4 @@ country_event = {
 	}
 
 }
-
-#Deforestation level 1
-country_event = {
-	id = 1410174
-	title = "Light deforestation"
-	desc = EVTDESC1410174
-	picture = "deforestation"
-	
-	
-	trigger = {
-
-OR = { year = 1980 has_country_flag = unlock_the_amazon }
-
-NOT = { has_country_flag = deforestation1 }
-
-NOT = { has_country_flag = deforestation2 }
-
-NOT = { has_country_flag = deforestation3 }
-
-NOT = { has_country_flag = deforestation4 }
-
-NOT = { has_country_flag = deforestation5 }
-
-any_owned_province = { NOT = { has_province_modifier = deforestation2 } }
-
-any_owned_province = { NOT = { has_province_modifier = deforestation3 } }
-
-any_owned_province = { NOT = { has_province_modifier = deforestation4 } }
-
-any_owned_province = { NOT = { has_province_modifier = deforestation5 } }
-
-any_owned_province = { trade_goods = timber }
-
-any_owned_province = { trade_goods = timber NOT = { has_province_modifier = deforestation1 } }
-				}
-
-mean_time_to_happen = { 
-months = 120
-modifier = { factor = 0.5 has_country_flag = unlock_the_amazon }
-}
-	
-	option = {
-	name = "A loss to $COUNTRY$'s biodiversity"
-any_owned = { remove_province_modifier = deforestation1 }
-any_owned = { remove_province_modifier = deforestation2 }
-any_owned = { remove_province_modifier = deforestation3 }
-any_owned = { remove_province_modifier = deforestation4 }
-any_owned = { remove_province_modifier = deforestation5 }
-set_country_flag = deforestation1
-any_owned = { limit = { OR = { trade_goods = timber trade_goods = lumber } } add_province_modifier = { name = deforestation1 duration = -1 } }
-		}
-}
-
-#Deforestation level 2
-country_event = {
-	id = 1410175
-	title = "Minor deforestation"
-	desc = EVTDESC1410174
-	picture = "deforestation"
-	
-	
-	trigger = {
-
-OR = { year = 2010 has_country_flag = unlock_the_amazon }
-
-has_country_flag = deforestation1
-
-NOT = { has_country_flag = deforestation2 }
-
-NOT = { has_country_flag = deforestation3 }
-
-NOT = { has_country_flag = deforestation4 }
-
-NOT = { has_country_flag = deforestation5 }
-
-any_owned_province = { trade_goods = timber }
-
-any_owned_province = { trade_goods = timber NOT = { has_province_modifier = deforestation2 } }
-				}
-
-mean_time_to_happen = { 
-months = 120
-modifier = { factor = 0.5 has_country_flag = unlock_the_amazon }
-}
-	
-	option = {
-	name = "A loss to $COUNTRY$'s biodiversity"
-set_country_flag = deforestation2
-any_owned = { remove_province_modifier = deforestation1 }
-any_owned = { remove_province_modifier = deforestation2 }
-any_owned = { remove_province_modifier = deforestation3 }
-any_owned = { remove_province_modifier = deforestation4 }
-any_owned = { remove_province_modifier = deforestation5 }
-any_owned = { limit = { OR = { trade_goods = timber trade_goods = lumber } } add_province_modifier = { name = deforestation2 duration = -1 } }
-		}
-}
-
-#Deforestation level 3
-country_event = {
-	id = 1410176
-	title = "Moderate deforestation"
-	desc = EVTDESC1410174
-	picture = "deforestation"
-	
-	
-	trigger = {
-
-OR = { year = 2030 has_country_flag = unlock_the_amazon }
-
-has_country_flag = deforestation1
-
-has_country_flag = deforestation2
-
-NOT = { has_country_flag = deforestation3 }
-
-NOT = { has_country_flag = deforestation4 }
-
-NOT = { has_country_flag = deforestation5 }
-
-any_owned_province = { trade_goods = timber }
-
-any_owned_province = { trade_goods = timber NOT = { has_province_modifier = deforestation3 } }
-
-				}
-
-mean_time_to_happen = { 
-months = 120
-modifier = { factor = 0.5 has_country_flag = unlock_the_amazon }
-}
-	
-	option = {
-	name = "A loss to $COUNTRY$'s biodiversity"
-set_country_flag = deforestation3
-any_owned = { remove_province_modifier = deforestation1 }
-any_owned = { remove_province_modifier = deforestation2 }
-any_owned = { remove_province_modifier = deforestation3 }
-any_owned = { remove_province_modifier = deforestation4 }
-any_owned = { remove_province_modifier = deforestation5 }
-any_owned = { limit = { OR = { trade_goods = timber trade_goods = lumber } } add_province_modifier = { name = deforestation3 duration = -1 } }
-		}
-}
-
-#Deforestation level 4
-country_event = {
-	id = 1410177
-	title = "Heavy deforestation"
-	desc = EVTDESC1410174
-	picture = "deforestation"
-	
-	
-	trigger = {
-
-OR = { year = 2050 has_country_flag = unlock_the_amazon }
-
-has_country_flag = deforestation1
-
-has_country_flag = deforestation2
-
-has_country_flag = deforestation3
-
-NOT = { has_country_flag = deforestation4 }
-
-NOT = { has_country_flag = deforestation5 }
-
-any_owned_province = { trade_goods = timber }
-
-any_owned_province = { trade_goods = timber NOT = { has_province_modifier = deforestation4 } }
-				}
-
-mean_time_to_happen = { 
-months = 120
-modifier = { factor = 0.5 has_country_flag = unlock_the_amazon }
-}
-	
-	option = {
-	name = "A loss to $COUNTRY$'s biodiversity"
-set_country_flag = deforestation4
-any_owned = { remove_province_modifier = deforestation1 }
-any_owned = { remove_province_modifier = deforestation2 }
-any_owned = { remove_province_modifier = deforestation3 }
-any_owned = { remove_province_modifier = deforestation4 }
-any_owned = { remove_province_modifier = deforestation5 }
-any_owned = { limit = { OR = { trade_goods = timber trade_goods = lumber } } add_province_modifier = { name = deforestation4 duration = -1 } }
-		}
-}
-
-#Deforestation level 5
-country_event = {
-	id = 1410178
-	title = "Massive deforestation"
-	desc = EVTDESC1410174
-	picture = "deforestation"
-	
-	
-	trigger = {
-
-OR = { year = 2060 has_country_flag = unlock_the_amazon }
-
-has_country_flag = deforestation1
-
-has_country_flag = deforestation2
-
-has_country_flag = deforestation3
-
-has_country_flag = deforestation4
-
-NOT = { has_country_flag = deforestation5 }
-
-any_owned_province = { trade_goods = timber }
-
-any_owned_province = { trade_goods = timber NOT = { has_province_modifier = deforestation5 } }
-				}
-
-mean_time_to_happen = { 
-months = 120
-modifier = { factor = 0.5 has_country_flag = unlock_the_amazon }
-}
-	
-	option = {
-	name = "A loss to $COUNTRY$'s biodiversity"
-set_country_flag = deforestation5
-any_owned = { remove_province_modifier = deforestation1 }
-any_owned = { remove_province_modifier = deforestation2 }
-any_owned = { remove_province_modifier = deforestation3 }
-any_owned = { remove_province_modifier = deforestation4 }
-any_owned = { remove_province_modifier = deforestation5 }
-any_owned = { limit = { OR = { trade_goods = timber trade_goods = lumber } } add_province_modifier = { name = deforestation5 duration = -1 } }
-		}
-}
-
 

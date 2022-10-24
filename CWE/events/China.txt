@@ -1179,3 +1179,476 @@ country_event = {
 	}
 	
 }
+
+#Chinese democracy
+country_event = {
+	id = 1512011
+title = "Three Principles of the People"
+	desc = EVTDESC1512011
+	picture = "chinese_democracy"
+
+fire_only_once = yes
+
+	trigger = {
+		tag = CHI
+		government = proletarian_dictatorship
+		has_country_flag = chinese_democracy
+		NOT = { has_country_modifier = chinese_democracy }
+	}
+
+	mean_time_to_happen = { 
+		months = 6
+	}
+	
+	option = {
+		name = "Let us walk on the path of Chinese Democracy!"
+		prestige = 100
+		government = socialist_democracy
+		country_event = 800054
+
+		ai_chance = { factor = 0.7 }
+	}
+
+	option = {
+		name = "Transition to a full democracy"
+		prestige = 200
+		government = democracy
+		country_event = 800054
+		ruling_party_ideology = liberal
+
+		random_country = { limit = { tag = HKG is_our_vassal = THIS government = sar_government } CHI = { inherit = HKG } }
+
+		random_country = { limit = { tag = MCA is_our_vassal = THIS government = sar_government } CHI = { inherit = MCA } }
+
+		ai_chance = { factor = 0.2 }
+	}
+
+	option = {
+		name = "Renegade on our promises!"
+		prestige_factor = -0.25
+
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+
+		any_owned = { 
+			limit = { 
+				OR = { 
+					is_core = FUJ
+					is_core = MCK
+					is_core = KWA
+					is_core = YNN
+					is_core = GGX
+					is_core = TIB
+					is_core = ETS
+					is_core = IMN 
+				}
+			} 
+
+			add_province_modifier = { name = nationalist_agitation duration = 10000 }
+		}
+
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+#1959 Tibetan uprising
+country_event = {
+	id = 1512023
+	title = "$YEAR$ Tibetan uprising"
+	desc = EVTDESC1512023
+	picture = "tib_sar_chance"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = CHI
+		year = 1959
+		NOT = { year = 1990 }
+
+		government = proletarian_dictatorship
+		is_vassal = no
+
+		is_possible_vassal = TIB
+	}
+
+	mean_time_to_happen = { 
+		months = 3
+	}
+
+	option = {
+		name = "Give in to the demand for self-autonomy in Tibet"
+		release_vassal = TIB
+		diplomatic_influence = { who = TIB value = 200 }
+		TIB = { 
+			government = sar_government
+			country_event = 800054 
+			ruling_party_ideology = communist
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
+	option = {
+		name = "Crush the rebellion!"
+		prestige = -50
+		
+		random_owned = {
+			limit = { owner = { ai = no } }
+			owner = {
+				release = TIB
+				TIB = { government = absolute_monarchy ruling_party_ideology = traditionalist country_event = 800050 }
+				CHI = {
+					war = {
+						target = TIB
+						attacker_goal = { casus_belli = annex_core_country }
+						defender_goal = { casus_belli = status_quo }
+						call_ally = no
+					}
+				}
+			}
+		}
+		
+		random_owned = {
+			limit = { owner = { ai = yes } }
+			owner = {
+				any_owned = {
+					limit = { is_core = TIB is_state_capital = no }
+					change_controller = REB
+					add_province_modifier = { name = nationalist_agitation duration = 1825 }
+				}
+			}
+		}
+
+		ai_chance = { factor = 0.9 }
+	}
+
+}
+
+#Return of Hong Kong choices - FROM is ENG or FBU
+country_event = {
+	id = 1512026
+	title = "The Return of Hong Kong"
+	desc = EVTDESC1512026
+	picture = "CHI_HKG_choices"
+
+	is_triggered_only = yes
+
+
+	option = {
+		name = "Propose the One Country, Two Systems plan"
+		prestige_factor = 0.2
+		1496 = { remove_core = XEU }
+		1496 = { remove_core = ENG remove_core = FBU }
+		1496 = { add_core = CHI }
+		FROM = { country_event = 1002801 }
+		FROM = { remove_accepted_culture = chinese_cantonese }
+		ai_chance = { factor = 0.7 }
+	}
+
+	option = {
+		name = "Agree to the British plan to retain administration rights"
+		prestige_factor = -0.1
+		relation = { who = FROM value = 50 }
+		1496 = { remove_core = XEU }
+		1496 = { remove_core = ENG remove_core = FBU }
+		1496 = { add_core = CHI }
+		FROM = { 
+			remove_accepted_culture = chinese_cantonese
+			inherit = HKG
+			release_vassal = HKG
+			HKG = { government = sar_government country_event = 800054 }
+		}
+
+		diplomatic_influence = { who = HKG value = 200 }
+
+		ai_chance = { factor = 0.2 }
+	}
+
+	option = {
+		name = "Grant the British an indefinite lease over the New Territories"
+		prestige_factor = -0.2
+		1496 = { add_core = CHI }
+		any_greater_power = { relation = { who = THIS value = 200 } }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+
+####	KMT China	####
+
+#Break-up of KMT controlled China
+country_event = {
+	id = 1512000
+	title = "Unrest in $COUNTRY$"
+	desc = EVTDESC1512000
+	picture = "kmt_federation"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = CHI
+		
+		#1975 onwards
+		has_country_flag = chiang_kai_shek_has_died
+		
+		government = populist_dictatorship
+		war = no
+		is_vassal = no
+		
+		#KMT is in charge
+		ruling_party_ideology = conservative
+		
+		OR = {
+			is_possible_vassal = FUJ
+			is_possible_vassal = MCK
+			is_possible_vassal = KWA
+			is_possible_vassal = YNN
+			is_possible_vassal = GGX
+			is_possible_vassal = TIB
+			is_possible_vassal = ETS
+			is_possible_vassal = IMN
+			is_possible_vassal = TAI
+		}
+		
+	}
+
+	mean_time_to_happen = { 
+		months = 6
+	}
+
+	option = {
+		name = "Grant the regions autonomy"
+		prestige = 50
+		
+		#KMT supporters are not happy
+		any_pop = { scaled_militancy = { factor = 10 ideology = conservative } }
+		
+		CHI_1552 = { add_core = MCK }
+		RUS_2589 = { add_core = MCK }
+		CHI_1479 = { add_core = MCK }
+		RUS_1072 = { add_core = MCK }
+
+		random_owned = { limit = { owner = { is_possible_vassal = FUJ } } owner = { release_vassal = FUJ diplomatic_influence = { who = FUJ value = 200 } FUJ = { government = sar_government country_event = 800054 ruling_party_ideology = conservative } } }
+		random_owned = { limit = { owner = { is_possible_vassal = MCK } } owner = { release_vassal = MCK diplomatic_influence = { who = MCK value = 200 } MCK = { government = sar_government country_event = 800054 ruling_party_ideology = conservative } } }
+		random_owned = { limit = { owner = { is_possible_vassal = KWA } } owner = { release_vassal = KWA diplomatic_influence = { who = KWA value = 200 } KWA = { government = sar_government country_event = 800054 ruling_party_ideology = conservative } } }
+		random_owned = { limit = { owner = { is_possible_vassal = YNN } } owner = { release_vassal = YNN diplomatic_influence = { who = YNN value = 200 } YNN = { government = sar_government country_event = 800054 ruling_party_ideology = conservative } } }
+		random_owned = { limit = { owner = { is_possible_vassal = GGX } } owner = { release_vassal = GGX diplomatic_influence = { who = GGX value = 200 } GGX = { government = sar_government country_event = 800054 ruling_party_ideology = conservative } } }
+		random_owned = { limit = { owner = { is_possible_vassal = TIB } } owner = { release_vassal = TIB diplomatic_influence = { who = TIB value = 200 } TIB = { government = sar_government country_event = 800054 ruling_party_ideology = conservative } } }
+		random_owned = { limit = { owner = { is_possible_vassal = ETS } } owner = { release_vassal = ETS diplomatic_influence = { who = ETS value = 200 } ETS = { government = sar_government country_event = 800054 ruling_party_ideology = conservative } } }
+		random_owned = { limit = { owner = { is_possible_vassal = IMN } } owner = { release_vassal = IMN diplomatic_influence = { who = IMN value = 200 } IMN = { government = sar_government country_event = 800054 ruling_party_ideology = conservative } } }
+		random_owned = { limit = { owner = { is_possible_vassal = TAI } } owner = { release_vassal = TAI diplomatic_influence = { who = TAI value = 200 } TAI = { government = sar_government country_event = 800054 ruling_party_ideology = conservative } } }
+
+		ai_chance = { factor = 0.2 }
+	}
+
+	option = {
+		name = "Transition towards democratic rule!"
+		prestige = 100
+		government = democracy
+		country_event = 800054
+		
+		add_country_modifier = { name = revolution_chaos duration = 7300 }
+		
+		CHI_1552 = { add_core = MCK }
+		RUS_2589 = { add_core = MCK }
+		CHI_1479 = { add_core = MCK }
+		RUS_1072 = { add_core = MCK }
+		
+		#Nationalist support rises
+		any_owned = { 
+			limit = { 
+				OR = { 
+					is_core = FUJ
+					is_core = MCK
+					is_core = KWA
+					is_core = YNN
+					is_core = GGX
+					is_core = TIB
+					is_core = ETS
+					is_core = IMN 
+					is_core = TAI
+				} 
+			} 
+			add_province_modifier = { name = nationalist_agitation duration = 3650 } 
+			any_pop = { militancy = 10 ideology = { factor = 0.25 value = nationalist } }
+		}
+		ai_chance = { factor = 0.6 }
+	}
+	
+	option = {
+		name = "Stick to the status quo!"
+		
+		CHI_1552 = { add_core = MCK }
+		RUS_2589 = { add_core = MCK }
+		CHI_1479 = { add_core = MCK }
+		RUS_1072 = { add_core = MCK }
+
+		random_owned = { limit = { owner = { is_possible_vassal = FUJ } } owner = { release = FUJ FUJ = { government = presidential_dictatorship country_event = 800050 ruling_party_ideology = nationalist } CHI = { war = { target = FUJ attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } call_ally = no } } } }
+		random_owned = { limit = { owner = { is_possible_vassal = MCK } } owner = { release = MCK MCK = { government = presidential_dictatorship country_event = 800050 ruling_party_ideology = nationalist } CHI = { war = { target = MCK attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } call_ally = no } } } }
+		random_owned = { limit = { owner = { is_possible_vassal = KWA } } owner = { release = KWA KWA = { government = presidential_dictatorship country_event = 800050 ruling_party_ideology = nationalist } CHI = { war = { target = KWA attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } call_ally = no } } } }
+		random_owned = { limit = { owner = { is_possible_vassal = YNN } } owner = { release = YNN YNN = { government = presidential_dictatorship country_event = 800050 ruling_party_ideology = nationalist } CHI = { war = { target = YNN attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } call_ally = no } } } }
+		random_owned = { limit = { owner = { is_possible_vassal = GGX } } owner = { release = GGX GGX = { government = presidential_dictatorship country_event = 800050 ruling_party_ideology = nationalist } CHI = { war = { target = GGX attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } call_ally = no } } } }
+		random_owned = { limit = { owner = { is_possible_vassal = TIB } } owner = { release = TIB TIB = { government = presidential_dictatorship country_event = 800050 ruling_party_ideology = nationalist } CHI = { war = { target = TIB attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } call_ally = no } } } }
+		random_owned = { limit = { owner = { is_possible_vassal = ETS } } owner = { release = ETS ETS = { government = presidential_dictatorship country_event = 800050 ruling_party_ideology = nationalist } CHI = { war = { target = ETS attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } call_ally = no } } } }
+		random_owned = { limit = { owner = { is_possible_vassal = IMN } } owner = { release = IMN IMN = { government = presidential_dictatorship country_event = 800050 ruling_party_ideology = nationalist } CHI = { war = { target = IMN attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } call_ally = no } } } }
+		random_owned = { limit = { owner = { is_possible_vassal = TAI } } owner = { release = TAI TAI = { government = presidential_dictatorship country_event = 800050 ruling_party_ideology = nationalist } CHI = { war = { target = TAI attacker_goal = { casus_belli = annex_core_country } defender_goal = { casus_belli = status_quo } call_ally = no } } } }
+
+		ai_chance = { factor = 0.2 }
+	}
+
+}
+
+#Death of Deng Xiaoping
+country_event = {
+	id = 1610014
+	title = "Death of Deng Xiaoping"
+	desc = EVTDESC1610014
+	picture = "deng_xiaoping_funeral"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = CHI
+		has_country_flag = deng_xiaoping_selected
+		year = 1997
+		government = proletarian_dictatorship
+		ruling_party_ideology = communist_social
+	}
+
+	mean_time_to_happen = { 
+		months = 2
+	}
+
+	option = {
+		name = "A great leader has left us"
+		any_pop = { militancy = -5 }
+	}
+
+}
+
+#Deng Xiaoping's successor
+country_event = {
+	id = 1610015
+	title = "Deng Xiaoping's Successor"
+	desc = EVTDESC1610015
+	picture = "deng_xiaoping_successor"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = CHI
+		has_country_flag = deng_xiaoping_selected
+		year = 1989 
+		NOT = { year = 1992 }
+		government = proletarian_dictatorship
+		ruling_party_ideology = communist_social
+	}
+
+	mean_time_to_happen = { 
+		months = 2
+	}
+
+	option = {
+		name = "Select Jiang Zemin"
+		add_country_modifier = { name = soviet_stability duration = 3650 }
+		set_country_flag = jiang_zemin_selected
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "Select Zhao Ziyang"
+		political_reform = open_opinion
+		political_reform = limited_meetings
+		political_reform = firewall_publishing
+		political_reform = minorities_equal_rights
+		ai_chance = { factor = 0.2 }
+	}
+
+}
+
+#Jiang Zemin's successor
+country_event = {
+	id = 1610016
+	title = "Jiang Zemin's Successor"
+	desc = EVTDESC1610016
+	picture = "jiang_zemin_successor"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = CHI
+		has_country_flag = jiang_zemin_selected
+		year = 2002
+		government = proletarian_dictatorship
+		ruling_party_ideology = communist_social
+	}
+
+	mean_time_to_happen = { 
+		months = 11
+	}
+
+	option = {
+		name = "Select Hu Jingtao"
+		set_country_flag = hu_jingtao_selected
+		add_country_modifier = { name = soviet_stability duration = 3650 }
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "Select Wen Jiabao"
+		social_reform = good_pensions
+		social_reform = good_health_care
+		social_reform = generous_subsidies
+		social_reform = eight_work_hours
+		social_reform = unlimited_education
+		social_reform = good_public_housing
+		ai_chance = { factor = 0.2 }
+	}
+
+}
+
+#Hu Jingtao's successor
+country_event = {
+	id = 1610017
+	title = "Hu Jingtao's Successor"
+	desc = EVTDESC1610017
+	picture = "hu_jingtao_successor"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = CHI
+		has_country_flag = hu_jingtao_selected
+		year = 2012
+		government = proletarian_dictatorship
+		ruling_party_ideology = communist_social
+	}
+
+	mean_time_to_happen = { 
+		months = 11
+	}
+
+	option = {
+		name = "Select Xi Jingping"
+		add_country_modifier = { name = reducing_corruption duration = 1825 }
+
+		random_owned = { limit = { owner = { has_country_modifier = low_government_corruption } } 
+		owner = { remove_country_modifier = low_government_corruption add_country_modifier = { name = minimal_government_corruption duration = -1 } } }
+
+		random_owned = { limit = { owner = { has_country_modifier = medium_government_corruption } } 
+		owner = { remove_country_modifier = medium_government_corruption add_country_modifier = { name = low_government_corruption duration = -1 } } }
+
+		random_owned = { limit = { owner = { has_country_modifier = large_government_corruption } } 
+		owner = { remove_country_modifier = large_government_corruption add_country_modifier = { name = medium_government_corruption duration = -1 } } }
+
+		random_owned = { limit = { owner = { has_country_modifier = massive_government_corruption } } 
+		owner = { remove_country_modifier = massive_government_corruption add_country_modifier = { name = large_government_corruption duration = -1 } } }
+
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "Select Bo Xilai"
+		ai_chance = { factor = 0.2 }
+	}
+
+}
