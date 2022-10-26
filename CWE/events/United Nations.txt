@@ -1,3 +1,113 @@
+#Opening of the UN Headquarters
+country_event = {
+	id = 1412125
+	title = "New United Nations Headquarters"
+	desc = EVTDESC1412125
+	picture = "un_hq"
+
+	fire_only_once = yes
+
+	trigger = {
+		year = 1952
+		NOT = { year = 1990 }
+		war = no
+		any_owned_province = { has_province_modifier = un_headquarters }
+	}
+
+	mean_time_to_happen = { months = 8 }
+
+	option = {
+		name = "For the advancement of world peace"
+		prestige = 100
+	}
+
+}
+
+####	War Crime Trials	####
+#War Crimes Trial - start
+country_event = {
+	id = 1412136
+title = "UN demands punishment for $COUNTRY$ war crimes"
+	desc = EVTDESC1412136
+	picture = "defeat_day"
+	
+trigger = { 
+war = no
+is_vassal = no
+has_recently_lost_war = yes
+is_disarmed = yes
+badboy = 0.5
+NOT = { has_country_modifier = unsc_permanent_member }
+NOT = { has_country_modifier = war_crimes_trial }
+NOT = { has_country_modifier = un_watch_list }
+}
+
+mean_time_to_happen = { months = 6 }
+
+option = {
+name = "We are now in the hands of the UNSC!"
+any_country = { limit = { has_country_modifier = unsc_permanent_member } country_event = 1412137 }
+add_country_modifier = { name = un_watch_list duration = 2190 }
+		}
+}
+
+#War Crimes Trial - UNSC
+country_event = {
+	id = 1412137
+title = "War Trial for $FROMCOUNTRY$'s War Crimes?"
+	desc = EVTDESC1412137
+	picture = "war_crimes_tribunal"
+
+is_triggered_only = yes
+
+option = {
+name = "Support!"
+FROM = { prestige = -50 }
+ai_chance = { factor = 1 
+modifier = { 
+factor = 0 
+relation = { who = FROM value = 100 } 
+} 
+	}
+}
+
+option = {
+name = "Veto!"
+FROM = { add_country_modifier = { name = trials_vetoed duration = 2190 } }
+FROM = { prestige = 10 }
+ai_chance = { factor = 1 
+modifier = { factor = 0 
+NOT = { relation = { who = FROM value = 100 } }
+} 
+	}
+}
+
+}
+
+#War Crimes Trial - Finish
+country_event = {
+	id = 1412138
+title = "War Trial for $COUNTRY_ADJ$ War Crimes"
+	desc = EVTDESC1412138
+	picture = "war_crimes_tribunal"
+	
+trigger = { 
+NOT = { has_country_modifier = trials_vetoed }
+NOT = { has_country_modifier = war_crimes_trial }
+has_country_modifier = un_watch_list
+}
+
+major = yes
+
+mean_time_to_happen = { months = 6 }
+
+option = {
+name = "This is a show trial!"
+prestige_factor = -0.2
+add_country_modifier = { name = war_crimes_trial duration = 2190 }
+		}
+}
+
 #Vassals get kicked out of the UN GA
 country_event = {
 	id = 1971281
