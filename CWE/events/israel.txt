@@ -2,6 +2,33 @@
 #Zionism and establishment of Israel
 ###########################################################################
 
+#ISR population boom
+country_event = {
+	id = 1200236
+	title = "Israeli Population Boom"
+	desc = "The war is over and the population is booming, many people are starting to feel that it is ok to have larger families."
+	picture = "germanpopulationboom"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = ISR
+		year = 1946
+		NOT = { year = 1989 }
+		war = no
+		NOT = { has_country_flag = isrpopboom }
+
+	}
+	
+	option = {
+		name = "A higher birthrate is always good"
+		any_owned = {
+			add_province_modifier = { name = family_values1 duration = 1000 }
+		}
+		set_country_flag = isrpopboom
+	}
+}
+
 country_event = {
   id = 8007721
   title = EVT_8007721_NAME
@@ -2474,5 +2501,137 @@ country_event = {
 	}
 
 	#TODO: option 5, beg Soviets for Aliyah in exchange for becoming communist. Unfortunately, impossible to disable the choice if the Aliyah already happened, so Israel could become communist after fall of USSR
+
+}
+
+
+#Vela Incident, initiate ISR
+country_event = {
+	id = 1610023
+title = "Israeli Nuclear Program"
+	desc = EVTDESC1610023
+	picture = "vela_incident"
+
+fire_only_once = yes
+
+trigger = {
+year = 1979
+NOT = { year = 1990 }
+tag = ISR
+is_vassal = no
+war = no
+money = 2000000
+
+NOT = { has_country_flag = neutrality }
+
+SAF = { exists = yes government = nationalist_dictatorship is_vassal = no war = no }
+
+NOT = { war_policy = pacifism }
+
+NOT = { has_country_modifier = develop_atomic_bomb }
+NOT = { has_country_modifier = develop_hydrogen_bomb }
+NOT = { has_country_modifier = atomic_nation }	
+NOT = { has_country_modifier = hydrogen_nation }
+
+}
+
+mean_time_to_happen = { 
+months = 8
+}
+
+option = {
+name = "Build nuclear weapons!"
+remove_country_modifier = non_proliferation_treaty
+badboy = 5
+money = -2000000
+add_country_modifier = { name = atomic_nation duration = -1 }
+set_country_flag = vela_incident
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Perhaps next time?"
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Vela Incident, SAF response
+country_event = {
+	id = 1610024
+title = "South African Nuclear Program"
+	desc = EVTDESC1610023
+	picture = "vela_incident"
+
+fire_only_once = yes
+
+trigger = {
+year = 1979
+NOT = { year = 1990 }
+tag = SAF
+is_vassal = no
+war = no
+money = 2000000
+government = nationalist_dictatorship
+
+ISR = { has_country_flag = vela_incident }
+
+NOT = { has_country_modifier = develop_atomic_bomb }
+NOT = { has_country_modifier = develop_hydrogen_bomb }
+NOT = { has_country_modifier = atomic_nation }	
+NOT = { has_country_modifier = hydrogen_nation }
+
+}
+
+mean_time_to_happen = { 
+months = 1
+}
+
+option = {
+name = "Build nuclear weapons with Israel!"
+remove_country_modifier = non_proliferation_treaty
+badboy = 5
+money = -2000000
+relation = { who = ISR value = 200 }
+add_country_modifier = { name = atomic_nation duration = -1 }
+
+random_country = { 
+limit = { tag = USA rank = 2 government = democracy }
+country_event = 1610025
+}
+
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Perhaps next time?"
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Vela Incident, USA response
+country_event = {
+	id = 1610025
+title = "The Vela Incident of $YEAR$"
+	desc = EVTDESC1610023
+	picture = "communist_cleanup"
+
+is_triggered_only = yes
+
+major = yes
+
+option = {
+name = "Condemn South Africa and Israel!"
+relation = { who = SAF value = -100 }
+relation = { who = ISR value = -100 }
+ai_chance = { factor = 0.75 }
+		}
+
+option = {
+name = "Say nothing"
+prestige = -100
+ai_chance = { factor = 0.25 }
+		}
 
 }

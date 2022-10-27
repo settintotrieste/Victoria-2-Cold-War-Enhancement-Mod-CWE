@@ -1777,6 +1777,76 @@ clr_province_flag = chemical_before
 
 ####### Corruption - Government #######
 
+#Anti-Corruption Drive Backlash
+country_event = {
+  id = 1512323
+  title = "Anti-Corruption Drive Backlash"
+  desc = EVTDESC1512323
+  picture = "anti_corruption_drive"
+
+is_triggered_only = yes
+
+  option = {
+	name = "We will drain the swamp!"	
+any_pop = { limit = { OR = { type = aristocrats type = officers type = bureaucrats } } militancy = 10 }
+		country_event = 100100
+  }
+
+}
+
+country_event = {
+	id = 6666
+	title = "Massive Corruption!"
+	desc = "The excesses of power by our Head of State has caused corruption to take root in our country."
+	picture = "corruption"
+	
+	
+	trigger = {
+		war = no
+		#NOT = { government = absolute_monarchy }
+		#NOT = { government = democracy }
+		#NOT = { government = proletarian_dictatorship }
+		#NOT = { government = proletarian_dictatorship1 }
+		#NOT = { government = sar_government }
+		#NOT = { government = colonial_government }
+		#NOT = { government = hms_government }
+		NOT = { has_country_flag = corruptionbegins }
+		#NOT = { tag = CHI }
+OR = { AND = { tag = IDO ai = yes } AND = { tag = BRZ year = 1980 ai = yes } }
+	}
+	
+	option = {
+		name = "That is bad news!"
+		
+add_country_modifier = { name = massive_corruption
+duration = 12410 }
+		
+		set_country_flag = corruptionbegins
+			}
+}
+
+country_event = {
+	id = 6667
+	title = "Corruption has been reduced!"
+	desc = "The excesses of power by our previous Head of State has caused corruption to take root in our country but with the overthrow of the regime corruption has been brought back to more resonable levels."
+	picture = "corruption"
+	
+	
+	trigger = {
+OR = { AND = { tag = IDO ai = no } AND = { tag = BRZ ai = no } }
+		#crime_fighting = 0.30
+		has_country_flag = corruptionbegins
+	}
+	
+	option = {
+		name = "That is good news!"
+		
+		remove_country_modifier = massive_corruption
+		
+		clr_country_flag = corruptionbegins
+			}
+}
+
 #Massive Governmental Corruption
 country_event = {
 	picture = "corruption"
@@ -3460,80 +3530,6 @@ option = {
 	name = "Don't buy any"
 ai_chance = { factor = 1 modifier = { factor = 0 
 money = 500000 }  }
-			}
-
-}
-
-#Select G8 Presidency
-country_event = {
-	id = 1410145
-	title = "Presidency of the G8"
-	desc = "As we are the most powerful nation in the G8, we get to have the first Presidency. The Presidency only last for 5 years."
-	picture = "fbu_union"
-
-	major = yes
-
-trigger = {
-rank = 1
-has_country_modifier = g8
-age_of_protests = 1
-NOT = { has_global_flag = g8_president_selected }
-}
-	
-mean_time_to_happen = { 
-months = 8
-}
-
-option = {
-	name = "Excellent!"
-set_global_flag = g8_president_selected
-set_country_flag = g8_president_now
-add_country_modifier = { name = g8_chairmanship duration = 1825 }
-			}
-
-}
-
-#Select G8 New President
-country_event = {
-	id = 1410146
-	title = "Presidency of the G8"
-	desc = "The Presidency of the G8 is rotating again and a new country will be been chosen to the President for the next 5 years."
-	picture = "g8_president"
-
-
-trigger = {
-NOT = { has_country_modifier = g8_chairmanship }
-has_country_modifier = g8
-has_country_flag = g8_president_now
-has_global_flag = g8_president_selected
-}
-	
-
-option = {
-	name = "We had a good run!"
-remove_country_modifier = g8_chairmanship
-clr_country_flag = g8_president_now
-random_country = { limit = { AND = { has_country_modifier = g8 is_greater_power = yes } } country_event = 1410147 }
-			}
-
-}
-
-#Select G8 New President
-country_event = {
-	id = 1410147
-	title = "Selected as Next President of the G8"
-	desc = "The Presidency of the G8 is rotating again and we have been chosen to the President for the next 5 years."
-	picture = "fbu_union"
-
-major = yes
-
-is_triggered_only = yes	
-
-option = {
-	name = "Excellent!"
-prestige = 10
-set_country_flag = g8_president_now
-add_country_modifier = { name = g8_chairmanship duration = 1825 }
 			}
 
 }

@@ -361,3 +361,264 @@ country_event = {
 		}
 	}
 }
+
+#Colonial War CB - Option for the Overlord to annex - vassal
+country_event = {
+	id = 1610138
+	title = "Resumption of Colonial Rule"
+	desc = EVTDESC1610138
+	picture = "failed_colonial_war"
+
+	trigger = { 
+		has_country_flag = lost_colonial_war
+		is_vassal = yes
+	}
+
+	option = {
+		name = "We are a colony once more"
+		
+		clr_country_flag = lost_colonial_war
+		
+		#Choice for the colonial power to annex or create a vassal
+		overlord = { country_event = 1610139 }
+	}
+
+}
+
+#Colonial War CB - Option for the Overlord to annex - overlord
+country_event = {
+	id = 1610139
+	title = "Restoration of $COUNTRY_ADJ$ $FROMCOUNTRY$"
+	desc = EVTDESC1610139
+	picture = "failed_colonial_war"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Reinstate direct rule from $CAPITAL$!"
+
+		FROM = { any_pop = { militancy = 5 consciousness = 5 } }
+
+		FROM = { civilized = no }
+		
+		inherit = FROM
+		
+		FROM = { civilized = yes }
+
+		ai_chance = { 
+			factor = 0.9 
+			modifier = { factor = 0 FROM = { ai = no } }
+		}
+	}
+
+	option = {
+		name = "Grant the Colony some autonomy"
+		prestige_factor = -0.01
+		
+		badboy = -3
+		
+		relation = { who = FROM value = 200 }
+		diplomatic_influence = { who = FROM value = 200 }
+		
+		FROM = { 
+			government = colonial_government
+			country_event = 800054
+			ruling_party_ideology = big_tent
+		}
+		
+		ai_chance = { 
+			factor = 0.1 
+			modifier = { factor = 0 FROM = { ai = yes } }
+		}
+	}
+
+}
+
+#Stop Independence CB - Option for the Overlord to annex - vassal
+country_event = {
+	id = 1610140
+	title = "Resumption of Foreign Rule"
+	desc = EVTDESC1610140
+	picture = "failed_indy_war"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "We are a subject nation once more"
+		
+		clr_country_flag = lost_colonial_war
+		
+		#Choice for the colonial power to annex or create a vassal
+		overlord = { country_event = 1610141 }
+	}
+
+}
+
+#Stop Independence CB - Option for the Overlord to annex - overlord
+country_event = {
+	id = 1610141
+	title = "Restoration of $COUNTRY_ADJ$ $FROMCOUNTRY$"
+	desc = EVTDESC1610141
+	picture = "failed_indy_war"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Enact direct rule from $CAPITAL$!"
+		
+		badboy = 5
+		
+		#Same continent, just inherit
+		random_owned = {
+			limit = {
+				owner = {
+					OR = {
+						AND = { capital_scope = { continent = europe } FROM = { capital_scope = { continent = europe } } }
+						AND = { capital_scope = { continent = asia } FROM = { capital_scope = { continent = asia } } }
+						AND = { capital_scope = { continent = africa } FROM = { capital_scope = { continent = africa } } }
+						AND = { capital_scope = { continent = mena } FROM = { capital_scope = { continent = mena } } }
+						AND = { capital_scope = { continent = north_america } FROM = { capital_scope = { continent = north_america } } }
+						AND = { capital_scope = { continent = south_america } FROM = { capital_scope = { continent = south_america } } }
+						AND = { capital_scope = { continent = oceania } FROM = { capital_scope = { continent = oceania } } }
+					}
+				}
+			}
+			owner = { 
+				FROM = { any_pop = { militancy = 5 consciousness = 5 } }
+				THIS = { inherit = FROM }
+			}
+		
+		}
+		
+		#Different continent, become colonial provinces
+		random_owned = {
+			limit = {
+				owner = {
+					NOT = { 
+						OR = {
+							AND = { capital_scope = { continent = europe } FROM = { capital_scope = { continent = europe } } }
+							AND = { capital_scope = { continent = asia } FROM = { capital_scope = { continent = asia } } }
+							AND = { capital_scope = { continent = africa } FROM = { capital_scope = { continent = africa } } }
+							AND = { capital_scope = { continent = mena } FROM = { capital_scope = { continent = mena } } }
+							AND = { capital_scope = { continent = north_america } FROM = { capital_scope = { continent = north_america } } }
+							AND = { capital_scope = { continent = south_america } FROM = { capital_scope = { continent = south_america } } }
+							AND = { capital_scope = { continent = oceania } FROM = { capital_scope = { continent = oceania } } }
+						}
+					}
+				}
+			}
+			owner = { 
+				FROM = { any_pop = { militancy = 5 consciousness = 5 } }
+				FROM = { civilized = no }
+				THIS = { inherit = FROM }
+				FROM = { civilized = yes }
+			}
+		
+		}
+
+		ai_chance = { 
+			factor = 0.9 
+			modifier = { factor = 0 FROM = { ai = no } }
+		}
+	}
+
+	option = {
+		name = "Let them remain autonomous"
+		prestige_factor = -0.01
+		
+		relation = { who = FROM value = 200 }
+		diplomatic_influence = { who = FROM value = 200 }
+		
+		#Set Gov type
+		random_owned = {
+			limit = { 
+				owner = {  
+					OR = { 
+						government = democracy
+						government = democracy1
+					} 
+				} 
+			}
+			owner = {
+				FROM = { 
+					government = democracy
+					country_event = 800054
+					ruling_party_ideology = big_tent
+				}
+			}
+		}
+		random_owned = {
+			limit = { 
+				owner = {  
+					OR = { 
+						government = absolute_monarchy
+						government = hms_government
+						government = hms_government1
+					} 
+				} 
+			}
+			owner = {
+				FROM = {
+					government = hms_government
+					country_event = 800054
+					ruling_party_ideology = big_tent
+				}
+			}
+		}
+		random_owned = {
+			limit = { 
+				owner = {  
+					OR = { 
+						government = presidential_dictatorship
+						government = populist_dictatorship
+						government = nationalist_dictatorship
+					} 
+				} 
+			}
+			owner = {
+				FROM = {
+					government = presidential_dictatorship
+					country_event = 800050
+					ruling_party_ideology = conservative
+				}
+			}
+		}
+		random_owned = {
+			limit = { 
+				owner = {  
+					OR = { 
+						government = proletarian_dictatorship
+						government = proletarian_dictatorship1
+					} 
+				} 
+			}
+			owner = {
+				FROM = {
+					government = proletarian_dictatorship
+					country_event = 800052
+					ruling_party_ideology = communist
+				}
+			}
+		}
+		random_owned = {
+			limit = { 
+				owner = {  
+					government = socialist_democracy
+				} 
+			}
+			owner = {
+				FROM = {
+					government = socialist_democracy
+					country_event = 800054
+					ruling_party_ideology = communist_social
+				}
+			}
+		}
+		
+		ai_chance = { 
+			factor = 0.1 
+			modifier = { factor = 0 FROM = { ai = yes } }
+		}
+	}
+
+}

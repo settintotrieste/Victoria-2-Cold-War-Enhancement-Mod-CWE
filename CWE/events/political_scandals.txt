@@ -4,6 +4,120 @@
 # August 2012								#
 #############################################
 
+#Generic Corruption Scandal
+country_event = {
+	id = 1610039
+title = "Major Corruption Scandal"
+	desc = EVTDESC1610039
+	picture = "major_corruption_scandal"
+
+trigger = {
+
+NOT = { has_country_modifier = leadership_chaos }
+NOT = { has_country_modifier = ruling_party_scandal }
+
+OR = { 
+has_country_modifier = massive_government_corruption has_country_modifier = large_government_corruption has_country_modifier = medium_government_corruption has_country_modifier = low_government_corruption 
+}
+
+OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 government = sar_government government = mandate_government government = socialist_democracy }
+}
+
+mean_time_to_happen = { 
+months = 12
+modifier = { factor = 2 OR = { has_country_modifier = large_government_corruption has_country_modifier = large_societal_corruption } }
+modifier = { factor = 3 OR = { has_country_modifier = medium_government_corruption has_country_modifier = medium_government_corruption } }
+modifier = { factor = 4 OR = { has_country_modifier = low_government_corruption has_country_modifier = low_government_corruption } }
+
+modifier = { factor = 3 has_country_modifier = nepohigh }
+modifier = { factor = 2 has_country_modifier = nepomedium }
+modifier = { factor = 0.5 election = yes }
+
+modifier = { factor = 3 publishing_rights = censored_publishing }
+
+modifier = { factor = 2 publishing_rights = firewall_publishing }
+
+modifier = { factor = 2 NOT = { average_militancy = 3 } }
+
+}
+
+option = {
+name = "Cover it up!"
+
+random = {
+	chance = 35
+add_country_modifier = { name = ruling_party_scandal duration = 365 }
+}
+
+add_country_modifier = { name = leadership_chaos duration = 10 }
+
+add_tax_relative_income = -25
+
+ai_chance = { factor = 0.75 }
+		}
+
+option = {
+name = "Admit our mistake!"
+
+prestige = -25
+
+add_country_modifier = { name = leadership_chaos duration = 60 }
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = conservative } }
+owner = { any_pop = { ideology = { factor = -0.03 value = conservative } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = big_tent } }
+owner = { any_pop = { ideology = { factor = -0.03 value = big_tent } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = socialist } }
+owner = { any_pop = { ideology = { factor = -0.03 value = socialist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = traditionalist } }
+owner = { any_pop = { ideology = { factor = -0.03 value = traditionalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = populist } }
+owner = { any_pop = { ideology = { factor = -0.03 value = populist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = nationalist } }
+owner = { any_pop = { ideology = { factor = -0.03 value = nationalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = progressive } }
+owner = { any_pop = { ideology = { factor = -0.03 value = progressive } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = liberal } }
+owner = { any_pop = { ideology = { factor = -0.03 value = liberal } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist } }
+owner = { any_pop = { ideology = { factor = -0.03 value = communist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist_social } }
+owner = { any_pop = { ideology = { factor = -0.03 value = communist_social } } }
+}
+
+ai_chance = { factor = 0.25 }
+		}
+
+}
+
 # 880130 - Party Scandal - populist # Reactionary
 country_event = {
 	id = 880130
@@ -1920,5 +2034,369 @@ country_event = {
 			duration = 365
 		}
 	}	
+}
+
+
+#### Removal from power ####
+
+
+#Impeachment!
+country_event = {
+	id = 1610032
+	title = "$MONARCHTITLE$ is Impeached!"
+	desc = EVTDESC1610032
+	picture = "impeachment"
+
+trigger = {
+OR = { government = democracy government = democracy1 government = socialist_democracy }
+
+#Only presidential or semi-presidential republics
+OR = {
+	has_country_flag = presidential_system_republic
+	has_country_flag = semi_presidential_system_republic
+}
+
+election = no
+war = no
+OR = { has_country_modifier = ruling_party_scandal has_country_modifier = party_scandal_evidence AND = { has_country_modifier = martial_law NOT = { average_militancy = 3 } } }
+average_militancy = 1
+
+NOT = { has_country_modifier = headless_chicken }
+NOT = { has_country_modifier = leader_cooldown }
+
+OR = { 
+
+AND = { 
+ruling_party_ideology = traditionalist 
+NOT = { upper_house = { ideology = traditionalist value = 0.33 } }
+NOT = { pop_majority_ideology = traditionalist }
+}
+
+AND = { 
+ruling_party_ideology = conservative
+NOT = { upper_house = { ideology = conservative value = 0.33 } }
+NOT = { pop_majority_ideology = conservative }
+}
+
+AND = { 
+ruling_party_ideology = big_tent 
+NOT = { upper_house = { ideology = big_tent value = 0.33 } }
+NOT = { pop_majority_ideology = big_tent }
+}
+
+AND = { 
+ruling_party_ideology = socialist 
+NOT = { upper_house = { ideology = socialist value = 0.33 } }
+NOT = { pop_majority_ideology = socialist }
+}
+
+AND = { 
+ruling_party_ideology = communist 
+NOT = { upper_house = { ideology = communist value = 0.33 } }
+NOT = { pop_majority_ideology = communist }
+}
+
+AND = { 
+ruling_party_ideology = communist_social 
+NOT = { upper_house = { ideology = communist_social value = 0.33 } }
+NOT = { pop_majority_ideology = communist_social }
+}
+
+AND = { 
+ruling_party_ideology = populist 
+NOT = { upper_house = { ideology = populist value = 0.33 } }
+NOT = { pop_majority_ideology = populist }
+}
+
+AND = { 
+ruling_party_ideology = nationalist 
+NOT = { upper_house = { ideology = nationalist value = 0.33 } }
+NOT = { pop_majority_ideology = nationalist }
+}
+
+AND = { 
+ruling_party_ideology = liberal 
+NOT = { upper_house = { ideology = liberal value = 0.33 } }
+NOT = { pop_majority_ideology = liberal }
+}
+
+AND = { 
+ruling_party_ideology = progressive 
+NOT = { upper_house = { ideology = progressive value = 0.33 } }
+NOT = { pop_majority_ideology = progressive }
+}
+
+	}
+
+}
+
+mean_time_to_happen = { 
+months = 3
+}
+
+option = {
+name = "Damn the opposition!"
+prestige_factor = -0.04
+country_event = 111222
+
+remove_country_modifier = ruling_party_scandal
+remove_country_modifier = party_scandal_evidence 
+
+any_pop = { limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } } militancy = 2 }
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = conservative } }
+owner = { any_pop = { ideology = { factor = -0.10 value = conservative } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = big_tent } }
+owner = { any_pop = { ideology = { factor = -0.10 value = big_tent } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = socialist } }
+owner = { any_pop = { ideology = { factor = -0.10 value = socialist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = traditionalist } }
+owner = { any_pop = { ideology = { factor = -0.10 value = traditionalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = populist } }
+owner = { any_pop = { ideology = { factor = -0.10 value = populist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = nationalist } }
+owner = { any_pop = { ideology = { factor = -0.10 value = nationalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = progressive } }
+owner = { any_pop = { ideology = { factor = -0.10 value = progressive } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = liberal } }
+owner = { any_pop = { ideology = { factor = -0.10 value = liberal } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist } }
+owner = { any_pop = { ideology = { factor = -0.10 value = communist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist_social } }
+owner = { any_pop = { ideology = { factor = -0.10 value = communist_social } } }
+}
+
+#End state of emergency
+
+clr_country_flag = prolonged_state_of_emergency
+
+#What meeting laws to revert back to
+
+random_owned = { 
+	limit = { owner = { has_country_flag = return_to_free_meetings } }
+	owner = { political_reform = free_meetings clr_country_flag = return_to_free_meetings }
+	}
+
+random_owned = { 
+	limit = { owner = { has_country_flag = return_to_limited_meetings } }
+	owner = { political_reform = limited_meetings clr_country_flag = return_to_limited_meetings }
+	}
+
+#What press laws to revert back to
+			
+random_owned = { 
+	limit = { owner = { has_country_flag = return_to_responsible_publishing  } }
+	owner = { political_reform = responsible_publishing clr_country_flag = return_to_responsible_publishing }
+	}
+
+random_owned = { 
+	limit = { owner = { has_country_flag = return_to_unregulated_publishing} }
+	owner = { political_reform = unregulated_publishing clr_country_flag = return_to_unregulated_publishing }
+	}
+
+random_owned = { 
+	limit = { owner = { has_country_flag = return_to_firewall_publishing } }
+	owner = { political_reform = firewall_publishing clr_country_flag = return_to_firewall_publishing }
+	}
+
+remove_country_modifier = martial_law
+
+	}
+
+}
+
+#Vote of no Confidence!
+country_event = {
+	id = 16100321
+	title = "Vote of No Confidence!"
+	desc = EVTDESC16100321
+	picture = "vote_of_no_confidence"
+
+trigger = {
+OR = { government = democracy government = democracy1 government = socialist_democracy }
+
+#Parliamentary democracy only
+has_country_flag = parliamentary_system_republic
+
+election = no
+war = no
+NOT = { OR = { has_country_modifier = ruling_party_scandal has_country_modifier = party_scandal_evidence } }
+OR = { average_militancy = 4 AND = { has_country_modifier = martial_law NOT = { average_militancy = 3 } } }
+
+NOT = { has_country_modifier = headless_chicken }
+NOT = { has_country_modifier = leader_cooldown }
+NOT = { has_country_modifier = power_vacuum }
+
+OR = { 
+
+AND = { 
+OR = { ruling_party_ideology = traditionalist ruling_party_ideology = conservative }
+
+NOT = { upper_house = { ideology = traditionalist value = 0.17 } }
+NOT = { upper_house = { ideology = conservative value = 0.17 } }
+}
+
+AND = { 
+OR = { ruling_party_ideology = socialist ruling_party_ideology = communist ruling_party_ideology = communist_social }
+
+NOT = { upper_house = { ideology = socialist value = 0.17 } }
+NOT = { upper_house = { ideology = communist value = 0.17 } }
+NOT = { upper_house = { ideology = communist_social value = 0.17 } }
+}
+
+AND = { 
+OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist }
+
+NOT = { upper_house = { ideology = nationalist value = 0.17 } }
+NOT = { upper_house = { ideology = populist value = 0.17 } }
+}
+
+AND = { 
+OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive }
+
+NOT = { upper_house = { ideology = liberal value = 0.17 } }
+NOT = { upper_house = { ideology = progressive value = 0.17 } }
+}
+
+AND = { 
+ruling_party_ideology = big_tent
+
+NOT = { upper_house = { ideology = big_tent value = 0.33 } }
+}
+
+	}
+
+}
+
+mean_time_to_happen = { 
+months = 6
+}
+
+option = {
+name = "Damn the opposition!"
+prestige_factor = -0.025
+
+election = yes
+
+remove_country_modifier = ruling_party_scandal
+remove_country_modifier = party_scandal_evidence 
+
+any_pop = { limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } } militancy = -2 }
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = conservative } }
+owner = { any_pop = { ideology = { factor = -0.05 value = conservative } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = big_tent } }
+owner = { any_pop = { ideology = { factor = -0.05 value = big_tent } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = socialist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = socialist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = traditionalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = traditionalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = populist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = populist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = nationalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = nationalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = progressive } }
+owner = { any_pop = { ideology = { factor = -0.05 value = progressive } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = liberal } }
+owner = { any_pop = { ideology = { factor = -0.05 value = liberal } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist_social } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist_social } } }
+}
+
+#End state of emergency
+
+clr_country_flag = prolonged_state_of_emergency
+
+#What meeting laws to revert back to
+
+random_owned = { 
+	limit = { owner = { has_country_flag = return_to_free_meetings } }
+	owner = { political_reform = free_meetings clr_country_flag = return_to_free_meetings }
+	}
+
+random_owned = { 
+	limit = { owner = { has_country_flag = return_to_limited_meetings } }
+	owner = { political_reform = limited_meetings clr_country_flag = return_to_limited_meetings }
+	}
+
+#What press laws to revert back to
+			
+random_owned = { 
+	limit = { owner = { has_country_flag = return_to_responsible_publishing  } }
+	owner = { political_reform = responsible_publishing clr_country_flag = return_to_responsible_publishing }
+	}
+
+random_owned = { 
+	limit = { owner = { has_country_flag = return_to_unregulated_publishing} }
+	owner = { political_reform = unregulated_publishing clr_country_flag = return_to_unregulated_publishing }
+	}
+
+random_owned = { 
+	limit = { owner = { has_country_flag = return_to_firewall_publishing } }
+	owner = { political_reform = firewall_publishing clr_country_flag = return_to_firewall_publishing }
+	}
+
+remove_country_modifier = martial_law
+
+	}
+
 }
 
