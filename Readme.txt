@@ -1,6 +1,6 @@
  DO NOT MERGE THIS. Experimental fork for testing
 
-This is one of the forks I've been maintaining offline. The fork contains bugfixes and content from me and Historical-Project-Mod ( https://github.com/arkhometha/Historical-Project-Mod ) NWO mod ( https://github.com/simsulla/nwomod ) and probably others I've forgotten. It's a test submod and isn't intended for merger in its current undocumented and badly atributed state.
+This is one of the forks I've been maintaining offline. The fork contains bugfixes and content from me and Historical-Project-Mod ( https://github.com/arkhometha/Historical-Project-Mod ) NWO mod ( https://github.com/simsulla/nwomod ) Divergences-HPM ( https://github.com/Outta-my-way-burrocrat/Divergences-HPM ), Pop Demand Mod, and probably others I've forgotten. It's a test submod and isn't intended for merger in its current undocumented and badly atributed state.
 
 WIP credits
 Converted Liberian primary culture back to afro_american and updated superstate decisions
