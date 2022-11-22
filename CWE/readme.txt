@@ -1,4 +1,3 @@
-CWE 0.80.23 branch
 
 third_generation_jet_fighters Image: A left front view of two multinational variable-swept-winged Tornado aircraft taking off at the Farnborough Air Show. https://en.wikipedia.org/wiki/File:RAF_Tornado_F2.JPEG Author: TSGT BOYD BELCHER
 
@@ -11,7 +10,7 @@ oil_seeds Image: Avocado (Persea americana) Oil in clear glass vial https://comm
 
 plastic_industry Image: https://openclipart.org/detail/6634/coffee-cup author antontw
 
-artillery image: A British 60-pounder (5-inch (130 mm)) gun at full recoil, in action during the Battle of Gallipoli, 1915. https://en.wikipedia.org/wiki/Artillery#/media/File:60_pounder_Cape_Helles_June_1915.jpg Photo by Ernest Brooks 
+artillery Image: A British 60-pounder (5-inch (130 mm)) gun at full recoil, in action during the Battle of Gallipoli, 1915. https://en.wikipedia.org/wiki/Artillery#/media/File:60_pounder_Cape_Helles_June_1915.jpg Photo by Ernest Brooks 
 
 HUAC Image: While newsmen take notes, Chairman Dies of House Committee investigating Un-American activities, proofs & reads his statement replying to Pres. Roosevelt's attack on the Committee, Oct. 26, 1938 https://en.wikipedia.org/wiki/File:Chairman_Dies_of_House_Committee_investigating_Un-American_activities.jpg authors: Harris & Ewing, official White House photographers
 
@@ -63,8 +62,6 @@ microfinance Image: Muhammad Yunus, founder of w:Grameen Bank https://commons.wi
 
 1979_mosque_seizure Image: https://commons.wikimedia.org/wiki/File:Saudi_soldiers,_Mecca,_1979.JPG Source: http://williamdudleybass.com/thirty-five-years-war
 
-copied arandomperson5000's Chad population fix https://github.com/simsulla/nwomod/commit/3f5bcb6f9c6954e9f76cd4c511960b81e536fafe#diff-9ea102cdeb575c03f0b6db40f369aef216c43a6edd21a112e6cace66ed348341
-
 plastics Image: plastic water bottle https://openclipart.org/detail/293067/plastic-water-bottle Author: dominiquechappard
 
 submarine_base Image: Concrete U-boat pens at Brest showing damage sustained after bombing attacks by the Royal Air Force. https://en.wikipedia.org/wiki/File:Concrete_U-boat_pens_at_Brest.jpg Saidman, Royal Air Force official photographer
@@ -79,5 +76,6 @@ television2 Image: https://commons.wikimedia.org/wiki/File:FamilyWatchingTV1958c
 
 
 
+navy_stealth Image:https://commons.wikimedia.org/wiki/File:US_Navy_Sea_Shadow_stealth_craft.jpg
 
 
