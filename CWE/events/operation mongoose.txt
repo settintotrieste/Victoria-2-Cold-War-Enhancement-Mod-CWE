@@ -1,0 +1,76 @@
+#Operation Moongoose - Superpower
+country_event = {
+	id = 1410112
+	title = "$FROMCOUNTRY_ADJ$ Interference in the $COUNTRY_ADJ$ Sphere"
+	desc = EVTDESC1410112
+	picture = "high_rebels_superpower"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "Issue a strong complaint!"
+		prestige = -20
+		
+		relation = { who = FROM value = -15 }
+		
+		#Affect the THIS's sphere
+		any_country = {
+			limit = { 
+				OR = { 
+					vassal_of = THIS 
+					in_sphere = THIS 
+					alliance_with = THIS 
+				} 
+			}
+			country_event = 1410113
+		}
+
+	}
+}
+
+#Operation Moongoose - Superpower's sphere
+country_event = {
+	id = 1410113
+	title = "Anti-$FROMCOUNTRY_ADJ$ Instigators"
+	desc = EVTDESC1410113
+	picture = "high_rebels"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "We must find those insurgents!"
+		
+		#Population supports ideology of rival superpower less
+		random_owned = { limit = { owner = { FROM = { ruling_party_ideology = traditionalist } } } owner = { any_pop = { militancy = 2 consciousness = 1 ideology = { factor = -0.04 value = traditionalist } } } }
+		random_owned = { limit = { owner = { FROM = { ruling_party_ideology = conservative } } } owner = { any_pop = { militancy = 2 consciousness = 1 ideology = { factor = -0.04 value = conservative } } } }
+		random_owned = { limit = { owner = { FROM = { ruling_party_ideology = liberal } } } owner = { any_pop = { militancy = 2 consciousness = 1 ideology = { factor = -0.04 value = liberal } } } }
+		random_owned = { limit = { owner = { FROM = { ruling_party_ideology = big_tent } } } owner = { any_pop = { militancy = 2 consciousness = 1 ideology = { factor = -0.04 value = big_tent } } } }
+		random_owned = { limit = { owner = { FROM = { ruling_party_ideology = progressive } } } owner = { any_pop = { militancy = 2 consciousness = 1 ideology = { factor = -0.04 value = progressive } } } }
+		random_owned = { limit = { owner = { FROM = { ruling_party_ideology = socialist } } } owner = { any_pop = { militancy = 2 consciousness = 1 ideology = { factor = -0.04 value = socialist } } } }
+		random_owned = { limit = { owner = { FROM = { ruling_party_ideology = communist } } } owner = { any_pop = { militancy = 2 consciousness = 1 ideology = { factor = -0.04 value = communist } } } }
+		random_owned = { limit = { owner = { FROM = { ruling_party_ideology = communist_social } } } owner = { any_pop = { militancy = 2 consciousness = 1 ideology = { factor = -0.04 value = communist_social } } } }
+		random_owned = { limit = { owner = { FROM = { ruling_party_ideology = nationalist } } } owner = { any_pop = { militancy = 2 consciousness = 1 ideology = { factor = -0.04 value = nationalist } } } }
+		random_owned = { limit = { owner = { FROM = { ruling_party_ideology = populist } } } owner = { any_pop = { militancy = 2 consciousness = 1 ideology = { factor = -0.04 value = populist } } } }
+
+		#Rival superpower loses influence and relation in THIS
+		random_country = {
+			limit = { 
+				NOT = { tag = FROM }
+				OR = { 
+					has_country_modifier = un_king1 
+					has_country_modifier = un_king2 
+				} 
+			}
+			relation = { who = THIS value = -25 }
+			diplomatic_influence = { who = THIS value = -25 }
+		}
+		
+		#Add interference modifier to rural provinces
+		any_owned = {
+			limit = { is_state_capital = no }
+			add_province_modifier = { name = superpower_backed_rebels duration = 730 }
+		}
+
+	}
+	
+}

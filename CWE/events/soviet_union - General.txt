@@ -2396,3 +2396,136 @@ country_event = {
 	}
 
 }
+
+#Union of Soverign States
+country_event = {
+	id = 1410094
+	title = "New Union Treaty Signed"
+	desc = EVTDESC1410094
+	picture = "union_treaty"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "Three cheers for Socialism!"
+		government = socialist_democracy
+		
+		political_reform = universal_voting
+		political_reform = open_opinion
+		political_reform = limited_meetings
+		political_reform = elitist_service
+		political_reform = responsible_publishing
+		political_reform = state_controlled_unions
+		political_reform = parties_only_nominated
+		political_reform = jefferson_method
+		
+		any_country = {
+			limit = { 
+				exists = yes 
+				vassal_of = THIS 
+				OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+			}
+			country_event = 14100941
+		}
+		
+		set_country_flag = eussr
+	}
+	
+}
+
+#Union of Soverign States - Puppets can choose to embrace socialist democracy
+country_event = {
+	id = 14100941
+	title = "A Socialist Democracy?"
+	desc = EVTDESC14100941
+	picture = "union_treaty"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "Embrace the developments in $COUNTRY$!"
+		government = socialist_democracy
+		
+		#Match ruling party with overlord
+		random_owned = {
+			limit = { owner = { FROM = { ruling_party_ideology = communist } } }
+			owner = { ruling_party_ideology = communist }
+		}
+		random_owned = {
+			limit = { owner = { FROM = { ruling_party_ideology = communist_social } } }
+			owner = { ruling_party_ideology = communist_social }
+		}
+		random_owned = {
+			limit = { owner = { FROM = { ruling_party_ideology = socialist } } }
+			owner = { ruling_party_ideology = socialist }
+		}
+		random_owned = {
+			limit = { owner = { FROM = { ruling_party_ideology = progressive } } }
+			owner = { ruling_party_ideology = progressive }
+		}
+		
+		political_reform = universal_voting
+		political_reform = open_opinion
+		political_reform = limited_meetings
+		political_reform = elitist_service
+		political_reform = responsible_publishing
+		political_reform = state_controlled_unions
+		political_reform = parties_only_nominated
+		political_reform = jefferson_method
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = 10
+			consciousness = 10
+			ideology = { factor = 0.25 value = communist }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = -5
+			consciousness = -5
+			ideology = { factor = 0.1 value = progressive }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = -2.5
+			consciousness = -2.5
+			ideology = { factor = 0.1 value = socialist }
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "We shall go our own way!"
+		
+		#USS loses influence in THIS
+		overlord = { 
+			relation = { who = THIS value = -200 }
+			diplomatic_influence = { who = THIS value = -100 }
+			release_vassal = THIS 
+		}
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = -5
+			consciousness = -5
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = 6
+			consciousness = 6
+			ideology = { factor = 0.2 value = liberal }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = 3
+			consciousness = 3
+			ideology = { factor = 0.1 value = liberal }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}

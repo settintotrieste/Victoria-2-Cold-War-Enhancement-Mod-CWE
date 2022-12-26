@@ -1,0 +1,108 @@
+#UK Choice to go with Empire or the EEC
+country_event = {
+	id = 1300026
+	title = "Future of British Foreign Policy"
+	desc = EVTDESC1300026
+	picture = "indiaoffice"
+
+fire_only_once = yes
+	
+	trigger = { 
+		tag = ENG
+		NOT = { year = 1990 }
+		exists = HND
+		NOT = { exists = RAJ }
+		NOT = { is_our_vassal = RAJ }
+		has_country_modifier = commonwealthmembereng
+	}
+
+	option = {
+		name = "Pivot towards Europe"
+		any_country = {
+			limit = { is_vassal = no capital_scope = { continent = europe } }
+			relation = { who = THIS value = 50 }
+		}
+		set_country_flag = british_europe_choice
+		ai_chance = { 
+			factor = 0.9
+			modifier = {
+				factor = 0.1
+				OR = { ruling_party_ideology = populist ruling_party_ideology = traditionalist ruling_party_ideology = nationalist }
+			}
+		}
+	}
+
+	option = {
+		name = "Keep ties with the Commonwealth"
+		any_country = {
+			limit = { is_vassal = no in_sphere = THIS }
+			relation = { who = THIS value = 50 }
+		}
+		set_country_flag = british_empire_choice
+		ai_chance = { 
+			factor = 0.1
+			modifier = {
+				factor = 10
+				OR = { ruling_party_ideology = populist ruling_party_ideology = traditionalist ruling_party_ideology = nationalist }
+			}
+		}
+	}
+
+}
+
+#Sterling Area - join
+country_event = {
+	id = 1400018
+	title = "Part of the Sterling Area"
+	desc = EVTDESC1400018
+	picture = "sterlingarea"
+
+	trigger = {
+		NOT = { tag = ENG }
+		ENG = { is_our_vassal = THIS }
+		in_sphere = ENG
+		NOT = { has_country_modifier = sterling_area }
+		}
+	
+	option = {
+	name = "Our currency is now pegged to the Pound Sterling"
+		prestige = 10
+add_country_modifier = { name = sterling_area duration = -1 }
+		
+			}
+		}
+#Sterling Area - leave
+country_event = {
+	id = 1400019
+	title = "No longer part of the Sterling Area"
+	desc = "With our independence from the British, our currency is no longer pegged to the Pound."
+	picture = "sterlingarea"
+
+	trigger = {
+		NOT = { tag = ENG }
+		is_vassal = no
+		NOT = { in_sphere = ENG }
+		has_country_modifier = sterling_area
+			}
+	
+	option = {
+	name = "Excellent"
+		prestige = 20
+remove_country_modifier = sterling_area
+			}
+		}
+		
+#Claim the Rockall
+country_event = {
+	id = 1400038
+	title = "The Bizarre End of the British Empire?"
+	desc = EVTDESC1400038
+	picture = "rockall2"
+
+	is_triggered_only = yes
+		
+	option = {
+name = "We welcome Rockall into the Great British Empire!"
+	any_country = { limit = { OR = { tag = IRE tag = ICL tag = DEN } } relation = { who = THIS value = -10 } }
+	}
+			}

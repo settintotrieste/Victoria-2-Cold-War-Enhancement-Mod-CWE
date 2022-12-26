@@ -1,0 +1,382 @@
+#Puppet Requests Independence
+country_event = {
+	id = 1412066
+	title = "$FROMCOUNTRY$ Seeks Conference on Independence"
+	desc = EVTDESC1412066
+	picture = "independence_conference"
+
+is_triggered_only = yes
+
+	option = {
+		name = "Accept the Conference (Grant Independence)"
+FROM = { country_event = { id = 1412068 days = 60 } }
+prestige = -50
+	ai_chance = { factor = 0 }
+					}
+	option = {
+		name = "Demand Independence Vote First"
+prestige = -25
+FROM = { country_event = 1412069 }
+ai_chance = { factor = 1 modifier = { factor = 0 NOT = { OR = { ruling_party_ideology = conservative ruling_party_ideology = liberal ruling_party_ideology = socialist ruling_party_ideology = progressive ruling_party_ideology = big_tent } } } }
+					}
+	option = {
+		name = "Reject any attempts to leave!"
+FROM = { country_event = 1412067 }
+prestige = -5
+ai_chance = { factor = 1 modifier = { factor = 0 NOT = { OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist ruling_party_ideology = traditionalist ruling_party_ideology = communist ruling_party_ideology = communist_social } } } }
+					}
+		}
+
+#Puppet Requests Independence
+country_event = {
+	id = 1412067
+	title = "$COUNTRY$ Self-Determination Rejected"
+	desc = "$FROMCOUNTRY$ has rejected our request for self determination. This means that we have to declare a War of Independence if we want to secede from our overlord."
+	picture = "independence_rejected"
+
+is_triggered_only = yes
+
+	option = {
+		name = "Fine!"
+ai_chance = { factor = 1 modifier = { factor = 0 has_recently_lost_war = no } }
+prestige = -10
+add_country_modifier = { name = revolution_chaos duration = 365 }
+any_pop = { 
+ideology = {
+	factor = 0.2
+	value = nationalist
+} 
+	}
+					}
+
+option = {
+		name = "WAR!"
+add_country_modifier = { name = revolution_chaos duration = 365 }
+ai_chance = { factor = 1 modifier = { factor = 0 has_recently_lost_war = yes } }
+FROM = { release_vassal = THIS }
+any_pop = { 
+ideology = {
+	factor = 0.1
+	value = nationalist
+} 
+	}
+		war = {
+			target = FROM
+			defender_goal = {
+			
+				   	}
+			attacker_goal = {
+				casus_belli = become_independent
+					}
+		}
+					}
+		}
+
+#Puppet Requests Independence
+country_event = {
+	id = 1412068
+	title = "$COUNTRY_ADJ$ Self-Determination Conference"
+	desc = "$FROMCOUNTRY$ has accepted our request for self determination. We now need to decide what our post-independence relations with $FROMCOUNTRY$ will be."
+	picture = "independence_conference"
+
+is_triggered_only = yes
+
+	option = {
+	name = "Very close relations with our former Overlord"
+prestige = 20
+overlord = { relation = { who = THIS value = 200 } }
+add_country_modifier = { name = revolution_chaos duration = 365 }
+
+add_country_modifier = { name = post_colonial_chaos duration = 3650 }
+
+random_owned = { limit = { owner = { overlord = { government = hms_government } } } owner = { government = hms_government country_event = 800054 } }
+
+random_owned = { limit = { owner = { overlord = { government = absolute_monarchy } } } owner = { government = absolute_monarchy country_event = 800050 } }
+
+random_owned = { limit = { owner = { overlord = { government = proletarian_dictatorship } } } owner = { government = proletarian_dictatorship country_event = 800050 } }
+
+clr_country_flag = full_independance
+set_country_flag = former_colonial_nation
+overlord = { release_vassal = THIS }
+ai_chance = { factor = 0.4 }
+				}
+	option = {
+		name = "Close relations with our former Overlord"
+prestige = 40
+overlord = { relation = { who = THIS value = 50 } }
+set_country_flag = former_colonial_nation
+add_country_modifier = { name = revolution_chaos duration = 365 }
+
+add_country_modifier = { name = post_colonial_chaos duration = 3650 }
+
+overlord = { diplomatic_influence = { who = THIS value = -10 } }
+clr_country_flag = full_independance
+
+
+random_owned = { limit = { owner = { overlord = { government = hms_government } } } owner = { government = hms_government1 country_event = 800054 } }
+
+random_owned = { limit = { owner = { overlord = { government = absolute_monarchy } } } owner = { government = hms_government country_event = 800054 } }
+
+random_owned = { limit = { owner = { overlord = { government = proletarian_dictatorship } } } owner = { government = proletarian_dictatorship country_event = 800050 } }
+
+
+overlord = { end_military_access = THIS }
+
+overlord = { release_vassal = THIS }
+
+
+ai_chance = { factor = 0.4 }
+				}
+option = {
+		name = "Sever all ties with our former Overlord"
+prestige = 60
+overlord = { relation = { who = THIS value = -200 } }
+set_country_flag = former_colonial_nation
+overlord = { diplomatic_influence = { who = THIS value = -200 } }
+add_country_modifier = { name = revolution_chaos duration = 365 }
+
+add_country_modifier = { name = post_colonial_chaos duration = 3650 }
+
+clr_country_flag = full_independance
+
+overlord = { end_military_access = THIS }
+
+overlord = { release_vassal = THIS }
+
+government = democracy
+
+country_event = 800054
+
+ai_chance = { factor = 0.2 }
+				}
+
+		}
+
+#Puppet Requests Independence
+country_event = {
+	id = 1412069
+	title = "Independence Vote Required"
+	desc = "$FROMCOUNTRY$ has offered to let $COUNTRY$ achieve independence if the majority of people in $COUNTRY$ demand it. Therefore they have granted us the authority to hold an independence vote to let the people's will determine  our future."
+	picture = "independence_permission"
+
+is_triggered_only = yes
+
+	option = {
+		name = "A vote can go either way!"
+prestige = 10
+add_country_modifier = { name = revolution_chaos duration = 365 }
+add_country_modifier = { name = independence_vote_permission duration = 730 }
+any_pop = { 
+ideology = {
+	factor = 0.01
+	value = nationalist
+} 
+	}
+					}
+		}
+
+#Puppet Requests Independence - The Vote
+country_event = {
+	id = 1412070
+	title = "$YEAR$ $COUNTRY_ADJ$ Independence Referendum"
+	desc = "Our independence vote to determine if the people want independence is underway. We will win if conservatives, liberals, progressives or centrists are not the majority ideology in $COUNTRY$. We will know the result in approximately half a month."
+	picture = "independence_vote"
+
+	trigger = {
+		is_vassal = yes
+		has_country_flag = hold_independence_referendum
+	}
+	
+	mean_time_to_happen = { 
+		months = 6
+	}
+
+	option = {
+		name = "We hope for the best"
+		any_pop = { militancy = -5 }
+		clr_country_flag = hold_independence_referendum
+		remove_country_modifier = independence_vote_permission
+		
+		#If there was a stray flag
+		clr_country_flag = independence_vote_passes_flag
+		
+		#Vote Fails
+		random_owned = {
+			limit = { 
+				owner = {
+					NOT = { OR = { pop_majority_ideology = nationalist pop_majority_ideology = populist pop_majority_ideology = socialist pop_majority_ideology = traditionalist pop_majority_ideology = communist pop_majority_ideology = communist_social } }
+				} 
+			}
+			owner = { country_event = 1412071 } #Vote fails
+			
+		}
+		
+		#Vote passes
+		random_owned = {
+			limit = { 
+				owner = {
+					OR = { pop_majority_ideology = nationalist pop_majority_ideology = populist pop_majority_ideology = socialist pop_majority_ideology = traditionalist pop_majority_ideology = communist pop_majority_ideology = communist_social }
+				} 
+			}
+			owner = { country_event = 1412072 } #Vote fails
+			
+		}
+		
+		
+	}
+	
+}
+
+#Puppet Requests Independence - vote fails
+country_event = {
+	id = 1412071
+	title = "$COUNTRY_ADJ$ Independence Referendum Fails"
+	desc = "Our independence vote to determine if the people want independence failed. Our overlord will now have the mandate to reject independence for our nation."
+	picture = "independence_fails"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "The people have spoken!"
+		prestige = -25
+		any_owned = { remove_province_modifier = voted_independence }
+		any_pop = { 
+			ideology = {
+				factor = 0.4
+				value = conservative
+			} 
+		}
+	}
+	
+}
+
+#Puppet Requests Independence - vote passes
+country_event = {
+	id = 1412072
+	title = "$COUNTRY_ADJ$ Independence Referendum Passes"
+	desc = "Our independence vote to determine if the people want independence passes. Our overlord will now have the mandate to grant independence for our nation."
+	picture = "independence_passes"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "The people have spoken!"
+		prestige = 50
+		any_owned = { remove_province_modifier = voted_independence }
+		set_country_flag = independence_vote_passes_flag
+		any_pop = { 
+			ideology = {
+				factor = 0.4
+				value = big_tent
+			} 
+		}
+	}
+	
+}
+
+#Puppet Requests Independence
+country_event = {
+	id = 1412073
+	title = "$COUNTRY_ADJ$ Independence Day"
+	desc = "EVTDESC1412073"
+	picture = "independence_day_vote"
+
+	trigger = {
+		is_vassal = yes
+		has_country_flag = independence_vote_passes_flag
+	}
+	
+	mean_time_to_happen = { 
+		months = 1
+	}
+	
+	immediate = { clr_country_flag = independence_vote_passes_flag }
+
+	option = {
+		name = "Very close relations with our former Overlord"
+		prestige = 20
+		
+		overlord = { 
+			relation = { who = THIS value = 200 } 
+			diplomatic_influence = { who = THIS value = 50 } 
+		}
+		
+		add_country_modifier = { name = post_colonial_chaos duration = 3650 }
+		
+		#Set Govt type
+		random_owned = { limit = { owner = { NOT = { government = democracy1 } overlord = { OR = { government = democracy government = democracy1 } } } } owner = { government = democracy country_event = 800054 } }
+		
+		random_owned = { limit = { owner = { overlord = { government = socialist_democracy } } } owner = { government = socialist_democracy country_event = 800054 } }
+
+		random_owned = { limit = { owner = { NOT = { government = hms_government1 } overlord = { government = hms_government } } } owner = { government = hms_government country_event = 800054 } }
+
+		random_owned = { limit = { owner = { overlord = { government = absolute_monarchy } } } owner = { government = absolute_monarchy country_event = 800050 } }
+
+		random_owned = { limit = { owner = { overlord = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } } } owner = { government = proletarian_dictatorship country_event = 800050 } }
+
+		clr_country_flag = full_independance
+		set_country_flag = former_colonial_nation
+		
+		#Independence!
+		overlord = { release_vassal = THIS }
+		
+		ai_chance = { factor = 0.4 }
+	}
+	
+	option = {
+		name = "Close relations with our former Overlord"
+		prestige = 40
+		
+		overlord = { 
+			relation = { who = THIS value = 50 } 
+			diplomatic_influence = { who = THIS value = -50 } 
+		}
+		
+		add_country_modifier = { name = post_colonial_chaos duration = 1825 }
+
+		#Set Govt type
+		random_owned = { limit = { owner = { NOT = { government = democracy1 } overlord = { OR = { government = democracy government = democracy1 } } } } owner = { government = democracy country_event = 800054 } }
+		
+		random_owned = { limit = { owner = { overlord = { government = socialist_democracy } } } owner = { government = democracy country_event = 800054 } }
+
+		random_owned = { limit = { owner = { NOT = { government = hms_government1 } overlord = { government = hms_government } } } owner = { government = hms_government1 country_event = 800054 } }
+
+		random_owned = { limit = { owner = { overlord = { government = absolute_monarchy } } } owner = { government = hms_government1 country_event = 800054 } }
+
+		random_owned = { limit = { owner = { overlord = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } } } owner = { government = proletarian_dictatorship country_event = 800050 } }
+
+		overlord = { end_military_access = THIS }
+
+		clr_country_flag = full_independance
+		set_country_flag = former_colonial_nation
+
+		#Independence!
+		overlord = { release_vassal = THIS }
+
+		ai_chance = { factor = 0.4 }
+	}
+	option = {
+		name = "Sever all ties with our former Overlord"
+		prestige = 60
+		
+		overlord = { 
+			relation = { who = THIS value = -200 } 
+			diplomatic_influence = { who = THIS value = -200 } 
+		}
+		
+		add_country_modifier = { name = post_colonial_chaos duration = 730 }
+		
+		#Set Govt type - Republic
+		government = democracy
+
+		overlord = { end_military_access = THIS leave_alliance = THIS }
+		
+		clr_country_flag = full_independance
+		set_country_flag = former_colonial_nation
+
+		#Independence!
+		overlord = { release_vassal = THIS }
+
+		ai_chance = { factor = 0.2 }
+		}
+	}

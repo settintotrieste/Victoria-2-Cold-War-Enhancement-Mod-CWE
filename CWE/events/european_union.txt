@@ -149,3 +149,105 @@ any_owned = { add_province_modifier = { name = single_market duration = -1 } }
   }
 
 }
+
+#Rotating Chairmanship of the EU
+country_event = {
+	id = 1400042
+	title = "Chairmanship of the European Union"
+	desc = "The Chairmanship of the European Union is rotating again. The Chairmanship only lasts 5 years." 
+	picture = "eu_chairman"
+	
+	trigger = {
+		year = 1946
+		NOT = { has_country_modifier = xeu_chairmanship }
+		has_country_flag = xeu_chairmanship
+	}
+	
+	option = {
+	name = "We had a good run."
+random_country = { limit = { AND = { NOT = { has_country_modifier = xeu_chairmanship } has_country_modifier = xeu_member has_country_modifier = creditor_nation } } country_event = 1300018 }
+	remove_country_modifier = xeu_chairmanship
+	clr_country_flag = xeu_chairmanship
+		}
+}
+
+#Rotating Chairmanship of the EU - select the new leader
+country_event = {
+	id = 1400043
+	title = "Chairmanship of the European Union"
+	desc = "The Chairmanship of the EU is rotating and the Chairmanship has come to us. The Chairmanship only lasts 5 years." 
+	picture = "eu_chairman"
+	
+is_triggered_only = yes
+
+	option = {
+	name = "Splendid!"
+prestige = 10
+any_country = { limit = { tech_school = XEU_tech_school } country_event = 1400044 }
+add_country_modifier = { name = xeu_chairmanship duration = 1825 }
+set_country_flag = xeu_chairmanship
+		}
+}
+
+#Rotating Chairmanship of the EU - inform EU members of change
+country_event = {
+	id = 1400044
+	title = "$FROMCOUNTRY$ has become new EU Chairman"
+	desc = "The Chairmanship of the EU is rotating and the Chairmanship has come to $FROMCOUNTRY$. The Chairmanship only lasts 5 years." 
+	picture = "eu_chairman"
+	
+is_triggered_only = yes
+
+	option = {
+	name = "Great!"
+	relation = { who = FROM value = 20 }
+		}
+	option = {
+	name = "Terrible!"
+	relation = { who = FROM value = -20 }
+		}
+}
+#Rotating Chairmanships first - EU
+country_event = {
+	id = 1400045
+	title = "Chairmanship of the European Union"
+	desc = "The Chairmanship of the EU is rotating and we get the first one as we are the founder. The Chairmanship only lasts 5 years." 
+	picture = "eu_chairman"
+	
+trigger = { 
+is_greater_power = yes
+economic_globalization = 1
+any_greater_power = { limit = { tech_school = XEU_tech_school } NOT = { has_country_modifier = xeu_chairmanship } }
+any_neighbor_country = { limit = { tech_school = XEU_tech_school } NOT = { has_country_modifier = xeu_chairmanship } }
+has_country_modifier = xeu_member
+NOT = { has_global_flag = eufirst }
+}
+	major = yes
+	option = {
+	name = "Splendid!"
+prestige = 10
+add_country_modifier = { name = xeu_chairmanship duration = 1825 }
+set_country_flag = xeu_chairmanship
+set_global_flag = eufirst
+		}
+}
+
+#Kicked out of the EIB
+country_event = {
+	id = 1400070
+	title = "$COUNTRY$ has been kicked out of the EIB"
+	desc = "Since we have left the EU, we can no longer be members of the European Investment Bank"
+	picture = "eib"
+	
+trigger = { 
+NOT = { OR = { tech_school = XEU_tech_school tech_school = XEU_tech_school1 } }
+has_country_modifier = eib_member
+}
+
+option = {
+name = "We don't want to be part of it anyway!"
+prestige = -10
+remove_country_modifier = eib_member
+remove_country_modifier = eib_principal_member
+		}
+}

@@ -1,0 +1,385 @@
+#Start of Factionalism
+country_event = {
+	id = 1412074
+	title = "Death of the $MONARCHTITLE$"
+	desc = EVTDESC1412074
+	picture = "great_leader_killed"
+
+	trigger = {
+
+		#Any government with President for Life
+		has_country_flag = president_for_life
+		
+		#Monarchies do not have presidents so they are to use Regency & Monarch death systems instead
+		NOT = { OR = { government = absolute_monarchy government = hms_government government = hms_government1 } }
+
+		#Historical
+		NOT = { AND = { tag = SPA government = populist_dictatorship NOT = { year = 1985 } } }
+
+		NOT = { AND = { tag = POR government = populist_dictatorship NOT = { year = 1975 } } }
+
+		NOT = { AND = { tag = RUS government = proletarian_dictatorship NOT = { year = 1990 } } }
+
+		NOT = { AND = { tag = CHI government = proletarian_dictatorship NOT = { year = 1975 } } }
+
+		NOT = { AND = { tag = NKO government = proletarian_dictatorship NOT = { year = 1990 } } }
+
+		NOT = { AND = { tag = DAI government = proletarian_dictatorship NOT = { year = 1980 } } }
+
+		NOT = { has_country_modifier = power_vacuum }
+
+		NOT = { has_country_modifier = civil_war }
+
+		NOT = { has_country_modifier = government_consensus }
+
+	}
+
+	mean_time_to_happen = { 
+		months = 360
+	}
+
+	option = {
+		name = "It is a day of mourning"
+		
+		#Clear President for Life, new dictator has to earn his eternal presidency. If democratic then life term ends, new guy to take over and earn his life term
+		clr_country_flag = president_for_life
+
+		#If leader refused to leave via 'backbencher's plot' event
+		clr_country_flag = leader_refuses_to_leave
+
+		remove_country_modifier = expert_diplomat
+		remove_country_modifier = successful_industrialist
+		remove_country_modifier = ivory_tower_intellectual
+		remove_country_modifier = man_of_the_people
+		remove_country_modifier = landed_gentleman
+		remove_country_modifier = military_man
+		remove_country_modifier = lord_admiral
+		remove_country_modifier = raving_loon
+		remove_country_modifier = luddite
+		remove_country_modifier = great_statesman
+		remove_country_modifier = backroom_boy
+		remove_country_modifier = great_reformer
+		remove_country_modifier = gauche_buffoon
+		remove_country_modifier = administrative_genius
+		remove_country_modifier = visionary_thinker
+		remove_country_modifier = competent_placeholder
+		remove_country_modifier = imperious_autocrat
+		remove_country_modifier = prince_of_terror
+		remove_country_modifier = efficient_sociopath
+		remove_country_modifier = pig_headed_isolationist
+		remove_country_modifier = ambitious_union_boss
+		remove_country_modifier = dour_economist
+
+		clr_country_flag = right_set_up
+		clr_country_flag = far_right_set_up
+		clr_country_flag = centre_set_up
+		clr_country_flag = left_set_up
+		clr_country_flag = far_left_set_up
+
+		add_country_modifier = { name = power_vacuum duration = 730 }
+
+		any_pop = {
+			consciousness = 2
+			militancy = 1
+		}
+	}
+	
+}
+
+#Debate over the Successor - stage 1
+country_event = {
+	id = 1412075
+	title = "$YEAR$ Congress to select new $MONARCHTITLE$"
+	desc = EVTDESC1412075
+	picture = "great_leader_selection"
+
+	trigger = {
+
+		OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship government = proletarian_dictatorship government = proletarian_dictatorship1 government = theocracy }
+
+		has_country_modifier = power_vacuum
+
+		NOT = { has_country_modifier = factionalism }
+
+		NOT = { has_country_modifier = civil_war }
+
+		NOT = { has_country_modifier = government_consensus }
+
+	}
+
+	mean_time_to_happen = { months = 2 }
+
+	option = {
+		name = "Let the leadership contest begin!"
+		add_country_modifier = { name = factionalism duration = 1825 }
+		country_event = 111222
+	}
+
+}
+
+#Choice for the new dictator
+country_event = {
+	id = 1412076
+	title = "Speech by the New $MONARCHTITLE$"
+	desc = EVTDESC1412076
+	picture = "new_dictator_speech"
+
+	trigger = {
+
+		OR = { government = presidential_dictatorship government = populist_dictatorship government = nationalist_dictatorship government = proletarian_dictatorship government = proletarian_dictatorship1 government = theocracy }
+
+		has_country_modifier = factionalism
+		has_country_modifier = power_vacuum
+
+		NOT = { has_country_flag = leadership_election }
+
+	}
+
+	mean_time_to_happen = { months = 2 }
+
+	option = {
+		name = "I will preserve the status quo!"
+
+		remove_country_modifier = power_vacuum
+
+		#Elites will be happy
+		any_pop = { 
+			limit = { OR = { type = officers type = aristocrats type = bureaucrats } }
+			militancy = -10
+		}
+
+		ai_chance = { factor = 0.6 }
+	}
+
+	option = {
+		name = "I will crush the counter-revolutionaries!"
+		badboy = 2
+		prestige_factor = -0.025
+		country_event = 1412077
+		remove_country_modifier = power_vacuum
+		ai_chance = { factor = 0.4 }
+	}
+
+	option = {
+		name = "I will start immediate political reforms!"
+		prestige_factor = -0.1
+		
+		#Enact democratic reforms
+		political_reform = parties_only_nominated
+		political_reform = open_opinion
+		
+		#Remove Power Vacuum
+		remove_country_modifier = power_vacuum
+
+		#Coup risk
+		add_country_modifier = { name = coup_risk duration = 1825 }
+
+		#Elites get angry
+		any_pop = { 
+			limit = { OR = { type = officers type = aristocrats type = bureaucrats } }
+			militancy = 10 
+		}
+
+		ai_chance = { factor = 0 }
+	}
+
+}
+
+#Purge - Factionalism
+country_event = {
+	id = 1412077
+	title = "Purge of $YEAR$"
+	desc = EVTDESC1412077
+	picture = "party_purge_ongoing"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Liquidate any opposition!"
+
+		remove_country_modifier = factionalism
+
+		any_pop = { militancy = 2 consciousness = -8 }
+
+#Reduce elite pop by 30%
+any_pop = { 
+limit = { OR = { type = officers type = aristocrats type = bureaucrats type = soldiers } }
+reduce_pop = 0.70
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = conservative } }
+owner = { any_pop = { limit = { OR = { type = officers type = aristocrats type = bureaucrats type = soldiers } } ideology = { factor = 0.25 value = conservative } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = big_tent } }
+owner = { any_pop = { limit = { OR = { type = officers type = aristocrats type = bureaucrats type = soldiers } } ideology = { factor = 0.25 value = big_tent } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = socialist } }
+owner = { any_pop = { limit = { OR = { type = officers type = aristocrats type = bureaucrats type = soldiers } } ideology = { factor = 0.25 value = socialist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = traditionalist } }
+owner = { any_pop = { limit = { OR = { type = officers type = aristocrats type = bureaucrats type = soldiers } } ideology = { factor = 0.25 value = traditionalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = populist } }
+owner = { any_pop = { limit = { OR = { type = officers type = aristocrats type = bureaucrats type = soldiers } } ideology = { factor = 0.25 value = populist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = nationalist } }
+owner = { any_pop = { limit = { OR = { type = officers type = aristocrats type = bureaucrats type = soldiers } } ideology = { factor = 0.25 value = nationalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = progressive } }
+owner = { any_pop = { limit = { OR = { type = officers type = aristocrats type = bureaucrats type = soldiers } } ideology = { factor = 0.25 value = progressive } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = liberal } }
+owner = { any_pop = { limit = { OR = { type = officers type = aristocrats type = bureaucrats type = soldiers } } ideology = { factor = 0.25 value = liberal } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist } }
+owner = { any_pop = { limit = { OR = { type = officers type = aristocrats type = bureaucrats type = soldiers } } ideology = { factor = 0.25 value = communist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist_social } }
+owner = { any_pop = { limit = { OR = { type = officers type = aristocrats type = bureaucrats type = soldiers } } ideology = { factor = 0.25 value = communist_social } } }
+}
+
+	}
+
+}
+
+#Militarisation - Factionalism
+country_event = {
+	id = 1412078
+	title = "Militarisation of the Nation"
+	desc = EVTDESC1412078
+	picture = "militarisation_of_nation"
+
+is_triggered_only = yes
+
+	option = {
+		name = "To arms!"
+any_pop = { militancy = 2 }
+any_pop = { limit = { pop_type = soldiers } reduce_pop = 1.05 }
+					}
+		}
+
+#Winds of Change - Factionalism
+country_event = {
+	id = 1412079
+	title = "Winds of Change in $COUNTRY$"
+	desc = EVTDESC1412079
+	picture = "democratisation_of_national"
+
+is_triggered_only = yes
+
+	option = {
+		name = "Viva Democracy!"
+prestige = 5
+government = democracy country_event = 800054
+					}
+		}
+
+#Nationalist Popularity
+country_event = {
+	id = 1412080
+	title = "Popularity of the regime of $COUNTRY$"
+	desc = "We have a highly charismatic nationalist leader who have won the support and admiration of many of our nation's citizens. This will allow our regime to remain stable for a long time to come."
+	picture = "franco_rally"
+
+	trigger = {
+        OR = { tag = SPA tag = POR }
+        NOT = { year = 1990 }
+        government = populist_dictatorship
+        ruling_party_ideology = nationalist
+        NOT = { has_country_flag = franco_boost }
+	}
+
+	option = {
+		name = "Their support will not be let down!"
+		set_country_flag = franco_boost
+		any_pop = {
+			limit = { AND = { OR = { is_primary_culture = yes is_accepted_culture = yes } strata = rich } }
+			ideology = {
+				factor = 0.4
+				value = nationalist
+			}
+		}
+		any_pop = { 
+			limit = { AND = { OR = { is_primary_culture = yes is_accepted_culture = yes } strata = middle } }		
+			ideology = {
+				factor = 0.25
+				value = nationalist
+			}
+		}
+		any_pop = { 
+			limit = { AND = { OR = { is_primary_culture = yes is_accepted_culture = yes } strata = poor } }	
+			ideology = {
+				factor = 0.15
+				value = nationalist
+			}
+		}
+		any_pop = { 
+			limit = { AND = {  OR = { culture = catalan culture = basque } strata = poor } }
+			ideology = {
+				factor = 0.2
+				value = communist_social
+			}
+		}
+		any_pop = {
+			limit = { AND = { is_accepted_culture = no strata = rich continent = europe } }
+			ideology = {
+				factor = 0.2
+				value = conservative
+			}
+		}
+		any_pop = {
+			limit = { AND = { is_accepted_culture = no strata = middle continent = europe } }
+			ideology = {
+				factor = 0.2
+				value = liberal
+			}
+		}
+		any_pop = {
+			limit = { AND = { is_accepted_culture = no strata = poor continent = europe } }
+			ideology = {
+				factor = 0.2
+				value = socialist
+			}
+		}
+		any_pop = {
+			limit = { AND = { is_accepted_culture = no strata = rich continent = africa } }
+			ideology = {
+				factor = 0.2
+				value = liberal
+			}
+		}
+		any_pop = {
+			limit = { AND = { is_accepted_culture = no strata = middle continent = africa } }
+			ideology = {
+				factor = 0.2
+				value = socialist
+			}
+		}
+		any_pop = {
+			limit = { AND = { is_accepted_culture = no strata = poor continent = africa } }
+			ideology = {
+				factor = 0.2
+				value = communist
+			}
+		}
+	}
+}
