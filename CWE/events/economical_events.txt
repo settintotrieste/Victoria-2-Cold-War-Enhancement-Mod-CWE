@@ -1,3 +1,78 @@
+#Bankruptcy
+country_event = {
+	id = 1412180
+title = "$FROMCOUNTRY$ Goes Bankrupt"
+	desc = EVTDESC1412180
+	picture = "economic_bailout"
+
+	trigger = {
+		NOT = { tag = FROM }
+	}
+
+is_triggered_only = yes
+
+
+option = {
+name = "They will need to restructure their debt themselves!"
+
+FROM = { relation = { who = THIS value = -25 } }
+
+FROM = { 
+add_country_modifier = { name = investor_flight duration = 730 }
+add_country_modifier = { name = stockcrash duration = 365 }
+
+add_country_modifier = { name = stock_market_crash duration = 183 } 
+
+add_country_modifier = { name = bankruptcy_flag duration = 3650 }
+}
+		}
+
+option = {
+name = "We will grant them a bailout!"
+
+FROM = { relation = { who = THIS value = 25 } }
+
+FROM = { 
+money = 50000
+add_country_modifier = { name = investor_flight duration = 730 }
+add_country_modifier = { name = stockcrash duration = 365 }
+
+add_country_modifier = { name = stock_market_crash duration = 183 } 
+
+add_country_modifier = { name = bankruptcy_flag duration = 3650 }
+}
+		}
+
+}
+
+#Bretton Woods Reduce Gold Output
+country_event = {
+	id = 1400046
+	title = "Bretton Woods System Effects"
+	desc = EVTDESC1400046
+	picture = "bretton_woods_system_gold"
+	
+trigger = {
+NOT = { tag = USA }
+war = no
+has_country_modifier = bretton_system
+any_owned_province = { AND = { trade_goods = credit NOT = { has_province_modifier = bretton_woods_effect } } }
+any_owned_province = { trade_goods = credit }
+
+#NOT = { has_country_flag = bsystem }
+
+}
+
+option = {
+name = "OK"
+any_owned = { limit = { trade_goods = credit }
+add_province_modifier = { name = bretton_woods_effect duration = -1 } }
+
+#set_country_flag = bsystem
+
+		}
+}
+
 #Currency Manipulation
 country_event = {
 	id = 1412108
@@ -774,4 +849,160 @@ country_event = {
 		treasury = 1000000
 		set_country_flag = moneyforall536
 		}
+}
+
+#Creditor Nation
+country_event = {
+	id = 1300015
+	title = "We are a Major Creditor Nation"
+	desc = "Our nation has reached a sufficient politico-economic status to be a major creditor nation." 
+	picture = "world_bank"
+	
+	trigger = {
+		#GPs only
+		is_greater_power = yes
+		
+		#Must have a large economy
+		industrial_score = 1000
+		
+		#Must have a lot of money
+		money = 4000000
+		
+		#Must not have high infamy
+		NOT = { badboy = 0.8 }
+		
+		#Not at war
+		war = no
+		
+		NOT = { has_country_modifier = creditor_nation }
+	}
+	
+	mean_time_to_happen = { months = 12 }
+	
+	option = {
+		name = "Rejoice!"
+		prestige = 100
+		add_country_modifier = { name = creditor_nation duration = -1 } 
+	}
+}
+#Creditor Nation lose
+country_event = {
+	id = 1300016
+	title = "Major Creditor Nation Status Lost"
+	desc = "Our nation has not reached a sufficient politico-economic status to be a creditor nation anymore." 
+	picture = "world_bank"
+	
+	trigger = {
+		has_country_modifier = creditor_nation
+		
+		#THIS is not a GP
+		is_greater_power = no
+	}
+	
+	mean_time_to_happen = { months = 12 }
+	
+	option = {
+		name = "NOOOOOO!"
+		prestige = -100
+		remove_country_modifier = creditor_nation
+	}
+	
+}
+
+#Nationalisation of Critical Industries start
+country_event = {
+	id = 1400069
+	title = "Should we Nationalise Major Companies?"
+	desc = EVTDESC1400069
+	picture = "nationalisation"
+	
+trigger = { 
+NOT = { has_country_modifier = nap }
+NOT = { has_country_modifier = nationalisation_of_industry }
+NOT = { has_country_modifier = privatisation_of_industry }
+NOT = { government = proletarian_dictatorship }
+NOT = { government = proletarian_dictatorship1 }
+}
+
+option = {
+name = "Nationalise them!"
+prestige = 10
+set_country_flag = nap
+
+add_country_modifier = { name = nationalisation_in_progress duration = 3650 }
+
+add_country_modifier = { name = nationalisation_of_industry duration = -1 }
+
+ai_chance = { 
+factor = 0 
+modifier = { 
+OR = { economic_policy = planned_economy economic_policy = planned_economy1 economic_policy = state_capitalism } 
+factor = 1 } 
+}
+		}
+option = {
+name = "Leave them Privatised!"
+prestige = -10
+set_country_flag = nap
+
+add_country_modifier = { name = privatisation_in_progress duration = 3650 }
+
+add_country_modifier = { name = privatisation_of_industry duration = -1 }
+
+ai_chance = { 
+factor = 1
+modifier = { 
+OR = { economic_policy = planned_economy economic_policy = planned_economy1 economic_policy = state_capitalism } 
+factor = 0 } 
+}
+
+		}
+}
+
+#Special Economic Zone Investment
+country_event = {
+	id = 1410125
+	title = "$FROMCOUNTRY_ADJ$ Investment in $COUNTRY_ADJ$ SEZ"
+	desc = EVTDESC1410125
+	picture = "spez"
+	
+	allow_multiple_instances = yes
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "We thank the $FROMCOUNTRY_ADJ$ Government for their money!"
+		
+		prestige = 25
+		
+		random_owned = {
+			limit = {
+				state_scope = {
+					any_owned_province = {
+						is_core = THIS
+						has_building = naval_base
+						has_building = railroad
+					}
+					any_owned_province = {
+						total_pops = 250000
+						is_capital = no
+						NOT = { has_province_modifier = spez }
+						is_state_capital = yes
+					}
+				}
+				is_state_capital = yes
+			}
+			add_province_modifier = { name = spez duration = 3650 }
+			
+			#Increase literacy
+			any_pop = { 
+				limit = { 
+					OR = { is_primary_culture = yes is_accepted_culture = yes } 
+				}
+				consciousness = 5
+				literacy = 0.04
+			}
+		}
+	}
+
 }

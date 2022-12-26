@@ -1,3 +1,37 @@
+#Thai instability
+country_event = {
+	id = 1400026
+	title = "Siamese coup d'état of 1947"
+	desc = EVTDESC1400026
+	picture = "thicoup"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = THI
+		year = 1947
+		NOT = { year = 1949 }
+		NOT = { has_country_modifier = revolution_chaos }
+	}
+	
+	mean_time_to_happen = { months = 6 }
+	
+	option = {
+		name = "Launch the Coup!"
+		add_country_modifier = { name = revolution_chaos duration = 10950 }
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Cooperate with the Government!"
+		any_pop = { militancy = 4 }
+		add_country_modifier = { name = revolution_chaos duration = 5000 }
+		money = -100000
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
 country_event = {
   id = 8013402
   title = EVT_8013402_NAME
@@ -56,4 +90,201 @@ country_event = {
   option = {
     name = OK
   }
+}
+
+#Thai Communist Insurgency - Begin
+country_event = {
+	id = 1410095
+	title = "Thai Communist Insurgency"
+	desc = EVTDESC1410095
+	picture = "thai_comm"
+	
+trigger = { 
+tag = THI
+NOT = { government = proletarian_dictatorship }
+year = 1964
+DAI = { ruling_party_ideology = communist }
+NOT = { year = 1990 }
+NOT = { has_country_flag = thai_comm }
+}
+
+mean_time_to_happen = { 
+months = 18
+}
+
+option = {
+name = "Squash the Communists!"
+set_country_flag = thai_comm
+add_country_modifier = { name = thai_emergency duration = -1 }
+		}
+}
+
+#Thai Communist Insurgency - End
+country_event = {
+	id = 1410096
+	title = "End of the Thai Communist Insurgency"
+	desc = EVTDESC1410096
+	picture = "thai_comm_end"
+	
+trigger = { 
+tag = THI
+OR = { 
+government = proletarian_dictatorship
+ruling_party_ideology = communist
+AND = { CAM = { ruling_party_ideology = communist } relation = { who = CAM value = 100 } }
+DAI = { NOT = { ruling_party_ideology = communist } }
+}
+has_country_modifier = thai_emergency
+NOT = { has_country_flag = thai_comm_end }
+}
+
+mean_time_to_happen = { 
+months = 14
+}
+
+option = {
+name = "Peace has returned!"
+prestige = 20
+set_country_flag = thai_comm_end
+remove_country_modifier = thai_emergency
+		}
+}
+
+#Asian Financial Crisis - originator
+country_event = {
+	id = 1512006
+	title = "Tom Yum Goong Crisis"
+	desc = EVTDESC1512006
+	picture = "asian_financial_crisis_thi"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = THI
+		year = 1997
+		NOT = { year = 2000 }
+		
+		capitalism = 1
+		is_greater_power = no 
+		is_vassal = no
+		
+		#Significant intervention in the economy
+		OR = { 
+			economic_policy = planned_economy1
+			economic_policy = state_capitalism
+			economic_policy = interventionism
+		}
+		
+		#Usual GPs
+		USA = { is_greater_power = yes }
+		JAP = { is_greater_power = yes }
+		CHI = { is_greater_power = yes }
+		
+		#Post Cold War
+		NOT = { has_global_flag = blocsenabled }
+		
+		#No stagflation modifier
+		NOT = { has_country_modifier = stagflation }
+	}
+
+	mean_time_to_happen = { 
+		months = 3
+	}
+
+	option = {
+		name = "Raise interest rates to prevent the Thai Baht from imploding!"
+		prestige = 50
+		country_event = 1512007
+		
+		set_global_flag = asian_financial_crisis_flag
+
+		any_country = { 
+
+			limit = { 
+				NOT = { 
+					OR = { 
+						government = proletarian_dictatorship 
+						government = proletarian_dictatorship1 
+					} 
+				}
+				OR = { tag = IDO tag = PHI tag = SKO tag = MSY }
+				exists = yes
+			}
+
+			country_event = 1512007
+
+		}
+
+
+		THI = { clr_country_flag = sea_economy_slow }
+		PHI = { clr_country_flag = sea_economy_slow }
+		BUR = { clr_country_flag = sea_economy_slow }
+		IDO = { clr_country_flag = sea_economy_slow }
+
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "Drop the fixed exchange rate and pump in stimulus"
+
+		add_country_modifier = { name = stagflation duration = 3650 }
+
+		THI = { clr_country_flag = sea_economy_slow }
+		PHI = { clr_country_flag = sea_economy_slow }
+		BUR = { clr_country_flag = sea_economy_slow }
+		IDO = { clr_country_flag = sea_economy_slow }
+
+		ai_chance = { factor = 0.2 }
+	}
+
+}
+
+#Asian Financial Crisis - reciepeints
+country_event = {
+	id = 1512007
+	title = "Asian Financial Crisis of $YEAR$"
+	desc = EVTDESC1512007
+	picture = "asian_financial_crisis"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Seek IMF assistance!"
+		prestige_factor = -0.1
+		any_pop = { money = -100 }
+
+		add_country_modifier = { name = stockcrash duration = 730 }
+
+		add_country_modifier = { name = stock_market_crash duration = 960 }
+
+		add_country_modifier = { name = imf_loan duration = 1200 }
+
+		add_country_modifier = { name = recession duration = 1000 }
+
+		add_country_modifier = { name = economic_malaise duration = 1825 }
+
+		#Trigger the end of the New Order for Indonesia
+		random_owned = {
+			limit = { 
+				owner = { tag = IDO } 
+			}
+			owner = { set_country_flag = ido_thaw_trigger }
+		}
+
+		ai_chance = { 
+			factor = 0.9 
+			
+			#Malaysia
+			modifier = { factor = 0 has_country_flag = MSY_mahathir_1981_flag }
+		}
+	}
+
+	option = {
+		name = "Unleash a massive economic stimulus program!"
+		prestige = 50
+		money = -1000000
+		add_country_modifier = { name = stagflation duration = 3650 }
+		ai_chance = { factor = 0.1 }
+	}
+
 }

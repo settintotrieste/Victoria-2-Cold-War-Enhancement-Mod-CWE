@@ -272,6 +272,87 @@ country_event = {
 	}
 }
 
+#Return of Port Arthur
+country_event = {
+	id = 1400035
+	title = "Return of Port Arthur"
+	desc = EVTDESC1400035
+	picture = "returnofportarthur"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		year = 1955
+		NOT = { year = 1990 }
+		
+		#Own Port Arthur
+		1481 = { owned_by = RUS }
+		
+		government = proletarian_dictatorship
+		war = no
+		is_vassal = no
+		
+		CHI = { 
+			exists = yes 
+			is_vassal = no 
+			government = proletarian_dictatorship 
+		}
+		
+		NOT = { has_country_flag = returnofportarthur }
+	}
+	
+	option = {
+		name = "Return the territory without compensation"
+		1481 = { secede_province = CHI }
+		prestige_factor = 0.025
+		relation = { who = CHI value = 100 }
+		set_country_flag = returnofportarthur
+		ai_chance = { factor = 0.9 }
+	}
+	option = {
+		name = "Keep our territory"
+		relation = { who = CHI value = -200 }
+		set_country_flag = returnofportarthur
+		any_pop = { limit = { is_culture_group = east_asian } militancy = 10 consciousness = 10 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Recapture of Port Arthur
+country_event = {
+	id = 1400052
+	title = "$YEAR$ Invasion of Port Arthur"
+	desc = "The Republic of China (ROC) have managed to sieze Port Arthur. We should sieze it back!"
+	picture = "port_arthur_recapture"
+	
+trigger = {
+tag = CHI
+CHI = { government = proletarian_dictatorship }
+exists = KMT
+NOT = { war_with = KMT }
+war = no
+NOT = { has_global_flag = port_arthur_recapture }
+1481 = { owned_by = KMT }
+
+}
+
+option = {
+name = "Sieze Port Arthur!"
+set_global_flag = port_arthur_recapture
+badboy = 5
+KMT = { 1481 = { secede_province = CHI } }
+ai_chance = { factor = 1 }
+		}
+option = {
+name = "Let the capitalist swine keep Port Arthur!"
+set_global_flag = port_arthur_recapture
+prestige = -50
+ai_chance = { factor = 0 }
+		}
+}
+
 #The KMT flees to Taiwan - End the Chinese Civil War
 country_event = {
 	id = 90903
@@ -901,4 +982,86 @@ country_event = {
 		CHI = { country_event = 90904 }
 		set_country_flag = releasekmt
 		}
+}
+
+#What to do with Taiwan if KMT wins
+country_event = {
+	id = 1412221
+title = "The Taiwan Question"
+	desc = EVTDESC1412221
+	picture = "taiwan_question"
+
+fire_only_once = yes
+
+trigger = {
+
+tag = KMT
+
+war = no
+
+TAI = { exists = yes }
+
+CHI = { exists = no }
+
+is_our_vassal = TAI	
+
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Integrate into $COUNTRY$"
+inherit = TAI
+ai_chance = { factor = 0.7 }
+		}
+
+option = {
+name = "Grant self-rule"
+prestige = 100
+TAI = { government = sar_government }
+TAI = { any_owned = { add_core = TAI } }
+ai_chance = { factor = 0.2 }
+		}
+
+option = {
+name = "Cede sovereignty to Japan"
+prestige = 200
+relation = { who = JAP value = 200 }
+relation = { who = USA value = 200 }
+TAI = { any_owned = { remove_core = KMT add_core = TAI } }
+JAP = { inherit = TAI }
+JAP = { country_event = 1412222 }
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#What to do with Taiwan if KMT wins - JAPAN
+country_event = {
+	id = 1412222
+title = "The Taiwan Question"
+	desc = EVTDESC1412222
+	picture = "taiwan_question"
+
+is_triggered_only = yes
+
+option = {
+name = "Integrate into $COUNTRY$"
+prestige = -50
+inherit = TAI
+any_owned = { limit = { is_core = TAI } add_core = JAP any_pop = { militancy = 8 } }
+ai_chance = { factor = 0.5 }
+		}
+
+option = {
+name = "Grant self-rule"
+prestige = 50
+release_vassal = TAI
+TAI = { government = sar_government }
+TAI = { any_pop = { militancy = 5 } }
+ai_chance = { factor = 0.5 }
+		}
+
 }

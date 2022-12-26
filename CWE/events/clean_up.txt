@@ -1,3 +1,145 @@
+#Region Check event
+country_event = {
+	id = 1412151
+	title = "Peaceful/Unstable Regions"
+	desc = EVTDESC1412151
+	picture = "region_system"
+
+	trigger = { 
+		NOT = { has_country_modifier = region_timer }
+	} 
+
+	mean_time_to_happen = { 
+		months = 60
+		modifier = { factor = 0 any_owned_province = { NOT = { OR = { has_province_modifier = peace_region has_province_modifier = unstable_region } } } }
+		modifier = { factor = 0.1 war = yes }
+		modifier = { factor = 0.2 num_of_revolts = 1 }
+		modifier = { factor = 0 NOT = { any_owned_province = { OR = { has_province_modifier = peace_region has_province_modifier = unstable_region } } } }
+	}
+
+	option = {
+		name = "Who cares?"
+
+		add_country_modifier = { name = region_timer duration = 60 }
+
+		#Add Unstable Region
+		any_owned = { 
+			limit = { 
+				OR = { 
+					has_province_modifier = nuke_low 
+					has_province_modifier = nuke_medium 
+					has_province_modifier = nuke_high
+					has_province_modifier = tactical_nuked
+					controlled_by_rebels = yes  
+					NOT = { controlled_by = THIS }
+					is_blockaded = yes
+					average_militancy = 5
+					any_neighbor_province = { owner = { war = yes } }
+					any_neighbor_province = { controlled_by_rebels = yes }
+				} 
+			}
+			remove_province_modifier = peace_region
+			add_province_modifier = { name = unstable_region duration = -1 }
+		} 
+
+		#Add Stable Region
+		any_owned = { 
+			limit = { 
+				NOT = {
+					OR = { 
+						has_province_modifier = nuke_low 
+						has_province_modifier = nuke_medium 
+						has_province_modifier = nuke_high
+						has_province_modifier = tactical_nukes
+						controlled_by_rebels = yes  
+						NOT = { controlled_by = THIS }
+						is_blockaded = yes
+						average_militancy = 5
+						any_neighbor_province = { owner = { war = yes } }
+						any_neighbor_province = { controlled_by_rebels = yes }
+					} 
+				}
+			}
+			remove_province_modifier = unstable_region
+			add_province_modifier = { name = peace_region duration = -1 }
+		} 
+
+	}
+
+}
+
+#SAR status
+country_event = {
+	id = 1300029
+	title = "Special Administrative Region Status"
+	desc = "$COUNTRY$'s Special Administrative Status only lasts for 50 years before we revert to direct rule by China."
+	picture = "nwo2_chinese_hongkong"
+
+	trigger = {
+		OR = { tag = HKG tag = MCA }
+		is_vassal_of = CHI
+		government = sar_government
+		NOT = { has_country_flag = endofsarstatus }
+
+	}
+	
+	option = {
+		name = "Noted"
+add_country_modifier = { name = sar_status duration = 18250 }
+		set_country_flag = endofsarstatus
+		}
+	}
+#End of SAR status
+country_event = {
+	id = 1300030
+	title = "Special Administrative Region Status"
+	desc = "$COUNTRY$'s Special Administrative Status has ended so we revert to direct rule by China."
+	picture = "macao"
+
+	trigger = {
+		OR = { tag = HKG tag = MCA }
+		exists = CHI
+		is_vassal_of = CHI
+		year = 2040
+		NOT = { has_country_modifier = sar_status }
+		NOT = { has_country_flag = endofsarstatus1 }
+
+	}
+	
+	option = {
+		name = "Noted"
+	        CHI = { inherit = THIS }
+		set_country_flag = endofsarstatus1
+		}
+	}
+#End of SAR status
+country_event = {
+	id = 1300031
+	title = "Special Administrative Region Status"
+	desc = "$COUNTRY$'s Special Administrative Status has ended because we are now independent."
+	picture = "macao"
+
+	trigger = {
+		
+NOT = { OR = { tag = IAR tag = TRE tag = DZG tag = SCS tag = UNT tag = TGZ tag = JRU tag = ICB } }
+		
+		is_vassal = no
+		
+		government = sar_government
+		NOT = { has_country_flag = endofsarstatus2 }
+
+	}
+	
+	mean_time_to_happen = { months = 3 }
+	
+	option = {
+		name = "Rejoice!"
+		government = democracy
+		remove_country_modifier = sar_status
+		set_country_flag = endofsarstatus2
+		}
+	}
+
 #Dominion government to Republic if colonial government indy
 country_event = {
 	id = 1300012

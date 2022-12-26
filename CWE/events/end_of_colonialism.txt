@@ -18,6 +18,114 @@ is_triggered_only = yes
 		}
 }
 
+#Decolonisation remove techschool
+country_event = {
+	id = 1300027
+	title = "Decline of the $COUNTRY_ADJ$ Empire"
+	desc = EVT_15403_DESC
+	picture = "colonialism_self_rule"
+
+	trigger = {
+
+		NOT = { year = 1990 }
+
+		OR = { 
+AND = { 
+tag = POR
+war = no
+OR = { is_vassal = yes is_greater_power = no }
+NOT = { is_our_vassal = ANG } NOT = { owns = 1999 }
+NOT = { is_our_vassal = MOZ } NOT = { owns = 2049 }
+}
+
+AND = { 
+tag = ENG
+war = no
+OR = { is_vassal = yes is_greater_power = no }
+NOT = { is_our_vassal = RAJ } NOT = { owns = 1236 }
+NOT = { is_our_vassal = HND } NOT = { owns = 1236 }
+NOT = { is_our_vassal = NGE } NOT = { owns = 1941 }
+NOT = { is_our_vassal = SUD } NOT = { owns = 1827 }
+NOT = { is_our_vassal = TAN } NOT = { owns = 2036 }
+NOT = { is_our_vassal = FMS } NOT = { owns = 1387 }
+NOT = { is_our_vassal = MSY } NOT = { owns = 1387 }
+}
+
+AND = { 
+tag = FRA
+war = no
+OR = { is_vassal = yes is_greater_power = no }
+NOT = { is_our_vassal = ALG } NOT = { owns = 1700 }
+NOT = { is_our_vassal = CAR } NOT = { owns = 1965 }
+NOT = { is_our_vassal = IVC } NOT = { owns = 1892 }
+NOT = { is_our_vassal = MAD } NOT = { owns = 2115 }
+NOT = { is_our_vassal = MLI } NOT = { owns = 1794 }
+}
+
+AND = { 
+tag = SPA
+war = no
+OR = { is_vassal = yes is_greater_power = no }
+NOT = { is_our_vassal = WSA } NOT = { owns = 1773 }
+NOT = { is_our_vassal = EQG } NOT = { owns = 1955 }
+}
+
+AND = { 
+tag = FBU
+war = no
+OR = { is_vassal = yes is_greater_power = no }
+NOT = { is_our_vassal = RAJ } NOT = { owns = 1236 }
+NOT = { is_our_vassal = HND } NOT = { owns = 1236 }
+NOT = { is_our_vassal = NGE } NOT = { owns = 1941 }
+NOT = { is_our_vassal = SUD } NOT = { owns = 1827 }
+NOT = { is_our_vassal = TAN } NOT = { owns = 2036 }
+NOT = { is_our_vassal = FMS } NOT = { owns = 1387 }
+NOT = { is_our_vassal = MSY } NOT = { owns = 1387 }
+NOT = { is_our_vassal = ALG } NOT = { owns = 1700 }
+NOT = { is_our_vassal = CAR } NOT = { owns = 1965 }
+NOT = { is_our_vassal = IVC } NOT = { owns = 1892 }
+NOT = { is_our_vassal = MAD } NOT = { owns = 2115 }
+NOT = { is_our_vassal = MLI } NOT = { owns = 1794 }
+}
+
+		}
+
+		NOT = { has_country_flag = decoloniasation2 }
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "Au revoir $COUNTRY_ADJ$ imperialism!"
+		prestige_factor = -0.05 
+		badboy = -5
+		set_country_flag = decoloniasation2
+		}
+
+}
+
+#End of the Capital of the Empire
+country_event = {
+	id = 1400012
+	title = "End of $CAPITAL$ as an Imperial Capital"
+	desc = "With the loss of our empire, our capital can no longer be classified as an imperial capital."
+	picture = "imperialcapital"
+
+	trigger = {
+		has_country_flag = decoloniasation2
+		NOT = { has_country_flag = impcapital }
+	capital_scope = { has_province_modifier = new_capital }
+		}
+	
+	option = {
+	name = "We need to find a new role for our capital!"
+		prestige = -10
+	any_owned = { remove_province_modifier = new_capital }
+		set_country_flag = impcapital
+		}
+
+	}
+
 # Demand Autonomy
 province_event = {
 	id = 15500
@@ -912,5 +1020,186 @@ country_event = { # Demand Immediate Repay 1mil of WW2 War Dept!
 }
 # If as a consequence of 15503 we are bancryot we have to give all countrie we previously denied independance independance.
 
+#Keep the Empire - All Colonial Provinces add modifier
+country_event = {
+	id = 1412217
+	title = "Dissent in the $COUNTRY_ADJ$ Colonies"
+	desc = EVTDESC1412217
+	picture = "colonial_dissent"
 
+	trigger = {
+	
+		#Blocking decolonisation events
+		has_country_flag = decolonise_yes
+
+		#Oppressing minorities
+		minorities_reform = minorities_oppression
+
+		#Has colonial provinces without the dissent province modifier
+		any_owned_province = { 
+			NOT = { is_core = THIS } 
+			is_colonial = yes 
+			NOT = { has_province_modifier = decolonise_yes } 
+		}
+
+	}
+
+	mean_time_to_happen = { 
+		months = 6
+	}
+
+	option = {
+		name = "A necessary evil to preserve the empire"
+		badboy = 1
+		prestige = -10
+		any_owned = { 
+			limit = { 
+				NOT = { is_core = THIS } 
+				
+				#Colonial provinces only
+				is_colonial = yes 
+				
+				#Province must not be majority accepted culture
+				is_primary_culture = no
+				is_accepted_culture = no
+				
+				NOT = { has_province_modifier = decolonise_yes } 
+			} 
+			add_province_modifier = { name = decolonise_yes duration = -1 } 
+		}
+	}
+
+}
+
+#Keep the Empire - Remove Province Modifier (province event)
+province_event = {
+	id = 1412218
+	title = "Anti-Colonial Dissent Eases in $STATENAME$"
+	desc = EVTDESC1412218
+	picture = "dissant_reduce"
+
+	trigger = {
+	
+		#Has colonial dissent modifier
+		has_province_modifier = decolonise_yes
+
+		#Owner blocking decolonisation events
+		owner = { has_country_flag = decolonise_yes }
+		
+		#Only fires in the state capital
+		is_state_capital = yes
+		
+		OR = {
+			#Owner is not oppressing minorities
+			owner = { NOT = { minorities_reform = minorities_oppression } }
+		
+			#Don't have a lot of radical natives sitting around
+			AND = {
+				is_primary_culture = no
+				is_accepted_culture = no
+				NOT = { populist = 0.10 }
+				NOT = { nationalist = 0.10 }
+				NOT = { traditionalist = 0.10 }
+				NOT = { socialist = 0.15 }
+				NOT = { communist = 0.10 }
+				NOT = { communist_social = 0.10 }
+			}
+			
+			#This province is no longer colonial
+			is_colonial = no
+			
+			#Natives have been diluted off from province
+			is_primary_culture = yes
+			is_accepted_culture = yes
+		}
+
+	}
+
+	mean_time_to_happen = { 
+		months = 400
+	}
+
+	option = {
+		name = "Excellent news!"
+		state_scope = { 
+			any_owned = { 
+				remove_province_modifier = decolonise_yes 
+				any_pop = { militancy = -5 consciousness = -5 }
+			} 
+		}
+	}
+
+}
+
+#Keep the Empire - Gain Legitimacy in province with primary or accepted pop as majority ideology
+country_event = {
+	id = 1412219
+	title = "Legitimacy Gained Over Certain Provinces"
+	desc = EVTDESC1412219
+	picture = "gain_colony_core"
+
+	trigger = {
+	
+		#Active attempt to artificially core provinces
+		OR = { 
+			has_country_flag = pop_displacement_system_active 
+			has_country_flag = promote_colonial_migration_active
+		}
+	
+		is_vassal = no
+		war = no
+		
+		#THIS is not an international pariah
+		NOT = { badboy = 1 }
+		
+		#Has eligible provinces
+		any_owned_province = {
+		
+			#Not already a core of THIS
+			NOT = { is_core = THIS }
+		
+			#THIS controls the province
+			controlled_by = THIS
+			
+			#Province has either majority primary or accepted culture
+			OR = {
+				is_primary_culture = yes
+				is_accepted_culture = yes
+			}
+			
+		}
+
+	}
+
+	mean_time_to_happen = { 
+		months = 12
+	}
+
+	option = {
+		name = "It's about time!"
+		prestige = 10
+		
+		#Add cores to uncored provinces
+		any_owned = {
+			limit = {
+				#Not already a core of THIS
+				NOT = { is_core = THIS }
+		
+				#THIS controls the province
+				controlled_by = THIS
+			
+				#Province has either majority primary or accepted culture
+				OR = {
+					is_primary_culture = yes
+					is_accepted_culture = yes
+				}
+			}
+			state_scope = { 
+				any_owned = { add_core = THIS }
+			}
+		}
+		
+	}
+
+}
 
