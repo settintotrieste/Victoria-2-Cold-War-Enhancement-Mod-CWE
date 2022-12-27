@@ -2014,3 +2014,117 @@ country_event = {
 	}
 	
 }
+
+#Choose the location of the UN Headquarters
+country_event = {
+	id = 1610068
+title = "United Nations Headquaters"
+	desc = EVTDESC1610068
+	picture = "un_hq_select"
+
+fire_only_once = yes
+
+trigger = {
+tag = USA
+has_global_flag = blocsenabled
+NOT = { year = 1992 }
+	}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Select New York"
+set_country_flag = un_hq_host_country
+money = -500000
+232 = { add_province_modifier = { name = un_headquarters duration = -1 } }
+ai_chance = { factor = 0.75 }
+		}
+option = {
+name = "Select San Francisco"
+set_country_flag = un_hq_host_country
+money = -500000
+relation = { who = AST value = 25 } # Historically favored San Franscico
+relation = { who = NZL value = 25 } # Historically favored San Franscico
+relation = { who = CHI value = 25 } # Historically favored San Franscico
+relation = { who = PHI value = 25 } # Historically favored San Franscico
+84 = { add_province_modifier = { name = un_headquarters duration = -1 } }
+ai_chance = { factor = 0.05 }
+		}
+
+option = {
+name = "Select London"
+ENG = { prestige = 500 set_country_flag = un_hq_host_country }
+relation = { who = ENG value = 200 }
+300 = { add_province_modifier = { name = un_headquarters duration = -1 } }
+ai_chance = { factor = 0.05 }
+		}
+
+option = {
+name = "Select Paris"
+FRA = { prestige = 500 set_country_flag = un_hq_host_country }
+relation = { who = FRA value = 200 }
+425 = { add_province_modifier = { name = un_headquarters duration = -1 } }
+ai_chance = { factor = 0.05 }
+		}
+
+option = {
+name = "Select Geneva"
+SWI = { prestige = 500 set_country_flag = un_hq_host_country }
+relation = { who = SWI value = 200 }
+607 = { add_province_modifier = { name = un_headquarters duration = -1 } }
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Change UN HQ location
+country_event = {
+	id = 1610069
+title = "UN Headquarters Relocates"
+	desc = EVTDESC1610069
+	picture = "un_hq_flees"
+
+major = yes
+
+trigger = {
+
+any_owned_province = { 
+has_province_modifier = un_headquarters 
+
+OR = { 
+
+#Losing a war
+owner = { national_provinces_occupied = 0.25 }
+
+#Occupied by enemy forces
+AND = { NOT = { controlled_by = THIS } 
+controlled_by_rebels = no }
+
+#UN HQ was struck by nukes
+has_province_modifier = nuke_accident 
+has_province_modifier = nuke_high 
+has_province_modifier = nuke_medium 
+has_province_modifier = nuke_low 
+has_province_modifier = tactical_nuked
+
+#UN HQ was struck by chemical bombs
+has_province_modifier = chemical_high
+has_province_modifier = chemical_medium
+has_province_modifier = chemical_low 
+	}
+
+}
+
+	}
+
+option = {
+name = "This is embarassing for $COUNTRY$"
+prestige = -500
+clr_country_flag = un_hq_host_country
+any_owned = { remove_province_modifier = un_headquarters }
+set_global_flag = host_un_hq
+		}
+
+}

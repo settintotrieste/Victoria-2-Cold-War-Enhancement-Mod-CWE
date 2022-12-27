@@ -1149,3 +1149,100 @@ country_event = {
 	}
 
 }
+
+#Dictatorship after a nuclear strike
+country_event = {
+	id = 1610133
+	title = "The Continuity of Government"
+	desc = EVTDESC1610133
+	picture = "post_nuke_cog"
+
+	trigger = {
+	
+		#Democratic government
+		OR = {
+			government = democracy
+			government = democracy1
+			
+			government = hms_government
+			government = hms_government1
+			
+			government = socialist_democracy
+		}
+		
+		is_vassal = no
+	
+		#Country has been hit by nuclear weapons
+		any_owned_province = { 
+			OR = { 
+				has_province_modifier = nuke_high 
+				has_province_modifier = nuke_medium 
+				has_province_modifier = nuke_low 
+			} 
+		}
+		
+		#Has some proper Civil Defence
+		OR = { 
+			has_country_modifier = cdhigh 
+			has_country_modifier = cdmedium 
+		}
+		
+		#Civil Defence shelters activated
+		has_country_flag = nuke_protection
+		
+		NOT = { has_country_flag = post_nuke_government }
+	}
+
+	mean_time_to_happen = { 
+		months = 0.1
+	}
+
+	option = {
+		name = "Grant the regional administrators absolute power"
+		
+		set_country_flag = post_nuke_government
+		
+		random_owned = {
+			limit = { owner = { OR = { government = hms_government government = hms_government1 } } }
+			owner = { government = absolute_monarchy }
+		}
+		
+		random_owned = {
+			limit = { owner = { OR = { government = democracy government = democracy1 } } }
+			owner = { government = presidential_dictatorship }
+		}
+		
+		random_owned = {
+			limit = { owner = { government = socialist_democracy } }
+			owner = { government = proletarian_dictatorship }
+		}
+		
+		#Set dictatorial reform
+		political_reform = none_voting 
+		political_reform = ruling_party_opinion
+		political_reform = no_meetings
+		political_reform = politicised_service
+		political_reform = censored_publishing
+		political_reform = no_trade_unions
+		political_reform = parties_not_allowed
+		political_reform = open_immigration
+		political_reform = lgbt_promoted #Conscription
+		
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "Try to preserve the pre-war order"
+		
+		set_country_flag = post_nuke_government
+		
+		add_country_modifier = { name = political_strife duration = 3650 }
+		
+		any_owned = {
+			add_province_modifier = { name = generic_uprising duration = 730 }
+		}
+		
+		ai_chance = { factor = 0 }
+	}
+
+}

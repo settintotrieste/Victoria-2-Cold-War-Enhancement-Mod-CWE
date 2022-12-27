@@ -1,0 +1,518 @@
+#Nuclear Blackmarket Acquisition successful
+country_event = {
+	id = 1410137
+	title = "$COUNTRY$ bought Nuclear Warheads"
+	desc = "We have successfully obtained nuclear warheads from shadowy Arms Dealers."
+	picture = "nuclear_blackmarket"
+	
+	major = yes
+	
+	trigger = {
+		NOT = { has_country_modifier = acquiring_bomb }
+		has_country_flag = acquiring_bomb
+	}	
+
+	option = {
+		name = "Success"
+		prestige = 50
+		clr_country_flag = acquiring_bomb
+		add_country_modifier = { name = acquired_bomb duration = -1 }
+	}
+
+}
+
+#UN Sanctions on Nuclear Blackmarket Nation
+country_event = {
+	id = 1410138
+	title = "$COUNTRY_ADJ$ Nuclear Bombs Condemned by UN"
+	desc = "The United Nations has condemned our illegal Nuclear bomb acqusition and has imposed punitative sanctions on us."
+	picture = "united_nations_sanctions"
+	
+	trigger = {
+		has_country_modifier = acquired_bomb
+		NOT = { has_country_modifier = acquired_bomb_sanctions }
+	}
+	
+	mean_time_to_happen = { 
+		months = 6
+		modifier = { factor = 0.5 has_global_flag = UNSG_aggressive }
+		modifier = { factor = 2 has_global_flag = UNSG_passive }
+	}
+
+	option = {
+		name = "We will have to resist them!"
+		prestige_factor = -0.05
+		add_country_modifier = { name = acquired_bomb_sanctions duration = -1 }
+	}
+
+}
+
+#Nuclear Threat
+country_event = {
+	id = 1410139
+	title = "$FROMCOUNTRY$ Threatens a Nuclear Attack!"
+	desc = "$FROMCOUNTRY$ has delivered an ultimatum to $CAPITAL$: if we do not cease hostilities, they will unleash their limited nuclear arsenal on us."
+	picture = "nuke_threat"
+	
+	allow_multiple_instances = yes  
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "Accept!"
+		prestige = -50
+		
+		end_war = FROM
+		
+		ai_chance = { factor = 1 modifier = { factor = 0 NOT = { OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation } } } }
+	}
+	
+	option = {
+		name = "Reject!"
+
+		add_country_modifier = { name = recently_attacked_nuke duration = 31 }
+
+		FROM = { remove_country_modifier = acquired_bomb }
+
+		random_owned = { 
+			set_province_flag = disease
+			set_province_flag = nuked_before
+			infrastructure = -2
+			add_province_modifier = { name = nuke_low duration = 18250 } 
+		}
+
+		random_owned = { 
+			set_province_flag = disease
+			set_province_flag = nuked_before
+			infrastructure = -2
+			add_province_modifier = { name = nuke_low duration = 18250 } 
+		}
+		
+		random_owned = {
+			set_province_flag = disease
+			set_province_flag = nuked_before
+			infrastructure = -2
+			add_province_modifier = { name = nuke_low duration = 18250 } 
+		}
+		
+		random_owned = {
+			set_province_flag = disease
+			set_province_flag = nuked_before
+			infrastructure = -2
+			add_province_modifier = { name = nuke_low duration = 18250 } 
+		}
+		
+		random_owned = { 
+			set_province_flag = disease
+			set_province_flag = nuked_before
+			infrastructure = -2
+			add_province_modifier = { name = nuke_low duration = 18250 } 
+		}
+
+		ai_chance = { factor = 1 modifier = { factor = 0 OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation } } }
+	}
+
+}
+
+#UN Sanctions on Nuclear Blackmarket Nation
+country_event = {
+	id = 1410140
+	title = "UN Sanctions on $COUNTRY$ lifted"
+	desc = "As we no longer possess illegal nuclear weapons, the United Nations Sanctions on us have been lifted."
+	picture = "united_nations_sanctions"
+	
+	trigger = {
+		NOT = { has_country_modifier = acquired_bomb }
+		has_country_modifier = acquired_bomb_sanctions
+	}	
+
+	option = {
+		name = "That's good"
+		remove_country_modifier = acquired_bomb_sanctions
+	}
+
+}
+
+#Nuclear Blackmail
+country_event = {
+	id = 1410111
+	title = "Nuclear Blackmail Result"
+	desc = "We have proposed to pause our nuclear program in exchange for international aid."
+	picture = "nuclear_blackmail"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "Let's roll the dice of fate"
+
+		random_list = {
+			10 = { badboy = 25 add_country_modifier = { name = blackmail_failed duration = 365 } }
+			90 = { 
+				add_country_modifier = { name = nuke_blackmail duration = 730 } 
+				prestige = 50 
+				remove_country_modifier = develop_atomic_bomb
+				add_country_modifier = { name = develop_atomic_bomb duration = 2555 }
+			}
+
+		}
+	}
+}
+
+#Remove Nuclear Animations
+province_event = {
+
+id = 1410081
+title = "No more signs of WMD fallout in $PROVINCENAME$"
+desc = "All WMD fallout seem to have vanished from $PROVINCENAME$. The province is now safe to settle in again."
+
+allow_multiple_instances = no
+
+trigger = {
+has_country_flag = disabled_for_now
+has_province_flag = disease
+		NOT = { 
+			has_province_modifier = nuke_low
+			has_province_modifier = nuke_medium
+			has_province_modifier = nuke_high
+			has_province_modifier = chemical_low
+			has_province_modifier = chemical_medium
+			has_province_modifier = chemical_high
+			}
+OR = { has_province_flag = nuked_before has_province_flag = chemical_before }
+		}
+
+	option = {
+		name = "Good!"
+				clr_province_flag = disease
+clr_province_flag = nuked_before
+clr_province_flag = chemical_before
+                                }
+	            }
+
+#USA Supersonic Jet Finish
+country_event = {
+	id = 1410134
+	title = "US Supersonic Passenger Jet Created"
+	desc = EVTDESC1410134
+	picture = "us_super_jet"
+	
+trigger = {
+has_country_flag = supersonic_usa
+NOT = { has_country_modifier = supersonic_usa_development }
+NOT = { has_country_modifier = supersonic_usa }
+}	
+
+option = {
+	name = "Success"
+prestige = 100
+add_country_modifier = { name = supersonic_usa duration = -1 }
+country_event = 1410143
+			}
+
+}
+
+#RUS Supersonic Jet Finish
+country_event = {
+	id = 1410135
+	title = "Russian Supersonic Passenger Jet Created"
+	desc = EVTDESC1410135
+	picture = "rus_super_jet"
+	
+trigger = {
+has_country_flag = supersonic_rus
+NOT = { has_country_modifier = supersonic_rus_development }
+NOT = { has_country_modifier = supersonic_rus }
+}	
+
+option = {
+	name = "Success"
+prestige = 100
+add_country_modifier = { name = supersonic_rus duration = -1 }
+country_event = 1410143
+			}
+
+}
+
+#Generic Supersonic Jet Finish
+country_event = {
+	id = 1410136
+title = "$COUNTRY_ADJ$ Supersonic Passenger Jet Created"
+	desc = EVTDESC1410136
+	picture = "generic_super_jet"
+	
+trigger = {
+has_country_flag = supersonic_generic
+NOT = { has_country_modifier = supersonic_generic_development }
+NOT = { has_country_modifier = supersonic_generic }
+}	
+
+option = {
+	name = "Success"
+prestige = 100
+add_country_modifier = { name = supersonic_generic duration = -1 }
+country_event = 1410143
+			}
+
+}
+
+#Remove Nuke Modifiers automatically when disarmed or vassal
+country_event = {
+	id = 1610030
+title = "Disarmament of $COUNTRY_ADJ$ Nuclear Weapons"
+	desc = EVTDESC1610030
+	picture = "nuclear_disarmament"
+
+major = yes
+
+trigger = {
+OR = { 
+AND = { is_disarmed = yes has_recently_lost_war = yes }
+is_vassal = yes
+}
+OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation has_country_modifier = tactical_nukes has_country_flag = atomic_bomb_developed has_country_flag = hydrogen_bomb_developed }
+}
+
+option = {
+name = "Our country is no longer great"
+prestige_factor = -0.2
+remove_country_modifier = hydrogen_nation 
+remove_country_modifier = atomic_nation
+remove_country_modifier = develop_atomic_bomb 
+remove_country_modifier = develop_hydrogen_bomb
+remove_country_modifier = nuclear_cap_high
+remove_country_modifier = nuclear_cap_medium 
+remove_country_modifier = nuclear_cap_low
+remove_country_modifier = tactical_nukes
+clr_country_flag = atomic_bomb_developed
+clr_country_flag = hydrogen_bomb_developed
+clr_country_flag = icbm_bomb
+clr_country_flag = sub_bomb
+clr_country_flag = air_bomb
+
+add_country_modifier = { name = revolution_chaos duration = 1825 }
+		}
+
+}
+
+#Use Tactical Nukes
+country_event = {
+	id = 1610031
+title = "Struck by $FROMCOUNTRY_ADJ$ Tactical Nuclear Weapons"
+	desc = EVTDESC1610031
+	picture = "disarm_tactical_nukes"
+
+is_triggered_only = yes
+
+option = {
+name = "We must retaliate!"
+prestige_factor = -0.025
+
+FROM = { set_country_flag = has_nuke_clouds }
+
+set_country_flag = has_nuke_clouds
+
+war_exhaustion = 10
+
+any_pop = { limit = { type = soldiers } reduce_pop = 0.99 }
+
+any_owned = { 
+limit = { units_in_province = 1 } 
+set_province_flag = disease
+add_province_modifier = { name = tactical_nuked duration = 1825 }
+any_pop = { reduce_pop = 0.95 }
+infrastructure = -2
+naval_base = -2
+fort = -2
+}
+		}
+
+}
+
+#Disarm WMDs CB - Loser
+country_event = {
+	id = 1610033
+title = "Disarmed of Weapons of Mass Destruction"
+	desc = EVTDESC1610033
+	picture = "disarm_tactical_nukes"
+
+major = yes
+
+is_triggered_only = yes
+
+option = {
+name = "This is humiliating!"
+prestige_factor = -0.3
+badboy = -15
+any_pop = { limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } } average_militancy = 4 }
+add_country_modifier = { name = wmd_removed duration = 3650 } 
+
+random_owned = { 
+limit = { owner = { OR = { has_country_modifier = hydrogen_nation has_country_modifier = atomic_nation } } }
+owner = { set_country_flag = can_take_nukes } 
+}
+
+random_owned = { 
+limit = { owner = { has_country_modifier = chemical_nation } }
+owner = { set_country_flag = can_take_chemical } 
+}
+
+random_owned = { 
+limit = { owner = { has_country_modifier = bio_nation } }
+owner = { set_country_flag = can_take_biological } 
+}
+
+#Remove Nuke modifiers
+
+remove_country_modifier = hydrogen_nation 
+remove_country_modifier = atomic_nation
+remove_country_modifier = develop_atomic_bomb 
+remove_country_modifier = develop_hydrogen_bomb  
+clr_country_flag = atomic_bomb_developed
+clr_country_flag = hydrogen_bomb_developed
+clr_country_flag = icbm_bomb
+clr_country_flag = sub_bomb
+clr_country_flag = air_bomb
+remove_country_modifier = tactical_nukes
+
+#Remove Chemical modifiers
+
+clr_country_flag = nerve_bomb
+clr_country_flag = choking_bomb
+clr_country_flag = blister_bomb
+remove_country_modifier = chemical_sanctions
+remove_country_modifier = chemical_nation
+remove_country_modifier = develop_chemical_bomb 
+clr_country_flag = chemical_bomb_developed
+
+#Remove Biological modifiers
+
+remove_country_modifier = bio_nation
+		}
+
+}
+
+#Disarm WMDs CB - Winner
+country_event = {
+	id = 1610034
+title = "Siezed Weapons of Mass Destruction"
+	desc = EVTDESC1610034
+	picture = "sieze_wmd_cb"
+
+is_triggered_only = yes
+
+option = {
+name = "Destroy the stockpiles!"
+prestige = 100
+badboy = -10
+ai_chance = { factor = 0.8 modifier = { factor = 0 war_policy = jingoism } }
+	}
+
+option = {
+name = "Take the WMDs for ourselves!"
+badboy = 10
+
+#Sieze Nukes
+random_country = { 
+limit = { truce_with = THIS has_country_flag = can_take_nukes } 
+clr_country_flag = can_take_nukes
+THIS = { 
+money = 500000 
+remove_country_modifier = develop_atomic_bomb 
+remove_country_modifier = develop_hydrogen_bomb  
+random_owned = { 
+limit = { owner = { NOT = { OR = { has_country_modifier = hydrogen_nation has_country_modifier = atomic_nation } } } }
+owner = { country_event = 1231432 } }
+	}
+}
+
+#Sieze Chemical - 1131432
+random_country = { 
+limit = { truce_with = THIS has_country_flag = can_take_chemical } 
+clr_country_flag = can_take_chemical
+THIS = { 
+money = 250000
+remove_country_modifier = develop_chemical_bomb 
+random_owned = { 
+limit = { owner = { NOT = { has_country_modifier = chemical_nation } } }
+owner = { country_event = 1131432 } }
+	}
+}
+
+#Sieze Biological - 1412061
+random_country = { 
+limit = { truce_with = THIS has_country_flag = can_take_biological } 
+clr_country_flag = can_take_biological
+THIS = { 
+money = 125000
+remove_country_modifier = develop_bio_weapons
+random_owned = { 
+limit = { owner = { NOT = { has_country_modifier = bio_nation } } }
+owner = { country_event = 1412061 } }
+	}
+}
+
+ai_chance = { factor = 0.2 modifier = { factor = 0 war_policy = pacifism } modifier = { factor = 0 badboy = 0.5 } }
+	}
+
+}
+
+#Remove Chemical Modifiers automatically when disarmed or vassal
+country_event = {
+	id = 1610035
+title = "Disarmament of $COUNTRY_ADJ$ Chemical Weapons"
+	desc = EVTDESC1610035
+	picture = "nuclear_disarmament"
+
+major = yes
+
+trigger = {
+OR = { 
+AND = { is_disarmed = yes has_recently_lost_war = yes }
+is_vassal = yes
+}
+OR = { has_country_modifier = chemical_nation has_country_flag = chemical_bomb_developed has_country_modifier = develop_chemical_bomb }
+}
+
+option = {
+name = "Our country is no longer great"
+prestige_factor = -0.1
+clr_country_flag = nerve_bomb
+clr_country_flag = blister_bomb
+clr_country_flag = choking_bomb
+remove_country_modifier = chemical_sanctions
+remove_country_modifier = chemical_nation
+remove_country_modifier = develop_chemical_bomb 
+clr_country_flag = chemical_bomb_developed
+
+add_country_modifier = { name = revolution_chaos duration = 1825 }
+		}
+
+}
+
+#Remove Biological automatically when disarmed or vassal
+country_event = {
+	id = 1610036
+title = "Disarmament of $COUNTRY_ADJ$ Biological Weapons"
+	desc = EVTDESC1610036
+	picture = "nuclear_disarmament"
+
+major = yes
+
+trigger = {
+OR = { 
+AND = { is_disarmed = yes has_recently_lost_war = yes }
+is_vassal = yes
+}
+OR = { has_country_modifier = develop_bio_weapons has_country_modifier = bio_nation }
+}
+
+option = {
+name = "Our country is no longer great"
+prestige_factor = -0.05
+remove_country_modifier = develop_bio_weapons
+remove_country_modifier = bio_nation 
+
+add_country_modifier = { name = revolution_chaos duration = 1825 }
+		}
+
+}

@@ -1,0 +1,347 @@
+#Party Hardliners event
+country_event = {
+	id = 1610123
+	title = "Resentful Party Hardliners"
+	desc = EVTDESC1610123
+	picture = "party_hardliners_revolt"
+
+	trigger = {
+		ai = no
+		OR = {
+			government = presidential_dictatorship
+			government = populist_dictatorship
+			government = nationalist_dictatorship
+			government = proletarian_dictatorship
+			government = proletarian_dictatorship1
+		}
+		
+		#Adopted some liberalisation
+		OR = {
+			NOT = { political_opinions = ruling_party_opinion }
+			NOT = { political_parties = parties_not_allowed }
+			NOT = { vote_franschise = none_voting }
+			
+			NOT = { OR = { publishing_rights = censored_publishing publishing_rights = firewall_publishing } }
+			
+			NOT = { public_meetings = no_meetings }
+		}
+		
+		#Has Conservative officers
+		any_pop = {
+			type = officers 
+			NOT = {
+				OR = {
+					pop_majority_ideology = liberal
+					pop_majority_ideology = progressive
+					pop_majority_ideology = populist
+					pop_majority_ideology = big_tent
+				}
+			}
+			militancy = 5
+		}
+		
+	}
+
+	mean_time_to_happen = { 
+		months = 6
+	}
+
+	option = {
+		name = "Accept their request!"
+		
+		prestige_factor = -0.02
+		
+		#Party liberals get angry
+		any_pop = {
+			limit = { type = officers }
+			scaled_militancy = {
+				factor = 10
+				ideology = liberal
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = progressive
+			}
+			scaled_militancy = {
+				factor = 5
+				ideology = populist
+			}
+			scaled_militancy = {
+				factor = 5
+				ideology = big_tent
+			}
+		}
+		
+		#Party hardliners are happy
+		any_pop = {
+			limit = { type = officers }
+			
+			#Moderate blocs
+			scaled_militancy = {
+				factor = -5
+				ideology = socialist
+			}
+			scaled_militancy = {
+				factor = -5
+				ideology = conservative
+			}
+			
+			#Extreme blocs
+			scaled_militancy = {
+				factor = -10
+				ideology = traditionalist
+			}
+			scaled_militancy = {
+				factor = -10
+				ideology = nationalist
+			}
+			scaled_militancy = {
+				factor = -10
+				ideology = communist
+			}
+			scaled_militancy = {
+				factor = -10
+				ideology = communist_social
+			}
+		}
+		
+		#Revert democratic reforms
+		
+		random_owned = {
+			limit = { 
+				owner = { 
+					NOT = { OR = { publishing_rights = censored_publishing publishing_rights = firewall_publishing } }
+				} 
+			}
+			owner = { political_reform = censored_publishing }
+		}
+		
+		random_owned = {
+			limit = { 
+				owner = { 
+					NOT = { public_meetings = no_meetings }
+				} 
+			}
+			owner = { political_reform = no_meetings }
+		}
+		
+		random_owned = {
+			limit = { 
+				owner = { 
+					NOT = { political_opinions = ruling_party_opinion } 
+				} 
+			}
+			owner = { political_reform = ruling_party_opinion }
+		}
+		
+		random_owned = {
+			limit = { 
+				owner = { 
+					NOT = { political_parties = parties_not_allowed }
+				} 
+			}
+			owner = { political_reform = parties_not_allowed }
+		}
+		
+		random_owned = {
+			limit = { 
+				owner = { 
+					NOT = { vote_franschise = none_voting }
+				} 
+			}
+			owner = { political_reform = none_voting }
+		}
+		
+		ai_chance = { factor = 0.6 }
+	}
+
+	option = {
+		name = "I am the $MONARCHTITLE$, I do what I want"
+		
+		#Party hardliners are angry
+		any_pop = {
+			limit = { type = officers }
+			
+			#Moderate blocs
+			scaled_militancy = {
+				factor = 5
+				ideology = socialist
+			}
+			scaled_militancy = {
+				factor = 5
+				ideology = conservative
+			}
+			
+			#Extreme blocs
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist_social
+			}
+		}
+		
+		#If military loyalty is not low
+		random_owned = {
+			limit = { 
+				owner = { NOT = { has_country_modifier = military_loyalty_low } } 
+			}
+			owner = {
+				random = {
+					chance = 15
+					country_event = 1610049
+				}
+				random = {
+					chance = 25
+					country_event = 1210202
+				}
+			}
+		}
+		
+		#If military loyalty is low
+		random_owned = {
+			limit = { 
+				owner = { has_country_modifier = military_loyalty_low } 
+			}
+			owner = {
+				country_event = 100100 #Coup Risk
+			}
+		}
+		
+		ai_chance = { factor = 0.4 }
+	}
+
+}
+
+#Remove all capitalists in fully planned economies (communist dictatorships)
+country_event = {
+	id = 1610128
+	title = "Purge of the $COUNTRY_ADJ$ Bourgeoisie"
+	desc = EVTDESC1610128
+	picture = "remove_all_bourgeoisie"
+
+	trigger = {
+		OR = {
+			government = proletarian_dictatorship
+			government = proletarian_dictatorship1
+		}
+		ruling_party_ideology = communist
+		economic_policy = planned_economy
+		
+		has_pop_type = capitalists
+		
+		war = no
+	}
+
+	mean_time_to_happen = {
+		months = 3
+	}
+
+	option = {
+		name = "Long live the revolution!"
+		farmers = { money = 10 }
+		labourers = { money = 10 }
+		craftsmen = { money = 10 }
+		clerks = { money = 10 }
+		soldiers = { money = 10 }
+		
+		officers = { money = 20 }
+		bureaucrats = { money = 30 }
+		
+		any_pop = {
+			limit = { type = capitalists }
+			militancy = 10
+			pop_type = aristocrats #Executives
+		}
+		any_pop = {
+			limit = { type = artisans }
+			militancy = 5
+			pop_type = craftsmen
+		}
+		
+		any_pop = { 
+			limit = { strata = poor }
+			ideology = { 
+				factor = 0.10 
+				value = communist 
+			} 
+		}
+		
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { 
+				factor = 0.05
+				value = communist 
+			} 
+		}
+	}
+
+}
+
+#Five Year Plan - Economic Specialisation
+country_event = {
+	id = 1610134
+	title = "The Five Year Plan of $YEAR$"
+	desc = EVTDESC1610134
+	picture = "five_year_plan_choice"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Focus on Heavy Industry"
+		add_country_modifier = { name = spclow duration = -1 }
+		
+		set_country_flag = spclow
+		
+		ai_chance = { factor = 0.6 }
+	}
+
+	option = {
+		name = "Focus on Consumer Goods"
+		add_country_modifier = { name = spcmedium duration = -1 }
+		
+		set_country_flag = spcmedium
+
+		ai_chance = { factor = 0.2 }
+	}
+	
+	option = {
+		name = "Focus on Services"
+		add_country_modifier = { name = spchigh duration = -1 }
+		
+		set_country_flag = spchigh
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+	option = {
+		name = "Focus on Military Production"
+		add_country_modifier = { name = spcno duration = -1 }
+		
+		set_country_flag = spcno
+		
+		#Military is happy
+		random_owned = { limit = { owner = { ruling_party_ideology = nationalist } } owner = { any_pop = { limit = { OR = { type = officers type = soldiers } } ideology = { factor = 0.05 value = nationalist } } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = traditionalist } } owner = { any_pop = { limit = { OR = { type = officers type = soldiers } } ideology = { factor = 0.05 value = traditionalist } } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = conservative } } owner = { any_pop = { limit = { OR = { type = officers type = soldiers } } ideology = { factor = 0.05 value = conservative } } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = liberal } } owner = { any_pop = { limit = { OR = { type = officers type = soldiers } } ideology = { factor = 0.05 value = liberal } } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = big_tent } } owner = { any_pop = { limit = { OR = { type = officers type = soldiers } } ideology = { factor = 0.05 value = big_tent } } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = progressive } } owner = { any_pop = { limit = { OR = { type = officers type = soldiers } } ideology = { factor = 0.05 value = progressive } } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = socialist } } owner = { any_pop = { limit = { OR = { type = officers type = soldiers } } ideology = { factor = 0.05 value = socialist } } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = communist } } owner = { any_pop = { limit = { OR = { type = officers type = soldiers } } ideology = { factor = 0.05 value = communist } } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = communist_social } } owner = { any_pop = { limit = { OR = { type = officers type = soldiers } } ideology = { factor = 0.05 value = communist_social } } } }
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
