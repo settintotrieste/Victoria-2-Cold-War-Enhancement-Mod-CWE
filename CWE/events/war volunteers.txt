@@ -1,0 +1,63 @@
+#FROM requests volunteer
+country_event = {
+	id = 1610103
+	title = "$FROMCOUNTRY$ Requests Volunteers"
+	desc = "EVTDESC1610103"
+	picture = "request_volunteers"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Send a military force to aid the $FROMCOUNTRY_ADJ$ war effort!"
+		war_exhaustion = 5
+		diplomatic_influence = { who = FROM value = 25 }
+		relation = { who = FROM value = 50 }
+		FROM = {
+			war_exhaustion = -2.5
+			#Add soldiers
+			any_pop = {
+				limit = { type = soldiers }
+				reduce_pop = 1.05
+			}
+			#Add officers
+			any_pop = {
+				limit = { type = officers }
+				reduce_pop = 1.01
+			}
+		}
+		ai_chance = { 
+			factor = 0.5
+			modifier = { factor = 0 war_policy = pacifism }
+		}
+	}
+	
+	option = {
+		name = "We will not sacrifice our citizens in a foreign war"
+		diplomatic_influence = { who = FROM value = -25 }
+		relation = { who = FROM value = -25 }
+		FROM = { country_event = 1610104 }
+		ai_chance = {
+			factor = 0.5
+			modifier = { factor = 0 war_policy = jingoism }
+		}
+	}
+
+}
+
+#FROM requests volunteer - Notification of rejection
+country_event = {
+	id = 1610104
+	title = "$FROMCOUNTRY$ Refuses"
+	desc = "EVTDESC1610104"
+	picture = "request_volunteers"
+
+	allow_multiple_instances = yes
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "The $FROMCOUNTRY_ADJ$-$COUNTRY_ADJ$ Alliance is useless"
+		war_exhaustion = 1
+	}
+
+}
