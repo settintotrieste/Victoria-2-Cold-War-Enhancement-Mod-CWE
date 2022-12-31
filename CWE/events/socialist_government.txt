@@ -345,3 +345,212 @@ country_event = {
 	}
 
 }
+
+#Collectivisation - start
+country_event = {
+	id = 1512058
+title = "Collectivisation in $COUNTRY$"
+	desc = EVTDESC1512058
+	picture = "collectivisation"
+
+trigger = {
+
+has_country_flag = collectivise_farms
+
+any_owned_province = { 
+OR = {
+trade_goods = fruit
+trade_goods = grain
+
+trade_goods = oil_seeds
+trade_goods = sugar
+trade_goods = tea
+trade_goods = tobacco
+trade_goods = coffee
+trade_goods = cotton
+} 
+
+NOT = { has_province_modifier = collectivisation }
+
+}
+
+
+}
+
+option = {
+name = "This will increase crop yield!"
+
+any_owned = { 
+
+limit = { 
+OR = {
+trade_goods = fruit
+trade_goods = grain
+
+trade_goods = oil_seeds
+trade_goods = sugar
+trade_goods = tea
+trade_goods = tobacco
+trade_goods = coffee
+trade_goods = cotton
+} 
+NOT = { has_province_modifier = collectivisation }
+	} 
+
+add_province_modifier = { name = collectivisation duration = -1 }
+
+}
+
+		}
+
+}
+
+#Socialist Democracy only has socialist parties
+country_event = {
+	id = 1512087
+	title = "$COUNTRY$ is Socialist!"
+	desc = "As we are a Socialist Democracy, only Socialists, Progressives, Communists and Market Communists are allowed in the Government. This event will remove the traitorous scum from our government."
+	picture = "socialist_demo_restrictions"
+
+	trigger = {
+		government = socialist_democracy
+		election = no
+		NOT = { OR = { ruling_party_ideology = socialist ruling_party_ideology = progressive ruling_party_ideology = communist ruling_party_ideology = communist_social } }
+		NOT = { has_country_modifier = revolution_chaos }
+	}
+
+	option = {
+		name = "Workers of the world unite!"
+		
+		#Revert back to socialism
+		ruling_party_ideology = socialist
+		
+		#Non-socialists are angry
+		any_pop = { 
+			scaled_consciousness = { factor = 10 ideology = traditionalist } 
+			scaled_militancy = { factor = 10 ideology = traditionalist } 
+		}
+		any_pop = { 
+			scaled_consciousness = { factor = 10 ideology = conservative } 
+			scaled_militancy = { factor = 10 ideology = conservative } 
+		}
+		any_pop = { 
+			scaled_consciousness = { factor = 10 ideology = liberal } 
+			scaled_militancy = { factor = 10 ideology = liberal } 
+		}
+		any_pop = { 
+			scaled_consciousness = { factor = 10 ideology = big_tent } 
+			scaled_militancy = { factor = 10 ideology = big_tent } 
+		}
+		any_pop = { 
+			scaled_consciousness = { factor = 10 ideology = nationalist } 
+			scaled_militancy = { factor = 10 ideology = nationalist } 
+		}
+		any_pop = { 
+			scaled_consciousness = { factor = 10 ideology = populist } 
+			scaled_militancy = { factor = 10 ideology = populist } 
+		}
+
+		ai_chance = { 
+			factor = 0.99
+			
+			#Exceptions
+			modifier = {
+				factor = 0
+				tag = RUS
+			}
+		}
+	}
+
+	option = {
+		name = "Let the will of the people speak!"
+		prestige_factor = -0.1
+		
+		#Add revolution modifier
+		remove_country_modifier = revolution_chaos
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		#Socialists side is angry
+		any_pop = { 
+			scaled_consciousness = { factor = 10 ideology = socialist } 
+			scaled_militancy = { factor = 10 ideology = socialist } 
+		}
+		any_pop = { 
+			scaled_consciousness = { factor = 5 ideology = progressive } 
+			scaled_militancy = { factor = 5 ideology = progressive } 
+		}
+		any_pop = { 
+			scaled_consciousness = { factor = 10 ideology = communist } 
+			scaled_militancy = { factor = 10 ideology = communist } 
+		}
+		any_pop = { 
+			scaled_consciousness = { factor = 10 ideology = communist_social } 
+			scaled_militancy = { factor = 10 ideology = communist_social } 
+		}
+		
+		ai_chance = { factor = 0.01 }
+	}
+
+}
+
+#Communist Nations ally with the Soviet Bloc
+country_event = {
+	id = 1512138
+title = "$COUNTRY_ADJ$-Soviet Treaty of Friendship"
+	desc = EVTDESC1512138
+	picture = "treaty_of_friendship_ussr_comm"
+
+trigger = {
+NOT = { tag = RUS }
+has_global_flag = blocsenabled
+is_vassal = no
+war = no
+exists = RUS
+OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+NOT = { alliance_with = RUS }
+NOT = { AND = { tag = GRD ai = yes } }
+NOT = { has_country_flag = treaty_of_friendship_ussr_comm }
+wars_of_national_liberation = 1
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Yes!"
+RUS = { country_event = 19801 }
+
+relation = { who = RUS value = 200 }
+create_alliance = RUS
+any_country = { 
+limit = { 
+OR = { has_country_modifier = democratic_bloc_leader has_country_modifier = democratic_bloc }
+} 
+diplomatic_influence = { who = THIS value = -100 }
+leave_alliance = THIS
+}
+
+set_country_flag = treaty_of_friendship_ussr_comm
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "We will go the third way"
+prestige = 50
+relation = { who = RUS value = -100 }
+random_country = { limit = { NOT = { tag = RUS } is_greater_power = yes OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } relation = { who = THIS value = 100 } diplomatic_influence = { who = THIS value = 100 } }
+set_country_flag = treaty_of_friendship_ussr_comm
+
+any_country = { 
+limit = { 
+OR = { has_country_modifier = democratic_bloc_leader has_country_modifier = democratic_bloc }
+} 
+diplomatic_influence = { who = THIS value = -100 }
+leave_alliance = THIS
+}
+
+ai_chance = { factor = 0.1 }
+		}
+
+}

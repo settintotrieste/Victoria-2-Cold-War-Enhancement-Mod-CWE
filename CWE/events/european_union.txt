@@ -251,3 +251,188 @@ remove_country_modifier = eib_member
 remove_country_modifier = eib_principal_member
 		}
 }
+
+#European Defence Community
+country_event = {
+	id = 1512070
+title = "The European Defence Community"
+	desc = EVTDESC1512070
+	picture = "edc_proposal"
+
+fire_only_once = yes
+
+trigger = {
+year = 1952
+war = no
+NOT = { year = 1990 }
+tag = FRA
+is_greater_power = yes
+GER = { exists = yes }
+}
+
+mean_time_to_happen = { 
+months = 5
+	}
+
+option = {
+name = "Propose the EDC Treaty"
+prestige = 25
+relation = { who = USA value = -200 }
+any_country = { limit = { exists = yes OR = { tag = GER tag = ITA tag = NET tag = BEL tag = LUX } } country_event = 1512071 }
+ai_chance = { factor = 0.1 }
+		}
+
+option = {
+name = "Leave defence to NATO"
+prestige = -25
+relation = { who = USA value = 200 }
+relation = { who = ENG value = 200 }
+ai_chance = { factor = 0.9 }
+		}
+
+}
+
+#European Defence Community - receiver
+country_event = {
+	id = 1512071
+title = "The European Defence Community"
+	desc = EVTDESC1512070
+	picture = "edc_proposal"
+
+is_triggered_only = yes
+
+option = {
+name = "Ratify the EDC Treaty"
+create_alliance = FROM
+relation = { who = FROM value = 200 }
+FROM = { diplomatic_influence = { who = THIS value = 300 } }
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Leave defence to NATO"
+prestige = 25
+relation = { who = USA value = 200 }
+USA = { diplomatic_influence = { who = THIS value = 50 } }
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#European Exchange Rate Mechanism
+country_event = {
+	id = 1512195
+title = "European Exchange Rate Mechanism"
+	desc = EVTDESC1512195
+	picture = "erm_eec"
+
+trigger = {
+
+NOT = { has_country_flag = erm_flag }
+
+has_country_flag = xeu_ambition
+
+war = no
+
+is_vassal = no
+
+year = 1979
+
+NOT = { modern_stock_exchange = 1 }
+
+money = 100000
+
+NOT = { has_country_flag = left_erm }
+
+}
+
+mean_time_to_happen = { 
+months = 3
+	}
+
+option = {
+name = "Join the system"
+money = -100000
+add_country_modifier = { name = economic_boom duration = 1825 }
+set_country_flag = erm_flag
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Maintain our monetary independence!"
+prestige = 50
+set_country_flag = left_erm
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#European Central Bank
+country_event = {
+	id = 1512229
+title = "European Central Bank"
+	desc = EVTDESC1512229
+	picture = "ecb_interest_rates"
+
+trigger = {
+OR = { 
+any_owned_province = { has_province_modifier = currency_union }
+any_owned_province = { has_province_modifier = currency_union_province }
+}
+has_country_flag = xeu_ambition
+NOT = { has_country_flag = superstate_central_bank }
+}
+
+option = {
+name = "We can no longer control our interest rates!"
+set_country_flag = superstate_central_bank
+remove_country_modifier = cbihigh
+remove_country_modifier = cbimedium
+remove_country_modifier = cbilow
+		}
+
+}
+
+#EEC countries join the French Sphere during the cold war
+country_event = {
+	id = 1512134
+title = "The European Economic Community"
+	desc = EVTDESC1512134
+	picture = "eec_join"
+
+trigger = {
+OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+NOT = { has_country_flag = eec_choice_made }
+capital_scope = { continent = europe }
+is_greater_power = no
+year = 1958
+part_of_sphere = no
+is_vassal = no
+war = no
+has_global_flag = european_coal_and_steel_community
+has_global_flag = blocsenabled
+GER = { exists = yes government = democracy tech_school = XEU_tech_school }
+FRA = { exists = yes government = democracy is_greater_power = yes tech_school = XEU_tech_school }
+tech_school = XEU_tech_school
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Join the EEC fully!"
+prestige = 50
+FRA = { diplomatic_influence = { who = THIS value = 200 } prestige = 50 }
+set_country_flag = eec_choice_made
+ai_chance = { factor = 1 }
+		}
+
+option = {
+name = "Delay integration"
+prestige = -50
+set_country_flag = eec_choice_made
+ai_chance = { factor = 0 }
+		}
+
+}
