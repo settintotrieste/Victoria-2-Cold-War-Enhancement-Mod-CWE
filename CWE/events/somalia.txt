@@ -1,243 +1,755 @@
-country_event = { # Trust Territory of Somaliland
+#Trust Territory of Somaliland
+country_event = { 
 	id = 8014100
 	title = EVT_8014100_NAME
 	desc = EVT_8014100_DESC
 	picture = "somalia_trust_territory"
+	
 	fire_only_once = yes
 
 	trigger = {
-		capital_scope = { continent = europe } # ENG or FBU
-		owns = 1869
+		OR = { tag = ENG tag = FBU }
+	    year = 1950
 		NOT = { year = 1990 }
+		
+		government = hms_government
+		is_vassal = no
+		war = no
+		
+		is_possible_vassal = SOM
 	}
 
-	mean_time_to_happen = {
-		months = 36
-	}
+	mean_time_to_happen = { months = 4 }
 
 	option = {
 		name = EVT_8014100_A
+		prestige = 25
+		
 		any_owned = {
 			limit = {
 				is_core = SOM
 				NOT = { is_core = SML }
+				NOT = { is_core = KEN }
 				NOT = { is_core = ETH } # In case Ogaden event not fired
+				NOT = { is_core = KEN }
 			}
 			secede_province = ITA
 		}
+		
+		ai_chance = { factor = 0.99 }
 	}
+	
+	option = {
+		name = "Ignore the United Nations"
+		prestige = -100
+		badboy = 10
+		
+		any_pop = { limit = { culture = somali } militancy = 10 consciousness = 10 }
+		
+		random_country = {
+			limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = -400 }
+		}
+        random_country = {
+			limit = { tag = CHI government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = -400 }
+		}			
+		random_country = {
+			limit = { tag = USA government = democracy is_greater_power = yes }
+			relation = { who = THIS value = -200 }
+		}
+		random_country = {
+			limit = { tag = FRA government = democracy is_greater_power = yes }
+			relation = { who = THIS value = -200 }
+		}
+		random_country = {
+			limit = { tag = KMT ruling_party_ideology = conservative is_vassal = no }
+			relation = { who = THIS value = -200 }
+		}
+		
+		random_country = {
+			limit = { tag = ITA OR = { government = democracy government = hms_government1 government = presidential_dictatorship } is_vassal = no }
+			relation = { who = THIS value = -400 }
+		}
+		
+		ai_chance = { factor = 0.01 }
+	}
+	
 }
+
+#Somalia if Italy is communist
 country_event = {
-  id = 8014101
-  title = EVT_8014100_NAME
-  desc = EVT_8014100_DESC
-  picture = "somalia_trust_territory"
-  fire_only_once = yes
+	id = 8014101
+	title = "Reversion of the Somalia Mandate"
+	desc = EVT_8014101_DESC
+	picture = "somalia_trust_territory"
+	
+	fire_only_once = yes
 
-  trigger = {
-    tag = ITA
-	owns = 1869
-	year = 1949 NOT = { year = 1990 }
-	NOT = { exists = SOM }
-  }
+	trigger = {
+		OR = { tag = ENG tag = FBU }
+		NOT = { year = 1990 }
+		
+		OR = { government = hms_government government = democracy }
+		is_vassal = no
+		war = no
+	
+		ITA = { 
+			government = proletarian_dictatorship 
+			is_vassal = no 
+			war = no
+			
+			is_possible_vassal = SOM
+		}
+	}
 
-  mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = EVT_8014101_A
-	release_vassal = SOM
-	1873 = { owner = { diplomatic_influence = { who = SOM value = 200 } } } # Berbera, ENG
-	create_vassal = SOM # some strange bug makes SOM UK vassal!!
-SOM = { government = mandate_government country_event = 800054 }
-	ai_chance = { factor = 1 }
-  }
-
-  option = {
-    name = "Stick to the status quo"
-	prestige_factor = -0.25
-	badboy = 20
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = "The Mandate is back in our hands"
+		prestige = 50
+	
+		ITA = {
+			any_owned = { limit = { is_core = SOM } secede_province = ENG }
+		}
+	
+		random_country = {
+			limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = -100 }
+		}
+		random_country = {
+			limit = { tag = CHI government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = -100 }
+		}			
+		random_country = {
+			limit = { tag = USA government = democracy is_greater_power = yes }
+			relation = { who = THIS value = 100 }
+		}
+		random_country = {
+			limit = { tag = FRA government = democracy is_greater_power = yes }
+			relation = { who = THIS value = 100 }
+		}
+		random_country = {
+			limit = { tag = KMT ruling_party_ideology = conservative is_vassal = no }
+			relation = { who = THIS value = 100 }
+		}
+	
+	}
 
 }
-country_event = { # Somalia Independence
-  id = 8014102
-  title = EVT_8014102_NAME
-  desc = EVT_8014102_DESC
-  picture = "somalia_independence"
-  fire_only_once = yes
 
-  trigger = {
-	tag = ITA
-	exists = SOM
-	is_our_vassal = SOM
-	SOM = { government = mandate_government }
-    year = 1960 NOT = { year = 1990 }
-  }
-
-  mean_time_to_happen = { months = 1 }
-
-  option = {
-    name = EVT_8014102_A
-	release_vassal = SOM
-	SOM = { government = democracy }
-
-random_country = { limit = { owns = 1873 } country_event = 8014103 }
-
-	ai_chance = { factor = 1 }
-  }
-  option = {
-    name = "Stick to the status quo"
-	prestige_factor = -0.25
-	badboy = 20
-	ai_chance = { factor = 0 }
-  }
-}
+#Somalia Self Rule
 country_event = {
-  id = 8014103
-  title = EVT_8014102_NAME
-  desc = EVT_8014102_DESC
-  picture = "somalia_independence"
-  is_triggered_only = yes # ENG
+	id = 80141011
+	title = "Self Rule in Somaliland"
+	desc = EVT_8014102_DESC
+	picture = "somalia_trust_territory"
+	
+	fire_only_once = yes
 
-  option = {
-    name = EVT_8014103_A
-	prestige = 10
-	any_owned = { limit = { OR = { is_core = SOM is_core = DJI } } secede_province = SOM } # DJI for FBU
-	ai_chance = { factor = 0.8 }
-  }
-  option = {
-    name = EVT_8014103_B
-	release = SML
+	trigger = {
+		tag = ITA
+		year = 1956
+		NOT = { year = 1990 }
+		
+		OR = { government = democracy government = hms_government }
+		is_vassal = no
+		war = no
+	
+		is_possible_vassal = SOM
+	}
 
-SML = { government = hms_government country_event = 800054 }
-SML = { set_country_flag = former_colonial_nation }
+	mean_time_to_happen = { months = 1 }
 
-	any_owned = { limit = { is_core = ETH } secede_province = SML } # In case Ogaden Occupation event never fired
-	any_owned = { limit = { is_core = DJI } secede_province = SML } # If FBU
-	badboy = 2
-	prestige = -5
-	diplomatic_influence = { who = SML value = 200 }
-	ai_chance = { factor = 0.2 }
-  }
-  option = {
-    name = EVT_8014103_C
-	badboy = 5
-	prestige = -100
-	any_pop = { limit = { culture = somali } militancy = 8.0  consciousness = 5.0 }
-	ai_chance = { factor = 0 }
-  }
+	option = {
+		name = "Set them on the road to independence!"
+		prestige = 50
+	
+		#Release Trust Territory of Somalia
+		release_vassal = SOM
+		SOM = { 
+			government = mandate_government 
+			country_event = 800054 
+			ruling_party_ideology = conservative
+		}
+		diplomatic_influence = { who = SOM value = 200 }
+		sphere_owner = { diplomatic_influence = { who = SOM value = 200 } }
+		
+		ai_chance = { factor = 0.99 }
+	}
+	
+	option = {
+		name = "Renege on the mandate's terms!"
+		badboy = 15
+		
+		any_pop = { 
+			limit = { culture = somali } 
+			militancy = 10 
+			consciousness = 10 
+			ideology = { factor = 0.25 value = nationalist } 
+		}
+		
+		random_country = {
+			limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = -400 }
+		}
+        random_country = {
+			limit = { tag = CHI government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = -400 }
+		}			
+		random_country = {
+			limit = { tag = USA government = democracy is_greater_power = yes }
+			relation = { who = THIS value = -200 }
+		}
+		random_country = {
+			limit = { tag = FRA government = democracy is_greater_power = yes }
+			relation = { who = THIS value = -200 }
+		}
+		random_country = {
+			limit = { tag = KMT ruling_party_ideology = conservative is_vassal = no }
+			relation = { who = THIS value = -200 }
+		}
+		random_country = {
+			limit = { tag = ENG OR = { government = democracy government = hms_government } is_vassal = no }
+			relation = { who = THIS value = -200 }
+		}
+		
+		ai_chance = { factor = 0.01 }
+	}
+
+}
+
+country_event = { #Somalia Independence
+	id = 8014102
+	title = EVT_8014102_NAME
+	desc = EVT_8014102_DESC
+	picture = "somalia_independence"
+	
+	fire_only_once = yes
+
+	trigger = {
+		capital_scope = { continent = europe } #ITA, ENG or FBU
+		year = 1960
+		NOT = { year = 1990 }
+	
+		OR = { government = democracy government = hms_government }
+		is_vassal = no
+		war = no
+		
+		is_our_vassal = SOM
+		SOM = { government = mandate_government }
+	}
+
+	mean_time_to_happen = { months = 3 }
+
+	option = {
+		name = EVT_8014102_A
+		
+		#Release independent SOM
+		release_vassal = SOM
+		SOM = { 
+			government = democracy
+			country_event = 800054
+			ruling_party_ideology = socialist
+			
+			any_pop = {
+				limit = { culture = somali NOT = { strata = rich } }
+				militancy = -8 
+				consciousness = -8
+				ideology = { factor = 0.6 value = socialist }
+			}
+		}
+		
+		#Option for owner of Somaliland to hand over territory to Somalia
+		random_country = { limit = { is_possible_vassal = SML } country_event = 8014103 }
+
+		ai_chance = { factor = 0.99 }
+	}
+  
+	option = {
+		name = "Disregard the UN"
+		prestige = -100
+		badboy = 10
+		
+		#Convert Mandate to normal Colonial puppet
+		SOM = { government = colonial_government }
+		
+		any_pop = { 
+			limit = { culture = somali } 
+			militancy = 10 
+			consciousness = 10 
+			ideology = { factor = 0.25 value = nationalist }
+		}
+		
+		random_country = {
+			limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = -400 }
+		}
+		random_country = {
+			limit = { tag = CHI government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = -400 }
+		}			
+		random_country = {
+			limit = { tag = USA government = democracy is_greater_power = yes }
+			relation = { who = THIS value = -200 }
+		}
+		random_country = {
+			limit = { tag = FRA government = democracy is_greater_power = yes }
+			relation = { who = THIS value = -200 }
+		}
+		random_country = {
+			limit = { tag = KMT ruling_party_ideology = conservative is_vassal = no }
+			relation = { who = THIS value = -200 }
+		}
+		random_country = {
+			limit = { tag = ENG OR = { government = democracy government = hms_government } is_vassal = no }
+			relation = { who = THIS value = -200 }
+		}
+		random_country = {
+			limit = { tag = ITA OR = { government = democracy government = hms_government } is_vassal = no }
+			relation = { who = THIS value = -200 }
+		}
+		random_country = {
+			limit = { tag = FBU OR = { government = democracy government = hms_government } is_vassal = no }
+			relation = { who = THIS value = -200 }
+		}
+		
+		ai_chance = { factor = 0.01 }
+	}
+  
+}
+
+#Option for owner of Somaliland to hand over territory to Somalia
+country_event = {
+	id = 8014103
+	title = EVT_8014102_NAME
+	desc = EVT_8014102_DESC
+	picture = "somalia_independence"
+	
+	is_triggered_only = yes # ENG
+
+	option = {
+		name = EVT_8014103_A
+		prestige = 50
+	
+		# DJI for FBU
+		any_owned = { 
+			limit = { OR = { is_core = SOM is_core = DJI } } 
+			secede_province = SOM 
+		}
+	
+		ai_chance = { factor = 0.9 }
+	}
+  
+	option = {
+		name = EVT_8014103_B
+	
+		release = SML
+		SML = { 
+			government = hms_government1 
+			country_event = 800054 
+			ruling_party_ideology = big_tent 
+		}
+		diplomatic_influence = { who = SML value = 200 }
+
+		any_owned = { limit = { is_core = ETH } secede_province = SML } # In case Ogaden Occupation event never fired
+		any_owned = { limit = { is_core = DJI } secede_province = SML } # If FBU
+	
+		ai_chance = { factor = 0.07 }
+	}
+  
+	option = {
+		name = EVT_8014103_C
+		prestige = -50
+		badboy = 5
+	
+		any_pop = { 
+			limit = { culture = somali } 
+			militancy = 10 
+			consciousness = 10 
+			ideology = { factor = 0.25 value = nationalist }
+		}
+	
+		ai_chance = { factor = 0.03 }
+	}
+  
 }
 
 #1969 Coup, Somali Democratic Republic
 country_event = {
-  id = 8014117
-  title = EVT_8014117_NAME
-  desc = EVT_8014117_DESC
-  picture = "nwo2_mohamed_barre"
-  fire_only_once = yes
+	id = 8014117
+	title = EVT_8014117_NAME
+	desc = EVT_8014117_DESC
+	picture = "nwo2_mohamed_barre"
+	
+	fire_only_once = yes
 
-  trigger = {
-    	tag = SOM
-	is_vassal = no
-	war = no
-	NOT = { government = proletarian_dictatorship }
-    	year = 1969 NOT = { year = 1990 }
-  }
+	trigger = {
+		tag = SOM
+		year = 1969
+		NOT = { year = 1990 }
+	
+		government = democracy
+		is_vassal = no
+		war = no
+		
+		has_global_flag = blocsenabled
+	}
 
-  mean_time_to_happen = { months = 10 }
+	mean_time_to_happen = { months = 10 }
 
-  option = {
-    name = EVT_8014117_A
-	government = proletarian_dictatorship 
-	country_event = 800052
-	ruling_party_ideology = communist
-	ai_chance = { factor = 0.9 }
-  }
+	option = {
+		name = EVT_8014117_A	
+		government = proletarian_dictatorship 
+		country_event = 800052
+		ruling_party_ideology = communist_social
+	
+		any_pop = { 
+			limit = { culture = somali NOT = { strata = rich } } 
+			ideology = { factor = 0.25 value = communist } 
+		}
+		
+		random_country = {
+			limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = 400 }
+			diplomatic_influence = { who = THIS value = 200 }
+		}
+	
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = "Stick to the status quo"
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-	ai_chance = { factor = 0.1 }
-  }
+	option = {
+		name = "Fend off the plotters"
+		government = presidential_dictatorship 
+		country_event = 800050
+		ruling_party_ideology = conservative
+	
+		any_pop = { limit = { culture = somali } consciousness = 4 }
+	
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+	
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#1978 Attempted Coup
+country_event = {
+	id = 8014122
+	title = "$YEAR$ Somali Coup"
+	desc = EVT_8014122_DESC
+	picture = "SOM_siad_barre"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = SOM
+		year = 1978
+		NOT = { year = 1990 }
+	
+		government = proletarian_dictatorship 
+		is_vassal = no
+		war = no
+		
+		ruling_party_ideology = communist_social
+	
+		NOT = { owns = 1865 owns = 1866 owns = 1867 }
+	
+		truce_with = ETH
+	}
+
+	mean_time_to_happen = { months = 1 }
+  
+	option = {
+		name = "Execute the plotters"
+		badboy = 2
+	
+		any_pop = { limit = { culture = somali } ideology = { factor = 0.25 value = communist_social } }
+	
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+	
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "The plotters succeed"
+		prestige = -25
+		
+		ruling_party_ideology = communist
+	
+		any_pop = { limit = { culture = somali } militancy = -4 consciousness = -4 }
+		
+		random_country = {
+			limit = { tag = RUS government = proletarian_dictatorship is_greater_power = yes }
+			relation = { who = THIS value = 400 }
+			diplomatic_influence = { who = THIS value = 200 }
+		}
+	
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
 #Interim Government of Somalia
 country_event = {
-  id = 8014121
-  title = EVT_8014121_NAME
-  desc = EVT_8014121_DESC
-  picture = "nwo2_mohamed_barre"
-  fire_only_once = yes
+	id = 8014121
+	title = EVT_8014121_NAME
+	desc = EVT_8014121_DESC
+	picture = "SOM_siad_barre"
+	
+	fire_only_once = yes
 
-  trigger = {
+	trigger = {
     	tag = SOM
     	year = 1991
-	is_vassal = no
-	war = no
-	government = proletarian_dictatorship
-  }
+		NOT = { has_global_flag = 1992_start_date }
+		NOT = { year = 2001 }
+		
+		government = proletarian_dictatorship
+	    is_vassal = no
+	    war = no
+		
+		ruling_party_ideology = communist_social
+    }
 
-  mean_time_to_happen = { months = 1 }
+	mean_time_to_happen = { months = 1 }
 
-  option = {
-    name = "End the tyranny of communism"
-	government = democracy
-	country_event = 800054
-	ruling_party_ideology = big_tent
-	ai_chance = { factor = 0.8 }
-  }
+	option = {
+		name = "End the tyranny of Siad Barre"
+		prestige = 25
+		badboy = -10
+	
+		government = democracy
+		country_event = 800054
+		ruling_party_ideology = nationalist
+		
+		random_owned = { limit = { owner = { is_possible_vassal = SML } } owner = { release = SML SML = { government = presidential_dictatorship country_event = 800050 ruling_party_ideology = socialist } } }
+	
+		any_pop = {
+			limit = { culture = somali }
+			militancy = -8
+			consciousness = 8
+			ideology = { factor = 0.6 value = traditionalist }
+		}
+	
+		ai_chance = { factor = 0.9 }
+	}
 
-  option = {
-    name = "Stick to the status quo"
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-	ai_chance = { factor = 0.2 }
-  }
+	option = {
+		name = "Cling on to power"
+		badboy = 5
+	
+		any_pop = {
+			limit = { culture = somali }
+			militancy = 9 
+			consciousness = -9
+			ideology = { factor = 0.3 value = traditionalist }
+			ideology = { factor = 0.3 value = liberal }
+		}
+	
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+	
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
+#Djibouti 1958 Referendum
+country_event = { 
+	id = 8014151
+	title = "$YEAR$ Somaliland Referendum"
+	desc = EVT_8014151_DESC
+	picture = "djibouti_independence"
+	
+	fire_only_once = yes
 
-country_event = { # Djibouti Independence
-  id = 8014150
-  title = EVT_8014150_NAME
-  desc = EVT_8014150_DESC
-  picture = "djibouti_independence"
-  fire_only_once = yes
+	trigger = {
+		tag = FRA
+		year = 1958
+		NOT = { year = 1990 }
+	
+		government = democracy
+		is_vassal = no
+		war = no
+	
+		is_possible_vassal = DJI
+		
+		SOM = { 
+			exists = yes 
+			
+			government = democracy 
+			is_vassal = no 
+			war = no 
+		}
+	}
 
-  trigger = {
-    tag = FRA
-    year = 1977 NOT = { year = 1990 }
-	owns = 1875 # Djibouti
-	war = no
-  }
+	mean_time_to_happen = { months = 6 }
+  
+	option = {
+		name = "Vote For!"
+		prestige = 25
+	
+		any_pop = { limit = { culture = somali } militancy = 4 consciousness = 8 }
+	
+		ai_chance = { factor = 0.9 }
+	}
+  
+	option = {
+		name = "Vote Against!"
+	
+		any_owned = { limit = { OR = { is_core = SOM is_core = DJI } } secede_province = SOM }
+	
+		random_country = {
+			limit = { tag = SOM is_vassal = no }
+			relation = { who = THIS value = 100 }
+			diplomatic_influence = { who = THIS value = 10 }
+		}
+	
+		ai_chance = { factor = 0.1 }
+	}
+  
+}
 
-  mean_time_to_happen = { months = 6 }
+# Djibouti Independence
+country_event = {
+	id = 8014150
+	title = "Independence of Djibouti"
+	desc = EVT_8014150_DESC
+	picture = "djibouti_independence"
+  
+	fire_only_once = yes
 
-  option = {
-    name = EVT_8014150_A
-	release = DJI
-	diplomatic_influence = { who = DJI value = 200 }
-	create_alliance = DJI
-	prestige = 10
-	ai_chance = { factor = 0.7 }
-  }
-  option = {
-    name = "Grant a loose confederation with France instead"
-	release_vassal = DJI
-	diplomatic_influence = { who = DJI value = 200 }
-	create_alliance = DJI
-	prestige = -50
-	badboy = 2.5
-	DJI = { government = colonial_government }
-DJI = { add_country_modifier = { name = revolution_chaos duration = 3650 } }
-	ai_chance = { factor = 0.2 }
-  }
-  option = {
-    name = EVT_8014150_B
-	badboy = 5
-	prestige = -100
-	any_pop = { limit = { location = { is_core = DJI } }  militancy = 8  consciousness = 5.0 }
-	ai_chance = { factor = 0.1 }
-  }
+	trigger = {
+		tag = FRA
+		year = 1977 
+		NOT = { year = 1990 }
+	
+		government = democracy
+		is_vassal = no
+		war = no
+	
+		is_possible_vassal = DJI
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "Set them free!"
+		prestige = 50
+		
+		#Release independent DJI
+		release = DJI
+		DJI = {
+			government = democracy
+			country_event = 800054
+			ruling_party_ideology = socialist
+			
+			any_pop = {
+				limit = { culture = somali NOT = { strata = rich } }
+				militancy = -8 
+				consciousness = -8
+				ideology = { factor = 0.6 value = socialist }
+			}
+			
+		}
+		diplomatic_influence = { who = DJI value = 200 }
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Release them as a puppet instead"
+		prestige = 25
+		badboy = 2.5
+		
+		#Release independent DJI
+		release_vassal = DJI
+		DJI = {
+			government = colonial_government
+			country_event = 800054
+			ruling_party_ideology = conservative
+			
+			any_pop = {
+				limit = { culture = somali NOT = { strata = rich } }
+				militancy = -8 
+				consciousness = -8
+				ideology = { factor = 0.2 value = socialist }
+				ideology = { factor = 0.2 value = communist }
+				ideology = { factor = 0.1 value = nationalist }
+			}
+			
+		}
+		diplomatic_influence = { who = DJI value = 200 }
+	
+		ai_chance = { factor = 0.05 }
+	}
+  
+	option = {
+		name = "They shall remain as an overseas department"
+		badboy = 5
+	
+		any_pop = {
+			limit = { 
+				location = { is_core = DJI } 
+			}
+			militancy = 10
+			consciousness = 10
+			ideology = { factor = 0.25 value = nationalist }
+		}
+	
+		ai_chance = { factor = 0.05 }
+	}
+  
+}
+
+#One Party State in DJI
+country_event = {
+	id = 8014153
+	title = "Outlawing the Opposition"
+	desc = EVT_8014153_DESC
+	picture = "djibouti_independence" 
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = DJI
+		year = 1981
+		NOT = { year = 1990 }
+		
+		government = democracy
+		is_vassal = no
+		war = no
+		
+		ruling_party_ideology = socialist
+	}
+	
+	mean_time_to_happen = { months = 3 }
+	
+    option = {
+		name = "Long live President Aptidon!"
+	  
+		government = presidential_dictatorship 
+		country_event = 800050
+	  
+		any_pop = { militancy = 3 consciousness = 4 }
+	  
+		ai_chance = { factor = 0.9 }
+    }
+
+	option = {
+		name = "We can still avoid that"
+		ruling_party_ideology = conservative
+	  
+		any_pop = { 
+			militancy = 6 
+			consciousness = -2 
+			ideology = { factor = 0.2 value = conservative }
+			ideology = { factor = 0.1 value = big_tent }
+		}
+	  
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
+	  
+		ai_chance = { factor = 0.1 }
+    }
+	
 }

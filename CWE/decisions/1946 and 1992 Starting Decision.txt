@@ -908,8 +908,8 @@ set_country_flag = pre_existing_monarchy
 
 #Set Free Speech Policy
 any_country = {
-limit = { publishing_rights = censored_publishing OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } }
-political_reform = firewall_publishing
+limit = { publishing_rights = state_publishing OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } }
+political_reform = censored_publishing
 }
 
 #Set Trade Union Policy
@@ -1186,8 +1186,21 @@ any_pop = {
 	pop_type = artisans
 }
 
+#Executives in colonies are capitalists if they are primary or accepted culture
+any_pop = {
+	limit = { 
+		type = aristocrats
+		OR = { 
+			is_primary_culture = yes
+			is_accepted_culture = yes
+		}
+		location = { is_colonial = yes } 
+	}
+	pop_type = capitalists
+}
+
 any_country = {
-	limit = { NOT = { economic_policy = planned_economy } }
+	limit = { NOT = { OR = { economic_policy = planned_economy economic_policy = planned_economy1 } } }
 	any_pop = {
 		limit = { 
 			type = aristocrats
@@ -1200,15 +1213,46 @@ any_country = {
 }
 
 any_country = {
-	limit = { economic_policy = planned_economy }
+	limit = { NOT = { OR = { economic_policy = planned_economy economic_policy = planned_economy1 } } }
 	any_pop = {
 		limit = { 
+			type = aristocrats
+			OR = { 
+				is_primary_culture = yes
+				is_accepted_culture = yes
+			}
+			location = { is_colonial = yes } 
+		}
+		pop_type = capitalists
+	}
+}
+
+#Executives in colonies of communist nations are officers or bureaucrats
+any_country = {
+	limit = { OR = { economic_policy = planned_economy economic_policy = planned_economy1 } }
+	any_pop = {
+		limit = {
 			type = aristocrats
 			is_primary_culture = no
 			is_accepted_culture = no
 			location = { is_colonial = yes } 
 		}
-		pop_type = clerks
+		pop_type = officers
+	}
+}
+
+any_country = {
+	limit = { OR = { economic_policy = planned_economy economic_policy = planned_economy1 } }
+	any_pop = {
+		limit = { 
+			type = aristocrats
+			OR = { 
+				is_primary_culture = yes
+				is_accepted_culture = yes
+			}
+			location = { is_colonial = yes } 
+		}
+		pop_type = bureaucrats
 	}
 }
 
@@ -1300,6 +1344,24 @@ random_owned = {
 		} 
 	}
 	owner = { add_country_modifier = { name = industrial_pop_boom duration = 7300 } }
+}
+
+#Swiss nuclear program
+random_country = {
+	limit = { 
+		year = 1946
+		NOT = { year = 1950 } 
+		tag = SWI
+	}
+	add_country_modifier = { name = paul_scherrer duration = 7300 }
+}
+random_country = {
+	limit = { 
+		year = 1950
+		NOT = { year = 1992 } 
+		tag = SWI
+	}
+	add_country_modifier = { name = paul_scherrer duration = 3650 }
 }
 
 #Hoover Dam
@@ -1450,7 +1512,7 @@ USA = {
 	
 	random_owned = { limit = { owner = { pollution = no_controls literacy = 0.10 } } owner = { social_reform = trinket_envir } } #-0.001 to +0
 	
-	random_owned = { limit = { owner = { social_service_reform = no_social_service literacy = 0.10 } } owner = { social_reform = social_services } } #-0.001 to +0
+	random_owned = { limit = { owner = { public_housing = no_public_housing literacy = 0.10 } } owner = { social_reform = trinket_public_housing } } #-0.001 to +0
 }
 
 any_country = {
@@ -1465,7 +1527,7 @@ any_country = {
 	
 	random_owned = { limit = { owner = { pollution = no_controls literacy = 0.10 } } owner = { social_reform = trinket_envir } } #-0.001 to +0
 	
-	random_owned = { limit = { owner = { social_service_reform = no_social_service literacy = 0.10 } } owner = { social_reform = social_services } } #-0.001 to +0
+	random_owned = { limit = { owner = { public_housing = no_public_housing literacy = 0.10 } } owner = { social_reform = trinket_public_housing } } #-0.001 to +0
 }
 
 #Bretton Woods System
@@ -1495,6 +1557,15 @@ any_country = {
 		NOT = { year = 1971 } 
 	}
 	add_country_modifier = { name = bretton_system duration = -1 }
+}
+
+#Spanish Autarky
+any_country = { 
+	limit = { 
+		NOT = { year = 1990 }
+		tag = SPA 
+	} 
+	add_country_modifier = { name = juche duration = -1 } 
 }
 
     } #Bracket for effect = { }

@@ -1,0 +1,115 @@
+##vassal interactions events, fired from gtfo.txt in /decisions
+
+country_event = {
+	id = 47777788
+	title = "Freedom!"
+	desc = "$FROMCOUNTRY$ has granted us unconditional independence!"
+	picture = "treaty"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Nice."
+		overlord = { release_vassal = THIS }
+	}
+	
+}
+
+country_event = {
+	id = 47777792
+	title = "Vassal Interactions: $FROMCOUNTRY$"
+	desc = "If $FROMCOUNTRY$ is the country you want to interact with, select an option. Otherwise, select 'Next country' to cycle through, or select 'Exit options' to return to the game."
+	picture = "treaty"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Release this country"
+		
+		FROM = {
+			country_event = 47777788
+		}
+		any_country = {
+			limit = {
+				exists = yes
+				vassal_of = THIS
+			}
+			clr_country_flag = interacted_with
+		}
+		
+		clr_country_flag = vassal_interactions_flag
+	}
+	
+	option = {
+		name = "Return cores to this country that don't belong to us"
+		
+		any_owned = {
+			limit = {
+				is_core = FROM
+				NOT = { is_core = THIS }
+			}
+			secede_province = FROM
+		}
+		any_country = {
+			limit = {
+				exists = yes
+				vassal_of = THIS
+			}
+			clr_country_flag = interacted_with
+		}
+		
+		clr_country_flag = vassal_interactions_flag
+	}
+	
+	option = {
+		name = "Next country"
+		
+		random_country = {
+			limit = {
+				vassal_of = THIS
+				NOT = { has_country_flag = interacted_with }
+			}
+			country_event = 47777793
+			THIS = { set_country_flag = possible_interactions }
+		}
+		any_country = {
+			limit = {
+				exists = yes
+				vassal_of = THIS
+				THIS = { NOT = { has_country_flag = possible_interactions } }
+			}
+			clr_country_flag = interacted_with
+		}
+	}
+	
+	option = {
+		name = "Exit options"
+		any_country = {
+			limit = {
+				exists = yes
+				vassal_of = THIS
+			}
+			clr_country_flag = interacted_with
+		}
+		
+		clr_country_flag = vassal_interactions_flag
+	}
+	
+}
+
+country_event = {
+	id = 47777793
+	title = "AI: Vassal Interactions"
+	desc = "This event lets your overlord interact with you. If you are a player, just close this."
+	picture = "treaty"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "OK"
+		set_country_flag = interacted_with
+		FROM = { clr_country_flag = possible_interactions }
+		overlord = { country_event = 47777792 }
+	}
+	
+}

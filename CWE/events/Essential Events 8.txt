@@ -2665,7 +2665,7 @@ country_event = {
 			NOT = { safety_regulations = rigid_regulations }
 			NOT = { unemployment_subsidies = citizen_salary }
 			NOT = { pensions = good_pensions }
-			NOT = { social_service_reform = the_safety_grid } 
+			NOT = { public_housing = good_public_housing } 
 		}
 
 	}
@@ -2770,20 +2770,20 @@ owner = { social_reform = trinket_pensions } }
 #Social Service
 
 random_owned = { 
-limit = { owner = { social_service_reform = anti_terror_surveillance } } 
-owner = { social_reform = the_safety_grid } }
+limit = { owner = { public_housing = acceptable_public_housing } } 
+owner = { social_reform = good_public_housing } }
 
 random_owned = { 
-limit = { owner = { social_service_reform = social_abuse_protection } } 
-owner = { social_reform = anti_terror_surveillance } }
+limit = { owner = { public_housing = low_public_housing } } 
+owner = { social_reform = acceptable_public_housing } }
 
 random_owned = { 
-limit = { owner = { social_service_reform = social_services } } 
-owner = { social_reform = social_abuse_protection } }
+limit = { owner = { public_housing = trinket_public_housing } } 
+owner = { social_reform = low_public_housing } }
 
 random_owned = { 
-limit = { owner = { social_service_reform = no_social_service  } } 
-owner = { social_reform = social_services } }
+limit = { owner = { public_housing = no_public_housing  } } 
+owner = { social_reform = trinket_public_housing } }
 
 		ai_chance = { 
 			factor = 1 
@@ -3258,7 +3258,7 @@ country_event = {
 		government = presidential_dictatorship
 		country_event = 800050
 		ruling_party_ideology = socialist
-		remove_accepted_culture = british
+		remove_accepted_culture = english
 		ai_chance = { factor = 0.8 }
 	}
 
@@ -3268,46 +3268,6 @@ country_event = {
 		add_country_modifier = { name = revolution_chaos duration = 3650 }
 		ai_chance = { factor = 0.2 }
 	}
-
-}
-
-#Zaire democracy
-country_event = {
-	id = 1512074
-title = "Democratic Republic of the Congo"
-	desc = EVTDESC1512074
-	picture = "CNG_democracy"
-
-fire_only_once = yes
-
-trigger = {
-tag = CNG
-NOT = { OR = { government = democracy government = socialist_democracy government = democracy1 government = hms_government government = hms_government1 } }
-OR = { war = yes has_recently_lost_war = yes }
-is_vassal = no
-year = 1997
-}
-
-mean_time_to_happen = { 
-months = 3
-	}
-
-option = {
-name = "Adopt the new democractic constitution"
-prestige = 25
-government = democracy
-country_event = 800054
-ruling_party_ideology = conservative
-ai_chance = { factor = 0.9 }
-		}
-
-option = {
-name = "Stay on the path of Mobutism!"
-prestige = -50
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-ai_chance = { factor = 0.1 }
-		}
-
 
 }
 
@@ -3536,36 +3496,35 @@ clr_country_flag = neutrality
 #Volkstaat
 country_event = {
 	id = 1512079
-title = "Afrikaner Nationalism"
+	title = "Afrikaner Nationalism"
 	desc = EVTDESC1512079
 	picture = "volkstaat"
 
-fire_only_once = yes
+	fire_only_once = yes
 
-trigger = {
-tag = SAF
-NOT = { OR = { primary_culture = afrikaaner primary_culture = british } }
-}
-
-mean_time_to_happen = { 
-months = 6
+	trigger = {
+		OR = { tag = SAF TAG = RSA }
+		NOT = { OR = { primary_culture = afrikaaner primary_culture = english } }
 	}
 
-option = {
-name = "Afrikaners are South Africans"
-prestige = 25
-ai_chance = { factor = 0.9 }
-		}
+	mean_time_to_happen = { 
+		months = 6
+	}
 
-option = {
-name = "Grant them self-rule"
-prestige = -25
-release_vassal = VLS
-VLS = { government = sar_government country_event = 800054 ruling_party_ideology = conservative }
-sphere_owner = { diplomatic_influence = { who = VLS value = 200 } }
-ai_chance = { factor = 0.1 }
-		}
+	option = {
+		name = "Afrikaners are South Africans"
+		prestige = 25
+		ai_chance = { factor = 0.9 }
+	}
 
+	option = {
+		name = "Grant them self-rule"
+		prestige = -25
+		release_vassal = VLS
+		VLS = { government = sar_government country_event = 800054 ruling_party_ideology = conservative }
+		sphere_owner = { diplomatic_influence = { who = VLS value = 200 } }
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
@@ -4208,43 +4167,45 @@ ai_chance = { factor = 0.1 }
 #Post Colonial Political fragmentation
 country_event = {
 	id = 1512094
-title = "Post Colonial Politics"
+	title = "Post Colonial Politics"
 	desc = EVTDESC1512094
 	picture = "post_colonial_politics"
 
-trigger = {
-is_vassal = no
-war = no
-pop_majority_ideology = nationalist
-has_country_flag = former_colonial_nation
-has_country_modifier = newly_independent_country
-NOT = { has_country_flag = post_colonial_politics }
-}
-
-mean_time_to_happen = { 
-months = 1
+	trigger = {
+		has_country_flag = former_colonial_nation
+		has_country_modifier = newly_independent_country
+	
+		is_vassal = no
+		war = no
+		pop_majority_ideology = nationalist
+		
+		NOT = { has_country_flag = post_colonial_politics }
+		OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 government = socialist_democracy } # must be a democracy of some kind
 	}
 
-option = {
-name = "The political scene of $COUNTRY$ will diversify"
-
-election = yes
-
-set_country_flag = post_colonial_politics
-
-add_country_modifier = { name = post_colonial_chaos duration = 1825 }
-
-any_pop = { 
-
-limit = { OR = { is_accepted_culture = yes is_primary_culture = yes } }
-
-ideology = {
-	factor = -0.75
-	value = nationalist
-}
-
+	mean_time_to_happen = { 
+		months = 1
 	}
+
+	option = {
+		name = "The political scene of $COUNTRY$ will diversify"
+
+		election = yes
+
+		set_country_flag = post_colonial_politics
+
+		add_country_modifier = { name = post_colonial_chaos duration = 1825 }
+
+		any_pop = { 
+			limit = { OR = { is_accepted_culture = yes is_primary_culture = yes } }
+			ideology = {
+				factor = -0.75
+				value = nationalist
+			}
+
 		}
+		
+	}
 
 }
 
@@ -4488,7 +4449,7 @@ option = {
 name = "Relax our grip over the media to relieve the unrest"
 prestige = -50
 badboy = -10
-political_reform = firewall_publishing
+political_reform = censored_publishing
 any_pop = { militancy = -5 }
 all_core = { limit = { is_core = SPA } add_province_modifier = { name = support_the_government duration = 1825 } }
 	ai_chance = { factor = 0.9 }
@@ -5287,7 +5248,7 @@ country_event = {
 			political_reform = lgbt_equal_rights #Conscription
 			political_reform = limited_meetings
 			political_reform = elitist_service
-			political_reform = firewall_publishing
+			political_reform = censored_publishing
 			
 			#Russian nationalism rises
 			any_pop = {
@@ -5319,51 +5280,6 @@ country_event = {
 		
 		ai_chance = { factor = 0.1 }
 	}
-
-}
-
-#Albanian People's Republic
-country_event = {
-	id = 1512126
-title = "People's Socialist Republic of Albania"
-	desc = EVTDESC1512126
-	picture = "alb_comm_start"
-
-fire_only_once = yes
-
-trigger = {
-tag = ALB
-OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
-is_vassal = no
-war = no
-year = 1946
-NOT = { year = 1990 }
-ruling_party_ideology = communist
-has_global_flag = blocsenabled
-}
-
-mean_time_to_happen = { 
-months = 1
-	}
-
-option = {
-name = "Join the Eastern Bloc"
-RUS = { create_vassal = ALB }
-government = proletarian_dictatorship
-country_event = 800052
-relation = { who = RUS value = 200 }
-ai_chance = { factor = 0.95 }
-		}
-
-option = {
-name = "Resist the Sovietisation of Albania"
-war = {
-	target = RUS
-	attacker_goal = { casus_belli = become_independent }
-	call_ally = no
-}
-ai_chance = { factor = 0.05 }
-		}
 
 }
 
@@ -5662,54 +5578,125 @@ country_event = {
 #End of the Warsaw Pact
 country_event = {
 	id = 1512136
-title = "Dissolution of the USSR"
+	title = "Dissolution of the USSR"
 	desc = EVT_8014249_DESC
 	picture = "rus_form_pic"
 
-is_triggered_only = yes
+	is_triggered_only = yes
 
-option = {
-name = "Declare $COUNTRY_ADJ$ sovereignty!"
-prestige = 50
-overlord = { release_vassal = THIS }
-RUS = { diplomatic_influence = { who = THIS value = -100 } }
-relation = { who = RUS value = -200 }
-country_event = { id = 1512137 days = 2 }
-ai_chance = { factor = 1 }
+	option = {
+		name = "Declare $COUNTRY_ADJ$ sovereignty!"
+		prestige = 100
+		
+		#FROM releases THIS
+		overlord = { release_vassal = THIS }
+		FROM = { diplomatic_influence = { who = THIS value = -200 } }
+		relation = { who = FROM value = -200 }
+		
+		#Choice to choose gov type if USSR collapsed messily, otherwise this remains as communist
+		random_owned = {
+			limit = { owner = { RUS = { has_country_flag = eussr } } }
+			owner = { country_event = { id = 1512137 days = 2 } }
 		}
+		
+		ai_chance = { factor = 1 }
+	}
 
-option = {
-name = "Remain in the Russian sphere"
-prestige = -50
-ai_chance = { factor = 0 }
+	option = {
+		name = "Remain in the $FROMCOUNTRY_ADJ$ sphere"
+		prestige = -50
+		
+		#Nationalist movements begin
+		any_pop = {
+			limit = { is_culture_group = THIS }
+			militancy = 10 
+			consciousness = 10 
+			ideology = { factor = 0.25 value = nationalist }
 		}
+		
+		ai_chance = { factor = 0 }
+	}
 
 }
 
 #End of the Warsaw Pact - choose Gov type
 country_event = {
 	id = 1512137
-title = "Constitutional Conference of $YEAR$"
+	title = "The Future of $COUNTRY$"
 	desc = EVTDESC1512137
 	picture = "warsaw_pact_end_gov"
 
-is_triggered_only = yes
+	is_triggered_only = yes
 
-option = {
-name = "Embrace democracy!"
-government = democracy
-country_event = 800054
-ruling_party_ideology = liberal
-any_pop = { ideology = { factor = 0.25 value = liberal } }
-ai_chance = { factor = 0.9 }
+	option = {
+		name = "Embrace democracy!"
+		
+		government = democracy
+		country_event = 800054
+		ruling_party_ideology = socialist
+		
+		election = yes
+		
+		#Fragmentation of domestic politics
+		any_pop = {
+			limit = { strata = rich is_culture_group = THIS }
+			consciousness = 5
+			ideology = { factor = 0.3 value = conservative }
 		}
+		any_pop = {
+			limit = { strata = middle is_culture_group = THIS }
+			consciousness = 10
+			ideology = { factor = 0.3 value = liberal }
+		}
+		any_pop = {
+			limit = { strata = poor is_culture_group = THIS }
+			consciousness = 5
+			ideology = { factor = 0.2 value = socialist }
+			ideology = { factor = 0.2 value = conservative }
+		}
+		
+		#Communists are not happy to lose power
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist_social
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
 
-option = {
-name = "Maintain the status quo"
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-any_pop = { ideology = { factor = -0.25 value = communist } }
-ai_chance = { factor = 0.1 }
+	option = {
+		name = "Communism is still relevant!"
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		
+		#Fragmentation of domestic politics
+		any_pop = {
+			limit = { strata = rich is_culture_group = THIS }
+			consciousness = 10 
+			ideology = { factor = 0.1 value = communist }
 		}
+		any_pop = {
+			limit = { strata = middle is_culture_group = THIS }
+			militancy = 10
+			consciousness = 10
+			ideology = { factor = 0.3 value = liberal }
+		}
+		any_pop = {
+			limit = { strata = poor is_culture_group = THIS }
+			militancy = 10
+			consciousness = 10
+			ideology = { factor = 0.1 value = conservative }
+			ideology = { factor = 0.1 value = big_tent }
+			ideology = { factor = 0.1 value = liberal }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
 
 }
 
@@ -6065,7 +6052,7 @@ months = 2
 
 option = {
 name = "Yes!"
-social_reform = the_safety_grid
+social_reform = good_public_housing
 social_reform = unlimited_education
 social_reform = low_health_care
 social_reform = low_pensions
@@ -6332,7 +6319,7 @@ social_reform = parental_leave_child_care
 social_reform = acceptable_pensions
 social_reform = acceptable_health_care
 social_reform = public_higher_education
-social_reform = the_safety_grid
+social_reform = good_public_housing
 ai_chance = { factor = 0.1 }
 		}
 
@@ -7119,7 +7106,7 @@ country_event = {
 		political_reform = regulated_opinion
 		political_reform = limited_meetings
 		political_reform = elitist_service
-		political_reform = firewall_publishing
+		political_reform = censored_publishing
 		political_reform = parties_only_nominated
 		
 		add_country_modifier = { name = political_strife duration = 3650 }
@@ -7703,7 +7690,7 @@ country_event = {
 			political_reform = elitist_service
 			political_reform = parties_promote_democratic
 			political_reform = lgbt_outlawed
-			political_reform = firewall_publishing
+			political_reform = censored_publishing
 			political_reform = restricted_unions
 			political_reform = jefferson_method
 			political_reform = promoted_voting
@@ -8848,7 +8835,27 @@ country_event = {
 		relation = { who = DAI value = 100 }
 		RUS = { diplomatic_influence = { who = DAI value = 200 } }
 		diplomatic_influence = { who = DAI value = 100 }
-		any_owned = { limit = { is_core = DAI } secede_province = DAI }
+		
+		
+		#Release South Vietnam to ensure ceded cores are states
+		release_vassal = SVI
+		any_owned = { limit = { is_core = SVI } secede_province = SVI }
+		SVI = { 
+			government = socialist_democracy
+			country_event = 800054
+			ruling_party_ideology = communist
+			any_pop = { 
+				ideology = {
+					factor = 0.25
+					value = communist
+				}
+			}
+		}
+
+		#Vietnam becomes unified
+		DAI = { inherit = SVI }
+		
+		
 		DAI = { government = socialist_democracy country_event = 800054 }
 		ai_chance = { factor = 0.1 }
 	}
@@ -9458,51 +9465,6 @@ ai_chance = { factor = 0.2 }
 option = {
 name = "Monachism is evil!"
 ai_chance = { factor = 0.1 }
-		}
-
-}
-
-#Academic Crisis - Portugal
-country_event = {
-	id = 1512243
-title = "The Academic Crisis"
-	desc = EVTDESC1512243
-	picture = "academic_crisis"
-
-fire_only_once = yes
-
-trigger = {
-tag = POR
-is_vassal = no
-government = populist_dictatorship
-year = 1962
-NOT = { year = 1990 }
-}
-
-mean_time_to_happen = { 
-months = 3
-	}
-
-option = {
-name = "Crush the student protests!"
-prestige = -25
-badboy = 1
-add_country_modifier = { name = revolution_chaos duration = 3650 }
-ai_chance = { factor = 0.8 }
-		}
-
-option = {
-name = "Give in to the students"
-government = democracy
-country_event = 800054
-ruling_party_ideology = big_tent
-any_pop = {
-ideology = {
-	factor = 0.5
-	value = communist
-	} 
-}
-ai_chance = { factor = 0.2 }
 		}
 
 }
@@ -10816,8 +10778,8 @@ country_event = {
 		}
 
 		random_owned = { 
-			limit = { owner = { has_country_flag = return_to_firewall_publishing } }
-			owner = { political_reform = firewall_publishing clr_country_flag = return_to_firewall_publishing }
+			limit = { owner = { has_country_flag = return_to_censored_publishing } }
+			owner = { political_reform = censored_publishing clr_country_flag = return_to_censored_publishing }
 		}
 
 		remove_country_modifier = martial_law
@@ -12815,106 +12777,136 @@ country_event = {
 
 #United Nations Trusteeship proposal after dismemberment
 country_event = {
-  id = 1512327
-  title = "UN Trusteeship over $FROMCOUNTRY$?"
-  desc = EVTDESC1512327
-  picture = "united_nations_trust_territories"
+	id = 1512327
+	title = "UN Trusteeship over $FROMCOUNTRY$?"
+	desc = EVTDESC1512327
+	picture = "united_nations_trust_territories"
 
 	is_triggered_only = yes
 	
 	allow_multiple_instances = yes
 
-  option = {
-	name = "Accept the mandate"
-	prestige = 100
-	money = -500000
-	create_vassal = FROM
-FROM = { government = mandate_government country_event = 800054 money = 500000 add_country_modifier = { name = tax_boost_modifier duration = 3650 } add_country_modifier = { name = economic_boom duration = 3650 } set_country_flag = great_war_mandate_un }
-	diplomatic_influence = { who = FROM value = 200 }
-	diplomatic_influence = { who = FROM value = 200 }
-	relation = { who = FROM value = 200 }
-	ai_chance = { 
-		factor = 1
-		modifier = { factor = 0 NOT = { money = 500000 } }
-	}	
-  }
+	option = {
+		name = "Accept the mandate"
+		prestige = 100
+		money = -500000
+		
+		#Initialise mandate
+		create_vassal = FROM
+		FROM = { 
+			government = mandate_government 
+			country_event = 800054 
+		
+			money = 500000 
+			add_country_modifier = { name = tax_boost_modifier duration = 3650 } 
+			add_country_modifier = { name = economic_boom duration = 3650 } 
+			
+			#Identify THIS as an unnatural division
+			set_country_flag = great_war_mandate_un 
+		}
+		
+		#Match ruling party of FROM with THIS
+		random_owned = { limit = { owner = { ruling_party_ideology = traditionalist } } owner = { FROM = { ruling_party_ideology = traditionalist } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = conservative } } owner = { FROM = { ruling_party_ideology = conservative } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = liberal } } owner = { FROM = { ruling_party_ideology = liberal } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = big_tent } } owner = { FROM = { ruling_party_ideology = big_tent } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = progressive } } owner = { FROM = { ruling_party_ideology = progressive } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = socialist } } owner = { FROM = { ruling_party_ideology = socialist } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = communist } } owner = { FROM = { ruling_party_ideology = communist } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = communist_social } } owner = { FROM = { ruling_party_ideology = communist_social } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = nationalist } } owner = { FROM = { ruling_party_ideology = nationalist } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = populist } } owner = { FROM = { ruling_party_ideology = populist } } }
+		
+		#THIS gains influence in FROM
+		diplomatic_influence = { who = FROM value = 200 }
+		diplomatic_influence = { who = FROM value = 200 }
+		relation = { who = FROM value = 200 }
+		
+		ai_chance = { 
+			factor = 1
+			modifier = { factor = 0 NOT = { money = 500000 } }
+		}
+	}
 
-  option = {
-	name = "The $FROMCOUNTRY_ADJ$ people can rule themselves"
-	relation = { who = FROM value = 50 }
-	ai_chance = { 
-		factor = 1
-		modifier = { factor = 0 money = 500000 }
-	}	
-  }
+	option = {
+		name = "The $FROMCOUNTRY_ADJ$ people can rule themselves"
+		relation = { who = FROM value = 50 }
+		ai_chance = { 
+			factor = 1
+			modifier = { factor = 0 money = 500000 }
+		}	
+	}
 
 }
 
 #Trigger UN mandate independence
 country_event = { 
-  id = 1512328
-  title = "Independence of $COUNTRY$"
-  desc = EVT_fullindependence_DESC
-  picture = "un_mandate_end"
+	id = 1512328
+	title = "Independence of $COUNTRY$"
+	desc = EVT_fullindependence_DESC
+	picture = "un_mandate_end"
 
-  trigger = {
+	trigger = {
+		has_country_flag = great_war_mandate_un
 
-government = mandate_government
+		government = mandate_government
+		is_vassal = yes
+		war = no
+
+		election = no
+	}
+
+	mean_time_to_happen = { 
+		months = 60
+	}
+
+	option = {
+		name = EVT_fullindependence_A
+		prestige = 50
+		clr_country_flag = great_war_mandate_un
+		overlord = { country_event = 15406 }
+		
+		#Identify THIS as an unnatural division
+		set_country_flag = unnatural_partition_of_country
+		
+		ai_chance = { factor = 1 }
+	}
 	
-has_country_flag = great_war_mandate_un
+	option = {
+		name = "Remain as a protectorate"
+		prestige = -50
+	
+		FROM = {
 
-	election = no
+			#Constitutional Monarchy
+			random_owned = { limit = { owner = { overlord = { OR = { government = hms_government government = hms_government1 government = absolute_monarchy } } } } owner = { government = hms_government1 } }
 
-	is_vassal = yes
+			#Democracy
+			random_owned = { limit = { owner = { overlord = { OR = { government = democracy government = democracy } } } } owner = { government = democracy } }
 
-	war = no
-}
+			#Socialist Democracy
+			random_owned = { limit = { owner = { overlord = { government = socialist_democracy } } } owner = { government = socialist_democracy ruling_party_ideology = socialist } }
 
-  mean_time_to_happen = { 
-	months = 60
+			#Communist Dictatorships
+			random_owned = { limit = { owner = { overlord = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } } } owner = { government = proletarian_dictatorship ruling_party_ideology = communist country_event = 800052 } }
+
+			#Theocracy
+			random_owned = { limit = { owner = { overlord = { government = theocracy } } } owner = { government = theocracy country_event = 800050 ruling_party_ideology = traditionalist } }
+
+			#Presidential Dictatorship
+			random_owned = { limit = { owner = { overlord = { government = presidential_dictatorship } } } owner = { government = presidential_dictatorship country_event = 800050 } }
+
+			#Nationalist Dictatorship
+			random_owned = { limit = { owner = { overlord = { government = populist_dictatorship } } } owner = { government = populist_dictatorship country_event = 800050 ruling_party_ideology = nationalist } }
+
+			#Sectarian Dictatorship
+			random_owned = { limit = { owner = { overlord = { government = nationalist_dictatorship } } } owner = { government = nationalist_dictatorship country_event = 800050 } }
+
 		}
 
-  option = {
-    name = EVT_fullindependence_A
-	prestige = 50
-	clr_country_flag = great_war_mandate_un
-	overlord = { country_event = 15406 }
-	ai_chance = { factor = 1 }
-  }
-  option = {
-    name = "Remain as a protectorate"
-	prestige = -50
-	
-FROM = {
-
-#Constitutional Monarchy
-random_owned = { limit = { owner = { overlord = { OR = { government = hms_government government = hms_government1 government = absolute_monarchy } } } } owner = { government = hms_government1 } }
-
-#Democracy
-random_owned = { limit = { owner = { overlord = { OR = { government = democracy government = democracy } } } } owner = { government = democracy } }
-
-#Socialist Democracy
-random_owned = { limit = { owner = { overlord = { government = socialist_democracy } } } owner = { government = socialist_democracy ruling_party_ideology = socialist } }
-
-#Communist Dictatorships
-random_owned = { limit = { owner = { overlord = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } } } owner = { government = proletarian_dictatorship ruling_party_ideology = communist country_event = 800052 } }
-
-#Theocracy
-random_owned = { limit = { owner = { overlord = { government = theocracy } } } owner = { government = theocracy country_event = 800050 ruling_party_ideology = traditionalist } }
-
-#Presidential Dictatorship
-random_owned = { limit = { owner = { overlord = { government = presidential_dictatorship } } } owner = { government = presidential_dictatorship country_event = 800050 } }
-
-#Nationalist Dictatorship
-random_owned = { limit = { owner = { overlord = { government = populist_dictatorship } } } owner = { government = populist_dictatorship country_event = 800050 ruling_party_ideology = nationalist } }
-
-#Sectarian Dictatorship
-random_owned = { limit = { owner = { overlord = { government = nationalist_dictatorship } } } owner = { government = nationalist_dictatorship country_event = 800050 } }
-
-}
-
-	clr_country_flag = great_war_mandate_un
-	ai_chance = { factor = 0 }
+		clr_country_flag = great_war_mandate_un
+		
+		ai_chance = { factor = 0 }
 	}
 
 }
