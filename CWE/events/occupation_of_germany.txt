@@ -1443,3 +1443,479 @@ country_event = {
 		DDR = { inherit = THIS }
 	}
 }
+
+
+#Merger of South and North Germany
+	country_event = {
+	id = 1512268
+	title = "West Germany"
+	desc = EVTDESC1512268
+	picture = "founding_treaty"
+
+	fire_only_once = yes
+
+trigger = {
+tag = USA
+year = 1950
+NGF = { exists = yes }
+any_owned_province = { is_core = GER }
+has_country_flag = policy_on_germany
+}
+
+mean_time_to_happen = { 
+months = 5
+	}
+
+option = {
+name = "Unite Germany"
+relation = { who = NGF value = 100 }
+any_owned = { limit = { is_core = GER } secede_province = NGF }
+NGF = { change_tag = GER }
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Form a rival South German state instead"
+prestige = -50
+
+564 = { secede_province = NGF } 
+565 = { secede_province = NGF } 
+566 = { secede_province = NGF } 
+567 = { secede_province = NGF } 
+568 = { secede_province = NGF } 
+2560 = { secede_province = NGF } 
+
+release_vassal = ICB
+
+ICB = { government = sar_government country_event = 800054 }
+
+539 = { secede_province = NGF }
+
+any_owned = { limit = { is_core = GER } add_core = SGF secede_province = SGF }
+SGF = { civilized = yes government = democracy country_event = 800054 }
+diplomatic_influence = { who = SGF value = 200 }
+
+diplomatic_influence = { who = ICB value = 200 }
+
+SGF = { capital = 595 }
+
+586 = { add_core = SGF }
+587 = { add_core = SGF }
+588 = { add_core = SGF }
+591 = { add_core = SGF }
+594 = { add_core = SGF }
+593 = { add_core = SGF }
+
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Return of the Hohenzollern monarchy in Germany
+country_event = {
+	id = 1512269
+title = "Return of the Hohenzollerns in Germany?"
+	desc = EVTDESC1512269
+	picture = "kaiser_returns"
+
+fire_only_once = yes
+
+trigger = {
+tag = ENG
+year = 1946
+NOT = { year = 1990 }
+government = hms_government
+has_country_flag = policy_on_germany
+NGF = { exists = yes }
+is_sphere_leader_of = NGF
+is_vassal = no
+}
+
+mean_time_to_happen = { 
+months = 5
+	}
+
+option = {
+name = "We will keep Germany a republic"
+prestige = 25
+ai_chance = { factor = 0.6 }
+		}
+
+option = {
+name = "A German monarchy with British ties can be a stabiliser"
+NGF = { government = hms_government add_country_modifier = { name = revolution_chaos duration = 1825 } }
+badboy = 5
+relation = { who = FRA value = -50 }
+relation = { who = USA value = -100 }
+relation = { who = RUS value = -100 }
+relation = { who = POL value = -50 }
+relation = { who = BEL value = -50 }
+relation = { who = NET value = -50 }
+ai_chance = { factor = 0.4 }
+		}
+}
+
+#Dutch annexation of German lands
+country_event = {
+	id = 1512270
+	title = "Bakker-Schut Plan"
+	desc = EVTDESC1512270
+	picture = "kaiser_returns"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = NET
+		year = 1947
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		
+		NGF = { exists = no }
+		GER = { exists = no }
+		
+		ENG = { 
+			is_vassal = no
+			owns = 575
+			owns = 576
+			owns = 577
+			owns = 581
+			owns = 542
+			owns = 543
+		}
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "Request for German lands as reparations"
+		prestige = 25
+		badboy = 5
+		ENG = { country_event = 1512271 }
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Keep Germany's territorial borders"
+		money = 500000
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+#Dutch annexation of German lands - ENG
+country_event = {
+	id = 1512271
+	title = "Bakker-Schut Plan"
+	desc = EVTDESC1512270
+	picture = "dutch_annexation_ger"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Reject their attempts at land grab!"
+		prestige = 25
+		relation = { who = NET value = -50 }
+		relation = { who = USA value = 50 }
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Accept the Dutch request"
+		
+		#Get a bribe
+		money = 500000
+		
+		relation = { who = NET value = 200 }
+		
+		#Cede German lands
+		575 = { secede_province = NET }
+		576 = { secede_province = NET }
+		577 = { secede_province = NET }
+		581 = { secede_province = NET }
+		542 = { secede_province = NET }
+		543 = { secede_province = NET }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Formation of Bizonia - USA proposes
+country_event = {
+	id = 1512282
+title = "Formation of Bizonia"
+	desc = EVTDESC1512282
+	picture = "bizonia"
+
+fire_only_once = yes
+
+trigger = {
+tag = USA
+GER = { exists = no }
+any_owned_province = { is_core = GER }
+ENG = { any_owned_province = { is_core = GER } }
+has_country_flag = no_partition_of_west_germany
+ENG = { has_country_flag = no_partition_of_west_germany }
+OR = { exists = OG1 RUS = { has_country_flag = policy_on_germany } }
+NOT = { year = 1990 }
+NOT = { has_country_flag = form_bizonia }
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Propose the Bizone to the British (80% chance of success)"
+prestige = 50
+any_owned = { limit = { is_core = GER NOT = { is_core = AUS } NOT = { is_core = ROA } } secede_province = OG4 }
+create_vassal = OG4
+OG4 = { civilized = yes government = mandate_government country_event = 800054 ruling_party_ideology = big_tent }
+diplomatic_influence = { who = OG4 value = 200 }
+OG4 = { primary_culture = german }
+ENG = { country_event = 1512283 }
+set_country_flag = form_bizonia
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "We'll create our own occupation zone"
+set_country_flag = occupation_zone_potential
+ENG = { set_country_flag = occupation_zone_potential }
+ai_chance = { factor = 0.1 }
+		}
+}
+
+#Formation of Bizonia - ENG acceptance
+country_event = {
+	id = 1512283
+title = "Formation of Bizonia"
+	desc = EVTDESC1512282
+	picture = "bizonia"
+
+is_triggered_only = yes
+
+option = {
+name = "Merge the two zones into an autonomous unit"
+
+prestige = 100
+
+relation = { who = USA value = 50 }
+
+any_owned = { limit = { is_core = GER NOT = { is_core = AUS } NOT = { is_core = ROA } } secede_province = OG4 }
+
+diplomatic_influence = { who = OG4 value = 100 }
+
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "We will focus on our own zone"
+set_country_flag = occupation_zone_potential
+USA = { set_country_flag = occupation_zone_potential }
+ai_chance = { factor = 0.1 }
+		}
+}
+
+#Formation of Trizonia - USA proposes
+country_event = {
+	id = 1512284
+title = "Formation of Trizonia"
+	desc = EVTDESC1512284
+	picture = "bizonia"
+
+fire_only_once = yes
+
+trigger = {
+tag = USA
+year = 1949
+GER = { exists = no }
+OG4 = { exists = yes }
+FRA = { any_owned_province = { is_core = GER } }
+FRA = { has_country_flag = policy_on_germany }
+has_country_flag = no_partition_of_west_germany
+FRA = { NOT = { has_country_flag = rhineland_option } }
+NOT = { year = 1990 }
+}
+
+mean_time_to_happen = { 
+months = 3
+	}
+
+option = {
+name = "Propose the Trizone to the French (80% chance of success)"
+FRA = { country_event = 1512285 }
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Exclude the French Zone"
+prestige = -50
+relation = { who = FRA value = 50 }
+FRA = { set_country_flag = occupation_zone_potential }
+ai_chance = { factor = 0.1 }
+		}
+}
+
+#Formation of Trizonia - FRA acceptance
+country_event = {
+	id = 1512285
+title = "Formation of Trizonia"
+	desc = EVTDESC1512284
+	picture = "bizonia"
+
+is_triggered_only = yes
+
+
+option = {
+name = "Merge the French zone into one autonomous unit"
+prestige = 50
+diplomatic_influence = { who = OG4 value = 100 }
+any_owned = { limit = { is_core = GER NOT = { is_core = SAL } NOT = { is_core = AUS } NOT = { is_core = ROA } } secede_province = OG4 }
+USA = { set_country_flag = trizone_formed }
+OG4 = { add_country_modifier = { name = independence_timer duration = 180 } }
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "We'll focus on our own zone"
+set_country_flag = occupation_zone_potential
+ai_chance = { factor = 0.1 }
+		}
+}
+
+#End of the Occupation Zones via independence
+country_event = {
+	id = 1512286
+title = "Return of German Sovereignty"
+	desc = "As the occupation zone has become an independent nation, we will switch back into Germany"
+	picture = "founding_treaty"
+
+fire_only_once = yes
+
+trigger = {
+OR = { tag = OG1 tag = OG2 tag = OG3 tag = OG4 }
+is_vassal = no
+war = no
+}
+
+option = {
+name = "Great!"
+
+any_owned = { remove_province_modifier = province_morgenthau_plan remove_province_modifier = province_monnet_plan }
+
+primary_culture = german
+
+#If there is no Germany
+random_owned = { limit = { owner = { GER = { exists = no } } } owner = { any_owned = { limit = { is_core = BAV } secede_province = BAV } change_tag = GER government = democracy country_event = 800054 prestige = 50 } }
+
+#If there is a Germany
+random_owned = { limit = { owner = { GER = { exists = yes } } } owner = { GER = { prestige = 50 } any_owned = { limit = { is_core = BAV } secede_province = BAV } any_owned = { limit = { is_core = GER } secede_province = GER } } }
+
+		}
+
+}
+
+#Apply Morgenthau/Monnet plan modifiers to Occupation Zone
+country_event = {
+	id = 1512287
+title = "Occupation Policy in Germany"
+	desc = "The occupying power decides what kind of economic policy the occupation zone adopts."
+	picture = "nwo2_allied_occupation_of_germany"
+
+fire_only_once = yes
+
+trigger = {
+OR = { tag = OG1 tag = OG2 tag = OG3 tag = OG4 }
+is_vassal = yes
+any_owned_province = { NOT = { OR = { has_province_modifier = province_morgenthau_plan has_province_modifier = province_monnet_plan } } }
+}
+
+option = {
+name = "We need to seek independence!"
+
+primary_culture = german
+
+#If occupying power chose morgenthau plan
+random_owned = { limit = { owner = { overlord = { has_country_flag = decide_german_economy_morgenthau } } } owner = { any_owned = { add_province_modifier = { name = province_morgenthau_plan duration = -1 } } } }
+
+#If occupying power chose monnet plan
+random_owned = { limit = { owner = { overlord = { has_country_flag = decide_german_economy_monnet } } } owner = { any_owned = { add_province_modifier = { name = province_monnet_plan duration = -1 } } } }
+
+		}
+
+}
+
+#Treaty on the Final Settlement with Respect to Germany
+country_event = {
+	id = 1512288
+	title = "Treaty on the Final Settlement with Respect to Germany"
+	desc = EVTDESC1512287
+	picture = "final_settlement_ger"
+
+	trigger = {
+		#Cold War is over and USA won
+		year = 1950
+		NOT = { has_global_flag = blocsenabled }
+		
+		#USA victory
+		has_global_flag = cold_warusa
+		
+		OR = {
+			AND = { tag = USA is_vassal = no }
+			AND = { tag = FRA is_vassal = no }
+			AND = { tag = ENG is_vassal = no }
+			AND = { tag = RUS is_vassal = no }
+			AND = { tag = DDR is_vassal = no }
+		}
+		
+		#Independent Germany exists
+		GER = { exists = yes is_vassal = no }
+
+		#THIS owns an occupation zone
+		OR = {
+			is_our_vassal = OG1
+			is_our_vassal = OG2
+			is_our_vassal = OG3
+			is_our_vassal = OG4
+			is_our_vassal = DDR
+		}
+		
+		#Event has not already fired for THIS
+		NOT = { has_country_flag = final_settlement_ger }
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "Sign the treaty"
+		set_country_flag = final_settlement_ger
+		
+		relation = { who = GER value = 100 }
+		GER = { prestige = 100 }
+
+		#Return occupied Germany to Germany
+		random_owned = { limit = { owner = { is_our_vassal = OG1 } } owner = { GER = { inherit = OG1 } } }
+		random_owned = { limit = { owner = { is_our_vassal = OG2 } } owner = { GER = { inherit = OG2 } } }
+		random_owned = { limit = { owner = { is_our_vassal = OG3 } } owner = { GER = { inherit = OG3 } } }
+		random_owned = { limit = { owner = { is_our_vassal = OG4 } } owner = { GER = { inherit = OG4 } } }
+		random_owned = { limit = { owner = { is_our_vassal = DDR } } owner = { GER = { inherit = DDR } } }
+		random_owned = { limit = { owner = { tag = DDR } } owner = { GER = { inherit = DDR } } }
+
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "Maintain our claims over Germany"
+		set_country_flag = final_settlement_ger
+		
+		prestige_factor = -0.10
+		badboy = 20
+		relation = { who = GER value = -200 }
+		ai_chance = { factor = 0 }
+	}
+}

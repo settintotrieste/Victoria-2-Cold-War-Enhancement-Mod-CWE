@@ -1477,3 +1477,57 @@ prestige = -2000
 random_owned = { limit = { is_capital = yes } add_province_modifier = { name = nuke_low duration = 3650 } }
 		}
 }
+
+#Terror support - receiver start
+country_event = {
+	id = 1512065
+title = "Terror Groups Supported by Foreign Nation"
+	desc = "A foreign nation has decided to sponsor terrorist organisations within our nation. This will cause our nation's poor people to rise in traditionalist support."
+	picture = "terrorism_rise_support"
+
+trigger = {
+is_greater_power = no
+is_secondary_power = no
+any_neighbor_country = { has_country_modifier = promoting_terrorists }
+NOT = { has_country_modifier = terror_groups_in }
+NOT = { has_country_modifier = spy_low }
+NOT = { has_country_modifier = spy_high_gp }
+}
+
+option = {
+name = "The only way to stop this is through regime change!"
+add_country_modifier = { name = terror_groups_in duration = -1 }
+set_country_flag = terror_groups_in
+		}
+
+}
+
+#Terror support - receiver end
+country_event = {
+	id = 1512066
+title = "Terror Groups' Foreign Support Ends"
+	desc = "A foreign nation has decided to stop sponsoring terrorist organisations within our nation. This will cause our nation's poor people to decrease in traditionalist support."
+	picture = "terrorism_fall_support"
+
+trigger = {
+
+OR = { has_country_modifier = terror_groups_in has_country_flag = terror_groups_in } 
+
+OR = { 
+is_greater_power = yes
+is_secondary_power = yes 
+has_country_modifier = spy_low 
+has_country_modifier = spy_high_gp 
+
+NOT = { any_neighbor_country = { has_country_modifier = promoting_terrorists } } 
+}
+
+}
+
+option = {
+name = "This is good news"
+remove_country_modifier = terror_groups_in
+clr_country_flag = terror_groups_in
+		}
+
+}

@@ -1,0 +1,117 @@
+#Change leader of NATO
+country_event = {
+	id = 1512275
+title = "New Leader of NATO"
+	desc = "As we are no longer a powerful nation, the leadership of NATO will be transferred to another stronger nation. Our ability to influence NATO policy will be lost."
+	picture = "nato_leader"
+
+trigger = {
+has_country_modifier = nato_leader
+has_country_flag = nato_leader
+NOT = { rank = 3 }
+any_greater_power = { rank = 3 OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } has_country_modifier = alliance_nato }
+}
+
+mean_time_to_happen = { 
+months = 3
+	}
+
+option = {
+name = "A big loss to our prestige!"
+prestige = -500
+remove_country_modifier = nato_leader
+remove_country_flag = nato_leader
+
+remove_country_modifier = natohigh_gp
+remove_country_modifier = natomedium_gp
+remove_country_modifier = natolow_gp
+
+random_country = { limit = { is_greater_power = yes rank = 3 OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } has_country_modifier = alliance_nato } country_event = 1512276 }
+		}
+}
+
+#Select new leader of NATO
+country_event = {
+	id = 1512276
+title = "New Leader of NATO"
+	desc = "As $FROMCOUNTRY$ is no longer a powerful nation, the leadership of NATO will be transferred the stronger nation, $COUNTRY$. We will gain the ability to influence NATO policy."
+	picture = "nato_leader"
+
+major = yes
+
+is_triggered_only = yes
+
+option = {
+name = "Great power comes with great responsibility"
+prestige = 500
+add_country_modifier = { name = nato_leader duration = -1 }
+set_country_flag = nato_leader
+		}
+
+}
+
+#Form NATO
+country_event = {
+	id = 1512277
+title = "Foundation of NATO"
+	desc = EVTDESC1512277
+	picture = "nato_foundation"
+
+fire_only_once = yes
+
+trigger = {
+tag = USA
+government = democracy
+rank = 2
+NOT = { has_global_flag = form_nato }
+year = 1949
+}
+
+mean_time_to_happen = { 
+months = 4
+modifier = { factor = 0 year = 1990 }
+	}
+
+option = {
+name = "This is great!"
+
+prestige = 100
+
+relation = { who = RUS value = -100 }
+
+add_country_modifier = { name = nato_leader duration = -1 }
+set_country_flag = nato_leader
+
+set_global_flag = form_nato
+
+				set_country_flag = nato_flag_member
+
+				random_country = {
+					limit = {
+						tag = THIS
+						NOT = { tag = USA }
+					}
+					create_alliance = USA
+				}
+				any_country = { 
+					limit = {
+					has_country_modifier = alliance_nato
+					}
+					relation = { who = THIS value = 200 }
+					create_alliance = THIS
+				}
+				add_country_modifier = {
+					name = alliance_nato
+					duration = 1825
+				}
+
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "I don't think its a good idea to divide the world"
+ai_chance = { factor = 0.1 
+modifier = { factor = 0 year = 1990 } }
+		}
+
+}

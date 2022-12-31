@@ -1,0 +1,104 @@
+#Union of Sovereign States coring event
+country_event = {
+	id = 1512157
+	title = "New Soviet Identity"
+	desc = EVTDESC1512157
+	picture = "uss_identity"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		government = socialist_democracy
+		
+		is_vassal = no
+		war = no
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "Rejoice!"
+
+		any_country = { 
+			limit = { is_vassal = no neighbour = RUS exists = yes OR = { tag = EST tag = LIT tag = LAT } OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social } } 
+			country_event = 1512158
+		}
+
+		any_owned = { 
+			limit = { 
+				OR = { 
+					is_core = BYE 
+					is_core = GEO 
+					is_core = AZB 
+					is_core = ARM 
+					is_core = TKR
+					is_core = MOL
+					is_core = UZB 
+					is_core = KYR 
+					is_core = TAJ 
+					is_core = KAZ 
+					is_core = LIT
+					is_core = LAT
+					is_core = EST
+					is_core = UKR
+				}
+			}
+			add_core = RUS
+		}
+
+		any_pop = { 
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			ideology = {
+				factor = 0.5
+				value = communist_social
+			} 
+		}
+
+	}
+
+}
+
+#Offer to join the USS
+country_event = {
+	id = 1512158
+	title = "The Union of Sovereign States"
+	desc = EVTDESC1512158
+	picture = "uss_identity"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Join the Union fully"
+		all_core = { add_core = RUS }
+		RUS = { inherit = THIS }
+		ai_chance = { factor = 0.5 }
+	}
+
+	option = {
+		name = "Join as an autonomous dependency"
+		RUS = { 
+			create_vassal = THIS 
+			any_owned = {
+				limit = { is_core = THIS }
+				secede_province = THIS
+			}
+		}
+		all_core = { add_core = RUS }
+		
+		government = socialist_democracy
+		country_event = 800054
+		ruling_party_ideology = communist_social
+		
+		ai_chance = { factor = 0.4 }
+	}
+
+	option = {
+		name = "Remain independent"
+		prestige = 25
+		ai_chance = { factor = 0.1 }
+	}
+
+}

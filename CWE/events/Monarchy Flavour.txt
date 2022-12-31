@@ -1751,3 +1751,296 @@ country_event = {
 	}
 
 }
+
+#Constitutional Referendum on the $COUNTRY_ADJ$ monarchy
+country_event = {
+	id = 1512015
+title = "Referendum on the $COUNTRY_ADJ$ Monarchy"
+	desc = EVTDESC1512015
+	picture = "king_poll"
+
+is_triggered_only = yes
+
+option = {
+name = "Lets see the result"
+random_list = { 
+
+90 = { government = democracy }
+
+10 = { }
+
+}
+		}
+
+}
+
+#Calls to abolish the $COUNTRY_ADJ$ Monarchy
+country_event = {
+  id = 1512330
+  title = "Call to Abolish the $COUNTRY_ADJ$ Monarchy"
+  desc = EVTDESC1512330
+  picture = "protests_to_abolish_monarchy"
+
+	is_triggered_only = yes
+
+  option = {
+	name = "Force the Monarch to abdicate!"
+	prestige_factor = -0.05
+	government = democracy
+	country_event = 800054
+
+any_pop = { limit = { OR = { pop_majority_ideology = traditionalist pop_majority_ideology = conservative } } militancy = 6 }
+
+any_pop = { limit = { OR = { pop_majority_ideology = socialist pop_majority_ideology = communist pop_majority_ideology = communist_social pop_majority_ideology = liberal pop_majority_ideology = progressive } } militancy = -6 }
+
+	ai_chance = { factor = 0 }	
+  }
+
+  option = {
+	name = "The people are misguided"
+
+add_country_modifier = { name = revolution_chaos duration = 1825 }
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = conservative } }
+owner = { any_pop = { ideology = { factor = -0.05 value = conservative } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = big_tent } }
+owner = { any_pop = { ideology = { factor = -0.05 value = big_tent } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = socialist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = socialist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = traditionalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = traditionalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = populist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = populist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = nationalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = nationalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = progressive } }
+owner = { any_pop = { ideology = { factor = -0.05 value = progressive } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = liberal } }
+owner = { any_pop = { ideology = { factor = -0.05 value = liberal } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist_social } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist_social } } }
+}
+	
+any_pop = { limit = { OR = { pop_majority_ideology = socialist pop_majority_ideology = communist pop_majority_ideology = communist_social pop_majority_ideology = liberal pop_majority_ideology = progressive } } militancy = 6 }
+
+	ai_chance = { factor = 1 }	
+  }
+
+}
+
+#Absolute Monarchies
+country_event = {
+  id = 1512332
+  title = "The $COUNTRY_ADJ$ Aristocrats' Demands"
+  desc = EVTDESC1512332
+  picture = "royal_court"
+
+  trigger = {
+	war = no
+	OR = { 
+	average_militancy = 5
+
+any_owned_province = {
+is_core = THIS
+any_pop = { type = aristocrats militancy = 9 } 
+}
+
+	}
+	political_opinions = ruling_party_opinion
+	government = absolute_monarchy
+	NOT = { has_country_modifier = revolution_chaos }
+  }
+
+mean_time_to_happen = { months = 6 }
+
+  option = {
+	name = "Accept the demands of the aristocrats"
+	prestige_factor = -0.05
+	political_reform = regulated_opinion
+any_pop = { limit = { type = aristocrats } militancy = -6 }
+	ai_chance = { factor = 0.75 }	
+  }
+
+  option = {
+	name = "Tell them who's King!"
+add_country_modifier = { name = revolution_chaos duration = 365 }
+any_pop = { 
+dominant_issue = {
+	value = regulated_opinion
+	factor = 0.25
+}
+	}
+any_pop = { limit = { type = aristocrats } militancy = 6 }
+any_pop = { limit = { type = officers } militancy = 3 }
+	ai_chance = { factor = 0.25 }		
+  }
+
+}
+
+#Absolute Monarchy - Aristocrat's plot
+country_event = {
+  id = 1512336
+  title = "Aristocrat's Plot"
+  desc = EVTDESC1512336
+  picture = "aristocrats_plot"
+
+  trigger = {
+	government = absolute_monarchy
+
+NOT = { OR = { ruling_party_ideology = traditionalist ruling_party_ideology = conservative ruling_party_ideology = nationalist } }
+
+any_owned_province = {
+is_core = THIS
+any_pop = { OR = { pop_majority_ideology = traditionalist pop_majority_ideology = conservative } type = aristocrats militancy = 6 } 
+}
+
+NOT = { has_country_modifier = revolution_chaos }
+
+	war = no
+	is_vassal = no
+  }
+
+mean_time_to_happen = { months = 6 }
+
+  option = {
+	name = "Restore the monarchy to the glory days!"	
+	ruling_party_ideology = traditionalist
+
+any_pop = { limit = { type = aristocrats } militancy = -10 }
+
+	any_pop = {
+limit = { NOT = { type = aristocrats } OR = { is_primary_culture = yes is_accepted_culture = yes } }
+
+scaled_militancy = {
+	factor = 5
+	ideology = socialist
+}
+
+scaled_militancy = {
+	factor = 7
+	ideology = communist
+}
+
+scaled_militancy = {
+	factor = 6
+	ideology = communist_social
+}
+
+scaled_militancy = {
+	factor = 4
+	ideology = big_tent
+}
+
+scaled_militancy = {
+	factor = 5
+	ideology = populist
+}
+
+scaled_militancy = {
+	factor = 10
+	ideology = liberal
+}
+
+scaled_militancy = {
+	factor = 10
+	ideology = progressive
+}
+
+	}
+
+	ai_chance = { factor = 0.9 }	
+  }
+
+  option = {
+    name = "The King decides, not some petty nobles"
+
+add_country_modifier = { name = revolution_chaos duration = 1825 }
+
+upper_house = { ideology = traditionalist value = 0.8 }
+
+any_pop = { limit = { type = officers } militancy = 5 }
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = conservative } }
+owner = { any_pop = { ideology = { factor = 0.05 value = conservative } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = big_tent } }
+owner = { any_pop = { ideology = { factor = 0.05 value = big_tent } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = socialist } }
+owner = { any_pop = { ideology = { factor = 0.05 value = socialist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = traditionalist } }
+owner = { any_pop = { ideology = { factor = 0.05 value = traditionalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = populist } }
+owner = { any_pop = { ideology = { factor = 0.05 value = populist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = nationalist } }
+owner = { any_pop = { ideology = { factor = 0.05 value = nationalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = progressive } }
+owner = { any_pop = { ideology = { factor = 0.05 value = progressive } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = liberal } }
+owner = { any_pop = { ideology = { factor = 0.05 value = liberal } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist } }
+owner = { any_pop = { ideology = { factor = 0.05 value = communist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist_social } }
+owner = { any_pop = { ideology = { factor = 0.05 value = communist_social } } }
+}
+
+	ai_chance = { factor = 0.1 }	
+  }
+
+}

@@ -345,3 +345,272 @@ owner = { money = 250000 }
 		}
 
 }
+
+#Get fellow puppets to aid in rebellions
+country_event = {
+	id = 1512038
+title = "Crisis in $COUNTRY$"
+	desc = "With rebels swarming our nation, our overlord will come to our aid to crush the rebels."
+	picture = "rebel_aid_mech"
+
+trigger = {
+is_vassal = yes
+overlord = { NOT = { military_access = THIS } }
+revolt_percentage = 0.1
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "We thank our overlords!"
+overlord = { military_access = THIS }
+		}
+
+}
+
+#Remove Neutrality from vassals
+country_event = {
+	id = 1512078
+title = "End of $COUNTRY_ADJ$ Neutrality"
+	desc = "$COUNTRY$ has become a protectorate of a greater power so we have lost our right to remain a neutral nation."
+	picture = "lose_neutrality"
+
+
+trigger = {
+	has_country_flag = neutrality
+	is_vassal = yes
+}
+
+option = {
+name = "We are no longer enjoying the splendid isolation"
+prestige = -50
+remove_country_modifier = declared_neutrality
+clr_country_flag = renounced_war_rights
+clr_country_flag = neutrality		
+	}
+
+}
+
+#Vassals with overlords at peace ends their war
+country_event = {
+	id = 1512198
+title = "Peace has returned to $COUNTRY$"
+	desc = "Our overlord has secured peace for their empire which includes us."
+	picture = "clear_non_existent"
+
+trigger = {
+
+war = yes
+
+is_vassal = yes
+
+overlord = { war = no }
+
+}
+
+option = {
+name = "Peace has returned!"
+any_country = { limit = { war_with = THIS } country_event = 1412204 }
+		}
+
+}
+
+#Vassals join the Overlord's Bloc - Communist
+country_event = {
+  	id = 1512304
+ 	title = "$COUNTRY$ Joins the Communist Bloc"
+ 	desc = EVTDESC1512304
+	picture = "communist_bloc_vassal"
+
+ 	trigger = {
+		has_global_flag = blocsenabled
+		is_vassal = yes
+		overlord = { OR = { has_country_modifier = communist_bloc_leader has_country_modifier = communist_bloc } }
+		NOT = { OR = { has_country_modifier = communist_bloc_leader has_country_modifier = communist_bloc } }
+ 	}
+
+  	option = {
+   		name = "We will destroy capitalism together!"
+
+		#Leave democratic bloc
+		clr_country_flag = joindemo
+		remove_country_modifier = democratic_bloc
+		remove_country_modifier = demohigh
+		remove_country_modifier = demomedium
+		remove_country_modifier = demolow 
+		random_country = {
+			limit = { has_country_modifier = democratic_bloc_leader }
+			relation = { who = THIS value = -100 }
+			diplomatic_influence = { who = THIS value = -50 }
+		}
+
+		#Join the communist bloc
+		set_country_flag = joincomm
+		add_country_modifier = { name = communist_bloc duration = -1 }
+		random_country = {
+			limit = { has_country_modifier = communist_bloc_leader }
+			relation = { who = THIS value = 50 }
+			diplomatic_influence = { who = THIS value = 25 }
+		}
+
+		#Leave the NAM
+		clr_country_flag = joinnam
+		remove_country_modifier = independent_bloc
+		any_country = {
+			limit = { exists = yes has_country_flag = joinnam }
+			relation = { who = THIS value = -50 }
+			diplomatic_influence = { who = THIS value = -25 }
+		}
+		
+ 	}
+
+}
+
+#Vassals join the Overlord's Bloc - Democractic
+country_event = {
+ 	id = 1512305
+ 	title = "$COUNTRY$ Joins the Democratic Bloc"
+ 	desc = EVTDESC1512305
+ 	picture = "democractic_bloc_vassal"
+
+  	trigger = {
+		has_global_flag = blocsenabled
+		is_vassal = yes
+		overlord = { OR = { has_country_modifier = democratic_bloc_leader has_country_modifier = democratic_bloc } }
+		NOT = { OR = { has_country_modifier = democratic_bloc_leader has_country_modifier = democratic_bloc } }
+  	}
+
+  	option = {
+    		name = "We will destroy communism together!"
+
+		#Leave the Communist bloc
+		clr_country_flag = joincomm
+		remove_country_modifier = communist_bloc
+		remove_country_modifier = commhigh
+		remove_country_modifier = commmedium
+		remove_country_modifier = commlow 
+		random_country = {
+			limit = { has_country_modifier = communist_bloc_leader }
+			relation = { who = THIS value = -100 }
+			diplomatic_influence =  { who = THIS value = -50 }
+		}
+
+		#Join the democratic bloc
+		set_country_flag = joindemo
+		add_country_modifier = { name = democratic_bloc duration = -1 }
+		random_country = {
+			limit = { has_country_modifier = democratic_bloc_leader }
+			relation = { who = THIS value = 50 }
+			diplomatic_influence =  { who = THIS value = 25 }
+		}
+
+		#Leave the NAM bloc
+		clr_country_flag = joinnam
+		remove_country_modifier = independent_bloc
+		any_country = {
+			limit = { exists = yes has_country_flag = joinnam }
+			relation = { who = THIS value = -50 }
+			diplomatic_influence = { who = THIS value = -25 }
+		}
+
+  	}
+
+}
+
+#Vassals join the Overlord's Bloc - Non-Aligned Movement
+country_event = {
+  	id = 1512306
+  	title = "$COUNTRY$ Joins the Non-Aligned Movement"
+  	desc = EVTDESC1512306
+  	picture = "nam_bloc_vassal"
+
+  	trigger = {
+		has_global_flag = blocsenabled
+		is_vassal = yes
+		overlord = { has_country_flag = joinnam }
+		NOT = { has_country_flag = joinnam }
+  	}
+
+  	option = {
+    		name = "We don't want to destroy each other!"
+
+		#Leave the Communist bloc
+		clr_country_flag = joincomm
+		remove_country_modifier = communist_bloc 
+		remove_country_modifier = commhigh
+		remove_country_modifier = commmedium
+		remove_country_modifier = commlow 
+		random_country = {
+			limit = { has_country_modifier = communist_bloc_leader }
+			relation = { who = THIS value = -100 }
+			diplomatic_influence =  { who = THIS value = -50 }
+		}
+
+		#Leave the Democratic bloc
+		clr_country_flag = joindemo
+		remove_country_modifier = democratic_bloc
+		remove_country_modifier = demohigh
+		remove_country_modifier = demomedium
+		remove_country_modifier = demolow 
+		random_country = {
+			limit = { has_country_modifier = democratic_bloc_leader }
+			relation = { who = THIS value = -100 }
+			diplomatic_influence =  { who = THIS value = -50 }
+		}
+			
+		#Join the NAM Bloc
+		set_country_flag = joinnam
+		remove_country_modifier = independent_bloc
+		any_country = {
+			limit = { exists = yes has_country_flag = joinnam }
+			relation = { who = THIS value = 50 }
+			diplomatic_influence = { who = THIS value = 25 }
+		}
+
+  	}
+
+}
+
+#Puppets join the sphere of the overlord
+country_event = {
+	id = 1512352
+title = "Shift in Geopolitics"
+	desc = "Our overlord's sphere has changed and so we have to follow the change because we are their puppet."
+	picture = "un_tension_reduction_summit"
+
+trigger = {
+is_vassal = yes
+
+NOT = { AND = { tag = VAN vassal_of = ENG in_sphere = FRA } }
+
+NOT = { government = sar_government government = mandate_government }
+
+OR = {
+overlord = { 
+is_greater_power = no part_of_sphere = yes
+sphere_owner = { NOT = { is_sphere_leader_of = THIS } } 
+}
+
+overlord = { 
+is_greater_power = yes
+NOT = { is_sphere_leader_of = THIS } 
+}
+	}
+
+}
+
+mean_time_to_happen = { 
+months = 1
+}
+
+option = {
+name = "This is the new reality"
+
+any_greater_power = { limit = { is_our_vassal = THIS } diplomatic_influence = { who = THIS value = 200 } }
+
+overlord = { sphere_owner = { diplomatic_influence = { who = THIS value = 200 } } }
+		}
+
+}

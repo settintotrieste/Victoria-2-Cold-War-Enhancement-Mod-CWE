@@ -1203,3 +1203,125 @@ country_event = {
 
 }
 
+#Bandung Conference, 1955
+country_event = {
+	id = 1512181
+title = "Bandung Conference"
+	desc = EVTDESC1512181
+	picture = "bandung_conference"
+
+#fire_only_once = yes
+
+trigger = {
+year = 1955
+NOT = { year = 1956 }
+is_vassal = no
+capital_scope = { OR = { continent = africa continent = mena continent = asia } }
+NOT = { has_country_modifier = democratic_bloc }
+NOT = { has_country_modifier = communist_bloc }
+NOT = { has_country_flag = bandung_conference }
+}
+
+mean_time_to_happen = { 
+months = 4
+	}
+
+option = {
+name = "Attend the conference"
+prestige = 10
+any_country = { 
+
+limit = { is_vassal = no NOT = { has_country_modifier = democratic_bloc } NOT = { has_country_modifier = communist_bloc } } 
+
+relation = { who = THIS value = 50 }
+
+}
+set_country_flag = bandung_conference
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Stay out of it"
+
+set_country_flag = bandung_conference
+
+any_country = { 
+
+limit = { 
+is_vassal = no 
+OR = { has_country_modifier = democratic_bloc has_country_modifier = communist_bloc } 
+}
+
+relation = { who = THIS value = 50 }
+
+}
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#UN Special Committe on Decolonisation
+country_event = {
+	id = 1512179
+title = "UN Special Committee on Decolonisation"
+	desc = EVTDESC1512179
+	picture = "dominiontorepublic"
+
+fire_only_once = yes
+
+trigger = {
+year = 1961
+ai = no
+}
+
+mean_time_to_happen = { 
+months = 6
+	}
+
+option = {
+name = "The era of Colonialism is over"
+set_global_flag = un_committe_on_decolonisation
+		}
+
+}
+
+#Civil War Mechanism Indy route
+country_event = {
+	id = 1512212
+title = "$FROMCOUNTRY$ Falls to Rebels"
+	desc = EVTDESC1512212
+	picture = "generic_indy"
+
+is_triggered_only = yes
+
+option = {
+name = "Withdraw from $FROMCOUNTRY$"
+prestige = -50
+relation = { who = FROM value = 50 }
+FROM = { set_country_flag = former_colonial_nation }
+ai_chance = { 
+factor = 1 
+modifier = { factor = 0 NOT = { war_policy = pacifism } }
+modifier = { factor = 0 NOT = { badboy = 0.7 } }
+}
+		}
+
+option = {
+name = "Restore order to $COUNTRY_ADJ$!"
+badboy = 5
+
+war = {
+	target = FROM
+	attacker_goal = { casus_belli = make_puppet }
+	defender_goal = { casus_belli = become_independent }
+	call_ally = no
+}
+
+ai_chance = { 
+factor = 1 
+modifier = { factor = 0 war_policy = pacifism }
+modifier = { factor = 0 badboy = 0.7 } 
+}
+		}
+
+}
