@@ -1,3 +1,37 @@
+#Thai instability
+country_event = {
+	id = 1400026
+	title = "Siamese coup d'état of 1947"
+	desc = EVTDESC1400026
+	picture = "thicoup"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = THI
+		year = 1947
+		NOT = { year = 1949 }
+		NOT = { has_country_modifier = revolution_chaos }
+	}
+	
+	mean_time_to_happen = { months = 6 }
+	
+	option = {
+		name = "Launch the Coup!"
+		add_country_modifier = { name = revolution_chaos duration = 10950 }
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Cooperate with the Government!"
+		any_pop = { militancy = 4 }
+		add_country_modifier = { name = revolution_chaos duration = 5000 }
+		money = -100000
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
 country_event = {
   id = 8013402
   title = EVT_8013402_NAME
@@ -56,4 +90,496 @@ country_event = {
   option = {
     name = OK
   }
+}
+
+#Thai Communist Insurgency - Begin
+country_event = {
+	id = 1410095
+	title = "Thai Communist Insurgency"
+	desc = EVTDESC1410095
+	picture = "thai_comm"
+	
+trigger = { 
+tag = THI
+NOT = { government = proletarian_dictatorship }
+year = 1964
+DAI = { ruling_party_ideology = communist }
+NOT = { year = 1990 }
+NOT = { has_country_flag = thai_comm }
+}
+
+mean_time_to_happen = { 
+months = 18
+}
+
+option = {
+name = "Squash the Communists!"
+set_country_flag = thai_comm
+add_country_modifier = { name = thai_emergency duration = -1 }
+		}
+}
+
+#Thai Communist Insurgency - End
+country_event = {
+	id = 1410096
+	title = "End of the Thai Communist Insurgency"
+	desc = EVTDESC1410096
+	picture = "thai_comm_end"
+	
+trigger = { 
+tag = THI
+OR = { 
+government = proletarian_dictatorship
+ruling_party_ideology = communist
+AND = { CAM = { ruling_party_ideology = communist } relation = { who = CAM value = 100 } }
+DAI = { NOT = { ruling_party_ideology = communist } }
+}
+has_country_modifier = thai_emergency
+NOT = { has_country_flag = thai_comm_end }
+}
+
+mean_time_to_happen = { 
+months = 14
+}
+
+option = {
+name = "Peace has returned!"
+prestige = 20
+set_country_flag = thai_comm_end
+remove_country_modifier = thai_emergency
+		}
+}
+
+#Asian Financial Crisis - originator
+country_event = {
+	id = 1512006
+	title = "Tom Yum Goong Crisis"
+	desc = EVTDESC1512006
+	picture = "asian_financial_crisis_thi"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = THI
+		year = 1997
+		NOT = { year = 2000 }
+		
+		capitalism = 1
+		is_greater_power = no 
+		is_vassal = no
+		
+		#Significant intervention in the economy
+		OR = { 
+			economic_policy = planned_economy1
+			economic_policy = state_capitalism
+			economic_policy = interventionism
+		}
+		
+		#Usual GPs
+		USA = { is_greater_power = yes }
+		JAP = { is_greater_power = yes }
+		CHI = { is_greater_power = yes }
+		
+		#Post Cold War
+		NOT = { has_global_flag = blocsenabled }
+		
+		#No stagflation modifier
+		NOT = { has_country_modifier = stagflation }
+	}
+
+	mean_time_to_happen = { 
+		months = 3
+	}
+
+	option = {
+		name = "Raise interest rates to prevent the Thai Baht from imploding!"
+		prestige = 50
+		country_event = 1512007
+		
+		set_global_flag = asian_financial_crisis_flag
+
+		any_country = { 
+
+			limit = { 
+				NOT = { 
+					OR = { 
+						government = proletarian_dictatorship 
+						government = proletarian_dictatorship1 
+					} 
+				}
+				OR = { tag = IDO tag = PHI tag = SKO tag = MSY }
+				exists = yes
+			}
+
+			country_event = 1512007
+
+		}
+
+
+		THI = { clr_country_flag = sea_economy_slow }
+		PHI = { clr_country_flag = sea_economy_slow }
+		BUR = { clr_country_flag = sea_economy_slow }
+		IDO = { clr_country_flag = sea_economy_slow }
+
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "Drop the fixed exchange rate and pump in stimulus"
+
+		add_country_modifier = { name = stagflation duration = 3650 }
+
+		THI = { clr_country_flag = sea_economy_slow }
+		PHI = { clr_country_flag = sea_economy_slow }
+		BUR = { clr_country_flag = sea_economy_slow }
+		IDO = { clr_country_flag = sea_economy_slow }
+
+		ai_chance = { factor = 0.2 }
+	}
+
+}
+
+#Asian Financial Crisis - reciepeints
+country_event = {
+	id = 1512007
+	title = "Asian Financial Crisis of $YEAR$"
+	desc = EVTDESC1512007
+	picture = "asian_financial_crisis"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Seek IMF assistance!"
+		prestige_factor = -0.1
+		any_pop = { money = -100 }
+
+		add_country_modifier = { name = stockcrash duration = 730 }
+
+		add_country_modifier = { name = stock_market_crash duration = 960 }
+
+		add_country_modifier = { name = imf_loan duration = 1200 }
+
+		add_country_modifier = { name = recession duration = 1000 }
+
+		add_country_modifier = { name = economic_malaise duration = 1825 }
+
+		#Trigger the end of the New Order for Indonesia
+		random_owned = {
+			limit = { 
+				owner = { tag = IDO } 
+			}
+			owner = { set_country_flag = ido_thaw_trigger }
+		}
+
+		ai_chance = { 
+			factor = 0.9 
+			
+			#Malaysia
+			modifier = { factor = 0 has_country_flag = MSY_mahathir_1981_flag }
+		}
+	}
+
+	option = {
+		name = "Unleash a massive economic stimulus program!"
+		prestige = 50
+		money = -1000000
+		add_country_modifier = { name = stagflation duration = 3650 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Anglo-Thai Peace Treaty
+country_event = {
+	id = 1512185
+	title = "Anglo-Thai Peace Treaty"
+	desc = EVTDESC1512185
+	picture = "1946_anglo_thai_treaty"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = THI
+		year = 1946
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		war = no
+		
+		ENG = {
+			is_vassal = no
+			is_our_vassal = FMS
+		}
+	}
+	
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "Renounce our claims over the Shan and Malay states"
+		relation = { who = ENG value = 50 }
+		money = -10000
+		FMS = { money = 10000 }
+		1391 = { remove_core = THI }
+		1389 = { remove_core = THI }
+		1340 = { remove_core = THI }
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Refuse to cooperate with the treaty terms"
+		badboy = 20
+		prestige = -50
+		relation = { who = ENG value = -50 }
+		relation = { who = USA value = -50 }
+		money = -5000
+		FMS = { money = 5000 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Treaty of Amity and Economic Relations
+country_event = {
+	id = 1512188
+title = "US-Thai Treaty of Amity and Economic Relations"
+	desc = EVTDESC1512188
+	picture = "thai_us_sphere"
+
+fire_only_once = yes
+
+trigger = {
+
+tag = THI
+
+war = no
+
+is_vassal = no
+
+year = 1966
+
+NOT = { year = 1990 }
+
+USA = { is_greater_power = yes government = democracy }
+
+NOT = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social ruling_party_ideology = socialist } }
+
+has_global_flag = blocsenabled
+
+}
+
+mean_time_to_happen = { 
+months = 6
+	}
+
+option = {
+name = "Sign the treaty"
+prestige = 50
+relation = { who = USA value = 200 }
+USA = { diplomatic_influence = { who = THI value = 200 } }
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "There is no need for this"
+relation = { who = RUS value = 50 }
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Treaty of Peace with France
+country_event = {
+	id = 1512189
+	title = "Thai Treaty of Peace with France"
+	desc = EVTDESC1512189
+	picture = "1946_anglo_thai_treaty"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = THI
+		year = 1946
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+
+		is_vassal = no
+		war = no
+
+		FRA = { exists = yes is_vassal = no }
+		LUA = { exists = yes vassal_of = FRA }
+		CAM = { exists = yes vassal_of = FRA }
+	}
+
+	mean_time_to_happen = { 
+		months = 10
+	}
+
+	option = {
+		name = "Sign the treaty"
+		1360 = { secede_province = LUA }
+		1366 = { secede_province = CAM }
+		1363 = { secede_province = LUA }
+		remove_core = 1360
+		remove_core = 1366
+		remove_core = 1363
+		money = 60000
+		relation = { who = USA value = 100 }
+		relation = { who = FRA value = 50 }
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Insist on our claims over French Indochina"
+		prestige = -50
+		badboy = 10
+		add_country_modifier = { name = ger_war_rep duration = 3650 }
+		relation = { who = FRA value = -100 }
+		relation = { who = USA value = -100 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Death of King Bhumibol Adulyadej of Thailand
+country_event = {
+  id = 1512325
+  title = "Death of King Bhumibol Adulyadej"
+  desc = EVTDESC1512325
+  picture = "bhumibol_adulyadej_death"
+
+fire_only_once = yes
+
+  trigger = {
+	tag = THI
+OR = { government = absolute_monarchy government = hms_government government = hms_government1 }
+	year = 2016
+  }
+
+mean_time_to_happen = { months = 10 }
+
+  option = {
+	name = "The nation is in mourning!"
+	any_pop = { militancy = -10 }	
+  }
+
+}
+
+#Siamese coup d'état of 1947
+country_event = {
+	id = 1512115
+title = "Siamese coup d'état of $YEAR$"
+	desc = EVTDESC1512115
+	picture = "thi_1947_coup"
+
+fire_only_once = yes
+
+trigger = {
+tag = THI
+election = no
+is_vassal = no
+war = no
+year = 1947
+NOT = { year = 1990 }
+OR = { government = hms_government government = hms_government1 }
+}
+
+mean_time_to_happen = { 
+months = 11
+	}
+
+option = {
+name = "The Coup Group succeeds"
+government = absolute_monarchy
+country_event = 800050
+ruling_party_ideology = nationalist
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "The coup shall fail"
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#1973 Thai popular uprising
+country_event = {
+	id = 1512116
+title = "$YEAR$ Thai Popular Uprising"
+	desc = EVTDESC1512116
+	picture = "thi_1973_demo"
+
+fire_only_once = yes
+
+trigger = {
+tag = THI
+election = no
+is_vassal = no
+war = no
+year = 1973
+NOT = { year = 1990 }
+government = absolute_monarchy
+}
+
+mean_time_to_happen = { 
+months = 10
+	}
+
+option = {
+name = "Long live democracy!"
+government = hms_government
+country_event = 800054
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Crush the students!"
+badboy = 15
+prestige = -50
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#2014 Thai coup d'état
+country_event = {
+	id = 1512117
+title = "$YEAR$ Thai coup d'état"
+	desc = EVTDESC1512117
+	picture = "thi_2014_coup"
+
+fire_only_once = yes
+
+trigger = {
+tag = THI
+election = no
+is_vassal = no
+war = no
+year = 2014
+OR = { government = hms_government government = hms_government1 }
+}
+
+mean_time_to_happen = { 
+months = 5
+	}
+
+option = {
+name = "Suspend the constitution"
+government = absolute_monarchy
+country_event = 800050
+ruling_party_ideology = nationalist
+ai_chance = { factor = 0.8 }
+		}
+
+option = {
+name = "Hold back and let the coup fail"
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+ai_chance = { factor = 0.2 }
+		}
+
 }

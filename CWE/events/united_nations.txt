@@ -8,6 +8,249 @@
 #############################
 
 
+#War with International Zone
+country_event = {
+	id = 1410128
+	title = "United Nations Condemnation"
+	desc = "The International Community has roundly condemned us for declaring war against an internationally protected United Nations Special Administrative State."
+	picture = "un_special_state"
+	
+	trigger = {
+
+		is_vassal = no
+
+		OR = { 
+			AND = { war_with = UNT UNT = { is_vassal = no } } 
+			AND = { war_with = SCS SCS = { is_vassal = no } }
+		}
+
+		NOT = { has_country_flag = war_with_un }
+	}	
+
+	option = {
+		name = "We will resist them!"
+		badboy = 100
+		set_country_flag = war_with_un
+	}
+
+}
+
+#New UN Secretary-General Selection
+country_event = {
+	id = 1412086
+	title = EVT_1412086_NAME # "$YEAR$ UN Secretary-General Selection"
+	desc = EVT_1412086_DESC
+	picture = "UNSG_Selection"
+
+	mean_time_to_happen = {
+		months = 10 # Based on time between 8th and 9th S-G's
+		modifier = {
+			factor = 14
+			OR = {
+				has_global_flag = UNSG_aggressive
+				has_global_flag = UNSG_normal
+				has_global_flag = UNSG_passive
+			}
+		}
+	}
+
+	trigger = {
+		year = 1946
+		any_owned_province = { has_province_modifier = un_headquarters }
+	}
+	option = {
+		name = EVT_1412086_A # "Let's see who got the job"
+		random_list = {
+			25 = { 
+				random_country = {
+					limit = {
+						has_country_modifier = united_nations_ga_member
+						NOT = { has_country_modifier = unsc_permanent_member }
+						war = no
+						NOT = { badboy = 1 }
+					}
+					country_event = 1412088
+				}
+			}
+			50 = { 
+				#Normal
+				random_country = {
+					limit = {
+						has_country_modifier = united_nations_ga_member
+						NOT = { has_country_modifier = unsc_permanent_member }
+						war = no
+						NOT = { badboy = 1 }
+					}
+					country_event = 1412089
+				}
+			}
+			25 = { 
+				#Passive
+				random_country = {
+					limit = {
+						has_country_modifier = united_nations_ga_member
+						NOT = { has_country_modifier = unsc_permanent_member }
+						war = no
+						NOT = { badboy = 1 }
+					}
+					country_event = 1412090
+				}
+			}
+		}
+	}
+}
+
+#Select Aggressive UN Secretary General
+country_event = {
+	id = 1412088
+	title = EVT_1412087_NAME # "Our Candidate for UN Secretary-General Selected!"
+	desc = EVT_1412088_DESC # "The new UN Secretary-General does not subscribe to non-interventionism, nor to acting only with the General Assembly's support, going so far as to believe that the office of Secretary-General should have independence of action. We can expect strong sanctions against warring nations."
+	picture = "UNSG_aggressive"
+	is_triggered_only = yes
+	major = yes
+
+	option = {
+		name = EVT_1412088_A # "That 'organization' had better not meddle in our affairs!"
+		clr_global_flag = UNSG_aggressive
+		clr_global_flag = UNSG_normal
+		clr_global_flag = UNSG_passive
+		set_global_flag = UNSG_aggressive
+		any_country = {
+			limit = {
+				exists = yes
+				OR = {
+					AND = {
+						is_vassal = yes
+						overlord = { has_country_modifier = united_nations_ga_member }
+					}
+					has_country_modifier = united_nations_ga_member
+				}
+			}
+			any_pop = { consciousness = 0.9 }
+		}
+		prestige = 50
+		badboy = -5
+	}
+}
+
+#Select Normal UN Secretary General
+country_event = {
+	id = 1412089
+	title = EVT_1412087_NAME
+	desc = EVT_1412089_DESC # "The new UN Secretary-General usually subscribes to non-interventionism and to acting with the General Assembly's support. At best, we can expect weak sanctions against warring nations."
+	picture = "UNSG_normal"
+	is_triggered_only = yes
+	major = yes
+
+	option = {
+		name = EVT_1412089_A # "Who is this, even?"
+		clr_global_flag = UNSG_aggressive
+		clr_global_flag = UNSG_normal
+		clr_global_flag = UNSG_passive
+		set_global_flag = UNSG_normal
+		any_country = {
+			limit = {
+				exists = yes
+				OR = {
+					AND = {
+						is_vassal = yes
+						overlord = { has_country_modifier = united_nations_ga_member }
+					}
+					has_country_modifier = united_nations_ga_member
+				}
+			}
+			any_pop = { consciousness = 0.6 }
+		}
+		prestige = 35
+		badboy = -5
+	}
+}
+
+#Select Passive UN Secretary General
+country_event = {
+	id = 1412090
+	title = EVT_1412087_NAME
+	desc = EVT_1412090_DESC # "The new UN Secretary-General subscribes completely to non-interventionism and to acting only with the General Assembly's support. We can expect warring nations to largely go unpunished."
+	picture = "UNSG_passive"
+	is_triggered_only = yes
+	major = yes
+
+	option = {
+		name = EVT_1412090_A # "What a joke"
+		clr_global_flag = UNSG_aggressive
+		clr_global_flag = UNSG_normal
+		clr_global_flag = UNSG_passive
+		set_global_flag = UNSG_passive
+		any_country = {
+			limit = {
+				exists = yes
+				OR = {
+					AND = {
+						is_vassal = yes
+						overlord = { has_country_modifier = united_nations_ga_member }
+					}
+					has_country_modifier = united_nations_ga_member
+				}
+			}
+			any_pop = { consciousness = 0.3 }
+		}
+		prestige = 20
+		badboy = -5
+	}
+}
+
+#UN Secretary General Aggressive
+country_event = {
+	id = 1412092
+	title = EVT_1412092_NAME # "UN sanctions imposed against our nation"
+	desc = un_sanctions_strong_desc # "The United Nations Secretary-General has imposed strong sanctions on our nation, hoping to persuade us to seek peace."
+	picture = "UNSG_sanctions"
+
+	trigger = {
+		war = yes
+		has_country_modifier = united_nations_ga_member
+		NOT = { has_country_modifier = unsc_permanent_member }
+		has_country_flag = this_is_aggressor
+		has_global_flag = UNSG_aggressive
+		NOT = { has_country_modifier = un_sanctions_strong }
+		NOT = { has_country_modifier = un_sanctions_weak }
+	}
+
+	mean_time_to_happen = { months = 2 }
+
+	option = {
+		name = EVT_1412092_A # "Lodge a strong complaint"
+		prestige = -50
+		add_country_modifier = { name = un_sanctions_strong duration = 365 }
+	}
+}
+
+#UN Secretary General Normal
+country_event = {
+	id = 1412093
+	title = EVT_1412092_NAME
+	desc = un_sanctions_weak_desc # "The United Nations Secretary-General has imposed weak sanctions on our nation, hoping to persuade us to seek peace."
+	picture = "UNSG_sanctions"
+
+	trigger = {
+		war = yes
+		has_country_modifier = united_nations_ga_member
+		NOT = { has_country_modifier = unsc_permanent_member }
+		has_country_flag = this_is_aggressor
+		has_global_flag = UNSG_normal
+		NOT = { has_country_modifier = un_sanctions_weak }
+		NOT = { has_country_modifier = un_sanctions_strong }
+	}
+
+	mean_time_to_happen = { months = 4 }
+
+	option = {
+		name = EVT_1412092_A
+		prestige = -25
+		add_country_modifier = { name = un_sanctions_weak duration = 365 }
+	}
+}
+
 ###################
 country_event = { 
   id = 9000
@@ -189,154 +432,6 @@ country_event = {
 ########################################################
 # UN Membership and UN Peackeeping in internal conflicts
 ########################################################
-
-country_event = {
-	id = 1215009
-	title = EVT_1215009_NAME # Permanent Member of the UN Security Council
-	desc = EVT_1215009_DESC
-	picture = "united_nations_security_council"
-
-	trigger = {
-		OR = { 
-			tag = CHI
-			tag = KMT
-			tag = ENG
-			tag = USA
-			tag = FRA
-			tag = RUS
-			tag = RUS
-			tag = XNA
-			tag = XEA
-		}	
-		has_country_flag = disabled_for_now	
-		NOT = { has_country_modifier = unsc_permanent_member }
-		NOT = { has_country_flag = not_participating_UNSC }
-		war = no
-	}
-
-	mean_time_to_happen = {
-		months = 1
-	}
-
-	option = {
-		name = EVT_1215009_A 
-		random_country = { limit = { NOT = { year = 1990 } tag = CHI } set_country_flag = not_participating_UNSC } 
-		random_country = { limit = { year = 1990 tag = KMT } set_country_flag = not_participating_UNSC } 
-		set_country_flag = permanent_member_of_UNSC
-		ai_chance = { factor = 1 }
-		prestige = 10 
-	}
-}
-
-country_event = {
-	id = 1215010
-	title = EVT_1215010_NAME
-	desc = EVT_1215010_DESC
-	picture = "united_nations"
-
-	trigger = {
-		has_country_flag = is_disabled_for_now
-		NOT = { has_country_modifier = not_member_of_united_nations }
-		NOT = { has_country_modifier = united_nations }
-		war = no
-		OR = { is_vassal = no government = proletarian_dictatorship }
-		year = 1946
-		NOT = { 
-			OR = { 
-				AND = { tag = CHI has_global_flag = CHI_in_UNSC }
-				AND = { tag = KMT NOT = { has_global_flag = CHI_in_UNSC } }
-				tag = ENG
-				tag = USA
-				tag = FRA
-				tag = RUS
-			}		
-		}
-	}
-
-	mean_time_to_happen = {
-		months = 12
-	}
-
-	option = {
-		name = EVT_1215010_A 
-		ai_chance = { factor = 0 }
-		prestige = -2 
-		add_country_modifier = { name = not_member_of_united_nations duration = -1 }
-	}
-
-	option = {
-		name = EVT_1215010_B
-		ai_chance = { factor = 1 }
-		prestige = -2 
-		add_country_modifier = { name = not_member_of_united_nations duration = -1 }
-		any_country = { 
-			limit = { 
-				THIS = { 
-					OR = { 
-						AND = { tag = CHI year = 1971 }
-						AND = { tag = KMT NOT = { year = 1971 } }
-						tag = ENG
-						tag = USA
-						tag = FRA
-						tag = RUS
-						tag = RUS
-					}
-				}
-				neighbour = THIS
-				is_greater_power = yes 
-				# same list as in  united_nations.txt decition
-				OR = { 
-					AND = { tag = CHI year = 1971 }
-					AND = { tag = KMT NOT = { year = 1971 } }
-					tag = KMT
-					tag = ENG
-					tag = USA
-					tag = FRA
-					tag = RUS
-					tag = RUS
-				}
-			}
-			diplomatic_influence = { who = THIS value = 25 }
-		}
-	}
-}
-
-country_event = {
-	id = 1215011
-	title = EVT_1215011_NAME
-	desc = EVT_1215011_DESC
-	picture = "united_nations_peacekeeping_mission"
-
-	trigger = {
-has_country_flag = not_enabled_forever
-		has_country_modifier = united_nations
-		NOT = { has_country_modifier = call_for_un_peacekeeping_mission }
-		is_greater_power = no
-		OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 } 
-		ai = yes
-		OR = { 
-			AND = { num_of_revolts = 1 NOT = { num_of_cities = 3 } }
-			AND = { num_of_revolts = 2 num_of_cities = 3  }
-			AND = { num_of_revolts = 3 num_of_cities = 9  }
-			AND = { num_of_revolts = 4 num_of_cities = 18 }
-		}
-		war = no
-	}
-
-	mean_time_to_happen = {
-		days = 1
-	}
-
-	option = {
-		name = EVT_1215011_A 
-		ai_chance = { factor = 1 }
-		prestige = -2 
-		add_country_modifier = { name = call_for_un_peacekeeping_mission duration = 700 }
-		any_country = { limit = { ai = no has_country_modifier = united_nations } country_event = 1215012 }
-	}
-	
-	# no need for second factor ai will always do
-}
 
 country_event = {
 	id = 1215012
@@ -1918,4 +2013,149 @@ country_event = {
 		
 	}
 	
+}
+
+#Choose the location of the UN Headquarters
+country_event = {
+	id = 1610068
+title = "United Nations Headquaters"
+	desc = EVTDESC1610068
+	picture = "un_hq_select"
+
+fire_only_once = yes
+
+trigger = {
+tag = USA
+has_global_flag = blocsenabled
+NOT = { year = 1992 }
+	}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Select New York"
+set_country_flag = un_hq_host_country
+money = -500000
+232 = { add_province_modifier = { name = un_headquarters duration = -1 } }
+ai_chance = { factor = 0.75 }
+		}
+option = {
+name = "Select San Francisco"
+set_country_flag = un_hq_host_country
+money = -500000
+relation = { who = AST value = 25 } # Historically favored San Franscico
+relation = { who = NZL value = 25 } # Historically favored San Franscico
+relation = { who = CHI value = 25 } # Historically favored San Franscico
+relation = { who = PHI value = 25 } # Historically favored San Franscico
+84 = { add_province_modifier = { name = un_headquarters duration = -1 } }
+ai_chance = { factor = 0.05 }
+		}
+
+option = {
+name = "Select London"
+ENG = { prestige = 500 set_country_flag = un_hq_host_country }
+relation = { who = ENG value = 200 }
+300 = { add_province_modifier = { name = un_headquarters duration = -1 } }
+ai_chance = { factor = 0.05 }
+		}
+
+option = {
+name = "Select Paris"
+FRA = { prestige = 500 set_country_flag = un_hq_host_country }
+relation = { who = FRA value = 200 }
+425 = { add_province_modifier = { name = un_headquarters duration = -1 } }
+ai_chance = { factor = 0.05 }
+		}
+
+option = {
+name = "Select Geneva"
+SWI = { prestige = 500 set_country_flag = un_hq_host_country }
+relation = { who = SWI value = 200 }
+607 = { add_province_modifier = { name = un_headquarters duration = -1 } }
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Change UN HQ location
+country_event = {
+	id = 1610069
+title = "UN Headquarters Relocates"
+	desc = EVTDESC1610069
+	picture = "un_hq_flees"
+
+major = yes
+
+trigger = {
+
+any_owned_province = { 
+has_province_modifier = un_headquarters 
+
+OR = { 
+
+#Losing a war
+owner = { national_provinces_occupied = 0.25 }
+
+#Occupied by enemy forces
+AND = { NOT = { controlled_by = THIS } 
+controlled_by_rebels = no }
+
+#UN HQ was struck by nukes
+has_province_modifier = nuke_accident 
+has_province_modifier = nuke_high 
+has_province_modifier = nuke_medium 
+has_province_modifier = nuke_low 
+has_province_modifier = tactical_nuked
+
+#UN HQ was struck by chemical bombs
+has_province_modifier = chemical_high
+has_province_modifier = chemical_medium
+has_province_modifier = chemical_low 
+	}
+
+}
+
+	}
+
+option = {
+name = "This is embarassing for $COUNTRY$"
+prestige = -500
+clr_country_flag = un_hq_host_country
+any_owned = { remove_province_modifier = un_headquarters }
+set_global_flag = host_un_hq
+		}
+
+}
+
+#Destroy UNESCO monuments - receiver
+country_event = {
+	id = 1610073
+title = "$FROMCOUNTRY_ADJ$ Cultural Atrocities"
+	desc = EVTDESC1610073
+	picture = "unesco_destruction"
+
+is_triggered_only = yes
+
+option = {
+name = "Outrageous!"
+
+FROM = { clr_country_flag = destroy_unesco_monuments_fired }
+
+any_owned = { 
+limit = { controlled_by = FROM has_province_modifier = unesco_whs }
+remove_province_modifier = unesco_whs 
+owner = { war_exhaustion = 1 prestige_factor = -0.01 FROM = { war_exhaustion = -1 } } 
+	}
+
+any_pop = { 
+limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+dominant_issue = {
+	value = jingoism
+	factor = 0.10
+	}
+}
+		}
+
 }

@@ -9,6 +9,113 @@
 
 ###################
 
+#The Last Emperor
+country_event = {
+	id = 1512095
+	title = "Repatriation of Puyi to China"
+	desc = EVTDESC1512095
+	picture = "puyi_china"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		year = 1950
+		NOT = { year = 1990 }
+		CHI = { government = proletarian_dictatorship }
+		CHI = { exists = yes war = no }
+		has_global_flag = puyi_china
+	}
+
+	mean_time_to_happen = { 
+		months = 8
+	}
+
+	option = {
+		name = "Banish him to Communist China for a life of hard labour"
+		relation = { who = CHI value = 100 }
+		CHI = { country_event = 1512097 }
+		ai_chance = { factor = 0.7 }
+	}
+
+	option = {
+		name = "Grant him asylum in the Soviet Union"
+		relation = { who = CHI value = -50 }
+		ai_chance = { factor = 0.2 }
+	}
+
+	option = {
+		name = "Let him leave for asylum in Japan"
+		prestige = -25
+		relation = { who = JAP value = 50 }
+		relation = { who = USA value = 50 }
+		relation = { who = CHI value = -100 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#The Last Emperor 2
+country_event = {
+	id = 1512096
+	title = "The Trial of Puyi"
+	desc = EVTDESC1512096
+	picture = "puyi_trial"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = USA
+		year = 1946
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+	}
+
+	mean_time_to_happen = { 
+		months = 4
+	}
+
+	option = {
+		name = "Do not indict him for War Crimes"
+		set_global_flag = puyi_china
+		relation = { who = CHI value = -50 }
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Indict him for War Crimes"
+		prestige = -25
+		relation = { who = CHI value = 50 }
+		relation = { who = KMT value = 50 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#The Last Emperor 3
+country_event = {
+	id = 1512097
+	title = "The Last Emperor of China"
+	desc = EVTDESC1512095
+	picture = "puyi_china"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Re-educate him in Marxism"
+		prestige = 25
+		any_pop = { consciousness = 2 }
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Execute him for treason to the Chinese people"
+		any_pop = { militancy = -3 consciousness = -5 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
 #Return Soviet occupied manchuria in 1946
 country_event = {
   id = 8200000
@@ -270,6 +377,87 @@ country_event = {
 		relation = { who = RUS value = 50 } 
 		relation = { who = MGL value = 25 } 
 	}
+}
+
+#Return of Port Arthur
+country_event = {
+	id = 1400035
+	title = "Return of Port Arthur"
+	desc = EVTDESC1400035
+	picture = "returnofportarthur"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		year = 1955
+		NOT = { year = 1990 }
+		
+		#Own Port Arthur
+		1481 = { owned_by = RUS }
+		
+		government = proletarian_dictatorship
+		war = no
+		is_vassal = no
+		
+		CHI = { 
+			exists = yes 
+			is_vassal = no 
+			government = proletarian_dictatorship 
+		}
+		
+		NOT = { has_country_flag = returnofportarthur }
+	}
+	
+	option = {
+		name = "Return the territory without compensation"
+		1481 = { secede_province = CHI }
+		prestige_factor = 0.025
+		relation = { who = CHI value = 100 }
+		set_country_flag = returnofportarthur
+		ai_chance = { factor = 0.9 }
+	}
+	option = {
+		name = "Keep our territory"
+		relation = { who = CHI value = -200 }
+		set_country_flag = returnofportarthur
+		any_pop = { limit = { is_culture_group = east_asian } militancy = 10 consciousness = 10 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Recapture of Port Arthur
+country_event = {
+	id = 1400052
+	title = "$YEAR$ Invasion of Port Arthur"
+	desc = "The Republic of China (ROC) have managed to sieze Port Arthur. We should sieze it back!"
+	picture = "port_arthur_recapture"
+	
+trigger = {
+tag = CHI
+CHI = { government = proletarian_dictatorship }
+exists = KMT
+NOT = { war_with = KMT }
+war = no
+NOT = { has_global_flag = port_arthur_recapture }
+1481 = { owned_by = KMT }
+
+}
+
+option = {
+name = "Sieze Port Arthur!"
+set_global_flag = port_arthur_recapture
+badboy = 5
+KMT = { 1481 = { secede_province = CHI } }
+ai_chance = { factor = 1 }
+		}
+option = {
+name = "Let the capitalist swine keep Port Arthur!"
+set_global_flag = port_arthur_recapture
+prestige = -50
+ai_chance = { factor = 0 }
+		}
 }
 
 #The KMT flees to Taiwan - End the Chinese Civil War
@@ -867,5 +1055,234 @@ country_event = {
 		any_pop = { militancy = -5 }
 		ai_chance = { factor = 0.5 }
 	}
+
+}
+
+#Release KMT
+country_event = {
+	id = 444
+	title = "The Nationalist Government has fled to Taiwan"
+	desc = "General Chiang has led a successful evacuation of the Nationalist forces to the island of Taiwan to plot a new campaign to reseize the mainland."
+	picture = "kmt_end_of_instability"
+	
+	
+	trigger = {
+		NOT = { year = 1955 }
+		exists = CHI
+		CHI = { government = proletarian_dictatorship }
+		NOT = { has_country_flag = releasekmt }
+		tag = TAI
+		NOT = { exists = KMT }
+	}
+	
+	option = {
+		name = "We shall push on!"
+	change_tag = KMT
+	government = presidential_dictatorship
+	country_event = 800050
+		CHI = { any_owned = { 
+			limit = { OR = { province_id = 1485 province_id = 1499 province_id = 2576 province_id = 2562 } }
+			secede_province = KMT
+		} }
+	KMT = { end_war = ETS }
+	KMT = { any_owned = { limit = { is_core = ETS } secede_province = CHI } }
+		CHI = { country_event = 90904 }
+		set_country_flag = releasekmt
+		}
+}
+
+#What to do with Taiwan if KMT wins
+country_event = {
+	id = 1412221
+title = "The Taiwan Question"
+	desc = EVTDESC1412221
+	picture = "taiwan_question"
+
+fire_only_once = yes
+
+trigger = {
+
+tag = KMT
+
+war = no
+
+TAI = { exists = yes }
+
+CHI = { exists = no }
+
+is_our_vassal = TAI	
+
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Integrate into $COUNTRY$"
+inherit = TAI
+ai_chance = { factor = 0.7 }
+		}
+
+option = {
+name = "Grant self-rule"
+prestige = 100
+TAI = { government = sar_government }
+TAI = { any_owned = { add_core = TAI } }
+ai_chance = { factor = 0.2 }
+		}
+
+option = {
+name = "Cede sovereignty to Japan"
+prestige = 200
+relation = { who = JAP value = 200 }
+relation = { who = USA value = 200 }
+TAI = { any_owned = { remove_core = KMT add_core = TAI } }
+JAP = { inherit = TAI }
+JAP = { country_event = 1412222 }
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#What to do with Taiwan if KMT wins - JAPAN
+country_event = {
+	id = 1412222
+title = "The Taiwan Question"
+	desc = EVTDESC1412222
+	picture = "taiwan_question"
+
+is_triggered_only = yes
+
+option = {
+name = "Integrate into $COUNTRY$"
+prestige = -50
+inherit = TAI
+any_owned = { limit = { is_core = TAI } add_core = JAP any_pop = { militancy = 8 } }
+ai_chance = { factor = 0.5 }
+		}
+
+option = {
+name = "Grant self-rule"
+prestige = 50
+release_vassal = TAI
+TAI = { government = sar_government }
+TAI = { any_pop = { militancy = 5 } }
+ai_chance = { factor = 0.5 }
+		}
+
+}
+
+#Chinese Reunification - Communist PRC
+country_event = {
+	id = 1512151
+title = "Chinese Reunification"
+	desc = EVTDESC1512151
+	picture = "chinese_reunification"
+
+fire_only_once = yes
+
+trigger = {
+
+tag = KMT
+
+is_vassal = no
+
+CHI = { government = proletarian_dictatorship ruling_party_ideology = communist exists = yes }
+
+KMT = { government = proletarian_dictatorship ruling_party_ideology = communist exists = yes }
+
+}
+
+option = {
+name = "Unify with the mainland!"
+CHI = { prestige = 1000 }
+
+all_core = { limit = { is_core = KMT } remove_core = KMT }
+
+any_owned = { limit = { OR = { province_id = 1485 province_id = 2562 } } add_core = TAI }
+
+CHI = { inherit = KMT }
+
+ai_chance = { factor = 0.7 }
+		}
+
+option = {
+name = "Stick to the status quo"
+relation = { who = CHI value = -100 }
+ai_chance = { factor = 0.2 }
+		}
+
+option = {
+name = "Embrace Taiwanese independence!"
+any_owned = { limit = { OR = { province_id = 1485 province_id = 2562 } } add_core = TAI }
+change_tag = TAI
+prestige = 100
+relation = { who = CHI value = -200 }
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Non-AI KMT player in the Chinese Civil War
+country_event = {
+	id = 1512152
+title = "The Chinese Civil War"
+	desc = EVTDESC1512152
+	picture = "chinese_civil_war_ai_no"
+
+fire_only_once = yes
+
+trigger = {
+
+tag = KMT
+
+war_with = CHI
+
+ai = no
+
+NOT = { year = 1990 }
+
+}
+
+option = {
+name = "The Generalissimo will prevail!"
+activate_technology = cold_war_doctrine
+activate_technology = proxy_war
+activate_technology = guerrilla
+activate_technology = heavy_tanks
+activate_technology = post_war_radar
+activate_technology = infantry
+		}
+
+}
+
+#End Vassal Tribute System
+country_event = {
+	id = 1512153
+title = "End of the $COUNTRY_ADJ$ Tribute System"
+	desc = "Our vassal tribute system has ended as we no longer have any puppets under our nation."
+	picture = "vassal_tribute_system_end"
+
+trigger = {
+OR = {	
+has_country_modifier = vtshigh
+has_country_modifier = vtsmedium
+has_country_modifier = vtslow 
+	}
+
+NOT = { num_of_vassals = 1 }
+
+}
+
+option = {
+name = "That's it"
+remove_country_modifier = vtshigh
+remove_country_modifier = vtsmedium
+remove_country_modifier = vtslow
+clr_country_flag = vtshigh
+clr_country_flag = vtsmedium
+clr_country_flag = vtslow
+		}
 
 }

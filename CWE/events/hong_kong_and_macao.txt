@@ -1,0 +1,873 @@
+#Future of Hong Kong
+country_event = {
+	id = 1412230
+title = "Hong Kong as a British Dependent Territory?"
+	desc = EVTDESC1412230
+	picture = "hkg_bot"
+
+fire_only_once = yes
+
+trigger = {
+tag = ENG
+owns = 1496
+government = hms_government
+year = 1981
+}
+
+mean_time_to_happen = { 
+months = 6
+	}
+
+option = {
+name = "Yes"
+prestige = 50
+ai_chance = { factor = 0.95 }
+		}
+
+option = {
+name = "Push for Hong Kong independence"
+prestige_factor = -0.1
+relation = { who = CHI value = -50 }
+release_vassal = HKG
+HKG = { government = colonial_government event = 800054 }
+diplomatic_influence = { who = HKG value = 200 }
+ai_chance = { factor = 0.05 }
+		}
+}
+
+#Future of Hong Kong
+country_event = {
+	id = 1412231
+title = "Hong Kong Independence?"
+	desc = EVTDESC1412231
+	picture = "hkg_indy_eng"
+
+fire_only_once = yes
+
+trigger = {
+tag = ENG
+government = hms_government
+HKG = { vassal_of = ENG }
+year = 1996
+}
+
+mean_time_to_happen = { 
+months = 2
+	}
+
+option = {
+name = "Keep Hong Kong's current status"
+prestige = 50
+ai_chance = { factor = 0.1 }
+		}
+
+option = {
+name = "Grant Hong Kong independence"
+prestige_factor = -0.1
+relation = { who = CHI value = -50 }
+release_vassal = HKG
+HKG = { government = hms_government }
+diplomatic_influence = { who = HKG value = 200 }
+ai_chance = { factor = 0.9 }
+		}
+}
+
+###################################
+
+### Handover of the SARs events ###
+
+###################################
+
+# Annex Hong Kong / Macao
+country_event = {
+	id = 1002801
+	title = "EVT_1002801_NAME"
+	desc = "EVT_1002801_DESC"
+	picture = "chinese_hongkong"
+
+	is_triggered_only = yes # ENG
+
+	option = {
+		name = "EVT_1002801_A"
+		ai_chance = {
+			factor = 100
+		}
+		prestige = -2
+		1496 = { secede_province = FROM }
+		FROM = { country_event = 1002803 }
+	}
+
+	option = {
+		name = "EVT_1002801_B"
+		ai_chance = {
+			factor = 0
+		}
+		prestige = 10
+		relation = {
+			who = FROM
+			value = -200
+		}
+		leave_alliance = FROM
+		FROM = { country_event = 1002804 }
+	}
+
+}
+
+#The Return of Macau
+country_event = {
+	id = 1002802
+	title = "EVT_1002802_NAME"
+	desc = "EVT_1002802_DESC"
+	picture = "macao"
+
+	is_triggered_only = yes # POR
+
+	option = {
+		name = "EVT_1002802_A"
+		ai_chance = {
+			factor = 100
+		}
+		prestige_factor = -0.05
+		1498 = { secede_province = FROM }
+		FROM = { country_event = 1002813 } # accept autonomy
+	}
+
+	option = {
+		name = "EVT_1002802_B"
+		ai_chance = {
+			factor = 0
+		}
+		prestige = 2
+		relation = {
+			who = FROM
+			value = -200
+		}
+		leave_alliance = FROM
+		FROM = { country_event = 1002804 } # refuse
+	}
+
+}
+
+# HKG
+country_event = {
+	id = 1002803
+	title = "EVT_1002803_NAME"
+	desc = "EVT_1002803_DESC"
+	picture = "chinese_hongkong"
+
+	is_triggered_only = yes # CHI
+
+	option = {
+		name = "EVT_1002803_A"
+
+		release_vassal = HKG
+
+		HKG = { government = sar_government }
+
+		diplomatic_influence = { who = HKG value = 200 }
+
+		HKG = { country_event = 800054 }
+
+		relation = {
+			who = FROM
+			value = 200
+		}
+	}
+
+}
+
+# MCA
+country_event = {
+	id = 1002813
+	title = "EVT_1002803_NAME"
+	desc = "EVTDESC1002813"
+	picture = "chinese_macau"
+
+	is_triggered_only = yes # CHI
+
+	option = {
+		name = "EVT_1002803_A"
+
+		release_vassal = MCA
+		MCA = { government = sar_government }
+		diplomatic_influence = { who = MCA value = 200 }
+		MCA = { country_event = 800054 }
+		relation = {
+			who = FROM
+			value = 200
+		}
+	}
+
+}
+
+
+###################################
+
+### Talks to return HKG and MCA ###
+
+###################################
+
+#Sino-British Talks - decide Hong Kong's fate
+country_event = {
+  id = 8002832
+  title = "Sino-British Joint Declaration"
+  desc = EVTDESC1512026
+  picture = "nwo2_chinese_hongkong"
+  fire_only_once = yes
+
+	trigger = {
+		tag = CHI
+		year = 1984
+		NOT = { has_global_flag = 1992_start_date_flag }
+		1496 = { OR = { owned_by = ENG owned_by = FBU } }
+		OR = { ENG = { is_vassal = no } FBU = { is_vassal = no } }
+		is_vassal = no
+		war = no
+		government = proletarian_dictatorship
+	}
+
+	mean_time_to_happen = { months = 12 }
+
+	option = {
+		name = "Agree to 50 years of Hong Kong autonomy from 1997"
+		
+		#Democratic GPs love this!
+		any_country = {
+			limit = { 
+				is_greater_power = yes 
+				OR = { tag = ENG tag = FBU government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+			}
+			relation = { who = THIS value = 50 }
+		}
+		
+		1496 = { add_core = CHI }
+		badboy = -5
+		
+		set_global_flag = HKG_SAR_option
+		
+		ai_chance = { factor = 0.8 }
+	}
+	
+	option = {
+		name = "Let the British retain administration rights"
+		prestige_factor = -0.1
+		
+		#Democratic GPs love this!
+		any_country = {
+			limit = { 
+				is_greater_power = yes 
+				OR = { tag = ENG tag = FBU government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+			}
+			relation = { who = THIS value = 100 }
+		}
+		
+		1496 = { remove_core = XEU }
+		1496 = { remove_core = ENG remove_core = FBU }
+		1496 = { add_core = CHI }
+		
+		#If UK
+		random_owned = {
+			limit = {
+				owner = { 
+					1496 = { owned_by = ENG }
+				}
+			}
+			owner = {
+				ENG = {
+					remove_accepted_culture = chinese_cantonese
+					inherit = HKG
+					release_vassal = HKG
+					HKG = { government = sar_government country_event = 800054 }
+				}
+			}
+		}
+		
+		#If FBU
+		random_owned = {
+			limit = {
+				owner = { 
+					1496 = { owned_by = FBU }
+				}
+			}
+			owner = {
+				FBU = {
+					remove_accepted_culture = chinese_cantonese
+					inherit = HKG
+					release_vassal = HKG
+					HKG = { government = sar_government country_event = 800054 }
+				}
+			}
+		}
+
+		diplomatic_influence = { who = HKG value = 200 }
+
+		ai_chance = { factor = 0.1 }
+	}
+	
+	option = {
+		name = "Extend the British lease for another 50 years"
+		prestige_factor = -0.2
+		
+		#Democratic GPs love this!
+		any_country = {
+			limit = { 
+				is_greater_power = yes 
+				OR = { tag = ENG tag = FBU government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+			}
+			relation = { who = THIS value = 200 }
+		}
+
+		1496 = { add_core = CHI }
+		badboy = -5
+		
+		set_global_flag = HKG_extend_lease_option
+		
+		ai_chance = { factor = 0.05 }
+	}
+
+	option = {
+		name = EVT_8002832_B
+		
+		1496 = { add_core = CHI }
+		
+		#Democratic GPs hate this!
+		any_country = {
+			limit = { 
+				is_greater_power = yes 
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+			}
+			relation = { who = THIS value = -100 }
+		}
+		
+		badboy = 10
+		
+		war = {
+			target = ENG
+			attacker_goal = { casus_belli = acquire_core_state state_province_id = 1496 }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = no
+		}
+
+		ai_chance = { factor = 0.05 }
+	}
+
+}
+
+#Sino-Portuguese Talks - decide Portugal's fate
+country_event = {
+  id = 80028321
+  title = "Sino-Portuguese Declaration"
+  desc = EVTDESC80028321
+  picture = "POR_MCA_1987"
+  fire_only_once = yes
+
+	trigger = {
+		tag = CHI
+		year = 1987
+		NOT = { has_global_flag = 1992_start_date_flag }
+		1498 = { owned_by = POR }
+		POR = { 
+			is_vassal = no 
+			government = democracy 
+			has_country_flag = POR_to_return_Macau
+		}
+		is_vassal = no
+		war = no
+		government = proletarian_dictatorship
+	}
+
+	mean_time_to_happen = { months = 4 }
+
+	option = {
+		name = "Agree to 50 years of Macau autonomy from 1999"
+		
+		#Democratic GPs love this!
+		any_country = {
+			limit = { 
+				is_greater_power = yes 
+				OR = { tag = POR government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+			}
+			relation = { who = THIS value = 50 }
+		}
+		
+		1498 = { add_core = CHI }
+		badboy = -5
+		
+		set_global_flag = MCA_SAR_option
+		
+		ai_chance = { factor = 0.8 }
+	}
+	
+	option = {
+		name = "Let the Portuguese retain administration rights"
+		prestige_factor = -0.1
+		
+		#Democratic GPs love this!
+		any_country = {
+			limit = { 
+				is_greater_power = yes 
+				OR = { tag = POR government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+			}
+			relation = { who = THIS value = 100 }
+		}
+		
+		1498 = { remove_core = XEU }
+		1498 = { remove_core = POR }
+		1498 = { add_core = CHI }
+		
+		POR = {
+			inherit = MCA
+			release_vassal = MCA
+			MCA = { government = sar_government country_event = 800054 }
+		}
+
+		diplomatic_influence = { who = MCA value = 200 }
+
+		ai_chance = { factor = 0.1 }
+	}
+	
+	option = {
+		name = "Extend the Portuguese lease for another 50 years"
+		prestige_factor = -0.2
+		
+		#Democratic GPs love this!
+		any_country = {
+			limit = { 
+				is_greater_power = yes 
+				OR = { tag = POR government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+			}
+			relation = { who = THIS value = 200 }
+		}
+
+		1498 = { add_core = CHI }
+		
+		badboy = -5
+		
+		set_global_flag = MCA_extend_lease_option
+		
+		ai_chance = { factor = 0.05 }
+	}
+
+	option = {
+		name = EVT_8002832_B
+		
+		#Democratic GPs hate this!
+		any_country = {
+			limit = { 
+				is_greater_power = yes 
+				OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } 
+			}
+			relation = { who = THIS value = -100 }
+		}
+		
+		1498 = { add_core = CHI }
+		
+		any_pop = {
+			ideology = {
+				factor = 0.10
+				value = liberal
+			}
+		}
+		
+		country_event = 1610121
+
+		ai_chance = { factor = 0.05 }
+	}
+
+}
+
+
+#Return of Hong Kong choices - FROM is ENG or FBU
+country_event = {
+	id = 1512026
+	title = "The Return of Hong Kong"
+	desc = EVTDESC1512026
+	picture = "CHI_HKG_choices"
+
+	is_triggered_only = yes
+
+
+	option = {
+		name = "Propose the One Country, Two Systems plan"
+		prestige_factor = 0.2
+		1496 = { remove_core = XEU }
+		1496 = { remove_core = ENG remove_core = FBU }
+		1496 = { add_core = CHI }
+		FROM = { country_event = 1002801 }
+		FROM = { remove_accepted_culture = chinese_cantonese }
+		ai_chance = { factor = 0.7 }
+	}
+
+	option = {
+		name = "Agree to the British plan to retain administration rights"
+		prestige_factor = -0.1
+		relation = { who = FROM value = 50 }
+		1496 = { remove_core = XEU }
+		1496 = { remove_core = ENG remove_core = FBU }
+		1496 = { add_core = CHI }
+		FROM = { 
+			remove_accepted_culture = chinese_cantonese
+			inherit = HKG
+			release_vassal = HKG
+			HKG = { government = sar_government country_event = 800054 }
+		}
+
+		diplomatic_influence = { who = HKG value = 200 }
+
+		ai_chance = { factor = 0.2 }
+	}
+
+	option = {
+		name = "Grant the British an indefinite lease over the New Territories"
+		prestige_factor = -0.2
+		1496 = { add_core = CHI }
+		any_greater_power = { relation = { who = THIS value = 200 } }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#2014 Umbrella Movement
+country_event = {
+	id = 1512234
+title = "The Umbrella Movement"
+	desc = EVTDESC1512234
+	picture = "umbrella_movement"
+
+fire_only_once = yes
+
+trigger = {
+tag = CHI
+government = proletarian_dictatorship
+is_vassal = no
+year = 2014
+is_our_vassal = HKG
+HKG = { government = sar_government }
+}
+
+mean_time_to_happen = { 
+months = 9
+	}
+
+option = {
+name = "Send in the police!"
+badboy = 5
+HKG = { add_country_modifier = { name = revolution_chaos duration = 1825 } }
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Accede to their demands"
+prestige = -100
+HKG = { country_event = 800054 }
+HKG = { set_country_flag = former_devolved_nation }
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Return of Hong Kong Historical 1997 - ENG
+country_event = {
+	id = 1610117
+	title = "The Handover of Hong Kong"
+	desc = EVTDESC1610117
+	picture = "chinese_hongkong"
+
+	fire_only_once = yes
+
+	trigger = {
+		OR = { tag = ENG tag = FBU }
+		year = 1997
+		NOT = { year = 2010 }
+		1496 = {
+			owned_by = THIS
+		}
+		is_vassal = no
+		NOT = { war_with = CHI }
+		CHI = {
+			is_vassal = no
+			war = no
+			government = proletarian_dictatorship
+		}
+		has_global_flag = HKG_SAR_option
+	}
+
+	mean_time_to_happen = {
+		months = 7
+	}
+
+	option = {
+		name = "It is the end of the empire" 
+		prestige_factor = -0.05
+		1496 = { remove_core = XEU }
+		1496 = { remove_core = ENG remove_core = FBU }
+		1496 = { add_core = CHI }
+		1496 = { secede_province = CHI }
+		relation = { who = CHI value = 100 }
+		
+		remove_accepted_culture = chinese_cantonese
+		
+		#Send the Handover event to CHI
+		CHI = { country_event = 1610118 }
+		
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Never!"
+		badboy = 10
+		relation = { who = CHI value = -200 }
+		leave_alliance = CHI
+		CHI = { country_event = 1002804 }
+		ai_chance = { factor = 0 }
+	}
+
+}
+
+#Return of Hong Kong Historical 1997 - CHI
+country_event = {
+	id = 1610118
+	title = "The Handover of Hong Kong"
+	desc = EVTDESC1610117
+	picture = "chinese_hongkong"
+
+	is_triggered_only = yes # ENG
+
+	option = {
+		name = "We are now One Country with Two Systems!"
+		
+		prestige_factor = 0.2
+		
+		release_vassal = HKG
+
+		HKG = { government = sar_government country_event = 800054 }
+		
+		set_country_flag = the_return_of_hong_kong
+
+		diplomatic_influence = { who = HKG value = 200 }
+		
+	}
+
+}
+
+#Return of Macau Historical 1999 - POR
+country_event = {
+	id = 1610119
+	title = "The Handover of Macau"
+	desc = EVTDESC1002813
+	picture = "chinese_macau"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = POR
+		year = 1999
+		NOT = { year = 2010 }
+		1498 = {
+			owned_by = THIS
+		}
+		is_vassal = no
+		NOT = { war_with = CHI }
+		CHI = {
+			is_vassal = no
+			war = no
+			government = proletarian_dictatorship
+		}
+		has_global_flag = MCA_SAR_option
+	}
+
+	mean_time_to_happen = {
+		months = 11
+	}
+
+	option = {
+		name = "We are no longer a colonial power" 
+		prestige_factor = -0.05
+		1498 = { remove_core = XEU }
+		1498 = { remove_core = POR }
+		1498 = { add_core = CHI }
+		1498 = { secede_province = CHI }
+		relation = { who = CHI value = 100 }
+		
+		#Send the Handover event to CHI
+		CHI = { country_event = 1610120 }
+		
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Never!"
+		badboy = 10
+		relation = { who = CHI value = -200 }
+		leave_alliance = CHI
+		CHI = { country_event = 1002804 }
+		ai_chance = { factor = 0 }
+	}
+
+}
+
+#Return of Macau Historical 1999 - CHI
+country_event = {
+	id = 1610120
+	title = "The Handover of Macau"
+	desc = EVTDESC1002813
+	picture = "chinese_macau"
+
+	is_triggered_only = yes # POR
+
+	option = {
+		name = "We are now One Country with Two Systems!"
+		
+		prestige_factor = 0.2
+		
+		release_vassal = MCA
+
+		MCA = { government = sar_government country_event = 800054 }
+		
+		set_country_flag = the_return_of_macao
+
+		diplomatic_influence = { who = MCA value = 200 }
+		
+	}
+
+}
+
+#Return of Macau ahistorical - POR
+country_event = {
+	id = 1610121
+	title = "The Immediate Handover of Macau?"
+	desc = EVTDESC1610121
+	picture = "POR_MCA_1987"
+
+	is_triggered_only = yes # POR
+
+	option = {
+		name = "Give it back to China"
+		
+		prestige_factor = -0.05
+		
+		1498 = { secede_province = CHI }
+		
+		CHI = { set_country_flag = the_return_of_macao }
+		
+		relation = { who = CHI value = 200 }
+		
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "It is way too early!"
+		
+		badboy = 5
+		
+		CHI = {
+			war = {
+				target = POR
+				attacker_goal = { casus_belli = acquire_core_state state_province_id = 1498 }
+				defender_goal = { casus_belli = status_quo }
+				call_ally = no
+			}
+		}
+		
+		ai_chance = { factor = 0 }
+	}
+
+}
+
+#12-3 incident Macau
+country_event = {
+	id = 1512214
+title = "12-3 Incident in Macau"
+	desc = EVTDESC1512214
+	picture = "mca_riots"
+
+fire_only_once = yes
+
+trigger = {
+
+tag = POR
+
+is_vassal = no
+
+owns = 1498
+
+CHI = { exists = yes government = proletarian_dictatorship }
+
+year = 1966
+
+NOT = { year = 1990 }
+
+}
+
+mean_time_to_happen = { 
+months = 11
+	}
+
+option = {
+name = "Crush the uprising!"
+badboy = 5
+1498 = { add_province_modifier = { name = instigating_rebels duration = 3650 } }
+relation = { who = CHI value = -200 }
+1498 = { add_core = CHI }
+ai_chance = { factor = 0.2 }
+		}
+
+option = {
+name = "Give up sovereignty over Macau!"
+prestige = 25
+relation = { who = CHI value = 100 }
+1498 = { add_core = CHI remove_core = POR }
+ai_chance = { factor = 0.8 }
+		}
+
+}
+
+#Hong Kong 1967 Leftist Riots
+country_event = {
+	id = 1512213
+title = "Hong Kong $YEAR$ Leftist Riots"
+	desc = EVTDESC1512213
+	picture = "hkg_riots"
+
+fire_only_once = yes
+
+trigger = {
+
+war = no
+
+tag = ENG
+
+is_vassal = no
+
+government = hms_government
+
+owns = 1496
+
+CHI = { exists = yes government = proletarian_dictatorship }
+
+year = 1967
+
+NOT = { year = 1990 }
+
+}
+
+mean_time_to_happen = { 
+months = 5
+	}
+
+option = {
+name = "Crush the uprising!"
+badboy = 1
+1496 = { add_province_modifier = { name = instigating_rebels duration = 1825 } }
+ai_chance = { factor = 1 }
+		}
+
+option = {
+name = "Let the Leftists win!"
+prestige = -50
+1496 = { secede_province = CHI }
+relation = { who = CHI value = 100 }
+ai_chance = { factor = 0 }
+		}
+
+}

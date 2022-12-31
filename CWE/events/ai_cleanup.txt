@@ -1,0 +1,393 @@
+#Economic tuning - IDO, PHI, BUR, THI, ETH economies
+country_event = {
+	id = 1512008
+title = "Economic tuning"
+	desc = "Slow down craftsmen promotion"
+	picture = "asian_financial_crisis"
+
+fire_only_once = yes
+
+trigger = {
+OR = { tag = THI tag = IDO tag = PHI tag = BUR }
+ai = yes
+exists = THI
+exists = IDO
+exists = PHI
+exists = BUR
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Yes"
+THI = { set_country_flag = sea_economy_slow }
+PHI = { set_country_flag = sea_economy_slow }
+BUR = { set_country_flag = sea_economy_slow }
+IDO = { set_country_flag = sea_economy_slow }
+ETH = { set_country_flag = economic_malaise set_country_flag = sea_economy_slow }
+		}
+
+}
+
+#AI Nuke Money
+country_event = {
+	id = 1410151
+	title = "$COUNTRY$ Nuclear Weapons Development Push"
+	desc = "$COUNTRY$ has decided to push its Nuclear Weapons development forward by sourcing the funds required from the treasury and black budgets."
+	picture = "1410150"
+	
+trigger = { 
+ai = yes
+NOT = { has_country_modifier = develop_atomic_bomb }
+NOT = { has_country_modifier = develop_hydrogen_bomb }
+NOT = { has_country_modifier = hydrogen_nation }
+NOT = { has_country_modifier = atomic_nation }
+OR = { 
+AND = { tag = ENG ai = yes year = 1949 }
+AND = { tag = FRA ai = yes year = 1956 }
+AND = { tag = CHI ai = yes year = 1960 }
+
+AND = { tag = HND ai = yes year = 1970 }
+AND = { tag = PAK ai = yes year = 1980 }
+AND = { tag = NKO ai = yes year = 2003 }
+AND = { tag = ISR ai = yes year = 1963 }
+AND = { tag = SAF ai = yes year = 1979 }
+}
+NOT = { has_country_flag = nuke_money_aid }
+}
+
+mean_time_to_happen = { 
+months = 4
+}
+
+option = {
+name = "Onwards!"
+set_country_flag = nuke_money_aid
+money = 2000000
+badboy = -10
+		}
+
+}
+
+#AI Open Borders
+country_event = {
+	id = 1410152
+	title = "$COUNTRY$ Opens its Borders"
+	desc = "$COUNTRY$ has decided to open its borders to the world once again to take advantage of the benefits international trade can bring."
+	picture = "1410150"
+	
+trigger = { 
+ai = yes
+NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = theocracy } }
+immigration_policy = nobody_gets_out
+}
+
+mean_time_to_happen = { 
+months = 2
+}
+
+option = {
+name = "Welcome to $COUNTRY$!"
+political_reform = quota_immigration
+		}
+
+}
+
+#End war with non-existent nations
+country_event = {
+	id = 1412203
+title = "End War with non-existent nations"
+	desc = "This event periodically fires during wars to ensure that your nation is not at war with non-existent nations."
+	picture = "clear_non_existent"
+
+trigger = { 
+war = yes
+ai = yes
+}
+
+mean_time_to_happen = { 
+months = 6
+	}
+
+option = {
+name = "Good"
+any_country = { limit = { exists = no war = yes } country_event = 1412204 }
+		}
+}
+
+#End war with non-existent nations
+country_event = {
+	id = 1412204
+title = "End War with non-existent nation"
+	desc = "As the country no longer exists, the war has ceased."
+	picture = "clear_non_existent"
+
+is_triggered_only = yes
+
+option = {
+name = "Good"
+end_war = FROM
+		}
+}
+
+#Give construction material to planned economy AI
+country_event = {
+	id = 1610037
+	title = "Give Construction Material"
+	desc = "This is to address the bug with the fully planned economy AI being unable to buy all construction materials."
+	picture = "nuclear_disarmament"
+
+	trigger = {
+		ai = yes
+		OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+		economic_policy = planned_economy
+		
+		NOT = {
+			lumber = 500
+			cement = 500
+			steel = 500
+			machine_parts = 500
+			electric_gear = 500
+			fuel = 500
+		}
+	}
+
+	mean_time_to_happen = { 
+		months = 6
+	}
+
+	option = {
+		name = "I like it"
+		lumber = 500
+		cement = 500
+		steel = 500
+		machine_parts = 500
+		electric_gear = 500
+		fuel = 500
+	}
+
+}
+
+#Infamy Cap for AI countries
+country_event = {
+	id = 1610018
+title = "Infamy Cap for AI"
+	desc = "This event reduces AI infamy if it exceeds 35"
+	picture = "treaty"
+
+trigger = {
+ai = yes
+badboy = 1.4
+}
+
+mean_time_to_happen = { 
+months = 1
+}
+
+option = {
+name = "Reduce badboy"
+badboy = -1000
+badboy = 34
+		}
+
+}
+
+#AI Infamy reduction for democracies
+country_event = {
+	id = 1610052
+title = "AI Infamy Reduction"
+desc = "This event reduces AI infamy on a half-yearly basis"
+	picture = "treaty"
+
+trigger = {
+OR = { is_greater_power = yes is_secondary_power = yes }
+NOT = { war_policy = jingoism }
+ai = yes
+war = no
+OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 government = socialist_democracy }
+badboy = 0.5
+	}
+
+mean_time_to_happen = { 
+months = 12
+modifier = { factor = 0.5 war_policy = pacifism }
+	}
+
+option = {
+name = "Great!"
+badboy = -5
+	}
+
+}
+
+#AI Infamy reduction for Francoist Spain
+country_event = {
+	id = 1610053
+title = "AI Infamy Reduction"
+desc = "This event reduces AI infamy on a half-yearly basis"
+	picture = "treaty"
+
+trigger = {
+tag = SPA
+OR = { is_greater_power = yes is_secondary_power = yes }
+ai = yes
+war = no
+government = populist_dictatorship
+has_global_flag = blocsenabled
+badboy = 0.5
+	}
+
+mean_time_to_happen = { 
+months = 6
+	}
+
+option = {
+name = "Great!"
+badboy = -5
+	}
+
+}
+
+#Rapid capitulation by the AI
+country_event = {
+	id = 1610129
+	title = "$COUNTRY_ADJ$ Unconditional Surrender"
+	desc = EVTDESC1610129
+	picture = "remove_all_bourgeoisie"
+	
+	major = yes
+
+	trigger = {
+		ai = yes
+		
+		war = yes
+		
+		is_vassal = no
+		
+		#Capital is occupied by the enemy
+		capital_scope = {
+			AND = {
+				NOT = { controlled_by = THIS } 
+				controlled_by_rebels = no
+			}
+		}
+		
+		#Situation is grim
+		OR = {
+			AND = { national_provinces_occupied = 0.50 war_policy = pacifism }
+			AND = { national_provinces_occupied = 0.75 war_policy = pro_military }
+		}
+		
+		#Not jingoism
+		NOT = { war_policy = jingoism }
+		
+		#THIS army has been defeated
+		NOT = { total_amount_of_divisions = 1 }
+		
+		#Not when the cold war is hot
+		NOT = { has_country_modifier = cold_war_hot }
+		
+		#Not already surrended
+		NOT = { has_country_flag = nation_has_capitulated }
+	}
+
+	mean_time_to_happen = {
+		months = 2
+	}
+
+	option = {
+		name = "The $COUNTRY_ADJ$ nation has been defeated"
+		
+		set_country_flag = nation_has_capitulated
+		
+		#Surrender to a country we are at war with
+		random_country = {
+			limit = { war_with = THIS }
+			country_event = 1610130
+		}
+		
+		#Nationalists are furious!
+		any_pop = { 
+			limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+			scaled_militancy = {
+				factor = 10
+				ideology = nationalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = populist
+			}
+		}
+	}
+
+}
+
+#Rapid capitulation by the AI
+country_event = {
+	id = 1610130
+	title = "$FROMCOUNTRY_ADJ$ Unconditional Surrender"
+	desc = EVTDESC1610130
+	picture = "ai_quick_capitulation"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Is end of the war near?"
+		
+		FROM = {
+			any_owned = { 
+				limit = { controlled_by = FROM } 
+				change_controller = THIS
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+
+	}
+	
+	option = {
+		name = "They shall pay for the war!"
+		
+		badboy = 3
+		
+		FROM = {
+			any_owned = { 
+				limit = { controlled_by = FROM } 
+				change_controller = THIS
+				owner = { THIS = { money = 5000 } }
+				add_province_modifier = { name = war_bombed duration = 1825 }
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+
+	}
+
+}
+
+#Infamy Cap for AI RUS during the cold war
+country_event = {
+	id = 1610101
+	title = "Infamy Cap for Soviet AI"
+	desc = "This event reduces AI infamy if it exceeds 35"
+	picture = "treaty"
+
+	trigger = {
+		tag = RUS
+		has_global_flag = blocsenabled
+		ai = yes
+		war = no
+		OR = {
+			AND = { has_country_modifier = cold_war_low badboy = 0.50 }
+			AND = { has_country_modifier = cold_war_medium badboy = 0.75 }
+		}
+	}
+
+	option = {
+		name = "Reduce badboy"
+		badboy = -10
+	}
+
+}

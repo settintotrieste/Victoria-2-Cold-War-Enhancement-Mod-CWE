@@ -165,3 +165,174 @@ country_event = {
 	ai_chance = { factor = 0.1 }
   }
 }
+
+#Atacama Border Dispute - CHL start
+country_event = {
+	id = 1610111
+	title = "Solution to the Atacama Border Dispute?"
+	desc = EVTDESC1610111
+	picture = "atacama_border_dispute"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = CHL
+		year = 1975
+		NOT = { year = 1990 }
+		owns = 2308
+		BOL = { exists = yes is_vassal = no neighbour = THIS }
+		government = presidential_dictatorship
+		is_vassal = no
+		war = no
+	}
+
+	mean_time_to_happen = { 
+		months = 6
+	}
+
+	option = {
+		name = "Propose that Arica be ceded to Bolivia (20% chance)"
+		prestige = 100
+		relation = { who = BOL value = 50 }
+		BOL = { country_event = 1610112 }
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Arica is Chilean!"
+		relation = { who = BOL value = -50 }
+		BOL = {
+			any_pop = {
+				limit = { is_primary_culture = yes }
+				ideology = {
+					factor = 0.1
+					value = nationalist
+				}
+			}
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Atacama Border Dispute - BOL decision
+country_event = {
+	id = 1610112
+	title = "Solution to the Atacama Border Dispute?"
+	desc = EVTDESC1610111
+	picture = "atacama_border_dispute"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Accept the exchange - if Peru accepts (30% chance)"
+		prestige = 100
+		relation = { who = CHL value = 50 }
+		
+		#Need for Peru's approval
+		random_owned = {
+			limit = {
+				owner = { PEU = { exists = yes is_vassal = no } } 
+			}
+			owner = { PEU = { country_event = 1610113 } }
+		}
+		
+		#Need for Peru's approval
+		random_owned = {
+			limit = {
+				owner = { PEU = { exists = no } } 
+			}
+			owner = { 
+				CHL = { 
+					2308 = { add_core = BOL secede_province = BOL }
+				} 
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Set aside the issue"
+		relation = { who = CHL value = 50 }
+		
+		any_pop = {
+			limit = { is_primary_culture = yes }
+			ideology = {
+				factor = 0.1
+				value = nationalist
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Atacama Border Dispute - PEU decision
+country_event = {
+	id = 1610113
+	title = "Solution to the Atacama Border Dispute?"
+	desc = EVTDESC1610111
+	picture = "atacama_border_dispute"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Accept the exchange"
+		prestige = 100
+		relation = { who = CHL value = 50 }
+		
+		BOL = { country_event = 1610114 }
+		
+		ai_chance = { factor = 0.3 }
+	}
+
+	option = {
+		name = "Refuse to allow the transfer"
+		relation = { who = CHL value = -100 }
+		relation = { who = BOL value = -100 }
+		
+		BOL = {
+			any_pop = {
+				limit = { is_primary_culture = yes }
+				ideology = {
+					factor = 0.1
+					value = nationalist
+				}
+			}
+		}
+		
+		ai_chance = { factor = 0.7 }
+	}
+
+}
+
+#Atacama Border Dispute - BOL conclusion
+country_event = {
+	id = 1610114
+	title = "Bolivian Access to the Sea"
+	desc = EVTDESC1610114
+	picture = "atacama_border_dispute"
+
+	is_triggered_only = yes
+	
+	major = yes
+
+	option = {
+		name = "This is a great day for Bolivia!"
+		prestige = 100
+		
+		relation = { who = CHL value = 50 }
+		
+		CHL = {
+			random_owned = { 
+				limit = { province_id = 2308 }
+				add_core = BOL 
+				secede_province = BOL
+			}
+		}
+		
+	}
+
+}

@@ -1,3 +1,30 @@
+#GERMAN population boom
+country_event = {
+	id = 1200233
+	title = "German Population Boom"
+	desc = "The war is over and the population is booming, many people are starting to feel that it is ok to have larger families."
+	picture = "germanpopulationboom"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = GER
+		year = 1946
+		NOT = { year = 1989 }
+		war = no
+		NOT = { has_country_flag = gerpopboom }
+
+	}
+	
+	option = {
+		name = "A higher birthrate is always good"
+		any_owned = {
+			add_province_modifier = { name = family_values1 duration = 1000 }
+		}
+		set_country_flag = gerpopboom
+	}
+}
+
 # Reparations Israel and West Germany
 country_event = {
   id = 8004326
@@ -782,6 +809,47 @@ country_event = {
 	}
 }
 
+# German Reparations
+country_event = {
+	id = 1412097
+	title = "German War Reparations"
+	desc = EVTDESC1412097
+	picture = "german_reparations"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = GER
+		NOT = { year = 1991 }
+	}
+
+	option = {
+		name = "As the losers, we have no choice"
+		prestige = -10
+		add_country_modifier = { name = ger_war_rep duration = 23360 }
+	}
+}
+
+#German Reunification - Historical
+country_event = {
+	id = 1412159
+	title = "The Reunification of Germany"
+	desc = EVTDESC1412159
+	picture = "nwo2_united_germany"
+
+	major = yes
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Deutschland Uber Alles!"
+		GER = { inherit = IAR }
+		GER = { inherit = ICB }
+		any_pop = { militancy = -10 }
+	}
+
+}
+
 #### Alternate History ####
 
 # Restoration of the Kaiser?
@@ -925,4 +993,339 @@ country_event = {
 		}
 		ai_chance = { factor = 0.30 }
 	}
+}
+
+#Fall of the Berlin Wall
+country_event = {
+	id = 1412019
+	title = "Fall of the Berlin Wall"
+	desc = EVTDESC1412019
+	picture = "berlin_wall_fall"
+
+	trigger = {
+		tag = GER
+		OR = { 
+			549 = { has_province_modifier = berlin_wall } 
+			551 = { has_province_modifier = berlin_wall } 
+		}
+		OR = { 
+			AND = { 
+				exists = DDR 
+				DDR = { NOT = { government = proletarian_dictatorship } } 
+			} 
+			AND = { 
+				has_global_flag = depuppetize_warsaw_pact 
+				exists = DDR 
+			} 
+			DDR = { exists = no } 
+		}
+	}
+	
+	option = {
+		name = "Mr. Gorbachev, tear down this wall!"
+		prestige = 50
+		549 = { remove_province_modifier = berlin_wall }
+		551 = { remove_province_modifier = berlin_wall }
+	}
+	
+}
+
+#Restore German monarchy decision - Plebscite yes
+country_event = {
+	id = 1610055
+title = "Referendum to Restore the Monarchy Accepted"
+desc = EVTDESC1610055
+	picture = "restore_the_german_monarchy_vote_yes"
+
+trigger = {
+tag = GER
+OR = { government = democracy government = democracy1 }
+has_country_flag = restore_german_monarchy
+is_vassal = no
+	}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "We welcome our new Kaiser!"
+government = hms_government
+clr_country_flag = restore_german_monarchy
+	}
+
+}
+
+#Restore German monarchy decision - Plebscite no
+country_event = {
+	id = 1610056
+title = "Referendum to Restore the Monarchy Rejected"
+desc = EVTDESC1610056
+	picture = "restore_the_german_monarchy_vote"
+
+trigger = {
+tag = GER
+OR = { government = democracy government = democracy1 }
+has_country_flag = restore_german_monarchy
+is_vassal = no
+	}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Republicanism is the way forward!"
+clr_country_flag = restore_german_monarchy
+	}
+
+}
+
+#Restore German monarchy decision - USA Overlord
+country_event = {
+	id = 1610057
+title = "Restoration of the German Monarchy?"
+desc = EVTDESC1610057
+	picture = "restore_the_german_monarchy_vote"
+
+is_triggered_only = yes
+
+option = {
+name = "If he is an anti-communist then why not?"
+release_vassal = GER
+GER = { government = hms_government }
+ai_chance = { factor = 0.6 }
+	}
+
+option = {
+name = "We dislike kings!"
+relation = { who = GER value = -50 }
+ai_chance = { factor = 0.4 }
+	}
+
+}
+
+#Restore German monarchy decision - notice of rejection
+country_event = {
+	id = 1610058
+title = "German Monarchy Request Rejected"
+desc = EVTDESC1610058
+	picture = "restore_the_german_monarchy_vote"
+
+is_triggered_only = yes
+
+option = {
+name = "We can try again once we are independent"
+prestige = -50
+	}
+
+}
+
+#Germany seeks return of Heligoland
+country_event = {
+	id = 1512273
+title = "Return of Heligoland"
+	desc = EVTDESC1512273
+	picture = "heligoland_1952"
+
+fire_only_once = yes
+
+trigger = {
+OR = { tag = GER tag = NGF }
+war = no
+year = 1952
+NOT = { owns = 533 }
+NOT = { year = 1990 }
+}
+
+mean_time_to_happen = { 
+months = 3
+	}
+
+option = {
+name = "Demand the return of the island"
+random_country = { 
+limit = { owns = 533 }
+country_event = 1512274
+}
+ai_chance = { factor = 0.8 }
+		}
+
+option = {
+name = "Abandon our claims"
+prestige = -25
+badboy = -5
+random_country = { 
+limit = { owns = 533 }
+relation = { who = THIS value = 100 }
+}
+ai_chance = { factor = 0.2 }
+		}
+}
+
+#Germany seeks return of Heligoland - receiver
+country_event = {
+	id = 1512274
+title = "Return of Heligoland to $FROMCOUNTRY$"
+	desc = EVTDESC1512273
+	picture = "heligoland_1952"
+
+is_triggered_only = yes
+
+option = {
+name = "Return the tiny island"
+FROM = { prestige = 50 }
+random_owned = { limit = { owner = { exists = NGF } } owner = { 533 = { add_core = NGF } } }
+533 = { remove_core = THIS add_core = GER secede_province = FROM }
+relation = { who = THIS value = 50 }
+ai_chance = { factor = 0.7 }
+		}
+
+option = {
+name = "Hold onto it"
+badboy = 2.5
+relation = { who = FROM value = -100 }
+533 = { add_core = GER }
+ai_chance = { factor = 0.3 }
+		}
+
+}
+
+#War reparations from Germany
+country_event = {
+  id = 1512322
+  title = "War Reparations from Germany"
+  desc = EVTDESC1512322
+  picture = "war_reparation_delivery"
+
+  trigger = {
+	NOT = { year = 1980 }
+	OR = { tag = USA tag = RUS tag = ENG tag = FRA }
+	
+OR = { 
+AND = { any_owned_province = { is_core = GER } 
+GER = { exists = no } NGF = { exists = no } 
+SGF = { exists = no } HAN = { exists = no } } 
+GER = { vassal_of = THIS } 
+OG1 = { vassal_of = THIS }
+OG2 = { vassal_of = THIS }
+OG3 = { vassal_of = THIS }
+OG4 = { vassal_of = THIS } 
+}
+
+  }
+
+mean_time_to_happen = { months = 12 }
+
+  option = {
+	name = "This is right and just!"	
+	money = 100000
+	small_arms = 250
+	weaponry = 250
+	ships = 250
+	aeroplanes = 250
+	gold_silver = 100
+	cement = 100
+	machine_parts = 100
+	fuel = 100
+  }
+
+}
+
+#London Agreement on German External Debts
+country_event = {
+  id = 1512324
+  title = "London Agreement on German External Debts"
+  desc = EVTDESC1512324
+  picture = "ger_debt_relief"
+
+fire_only_once = yes
+
+  trigger = {
+	tag = GER
+	government = democracy
+	year = 1953
+	exists = DDR
+	NOT = { year = 1990 }
+	NOT = { badboy = 0.5 }
+	war = no
+	is_vassal = no
+	has_global_flag = blocsenabled
+  }
+
+mean_time_to_happen = { months = 9 }
+
+  option = {
+	name = "Great!"	
+	prestige = 50
+add_country_modifier = { name = tax_boost_modifier duration = 3650 }
+  }
+
+}
+
+#Nationalist Germany - Add Austrian Culture for anschluss
+country_event = {
+	id = 1512340
+title = "Return of German Nationalism"
+	desc = EVTDESC1512340
+	picture = "nazi_return"
+
+fire_only_once = yes
+
+trigger = {
+tag = GER
+is_vassal = no
+election = no
+ruling_party_ideology = nationalist
+}
+
+mean_time_to_happen = { months = 6 }
+
+option = {
+name = "We shall unite all Germans under one flag!"
+any_country = { limit = { OR = { tag = USA tag = FRA tag = NET tag = BEL tag = LUX tag = RUS tag = ENG tag = POL tag = CZH tag = BOH } } relation = { who = THIS value = -100 } }
+add_accepted_culture = austrian_german
+		}
+
+}
+
+#German Welfare State
+country_event = {
+	id = 1512149
+title = "The Welfare State"
+	desc = EVTDESC1512149
+	picture = "german_welfare_state"
+
+fire_only_once = yes
+
+trigger = {
+tag = GER
+year = 1960
+ruling_party_ideology = socialist
+NOT = { year = 1990 }
+government = democracy
+}
+
+mean_time_to_happen = { 
+months = 2
+	}
+
+option = {
+name = "Yes!"
+social_reform = good_public_housing
+social_reform = unlimited_education
+social_reform = low_health_care
+social_reform = low_pensions
+social_reform = preemptive_security_actions
+social_reform = paid_vacation_hours
+social_reform = generous_subsidies
+ai_chance = { factor = 0.9 }
+	}
+
+option = {
+name = "No need"
+prestige = -25
+ai_chance = { factor = 0.1 }
+	}
+
 }

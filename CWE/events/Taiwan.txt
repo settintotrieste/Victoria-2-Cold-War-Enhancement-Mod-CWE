@@ -208,3 +208,124 @@ country_event = {
 	}
 
 }
+
+#Taiwan SAR
+country_event = {
+	id = 1512048
+title = "Taiwan Special Administrative Region"
+	desc = EVTDESC1512048
+	picture = "taiwan_sar"
+
+fire_only_once = yes
+
+trigger = {
+
+tag = KMT
+
+is_vassal = no
+
+CHI = { government = proletarian_dictatorship ruling_party_ideology = communist_social exists = yes }
+
+CHI = { is_greater_power = yes }
+KMT = { is_greater_power = no }
+
+KMT = { is_greater_power = no government = democracy OR = { ruling_party_ideology = communist_social ruling_party_ideology = communist } exists = yes }
+
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Unify with the mainland!"
+prestige = 100
+
+any_owned = { limit = { is_core = CHI } remove_core = CHI }
+
+any_owned = { limit = { is_core = KMT } remove_core = KMT }
+
+any_owned = { limit = { OR = { province_id = 1485 province_id = 2562 } } add_core = TAI }
+
+primary_culture = taiwanese
+
+change_tag = TAI
+CHI = { create_vassal = TAI }
+government = sar_government
+CHI = { diplomatic_influence = { who = TAI value = 200 } }
+
+all_core = { limit = { NOT = { OR = { province_id = 1485 province_id = 2562 } } } remove_core = TAI }
+
+ai_chance = { factor = 0.8 }
+		}
+
+option = {
+name = "Remain independent!"
+ai_chance = { factor = 0.2 }
+		}
+
+}
+
+#Taiwan is kicked out of the UNSC
+country_event = {
+  id = 1512301
+  title = "Loss of United Nations Recognition"
+  desc = EVTDESC1512301
+  picture = "nwo2_communist_china_in_unsc"
+
+  trigger = {
+	tag = KMT
+	CHI = { exists = yes }
+	has_country_flag = not_participating_UNSC
+OR = { 
+has_country_modifier = united_nations_ga_member has_country_modifier = unsc_permanent_member has_country_modifier = united_nations 
+has_country_modifier = united_nations_observer_member 
+}
+  }
+
+  option = {
+    name = "This is a disaster!"
+	prestige_factor = -0.25
+	remove_country_modifier = united_nations_ga_member
+	remove_country_modifier = unsc_permanent_member
+	remove_country_modifier = united_nations
+	remove_country_modifier = united_nations_observer_member
+	}
+
+}
+
+#Chinese Reunification decision - KMT
+country_event = {
+  id = 1512331
+  title = "Reunification of China"
+  desc = EVTDESC1512331
+  picture = "chinese_reunification_decision"
+
+	is_triggered_only = yes
+
+  option = {
+	name = "Become one united China!"
+	clr_global_flag = one_china_policy
+	remove_country_modifier = one_china_policy
+FROM = { remove_country_modifier = one_china_policy } 
+FROM = { inherit = THIS }
+	ai_chance = { factor = 1 }	
+  }
+
+  option = {
+	name = "Maintain our independence!"
+	prestige = 100
+
+random_owned = { 
+
+limit = { 
+owner = { NOT = { any_owned_province = { NOT = { is_core = TAI } } } }
+} 
+
+owner = { change_tag = TAI primary_culture = taiwanese } }
+
+	relation = { who = FROM value = -100 }
+	ai_chance = { factor = 0 }		
+  }
+
+}

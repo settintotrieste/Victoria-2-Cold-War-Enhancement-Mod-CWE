@@ -1,6 +1,50 @@
 #
 # Globalization events
 #
+
+#Germania built
+country_event = {
+	id = 1412228
+title = "$COUNTRY_ADJ$ia"
+	desc = EVTDESC1412228
+	picture = "germania"
+
+trigger = {
+has_country_flag = germania
+NOT = { has_country_modifier = germania }
+}
+
+option = {
+name = "A city that will last a 1000 years"
+prestige = 1000
+random_owned = { limit = { is_capital = yes } life_rating = 5 add_province_modifier = { name = new_capital duration = -1 } }
+clr_country_flag = germania
+		}
+}
+
+#Enable Canals
+country_event = {
+	id = 1400037
+	title = "Great Wonders of the World"
+	desc = EVTDESC1400037
+	picture = "canals"
+
+	trigger = {
+	ai = yes
+	OR = { tag = PNM tag = EGY tag = ENG tag = USA }
+	NOT = { has_global_flag = canalsoftheworld }
+	}
+	
+	option = {
+	name = "The wonders of the modern age!"
+	enable_canal = 1
+	enable_canal = 2
+	enable_canal = 3
+	set_global_flag = canalsoftheworld
+	}
+			}
+
+
 country_event = {
 	id = 15600
 	title = EVT_15600_NAME
@@ -80,90 +124,6 @@ country_event = {
 			}
 			trade_goods = coal
 		}
-	}
-}
-
-country_event = {
-	id = 15603
-	title = "the_imf_title"
-	desc = "the_imf_desc"
-	picture = "world_bank"
-	
-	fire_only_once = yes
-	
-	trigger = {
-		has_country_flag = is_disabled_for_now
-		NOT = { 
-			has_country_flag = the_imf
-		}
-		OR = {
-			AND = {
-				tag = GER
-				year = 1992
-			}
-			AND = { 
-				tag = FRA
-				NOT = { year = 1992 }
-			}
-		}
-	}
-	
-	mean_time_to_happen = {
-		days = 1
-	}
-	
-	option = {
-		name = "the_imf_title"
-		set_country_flag = the_imf
-		random_province = {
-			limit = {
-				province_id = 564
-				owned_by = GER
-				year = 1992
-			}
-			trade_goods = credit
-		}
-		random_province = {
-			limit = {
-				province_id = 425
-				owned_by = FRA
-				NOT = { year = 1992 }
-			}
-			trade_goods = credit
-		}
-	}
-}
-
-country_event = {
-	id = 15604
-	title = "world_bank_title"
-	desc = "world_bank_desc"
-	picture = "world_bank"
-	
-	fire_only_once = yes
-	
-	trigger = {
-		has_country_flag = is_disabled_for_now
-		NOT = { 
-			has_country_flag = world_bank
-		}
-		tag = USA
-	}
-	
-	mean_time_to_happen = {
-		days = 10
-	}
-	
-	option = {
-		name = "world_bank_title"
-		set_country_flag = world_bank
-		random_province = {
-			limit = {
-				province_id = 232
-				owned_by = USA
-			}
-			trade_goods = credit
-		}		
 	}
 }
 
@@ -541,4 +501,1272 @@ country_event = {
 		# EVT_15619_A;A diplomatic triumph
 		prestige = 50
 	}
+}
+
+
+#### G8 ####
+
+#G8 join
+country_event = {
+	id = 1975
+	title = "$COUNTRY$ Joins the G8"
+	desc = EVTDESC1975
+	picture = "g8_join_image"
+	
+	trigger = {
+		year = 1975
+		is_greater_power = yes
+		NOT = { has_country_flag = gg }
+		NOT = { AND = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } ruling_party_ideology = communist } }
+	}
+	
+	mean_time_to_happen = { months = 6 }
+	
+	option = {
+		name = "Good, we shall announce it to the world at noon today!"
+		add_country_modifier = { name = g8 duration = -1 }
+		prestige = 10
+		set_country_flag = gg
+	}
+}
+
+#G8 leave
+country_event = {
+	id = 1976
+	title = "$COUNTRY$ Leaves the G8"
+	desc = EVTDESC1975
+	picture = "g8_leave_image"
+	
+	trigger = {
+		has_country_flag = gg
+		OR = { is_greater_power = no AND = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } ruling_party_ideology = communist } }
+	}
+	
+	mean_time_to_happen = { months = 6 }
+	
+	option = {
+		name = "That's bad but we must still announce it to the world at noon today"
+		remove_country_modifier = g8
+		prestige = -20
+		clr_country_flag = gg
+	}
+}
+
+#Select G8 Presidency
+country_event = {
+	id = 1410145
+	title = "Presidency of the G8"
+	desc = "As we are the most powerful nation in the G8, we get to have the first Presidency. The Presidency only last for 5 years."
+	picture = "fbu_union"
+
+	major = yes
+
+trigger = {
+rank = 1
+has_country_modifier = g8
+age_of_protests = 1
+NOT = { has_global_flag = g8_president_selected }
+}
+	
+mean_time_to_happen = { 
+months = 8
+}
+
+option = {
+	name = "Excellent!"
+set_global_flag = g8_president_selected
+set_country_flag = g8_president_now
+add_country_modifier = { name = g8_chairmanship duration = 1825 }
+			}
+
+}
+
+#Select G8 New President
+country_event = {
+	id = 1410146
+	title = "Presidency of the G8"
+	desc = "The Presidency of the G8 is rotating again and a new country will be been chosen to the President for the next 5 years."
+	picture = "g8_president"
+
+
+trigger = {
+NOT = { has_country_modifier = g8_chairmanship }
+has_country_modifier = g8
+has_country_flag = g8_president_now
+has_global_flag = g8_president_selected
+}
+	
+
+option = {
+	name = "We had a good run!"
+remove_country_modifier = g8_chairmanship
+clr_country_flag = g8_president_now
+random_country = { limit = { AND = { has_country_modifier = g8 is_greater_power = yes } } country_event = 1410147 }
+			}
+
+}
+
+#Select G8 New President
+country_event = {
+	id = 1410147
+	title = "Selected as Next President of the G8"
+	desc = "The Presidency of the G8 is rotating again and we have been chosen to the President for the next 5 years."
+	picture = "fbu_union"
+
+major = yes
+
+is_triggered_only = yes	
+
+option = {
+	name = "Excellent!"
+prestige = 10
+set_country_flag = g8_president_now
+add_country_modifier = { name = g8_chairmanship duration = 1825 }
+			}
+
+}
+
+#World Economic Forum
+country_event = {
+	id = 1412142
+title = "$YEAR$ World Economic Forum"
+	desc = EVTDESC1412142
+	picture = "wef"
+	
+trigger = { 
+NOT = { any_greater_power = { OR = { has_country_modifier = wef_1 has_country_modifier = wef_2 has_country_modifier = wef_3 } } }
+year = 1971
+has_country_modifier = g8
+}
+
+mean_time_to_happen = { months = 72 }
+
+option = {
+name = "Give a rousing speech on free trade!"
+prestige = 10
+any_country = { limit = { trade_policy = protectionism } relation = { who = THIS value = -20 } }
+any_country = { limit = { trade_policy = free_trade } relation = { who = THIS value = 20 } }
+add_country_modifier = { name = wef_1 duration = 2190 }
+
+any_country = { limit = { NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } } add_country_modifier = { name = wef_1 duration = 2190 } }
+		}
+
+option = {
+name = "Encourage economic aid to the third world"
+prestige = 25
+any_country = { limit = { economic_policy = interventionism } relation = { who = THIS value = 20 } }
+any_country = { limit = { economic_policy = laissez_faire } relation = { who = THIS value = -20 } }
+add_country_modifier = { name = wef_2 duration = 2190 }
+any_country = { limit = { NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } } add_country_modifier = { name = wef_2 duration = 2190 } }
+		}
+
+	option = {
+		name = "Promote climate controls!"
+		prestige = -10
+		any_country = { limit = { OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive } } relation = { who = THIS value = 25 } }
+
+		any_country = { limit = { NOT = { OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive } } } relation = { who = THIS value = -25 } }
+
+		add_country_modifier = { name = wef_3 duration = 2190 }
+		any_country = { limit = { NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } } add_country_modifier = { name = wef_3 duration = 2190 } }
+	}
+
+}
+
+
+
+
+####	Foreign Policy and Setup	####
+
+#Loss of Arctic Trading Route participation
+country_event = {
+	id = 1412140
+title = "Lost access to the Arctic Trading Route"
+	desc = "As we no longer have any more naval bases, we cannot continue to participate in the Arctic trading route."
+	picture = "arctic_r_lose"
+	
+trigger = { 
+has_country_modifier = arctic_route
+NOT = { any_owned_province = { has_building = naval_base } }
+}
+
+option = {
+name = "Sad"
+prestige = -50
+remove_country_modifier = arctic_route
+remove_country_modifier = arctic_route_control
+		}
+}
+
+#Loss of Arctic Trading Route Control
+country_event = {
+	id = 1412141
+title = "Loss of Arctic Trading Route Monopoly"
+	desc = "$FROMCOUNTRY$ has managed to buy off our monopolistic rights to the Arctic Trading Route causing us to lose our monopoly in the Arctic."
+	picture = "arctic_r_lose"
+	
+trigger = { 
+has_country_modifier = arctic_route
+NOT = { any_owned_province = { has_building = naval_base } }
+}
+
+option = {
+name = "A catastrophe"
+remove_country_modifier = arctic_route_control 
+prestige = -100
+relation = { who = FROM value = -25 }
+		}
+}
+
+#Protect Neutral Countries
+country_event = {
+	id = 1412143
+	title = "Diplomatic neutrality violated"
+	desc = "Neutral $COUNTRY$'s diplomatic immunity has been violated. All nations at war with $COUNTRY$ will be punished by the international community."
+	picture = "arctic_r_lose"
+	
+	major = yes
+
+	trigger = {
+		#Country is neutral
+		has_country_flag = neutrality
+		
+		#Country has been attacked
+		war = yes
+		
+		#Only fires if the country is really neutral - no alliances at the time of this event
+		NOT = { num_of_allies = 1 }
+		
+		#Event has not already fired
+		NOT = { has_country_flag = declared_neutrality_active }
+		
+		#Not fighting a civil war
+		NOT = { 
+			OR = { 
+				war_with = R01 
+				war_with = R02
+				war_with = R03
+				war_with = R04
+				war_with = R05
+				war_with = R06
+				war_with = R07
+				war_with = R08
+				war_with = R09
+				war_with = R10
+			} 
+		}
+	}
+
+	mean_time_to_happen = { months = 1 }
+
+	option = {
+		name = "We need their support"
+		set_country_flag = declared_neutrality_active
+		
+		#Option for aggressor to seek peace or face a potential coaliation against them
+		any_country = { limit = { war_with = THIS } country_event = 1412144 }
+		
+		#Form global UN alliance with THIS
+		any_country = { 
+			limit = { 
+				NOT = { has_country_flag = neutrality } 
+				is_vassal = no 
+				has_country_modifier = united_nations_ga_member 
+				relation = { who = THIS value = 50 } 
+				exists = yes 
+				NOT = { war_with = THIS } 
+			} 
+			create_alliance = THIS 
+			relation = { who = THIS value = 50 } 
+		}
+	}
+
+}
+
+country_event = {
+	id = 66668
+	title = "We are no longer considered a Superpower"
+	desc = "The power and influence of our nation that made us considered a Superpower has been lost and thus our status too."
+	picture = "super_powers"
+	
+	
+	trigger = {
+
+		NOT = { rank = 1 }
+		NOT = { rank = 2 }
+		
+	has_country_flag = superpower
+
+	}
+	
+	option = {
+		name = "That is terrible!"
+		
+		remove_country_modifier = superpower
+		
+		clr_country_flag = superpower
+			}
+}
+
+#Post War protectionism
+country_event = {
+	id = 1123
+	title = "Post-War protectionism"
+	desc = "In the wake of the economically devastating Second World War, many countries used protectionist measures to protect their economy from the rough global markets."
+	picture = "Merchants"
+	
+	
+	trigger = {
+		NOT = { year = 1990 }
+		NOT = { tag = ENG }
+		NOT = { tag = USA }
+		NOT = { tag = SNG }
+		NOT = { government = proletarian_dictatorship }
+		NOT = { has_country_flag = postwarprotectionism }
+	}
+	
+	option = {
+		name = "Raise the tariffs!"
+add_country_modifier = { name = protectionism duration = -1 }
+		set_country_flag = postwarprotectionism
+		}
+}
+
+#AI communist countries leave alliance with democracies
+country_event = {
+	id = 1610040
+title = "The Communist Way - AI"
+	desc = "The communist AI will leave any alliances with non communist governments."
+	picture = "treaty"
+
+trigger = {
+ai = yes
+OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+ruling_party_ideology = communist
+war = no
+is_vassal = no
+NOT = { has_country_flag = communist_ai_break_ally }
+}
+
+option = {
+name = "Seek friendship with our fellow communists"
+set_country_flag = communist_ai_break_ally
+any_country = { 
+limit = { alliance_with = THIS NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy ruling_party_ideology = communist } } }
+leave_alliance = THIS
+relation = { who = THIS value = -200 }
+}
+		}
+
+}
+
+#Non GPs lose the interfering with sphere modifier
+country_event = {
+	id = 1610041
+	title = "$COUNTRY_ADJ$ Global Influence Fades"
+	desc = "$COUNTRY$ is no longer a Great Power hence it cannot continue to promote its ideology in the $COUNTRY_ADJ$ sphere."
+	picture = "interfering_with_sphere"
+
+	trigger = {
+		has_country_modifier = sphere_interference
+		is_greater_power = no
+	}
+
+	option = {
+		name = "We must make $COUNTRY$ great again!"
+		remove_country_modifier = sphere_interference
+	}
+
+}
+
+#Interfere with sphere politics - independent
+country_event = {
+	id = 1610042
+	title = "Foreign Interference in $COUNTRY_ADJ$ Politics"
+	desc = EVTDESC1610042
+	picture = "interfering_with_sphere"
+
+	trigger = {
+		part_of_sphere = yes
+		sphere_owner = { has_country_modifier = sphere_interference }
+		is_vassal = no
+
+		OR = { 
+
+			AND = { sphere_owner = { ruling_party_ideology = traditionalist } NOT = { has_country_flag = sphere_traditionalist } }
+
+			AND = { sphere_owner = { ruling_party_ideology = conservative } NOT = { has_country_flag = sphere_conservative } }
+
+			AND = { sphere_owner = { ruling_party_ideology = big_tent } NOT = { has_country_flag = sphere_big_tent } }
+
+			AND = { sphere_owner = { ruling_party_ideology = socialist } NOT = { has_country_flag = sphere_socialist } }
+
+			AND = { sphere_owner = { ruling_party_ideology = communist } NOT = { has_country_flag = sphere_communist } }
+
+			AND = { sphere_owner = { ruling_party_ideology = communist_social } NOT = { has_country_flag = sphere_communist_social } }
+
+			AND = { sphere_owner = { ruling_party_ideology = populist } NOT = { has_country_flag = sphere_populist } }
+
+			AND = { sphere_owner = { ruling_party_ideology = nationalist } NOT = { has_country_flag = sphere_nationalist } }
+
+			AND = { sphere_owner = { ruling_party_ideology = liberal } NOT = { has_country_flag = sphere_liberal } }
+
+			AND = { sphere_owner = { ruling_party_ideology = progressive } NOT = { has_country_flag = sphere_progressive } }
+
+		}
+
+	}
+
+	mean_time_to_happen = { 
+		months = 6
+	}
+
+	option = {
+		name = "We can't do anything"
+		prestige_factor = -0.01
+		sphere_owner = { relation = { who = THIS value = -50 } }
+
+		clr_country_flag = sphere_traditionalist
+		clr_country_flag = sphere_conservative
+		clr_country_flag = sphere_big_tent
+		clr_country_flag = sphere_socialist
+		clr_country_flag = sphere_communist
+		clr_country_flag = sphere_communist_social
+		clr_country_flag = sphere_populist
+		clr_country_flag = sphere_nationalist
+		clr_country_flag = sphere_liberal
+		clr_country_flag = sphere_progressive
+
+		random_owned = { limit = { owner = { sphere_owner = { ruling_party_ideology = traditionalist } } } owner = { set_country_flag = sphere_traditionalist } }
+
+		random_owned = { limit = { owner = { sphere_owner = { ruling_party_ideology = conservative } } } owner = { set_country_flag = sphere_conservative } }
+
+		random_owned = { limit = { owner = { sphere_owner = { ruling_party_ideology = big_tent } } } owner = { set_country_flag = sphere_big_tent } }
+
+		random_owned = { limit = { owner = { sphere_owner = { ruling_party_ideology = socialist } } } owner = { set_country_flag = sphere_socialist } }
+
+		random_owned = { limit = { owner = { sphere_owner = { ruling_party_ideology = communist } } } owner = { set_country_flag = sphere_communist } }
+
+		random_owned = { limit = { owner = { sphere_owner = { ruling_party_ideology = communist_social } } } owner = { set_country_flag = sphere_communist_social } }
+
+		random_owned = { limit = { owner = { sphere_owner = { ruling_party_ideology = populist } } } owner = { set_country_flag = sphere_populist } }
+
+		random_owned = { limit = { owner = { sphere_owner = { ruling_party_ideology = nationalist } } } owner = { set_country_flag = sphere_nationalist } }
+
+		random_owned = { limit = { owner = { sphere_owner = { ruling_party_ideology = liberal } } } owner = { set_country_flag = sphere_liberal } }
+
+		random_owned = { limit = { owner = { sphere_owner = { ruling_party_ideology = progressive } } } owner = { set_country_flag = sphere_progressive } }
+
+		ai_chance = { 
+			factor = 1 
+			modifier = { 
+				factor = 0
+				AND = {
+					sphere_owner = { 
+						OR = { 
+							ruling_party_ideology = nationalist 
+							ruling_party_ideology = populist 
+							alliance_with = THIS 
+							relation = { who = THIS value = 50 } 
+						} 
+					}
+					OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist } 
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "Sever ties with our sphere master!"
+		sphere_owner = { relation = { who = THIS value = -200 } diplomatic_influence = { who = THIS value = -200 } }
+
+		clr_country_flag = sphere_traditionalist
+		clr_country_flag = sphere_conservative
+		clr_country_flag = sphere_big_tent
+		clr_country_flag = sphere_socialist
+		clr_country_flag = sphere_communist
+		clr_country_flag = sphere_communist_social
+		clr_country_flag = sphere_populist
+		clr_country_flag = sphere_nationalist
+		clr_country_flag = sphere_liberal
+		clr_country_flag = sphere_progressive
+
+		ai_chance = { 
+			factor = 1 
+			modifier = { 
+				factor = 0 
+				AND = {
+					sphere_owner = { 
+						NOT = { 
+							OR = { 
+								ruling_party_ideology = nationalist 
+								ruling_party_ideology = populist 
+								alliance_with = THIS 
+								relation = { who = THIS value = 50 } 
+							} 
+						}
+					}
+					NOT = { OR = { ruling_party_ideology = nationalist ruling_party_ideology = populist } } 
+				}
+			} 
+		}
+	}
+
+}
+
+#Interfere with sphere politics - vassal
+country_event = {
+	id = 1610043
+title = "Foreign Interference in $COUNTRY_ADJ$ Politics"
+	desc = EVTDESC1610042
+	picture = "interfering_with_sphere"
+
+trigger = {
+part_of_sphere = yes
+sphere_owner = { has_country_modifier = sphere_interference }
+is_vassal = yes
+
+OR = { 
+
+AND = { sphere_owner = { ruling_party_ideology = traditionalist } NOT = { has_country_flag = sphere_traditionalist } }
+
+AND = { sphere_owner = { ruling_party_ideology = conservative } NOT = { has_country_flag = sphere_conservative } }
+
+AND = { sphere_owner = { ruling_party_ideology = big_tent } NOT = { has_country_flag = sphere_big_tent } }
+
+AND = { sphere_owner = { ruling_party_ideology = socialist } NOT = { has_country_flag = sphere_socialist } }
+
+AND = { sphere_owner = { ruling_party_ideology = communist } NOT = { has_country_flag = sphere_communist } }
+
+AND = { sphere_owner = { ruling_party_ideology = communist_social } NOT = { has_country_flag = sphere_communist_social } }
+
+AND = { sphere_owner = { ruling_party_ideology = populist } NOT = { has_country_flag = sphere_populist } }
+
+AND = { sphere_owner = { ruling_party_ideology = nationalist } NOT = { has_country_flag = sphere_nationalist } }
+
+AND = { sphere_owner = { ruling_party_ideology = liberal } NOT = { has_country_flag = sphere_liberal } }
+
+AND = { sphere_owner = { ruling_party_ideology = progressive } NOT = { has_country_flag = sphere_progressive } }
+
+}
+
+}
+
+mean_time_to_happen = { 
+months = 3
+}
+
+option = {
+name = "We can't do anything"
+prestige_factor = -0.01
+sphere_owner = { relation = { who = THIS value = -50 } }
+
+clr_country_flag = sphere_traditionalist
+clr_country_flag = sphere_conservative
+clr_country_flag = sphere_big_tent
+clr_country_flag = sphere_socialist
+clr_country_flag = sphere_communist
+clr_country_flag = sphere_communist_social
+clr_country_flag = sphere_populist
+clr_country_flag = sphere_nationalist
+clr_country_flag = sphere_liberal
+clr_country_flag = sphere_progressive
+
+random_owned = { limit = { owner = { sphere_owner = { ruling_party_ideology = traditionalist } } } owner = { set_country_flag = sphere_traditionalist } }
+
+random_owned = { limit = { owner = { sphere_owner = { ruling_party_ideology = conservative } } } owner = { set_country_flag = sphere_conservative } }
+
+random_owned = { limit = { owner = { sphere_owner = { ruling_party_ideology = big_tent } } } owner = { set_country_flag = sphere_big_tent } }
+
+random_owned = { limit = { owner = { sphere_owner = { ruling_party_ideology = socialist } } } owner = { set_country_flag = sphere_socialist } }
+
+random_owned = { limit = { owner = { sphere_owner = { ruling_party_ideology = communist } } } owner = { set_country_flag = sphere_communist } }
+
+random_owned = { limit = { owner = { sphere_owner = { ruling_party_ideology = communist_social } } } owner = { set_country_flag = sphere_communist_social } }
+
+random_owned = { limit = { owner = { sphere_owner = { ruling_party_ideology = populist } } } owner = { set_country_flag = sphere_populist } }
+
+random_owned = { limit = { owner = { sphere_owner = { ruling_party_ideology = nationalist } } } owner = { set_country_flag = sphere_nationalist } }
+
+random_owned = { limit = { owner = { sphere_owner = { ruling_party_ideology = liberal } } } owner = { set_country_flag = sphere_liberal } }
+
+random_owned = { limit = { owner = { sphere_owner = { ruling_party_ideology = progressive } } } owner = { set_country_flag = sphere_progressive } }
+
+	}
+
+}
+
+#Non GPs lose the interfering with sphere modifier
+country_event = {
+	id = 1610044
+title = "End of Foreign Interference in $COUNTRY_ADJ$"
+	desc = EVTDESC1610044
+	picture = "interfering_with_sphere"
+
+trigger = {
+OR = {
+part_of_sphere = no
+AND = { part_of_sphere = yes sphere_owner = { NOT = { has_country_modifier = sphere_interference } } }
+	}
+
+OR = { 
+has_country_flag = sphere_traditionalist
+has_country_flag = sphere_conservative
+has_country_flag = sphere_big_tent
+has_country_flag = sphere_socialist
+has_country_flag = sphere_communist
+has_country_flag = sphere_communist_social
+has_country_flag = sphere_populist
+has_country_flag = sphere_nationalist
+has_country_flag = sphere_liberal
+has_country_flag = sphere_progressive
+	}
+
+}
+
+option = {
+name = "Good riddance!"
+clr_country_flag = sphere_traditionalist
+clr_country_flag = sphere_conservative
+clr_country_flag = sphere_big_tent
+clr_country_flag = sphere_socialist
+clr_country_flag = sphere_communist
+clr_country_flag = sphere_communist_social
+clr_country_flag = sphere_populist
+clr_country_flag = sphere_nationalist
+clr_country_flag = sphere_liberal
+clr_country_flag = sphere_progressive
+		}
+
+}
+
+#Select continent to claim - Assert Hegemony CB
+country_event = {
+	id = 1610045
+title = "Asserted $COUNTRY_ADJ$ Hegemony"
+	desc = EVTDESC1610045
+	picture = "assert_hegemony_cb"
+
+is_triggered_only = yes
+
+option = {
+name = "Claim European Spheres!"
+prestige_factor = 0.1
+
+any_country = { limit = { is_vassal = no capital_scope = { continent = europe } part_of_sphere = yes sphere_owner = { has_country_flag = assert_hegemony_target } } country_event = 1610046 }
+
+random_country = { limit = { has_country_flag = assert_hegemony_target } country_event = 1610047 }
+
+		}
+
+option = {
+name = "Claim Asian Spheres!"
+prestige_factor = 0.1
+
+any_country = { limit = { is_vassal = no capital_scope = { continent = asia } part_of_sphere = yes sphere_owner = { has_country_flag = assert_hegemony_target } } country_event = 1610046 }
+
+random_country = { limit = { has_country_flag = assert_hegemony_target } country_event = 1610047 }
+
+		}
+
+option = {
+name = "Claim African Spheres!"
+prestige_factor = 0.1
+
+any_country = { limit = { is_vassal = no capital_scope = { continent = africa } part_of_sphere = yes sphere_owner = { has_country_flag = assert_hegemony_target } } country_event = 1610046 }
+
+random_country = { limit = { has_country_flag = assert_hegemony_target } country_event = 1610047 }
+
+		}
+
+option = {
+name = "Claim Middle Eastern Spheres!"
+prestige_factor = 0.1
+
+any_country = { limit = { is_vassal = no capital_scope = { continent = mena } part_of_sphere = yes sphere_owner = { has_country_flag = assert_hegemony_target } } country_event = 1610046 }
+
+random_country = { limit = { has_country_flag = assert_hegemony_target } country_event = 1610047 }
+
+		}
+
+option = {
+name = "Claim North American Spheres!"
+prestige_factor = 0.1
+
+any_country = { limit = { is_vassal = no capital_scope = { continent = north_america } part_of_sphere = yes sphere_owner = { has_country_flag = assert_hegemony_target } } country_event = 1610046 }
+
+random_country = { limit = { has_country_flag = assert_hegemony_target } country_event = 1610047 }
+
+		}
+
+option = {
+name = "Claim South American Spheres!"
+prestige_factor = 0.1
+
+any_country = { limit = { is_vassal = no capital_scope = { continent = south_america } part_of_sphere = yes sphere_owner = { has_country_flag = assert_hegemony_target } } country_event = 1610046 }
+
+random_country = { limit = { has_country_flag = assert_hegemony_target } country_event = 1610047 }
+
+		}
+
+option = {
+name = "Claim Oceanian Spheres!"
+prestige_factor = 0.1
+
+any_country = { limit = { is_vassal = no capital_scope = { continent = oceania } part_of_sphere = yes sphere_owner = { has_country_flag = assert_hegemony_target } } country_event = 1610046 }
+
+random_country = { limit = { has_country_flag = assert_hegemony_target } country_event = 1610047 }
+
+		}
+
+}
+
+#Assert Hegemony CB - Seize spheres
+country_event = {
+	id = 1610046
+title = "Major Shift in Geopolitics"
+	desc = EVTDESC1610046
+	picture = "assert_hegemony_cb"
+
+is_triggered_only = yes
+
+option = {
+name = "Our former sphere master is no more"
+sphere_owner = { diplomatic_influence = { who = THIS value = -200 } }
+FROM = { diplomatic_influence = { who = THIS value = 100 } }
+		}
+
+}
+
+#Assert Hegemony CB - Loser superpower
+country_event = {
+	id = 1610047
+title = "$COUNTRY_ADJ$ Global Power Weakens"
+	desc = EVTDESC1610047
+	picture = "assert_hegemony_cb"
+
+is_triggered_only = yes
+
+option = {
+name = "We will win the next time!"
+war_exhaustion = 25
+clr_country_flag = assert_hegemony_target
+		}
+
+}
+
+
+#### International Orgs ####
+
+#Rotating Chairmanship of the IMF
+country_event = {
+	id = 1300017
+	title = "Chairmanship of the IMF"
+	desc = "The Chairmanship of the IMF is rotating again. The Chairmanship only lasts 5 years." 
+	picture = "world_bank"
+	
+	trigger = {
+		year = 1946
+		NOT = { has_country_modifier = imf_chairmanship }
+		has_country_flag = imf_chairmanship
+	}
+	
+	option = {
+	name = "We had a good run."
+random_country = { limit = { AND = { NOT = { has_country_modifier = imf_chairmanship } has_country_modifier = imf_member has_country_modifier = creditor_nation } } country_event = 1300018 }
+	remove_country_modifier = imf_chairmanship
+	clr_country_flag = imf_chairmanship
+		}
+}
+#Rotating Chairmanship of the IMF - select the new leader
+country_event = {
+	id = 1300018
+	title = "Chairmanship of the IMF"
+	desc = "The Chairmanship of the IMF is rotating and the Chairmanship has come to us. The Chairmanship only lasts 5 years." 
+	picture = "world_bank"
+	
+is_triggered_only = yes
+	major = yes
+	option = {
+	name = "Splendid!"
+prestige = 10
+add_country_modifier = { name = imf_chairmanship duration = 1825 }
+set_country_flag = imf_chairmanship
+		}
+}
+#Rotating Chairmanship of the WTO
+country_event = {
+	id = 1300019
+	title = "Chairmanship of the WTO"
+	desc = "The Chairmanship of the WTO is rotating again. The Chairmanship only lasts 5 years." 
+	picture = "world_bank"
+	
+	trigger = {
+		year = 1946
+	NOT = { has_country_modifier = wto_chairmanship }
+	has_country_flag = wto_chairmanship
+	}
+	
+	option = {
+	name = "We had a good run."
+random_country = { limit = { AND = { is_greater_power = yes NOT = { has_country_modifier = wto_chairmanship } has_country_modifier = wto_member } } country_event = 1300020 }
+	remove_country_modifier = wto_chairmanship
+	clr_country_flag = wto_chairmanship
+		}
+}
+#Rotating Chairmanship of the WTO - select the new leader
+country_event = {
+	id = 1300020
+	title = "Chairmanship of the WTO"
+	desc = "The Chairmanship of the WTO is rotating and the Chairmanship has come to us. The Chairmanship only lasts 5 years." 
+	picture = "world_bank"
+	
+is_triggered_only = yes
+	major = yes
+	option = {
+	name = "Splendid!"
+prestige = 10
+add_country_modifier = { name = wto_chairmanship duration = 1825 }
+set_country_flag = wto_chairmanship
+		}
+}
+
+#Rotating Chairmanship of the IBRD
+country_event = {
+	id = 1300021
+	title = "Chairmanship of the IBRD"
+	desc = "The Chairmanship of the IBRD is rotating again. The Chairmanship only lasts 5 years." 
+	picture = "world_bank"
+	
+	trigger = {
+		year = 1946
+NOT = { has_country_modifier = ibrd_chairmanship }
+has_country_flag = ibrd_chairmanship
+	}
+	
+	option = {
+	name = "We had a good run."
+random_country = { limit = { AND = { NOT = { has_country_modifier = ibrd_chairmanship } has_country_modifier = ibrd_member has_country_modifier = creditor_nation } } country_event = 1300022 }
+	remove_country_modifier = ibrd_chairmanship
+	clr_country_flag = ibrd_chairmanship
+		}
+}
+#Rotating Chairmanship of the IBRD - select the new leader
+country_event = {
+	id = 1300022
+	title = "Chairmanship of the IBRD"
+	desc = "The Chairmanship of the IBRD is rotating and the Chairmanship has come to us. The Chairmanship only lasts 5 years." 
+	picture = "world_bank"
+	
+is_triggered_only = yes
+	major = yes
+	
+	option = {
+	name = "Splendid!"
+prestige = 10
+add_country_modifier = { name = ibrd_chairmanship duration = 1825 }
+set_country_flag = ibrd_chairmanship
+		}
+}
+
+#Rotating Chairmanships USA first - IMF
+country_event = {
+	id = 1300023
+	title = "Chairmanship of the IMF"
+	desc = "The Chairmanship of the IMF is currently vacant so we have been chosen to fill it. The Chairmanship only lasts 5 years." 
+	picture = "world_bank"
+	
+	major = yes
+	
+	trigger = {
+		is_greater_power = yes
+		has_country_modifier = imf_member
+		#NOT = { has_global_flag = imfusafirst }
+		
+		NOT = { has_country_modifier = imf_chairmanship }
+		
+		NOT = { any_greater_power = { has_country_modifier = imf_chairmanship } }
+	}
+	
+	mean_time_to_happen = { months = 6 }
+	
+	option = {
+		name = "Splendid!"
+		prestige = 10
+		add_country_modifier = { name = imf_chairmanship duration = 1825 }
+		set_country_flag = imf_chairmanship
+		set_global_flag = imfusafirst
+		
+		random_owned = { 
+			limit = { owner = { OR = { economic_policy = state_capitalism economic_policy = planned_economy1 economic_policy = planned_economy } } } 
+			owner = { 
+				add_country_modifier = { name = imfhigh duration = -1 } 
+				any_country = { limit = { has_country_modifier = imf_member } add_country_modifier = { name = imfhigh duration = -1 } }
+			} 
+		}
+		random_owned = { 
+			limit = { owner = { economic_policy = interventionism } } 
+			owner = { 
+				add_country_modifier = { name = imfmedium duration = -1 }
+				any_country = { limit = { has_country_modifier = imf_member } add_country_modifier = { name = imfmedium duration = -1 } }
+			} 
+		}
+		random_owned = { 
+			limit = { owner = { economic_policy = laissez_faire } } 
+			owner = { 
+				add_country_modifier = { name = imflow duration = -1 }
+				any_country = { limit = { has_country_modifier = imf_member } add_country_modifier = { name = imflow duration = -1 } }
+			} 
+		}
+		
+	}
+	
+}
+#Rotating Chairmanships USA first - WTO
+country_event = {
+	id = 1300024
+	title = "Chairmanship of the WTO"
+	desc = "The Chairmanship of the WTO is currently vacant so we have been chosen to fill it. The Chairmanship only lasts 5 years." 
+	picture = "world_bank"
+	
+	major = yes
+	
+	trigger = { 
+		is_greater_power = yes
+		has_country_modifier = wto_member
+		#NOT = { has_global_flag = wtousafirst }
+		
+		NOT = { has_country_modifier = wto_chairmanship }
+		
+		NOT = { any_greater_power = { has_country_modifier = wto_chairmanship } }
+	}
+	
+	mean_time_to_happen = { months = 6 }
+	
+	option = {
+		name = "Splendid!"
+		prestige = 10
+		add_country_modifier = { name = wto_chairmanship duration = 1825 }
+		set_country_flag = wto_chairmanship
+		set_global_flag = wtousafirst
+		set_global_flag = wto_created
+		
+		random_owned = { 
+			limit = { owner = { trade_policy = protectionism } } 
+			owner = { 
+				add_country_modifier = { name = wtohigh duration = -1 } 
+				any_country = { limit = { has_country_modifier = wto_member } add_country_modifier = { name = wtohigh duration = -1 } }
+			} 
+		}
+		random_owned = { 
+			limit = { owner = { trade_policy = free_trade NOT = { economic_policy = laissez_faire } } } 
+			owner = { 
+				add_country_modifier = { name = wtomedium duration = -1 }
+				any_country = { limit = { has_country_modifier = wto_member } add_country_modifier = { name = wtomedium duration = -1 } }
+			} 
+		}
+		random_owned = { 
+			limit = { owner = { trade_policy = free_trade economic_policy = laissez_faire } } 
+			owner = { 
+				add_country_modifier = { name = wtolow duration = -1 }
+				any_country = { limit = { has_country_modifier = wto_member } add_country_modifier = { name = wtolow duration = -1 } }
+			} 
+		}
+		
+	}
+	
+}
+#Rotating Chairmanships USA first - IBRD
+country_event = {
+	id = 1300025
+	title = "Chairmanship of the IBRD"
+	desc = "The Chairmanship of the IBRD is currently vacant so we have been chosen to fill it. The Chairmanship only lasts 5 years." 
+	picture = "world_bank"
+	
+	major = yes
+	
+	trigger = { 
+		is_greater_power = yes
+		has_country_modifier = ibrd_member
+		#NOT = { has_global_flag = ibrdusafirst }
+		
+		NOT = { has_country_modifier = ibrd_chairmanship }
+		
+		NOT = { any_greater_power = { has_country_modifier = ibrd_chairmanship } }
+	}
+	
+	mean_time_to_happen = { months = 6 }
+	
+	option = {
+		name = "Splendid!"
+		prestige = 10
+		add_country_modifier = { name = ibrd_chairmanship duration = 1825 }
+		set_country_flag = ibrd_chairmanship
+		set_global_flag = ibrdusafirst
+
+		random_owned = { 
+			limit = { owner = { OR = { economic_policy = state_capitalism economic_policy = planned_economy1 economic_policy = planned_economy } } } 
+			owner = { 
+				add_country_modifier = { name = ibrdhigh_gp duration = -1 } 
+				any_country = { limit = { has_country_modifier = ibrd_member } add_country_modifier = { name = ibrdhigh duration = -1 } }
+			} 
+		}
+		random_owned = { 
+			limit = { owner = { economic_policy = interventionism } } 
+			owner = { 
+				add_country_modifier = { name = ibrdmedium_gp duration = -1 }
+				any_country = { limit = { has_country_modifier = ibrd_member } add_country_modifier = { name = ibrdmedium duration = -1 } }
+			} 
+		}
+		random_owned = { 
+			limit = { owner = { economic_policy = laissez_faire } } 
+			owner = { 
+				add_country_modifier = { name = ibrdlow_gp duration = -1 }
+				any_country = { limit = { has_country_modifier = ibrd_member } add_country_modifier = { name = ibrdlow duration = -1 } }
+			} 
+		}
+		
+	}
+	
+}
+
+#Rotating Chairmanship of the OIC
+country_event = {
+	id = 1410100
+	title = "Chairmanship of the OIC"
+	desc = "The Chairmanship of the Organisation for Islamic Cooperation is rotating again. The Chairmanship only lasts 5 years." 
+	picture = "oic_chairman"
+	
+	trigger = {
+		year = 1946
+		NOT = { has_country_modifier = oic_chairmanship }
+		has_country_flag = oic_chairmanship
+	}
+	
+	option = {
+	name = "We had a good run."
+random_country = { limit = { AND = { NOT = { has_country_modifier = oic_chairmanship } has_country_modifier = oic_member } } country_event = 1410101 }
+	remove_country_modifier = oic_chairmanship
+	clr_country_flag = oic_chairmanship
+		}
+}
+
+#Rotating Chairmanship of the OIC - select the new leader
+country_event = {
+	id = 1410101
+	title = "Chairmanship of the OIC"
+	desc = "The Chairmanship of the Organisation for Islamic Cooperation is rotating and the Chairmanship has come to us. The Chairmanship only lasts 5 years." 
+	picture = "oic_chairman"
+	
+is_triggered_only = yes
+
+	option = {
+	name = "Splendid!"
+prestige = 10
+any_country = { limit = { has_country_modifier = oic_member } country_event = 1410102 }
+add_country_modifier = { name = oic_chairmanship duration = 1825 }
+set_country_flag = oic_chairmanship
+		}
+}
+
+#Rotating Chairmanship of the OIC - inform OIC members of change
+country_event = {
+	id = 1410102
+	title = "$FROMCOUNTRY$ has become new OIC Chairman"
+	desc = "The Chairmanship of the Organisation for Islamic Cooperation is rotating and the Chairmanship has come to $FROMCOUNTRY$. The Chairmanship only lasts 5 years." 
+	picture = "oic_chairman"
+	
+is_triggered_only = yes
+
+	option = {
+	name = "Great!"
+	relation = { who = FROM value = 20 }
+		}
+	option = {
+	name = "Terrible!"
+	relation = { who = FROM value = -20 }
+		}
+}
+
+#Rotating Chairmanships first - OIC
+country_event = {
+	id = 1410103
+	title = "Chairmanship of the OIC"
+	desc = "The Chairmanship of the Organisation for Islamic Cooperation is rotating and we get the first one as we are the founder. The Chairmanship only lasts 5 years." 
+	picture = "oic_chairman"
+	
+trigger = { 
+tag = IDO
+has_country_modifier = oic_member
+NOT = { has_global_flag = oicfirst }
+}
+	option = {
+	name = "Splendid!"
+prestige = 10
+add_country_modifier = { name = oic_chairmanship duration = 1825 }
+set_country_flag = oic_chairmanship
+set_global_flag = oicfirst
+		}
+}
+
+#Establish Polar Military Base
+country_event = {
+	id = 1410106
+	title = "Polar Military Base Established"
+	desc = EVTDESC1410106
+	picture = "polar_military_base"
+	
+is_triggered_only = yes
+
+	option = {
+	name = "Brrr... Its cold out there!"
+add_country_modifier = { name = polar_military_base duration = -1 }
+			}
+}
+
+#Polar Expedition Result
+country_event = {
+	id = 1410107
+	title = "Result of the Polar Expedition"
+	desc = "We recently sent some Explorers to scout our Polar regions to see if there are any new scientific discoveries in the region."
+	picture = "polar_expedition"
+	
+trigger = { 
+NOT = { has_country_modifier = polar_expedition_underway }
+has_country_flag = polar_expedition_underway
+}
+
+	option = {
+	name = "I can't wait to hear from them!"
+
+random_list = {
+	60 = { country_event = 1410108 } #success
+	40 = { country_event = 1410109 } #failure
+}
+
+			}
+}
+
+#Polar Expedition Result - success
+country_event = {
+	id = 1410108
+	title = "Polar Expedition Successful"
+	desc = "The explorers have returned safely with loads of highly facinating Scientific discoveries."
+	picture = "polar_expedition_successful"
+	
+is_triggered_only = yes
+
+	option = {
+	name = "They are our national heroes!"
+	prestige = 50
+	clr_country_flag = polar_expedition_underway
+	set_country_flag = not_eaten_by_bears
+			}
+}
+
+#Polar Expedition Result - failure
+country_event = {
+	id = 1410109
+	title = "Polar Expedition Fails"
+	desc = "The Polar Expedition has failed as the explorers have gone missing and failed to transmit back any useful new scientific discoveries. The Nation mourns their loss."
+	picture = "polar_expedition_fails"
+	
+is_triggered_only = yes
+
+	option = {
+	name = "They were eaten by Polar Bears?!"
+	prestige = -10
+	clr_country_flag = polar_expedition_underway
+				}
+}
+
+#Rise of the Metropolitan elite
+country_event = {
+	id = 1412100
+	title = "Rise of the Metropolitan Elite"
+	desc = "Due to the increasingly powerful role that the cities in $COUNTRY$ play to the national economy, they have started to gain an increasingly disproportionate amount of political representation and influence in $COUNTRY$."
+	picture = "city_voting_more"
+
+	trigger = {
+		globalization = 1
+		NOT = { any_owned_province = { has_province_modifier = city_politics_boost } }
+		OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 }
+	}
+
+	mean_time_to_happen = { 
+		months = 7300 
+		modifier = { factor = 0.4 vote_franschise = universal_voting }
+		modifier = { factor = 0.8 vote_franschise = promoted_voting }
+		modifier = { factor = 1.5 vote_franschise = universal_weighted_voting } 
+		modifier = { factor = 3 vote_franschise = registered_voting } 
+	}
+
+	option = {
+		name = "The City rules"
+		any_owned = { limit = { 
+				OR = { is_capital = yes AND = { is_state_capital = yes total_pops = 1000000 } } 
+			} 
+			add_province_modifier = { name = city_politics_boost duration = -1 } }
+	}
+}
+
+#End of the Metropolitan elite
+country_event = {
+	id = 1412101
+	title = "End of the Metropolitan Elite"
+	desc = "As we are no longer a proper demcracy, the cities' disproportionate amount of political representation and influence in $COUNTRY$ have been lost to the central government."
+	picture = "city_voting_less"
+
+	trigger = {
+		globalization = 1
+		any_owned_province = { has_province_modifier = city_politics_boost }
+		NOT = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } }
+	}
+
+	option = {
+		name = "The City loses"
+		any_owned = { remove_province_modifier = city_politics_boost }
+	}
+}
+
+#G20
+country_event = {
+	id = 1412157
+title = "We are now a G20 member"
+	desc = EVTDESC1412157
+
+	picture = "g20"
+
+trigger = {
+year = 1999
+rank = 20
+NOT = { has_country_modifier = g20 }
+}
+
+option = {
+name = "Tremendous!"
+add_country_modifier = { name = g20 duration = -1 }
+remove_country_modifier = g77
+		}
+}
+
+#G77
+country_event = {
+	id = 1412158
+title = "We are now a G77 member"
+	desc = EVTDESC1412158
+
+	picture = "g77"
+
+trigger = {
+year = 1964
+NOT = { rank = 20 }
+NOT = { has_country_modifier = g77 }
+}
+
+option = {
+name = "We will strive to prosper!"
+remove_country_modifier = g20
+add_country_modifier = { name = g77 duration = -1 }
+		}
 }

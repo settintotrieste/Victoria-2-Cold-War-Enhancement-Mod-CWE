@@ -375,3 +375,109 @@ country_event = {
 		ai_chance = { factor = 0.3 }
 	}
 }
+
+#South Vietnam Reunification
+country_event = {
+	id = 1412103
+	title = "Reunification of Vietnam"
+	desc = EVTDESC1412103
+	picture = "vietnam_svi_reunion"
+
+	trigger = {
+		tag = SVI
+		NOT = { exists = DAI }
+		owns = 1369
+		owns = 1380
+	}
+
+	option = {
+		name = "Let's celebrate!"
+		
+		#Clear cores
+		SVI = { all_core = { add_core = DAI remove_core = SVI } }
+		
+		change_tag = DAI
+		prestige = 50
+	}
+}
+
+#Viet Cong
+country_event = {
+	id = 1512042
+	title = "The Viet Cong"
+	desc = EVTDESC1512042
+	picture = "viet_cong_1"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = SVI
+		year = 1960
+
+		war_with = DAI
+		DAI = { exists = yes }
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "We must do something about this!"
+		add_country_modifier = { name = viet_cong duration = 1825 }
+		war_exhaustion = 10
+		any_pop = { militancy = 2 }
+	}
+
+}
+
+#South Vietnam is not socialist
+country_event = {
+	id = 1512047
+	title = "Anti-communist Purge in $COUNTRY$"
+	desc = EVTDESC1512047
+	picture = "south_viet_soc"
+
+	trigger = {
+		tag = SVI
+		
+		OR = { government = democracy government = democracy1 }
+		is_vassal = no
+		
+		OR = { 
+			ruling_party_ideology = socialist 
+			ruling_party_ideology = communist 
+			ruling_party_ideology = communist_social 
+		}
+		
+		DAI = { 
+			exists = yes 
+			ruling_party_ideology = communist 
+		}
+		
+		NOT = { has_country_flag = south_viet_soc }
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "Purge the socialists and communists!"
+		badboy = 5
+		
+		government = presidential_dictatorship
+		country_event = 800050
+		ruling_party_ideology = conservative
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Embrace socialism"
+		prestige = 25
+		set_country_flag = south_viet_soc
+		ai_chance = { factor = 0.1 }
+	}
+
+}

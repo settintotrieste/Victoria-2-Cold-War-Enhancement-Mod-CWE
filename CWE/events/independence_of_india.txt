@@ -1,3 +1,157 @@
+#Stop UK war with HND
+country_event = {
+	id = 1412034
+	title = "First Indo-Pakistan War"
+	desc = "Two of our Dominions are at war with each other, India and Pakistan. We should use our influence to stop the war."
+	picture = "nwo2_first_kashmir_war"
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "That is a good idea"
+	diplomatic_influence = { who = PAK value = 200 }
+				}
+	}
+
+#Gurkha Treaty
+country_event = {
+	id = 1410173
+	title = "Tripartite Agreement"
+	desc = EVTDESC1410173
+	picture = "tripartite_agreement"
+	
+	trigger = {
+		OR = { tag = HND tag = ENG }
+		NOT = { exists = RAJ }
+		NOT = { war_with = HND }
+		NOT = { war_with = NEP }
+		NOT = { war_with = ENG }
+		HND = { is_vassal = no }
+		NOT = { has_country_flag = tripartite_agreement }
+		ENG = { is_greater_power = yes }
+		year = 1947
+		NOT = { year = 1990 }
+	}
+
+	mean_time_to_happen = { 
+		months = 4
+	}
+	
+	option = {
+		name = "Sign the Agreement"
+		money = -100000
+		NEP = { money = 100000 }
+		set_country_flag = tripartite_agreement
+		set_country_flag = has_mercenary_training
+		
+		#India accepts nepali
+		random_owned = {
+			limit = { owner = { tag = HND } }
+			owner = { add_accepted_culture = nepali }
+		}
+		
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Abandon the Agreement"
+		set_country_flag = tripartite_agreement
+		prestige = -5
+		ai_chance = { factor = 0 }
+	}
+
+}
+
+#Event for RAJ at war with ENG
+country_event = {
+	id = 19474747
+	title = "War of Indian Independence"
+desc = "With the declaration of independence being rejected by the British overlords, India has no choice but to fight the British to achieve independence. We have asked the princely states to aid us in our struggle!"
+	picture = "warofindianindependence"
+	
+	
+	trigger = {
+		tag = RAJ
+		war_with = ENG
+		war = yes
+	NOT = { has_country_flag = warofindependenceindia }
+	}
+	
+	option = {
+		name = "For an independent India!"
+any_country = { limit = { OR = { tag = HYD tag = MNP tag = RAA tag = IND tag = GWA tag = BER tag = ORI tag = NAX tag = BOD tag = MYS tag = TRA tag = SIK tag = AZK tag = BLO tag = JAK tag = SIN } vassal_of = ENG } country_event = 19474748 }
+		set_country_flag = warofindependenceindia
+		}
+}
+
+country_event = {
+	id = 19474748
+	title = "War of Indian Independence"
+desc = "With the declaration of independence being rejected by the British overlords, India has no choice but to fight the British to achieve independence. The Nationalist Indian Government have asked the princely states to aid them in their struggle!"
+	picture = "warofindianindependence"
+	
+	is_triggered_only = yes
+	option = {
+		name = "Yes we shall join India's struggle"
+		RAJ = { inherit = THIS }
+		}
+}
+
+#Portugese Colonies of Daman & Diu
+country_event = {
+	id = 1412127
+	title = "Colonies of Daman & Diu"
+	desc = EVTDESC1412127
+	picture = "por_hnd_colonies"
+
+	trigger = {
+		capital_scope = { continent = europe }
+		owns = 1303 # Goa
+		NOT = { has_global_flag = por_hnd_colonies }
+		OR = { 
+			1292 = { NOT = { has_province_modifier = daman } }
+			1296 = { NOT = { has_province_modifier = diu } }
+		}
+	}
+	
+	option = {
+		name = "If Goa ever reverted to Indian rule we will lose them"
+
+		any_owned = { limit = { is_core = POR is_colonial = no } add_province_modifier = { name = portugese_stability duration = 7300 } }
+
+		add_country_modifier = { name = portugese_indian_colonies duration = -1 }
+		1292 = { add_province_modifier = { name = daman duration = -1 } }
+		1296 = { add_province_modifier = { name = diu duration = -1 } }
+		1303 = { add_province_modifier = { name = colonial_exploitation duration = -1 } }
+	}
+}
+
+#French Colonies of Karikal & Yanaon
+country_event = {
+	id = 1412128
+	title = "Colonies of Karikal & Yanaon"
+	desc = EVTDESC1412128
+	picture = "fra_hnd_colonies"
+
+	trigger = {
+		capital_scope = { continent = europe }
+		owns = 1312 # Pondicherry
+		NOT = { has_global_flag = fra_hnd_colonies }
+		OR = { 
+			1310 = { NOT = { has_province_modifier = karikal } }
+			1306 = { NOT = { has_province_modifier = yanaon } }
+		}
+	}
+	
+	option = {
+		name = "If Pondicherry ever reverted to Indian rule we will lose them"
+		add_country_modifier = { name = french_indian_colonies duration = -1 }
+		1310 = { add_province_modifier = { name = karikal duration = -1 } }
+		1306 = { add_province_modifier = { name = yanaon duration = -1 } }
+		1312 = { add_province_modifier = { name = colonial_exploitation duration = 7300 } }
+	}
+}
+
 #Interim Government of India - kickstart independent of india chain
 country_event = {
 	id = 1214010
@@ -85,18 +239,6 @@ country_event = {
 		modifier = { factor = 0 year = 1947 }
 	}
 	
-	option = {
-		name = "Accept a partitioned India"
-		
-		RAJ = { 
-			any_pop = {
-				militancy = -3
-			}
-		}
-		
-		set_global_flag = partioned_india_option
-		ai_chance = { factor = 0.1 }
-	}
 	
 	option = {
 		name = "Continue to push for a united India"
@@ -112,6 +254,19 @@ country_event = {
 		set_global_flag = direct_action_day
 		
 		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "Accept a partitioned India"
+		
+		RAJ = { 
+			any_pop = {
+				militancy = -3
+			}
+		}
+		
+		set_global_flag = partioned_india_option
+		ai_chance = { factor = 0.1 }
 	}
 
 }
@@ -518,5 +673,68 @@ country_event = {
 		prestige = 100
 		primary_culture = indian
 	}
+
+}
+
+#Provid 3281 Clean up - PAK cedes to HND
+country_event = {
+	id = 1512062
+title = "Aksai Chin falls to Indian Forces!"
+	desc = "As the province of Aksai Chin is surrounded by hostile provinces, we were unable to defend our claim over it so it was invaded by India and seized."
+	picture = "aksai_chin_war"
+
+trigger = {
+tag = PAK
+exists = HND
+owns = 3281
+HND = { owns = 1226 owns = 1224 }
+war = no
+}
+
+option = {
+name = "Lodge a strong complaint to the UN"
+prestige = -25
+3281 = { secede_province = HND }
+		}
+
+}
+
+#Provid 3281 Clean up - HND cedes to PAK
+country_event = {
+	id = 1512063
+title = "Aksai Chin falls to Pakistani Forces!"
+	desc = "As the province of Aksai Chin is surrounded by hostile provinces, we were unable to defend our claim over it so it was invaded by Pakistan and seized."
+	picture = "aksai_chin_war"
+
+trigger = {
+tag = HND
+exists = PAK
+owns = 3281
+PAK = { owns = 1226 owns = 1224 }
+war = no
+}
+
+option = {
+name = "Lodge a strong complaint to the UN"
+prestige = -25
+3281 = { secede_province = PAK }
+		}
+
+}
+
+#RAJ allows self autonomy for the Princely States
+country_event = {
+	id = 1512064
+title = "Princely State of $COUNTRY$ under India"
+	desc = EVTDESC1412198
+	picture = "union_of_india"
+
+is_triggered_only = yes
+
+option = {
+name = "This limited freedom must be cherished"
+overlord = { release_vassal = THIS }
+FROM = { create_vassal = THIS }
+		}
 
 }

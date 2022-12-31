@@ -1,3 +1,57 @@
+#Al-Wathbah Uprising 1948
+country_event = {
+	id = 1512248
+title = "Al-Wathbah Uprising"
+	desc = EVTDESC1512248
+	picture = "iraq_1948_riot"
+
+fire_only_once = yes
+
+trigger = {
+tag = IRQ
+year = 1948
+is_vassal = no
+government = hms_government
+in_sphere = ENG
+ENG = { government = hms_government }
+NOT = { year = 1990 }
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Push through the revised Anglo-Iraqi Treaty!"
+money = 200000
+create_alliance = ENG
+relation = { who = ENG value = 200 }
+ENG = { diplomatic_influence = { who = IRQ value = 50 } }
+add_country_modifier = { name = revolution_chaos duration = 1825 }
+ai_chance = { factor = 0.7 }
+		}
+
+option = {
+name = "Sever all relations with the British"
+leave_alliance = ENG
+relation = { who = ENG value = -200 }
+relation = { who = ENG value = -200 }
+ENG = { diplomatic_influence = { who = IRQ value = -200 } }
+ai_chance = { factor = 0.2 }
+		}
+
+option = {
+name = "Revert to British Dominionship for stability"
+prestige = -100
+money = 400000
+add_country_modifier = { name = revolution_chaos duration = 3650 }
+ENG = { create_vassal = IRQ }
+government = colonial_government
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
 #14th July Revolution
 country_event = {
   id = 8007514
@@ -63,6 +117,24 @@ country_event = {
 		ai_chance = { factor = 0.2 }
 	}
   
+}
+
+#Arab Federation
+country_event = {
+	id = 1512001
+	title = "Unitary Arab Federation"
+	desc = EVTDESC1512001
+	picture = "arab_federation"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Arabs of the world unite!"
+		prestige = 50
+		inherit = JOR
+		change_tag = ARF
+		any_owned = { limit = { OR = { is_core = IRQ is_core = JOR } } add_core = ARF }
+	}
 }
 
 #Dictatorship of Saddam Hussein, 1979
@@ -1006,6 +1078,56 @@ country_event = {
 	
 }
 
+#Kurdistan Autonomy
+country_event = {
+	id = 1512002
+	title = "Kurdistan Regional Government"
+	desc = EVTDESC1512002
+	picture = "kurdisatn_sar"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = IRQ
+		year = 1992
+		war = no
+		KRQ = { exists = yes }
+		KRQ = { is_vassal = no }
+		exists = KUW
+		NOT = { government = democracy }
+	}
+
+	mean_time_to_happen = { 
+		months = 5
+	}
+
+	option = {
+		name = "Grant Autonomy"
+		prestige = 25
+		badboy = -5
+		create_vassal = KRQ
+		KRQ = { government = sar_government country_event = 800054 }
+		any_owned = { limit = { is_core = KRQ } secede_province = KRQ }
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "Crush the Kurdistani rebels"
+		prestige = -50
+		badboy = 5
+		release = KRQ
+		war = {
+			target = KRQ
+			attacker_goal = { casus_belli = annex_core_country }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = no
+		}
+		ai_chance = { factor = 0.2 }
+	}
+
+}
+
+
 #2003 Iraq War - restablish the Kurdistan Regional Government
 country_event = {
 	id = 80075653
@@ -1698,4 +1820,47 @@ country_event = {
 		relation = { who = USA value = 100 }
 		prestige = -10
 	}
+}
+
+#Baghdad Pact
+country_event = {
+	id = 1512067
+title = "Middle East Treaty Organisation"
+	desc = EVTDESC1512067
+	picture = "baghdad_pact"
+
+trigger = {
+year = 1955
+war = no
+is_vassal = no
+NOT = { year  = 1990 }
+OR = { tag = ENG tag = PAK tag = PER tag = IRQ tag = TUR }
+NOT = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = theocracy } }
+NOT = { has_country_flag = meto_flag }
+}
+
+mean_time_to_happen = { 
+months = 2
+	}
+
+option = {
+name = "Join the alliance!"
+prestige = 25
+set_country_flag = meto_accept
+set_country_flag = meto_flag
+set_global_flag = cento_start
+
+add_country_modifier = { name = cento_member duration = 1825 }
+
+any_country = { limit = { has_country_flag = meto_accept } relation = { who = THIS value = 300 } create_alliance = THIS }
+
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Decline the invitation"
+set_country_flag = meto_flag
+ai_chance = { factor = 0.1 }
+		}
+
 }

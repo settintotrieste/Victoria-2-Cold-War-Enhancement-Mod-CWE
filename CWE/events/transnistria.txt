@@ -1,46 +1,76 @@
-# Transnistria War
+#Transnistria War 1990
 country_event = {
-  id = 8023020
-  title = EVT_8023020_NAME
-  # EVT_8023020_NAME;Transnistria War
-  desc = EVT_8023020_DESC 
-  # EVT_8023020_DESC;The Transnistria War was a limited conflict that broke out in November 1990 at Dubari between pro-Transnistria forces, including the Transnistrian Republican Guard, militia and Cossack units, and supported by elements of the Russian 14th Army, and pro-Moldovan forces, including Moldovan troops and police. Fighting intensified on 1 March 1992 and, alternating with ad hoc ceasefires, lasted throughout the spring and early summer of 1992 until a ceasefire was declared on 21 July 1992, which has held. 
-  picture = "transnistria_war"
-  
+	id = 1512241
+	title = "The Transnistria War"
+	desc = EVTDESC1512241
+	picture = "transnistria_war"
+
 	fire_only_once = yes
 
 	trigger = {
 		tag = MOL
 		year = 1990
-		NOT = { has_global_flag = 1992_start_date_flag }
+		NOT = { year = 2000 }
 		
 		is_vassal = no
-		war = no
+		OR = { war = no war_with = GAG }
 		
-		TRD = { 
-			exists = yes
-			is_vassal = no
-			war = no
-		}
+		#Owns Transnistria
+		is_possible_vassal = TRD
+		
+		#Caused by USSR dissolution
+		RUS = { has_country_flag = eussr }
 	}
 
-	mean_time_to_happen = { months = 11 }
+	mean_time_to_happen = { 
+		months = 1
+	}
 
 	option = {
-		name = "Retake control over our country!"
-		any_pop = { militancy = -3 consciousness = -3 }
-		war = { 
-			target = TRD 
-			attacker_goal = { casus_belli = annex_core_country } 
-			defender_goal = { casus_belli = status_quo } 
+		name = "Restore order to the renegade province!"
+		
+		release = TRD
+		TRD = {
+			government = democracy1
+			country_event = 800054
+			ruling_party_ideology = nationalist
+		}
+		
+		random_country = {
+			limit = { tag = RUS is_greater_power = yes }
+			relation = { who = THIS value = 200 }
+			diplomatic_influence = { who = THIS value = 200 }
+			create_alliance = THIS
+		}
+		
+		random_country = {
+			limit = { tag = UKR is_vassal = no war = no }
+			relation = { who = THIS value = 200 }
+			diplomatic_influence = { who = THIS value = 200 }
+			create_alliance = THIS
+		}
+		
+		war = {
+			target = TRD
+			attacker_goal = { casus_belli = annex_core_country }
+			defender_goal = { casus_belli = status_quo }
+			call_ally = no
 		}
 		ai_chance = { factor = 0.9 }
 	}
 
 	option = {
-		name = "No, this is too dangerous"
-		prestige_factor = -0.2
-		any_pop = { militancy = 5 consciousness = 5 }
+		name = "Recognise Transnistrian independence"
+		prestige_factor = -0.1
+		
+		release = TRD
+		TRD = {
+			government = democracy1
+			country_event = 800054
+			ruling_party_ideology = nationalist
+		}
+		
 		ai_chance = { factor = 0.1 }
 	}
+
 }

@@ -1,3 +1,393 @@
+#Post War French Communism
+country_event = {
+	id = 1512254
+	title = "$YEAR$ French Legislative Election"
+	desc = EVTDESC1512254
+	picture = "1946_FRA_election"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = FRA
+		year = 1946
+		NOT = { has_global_flag = 1950_start_date_flag }
+		NOT = { year = 1990 }
+
+		government = democracy
+	}
+
+	mean_time_to_happen = { months = 4 }
+
+	option = {
+		name = "Exclude the Communists!"
+		election = yes
+		any_pop = {
+			ideology = {
+				factor = 0.15
+				value = communist
+			} 
+		}
+		ai_chance = { factor = 0.7 }
+	}
+
+	option = {
+		name = "Leave the communists be"
+		any_pop = {
+			ideology = {
+				factor = 0.30
+				value = communist
+			} 
+		}
+		ai_chance = { factor = 0.3 }
+	}
+
+}
+
+#Gaulism
+country_event = {
+	id = 1400022
+	title = "Gaullism"
+	desc = EVTDESC1400022
+	picture = "gaullism"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = FRA
+		has_country_flag = fifth_republic
+		NOT = { year = 1990 }
+		
+		government = democracy
+		is_vassal = no
+		war = no
+		
+		NOT = { has_country_flag = gallisum }
+		NOT = { has_country_modifier = gaullism }
+	}
+	
+	mean_time_to_happen = { months = 6 }
+	
+	option = {
+		name = "Rebuild France!"
+		prestige = 50
+		
+		any_pop = { 
+			limit = { is_primary_culture = yes } 
+			militancy = -4 
+		}
+		
+		set_country_flag = gallisum
+		add_country_modifier = { name = gaullism duration = 3650 }
+	}
+	
+}
+
+#Formation of the French Community
+country_event = {
+	id = 888999
+	title = "Formation of the French Community"
+	desc = EVT_8005731_DESC
+  	picture = "end_of_the_french_empire"
+	
+	fire_only_once = yes
+
+	trigger = {
+		tag = FRA
+		year = 1958
+		NOT = { year = 1990 }
+		
+		government = democracy
+		is_greater_power = yes
+		war = no
+		
+		NOT = { has_country_flag = endoffra }
+		
+		#Owns African colonies
+		is_possible_vassal = GUI 
+		is_possible_vassal = CAR
+		is_possible_vassal = MAU
+		is_possible_vassal = CHA
+		is_possible_vassal = GAB
+		is_possible_vassal = IVC
+		is_possible_vassal = MAD
+		is_possible_vassal = BUF
+		is_possible_vassal = NIG
+		is_possible_vassal = MLI
+		is_possible_vassal = ROC
+		is_possible_vassal = BEN
+		is_possible_vassal = SEN
+	}
+	
+	mean_time_to_happen = { months = 9 }
+	
+	option = {
+		name = EVT_8005731_A
+
+		#French Guinea
+		random_list = {
+			80 = { 
+				release = GUI 
+				GUI = { set_country_flag = former_colonial_nation } 	
+				diplomatic_influence = { who = GUI value = 200 } 
+			}
+			20 = { GUI = { country_event = 989898 } }
+		}
+
+		#Create French dominions
+		any_country = { limit = { exists = no OR = { tag = CAR tag = MAU tag = CHA tag = GAB tag = IVC tag = MAD tag = BUF tag = NIG tag = MLI tag = ROC tag = BEN tag = SEN } } country_event = 989898 }
+
+		set_country_flag = endoffra
+
+		remove_country_modifier = french_union
+
+		any_owned = { limit = { is_core = MAD } secede_province = MAD }
+
+		ai_chance = { factor = 0.7 }
+	}
+
+	option = {
+		name = "Reform the African Colonies into federations"
+		prestige_factor = -0.05
+		any_pop = { militancy = 1.5 }
+		set_country_flag = endoffra
+		add_country_modifier = { name = revolution_chaos duration = 1825 }
+
+		#West Africa
+		any_owned = { limit = { OR = { is_core = SEN is_core = MLI is_core = GUI is_core = BUF is_core = NIG is_core = BEN is_core = IVC is_core = MAU } } add_core = AOF }
+
+		AOF = { civilized = yes }
+		
+		release_vassal = AOF
+
+		AOF = { 
+			government = colonial_government
+			country_event = 800054
+			ruling_party_ideology = conservative
+			capital = 1783 #Dakar
+			add_accepted_culture = mande
+			add_accepted_culture = fula
+			add_accepted_culture = wolof
+			add_accepted_culture = zarma
+			add_accepted_culture = hausa
+			add_accepted_culture = akan
+		}
+		
+		#Equatorial Africa
+		any_owned = { limit = { OR = { is_core = CHA is_core = CAR  is_core = ROC is_core = GAB } } add_core = AEF }
+
+		AEF = { civilized = yes }
+
+		release_vassal = AEF
+
+		AEF = { 
+			capital = 1965 #Bangui
+			government = colonial_government 
+			country_event = 800054 
+			add_accepted_culture = baya_mandjia
+			add_accepted_culture = teke
+			add_accepted_culture = fang
+			add_accepted_culture = sara
+		}
+
+		diplomatic_influence = { who = AEF value = 200 }
+		diplomatic_influence = { who = AOF value = 200 }
+
+		AOF = { any_owned = { add_province_modifier = { name = nationalist_agitation duration = 3650 } } }
+
+		AEF = { any_owned = { add_province_modifier = { name = nationalist_agitation duration = 3650 } } }
+
+		ai_chance = { factor = 0.2 }
+	}
+
+	option = {
+		name = "Maintain the integrity of the Empire"
+		prestige_factor = -0.1
+		any_pop = { militancy = 3 }
+		set_country_flag = endoffra
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Create French Dominions
+country_event = {
+	id = 989898
+	title = "Self Rule of $COUNTRY$"
+	desc = EVT_8005731_DESC
+  	picture = "end_of_the_french_empire"
+	
+	is_triggered_only = yes
+		
+	option = {
+		name = EVT_8005731_A
+		
+		#Release THIS
+		FRA = { release_vassal = THIS }
+		FRA = { any_owned = { limit = { controlled_by_rebels = yes is_core = THIS } secede_province = THIS } }
+
+		#Create Colonial Government
+		government = democracy
+		ruling_party_ideology = conservative
+		election = yes
+		country_event = 800054
+		
+		#Set flags
+		set_country_flag = frenchcommunity
+		set_country_flag = former_colonial_nation
+		
+		#THIS joins french sphere
+		FRA = { 
+			diplomatic_influence = { who = THIS value = 200 } 
+			relation = { who = THIS value = 200 } 
+		}
+
+		#Set up post colonial politics
+		any_pop = { 
+			limit = { strata = rich }
+			ideology = { factor = 0.25 value = conservative }
+			militancy = -5
+			consciousness = 5
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.25 value = liberal }
+			militancy = -5
+			consciousness = 5
+		}
+		any_pop = { 
+			limit = { type = farmers }
+			ideology = { factor = 0.25 value = conservative }
+			militancy = -5
+			consciousness = 5
+		}
+		any_pop = { 
+			limit = { type = labourers }
+			ideology = { factor = 0.25 value = socialist }
+			militancy = -5
+			consciousness = 5
+		}
+		any_pop = { 
+			limit = { type = soldiers }
+			ideology = { factor = 0.25 value = nationalist }
+			militancy = -5
+			consciousness = 5
+		}
+		add_country_modifier = { name = post_colonial_chaos duration = 3650 }
+	}
+}
+
+# French Community Collapse - Colony
+country_event = {
+  id = 999888
+  title = "Withdrawal from the French Community"
+  desc = "EVTDESC999888"
+  picture = "colonialism_end"
+
+	trigger = {
+		capital_scope = { continent = africa }
+		year = 1960
+		NOT = { year = 1990 }
+		
+		OR = { government = democracy government = democracy1 }
+		vassal_of = FRA
+		war = no
+		
+		#France is a democracy
+		FRA = { OR = { government = democracy government = democracy1 } is_vassal = no }
+		
+		#Stop repeating events
+		has_country_flag = frenchcommunity
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "We shall demand independence!"
+		
+		prestige = 50
+		overlord = { country_event = 998888 }
+		
+		political_reform = minorities_equal_rights
+		political_reform = jefferson_method
+		
+		clr_country_flag = frenchcommunity
+		ai_chance = { factor = 0.9 }
+	}
+	option = {
+		name = "We don't want independence now"
+		prestige = -50
+		clr_country_flag = frenchcommunity
+		ai_chance = { factor = 0.1 }
+	}
+  
+}
+
+# French Community Collapse - France
+country_event = {
+  id = 998888
+  title = "Independence of $FROMCOUNTRY$?"
+  desc = "EVTDESC999888"
+  picture = "colonialism_end"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Set the $FROMCOUNTRY_ADJ$ people free"
+		prestige = -50
+		release_vassal = FROM
+		
+		#Set up post colonial politics
+		any_pop = { 
+			limit = { strata = rich }
+			ideology = { factor = 0.10 value = conservative }
+			militancy = -5
+			consciousness = 5
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			ideology = { factor = 0.10 value = liberal }
+			militancy = -5
+			consciousness = 5
+		}
+		any_pop = { 
+			limit = { type = farmers }
+			ideology = { factor = 0.10 value = conservative }
+			militancy = -5
+			consciousness = 5
+		}
+		any_pop = { 
+			limit = { type = labourers }
+			ideology = { factor = 0.10 value = socialist }
+			militancy = -5
+			consciousness = 5
+		}
+		any_pop = { 
+			limit = { type = soldiers }
+			ideology = { factor = 0.10 value = nationalist }
+			militancy = -5
+			consciousness = 5
+		}
+		
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Over my dead body!"
+		release_vassal = FROM 
+		badboy = 5
+		FROM = {
+			war = {
+				target = THIS
+				attacker_goal = { casus_belli = become_independent }
+				defender_goal = { }
+			}
+		}
+		ai_chance = { factor = 0 }
+	}
+  
+}
+
 #The May 1958 Crisis
 country_event = {
   id = 8005730
@@ -39,7 +429,25 @@ country_event = {
 		set_country_flag = fifth_republic
 		ruling_party_ideology = conservative
 	
-		ai_chance = { factor = 0.8 }
+		ai_chance = { 
+			factor = 0.8
+			modifier = {
+				factor = 2
+				ruling_party_ideology = conservative
+			}
+			modifier = {
+				factor = 3
+				OR = { ruling_party_ideology = traditionalist ruling_party_ideology = nationalist }
+			}
+			modifier = {
+				factor = 0.2
+				OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social ruling_party_ideology = socialist ruling_party_ideology = progressive }
+			}
+			modifier = {
+				factor = 0.9
+				OR = { ruling_party_ideology = big_tent ruling_party_ideology = liberal }
+			}
+		}
 	}
 
 	option = {
@@ -78,9 +486,14 @@ country_event = {
 			}
 		}
 		
-		ai_chance = { factor = 0.2 }
+		ai_chance = { 
+			factor = 0.2
+			modifier = {
+				factor = 8
+				OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social ruling_party_ideology = socialist ruling_party_ideology = progressive }
+			}
+		}
 	}
-  
 }
 
 #The Fifth Republic
@@ -239,6 +652,48 @@ country_event = {
 
 }
 
+#Operation Barracuda
+country_event = {
+	id = 1412167
+	title = "Opération Barracuda"
+	desc = EVTDESC1412167
+	picture = "1412167"
+
+	fire_only_once = yes
+
+	trigger = { 
+		year = 1979
+		tag = FRA
+		is_greater_power = yes
+		government = democracy
+		CAR = { government = absolute_monarchy }
+		NOT = { war_with = CAR }
+		CAR = { is_greater_power = no }
+	}
+
+	mean_time_to_happen = { 
+		months = 10
+	}
+
+	option = {
+		name = "Depose Bokassa!"
+		badboy = 5
+		prestige = 10
+		diplomatic_influence = { who = CAR value = 50 }
+		CAR = { government = democracy country_event = 800054 }
+		relation = { who = CAR value = 50 }
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Let the banana empire remain"
+		prestige = -10
+		diplomatic_influence = { who = CAR value = -50 }
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
 #1998 FIFA World Cup
 country_event = {
 	id = 8005734
@@ -374,7 +829,7 @@ country_event = {
 	mean_time_to_happen = { months = 5 }
 
 	option = {
-		name = "Demand the return of Pondicherry (10% risk of war)"
+		name = "Demand the return of Pondicherry (Risk of War)"
 		FRA = { country_event = 1005701 }
 		ai_chance = { factor = 0.9 }
 	}
@@ -412,7 +867,21 @@ country_event = {
 		
 		badboy = -5
 		
-		ai_chance = { factor = 0.9 }
+		ai_chance = { 
+			factor = 0.9
+			modifier = {
+				factor = 3
+				OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social ruling_party_ideology = progressive ruling_party_ideology = socialist }
+			}
+			modifier = {
+				factor = 0.95
+				OR = { ruling_party_ideology = conservative ruling_party_ideology = big_tent }
+			}
+			modifier = {
+				factor = 0.25
+				OR = { ruling_party_ideology = nationalist ruling_party_ideology = traditionalist ruling_party_ideology = populist }
+			}
+		}
 	}
 	
 	option = {
@@ -426,7 +895,17 @@ country_event = {
 			}
 		}
 
-		ai_chance = { factor = 0.1 }
+		ai_chance = { 
+			factor = 0.1
+			modifier = {
+				factor = 2
+				OR = { ruling_party_ideology = conservative ruling_party_ideology = big_tent }
+			}
+			modifier = {
+				factor = 10
+				OR = { ruling_party_ideology = nationalist ruling_party_ideology = traditionalist ruling_party_ideology = populist }
+			}
+		}
 	}
 
 }
@@ -447,6 +926,17 @@ country_event = { # FROM = GER THIS = FRA
 		prestige = 5
 		relation = { who = GER value = 50 }
 		diplomatic_influence = { who = GER value = 50 }
+		ai_chance = { 
+			factor = 0.9
+			modifier = {
+				factor = 3
+				OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social ruling_party_ideology = progressive ruling_party_ideology = socialist }
+			}
+			modifier = {
+				factor = 0.85
+				OR = { ruling_party_ideology = nationalist ruling_party_ideology = traditionalist ruling_party_ideology = populist }
+			}
+		}
 	}
 	
 	option = {
@@ -469,6 +959,13 @@ country_event = { # FROM = GER THIS = FRA
 		}
 		diplomatic_influence = { who = GER value = -50 }
 		badboy = 5
+		ai_chance = { 
+			factor = 0.1
+			modifier = {
+				factor = 0.5
+				OR = { ruling_party_ideology = nationalist ruling_party_ideology = traditionalist ruling_party_ideology = populist }
+			}
+		}
 	}
 }
 
@@ -867,6 +1364,156 @@ country_event = {
 		}
 		
 		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+
+#May 1968 events France
+country_event = {
+	id = 1512267
+	title = "May $YEAR$ Events"
+	desc = EVTDESC1512267
+	picture = "fra_may_1968"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = FRA
+		year = 1968
+		NOT = { year = 1990 }
+		war = no
+		is_vassal = no
+		government = democracy
+	}
+
+	mean_time_to_happen = { 
+		months = 5
+	}
+
+	option = {
+		name = "Attempt to quell the unrest"
+		add_country_modifier = { name = revolution_chaos duration = 365 }
+		ai_chance = { factor = 0.6 }
+	}
+
+	option = {
+		name = "The government resigns"
+		election = yes
+		prestige = -50
+		ai_chance = { factor = 0.4 }
+	}
+
+}
+
+#Notre-Dame de Paris fire, 2019
+country_event = {
+	id = 1610000
+	title = "Notre-Dame de Paris fire"
+	desc = EVTDESC1610000
+	picture = "notre_dame_fire"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = FRA
+		year = 2019
+		
+		#Paris
+		owns = 425
+	}
+
+	mean_time_to_happen = { 
+		months = 4.5
+	}
+
+	option = {
+		name = "Rebuild the spire as it was"
+		money = -50000
+		prestige = 50
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "Create a contemporary spire"
+		money = -25000
+		ai_chance = { factor = 0.2 }
+	}
+
+}
+
+#Charlie Hebdo Incident
+country_event = {
+	id = 1512154
+title = "Charlie Hebdo Shooting"
+	desc = EVTDESC1512154
+	picture = "charlie_hebdo"
+
+fire_only_once = yes
+
+trigger = {
+tag = FRA
+year = 2015
+government = democracy
+}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "We pray for the victims"
+
+any_pop = { 
+limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } }
+ideology = {
+	factor = 0.5
+	value = conservative
+} 
+	}
+
+ai_chance = { factor = 0.6 }
+	}
+
+option = {
+name = "Seek vengence!"
+
+any_pop = { 
+limit = { is_primary_culture = no is_accepted_culture = no }
+ideology = {
+	factor = 0.25
+	value = traditionalist
+} 
+	}
+
+ai_chance = { factor = 0.4 }
+	}
+
+}
+
+#French Population boom
+country_event = {
+	id = 1512147
+	title = "French Population Boom"
+	desc = EVTDESC1512147
+	picture = "germanpopulationboom"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = FRA
+		year = 1946
+		NOT = { year = 1990 }
+	}
+
+	mean_time_to_happen = { 
+		months = 2
+	}
+
+	option = {
+		name = "Rejoice!"
+		set_country_flag = demographic_transition_stage_2_flag
+		add_country_modifier = { name = industrial_pop_boom duration = 5475 }
 	}
 
 }

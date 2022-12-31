@@ -1,0 +1,161 @@
+#Greenland Self-Rule
+country_event = {
+	id = 1412220
+	title = "Home Rule for Greenland"
+	desc = EVTDESC1412220
+	picture = "greenland_indy"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = DEN
+		year = 1979
+		NOT = { year = 1990 } 
+
+		OR = { government = hms_government government = hms_government1 government = democracy government = democracy1 }
+		war = no
+		is_vassal = no
+
+		is_possible_vassal = GRN
+
+		#Previously released Faroe Islands as an SAR
+		is_our_vassal = FAR
+	}
+
+	mean_time_to_happen = { 
+		months = 6
+	}
+
+	option = {
+		name = "Grant Self-Rule"
+		release_vassal = GRN
+		GRN = {
+			government = sar_government 
+			set_country_flag = former_devolved_nation
+			country_event = 800054 
+			ruling_party_ideology = conservative
+			any_pop = { 
+				ideology = {
+					factor = 0.1
+					value = conservative
+				}
+			}
+		}
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Retain Direct Rule"
+		prestige = 50
+		badboy = 5
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Danish Citizenship for Greenland
+country_event = {
+	id = 1412234
+title = "1953 Danish Constitution"
+	desc = EVTDESC1412234
+	picture = "inuit_accepted"
+
+fire_only_once = yes
+
+trigger = {
+tag = DEN
+government = hms_government
+year = 1953
+owns = 251
+GRN = { exists = no }
+}
+
+mean_time_to_happen = { 
+months = 2
+	}
+
+option = {
+name = "Adopt the Constitution"
+prestige = 25
+any_pop = { limit = { is_primary_culture = yes } militancy = 2 }
+add_accepted_culture = inuit
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Reject the Constitution"
+prestige = -5
+any_pop = { limit = { is_primary_culture = yes } militancy = -2 }
+any_pop = { limit = { is_primary_culture = no } militancy = 2 }
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Sale of Greenland to the USA - USA
+country_event = {
+	id = 1512098
+title = "The Sale of Greenland"
+	desc = EVTDESC1512098
+	picture = "sale_of_greenland"
+
+fire_only_once = yes
+
+trigger = {
+tag = USA
+year = 1946
+DEN = { owns = 251 }
+GRN = { exists = no }
+NOT = { year = 1990 }
+}
+
+mean_time_to_happen = { 
+months = 12
+	}
+
+option = {
+name = "Propose the sale"
+DEN = { country_event = 1512099 }
+ai_chance = { factor = 0.8 }
+		}
+
+option = {
+name = "Pass on the offer"
+DEN = { add_country_modifier = { name = economic_boom duration = 1825 } }
+ai_chance = { factor = 0.2 }
+		}
+
+
+}
+
+#Sale of Greenland to the USA - DEN
+country_event = {
+	id = 1512099
+title = "The Sale of Greenland"
+	desc = EVTDESC1512098
+	picture = "sale_of_greenland"
+
+is_triggered_only = yes
+
+option = {
+name = "Agree to the sale"
+any_owned = { limit = { is_core = GRN } secede_province = USA }
+money = 2000000
+ai_chance = { factor = 0.1 }
+		}
+
+option = {
+name = "Grant military basing rights to the USA"
+relation = { who = USA value = 100 }
+create_alliance = USA
+USA = { diplomatic_influence = { who = DEN value = 50 } }
+ai_chance = { factor = 0.8 }
+		}
+
+option = {
+name = "Refuse"
+relation = { who = USA value = -50 }
+ai_chance = { factor = 0.1 }
+		}
+
+}

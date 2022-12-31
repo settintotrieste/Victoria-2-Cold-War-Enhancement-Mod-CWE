@@ -92,6 +92,37 @@ country_event = {
 	
 }
 
+#License Raj
+country_event = {
+	id = 1300014
+	title = "The License Raj"
+	desc = EVTDESC1300014
+	picture = "licenseraj"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = HND
+		year = 1946
+		NOT = { year = 1990 }
+		
+		is_vassal = no
+		
+		#Socialist policies chosen
+		has_country_flag = nehru_economic_policies_flag
+		
+		#INC in charge
+		ruling_party_ideology = socialist
+	}
+	
+	mean_time_to_happen = { months = 24 }
+	
+	option = {
+		name = "Let slip the dogs of regulation"
+		add_country_modifier = { name = license_raj duration = -1 } 
+	}
+}
+
 #Death of Nehru
 country_event = {
   id = 8007222
@@ -134,6 +165,48 @@ country_event = {
 		
 	}
 	
+}
+
+#Integration of Sikkim
+country_event = {
+	id = 1412246
+title = "From Indian protectorate to statehood"
+	desc = EVTDESC1412246
+	picture = "sik_statehood"
+
+fire_only_once = yes
+
+trigger = {
+tag = HND
+war = no
+SIK = { exists = yes }
+is_our_vassal = SIK
+year = 1975
+NOT = { year = 1990 }
+}
+
+mean_time_to_happen = { 
+months = 6
+	}
+
+option = {
+name = "Integrate Sikkim"
+prestige = 10
+badboy = 1
+
+inherit = SIK
+
+1328 = { add_core = HND }
+
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Let it continue to be our protectorate"
+relation = { who = CHI value = 50 }
+ai_chance = { factor = 0.1 }
+		}
+
 }
 
 #Indira Gandhi - The Emergency
@@ -662,6 +735,32 @@ country_event = {
 }
 
 ### The First Kashmir War ###
+
+#Indo-Pakistan Conflict
+country_event = {
+	id = 1412146
+	title = "Indo-Pakistan Conflict"
+	desc = EVTDESC1412146
+	picture = "indo_pakistan_war_pic"
+
+	trigger = { 
+		tag = HND
+		NOT = { has_country_flag = indo_con }
+		PAK = { NOT = { has_country_flag = indo_con } }
+		exists = PAK
+		war_with = PAK
+		PAK = { is_vassal = no }
+		HND = { is_vassal = no }
+	}
+
+	option = {
+		name = "Unite the subcontinent under one flag"
+		relation = { who = PAK value = -100 }
+		HND = { set_country_flag = inc_support }
+		HND = { set_country_flag = indo_con }
+		PAK = { set_country_flag = indo_con }
+	}
+}
 
 #Annexation of Kashmir - JAK
 country_event = {
@@ -1310,4 +1409,103 @@ country_event = {
 		}
 		clr_country_flag = naxalite_insurgency
 	}
+}
+
+#Asian Relations Conference
+country_event = {
+	id = 1610096
+	title = "The Asian Relations Conference"
+	desc = EVTDESC1610096
+	picture = "ARC_india"
+
+	fire_only_once = yes
+
+	trigger = {
+		OR = { tag = RAJ tag = HND }
+		OR = { is_vassal = no government = colonial_government }
+		war = no
+		election = no
+		OR = { ruling_party_ideology = socialist ruling_party_ideology = nationalist }
+		year = 1947
+		NOT = { year = 1990 }
+		NOT = { has_global_flag = 1950_start_date_flag }
+	}
+
+	mean_time_to_happen = { 
+		months = 8
+	}
+
+	option = {
+		name = "Promote Asian unity!"
+		any_pop = { 
+			ideology = { factor = 0.1 value = nationalist }
+		}
+		
+		#Non communist states
+		any_country = {
+			limit = { exists = yes NOT = { ruling_party_ideology = communist } capital_scope = { continent = asia } NOT = { tag = JAP } }
+			relation = { who = THIS value = 50 }
+			any_pop = {
+				ideology = { factor = 0.05 value = nationalist }
+			}
+		}
+		
+		#Communist states
+		any_country = {
+			limit = { exists = yes ruling_party_ideology = communist capital_scope = { continent = asia } }
+			relation = { who = THIS value = 50 }
+			any_pop = {
+				ideology = { factor = 0.05 value = communist }
+			}
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Promote Indian greatness!"
+		prestige = 100
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Operation Blue Star 
+country_event = {
+	id = 1512100
+title = "Operation Blue Star"
+	desc = EVTDESC1512100
+	picture = "blue_star"
+
+fire_only_once = yes
+
+trigger = {
+tag = HND
+year = 1984
+owns = 1233
+PNJ = { exists = no }
+NOT = { year = 1990 }
+}
+
+mean_time_to_happen = { 
+months = 6
+	}
+
+option = {
+name = "Resist the Sikh militants!"
+prestige = -100
+any_pop = { limit = { is_accepted_culture = no is_primary_culture = no } militancy = 5 }
+all_core = { limit = { is_core = PNJ } add_province_modifier = { name = nationalist_agitation duration = 3650 } }
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Grant the Sikhs self-rule"
+release_vassal = PNJ
+PNJ = { government = sar_government country_event = 800054 set_country_flag = former_devolved_nation }
+diplomatic_influence = { who = PNJ value = 200 }
+ai_chance = { factor = 0.1 }
+		}
+
+
 }

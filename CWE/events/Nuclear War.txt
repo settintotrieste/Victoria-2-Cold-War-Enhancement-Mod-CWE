@@ -867,3 +867,382 @@ FROM = { set_country_flag = nobel_peace_prize_recipient }
 		}
 
 }
+
+
+#Nuclear fallout spread - Immediate Neighbours
+country_event = {
+	id = 1412056
+	title = nuke_fallout_spread
+	desc = "A neighbouring nation has been struck by nuclear weapons and the nuclear fallout has spread to $COUNTRY$ due to our proximity to the struck nation."
+	picture = "fallout_spreads"
+
+trigger = {
+
+NOT = { 
+any_owned_province = {
+OR = { has_province_modifier = nuke_high has_province_modifier = nuke_medium has_province_modifier = nuke_low } 
+} 
+}
+
+NOT = { has_country_modifier = nuke_neighbour_fallout }
+any_greater_power = {
+neighbour = THIS
+has_country_modifier = nuke_fallout
+}
+
+}
+	
+mean_time_to_happen = { 
+months = 6
+}
+
+	option = {
+		name = "Brace ourselves for the fallout"
+prestige = -50
+add_country_modifier = { name = nuke_neighbour_fallout duration = 3650 }
+					}
+		}
+
+#Nuclear fallout spread - Neighbouring Neighbours
+country_event = {
+	id = 1412057
+	title = nuke_fallout_spread
+	desc = "A nation has been struck by nuclear weapons and the nuclear fallout has spread to $COUNTRY$ via the gradual spread of nuclear fallout across the world."
+	picture = "fallout_spreads"
+
+trigger = {
+
+NOT = { 
+any_neighbor_country = { 
+has_country_modifier = nuke_fallout 
+} 
+}
+
+NOT = { 
+any_owned_province = {
+OR = { has_province_modifier = nuke_high has_province_modifier = nuke_medium has_province_modifier = nuke_low } 
+} 
+}
+
+NOT = { has_country_modifier = nuke_distant_fallout }
+any_neighbor_country = { has_country_modifier = nuke_neighbour_fallout }
+}
+	
+mean_time_to_happen = { 
+months = 6
+}
+
+	option = {
+		name = "Brace ourselves for the fallout"
+prestige = -25
+add_country_modifier = { name = nuke_distant_fallout duration = 1825 }
+					}
+		}
+
+
+#Civil Defence - Nuke Protection - Start
+country_event = {
+	id = 1412169
+	title = "Nuclear Shelters Activated"
+	desc = EVTDESC1412169
+	picture = "nuclear_shelter"
+
+	trigger = { 
+	
+		#Country has been hit by nuclear weapons
+		any_owned_province = { 
+			OR = { 
+				has_province_modifier = nuke_high 
+				has_province_modifier = nuke_medium 
+				has_province_modifier = nuke_low 
+			} 
+		}
+		
+		#Has some proper Civil Defence
+		OR = { 
+			has_country_modifier = cdhigh 
+			has_country_modifier = cdmedium 
+		}
+		
+		NOT = { has_country_flag = nuke_protection }
+	}
+
+	option = {
+		name = "A moment of silence for those who didn't make it"
+		
+		set_country_flag = nuke_protection
+
+		#High Civil Defence
+		random_owned = { 
+			limit = { owner = { has_country_modifier = cdhigh } } 
+			owner = { 
+				any_owned = { 
+					limit = { has_province_modifier = nuke_low } 
+					remove_province_modifier = nuke_low
+					add_province_modifier = { name = nuke_low duration = 9125 } 
+				} 
+				any_owned = { 
+					limit = { has_province_modifier = nuke_medium } 
+					remove_province_modifier = nuke_medium
+					add_province_modifier = { name = nuke_low duration = 18250 } 
+				} 
+				any_owned = { 
+					limit = { has_province_modifier = nuke_high } 
+					remove_province_modifier = nuke_high
+					add_province_modifier = { name = nuke_medium duration = 18250 } 
+				} 
+			} 
+		}
+		
+		#Medium Civil Defence - Only protects against medium nuke damage at best
+		random_owned = { 
+			limit = { owner = { has_country_modifier = cdhigh } } 
+			owner = { 
+				any_owned = { 
+					limit = { has_province_modifier = nuke_low } 
+					remove_province_modifier = nuke_low
+					add_province_modifier = { name = nuke_low duration = 9125 } 
+				} 
+				any_owned = { 
+					limit = { has_province_modifier = nuke_medium } 
+					remove_province_modifier = nuke_medium
+					add_province_modifier = { name = nuke_low duration = 18250 } 
+				} 
+			} 
+		}
+
+	}
+
+}
+
+#Civil Defence - No Nuke Protection - Total Anarchy!
+country_event = {
+	id = 14121691
+	title = "Anarchy in $COUNTRY$"
+	desc = EVTDESC14121691
+	picture = "nuclear_fallout_anarchy"
+
+	trigger = { 
+	
+		#Country has been hit by nuclear weapons
+		any_owned_province = { 
+			OR = { 
+				has_province_modifier = nuke_high 
+				has_province_modifier = nuke_medium 
+				has_province_modifier = nuke_low 
+			} 
+		}
+		
+		#Has no Civil Defence
+		NOT = { 
+			OR = { 
+				has_country_modifier = cdhigh 
+				has_country_modifier = cdmedium 
+			}
+		}
+		
+		NOT = { has_country_flag = nuke_protection }
+	}
+
+	option = {
+		name = "A moment of silence for those who didn't make it"
+		
+		set_country_flag = nuke_protection
+
+		#All provinces get transferred to rebels
+		any_owned = {
+			limit = { controlled_by = THIS }
+			change_controller = REB
+		}
+
+	}
+
+}
+
+#Civil Defence - states occassionally fall to rebels
+country_event = {
+	id = 14121692
+	title = "Government Control Weakens"
+	desc = EVTDESC14121692
+	picture = "nuclear_fallout_anarchy_2"
+
+	trigger = { 
+	
+		#Country has been hit by nuclear weapons
+		any_owned_province = { 
+			OR = { 
+				has_province_modifier = nuke_high 
+				has_province_modifier = nuke_medium 
+				has_province_modifier = nuke_low 
+			} 
+			controlled_by = THIS
+			average_militancy = 9
+		}
+		
+		#Has weak civil defence
+		NOT = { has_country_modifier = cdhigh }
+		
+		#Post nuclear government
+		has_country_flag = nuke_protection
+	}
+	
+	mean_time_to_happen = { 
+		months = 6
+	}
+
+	option = {
+		name = "At this rate we might lose the whole country!"
+		prestige_factor = -0.01
+		
+		#Transfer states to rebels
+		any_owned = { 
+			limit = {
+				OR = { 
+					has_province_modifier = nuke_high 
+					has_province_modifier = nuke_medium 
+					has_province_modifier = nuke_low 
+				} 
+				controlled_by = THIS
+				average_militancy = 9
+			}
+			state_scope = {
+				any_owned = {
+					limit = { 
+						is_state_capital = no 
+						controlled_by = THIS 
+					}
+					change_controller = REB
+				}
+			}
+		}
+	}
+
+}
+
+#Civil Defence - ENL Nuke Protection
+country_event = {
+	id = 1412170
+	title = "Nuclear Fallout has Subsided"
+	desc = "It is now safe to leave the nuclear shelters, if there were any, so our population can start to slowly restore the nuclear hit wasteland back to its glory days."
+	picture = "nuclear_shelter_clear"
+
+	trigger = { 
+	
+		#No more nuke damage
+		NOT = {
+			any_owned_province = { 
+				OR = { 
+					has_province_modifier = nuke_high 
+					has_province_modifier = nuke_medium 
+					has_province_modifier = nuke_low 
+				} 
+			}
+		}
+		
+		has_country_flag = nuke_protection
+	}
+
+	option = {
+		name = "We will rebuild the $COUNTRY_ADJ$ civilisation!"
+		clr_country_flag = nuke_protection
+		clr_country_flag = post_nuke_government
+	}
+
+}
+
+#Dictatorship after a nuclear strike
+country_event = {
+	id = 1610133
+	title = "The Continuity of Government"
+	desc = EVTDESC1610133
+	picture = "post_nuke_cog"
+
+	trigger = {
+	
+		#Democratic government
+		OR = {
+			government = democracy
+			government = democracy1
+			
+			government = hms_government
+			government = hms_government1
+			
+			government = socialist_democracy
+		}
+		
+		is_vassal = no
+	
+		#Country has been hit by nuclear weapons
+		any_owned_province = { 
+			OR = { 
+				has_province_modifier = nuke_high 
+				has_province_modifier = nuke_medium 
+				has_province_modifier = nuke_low 
+			} 
+		}
+		
+		#Has some proper Civil Defence
+		OR = { 
+			has_country_modifier = cdhigh 
+			has_country_modifier = cdmedium 
+		}
+		
+		#Civil Defence shelters activated
+		has_country_flag = nuke_protection
+		
+		NOT = { has_country_flag = post_nuke_government }
+	}
+
+	mean_time_to_happen = { 
+		months = 0.1
+	}
+
+	option = {
+		name = "Grant the regional administrators absolute power"
+		
+		set_country_flag = post_nuke_government
+		
+		random_owned = {
+			limit = { owner = { OR = { government = hms_government government = hms_government1 } } }
+			owner = { government = absolute_monarchy }
+		}
+		
+		random_owned = {
+			limit = { owner = { OR = { government = democracy government = democracy1 } } }
+			owner = { government = presidential_dictatorship }
+		}
+		
+		random_owned = {
+			limit = { owner = { government = socialist_democracy } }
+			owner = { government = proletarian_dictatorship }
+		}
+		
+		#Set dictatorial reform
+		political_reform = none_voting 
+		political_reform = ruling_party_opinion
+		political_reform = no_meetings
+		political_reform = politicised_service
+		political_reform = censored_publishing
+		political_reform = no_trade_unions
+		political_reform = parties_not_allowed
+		political_reform = open_immigration
+		political_reform = lgbt_promoted #Conscription
+		
+		ai_chance = { factor = 1 }
+	}
+
+	option = {
+		name = "Try to preserve the pre-war order"
+		
+		set_country_flag = post_nuke_government
+		
+		add_country_modifier = { name = political_strife duration = 3650 }
+		
+		any_owned = {
+			add_province_modifier = { name = generic_uprising duration = 730 }
+		}
+		
+		ai_chance = { factor = 0 }
+	}
+
+}

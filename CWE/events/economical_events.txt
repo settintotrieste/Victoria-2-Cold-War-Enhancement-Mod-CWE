@@ -1,3 +1,95 @@
+#Bankruptcy
+country_event = {
+	id = 1412180
+title = "$FROMCOUNTRY$ Goes Bankrupt"
+	desc = EVTDESC1412180
+	picture = "economic_bailout"
+
+	trigger = {
+		NOT = { tag = FROM }
+	}
+
+is_triggered_only = yes
+
+
+option = {
+name = "They will need to restructure their debt themselves!"
+
+FROM = { relation = { who = THIS value = -25 } }
+
+FROM = { 
+add_country_modifier = { name = investor_flight duration = 730 }
+add_country_modifier = { name = stockcrash duration = 365 }
+
+add_country_modifier = { name = stock_market_crash duration = 183 } 
+
+add_country_modifier = { name = bankruptcy_flag duration = 3650 }
+}
+		}
+
+option = {
+name = "We will grant them a bailout!"
+
+FROM = { relation = { who = THIS value = 25 } }
+
+FROM = { 
+money = 50000
+add_country_modifier = { name = investor_flight duration = 730 }
+add_country_modifier = { name = stockcrash duration = 365 }
+
+add_country_modifier = { name = stock_market_crash duration = 183 } 
+
+add_country_modifier = { name = bankruptcy_flag duration = 3650 }
+}
+		}
+
+}
+
+#Bretton Woods Reduce Gold Output
+country_event = {
+	id = 1400046
+	title = "Bretton Woods System Effects"
+	desc = EVTDESC1400046
+	picture = "bretton_woods_system_gold"
+	
+trigger = {
+NOT = { tag = USA }
+war = no
+has_country_modifier = bretton_system
+any_owned_province = { AND = { trade_goods = credit NOT = { has_province_modifier = bretton_woods_effect } } }
+any_owned_province = { trade_goods = credit }
+
+#NOT = { has_country_flag = bsystem }
+
+}
+
+option = {
+name = "OK"
+any_owned = { limit = { trade_goods = credit }
+add_province_modifier = { name = bretton_woods_effect duration = -1 } }
+
+#set_country_flag = bsystem
+
+		}
+}
+
+#Currency Manipulation
+country_event = {
+	id = 1412108
+title = "$FROMCOUNTRY$ has labelled us Currency Manipulators"
+	desc = "$FROMCOUNTRY$ has decided to call our nation a currency manipulator. This has severely damaged our international standings and reduced investor confidence in our nation's ability to grow our economy intrinsically."
+	picture = "currency_manipulation"
+	
+is_triggered_only = yes
+
+option = {
+name = "The pot calling the kettle black"
+prestige_factor = -0.05
+relation = { who = FROM value = -50 }
+add_country_modifier = { name = currency_manipulation_sanctions duration = -1 }
+		}
+}
+
 # Stock Market Crash
 country_event = {
 	id = 22500
@@ -482,4 +574,492 @@ country_event = {
 			militancy = 1
 		}
 	}
+}
+
+
+#Industrious Nation
+country_event = {
+	id = 576
+	title = "Industrious Nation"
+	desc = EVTDEESC576
+	picture = "industrious_nation"
+	
+	
+	trigger = {
+NOT = { has_country_flag = industrious_nation }
+OR = { 
+
+#Higher Education rate is high
+literacy = 0.30
+
+#Western European Economies
+AND = { tag = ENG austrian_school = 1 } 
+AND = { tag = FRA has_country_modifier = dirigisme } 
+AND = { tag = ITA has_country_modifier = dirigisme }
+
+#4 asian tigers
+AND = { tag = KMT capital = 1485 } tag = SKO tag = HKG tag = SNG tag = MSY 
+
+#Balance for incompetent AI
+tag = BRU tag = SAA tag = IRQ tag = YUG tag = SAF tag = RHO 
+tag = CAF tag = KUW tag = UAE tag = QAT tag = BHR tag = AST 
+tag = NZL tag = XCC tag = XEU tag = SWE tag = NOR tag = USA
+
+tag = AUS tag = SWI tag = LUX tag = BEL tag = NET tag = DEN
+tag = POR tag = FIN tag = IRE tag = CAN tag = SPA tag = ISR
+tag = DAI tag = SVI tag = SYR tag = LBY tag = GRE tag = PER 
+
+#Historical Economic Great Powers
+AND = { tag = GER is_vassal = no OR = { has_country_modifier = germaneconomy year = 1990 } }
+AND = { tag = JAP is_vassal = no OR = { has_country_modifier = japaneseeconomy year = 1990 } }
+  
+}
+	}
+	
+	option = {
+		name = "Onwards $COUNTRY$!"
+		set_country_flag = industrious_nation
+		clr_country_flag = economic_malaise
+					}
+}
+
+#Stop AI incompetence bankruptcies
+country_event = {
+	id = 781
+	title = "$COUNTRY_ADJ$ Capital Injection"
+	desc = "International Monetary Aid for $COUNTRY$ has arrived."
+	picture = "GOLD"
+	
+	
+	trigger = {
+NOT = { has_country_modifier = cold_war_hot }
+OR = { AND = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } is_vassal_of = RUS } is_greater_power = yes is_secondary_power = yes tag = SAF AND = { NOT = { war_with = CHI } tag = KMT } tag = ISR tag = SNG tag = HKG AND = { OR = { government = democracy government = democracy1 } tag = SPA } tag = POR tag = TUR tag = YUG tag = SKO tag = KOR tag = AUS tag = DEN tag = FIN tag = SWI tag = SWE tag = NOR tag = MEX tag = PER tag = MSY tag = JAP tag = HND tag = ITA tag = BEL tag = NET }
+
+		#war = no
+
+		ai = yes
+		NOT = { money = 1000000 }
+
+	}
+	
+	option = {
+		name = "Weaknesspays!"
+		treasury = 2000000
+		badboy = -1
+			}
+}
+
+#Stop AI incompetence bankruptcies
+country_event = {
+	id = 782
+	title = "$COUNTRY_ADJ$ Capital Injection"
+	desc = "International Monetary Aid for $COUNTRY$ has arrived."
+	picture = "GOLD"
+	
+	
+	trigger = {
+NOT = { has_country_modifier = cold_war_hot }
+OR = { NOT = { year = 1955 } war = no }
+		tag = USA
+		is_greater_power = yes
+		government = democracy
+		ai = yes
+		NOT = { money = 2000000 }
+
+	}
+	
+	option = {
+		name = "Weaknesspays!"
+		treasury = 2000000
+			}
+}
+
+#Startup capital
+country_event = {
+	id = 886
+	title = "Marshall Plan aid for $COUNTRY$"
+	desc = "US Monetary Aid for $COUNTRY$ has arrived."
+	picture = "GOLD"
+	
+	
+	trigger = {
+		year = 1950
+	OR = { tag = ENG tag = FRA tag = NET tag = BEL }
+		ai = yes
+		NOT = { has_country_flag = moneyforallfraeng }
+
+	}
+	
+	option = {
+		name = "Money really does grows on trees!"
+		treasury = 2000000
+		set_country_flag = moneyforallfraeng
+		}
+}
+
+#Startup capital - CHINA
+country_event = {
+	id = 887
+	title = "Financial Aid from the Communist Internationale"
+	desc = "The Internationale has raised some money for our cause."
+	picture = "GOLDCOMM"
+	
+	
+	trigger = {
+		year = 1946
+		NOT = { year = 1990 }
+		OR = { NOT = { year = 1955 } war = no }
+		tag = CHI
+		ai = yes
+		government = proletarian_dictatorship
+		war_with = KMT
+		NOT = { money = 1000000 }
+
+	}
+	
+	option = {
+		name = "We thank our Communist Brothers!"
+		treasury = 2000000
+				}
+}
+
+#Startup capital
+country_event = {
+	id = 888
+	title = "Start up capital"
+	desc = "Bankers laden with gold have mysteriously appeared in our country."
+	picture = "GOLD"
+	
+	
+	trigger = {
+		year = 1946
+		is_greater_power = yes
+		ai = yes
+		NOT = { has_country_flag = moneyforall }
+	}
+	
+	option = {
+		name = "Money really does grows on trees!"
+		treasury = 2000000
+		set_country_flag = moneyforall
+		}
+}
+
+#Startup capital
+country_event = {
+	id = 783
+	title = "Start up capital"
+	desc = "Bankers laden with gold have mysteriously appeared in our country."
+	picture = "GOLD"
+	
+	trigger = {
+		NOT = { has_country_flag = playermoneyboost }
+	}
+	
+	option = {
+		name = "Money really does grows on trees!"
+		any_owned = { owner = { money = 10000 } }
+		set_country_flag = playermoneyboost
+	}
+}
+
+#Export focus cleanup
+country_event = {
+	id = 123242
+	title = "Strengthen our economic policy's reach"
+	desc = "Some of our provinces are not benefitting from our current economic focus, we should rectify it immediately."
+	picture = "economicfocus"
+	
+	
+	trigger = {
+		year = 1946
+		has_country_flag = exportfocus
+		any_owned_province = { AND = { is_colonial = no NOT = { has_province_modifier = exportfocus } } }
+	}
+	
+	option = {
+		name = "Yes, do it"
+		treasury = -1000
+		any_owned = { limit = { AND = { is_colonial = no NOT = { has_province_modifier = exportfocus } } } add_province_modifier = { name = exportfocus duration = -1 } }
+		}
+}
+
+#Import focus cleanup
+country_event = {
+	id = 123243
+	title = "Strengthen our economic policy's reach"
+	desc = "Some of our provinces are not benefitting from our current economic focus, we should rectify it immediately."
+	picture = "economicfocus"
+	
+	
+	trigger = {
+		year = 1946
+		has_country_flag = importfocus
+		any_owned_province = { AND = { is_colonial = no NOT = { has_province_modifier = importsubstitutionfocus } } }
+	}
+	
+	option = {
+		name = "Yes, do it"
+		treasury = -1000
+		any_owned = { limit = { AND = { is_colonial = no NOT = { has_province_modifier = importsubstitutionfocus } } } add_province_modifier = { name = importsubstitutionfocus duration = -1 } }
+		}
+}
+
+#Startup capital
+country_event = {
+	id = 889
+	title = "Start up capital"
+	desc = "Bankers laden with gold have mysteriously appeared in our country."
+	picture = "GOLD"
+	
+	
+	trigger = {
+		year = 1946
+		is_greater_power = no
+		ai = yes
+		NOT = { tag = BRZ }
+		NOT = { has_country_flag = moneyforall425 }
+
+	}
+	
+	option = {
+		name = "Money really does grows on trees!"
+		treasury = 10000
+		set_country_flag = moneyforall425
+		}
+}
+#Startup capital
+country_event = {
+	id = 890
+	title = "Start up capital"
+	desc = "Bankers laden with gold have mysteriously appeared in our country."
+	picture = "GOLD"
+	
+	
+	trigger = {
+		year = 1946
+		ai = yes
+		is_greater_power = yes
+		NOT = { has_country_flag = moneyforall536 }
+
+	}
+	
+	option = {
+		name = "Money really does grows on trees!"
+		treasury = 1000000
+		set_country_flag = moneyforall536
+		}
+}
+
+#Creditor Nation
+country_event = {
+	id = 1300015
+	title = "We are a Major Creditor Nation"
+	desc = "Our nation has reached a sufficient politico-economic status to be a major creditor nation." 
+	picture = "world_bank"
+	
+	trigger = {
+		#GPs only
+		is_greater_power = yes
+		
+		#Must have a large economy
+		industrial_score = 1000
+		
+		#Must have a lot of money
+		money = 4000000
+		
+		#Must not have high infamy
+		NOT = { badboy = 0.8 }
+		
+		#Not at war
+		war = no
+		
+		NOT = { has_country_modifier = creditor_nation }
+	}
+	
+	mean_time_to_happen = { months = 12 }
+	
+	option = {
+		name = "Rejoice!"
+		prestige = 100
+		add_country_modifier = { name = creditor_nation duration = -1 } 
+	}
+}
+#Creditor Nation lose
+country_event = {
+	id = 1300016
+	title = "Major Creditor Nation Status Lost"
+	desc = "Our nation has not reached a sufficient politico-economic status to be a creditor nation anymore." 
+	picture = "world_bank"
+	
+	trigger = {
+		has_country_modifier = creditor_nation
+		
+		#THIS is not a GP
+		is_greater_power = no
+	}
+	
+	mean_time_to_happen = { months = 12 }
+	
+	option = {
+		name = "NOOOOOO!"
+		prestige = -100
+		remove_country_modifier = creditor_nation
+	}
+	
+}
+
+#Nationalisation of Critical Industries start
+country_event = {
+	id = 1400069
+	title = "Should we Nationalise Major Companies?"
+	desc = EVTDESC1400069
+	picture = "nationalisation"
+	
+trigger = { 
+NOT = { has_country_modifier = nap }
+NOT = { has_country_modifier = nationalisation_of_industry }
+NOT = { has_country_modifier = privatisation_of_industry }
+NOT = { government = proletarian_dictatorship }
+NOT = { government = proletarian_dictatorship1 }
+}
+
+option = {
+name = "Nationalise them!"
+prestige = 10
+set_country_flag = nap
+
+add_country_modifier = { name = nationalisation_in_progress duration = 3650 }
+
+add_country_modifier = { name = nationalisation_of_industry duration = -1 }
+
+ai_chance = { 
+factor = 0 
+modifier = { 
+OR = { economic_policy = planned_economy economic_policy = planned_economy1 economic_policy = state_capitalism } 
+factor = 1 } 
+}
+		}
+option = {
+name = "Leave them Privatised!"
+prestige = -10
+set_country_flag = nap
+
+add_country_modifier = { name = privatisation_in_progress duration = 3650 }
+
+add_country_modifier = { name = privatisation_of_industry duration = -1 }
+
+ai_chance = { 
+factor = 1
+modifier = { 
+OR = { economic_policy = planned_economy economic_policy = planned_economy1 economic_policy = state_capitalism } 
+factor = 0 } 
+}
+
+		}
+}
+
+#Special Economic Zone Investment
+country_event = {
+	id = 1410125
+	title = "$FROMCOUNTRY_ADJ$ Investment in $COUNTRY_ADJ$ SEZ"
+	desc = EVTDESC1410125
+	picture = "spez"
+	
+	allow_multiple_instances = yes
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "We thank the $FROMCOUNTRY_ADJ$ Government for their money!"
+		
+		prestige = 25
+		
+		random_owned = {
+			limit = {
+				state_scope = {
+					any_owned_province = {
+						is_core = THIS
+						has_building = naval_base
+						has_building = railroad
+					}
+					any_owned_province = {
+						total_pops = 250000
+						is_capital = no
+						NOT = { has_province_modifier = spez }
+						is_state_capital = yes
+					}
+				}
+				is_state_capital = yes
+			}
+			add_province_modifier = { name = spez duration = 3650 }
+			
+			#Increase literacy
+			any_pop = { 
+				limit = { 
+					OR = { is_primary_culture = yes is_accepted_culture = yes } 
+				}
+				consciousness = 5
+				literacy = 0.04
+			}
+		}
+	}
+
+}
+
+#Import Substitution Economy in South America
+country_event = {
+	id = 1610061
+title = "Import Substitution Economy in $COUNTRY$?"
+	desc = EVTDESC1610061
+	picture = "south_america_isi"
+
+trigger = {
+OR = { capital_scope = { continent = south_america } tag = MEX }
+year = 1946
+NOT = { year = 1990 }
+is_vassal = no
+election = no
+war = no
+
+NOT = { has_country_flag = south_american_isi }
+NOT = { has_country_flag = south_american_isi_event_fired }
+	}
+
+mean_time_to_happen = { 
+months = 1
+	}
+
+option = {
+name = "Embrace this magical way"
+
+set_country_flag = south_american_isi_event_fired
+
+add_country_modifier = { name = economic_boom duration = 5840 }
+
+set_country_flag = south_american_isi
+
+set_country_flag = importfocus
+any_owned = { limit = { is_colonial = no } add_province_modifier = { name = importsubstitutionfocus duration = -1 } }
+
+clr_country_flag = exportfocus
+any_owned = { remove_province_modifier = exportfocus }
+
+ai_chance = { factor = 0.9 }
+	}
+
+option = {
+name = "Focus on exports instead"
+
+set_country_flag = south_american_isi_event_fired
+
+set_country_flag = exportfocus
+any_owned = { limit = { is_colonial = no } add_province_modifier = { name = exportfocus duration = -1 } }
+
+clr_country_flag = importfocus
+any_owned = { remove_province_modifier = importsubstitutionfocus }
+
+ai_chance = { factor = 0.1 }
+	}
+
 }

@@ -1,0 +1,676 @@
+#Helsinki Accords - inform players
+country_event = {
+	id = 1412188
+title = "Helsinki Accords of $YEAR$"
+	desc = EVTDESC1412188
+	picture = "helsinki_accords"
+
+is_triggered_only = yes
+
+option = {
+name = "This may well be the start of a detente between the superpowers"
+		}
+}
+
+#State Visit
+country_event = {
+	id = 1412191
+	title = "Important State Visit in $CAPITAL$"
+	desc = EVTDESC1412191
+	picture = "state_visit"
+
+	trigger = { 
+	
+		#Diplomacy focus
+		has_country_modifier = nprlow
+		
+		#Big powers dont waste time with irrelevant minors
+		rank = 45
+		
+		is_vassal = no
+		war = no
+		election = no
+		
+		#No visits if THIS doesn't give loans
+		NOT = { has_country_flag = stop_loan }
+	}
+
+	mean_time_to_happen = { 
+		months = 36
+		modifier = { factor = 2 is_greater_power = no is_secondary_power = no }
+		modifier = { factor = 1.5 badboy = 0.1 }
+		modifier = { factor = 1.5 badboy = 0.2 }
+		modifier = { factor = 1.5 badboy = 0.3 }
+		modifier = { factor = 1.5 badboy = 0.4 }
+		modifier = { factor = 1.5 badboy = 0.5 }
+		modifier = { factor = 1.5 badboy = 0.6 }
+		modifier = { factor = 1.5 badboy = 0.7 }
+		modifier = { factor = 1.5 badboy = 0.8 }
+		modifier = { factor = 1.5 badboy = 0.9 }
+		modifier = { factor = 1.5 badboy = 1.0 }
+	}
+
+	option = {
+		name = "Discuss deepening trade ties"
+		prestige = 10
+		random_country = { limit = { OR = { is_greater_power = yes is_secondary_power = yes } } relation = { who = THIS value = 10 } }
+		add_country_modifier = { name = economic_boom duration = 730 }
+	}
+
+	option = {
+		name = "Discuss mutual interests"
+		prestige = 5
+		random_country = { limit = { OR = { is_greater_power = yes is_secondary_power = yes } } diplomatic_influence = { who = THIS value = 5 } relation = { who = THIS value = 25 } }
+	}
+
+
+	option = {
+		name = "Discuss contentious issues"
+		prestige = 30
+		random_country = { limit = { OR = { is_greater_power = yes is_secondary_power = yes } } relation = { who = THIS value = -25 } }
+	}
+
+}
+
+#GP Trade Deal
+country_event = {
+	id = 1412083
+	title = "$COUNTRY_ADJ$-$FROMCOUNTRY_ADJ$ Free Trade Deal"
+	desc = EVTDESC1412083
+	picture = "free_trade_deal"
+
+	is_triggered_only = yes
+	option = {
+		name = "Accept!"
+		prestige = 25
+		FROM = { prestige = 25 }
+		relation = { who = FROM value = 25 }
+		FROM = { add_country_modifier = { name = bilateral_trade_pact_gp duration = 1825 } }
+		add_country_modifier = { name = bilateral_trade_pact_gp duration = 1825 }
+		ai_chance = { factor = 0.9 }
+	}
+	option = {
+		name = "Reject!"
+		FROM = { country_event = 1412085 }
+		prestige = -10
+		add_country_modifier = { name = trade_deal_failure duration = 500 }
+		relation = { who = FROM value = -25 }
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+#SP Trade Deal
+country_event = {
+	id = 1412084
+	title = "$COUNTRY_ADJ$-$FROMCOUNTRY_ADJ$ Free Trade Deal"
+	desc = EVTDESC1412083
+	picture = "free_trade_deal"
+
+	is_triggered_only = yes
+	option = {
+		name = "Accept!"
+		prestige = 25
+		FROM = { prestige = 25 }
+		relation = { who = FROM value = 25 }
+		FROM = { add_country_modifier = { name = bilateral_trade_pact_sp duration = 1825 } }
+		add_country_modifier = { name = bilateral_trade_pact_sp duration = 1825 }
+		ai_chance = { factor = 0.9 }
+	}
+	option = {
+		name = "Reject!"
+		FROM = { country_event = 1412085 }
+		prestige = -10
+		relation = { who = FROM value = -25 }
+		add_country_modifier = { name = trade_deal_failure duration = 500 }
+		ai_chance = { factor = 0.1 }
+	}
+}
+
+#SP Trade Deal
+country_event = {
+	id = 1412085
+	title = "$COUNTRY_ADJ$-$FROMCOUNTRY_ADJ$ Free Trade Deal Refused"
+	desc = "The free trade deal that we proposed to $FROMCOUNTRY$ has been rejected after talks about its scope and depth broke down. Furthermore, $FROMCOUNTRY$ has said that the deal is not in their economic best interest."
+	picture = "free_trade_deal"
+
+	is_triggered_only = yes
+	option = {
+		name = EVT_1412085_A
+		prestige = -25
+		add_country_modifier = { name = trade_deal_failure duration = 500 }
+		relation = { who = FROM value = -25 }
+	}
+}
+
+#Uniting for Peace Secondary Powers Recipients
+country_event = {
+	id = 1412042
+	title = "$FROMCOUNTRY$ invokes Uniting for Peace"
+	desc = EVTDESC1412042
+	picture = "uniting_for_peace"
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "Vote in favour of $FROMCOUNTRY$!"
+		relation = { who = FROM value = 20 }
+		any_country = { 
+			limit = { 
+				is_vassal = no 
+				war_with = FROM 
+			} 
+			country_event = 1412043 
+		}
+
+		ai_chance = { 
+			factor = 1 
+			modifier = { 
+				factor = 0 
+				NOT = { relation = { who = FROM value = 100 } } 
+			} 
+		}
+	}
+	option = {
+		name = "Vote against $FROMCOUNTRY$!"
+		relation = { who = FROM value = -20 }
+		any_country = { 
+			limit = { war_with = FROM } 
+			relation = { who = THIS value = 10 } 
+		}
+
+		ai_chance = { 
+			factor = 1 
+			modifier = { 
+				factor = 0 
+				relation = { who = FROM value = 100 } 
+			} 
+		}
+	}
+
+}
+
+#Uniting for Peace war with Recipients
+country_event = {
+	id = 1412043
+	title = "$FROMCOUNTRY$ Condemns $COUNTRY$"
+	desc = "As the UNSC failed to pass the opposing nation's resolution to end the conflict, they decided to use a Uniting for Peace Resolution to impose sanctions on our nation. $FROMCOUNTRY$ voted to condemn us."
+	picture = "uniting_for_peace"
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "SAD, but the war goes on!"
+		prestige = -25
+		badboy = 3
+		money = -50000
+		add_tax_relative_income = -10
+	}
+
+}
+
+
+#### Warfare and Embargo ####
+
+
+#Maritime Trade Routes Disrupted
+country_event = {
+	id = 1610144
+	title = "Maritime Trade Routes Disrupted"
+	desc = EVTDESC1610144
+	picture = "sea_route_blocked_war"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Outrageous!"
+		prestige_factor = -0.01
+		
+		war_exhaustion = 20
+		
+		relation = { who = FROM value = -50 }
+		
+		add_country_modifier = { name = constricted_international_trade duration = 365 }
+		
+		any_pop = {
+			militancy = 2.5
+			consciousness = 2.5
+		}
+	}
+
+}
+
+#Maritime Trade Routes Disrupted
+country_event = {
+	id = 1610145
+	title = "Maritime Blockade Failed"
+	desc = EVTDESC1610145
+	picture = "sea_route_cleared_war"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "Damn!"
+		prestige_factor = -0.01
+		
+		war_exhaustion = 10
+		
+		any_pop = {
+			militancy = 2.5
+			consciousness = 2.5
+		}
+	}
+
+}
+
+#End of Commerce raiding
+country_event = {
+	id = 1412148
+title = "Enemy commerce raiding subsides"
+	desc = "Active commerce raiding by our enemies have ceased."
+	picture = "commerce_raiding"
+
+
+trigger = {
+has_country_modifier = commerce_raiding
+
+OR = {
+NOT = { any_owned_province = { has_building = naval_base } } 
+war = no 
+AND = { NOT = { any_greater_power = { war_with = THIS has_country_flag = commerce_raiding } }
+NOT = { any_neighbor_country = { war_with = THIS has_country_flag = commerce_raiding } } }
+	} 
+
+
+}
+
+option = {
+name = "Hooray!"
+war_exhaustion = -10
+remove_country_modifier = commerce_raiding
+		}
+}
+
+#End of Commerce raiding ability
+country_event = {
+	id = 1412149
+title = "Lost ability to raid enemy shipping"
+	desc = "We no longer have any ports or sufficient naval ships to conduct raids on enemy shipping."
+	picture = "end_commerce_raiding"
+
+
+trigger = {
+has_country_flag = commerce_raiding
+OR = { NOT = { total_amount_of_ships = 40 } NOT = { any_owned_province = { has_building = naval_base } } }
+}
+
+option = {
+name = "NOOOO!"
+prestige = -50
+clr_country_flag = commerce_raiding
+		}
+}
+
+#Announce embargo
+country_event = {
+	id = 1412150
+	title = "The $FROMCOUNTRY_ADJ$ Embargo of $COUNTRY$"
+	desc = "Due to the recent deterioration in our relations with $FROMCOUNTRY$, they have decided to punish us by embargoing our nation. They hope that this will serve as a warning not to antagonise them and trigger a push to repair relations."
+	picture = "end_commerce_raiding"
+
+	major = yes
+
+	is_triggered_only = yes
+
+	option = {
+		name = "They will pay for this!"
+		prestige = -25
+		
+		random_owned = {
+			limit = { 
+				owner = { FROM = { is_greater_power = yes } } 
+			}
+			owner = { add_country_modifier = { name = embargoed_by_GP duration = 365 } }
+		}
+		
+		random_owned = {
+			limit = { 
+				owner = { FROM = { is_secondary_power = yes } } 
+			}
+			owner = { add_country_modifier = { name = embargoed_by_SP duration = 365 } }
+		}
+		
+		random_owned = {
+			limit = { 
+				owner = { FROM = { is_greater_power = no is_secondary_power = no } } 
+			}
+			owner = { add_country_modifier = { name = embargoed_by_minor_nation duration = 365 } }
+		}
+		
+		#Retaliate with our own embargo
+		random_owned = {
+			limit = { 
+				owner = { FROM = { has_country_flag = embargo_nation_flag } } 
+			}
+			owner = { FROM = { country_event = 1412150 } }
+		}
+		
+		FROM = { clr_country_flag = embargo_nation_flag }
+		
+	}
+
+	option = {
+		name = "Seek dialogue!"
+		prestige = -50
+		
+		relation = { who = FROM value = 25 }
+		
+		random_owned = {
+			limit = { 
+				owner = { FROM = { is_greater_power = yes } } 
+			}
+			owner = { add_country_modifier = { name = embargoed_by_GP duration = 365 } }
+		}
+		
+		random_owned = {
+			limit = { 
+				owner = { FROM = { is_secondary_power = yes } } 
+			}
+			owner = { add_country_modifier = { name = embargoed_by_SP duration = 365 } }
+		}
+		
+		random_owned = {
+			limit = { 
+				owner = { FROM = { is_greater_power = no is_secondary_power = no } } 
+			}
+			owner = { add_country_modifier = { name = embargoed_by_minor_nation duration = 365 } }
+		}
+		
+		FROM = { clr_country_flag = embargo_nation_flag }
+		
+	}
+
+}
+
+
+#### Peace Summit ####
+
+#Rank 1 Receive offer for Relations boost
+country_event = {
+	id = 1412153
+title = "$FROMCOUNTRY_ADJ$ International Peace Summit?"
+	desc = EVTDESC1412153
+	picture = "crisis_talks"
+
+is_triggered_only = yes
+
+option = {
+name = "Accept!"
+badboy = -5
+random_country = { limit = { has_country_modifier = un_king2 } country_event = 1412154 }
+ai_chance = { factor = 0.8 }
+		}
+
+option = {
+name = "Reject!"
+prestige = -10
+FROM = { country_event = 1412155 }
+ai_chance = { factor = 0.2 }
+		}
+}
+
+#Rank 2 Receive offer for Relations boost
+country_event = {
+	id = 1412154
+title = "$FROMCOUNTRY_ADJ$ International Peace Summit?"
+	desc = EVTDESC1412154
+
+	picture = "crisis_talks"
+
+is_triggered_only = yes
+
+option = {
+name = "Accept!"
+badboy = -5
+random_country = { limit = { has_country_modifier = crisis_talk } country_event = 1412156 }
+FROM = { prestige = 25 }
+relation = { who = FROM value = 75 }
+prestige = 25
+ai_chance = { factor = 0.8 }
+		}
+
+option = {
+name = "Reject!"
+prestige = -10
+random_country = { limit = { has_country_modifier = crisis_talk } country_event = 1412155 }
+ai_chance = { factor = 0.2 }
+		}
+}
+
+#Failed Outcome
+country_event = {
+	id = 1412155
+title = "International Peace Summit in $CAPITAL$ Collapses"
+	desc = "The superpowers have decided to reject our offer to host summit talks to soothe tensions between the superpowers as they are unable to reconcile their deep divisions at the moment."
+
+	picture = "crisis_talks"
+
+is_triggered_only = yes
+
+option = {
+name = "Terrible!"
+prestige = -25
+relation = { who = FROM value = -50 }
+
+clr_country_flag = nobel_peace_prize_recipient
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = conservative } }
+owner = { any_pop = { ideology = { factor = -0.05 value = conservative } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = big_tent } }
+owner = { any_pop = { ideology = { factor = -0.05 value = big_tent } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = socialist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = socialist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = traditionalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = traditionalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = populist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = populist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = nationalist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = nationalist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = progressive } }
+owner = { any_pop = { ideology = { factor = -0.05 value = progressive } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = liberal } }
+owner = { any_pop = { ideology = { factor = -0.05 value = liberal } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist } } }
+}
+
+random_owned = { 
+limit = { owner = { ruling_party_ideology = communist_social } }
+owner = { any_pop = { ideology = { factor = -0.05 value = communist_social } } }
+}
+
+		}
+}
+
+#Successful Outcome
+country_event = {
+	id = 1412156
+title = "International Peace Summit in $CAPITAL$"
+	desc = "The superpowers have decided to accept our offer to host summit talks to soothe tensions between the superpowers. Our nation managed to get some limelight in the international scene for this, in addition to gaining more superpower goodwill."
+
+	picture = "crisis_talks"
+
+major = yes
+
+is_triggered_only = yes
+
+option = {
+name = "Tremendous!"
+prestige = 10
+random_country = { limit = { has_country_modifier = un_king1 } relation = { who = THIS value = 25 } badboy = -10 }
+random_country = { limit = { has_country_modifier = un_king2 } relation = { who = THIS value = 25 } badboy = -10 }
+set_country_flag = nobel_peace_prize_recipient
+		}
+}
+
+#Expelled from Military Alliance
+country_event = {
+	id = 1610143
+	title = "Expelled from Global Military Alliance"
+	desc = "EVTDESC1610143"
+	picture = "expelled_from_global_alliance"
+
+	trigger = {
+		
+		#Not NATO Leader
+		NOT = { has_country_modifier = nato_leader }
+		
+		#Not bloc leader
+		NOT = { has_country_modifier = communist_bloc_leader }
+		NOT = { has_country_modifier = democratic_bloc_leader }
+		
+		#Part of a global bloc
+		OR = {
+			AND = { has_country_modifier = alliance_nato THIS = { has_country_modifier = alliance_nato } }
+			AND = { has_country_modifier = rio_pact THIS = { has_country_modifier = rio_pact } }	
+			AND = { has_country_modifier = warsaw_pact THIS = { has_country_modifier = warsaw_pact } }
+			AND = { has_country_modifier = csto_alliance THIS = { has_country_modifier = csto_alliance } }	
+			AND = { has_country_modifier = anzus_alliance THIS = { has_country_modifier = anzus_alliance } }
+			AND = { has_country_modifier = sco_pact THIS = { has_country_modifier = sco_pact } }
+			AND = { has_country_modifier = cento_member THIS = { has_country_modifier = cento_member } }
+		}
+		
+		#THIS is a pariah
+		has_country_modifier = international_pariah
+		badboy = 1
+		
+		#THIS is independent
+		is_vassal = no
+		
+	}
+	
+	mean_time_to_happen = {
+		months = 10
+		modifier = { factor = 0.1 has_country_modifier = cold_war_high }
+		modifier = { factor = 0.5 has_country_modifier = cold_war_medium }
+		
+		modifier = { factor = 0.1 has_country_modifier = world_high }
+		modifier = { factor = 0.5 has_country_modifier = world_medium }
+	}
+
+	option = {
+		name = "They 'wish' us well"
+		
+		any_pop = { militancy = 1 consciousness = 2 }
+		
+		#NATO
+		random_owned = {
+			limit = { owner = { has_country_modifier = alliance_nato } }
+			owner = {
+				prestige_factor = -0.01
+				remove_country_modifier = alliance_nato
+				
+				add_country_modifier = { name = leave_alliance_nato duration = 1825 }
+				any_country = { limit = { has_country_modifier = alliance_nato } relation = { who = THIS value = -50 } leave_alliance = THIS }
+			}
+		}
+		
+		#Rio Pact
+		random_owned = {
+			limit = { owner = { has_country_modifier = rio_pact } }
+			owner = {
+				prestige_factor = -0.01
+				remove_country_modifier = rio_pact
+				
+				add_country_modifier = { name = leave_rio_pact duration = 1825 }
+				any_country = { limit = { has_country_modifier = rio_pact } relation = { who = THIS value = -50 } leave_alliance = THIS }
+			}
+		}
+		
+		#Warsaw Pact
+		random_owned = {
+			limit = { owner = { has_country_modifier = warsaw_pact } }
+			owner = {
+				prestige_factor = -0.01
+				remove_country_modifier = warsaw_pact
+				
+				add_country_modifier = { name = leave_warsaw_pact duration = 1825 }
+				any_country = { limit = { has_country_modifier = warsaw_pact } relation = { who = THIS value = -50 } leave_alliance = THIS }
+			}
+		}
+		
+		#CSTO
+		random_owned = {
+			limit = { owner = { has_country_modifier = csto_alliance } }
+			owner = {
+				prestige_factor = -0.01
+				remove_country_modifier = csto_alliance
+				
+				add_country_modifier = { name = leave_csto_alliance duration = 1825 }
+				any_country = { limit = { has_country_modifier = csto_alliance } relation = { who = THIS value = -50 } leave_alliance = THIS }
+			}
+		}
+		
+		#ANZUS
+		random_owned = {
+			limit = { owner = { has_country_modifier = anzus_alliance } }
+			owner = {
+				prestige_factor = -0.01
+				remove_country_modifier = anzus_alliance
+				
+				add_country_modifier = { name = leave_anzus_alliance duration = 1825 }
+				any_country = { limit = { has_country_modifier = anzus_alliance } relation = { who = THIS value = -50 } leave_alliance = THIS }
+			}
+		}
+		
+		#SCO Pact
+		random_owned = {
+			limit = { owner = { has_country_modifier = sco_pact } }
+			owner = {
+				prestige_factor = -0.01
+				remove_country_modifier = sco_pact
+				
+				add_country_modifier = { name = leave_sco_pact duration = 1825 }
+				any_country = { limit = { has_country_modifier = sco_pact } relation = { who = THIS value = -50 } leave_alliance = THIS }
+			}
+		}
+		
+		#CENTO Pact
+		random_owned = {
+			limit = { owner = { has_country_modifier = cento_member } }
+			owner = {
+				prestige_factor = -0.01
+				remove_country_modifier = cento_member
+				
+				add_country_modifier = { name = leave_cento_member duration = 1825 }
+				any_country = { limit = { has_country_modifier = cento_member } relation = { who = THIS value = -50 } leave_alliance = THIS }
+			}
+		}
+		
+	}
+
+}

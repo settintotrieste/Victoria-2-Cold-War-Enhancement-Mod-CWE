@@ -261,3 +261,202 @@ UNT = { sphere_owner = { diplomatic_influence = { who = THIS value = 200 } } }
 		}
 
 }
+
+#Clean up UNO tag
+country_event = {
+	id = 1610131
+	title = "The United Nations"
+	desc = EVTDESC1610131
+	picture = "united_nations"
+
+	trigger = {
+		UNO = { exists = yes }
+		any_neighbor_country = { tag = UNO }
+	}
+
+	option = {
+		name = "The UN is now being operated from $COUNTRY_ADJ$ territory"
+		prestige = 50
+		inherit = UNO
+	}
+
+}
+
+#United Nations Trusteeship proposal after dismemberment
+country_event = {
+	id = 1512327
+	title = "UN Trusteeship over $FROMCOUNTRY$?"
+	desc = EVTDESC1512327
+	picture = "united_nations_trust_territories"
+
+	is_triggered_only = yes
+	
+	allow_multiple_instances = yes
+
+	option = {
+		name = "Accept the mandate"
+		prestige = 100
+		money = -500000
+		
+		#Initialise mandate
+		create_vassal = FROM
+		FROM = { 
+			government = mandate_government 
+			country_event = 800054 
+		
+			money = 500000 
+			add_country_modifier = { name = tax_boost_modifier duration = 3650 } 
+			add_country_modifier = { name = economic_boom duration = 3650 } 
+			
+			#Identify THIS as an unnatural division
+			set_country_flag = great_war_mandate_un 
+		}
+		
+		#Match ruling party of FROM with THIS
+		random_owned = { limit = { owner = { ruling_party_ideology = traditionalist } } owner = { FROM = { ruling_party_ideology = traditionalist } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = conservative } } owner = { FROM = { ruling_party_ideology = conservative } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = liberal } } owner = { FROM = { ruling_party_ideology = liberal } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = big_tent } } owner = { FROM = { ruling_party_ideology = big_tent } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = progressive } } owner = { FROM = { ruling_party_ideology = progressive } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = socialist } } owner = { FROM = { ruling_party_ideology = socialist } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = communist } } owner = { FROM = { ruling_party_ideology = communist } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = communist_social } } owner = { FROM = { ruling_party_ideology = communist_social } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = nationalist } } owner = { FROM = { ruling_party_ideology = nationalist } } }
+		random_owned = { limit = { owner = { ruling_party_ideology = populist } } owner = { FROM = { ruling_party_ideology = populist } } }
+		
+		#THIS gains influence in FROM
+		diplomatic_influence = { who = FROM value = 200 }
+		diplomatic_influence = { who = FROM value = 200 }
+		relation = { who = FROM value = 200 }
+		
+		ai_chance = { 
+			factor = 1
+			modifier = { factor = 0 NOT = { money = 500000 } }
+		}
+	}
+
+	option = {
+		name = "The $FROMCOUNTRY_ADJ$ people can rule themselves"
+		relation = { who = FROM value = 50 }
+		ai_chance = { 
+			factor = 1
+			modifier = { factor = 0 money = 500000 }
+		}	
+	}
+
+}
+
+#Trigger UN mandate independence
+country_event = { 
+	id = 1512328
+	title = "Independence of $COUNTRY$"
+	desc = EVT_fullindependence_DESC
+	picture = "un_mandate_end"
+
+	trigger = {
+		has_country_flag = great_war_mandate_un
+
+		government = mandate_government
+		is_vassal = yes
+		war = no
+
+		election = no
+	}
+
+	mean_time_to_happen = { 
+		months = 60
+	}
+
+	option = {
+		name = EVT_fullindependence_A
+		prestige = 50
+		clr_country_flag = great_war_mandate_un
+		overlord = { country_event = 15406 }
+		
+		#Identify THIS as an unnatural division
+		set_country_flag = unnatural_partition_of_country
+		
+		ai_chance = { factor = 1 }
+	}
+	
+	option = {
+		name = "Remain as a protectorate"
+		prestige = -50
+	
+		FROM = {
+
+			#Constitutional Monarchy
+			random_owned = { limit = { owner = { overlord = { OR = { government = hms_government government = hms_government1 government = absolute_monarchy } } } } owner = { government = hms_government1 } }
+
+			#Democracy
+			random_owned = { limit = { owner = { overlord = { OR = { government = democracy government = democracy } } } } owner = { government = democracy } }
+
+			#Socialist Democracy
+			random_owned = { limit = { owner = { overlord = { government = socialist_democracy } } } owner = { government = socialist_democracy ruling_party_ideology = socialist } }
+
+			#Communist Dictatorships
+			random_owned = { limit = { owner = { overlord = { OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 } } } } owner = { government = proletarian_dictatorship ruling_party_ideology = communist country_event = 800052 } }
+
+			#Theocracy
+			random_owned = { limit = { owner = { overlord = { government = theocracy } } } owner = { government = theocracy country_event = 800050 ruling_party_ideology = traditionalist } }
+
+			#Presidential Dictatorship
+			random_owned = { limit = { owner = { overlord = { government = presidential_dictatorship } } } owner = { government = presidential_dictatorship country_event = 800050 } }
+
+			#Nationalist Dictatorship
+			random_owned = { limit = { owner = { overlord = { government = populist_dictatorship } } } owner = { government = populist_dictatorship country_event = 800050 ruling_party_ideology = nationalist } }
+
+			#Sectarian Dictatorship
+			random_owned = { limit = { owner = { overlord = { government = nationalist_dictatorship } } } owner = { government = nationalist_dictatorship country_event = 800050 } }
+
+		}
+
+		clr_country_flag = great_war_mandate_un
+		
+		ai_chance = { factor = 0 }
+	}
+
+}
+
+#Independence event for UNT puppets
+country_event = {
+  id = 1512308
+  title = "Independence of $COUNTRY$"
+  desc = "As part of the Peace Treaty, the United Nations is committed to grant us independence in 5 years, the time has finally come to embrace our new found freedom!"
+  picture = "colonial_dissent"
+
+  trigger = {
+	vassal_of = UNT
+	war = no
+	is_vassal = yes
+  }
+
+mean_time_to_happen = { months = 60 }
+
+  option = {
+    name = "The United Nations grants us independence!"
+	overlord = { release_vassal = THIS }
+	government = democracy
+	country_event = 800054	
+  }
+
+}
+
+#Remove Ports and Forts in UNT territories
+country_event = {
+	id = 1512122
+title = "Disarmament"
+desc = "The UN will remove all ports in its occupied territories."
+	picture = "un_trust_territory"
+
+trigger = {
+tag = UNT
+any_owned_province = { OR = { has_building = fort has_building = naval_base } }
+}
+
+option = {
+name = "Disarm"
+any_owned = { limit = { has_building = fort } fort = -10 }
+any_owned = { limit = { has_building = naval_base } naval_base = -10 }
+		}
+}

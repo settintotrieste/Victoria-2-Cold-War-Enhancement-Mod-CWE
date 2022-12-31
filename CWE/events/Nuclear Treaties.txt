@@ -1,0 +1,351 @@
+#Partial Test Ban Treaty, 1963
+country_event = {
+	id = 1610088
+title = "Partial Test Ban Treaty"
+	desc = EVTDESC1610088
+	picture = "partial_test_ban_treaty"
+
+trigger = {
+year = 1963
+NOT = { has_global_flag = comprehensive_test_ban_treaty }
+NOT = { has_country_flag = partial_test_ban_treaty_fired }
+is_vassal = no
+election = no
+war = no
+}
+
+mean_time_to_happen = { 
+months = 10
+}
+
+option = {
+name = "Sign the treaty! (Slower nuclear development)"
+badboy = -5
+set_global_flag = partial_test_ban_treaty
+
+set_country_flag = signed_partial_test_ban_treaty
+
+set_country_flag = partial_test_ban_treaty_fired
+
+ai_chance = { 
+factor = 0.75
+modifier = { factor = 0 war_policy = jingoism }
+	}
+		}
+
+option = {
+name = "Never! (More infamy for nuclear development)"
+set_global_flag = partial_test_ban_treaty
+
+set_country_flag = partial_test_ban_treaty_fired
+
+ai_chance = { factor = 0.25 modifier = { factor = 0 war_policy = pacifism } }
+		}
+
+}
+
+#Comprehensive Nuclear Test Ban Treaty, 1996
+country_event = {
+	id = 1610089
+title = "Comprehensive Nuclear Test Ban Treaty"
+	desc = EVTDESC1610089
+	picture = "comprehensive_test_ban_treaty"
+
+trigger = {
+year = 1996
+NOT = { has_global_flag = blocsenabled }
+has_global_flag = partial_test_ban_treaty
+NOT = { has_country_flag = comprehensive_test_ban_treaty_fired }
+is_vassal = no
+election = no
+war = no
+}
+
+mean_time_to_happen = { 
+months = 9
+}
+
+option = {
+name = "Sign the treaty! (Slower nuclear development)"
+badboy = -5
+set_global_flag = comprehensive_test_ban_treaty
+set_country_flag = signed_comprehensive_test_ban_treaty
+set_country_flag = signed_partial_test_ban_treaty
+
+set_country_flag = comprehensive_test_ban_treaty_fired
+
+ai_chance = { 
+factor = 0.75
+modifier = { factor = 0 war_policy = jingoism }
+	}
+		}
+
+option = {
+name = "Never! (More infamy for nuclear development)"
+set_global_flag = comprehensive_test_ban_treaty
+
+set_country_flag = comprehensive_test_ban_treaty_fired
+
+ai_chance = { factor = 0.25 modifier = { factor = 0 war_policy = pacifism } }
+		}
+
+}
+
+#Fears of Mutually Assured Destruction
+country_event = {
+	id = 1610106
+	title = "Fears of Mutually Assured Destruction"
+	desc = "EVTDESC1610106"
+	picture = "MAD_fear"
+
+	trigger = {
+		war = yes
+		national_provinces_occupied = 0.10
+		OR = {
+			has_country_modifier = nuclear_cap_high
+			has_country_modifier = nuclear_cap_medium 
+			has_country_modifier = nuclear_cap_low
+		}
+		war_countries = {
+			national_provinces_occupied = 0.10
+			OR = {
+				has_country_modifier = nuclear_cap_high
+				has_country_modifier = nuclear_cap_medium 
+				has_country_modifier = nuclear_cap_low
+			}
+		}
+		seventies_subcultures = 1
+	}
+
+	mean_time_to_happen = { 
+		months = 6
+	}
+
+	option = {
+		name = "There is nothing to fear but fear itself!"
+		
+		any_pop = { consciousness = 1 }
+		
+		random_owned = {
+			limit = { owner = { publishing_rights = censored_publishing } }
+			owner = {
+				any_pop = {
+					dominant_issue = {
+						value = pacifism
+						factor = 0.01
+					}
+				}
+			}
+		}
+		
+		random_owned = {
+			limit = { owner = { publishing_rights = firewall_publishing } }
+			owner = {
+				any_pop = {
+					dominant_issue = {
+						value = pacifism
+						factor = 0.02
+					}
+				}
+			}
+		}
+		
+		random_owned = {
+			limit = { 
+				owner = { 
+					NOT = { 
+						publishing_rights = censored_publishing 
+						publishing_rights = firewall_publishing 
+					} 
+				} 
+			}
+			owner = {
+				any_pop = {
+					dominant_issue = {
+						value = pacifism
+						factor = 0.04
+					}
+				}
+			}
+		}
+	}
+	
+}
+
+#Denuclearisation Demanded - target
+country_event = {
+	id = 1512354
+title = "$FROMCOUNTRY$ Demands Denuclearisation"
+	desc = EVTDESC1512354
+	picture = "nuclear_disarmament_un"
+
+is_triggered_only = yes
+
+option = {
+name = "Push ahead in our nuclear development!"
+relation = { who = FROM value = -100 }
+
+any_country = { limit = { OR = { is_greater_power = yes has_country_modifier = unsc_permanent_member } } country_event = 1512355 }
+
+ai_chance = { factor = 0.9 modifier = { factor = 0 badboy = 1 } }
+		}
+
+option = {
+name = "Accept the $FROMCOUNTRY_ADJ$ demand"
+badboy = -25
+prestige_factor = -0.25
+remove_country_modifier = hydrogen_nation 
+remove_country_modifier = atomic_nation
+remove_country_modifier = develop_atomic_bomb 
+remove_country_modifier = develop_hydrogen_bomb
+remove_country_modifier = nuclear_cap_high
+remove_country_modifier = nuclear_cap_medium 
+remove_country_modifier = nuclear_cap_low
+clr_country_flag = atomic_bomb_developed
+clr_country_flag = hydrogen_bomb_developed
+clr_country_flag = icbm_bomb
+clr_country_flag = sub_bomb
+clr_country_flag = air_bomb
+
+remove_country_modifier = nuke_sanctions
+
+add_country_modifier = { name = non_proliferation_treaty duration = 7300 }
+
+clr_country_flag = demanded_denuclearisation
+
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Denuclearisation Demanded - GPs and UNSC members
+country_event = {
+	id = 1512355
+title = "Denuclearisation of $FROMCOUNTRY$?"
+	desc = EVTDESC1512355
+	picture = "nuclear_disarmament_un"
+
+is_triggered_only = yes
+
+option = {
+name = "Support the motion in the UN General Assembly!"
+relation = { who = FROM value = -100 }
+FROM = { badboy = 2 add_country_modifier = { name = nuke_sanctions duration = -1 } }
+ai_chance = { 
+factor = 1 
+modifier = { factor = 0 NOT = { relation = { who = FROM value = 100 } } } 
+}
+		}
+
+option = {
+name = "Abstain from the motion"
+prestige = -10
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Vote against the motion"
+relation = { who = FROM value = 100 }
+FROM = { badboy = -2 }
+ai_chance = { 
+factor = 1 
+modifier = { factor = 0 relation = { who = FROM value = -50 } } 
+}
+		}
+
+}
+
+#Denuclearisation Demanded - Summit
+country_event = {
+	id = 1512356
+title = "Summit on De-nuclearisation"
+	desc = EVTDESC1512356
+	picture = "nuclear_disarmament_summit"
+
+is_triggered_only = yes
+
+option = {
+name = "Slow down the $FROMCOUNTRY_ADJ$ nuclear program (5 years)!"
+
+any_country = { 
+limit = { is_vassal = no neighbour = FROM 
+NOT = { relation = { who = FROM value = 0 } } } 
+relation = { who = THIS value = -50 }
+} 
+
+FROM = { country_event = 1512357 }
+ai_chance = { factor = 0.5 }
+		}
+
+option = {
+name = "No sanctions relief until total de-nuclearisation"
+
+
+any_country = { 
+limit = { is_vassal = no relation = { who = FROM value = 100 } } 
+relation = { who = THIS value = -50 }
+} 
+
+FROM = { country_event = 1512358 }
+ai_chance = { factor = 0.5 }
+		}
+
+}
+
+#Denuclearisation Demanded - Summit success
+country_event = {
+	id = 1512357
+title = "$CAPITAL$ Summit Succeeds"
+	desc = EVTDESC1512357
+	picture = "nuclear_disarmament_summit"
+
+is_triggered_only = yes
+
+major = yes
+
+option = {
+name = "Great!"
+
+prestige = 50
+
+relation = { who = THIS value = 50 }
+
+badboy = -10
+
+add_country_modifier = { name = nuke_sanctions_relief duration = 1825 }
+
+clr_country_flag = nuclear_blackmail_flag
+
+random_owned = { limit = { owner = { has_country_modifier = develop_atomic_bomb } } owner = { remove_country_modifier = develop_atomic_bomb add_country_modifier = { name = develop_atomic_bomb duration = 3650 } } }
+
+random_owned = { limit = { owner = { has_country_modifier = develop_hydrogen_bomb } } owner = { remove_country_modifier = develop_hydrogen_bomb add_country_modifier = { name = develop_hydrogen_bomb duration = 3650 } } }
+
+		}
+
+}
+
+#Denuclearisation Demanded - Summit failure
+country_event = {
+	id = 1512358
+title = "$CAPITAL$ Summit Fails"
+	desc = EVTDESC1512358
+	picture = "nuclear_disarmament_summit"
+
+is_triggered_only = yes
+
+major = yes
+
+option = {
+name = "Disaster!"
+
+prestige = -25
+
+relation = { who = THIS value = -100 }
+
+badboy = 3
+
+clr_country_flag = nuclear_blackmail_flag
+
+		}
+
+}

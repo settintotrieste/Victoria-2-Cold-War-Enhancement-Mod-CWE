@@ -1,0 +1,164 @@
+#Rhodesian Republic
+country_event = {
+	id = 1512244
+	title = "Republic of Rhodesia"
+	desc = EVTDESC1512244
+	picture = "rep_of_rho"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = RHO
+		is_vassal = no
+		war = no
+		government = hms_government
+		year = 1970
+		NOT = { year = 1990 }
+		ENG = { government = hms_government }
+	}
+
+	mean_time_to_happen = { 
+		months = 3
+	}
+
+	option = {
+		name = "Become a Republic!"
+		prestige = 50
+		government = democracy
+		relation = { who = ENG value = -200 }
+		ENG = { diplomatic_influence = { who = RHO value = -200 } }
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Stay as the Autonomous Realm of Rhodesia"
+		badboy = -2
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		government = hms_government1
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Zimbabwe Name
+country_event = {
+	id = 1412207
+	title = "Transition to Zimbabwe"
+	desc = EVTDESC1412207	
+	picture = "zimbabwe_name"
+
+	fire_only_once = yes
+
+	trigger = { 
+		tag = ZIM
+		OR = { government = democracy1 government = hms_government government = hms_government1 }
+		war = no
+		election = no
+		OR = { 
+			is_vassal = no
+			
+			#Landcaster House Agreement
+			AND = {
+				has_country_flag = RHO_ENG_revert_flag
+				vassal_of = ENG
+			} 
+		}
+		
+		OR = { 
+			AND = { year = 1980 has_country_flag = RHO_ENG_revert_flag }
+			
+			#5 years slower if no British help
+			AND = { year = 1985 NOT = { has_country_flag = RHO_ENG_revert_flag } }
+		}
+		
+		NOT = { primary_culture = shona }
+		
+		NOT = { minorities_reform = minorities_oppression }
+	}
+
+	mean_time_to_happen = {
+		months = 4
+	}
+
+	option = {
+		name = "End white rule once and for all!"
+		
+		#If Landcaster House Agreement was accepted, option for ENG to grant independence
+		overlord = { country_event = 8012217 }
+		
+		government = democracy
+		prestige = 50
+		primary_culture = shona
+		add_accepted_culture = british
+		ruling_party_ideology = socialist
+		
+		any_pop = {
+			limit = { is_primary_culture = shona }
+			militancy = -10
+			ideology = { factor = 0.30 value = socialist }
+		}
+
+		random_country = {
+			limit = { OR = { primary_culture = british accepted_culture = british } } 
+			diplomatic_influence = { who = THIS value = -50 }
+		}
+
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "Stay as Zimbabwe-Rhodesia"
+		any_pop = { limit = { is_primary_culture = no } militancy = 5 }
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+
+		random_country = { 
+			limit = { OR = { primary_culture = british accepted_culture = british } } 
+			relation = { who = THIS value = 50 }
+			diplomatic_influence = { who = THIS value = 25 }
+		}
+
+		ai_chance = { factor = 0.2 }
+	}
+
+}
+
+#Mugabe Dictatorship 1987
+country_event = {
+	id = 1512073
+	title = "President Robert Mugabe"
+	desc = EVTDESC1512073
+	picture = "ZIM_pres_dic"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = ZIM
+		year = 1987
+		NOT = { year = 1991 }
+		government = democracy
+		war = no
+		election = no
+		is_vassal = no
+	}
+
+	mean_time_to_happen = { 
+		months = 7
+	}
+
+	option = {
+		name = "Declare his victory"
+		government = presidential_dictatorship
+		country_event = 800050
+		ruling_party_ideology = socialist
+		remove_accepted_culture = british
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "Call another election!"
+		prestige = -50
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.2 }
+	}
+
+}

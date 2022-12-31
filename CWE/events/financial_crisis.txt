@@ -1,0 +1,469 @@
+#Financial Crisis
+country_event = {
+	id = 1412094
+	title = "Financial Meltdown in $COUNTRY$"
+	desc = EVTDESC1412094
+	picture = "financial_crisis"
+
+	trigger = {
+	
+		#Favourable economic condition
+		OR = {
+			money = 5000000
+			has_country_modifier = economic_boom
+		}
+
+		#Post 2000s
+		modern_stock_exchange = 1
+		
+		#Appropriate economic policy
+		OR = {
+			economic_policy = laissez_faire
+			economic_policy = interventionism
+			AND = { economic_policy = state_capitalism has_country_modifier = stock_market_crash }
+		}
+		
+		#Does not have high baking regulations
+		NOT = { has_country_modifier = bkrhigh }
+		
+		#Does not already have an economic crisis in THIS
+		NOT = { has_country_modifier = financial_crisis }
+		NOT = { has_country_modifier = recession }
+		NOT = { has_country_modifier = great_recession }
+		NOT = { has_country_modifier = great_depression }
+		
+		#Only 1 financial crisis at a time
+		NOT = { any_neighbor_country = { has_country_modifier = great_recession } }
+		NOT = { any_neighbor_country = { has_country_modifier = recession } }
+		NOT = { any_greater_power = { has_country_modifier = great_recession } }
+
+	}
+
+	mean_time_to_happen = {
+		months = 3650
+		modifier = { factor = 0.5 has_country_modifier = bkrlow }
+		modifier = { factor = 0.75 has_country_modifier = bkrmedium }
+	}
+
+	option = {
+		name = "Bail the banks out, we can't afford a meltdown"
+		add_tax_relative_income = -50
+
+		#Prestige loss
+		random_owned = { 
+			limit = { owner = { is_greater_power = yes } }
+			owner = { prestige_factor = -0.02 }
+		}
+		
+		random_owned = { 
+			limit = { owner = { is_greater_power = no } }
+			owner = { prestige_factor = -0.02 }
+		}
+		
+		#Pops want less government intervention in the economy
+		any_pop = {
+			dominant_issue = {
+				value = laissez_faire
+				factor = 0.15
+			}
+		}
+
+		ai_chance = {
+			factor = 0.8
+			modifier = {
+				factor = 0.5
+				economic_policy = laissez_faire
+			}
+		}
+	}
+
+	option = {
+		name = "Let the market restructure itself"
+		
+		capitalists = { money = -1000 }
+		aristocrats = { money = -500 }
+		
+		#Prestige loss
+		random_owned = { 
+			limit = { owner = { is_greater_power = yes } }
+			owner = { prestige_factor = -0.02 }
+		}
+		
+		random_owned = { 
+			limit = { owner = { is_greater_power = no } }
+			owner = { prestige_factor = -0.02 }
+		}
+		
+		#Pops want more government intervention in the economy
+		any_pop = {
+			dominant_issue = {
+				value = interventionism
+				factor = 0.15
+			}
+		}
+		
+		#Economic contagion to the whole world if a rank 2 and above GP
+		random_owned = { 
+			limit = { owner = { is_greater_power = yes rank = 2 } }
+			owner = { 
+			
+				add_country_modifier = { name = great_recession duration = 1000 }
+			
+				any_country = {
+					limit = { 
+					
+						exists = yes
+					
+						#Appropriate economic policy
+						OR = {
+							economic_policy = laissez_faire
+							economic_policy = interventionism
+							AND = { economic_policy = state_capitalism has_country_modifier = stock_market_crash }
+						}
+		
+						#Does not have high baking regulations
+						NOT = { has_country_modifier = bkrhigh }
+		
+						#Does not already have an economic crisis in THIS
+						NOT = { has_country_modifier = financial_crisis }
+						NOT = { has_country_modifier = recession }
+						NOT = { has_country_modifier = great_recession }
+						NOT = { has_country_modifier = great_depression }
+					}
+					#Economic Contagion - Great Recession
+					country_event = 1412095
+				}
+			}
+		}
+		
+		#Economic contagion to the whole world if a rank 4 and below GP
+		random_owned = { 
+			limit = { owner = { is_greater_power = yes NOT = { rank = 2 } } }
+			owner = { 
+			
+				add_country_modifier = { name = recession duration = 900 }
+			
+				any_country = {
+					limit = { 
+					
+						exists = yes
+					
+						#Appropriate economic policy
+						OR = {
+							economic_policy = laissez_faire
+							economic_policy = interventionism
+							AND = { economic_policy = state_capitalism has_country_modifier = stock_market_crash }
+						}
+		
+						#Does not have high baking regulations
+						NOT = { has_country_modifier = bkrhigh }
+		
+						#Does not already have an economic crisis in THIS
+						NOT = { has_country_modifier = financial_crisis }
+						NOT = { has_country_modifier = recession }
+						NOT = { has_country_modifier = great_recession }
+						NOT = { has_country_modifier = great_depression }
+					}
+					#Economic Contagion - Normal Recession
+					country_event = 1412096
+				}
+			}
+		}
+		
+		#Economic contagion to the whole region if is an SP
+		#europe
+		random_owned = { 
+			limit = { owner = { is_secondary_power = yes capital_scope = { continent = europe } } }
+			owner = { 
+			
+				add_country_modifier = { name = recession duration = 900 }
+			
+				any_country = {
+					limit = { 
+					
+						exists = yes
+						
+						capital_scope = { continent = europe }
+					
+						#Appropriate economic policy
+						OR = {
+							economic_policy = laissez_faire
+							economic_policy = interventionism
+							AND = { economic_policy = state_capitalism has_country_modifier = stock_market_crash }
+						}
+		
+						#Does not have high baking regulations
+						NOT = { has_country_modifier = bkrhigh }
+		
+						#Does not already have an economic crisis in THIS
+						NOT = { has_country_modifier = financial_crisis }
+						NOT = { has_country_modifier = recession }
+						NOT = { has_country_modifier = great_recession }
+						NOT = { has_country_modifier = great_depression }
+					}
+					#Economic Contagion - Normal Recession
+					country_event = 1412096
+				}
+			}
+		}
+		
+		#asia
+		random_owned = { 
+			limit = { owner = { is_secondary_power = yes capital_scope = { continent = asia } } }
+			owner = { 
+			
+				add_country_modifier = { name = recession duration = 900 }
+			
+				any_country = {
+					limit = { 
+					
+						exists = yes
+						
+						capital_scope = { continent = asia }
+					
+						#Appropriate economic policy
+						OR = {
+							economic_policy = laissez_faire
+							economic_policy = interventionism
+							AND = { economic_policy = state_capitalism has_country_modifier = stock_market_crash }
+						}
+		
+						#Does not have high baking regulations
+						NOT = { has_country_modifier = bkrhigh }
+		
+						#Does not already have an economic crisis in THIS
+						NOT = { has_country_modifier = financial_crisis }
+						NOT = { has_country_modifier = recession }
+						NOT = { has_country_modifier = great_recession }
+						NOT = { has_country_modifier = great_depression }
+					}
+					#Economic Contagion - Normal Recession
+					country_event = 1412096
+				}
+			}
+		}
+		
+		#africa
+		random_owned = { 
+			limit = { owner = { is_secondary_power = yes capital_scope = { continent = africa } } }
+			owner = { 
+			
+				add_country_modifier = { name = recession duration = 900 }
+			
+				any_country = {
+					limit = { 
+					
+						exists = yes
+						
+						capital_scope = { continent = africa }
+					
+						#Appropriate economic policy
+						OR = {
+							economic_policy = laissez_faire
+							economic_policy = interventionism
+							AND = { economic_policy = state_capitalism has_country_modifier = stock_market_crash }
+						}
+		
+						#Does not have high baking regulations
+						NOT = { has_country_modifier = bkrhigh }
+		
+						#Does not already have an economic crisis in THIS
+						NOT = { has_country_modifier = financial_crisis }
+						NOT = { has_country_modifier = recession }
+						NOT = { has_country_modifier = great_recession }
+						NOT = { has_country_modifier = great_depression }
+					}
+					#Economic Contagion - Normal Recession
+					country_event = 1412096
+				}
+			}
+		}
+		
+		#mena
+		random_owned = { 
+			limit = { owner = { is_secondary_power = yes capital_scope = { continent = mena } } }
+			owner = { 
+			
+				add_country_modifier = { name = recession duration = 900 }
+			
+				any_country = {
+					limit = { 
+					
+						exists = yes
+						
+						capital_scope = { continent = mena }
+					
+						#Appropriate economic policy
+						OR = {
+							economic_policy = laissez_faire
+							economic_policy = interventionism
+							AND = { economic_policy = state_capitalism has_country_modifier = stock_market_crash }
+						}
+		
+						#Does not have high baking regulations
+						NOT = { has_country_modifier = bkrhigh }
+		
+						#Does not already have an economic crisis in THIS
+						NOT = { has_country_modifier = financial_crisis }
+						NOT = { has_country_modifier = recession }
+						NOT = { has_country_modifier = great_recession }
+						NOT = { has_country_modifier = great_depression }
+					}
+					#Economic Contagion - Normal Recession
+					country_event = 1412096
+				}
+			}
+		}
+		
+		#north_america
+		random_owned = { 
+			limit = { owner = { is_secondary_power = yes capital_scope = { continent = north_america } } }
+			owner = { 
+			
+				add_country_modifier = { name = recession duration = 900 }
+			
+				any_country = {
+					limit = { 
+					
+						exists = yes
+						
+						capital_scope = { continent = north_america }
+					
+						#Appropriate economic policy
+						OR = {
+							economic_policy = laissez_faire
+							economic_policy = interventionism
+							AND = { economic_policy = state_capitalism has_country_modifier = stock_market_crash }
+						}
+		
+						#Does not have high baking regulations
+						NOT = { has_country_modifier = bkrhigh }
+		
+						#Does not already have an economic crisis in THIS
+						NOT = { has_country_modifier = financial_crisis }
+						NOT = { has_country_modifier = recession }
+						NOT = { has_country_modifier = great_recession }
+						NOT = { has_country_modifier = great_depression }
+					}
+					#Economic Contagion - Normal Recession
+					country_event = 1412096
+				}
+			}
+		}
+		
+		#south_america
+		random_owned = { 
+			limit = { owner = { is_secondary_power = yes capital_scope = { continent = south_america } } }
+			owner = { 
+			
+				add_country_modifier = { name = recession duration = 900 }
+			
+				any_country = {
+					limit = { 
+					
+						exists = yes
+						
+						capital_scope = { continent = south_america }
+					
+						#Appropriate economic policy
+						OR = {
+							economic_policy = laissez_faire
+							economic_policy = interventionism
+							AND = { economic_policy = state_capitalism has_country_modifier = stock_market_crash }
+						}
+		
+						#Does not have high baking regulations
+						NOT = { has_country_modifier = bkrhigh }
+		
+						#Does not already have an economic crisis in THIS
+						NOT = { has_country_modifier = financial_crisis }
+						NOT = { has_country_modifier = recession }
+						NOT = { has_country_modifier = great_recession }
+						NOT = { has_country_modifier = great_depression }
+					}
+					#Economic Contagion - Normal Recession
+					country_event = 1412096
+				}
+			}
+		}
+		
+		#oceania
+		random_owned = { 
+			limit = { owner = { is_secondary_power = yes capital_scope = { continent = oceania } } }
+			owner = { 
+			
+				add_country_modifier = { name = recession duration = 900 }
+			
+				any_country = {
+					limit = { 
+					
+						exists = yes
+						
+						capital_scope = { continent = oceania }
+					
+						#Appropriate economic policy
+						OR = {
+							economic_policy = laissez_faire
+							economic_policy = interventionism
+							AND = { economic_policy = state_capitalism has_country_modifier = stock_market_crash }
+						}
+		
+						#Does not have high baking regulations
+						NOT = { has_country_modifier = bkrhigh }
+		
+						#Does not already have an economic crisis in THIS
+						NOT = { has_country_modifier = financial_crisis }
+						NOT = { has_country_modifier = recession }
+						NOT = { has_country_modifier = great_recession }
+						NOT = { has_country_modifier = great_depression }
+					}
+					#Economic Contagion - Normal Recession
+					country_event = 1412096
+				}
+			}
+		}
+		
+		ai_chance = { factor = 0.2 }
+	}
+}
+
+# Great Recession for all eligible
+country_event = {
+	id = 1412095
+	title = "The Great Recession of $YEAR$"
+	desc = EVT_1412095_DESC
+	picture = "financial_crisis"
+	is_triggered_only = yes
+
+	option = {
+		name = EVT_1412095_A # "We will have to tide through this"
+		prestige_factor = -0.02
+		add_tax_relative_income = -50
+
+		capitalists = { money = -1000 }
+		aristocrats = { money = -500 }
+
+		add_country_modifier = { name = great_recession duration = 1000 }
+	}
+}
+
+
+# Financial crisis for all in region
+country_event = {
+	id = 1412096
+	title = "The Financial Crisis of $YEAR$"
+	desc = EVT_1412095_DESC
+	picture = "financial_crisis"
+	is_triggered_only = yes
+
+	option = {
+		name = EVT_1412095_A
+		prestige_factor = -0.01
+		add_tax_relative_income = -25
+		
+		capitalists = { money = -500 }
+		aristocrats = { money = -250 }
+		
+		add_country_modifier = { name = recession duration = 900 }
+	}
+}

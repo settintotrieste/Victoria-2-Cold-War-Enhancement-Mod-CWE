@@ -1,0 +1,501 @@
+#Start of the ICJ process
+country_event = {
+	id = 1512017
+title = "$FROMCOUNTRY_ADJ$-$COUNTRY_ADJ$ Territorial Dispute"
+	desc = EVTDESC1512017
+	picture = "icj_territorial_dispute"
+
+is_triggered_only = yes
+
+option = {
+name = "Send a strongly worded complaint to the $FROMCOUNTRY_ADJ$ Embassy!"
+prestige = 25
+relation = { who = FROM value = -50 }
+set_country_flag = icj_marker
+ai_chance = { 
+factor = 1 
+modifier = { factor = 0 relation = { who = FROM value = 0 } }
+}
+		}
+
+option = {
+name = "Release a statement agreeing to cooperate with the ICJ"
+prestige = -25
+relation = { who = FROM value = 50 }
+set_country_flag = icj_marker
+ai_chance = { 
+factor = 1 
+modifier = { factor = 0 NOT = { relation = { who = FROM value = 0 } } }
+}
+		}
+
+}
+
+#ICJ result
+country_event = {
+	id = 1512018
+title = "$COUNTRY_ADJ$ Territorial Dispute Result"
+	desc = EVTDESC1512018
+	picture = "icj_territorial_dispute"
+
+trigger = {
+NOT = { all_core = { owned_by = THIS } }
+NOT = { badboy = 0.8 }
+NOT = { has_country_modifier = icj_in_process }			
+has_country_flag = icj_in_process	
+}
+
+option = {
+name = "The Judges of the ICJ have spoken"
+clr_country_flag = icj_in_process
+add_country_modifier = { name = icj_timer_land duration = 3650 }
+random_list = { 
+	50 = { THIS = { country_event = 1512019 } }
+	50 = { THIS = { country_event = 1512020 } }
+}
+		}
+
+}
+
+#Starter Won
+country_event = {
+	id = 1512019
+title = "International Court of Justice rules in our favour"
+	desc = EVTDESC1512019
+	picture = "icj_territorial_dispute"
+
+is_triggered_only = yes
+
+option = {
+name = "Let's celebrate!"
+prestige = 100
+
+
+random_country = { 
+
+limit = { 
+has_country_flag = international_court_of_justice 
+has_country_flag = icj_marker
+is_vassal = no 
+war = no 
+
+any_owned_province = { is_capital = no is_core = THIS } 
+
+NOT = { any_owned_province = { is_capital = yes is_core = THIS } }
+
+neighbour = THIS 
+} 
+
+clr_country_flag = icj_marker
+
+country_event = { id = 1512021 days = 10 } 
+
+}
+		}
+
+}
+
+#Starter Loss
+country_event = {
+	id = 1512020
+title = "International Court of Justice rules against us"
+	desc = EVTDESC1512020
+	picture = "icj_territorial_dispute"
+
+is_triggered_only = yes
+
+option = {
+name = "A disaster!"
+prestige_factor = -0.1
+
+any_pop = { militancy = 1 }
+
+random_country = { 
+
+limit = { 
+has_country_flag = international_court_of_justice 
+has_country_flag = icj_marker
+is_vassal = no 
+war = no 
+
+any_owned_province = { is_capital = no is_core = THIS } 
+
+NOT = { any_owned_province = { is_capital = yes is_core = THIS } }
+
+neighbour = THIS 
+} 
+
+clr_country_flag = icj_marker 
+
+}
+
+		}
+
+}
+
+#What to do if win
+country_event = {
+	id = 1512021
+title = "International Court of Justice rules against us"
+	desc = EVTDESC1512021
+	picture = "icj_territorial_dispute"
+
+is_triggered_only = yes
+
+option = {
+name = "Accept the ruling"
+prestige_factor = 0.05
+badboy = -10
+FROM = { relation = { who = THIS value = 100 } }
+clr_country_flag = icj_marker
+any_owned = { limit = { is_capital = no is_core = FROM } remove_core = THIS secede_province = FROM }
+
+
+ai_chance = { 
+factor = 1 
+modifier = { factor = 0 NOT = { OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive } } }
+}
+		}
+
+option = {
+name = "Ignore the ruling!"
+prestige_factor = -0.05
+badboy = 15
+FROM = { relation = { who = THIS value = -100 } country_event = { id = 1512022 days = 10 } }
+
+any_owned = { limit = { is_core = FROM } add_province_modifier = { name = nationalist_agitation duration = 3650 } }
+clr_country_flag = icj_marker
+ai_chance = { 
+factor = 1 
+modifier = { factor = 0 OR = { ruling_party_ideology = liberal ruling_party_ideology = progressive } }
+}
+		}
+
+}
+
+#Starter end
+country_event = {
+	id = 1512022
+title = "$FROMCOUNTRY$ refuses to comply with the ICJ ruling"
+	desc = EVTDESC1512022
+	picture = "icj_territorial_dispute"
+
+is_triggered_only = yes
+
+option = {
+name = "Outrageous!"
+prestige_factor = -0.1
+
+any_pop = { 
+
+limit = { OR = { is_primary_culture = yes is_accepted_culture = yes } } 
+
+ideology = {
+	factor = 0.25
+	value = nationalist
+}
+
+}
+
+ai_chance = { 
+factor = 1 
+modifier = { factor = 0 war_policy = jingoism }
+}
+		}
+
+option = {
+name = "The $COUNTRY_ADJ$ people have enough of useless diplomacy!"
+
+war = {
+	target = FROM
+	attacker_goal = { casus_belli = dismantle_cb }
+	defender_goal = { casus_belli = territorial_dispute }
+	call_ally = yes
+}
+
+ai_chance = { 
+factor = 1 
+modifier = { factor = 0 NOT = { war_policy = jingoism } }
+}
+		}
+
+}
+
+#ICJ Sea Dispute Result
+country_event = {
+	id = 1412023
+	title = "Dispute over territorial waters ICJ result"
+	desc = "The ICJ is ready to give their verdict on the dispute that we had with another nation over the extent of our exclusive sea territory that we brought up to the ICJ for arbitration."
+	picture = "icj_ruling"
+
+	trigger = {
+		has_country_flag = sea_dispute_underway
+NOT = { has_country_modifier = sea_dispute }
+num_of_ports = 1
+		}
+
+mean_time_to_happen = { 
+months = 7
+}
+
+	option = {
+		name = "We hope for the best"
+clr_country_flag = sea_dispute_underway
+random_list = {
+	50 = { country_event = 1412024 } #Win
+	50 = { country_event = 1412025 } #Lose
+	}
+		}
+	}
+
+#ICJ Sea Dispute Result - Win
+country_event = {
+	id = 1412024
+	title = "ICJ rules in our favour"
+	desc = "The International Court of Justice has ruled in our favour in the dispute over sovereignty over certain sections of territorial waters."
+	picture = "icj_ruling"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "A victory!"
+		prestige = 100
+		}
+	}
+#ICJ Sea Dispute Result - Lose
+country_event = {
+	id = 1412025
+	title = "ICJ rules in their favour"
+	desc = "The International Court of Justice has ruled in their favour in the dispute over sovereignty over certain sections of territorial waters."
+	picture = "icj_ruling"
+
+	is_triggered_only = yes
+
+	option = {
+		name = "We will get them next time!"
+		prestige = -50
+		}
+	}
+
+
+#Announce ICJ case against us
+country_event = {
+	id = 1412029
+	title = "$FROMCOUNTRY$ disputes our ownership of the South China Sea Islands"
+	desc = "As they have claims over the South China Sea Islands, they will not stand our presence on the Islands. They have sent an appeal to the ICJ for arbiteration in this matter."
+	picture = "south_china_sea_court"
+
+is_triggered_only = yes
+
+	option = {
+		name = "Condemn them!"
+prestige = 5
+relation = { who = FROM value = -50 }
+any_country = { limit = { relation = { who = FROM value = 100 } } relation = { who = FROM value = 50 } }
+ai_chance = { factor = 1 modifier = { factor = 0 NOT = { tag = CHI } } }
+		}
+
+	option = {
+		name = "SEE YOU IN COURT!"
+prestige = -10
+relation = { who = FROM value = 20 }
+any_country = { limit = { relation = { who = FROM value = 100 } } relation = { who = FROM value = 10 } }
+set_country_flag = scs_race
+ai_chance = { factor = 1 modifier = { factor = 0 tag = CHI } }
+		}
+	}
+
+#Announce Court Judgement
+country_event = {
+	id = 1412030
+	title = "The ICJ rules in our favour in the South China Sea Dispute"
+	desc = EVTDESC1412030
+	picture = "south_china_sea_court"
+
+trigger = { 
+NOT = { has_country_modifier = dispute_south_china_sea }
+has_country_flag = dispute_south_china_sea1
+}
+
+	option = {
+		name = "This is excellent news!"
+prestige = 10
+clr_country_flag = dispute_south_china_sea1
+set_country_flag = dispute_south_china_sea_done
+random_country = { limit = { controls = 2576 } country_event = 1412031 }
+		}
+	}
+
+#Announce Court Judgement Recipent
+country_event = {
+	id = 1412031
+	title = "$FROMCOUNTRY$'s ICJ case disputing our ownership over the South China Sea Islands succeeds"
+	desc = EVTDESC1412031
+	picture = "south_china_sea_court"
+
+is_triggered_only = yes
+
+	option = {
+		name = "IGNORE THE COURT RULING!"
+prestige = 10
+relation = { who = FROM value = -50 }
+any_country = { limit = { relation = { who = FROM value = 100 } } relation = { who = FROM value = 20 } }
+badboy = 5
+ai_chance = { factor = 1 modifier = { factor = 0 NOT = { tag = CHI } } }
+set_country_flag = scs_race
+		}
+
+option = {
+		name = "Graciously accept the ruling!"
+prestige = -20
+relation = { who = FROM value = 50 }
+country_event = { id = 1412032 days = 30 }
+badboy = -5
+ai_chance = { factor = 1 modifier = { factor = 0 tag = CHI } }
+		}
+	}
+	
+#Return of Territories Giver
+country_event = {
+	id = 1412160
+title = "Return of $FROMCOUNTRY$'s former territories?"
+	desc = EVTDESC1412160
+	picture = "sovereignty_talk"
+
+is_triggered_only = yes
+
+option = {
+name = "Return the territories!"
+prestige = 0.1
+badboy = -10
+relation = { who = FROM value = 100 }
+diplomatic_influence = { who = FROM value = 100 }
+any_owned = { limit = { is_core = FROM } secede_province = FROM }
+FROM = { country_event = 1412161 }
+ai_chance = { factor = 1 
+
+modifier = { 
+factor = 0 
+NOT = { OR = { ruling_party_ideology = progressive ruling_party_ideology = liberal } } 
+}
+
+modifier = { 
+factor = 0 
+AND = { is_greater_power = yes NOT = { badboy = 1 } }
+AND = { is_secondary_power = yes NOT = { badboy = 0.75 } }
+}
+
+modifier = { factor = 0 FROM = { 
+OR = { 
+has_country_flag = claim_greater_afghanistan
+has_country_flag = claim_greater_albania
+has_country_flag = claim_greater_argentina
+has_country_flag = claim_greater_armenia
+has_country_flag = claim_greater_azerbaijan
+has_country_flag = claim_greater_bangladesh
+has_country_flag = claim_greater_bolivia
+has_country_flag = claim_greater_bosnia
+has_country_flag = claim_greater_bulgaria
+has_country_flag = claim_greater_china
+has_country_flag = claim_greater_comoros
+has_country_flag = claim_greater_croatia
+has_country_flag = claim_greater_south
+has_country_flag = claim_greater_fer
+has_country_flag = claim_greater_finland
+has_country_flag = claim_greater_france
+has_country_flag = claim_greater_germany
+has_country_flag = claim_greater_greece
+has_country_flag = claim_northern_epirus
+has_country_flag = claim_greater_india
+has_country_flag = claim_tamil_ceylon
+has_country_flag = claim_greater_hungary
+has_country_flag = claim_greater_indonesia
+has_country_flag = claim_greater_ireland
+has_country_flag = claim_greater_israel
+has_country_flag = claim_greater_israel_1
+has_country_flag = claim_greater_taiwan
+has_country_flag = claim_greater_macedonia
+has_country_flag = claim_greater_mexico
+has_country_flag = claim_greater_morocco
+has_country_flag = claim_greater_northern_mariana
+has_country_flag = claim_greater_iran
+has_country_flag = claim_greater_romania
+has_country_flag = claim_greater_russia
+has_country_flag = claim_greater_novorossiya
+has_country_flag = claim_greater_samoa
+has_country_flag = claim_greater_serbia
+has_country_flag = claim_greater_somalia
+has_country_flag = claim_greater_texas
+has_country_flag = claim_greater_guatemala
+has_country_flag = claim_greater_venezuela
+has_country_flag = claim_greater_italy
+has_country_flag = claim_greater_latinamerica
+has_country_flag = claim_greater_europe
+has_country_flag = claim_greater_africa
+has_country_flag = claim_greater_oceania
+has_country_flag = claim_greater_arabia
+has_country_flag = claim_greater_turkculuk
+has_country_flag = claim_greater_norway
+} 
+} }
+modifier = { factor = 0 any_owned_province = { is_core = THIS is_core = FROM } }
+modifier = { factor = 0.1 OR = { ruling_party_ideology = populist ruling_party_ideology = nationalist ruling_party_ideology = traditionalist } }
+modifier = { factor = 0 NOT = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 government = socialist_democracy } } } }
+		}
+
+option = {
+name = "Hold onto the territories!"
+relation = { who = FROM value = -100 }
+FROM = { country_event = 1412162 }
+ai_chance = { factor = 1 
+
+modifier = { factor = 2 OR = { ruling_party_ideology = populist ruling_party_ideology = nationalist ruling_party_ideology = traditionalist } }
+}
+		}
+
+}
+
+#Return of Territories Success
+country_event = {
+	id = 1412161
+title = "$FROMCOUNTRY$ Returns $COUNTRY_ADJ$ Lands"
+	desc = EVTDESC1412161
+	picture = "sovereignty_return"
+
+is_triggered_only = yes
+
+option = {
+name = "Excellent!"
+prestige = 0.1
+any_pop = { militancy = -5 }
+		}
+}
+
+#Return of Territories Failure
+country_event = {
+	id = 1412162
+title = "$FROMCOUNTRY$ Refuses to Return $COUNTRY_ADJ$ Lands"
+	desc = "$FROMCOUNTRY$ finds that the time is not right yet to return our sacred and sovereign lands back to us. They cite reasons as disagreements over how to transfer the territories to us. We believe that it is an excuse to keep them in perpetuity."
+	picture = "sovereignty_talk"
+
+is_triggered_only = yes
+
+option = {
+name = "Terrible!"
+prestige = -50
+ai_chance = { factor = 1 modifier = { factor = 0 stronger_army_than = FROM } }
+		}
+
+option = {
+name = "We have to reseize the lands by force!"
+prestige = -50
+war = {
+target = FROM
+	attacker_goal = { casus_belli = territorial_dispute }
+	defender_goal = { casus_belli = territorial_dispute }
+	call_ally = yes
+}
+ai_chance = { factor = 1 modifier = { factor = 0 NOT = { stronger_army_than = FROM } } }
+		}
+
+}

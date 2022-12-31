@@ -1,0 +1,213 @@
+#Trade War Ended
+country_event = {
+	id = 1512344
+title = "$FROMCOUNTRY$ Removes Trade Tariffs"
+	desc = EVTDESC1512344
+	picture = "end_trade_war"
+
+is_triggered_only = yes
+
+option = {
+name = "Rejoice!"
+
+relation = { who = FROM value = 50 }
+
+remove_country_modifier = trade_war_tariffs
+
+#If resisted demands of Trade Instigator
+random_owned = { limit = { owner = { NOT = { has_country_modifier = conceded_trade_war } } } owner = { prestige_factor = 0.1 } }
+
+		}
+
+}
+
+#Trade War Started
+country_event = {
+	id = 1512345
+title = "$FROMCOUNTRY$ Starts a Trade War"
+	desc = EVTDESC1512345
+	picture = "start_trade_war"
+
+is_triggered_only = yes
+
+option = {
+name = "Impose retaliatory tariffs on $FROMCOUNTRY_ADJ$ exports!"
+relation = { who = FROM value = -50 }
+add_country_modifier = { name = trade_war_tariffs duration = -1 }
+
+ai_chance = { factor = 0.9 modifier = { factor = 0 war_policy = pacifism } }
+		}
+
+option = {
+name = "Accede to $FROMCOUNTRY_ADJ$ demands"
+
+prestige_factor = -0.2
+
+add_country_modifier = { name = conceded_trade_war duration = 3650 }
+
+relation = { who = FROM value = 200 }
+
+#If accepted demands of Trade Instigator
+random_owned = { limit = { owner = { has_country_modifier = conceded_trade_war } } owner = { prestige_factor = -0.2 } }
+
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Increase Trade War Levels
+country_event = {
+	id = 1512346
+title = "Change in Trade War Levels"
+	desc = EVTDESC1512346
+	picture = "trade_war_levels"
+
+trigger = {
+has_global_flag = trade_war
+NOT = { has_country_modifier = trade_war_4 }
+NOT = { has_country_modifier = conceded_trade_war }
+NOT = { has_country_modifier = juche }
+}
+
+mean_time_to_happen = { months = 12 }
+
+option = {
+name = "We need to look at this strongly!"
+
+#Add Trade War 4
+random_owned = { 
+limit = { owner = { has_country_modifier = trade_war_3 } }
+owner = {
+remove_country_modifier = trade_war_1
+remove_country_modifier = trade_war_2
+remove_country_modifier = trade_war_3
+remove_country_modifier = trade_war_4 
+add_country_modifier = { name = trade_war_4 duration = -1 } }
+}
+
+#Add Trade War 3
+random_owned = { 
+limit = { owner = { has_country_modifier = trade_war_2 } }
+owner = { 
+remove_country_modifier = trade_war_1
+remove_country_modifier = trade_war_2
+remove_country_modifier = trade_war_3
+remove_country_modifier = trade_war_4
+add_country_modifier = { name = trade_war_3 duration = -1 } }
+}
+
+#Add Trade War 2
+random_owned = { 
+limit = { owner = { has_country_modifier = trade_war_1 } }
+owner = { 
+remove_country_modifier = trade_war_1
+remove_country_modifier = trade_war_2
+remove_country_modifier = trade_war_3
+remove_country_modifier = trade_war_4
+add_country_modifier = { name = trade_war_2 duration = -1 } }
+}
+
+#Add Trade War 1
+random_owned = { 
+limit = { owner = { 
+NOT = { has_country_modifier = trade_war_1 }
+NOT = { has_country_modifier = trade_war_2 }
+NOT = { has_country_modifier = trade_war_3 }
+NOT = { has_country_modifier = trade_war_4 }
+} }
+owner = { 
+remove_country_modifier = trade_war_1
+remove_country_modifier = trade_war_2
+remove_country_modifier = trade_war_3
+remove_country_modifier = trade_war_4
+add_country_modifier = { name = trade_war_1 duration = -1 } }
+}
+
+		}
+
+}
+
+#Fully end Trade War
+country_event = {
+	id = 1512347
+title = "Effects of the Trade War Wanes"
+	desc = EVTDESC1512347
+	picture = "end_trade_war_levels"
+
+trigger = {
+OR = { NOT = { has_global_flag = trade_war } 
+has_country_modifier = conceded_trade_war has_country_modifier = juche }
+has_country_modifier = trade_war_1
+}
+
+mean_time_to_happen = { months = 6 }
+
+option = {
+name = "We have weathered the worst"
+remove_country_modifier = trade_war_1
+remove_country_modifier = trade_war_2
+remove_country_modifier = trade_war_3
+remove_country_modifier = trade_war_4 
+
+add_country_modifier = { name = economic_boom duration = 1825 }
+		}
+
+}
+
+#Decrease Trade War Levels
+country_event = {
+	id = 1512348
+title = "Decrease in Trade War Levels"
+	desc = EVTDESC1512346
+	picture = "trade_war_levels"
+
+trigger = {
+OR = { NOT = { has_global_flag = trade_war } has_country_modifier = conceded_trade_war has_country_modifier = juche }
+OR = { 
+has_country_modifier = trade_war_2
+has_country_modifier = trade_war_3
+has_country_modifier = trade_war_4 
+	}
+}
+
+mean_time_to_happen = { months = 6 }
+
+option = {
+name = "The economy is recovering!"
+
+#Remove Trade War 2
+random_owned = { 
+limit = { owner = { NOT = { has_global_flag = trade_war } has_country_modifier = trade_war_2 } }
+owner = {
+remove_country_modifier = trade_war_1
+remove_country_modifier = trade_war_2
+remove_country_modifier = trade_war_3
+remove_country_modifier = trade_war_4 
+add_country_modifier = { name = trade_war_1 duration = -1 } }
+}
+
+#Remove Trade War 3
+random_owned = { 
+limit = { owner = { NOT = { has_global_flag = trade_war }  has_country_modifier = trade_war_3 } }
+owner = {
+remove_country_modifier = trade_war_1
+remove_country_modifier = trade_war_2
+remove_country_modifier = trade_war_3
+remove_country_modifier = trade_war_4
+add_country_modifier = { name = trade_war_2 duration = -1 } }
+}
+
+#Remove Trade War 4
+random_owned = { 
+limit = { owner = { NOT = { has_global_flag = trade_war } has_country_modifier = trade_war_4 } }
+owner = { 
+remove_country_modifier = trade_war_1
+remove_country_modifier = trade_war_2
+remove_country_modifier = trade_war_3
+remove_country_modifier = trade_war_4
+add_country_modifier = { name = trade_war_3 duration = -1 } }
+}
+
+		}
+
+}

@@ -1,0 +1,153 @@
+#Biological weapons developed
+country_event = {
+	id = 1412061
+	title = "Biological Weapons Developed"
+	desc = EVTDESC1412061
+	picture = "biological_weapons"
+
+trigger = {
+has_country_flag = develop_bio_weapons
+NOT = { has_country_modifier = develop_bio_weapons }
+NOT = { has_country_modifier = bio_nation }
+}
+
+	option = {
+		name = "Excellent!"
+		prestige = 10
+clr_country_flag = develop_bio_weapons
+add_country_modifier = { name = bio_nation duration = -1 }
+					}
+		}
+
+#Biological weapons attack
+country_event = {
+	id = 1412062
+	title = "$COUNTRY$ Struck by Biological Weapons"
+	desc = "Our nation has been struck by biological weapons, our population has been severely damaged by the weapons."
+	picture = "biological_weapons_attack"
+
+	major = yes
+
+	is_triggered_only = yes
+	
+	option = {
+		name = "A disaster!"
+		prestige_factor = -0.05
+		any_pop = { limit = { is_state_capital = yes } reduce_pop = 0.99 }
+		add_country_modifier = { name = biological_attack duration = 3650 }
+	}
+	
+}
+
+#Biological weapons - Epidemic
+country_event = {
+	id = 1412063
+	title = "Biological Weapons Especially Infectious"
+	desc = EVTDESC1412063
+	picture = "biological_weapons_attack"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "This can spread!"
+		
+		any_country = {
+			limit = { exists = yes is_vassal = no }
+			relation = { who = FROM value = -100 }
+		}
+		
+		#Spawn virus in a country at with FROM
+		random_country = {
+			limit = { NOT = { tag = REB } war_with = FROM }
+			country_event = 14120631
+		}
+	}
+
+}
+
+#Biological weapons - Epidemic
+country_event = {
+	id = 14120631
+	title = "Biological Weapon Induced Epidemic"
+	desc = EVTDESC1412063
+	picture = "biological_weapons_attack"
+	
+	major = yes
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "This can spread!"
+		prestige_factor = -0.025
+		
+		poor_strata = {
+			consciousness = 1
+			militancy = 1
+		}
+		middle_strata = {
+			consciousness = 3
+			militancy = 2
+		}
+		rich_strata = {
+			consciousness = 4
+			militancy = 3
+		}
+		
+		set_global_flag = epidemic_start
+
+		set_country_flag = virus_originator_country
+		
+		set_country_flag = enable_virus_controls
+		
+		set_global_flag = deadly_epidemic
+		
+		set_global_flag = biological_weapon_induced_epidemic
+		
+		remove_country_modifier = vaccine_created
+		
+		any_owned = {
+			limit = { 
+				OR = { 
+					is_capital = yes 
+					is_state_capital = yes 
+				} 
+			}
+			add_province_modifier = { name = virus_outbreak_deadly duration = 730 }
+		}
+		
+	}
+
+}
+
+#Biological Weapons spread
+country_event = {
+	id = 1412064
+	title = "Biological Weapons spreads to our nation"
+	desc = "A nation has been struck by biological weapons and the agents have been highly infectious allowing it to spread to $COUNTRY$ due to our proximity to a nation which is currently infected with the agents."
+	picture = "agent_spreads"
+
+	trigger = {
+		NOT = { has_country_flag = spreading_bio_weapon }
+		NOT = { has_country_modifier = biological_attack }
+		any_neighbor_country = { has_country_flag = spreading_bio_weapon has_country_modifier = biological_attack }
+	}
+	
+	mean_time_to_happen = { 
+		months = 2
+
+		modifier = { factor = 4 AND = { immigration_policy = nobody_gets_out war = no } }
+
+		modifier = { factor = 2 AND = { immigration_policy = quota_immigration war = no } }
+
+		modifier = { factor = 2 health_care = good_health_care }
+		modifier = { factor = 1.5 health_care = acceptable_health_care }
+		modifier = { factor = 1.25 health_care = low_health_care }
+	}
+
+	option = {
+		name = "We need to find a vaccine for it!"
+		prestige = -25
+		set_country_flag = spreading_bio_weapon
+		add_country_modifier = { name = biological_attack duration = 3650 }
+	}
+}

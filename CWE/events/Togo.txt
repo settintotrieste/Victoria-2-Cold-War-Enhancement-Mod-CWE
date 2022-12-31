@@ -1,0 +1,208 @@
+#British Togoland Plebiscite
+country_event = {
+	id = 1412237
+title = "British Togoland Plebiscite"
+	desc = EVTDESC1412237
+	picture = "british_togoland"
+
+fire_only_once = yes
+
+trigger = {
+year = 1956
+tag = ENG
+TOG = { exists = yes }
+GHA = { exists = no }
+NOT = { year = 1991 }
+OR = { owns = 1914 owns = 1915 owns = 1916 owns = 1917 owns = 1918 }
+}
+
+mean_time_to_happen = { 
+months = 5
+	}
+
+option = {
+name = "Integrate with the Gold Coast Colony"
+
+any_pop = { limit = { culture = ewe location = { OR = { province_id = 1915 province_id = 1916 } } } militancy = 5 consciousness = 4 }
+
+any_pop = { limit = { culture = ga_adangbe location = { OR = { province_id = 1915 province_id = 1916 } } } militancy = -5 consciousness = -4 }
+
+ai_chance = { factor = 0.8 }
+		}
+
+option = {
+name = "Unite with Togoland"
+
+any_pop = { limit = { culture = ewe location = { OR = { province_id = 1915 province_id = 1916 } } } militancy = -5 consciousness = -4 }
+
+any_pop = { limit = { culture = ga_adangbe location = { OR = { province_id = 1915 province_id = 1916 } } } militancy = 5 consciousness = 4 }
+
+any_owned = { 
+limit = { 
+OR = { 
+province_id = 1914 
+province_id = 1915
+province_id = 1916
+province_id = 1917
+province_id = 1918
+	} 
+} 
+
+add_core = TOG
+}
+
+any_owned = { 
+limit = { 
+OR = { 
+province_id = 1914 
+province_id = 1915
+province_id = 1916
+province_id = 1917
+province_id = 1918
+	} 
+} 
+
+secede_province = TOG
+}
+
+ai_chance = { factor = 0.2 }
+		}
+
+}
+
+#Formation of Mandatory French Togo
+country_event = {
+	id = 1412107
+	title = "$COUNTRY_ADJ$ Togoland autonomy?"
+	desc = EVTDESC1412107
+	picture = "togm_start"
+	fire_only_once = yes
+
+	trigger = {
+		OR = {
+			government = hms_government
+			government = hms_government1
+			government = democracy
+			government = democracy1
+		}
+		TOG = { exists = no }
+		owns = 1914
+		1914 = { is_overseas = yes }
+		OR = {
+			year = 1954
+			any_owned_province = {
+				is_core = TOG
+				OR = {
+					has_province_modifier = nationalist_agitation
+					controlled_by_rebels = yes
+				}
+			}
+		}
+	}
+
+	mean_time_to_happen = {
+		months = 24
+		modifier = {
+			factor = 0.5
+			year = 1955
+		}
+		modifier = {
+			factor = 0.1
+			any_owned_province = {
+				is_core = TOG
+				OR = {
+					has_province_modifier = nationalist_agitation
+					controlled_by_rebels = yes
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "Form the state!"
+		prestige = 10
+		release_vassal = TOG
+		TOG = { government = mandate_government }
+		diplomatic_influence = { who = TOG value = 200 }
+		ai_chance = { 
+			factor = 0.95
+			modifier = {
+				factor = 5.5
+				OR = {
+					ruling_party_ideology = communist
+					ruling_party_ideology = communist_social
+				}
+			}
+		}
+	}
+
+	option = {
+		name = "Refuse!"
+		prestige_factor = -0.1
+		badboy = 4
+		TOG = { any_core = { add_province_modifier = { name = nationalist_agitation duration = 1095 } } }
+		ai_chance = {
+			factor = 0.05
+			modifier = {
+				factor = 0.2 #Pretty sure having it set to 0 wouldn't have any effect
+				OR = {
+					badboy = 0.84
+					ruling_party_ideology = liberal
+					ruling_party_ideology = progressive
+					ruling_party_ideology = socialist
+				}
+			}
+			modifier = {
+				factor = 5.5
+				OR = {
+					ruling_party_ideology = populist
+					ruling_party_ideology = traditionalist
+					ruling_party_ideology = nationalist
+				}
+			}
+			modifier = {
+				factor = 2
+				NOT = { exists = ALG }
+			}
+		}
+	}
+}
+
+
+#Communist Togo
+country_event = {
+	id = 1412044
+	title = "Rally of the Togolese People"
+	desc = EVTDESC1412044
+	picture = "communist_togo"
+
+	trigger = {
+		is_vassal = no
+		NOT = { government = proletarian_dictatorship }
+		year = 1967
+		tag = TOG
+		NOT = { year = 1990 }
+		NOT = { has_country_flag = tog_communist }
+	}
+	
+	mean_time_to_happen = { 
+		months = 5
+	}
+
+	option = {
+		name = "Embrace the Proletarian Revolution!"
+		prestige = 10
+		government = proletarian_dictatorship
+		country_event = 800050
+		diplomatic_influence = { who = RUS value = 200 }
+		set_country_flag = tog_communist
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Say no to the Communists!"
+		set_country_flag = tog_communist
+		ai_chance = { factor = 0.1 }
+	}
+
+}

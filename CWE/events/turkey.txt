@@ -1,3 +1,77 @@
+#1950 Turkish Election
+country_event = {
+	id = 1412189
+	title = "$YEAR$ Turkish general election"
+	desc = EVTDESC1412189
+	picture = "turkey_election_1950"
+
+	fire_only_once = yes
+
+	trigger = { 
+		tag = TUR
+		year = 1950
+		government = presidential_dictatorship
+		has_global_flag = blocsenabled
+	}
+
+	mean_time_to_happen = { 
+		months = 7
+	}
+
+	option = {
+		name = "Democratic Party"
+		
+		government = democracy
+		country_event = 800054
+		ruling_party_ideology = conservative
+
+		any_pop = {
+			limit = { AND = { OR = { strata = rich strata = middle } is_accepted_culture = yes } }
+			ideology = {
+				factor = 0.5
+				value = conservative
+			}
+		}
+		
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "Republican People's Party"
+		
+		ruling_party_ideology = socialist
+
+		any_pop = {
+			limit = { AND = { OR = { strata = poor strata = middle } is_accepted_culture = yes } }
+			ideology = {
+				factor = 0.35
+				value = socialist
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+
+
+	option = {
+		name = "Nation Party"
+		
+		government = democracy
+		country_event = 800054
+		ruling_party_ideology = nationalist
+
+		any_pop = {
+			limit = { AND = { OR = { strata = middle strata = rich } is_accepted_culture = yes } }
+			ideology = {
+				factor = 0.25
+				value = nationalist
+			}
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+}
+
 #1960 Turkish coup d'Ètat
 country_event = {
   id = 8015505
@@ -8,8 +82,8 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-    	tag = TUR
-    	year = 1960 
+    		tag = TUR
+    		year = 1960 
 		NOT = { year = 1990 }
 		
 		government = democracy
@@ -23,7 +97,7 @@ country_event = {
 		name = EVT_8015505_A
 		government = presidential_dictatorship 
 		country_event = 800050 
-		ruling_party_ideology = conservative
+		ruling_party_ideology = socialist
 		ai_chance = { factor = 0.9 }
 	}
 
@@ -83,10 +157,10 @@ country_event = {
 	fire_only_once = yes
 
 	trigger = {
-    	tag = TUR
-    	year = 1983 
+    		tag = TUR
+    		year = 1983 
 		NOT = { year = 1990 }
-    	government = presidential_dictatorship
+    		government = presidential_dictatorship
 		is_vassal = no
 		war = no
 	}
@@ -94,15 +168,23 @@ country_event = {
 	mean_time_to_happen = { months = 2 }
 
 	option = {
-		name = EVT_8015518_A
+		name = "Motherland Party"
 		government = democracy 
 		country_event = 800054
 		ruling_party_ideology = liberal
-		ai_chance = { factor = 0.9 }
+		ai_chance = { factor = 0.8 }
 	}
 
 	option = {
-		name = "Stick to the status quo"
+		name = "Populist Party"
+		government = democracy 
+		country_event = 800054
+		ruling_party_ideology = socialist
+		ai_chance = { factor = 0.1 }
+	}
+
+	option = {
+		name = "The Military continues their rule."
 		add_country_modifier = { name = revolution_chaos duration = 3650 }
 		ai_chance = { factor = 0.1 }
 	}
@@ -161,6 +243,7 @@ country_event = {
 	
 	trigger = {
 		tag = TUR
+		year = 2000
 		is_greater_power = no
 		has_global_flag = arab_spring
 		government = democracy
@@ -171,84 +254,9 @@ country_event = {
 	mean_time_to_happen = { months = 3 }
 
 	option = {
-		name = EVT_8015520_A # "Remove these plotters from our ranks!"
+		name = "Remove these plotters from our ranks!"
 		any_pop = { limit = { type = officers } reduce_pop = 0.25 }
 
-		random_list = { 
-			25 = { country_event = 8015521 } #Success
-			75 = { country_event = 8015522 } #Failure
-		}
-		ai_chance = { factor = 0.6 }
-	}
-	option = {
-		name = EVT_8015520_B # "Allah and our loyal citizens will protect us!"
-		prestige_factor = -0.2
-		random_list = { 
-			75 = { country_event = 8015521 } #Success
-			25 = { country_event = 8015522 } #Failure
-		}
-		ai_chance = { factor = 0.4 }
-	}
-}
-
-#15th of July Coup - Success
-country_event = {
-	id = 8015521
-	title = EVT_8015521_NAME
-	desc = EVTDESC8015521
-	picture = "turkey_coup_2016_win"
-
-	is_triggered_only = yes
-
-	option = {
-		name = EVT_8015521_A # We are Atat√ºrk's country once more!
-		add_country_modifier = { name = stock_market_crash duration = 900 }
-		ruling_party_ideology = liberal
-		political_reform = ruling_party_opinion
-		any_pop = {
-			limit = {
-				NOT = { religion = secularism }
-			}
-			scaled_militancy = {
-				factor = 10
-				ideology = traditionalist
-			}
-			scaled_consciousness = {
-				factor = 8
-				ideology = traditionalist
-			}
-			scaled_militancy = {
-				factor = 10
-				ideology = populist
-			}
-			scaled_consciousness = {
-				factor = 8
-				ideology = populist
-			}
-			scaled_militancy = {
-				factor = 8
-				ideology = conservative
-			}
-			scaled_consciousness = {
-				factor = 5
-				ideology = conservative
-			}
-		}
-	}
-}
-
-#15th of July Coup - Fails
-country_event = {
-	id = 8015522
-	title = EVT_8015522_NAME
-	desc = EVTDESC8015522
-	picture = "turkey_coup_2016_lose"
-
-	is_triggered_only = yes
-
-	option = {
-		name = EVT_8015522_A # Declare a state of emergency
-		#prestige = 25
 		government = presidential_dictatorship
 		country_event = 800050
 		add_country_modifier = { name = stock_market_crash duration = 365 }
@@ -287,5 +295,42 @@ country_event = {
 				ideology = liberal
 			}
 		}
+		ai_chance = { factor = 0.7 }
+	}
+	option = {
+		name = EVT_8015521_A
+		add_country_modifier = { name = stock_market_crash duration = 900 }
+		ruling_party_ideology = liberal
+		political_reform = ruling_party_opinion
+		any_pop = {
+			limit = {
+				NOT = { religion = secularism }
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = traditionalist
+			}
+			scaled_consciousness = {
+				factor = 8
+				ideology = traditionalist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = populist
+			}
+			scaled_consciousness = {
+				factor = 8
+				ideology = populist
+			}
+			scaled_militancy = {
+				factor = 8
+				ideology = conservative
+			}
+			scaled_consciousness = {
+				factor = 5
+				ideology = conservative
+			}
+		}
+		ai_chance = { factor = 0.3 }
 	}
 }

@@ -7,10 +7,15 @@ country_event = {
 	fire_only_once = yes
 	
 	trigger = {
+		year = 1952 
+		NOT = { year = 1990 }
+
 		tag = EGY
-		NOT = { 1755 = { owned_by = THIS } }
-		OR = { government = democracy government = hms_government government = absolute_monarchy }
-		year = 1952 NOT = { year = 1990 }
+
+		#NOT = { 1755 = { owned_by = THIS } }
+
+		OR = { government = hms_government government = hms_government1 government = absolute_monarchy }
+
 		is_vassal = no
 		war = no
 	}
@@ -29,6 +34,8 @@ country_event = {
 		leave_alliance = ENG
 
 		government = presidential_dictatorship
+		ruling_party_ideology = socialist
+
 		political_reform = none_voting
 		political_reform = ruling_party_opinion
 		political_reform = parties_not_allowed
@@ -39,7 +46,7 @@ country_event = {
 			country_event = 8004906
 		}
 		
-		ruling_party_ideology = socialist
+		
 		add_country_modifier = {
 			name = economic_boom
 			duration = 365
@@ -125,4 +132,161 @@ country_event = {
 	ai_chance = { factor = 0 }
   }
   
+}
+
+#Ouster of Morsi - Egpyt
+country_event = {
+	id = 1512238
+	title = "Islamist Constitution of Egypt"
+	desc = EVTDESC1512238
+	picture = "morsi_coup"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = EGY
+		government = democracy
+		ruling_party_ideology = traditionalist
+		election = no
+		year = 2013
+	}
+
+	mean_time_to_happen = { 
+		months = 7
+	}
+
+	option = {
+		name = "Purge the Muslim Brotherhood!"
+		country_event = 800050
+		government = presidential_dictatorship
+		ruling_party_ideology = conservative
+		any_pop = {
+			ideology = {
+				factor = -0.25
+				value = traditionalist
+			} 
+		}
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "Leave it be"
+		add_country_modifier = { name = revolution_chaos duration = 3650 }
+		ai_chance = { factor = 0.2 }
+	}
+
+}
+
+#Fix Egypt being Libya bug
+country_event = {
+	id = 1610122
+	title = "The Libyan State"
+	desc = EVTDESC1610122
+	picture = "EGY_to_TRI"
+
+	trigger = {
+		tag = EGY
+		LBY = { exists = no }
+		capital_scope = { is_core = LBY }
+	}
+	
+	option = {
+		name = "This is a state worthy of our lands" 
+		
+		#Remove stray Egyptian cores in Libya
+		all_core = { 
+			limit = { is_core = EGY is_core = LBY }
+			remove_core = EGY
+		}
+		any_country = {
+			limit = { NOT = { tag = LBY } }
+			all_core = { remove_core = LBY }
+		}
+		
+		change_tag = LBY
+		
+		primary_culture = libyan
+		
+		EGY = { capital = 1745 primary_culture = egyptian }
+	}
+
+}
+
+#King of Egypt and Sudan
+country_event = {
+  id = 1512291
+  title = "King of Egypt and Sudan"
+  desc = EVTDESC1512291
+  picture = "egy_sud_claims"
+  fire_only_once = yes
+
+  trigger = {
+    	tag = EGY
+	year = 1951
+    	NOT = { year = 1990 }
+OR = { government = hms_government government = absolute_monarchy }
+	SUD = { exists = no }
+	1827 = { owned_by = ENG }
+  }
+
+  mean_time_to_happen = { months = 10 }
+
+  option = {
+    name = "Claim the Sudan"
+	prestige = 50
+	badboy = 5
+
+relation = { who = ENG value = -50 }
+
+SUD = { all_core = { add_core = EGY } }
+
+any_pop = { 
+	ideology = {
+	factor = 0.2
+	value = nationalist
+	} 
+}
+
+	ai_chance = { factor = 0.9 }
+  }
+
+option = {
+    name = "Keep to the title of King of Egypt"
+add_country_modifier = { name = revolution_chaos duration = 1825 }
+	ai_chance = { factor = 0.1 }
+  }
+
+}
+
+#Kingdom of Egypt demands the Sudan
+country_event = {
+  id = 1512295
+  title = "Abrogation of the Sudan Condominium"
+  desc = EVTDESC1512295
+  picture = "egy_sud_claims"
+
+is_triggered_only = yes
+
+option = {
+    name = "Refuse to end the occupation"
+	relation = { who = EGY value = -100 }
+	badboy = 5
+	ai_chance = { factor = 0.5 }
+}
+
+option = {
+    name = "Let the Sudanese decide"
+	release = SUD
+	SUD = { government = democracy }
+	ai_chance = { factor = 0.4 }
+  }
+
+option = {
+    name = "Surrender the Sudan to Egypt"
+	prestige = -50
+	badboy = -5
+any_owned = { limit = { is_core = SUD } secede_province = EGY }
+	ai_chance = { factor = 0.1 }
+  }
+
 }

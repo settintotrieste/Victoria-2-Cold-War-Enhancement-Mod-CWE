@@ -1383,3 +1383,151 @@ country_event = {
 		remove_country_modifier = regional_anti_terror
 	}
 }
+
+
+
+
+### Nuclear Terrorism ###
+
+#Terrorists Steal Nukes
+country_event = {
+	id = 1410155
+	title = "Terrorists have siezed Nuclear bombs"
+	desc = "Due to the current Civil War in our nation, terrorists have managed to sieze some of our nuclear bombs. We have reasons to suspect that they will use it to blackmail a Great Power. Our international standing has been gravely hit by this."
+	picture = "1410156"
+	
+trigger = { 
+OR = { has_country_modifier = atomic_nation has_country_modifier = hydrogen_nation }
+is_greater_power = no
+revolt_percentage = 0.80
+average_militancy = 7
+}
+
+mean_time_to_happen = { 
+months = 8
+}
+
+option = {
+name = "Hunt them down at all costs!"
+prestige_factor = -0.1
+random_country = { limit = { is_greater_power = yes } country_event = { id = 1410156 days = 57 } relation = { who = THIS value = -100 } }
+		}
+
+}
+
+#Terrorists Steal Nukes
+country_event = {
+	id = 1410156
+	title = "Terrorists demand money or armageddon"
+	desc = EVTDESC1410156
+	picture = "1410155"
+	
+is_triggered_only = yes
+
+option = {
+name = "Pay the ransom"
+prestige = -1000
+money = -1000000
+ai_chance = { factor = 1 modifier = { factor = 0 NOT = { money = 1100000 } } }
+		}
+
+option = {
+name = "Launch the Operation"
+
+random_list = { 
+
+50 = { country_event = { id = 1410157 days = 10 } }
+
+50 = { country_event = { id = 1410158 days = 10 } }
+
+}
+
+ai_chance = { factor = 1 modifier = { factor = 0 money = 1100000 } }
+		}
+
+}
+
+#Terrorist operation - success
+country_event = {
+	id = 1410157
+	title = "Operation to neutralise terrorists succeeds"
+	desc = "The nuclear weapons have been recovered and the terrorists have been either killed or arrested. The world is safe again."
+	picture = "1410157"
+	
+is_triggered_only = yes
+
+option = {
+name = "Great"
+prestige = 100
+		}
+}
+
+#Terrorist operation - fail
+country_event = {
+	id = 1410158
+	title = "Operation to neutralise terrorists failed"
+	desc = "The nuclear weapons were not recovered and not all the terrorists have been captured or killed. This allowed the terrorists to set off the Nuclear Bomb in $CAPITAL$."
+	picture = "1410158"
+	
+is_triggered_only = yes
+
+option = {
+name = "Oh no"
+prestige = -2000
+random_owned = { limit = { is_capital = yes } add_province_modifier = { name = nuke_low duration = 3650 } }
+		}
+}
+
+#Terror support - receiver start
+country_event = {
+	id = 1512065
+title = "Terror Groups Supported by Foreign Nation"
+	desc = "A foreign nation has decided to sponsor terrorist organisations within our nation. This will cause our nation's poor people to rise in traditionalist support."
+	picture = "terrorism_rise_support"
+
+trigger = {
+is_greater_power = no
+is_secondary_power = no
+any_neighbor_country = { has_country_modifier = promoting_terrorists }
+NOT = { has_country_modifier = terror_groups_in }
+NOT = { has_country_modifier = spy_low }
+NOT = { has_country_modifier = spy_high_gp }
+}
+
+option = {
+name = "The only way to stop this is through regime change!"
+add_country_modifier = { name = terror_groups_in duration = -1 }
+set_country_flag = terror_groups_in
+		}
+
+}
+
+#Terror support - receiver end
+country_event = {
+	id = 1512066
+title = "Terror Groups' Foreign Support Ends"
+	desc = "A foreign nation has decided to stop sponsoring terrorist organisations within our nation. This will cause our nation's poor people to decrease in traditionalist support."
+	picture = "terrorism_fall_support"
+
+trigger = {
+
+OR = { has_country_modifier = terror_groups_in has_country_flag = terror_groups_in } 
+
+OR = { 
+is_greater_power = yes
+is_secondary_power = yes 
+has_country_modifier = spy_low 
+has_country_modifier = spy_high_gp 
+
+NOT = { any_neighbor_country = { has_country_modifier = promoting_terrorists } } 
+}
+
+}
+
+option = {
+name = "This is good news"
+remove_country_modifier = terror_groups_in
+clr_country_flag = terror_groups_in
+		}
+
+}

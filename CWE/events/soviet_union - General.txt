@@ -1970,6 +1970,40 @@ country_event = {
 	
 }
 
+#Russian Civil War
+country_event = {
+	id = 19911
+	title = "Russian Borders are Inviolable"
+  	desc = EVT_8014249_DESC
+  	picture = "rus_form_pic"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "Oh well, war it is then!"
+		
+		FROM = { release = THIS }
+		
+		government = presidential_dictatorship 
+		country_event = 800050 
+		ruling_party_ideology = nationalist
+		
+		#Nationalist support grows
+		any_pop = { 
+			limit = { is_primary_culture = yes } 
+			ideology = { factor = 0.25 value = nationalist } 
+		}
+		
+		war = { 
+			target = FROM 
+			attacker_goal = { casus_belli = war_reparations } 
+			defender_goal = { casus_belli = civil_war } 
+			call_ally = no 
+		}
+	}
+
+}
+
 #Fall of USSR
 country_event = {
 	id = 8014271
@@ -2155,12 +2189,160 @@ country_event = {
 			owner = { country_event = 8225006 } 
 		}
 
-		#Release all vassals
-		any_country = { 
-			limit = { vassal_of = RUS } 
-			country_event = 1512136 
-		}
+	}
+	
+}
 
+#Fall of the USSR - Ahistorical clean transition to democracy, messy historical transition is handled by the August Coup chain
+country_event = {
+	id = 1991
+	title = "The Russian Federation"
+  	desc = EVT_8014249_DESC
+  	picture = "rus_form_pic"
+	
+	fire_only_once = yes
+	
+	trigger = {
+		tag = RUS
+		NOT = { has_global_flag = 1992_start_date_flag }
+		
+		OR = { 
+			government = democracy 
+			government = democracy1 
+		}
+		
+		NOT = { has_country_flag = eussr }
+	}
+	
+	option = {
+		name = "It is the end of Communist rule!"
+		
+		badboy = -20
+		
+		remove_country_modifier = uss_timer
+		
+		#To allow historical events to continue to fire, if this event fired between 1990 and 2000
+		random_owned = {
+			limit = { 
+				owner = { 
+					year = 1990 
+					NOT = { year = 2000 } 
+					
+					NOT = { government = democracy1 }
+				} 
+			}
+			owner = { government = democracy1 }
+		}
+		
+		#Nationalist movements begin
+		any_pop = {
+			limit = { NOT = { is_culture_group = THIS } }
+			militancy = 10 
+			consciousness = 10 
+			ideology = { factor = 0.25 value = nationalist }
+		}
+		any_owned = { 
+			limit = { is_primary_culture = no }
+			add_province_modifier = { name = nationalist_agitation duration = 1825 } 
+		}
+		
+		#Fragmentation of domestic politics
+		any_pop = {
+			limit = { strata = rich is_culture_group = THIS }
+			consciousness = 5
+			ideology = { factor = 0.2 value = conservative }
+		}
+		any_pop = {
+			limit = { strata = middle is_culture_group = THIS }
+			consciousness = 10
+			ideology = { factor = 0.2 value = liberal }
+		}
+		any_pop = {
+			limit = { strata = poor is_culture_group = THIS }
+			consciousness = 5
+			ideology = { factor = 0.1 value = socialist }
+			ideology = { factor = 0.1 value = communist }
+		}
+		
+		#Communists are not happy to lose power
+		any_pop = {
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+			scaled_militancy = {
+				factor = 10
+				ideology = communist_social
+			}
+		}
+		
+		#### Vassals ####
+		
+		#Dissolution of the Warsaw Pact
+		random_owned = { 
+			limit = { owner = { NOT = { has_global_flag = breakup_of_ussr } } } 
+			owner = { country_event = 8225006 } 
+		}
+		
+		#### Berlin Problem ####
+		
+		#Return West Berlin, if USSR managed to annex West Berlin
+		random_owned = { 
+			limit = { 
+				owner = { 
+					GER = { exists = yes } 
+					owns = 549 
+				} 
+			} 
+			owner = { 549 = { secede_province = GER } } 
+		}
+		random_owned = { 
+			limit = { 
+				owner = { 
+					GER = { exists = no } 
+					DDR = { exists = yes }
+					owns = 549 
+				} 
+			} 
+			owner = { 549 = { secede_province = DDR } } 
+		}
+		
+		#Release IC Berlin if GER or DDR does not exist
+		random_owned = { 
+			limit = { 
+				owner = { 
+					owns = 549 
+					GER = { exists = no } 
+					DDR = { exists = no } 
+				} 
+			} 
+			owner = { 
+				release = ICB 
+				government = sar_government 
+				country_event = 800054 
+				ruling_party_ideology = socialist 
+			} 
+		}
+		
+		#GER annexes ICB if ICB was a puppet of THIS
+		random_country = { 
+			limit = { 
+				tag = ICB 
+				OR = { is_vassal = no vassal_of = THIS } 
+				GER = { exists = yes }
+			}
+			GER = { inherit = ICB }
+		}
+		random_country = { 
+			limit = { 
+				tag = ICB 
+				OR = { is_vassal = no vassal_of = THIS } 
+				GER = { exists = no }
+				DDR = { exists = yes }
+			}
+			DDR = { inherit = ICB }
+		}
+		
 	}
 	
 }
@@ -2212,5 +2394,666 @@ country_event = {
 		}	
 	
 	}
+
+}
+
+#Union of Soverign States
+country_event = {
+	id = 1410094
+	title = "New Union Treaty Signed"
+	desc = EVTDESC1410094
+	picture = "union_treaty"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "Three cheers for Socialism!"
+		government = socialist_democracy
+		
+		political_reform = universal_voting
+		political_reform = open_opinion
+		political_reform = limited_meetings
+		political_reform = elitist_service
+		political_reform = responsible_publishing
+		political_reform = state_controlled_unions
+		political_reform = parties_only_nominated
+		political_reform = jefferson_method
+		
+		any_country = {
+			limit = { 
+				exists = yes 
+				vassal_of = THIS 
+				OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 }
+			}
+			country_event = 14100941
+		}
+		
+		set_country_flag = eussr
+	}
+	
+}
+
+#Union of Soverign States - Puppets can choose to embrace socialist democracy
+country_event = {
+	id = 14100941
+	title = "A Socialist Democracy?"
+	desc = EVTDESC14100941
+	picture = "union_treaty"
+	
+	is_triggered_only = yes
+
+	option = {
+		name = "Embrace the developments in $COUNTRY$!"
+		government = socialist_democracy
+		
+		#Match ruling party with overlord
+		random_owned = {
+			limit = { owner = { FROM = { ruling_party_ideology = communist } } }
+			owner = { ruling_party_ideology = communist }
+		}
+		random_owned = {
+			limit = { owner = { FROM = { ruling_party_ideology = communist_social } } }
+			owner = { ruling_party_ideology = communist_social }
+		}
+		random_owned = {
+			limit = { owner = { FROM = { ruling_party_ideology = socialist } } }
+			owner = { ruling_party_ideology = socialist }
+		}
+		random_owned = {
+			limit = { owner = { FROM = { ruling_party_ideology = progressive } } }
+			owner = { ruling_party_ideology = progressive }
+		}
+		
+		political_reform = universal_voting
+		political_reform = open_opinion
+		political_reform = limited_meetings
+		political_reform = elitist_service
+		political_reform = responsible_publishing
+		political_reform = state_controlled_unions
+		political_reform = parties_only_nominated
+		political_reform = jefferson_method
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = 10
+			consciousness = 10
+			ideology = { factor = 0.25 value = communist }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = -5
+			consciousness = -5
+			ideology = { factor = 0.1 value = progressive }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = -2.5
+			consciousness = -2.5
+			ideology = { factor = 0.1 value = socialist }
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+	
+	option = {
+		name = "We shall go our own way!"
+		
+		#USS loses influence in THIS
+		overlord = { 
+			relation = { who = THIS value = -200 }
+			diplomatic_influence = { who = THIS value = -100 }
+			release_vassal = THIS 
+		}
+		
+		#Domestic reaction
+		any_pop = { 
+			limit = { strata = rich }
+			militancy = -5
+			consciousness = -5
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = 6
+			consciousness = 6
+			ideology = { factor = 0.2 value = liberal }
+		}
+		any_pop = { 
+			limit = { strata = middle }
+			militancy = 3
+			consciousness = 3
+			ideology = { factor = 0.1 value = liberal }
+		}
+		
+		ai_chance = { factor = 0.1 }
+	}
+	
+}
+
+#Soviet Interference in Post War FRA and ITA elections
+country_event = {
+	id = 1610107
+	title = "Interfere in French and Italian Politics?"
+	desc = EVTDESC1610107
+	picture = "romania_stalinism"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		year = 1946
+		NOT = { year = 1950 }
+		has_global_flag = blocsenabled
+	}
+
+	mean_time_to_happen = { 
+		months = 2
+	}
+
+	option = {
+		name = "Do not interfere"
+		badboy = -3
+		ai_chance = { factor = 0.8 }
+	}
+
+	option = {
+		name = "Interfere moderately"
+		money = -500000
+		badboy = 5
+		FRA = { 
+			relation = { who = THIS value = -100 }
+			any_pop = {
+				limit = { is_culture_group = european_french strata = poor }
+				ideology = { factor = 0.10 value = communist }
+				militancy = 2.5
+				consciousness = 2.5
+			}
+			any_pop = {
+				limit = { is_culture_group = european_french strata = middle }
+				ideology = { factor = 0.05 value = communist }
+				militancy = 2.5
+				consciousness = 2.5
+			}
+		}
+		ITA = { 
+			relation = { who = THIS value = -100 }
+			any_pop = {
+				limit = { is_culture_group = european_italian strata = poor }
+				ideology = { factor = 0.10 value = communist }
+				militancy = 2.5
+				consciousness = 2.5
+			}
+			any_pop = {
+				limit = { is_culture_group = european_italian strata = middle }
+				ideology = { factor = 0.05 value = communist }
+				militancy = 2.5
+				consciousness = 2.5
+			}
+		}
+		ai_chance = { factor = 0.1 }
+	}
+	
+	option = {
+		name = "Go all out!"
+		money = -1000000
+		badboy = 10
+		FRA = { 
+			relation = { who = THIS value = -200 }
+			any_pop = {
+				limit = { is_culture_group = european_french strata = poor }
+				ideology = { factor = 0.20 value = communist }
+				militancy = 5
+				consciousness = 5
+			}
+			any_pop = {
+				limit = { is_culture_group = european_french strata = middle }
+				ideology = { factor = 0.10 value = communist }
+				militancy = 5
+				consciousness = 5
+			}
+		}
+		ITA = { 
+			relation = { who = THIS value = -200 }
+			any_pop = {
+				limit = { is_culture_group = european_italian strata = poor }
+				ideology = { factor = 0.20 value = communist }
+				militancy = 5
+				consciousness = 5
+			}
+			any_pop = {
+				limit = { is_culture_group = european_italian strata = middle }
+				ideology = { factor = 0.10 value = communist }
+				militancy = 5
+				consciousness = 5
+			}
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Soviet Interference in US election
+country_event = {
+	id = 1610108
+	title = "Interfere in the $YEAR$ US Election?"
+	desc = EVTDESC1610108
+	picture = "USSR_USA_1975_election_interference"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		year = 1974
+		NOT = { year = 1980 }
+		
+		government = proletarian_dictatorship
+		is_greater_power = yes
+		war = no
+		
+		money = 600000
+		
+		#Gerald Ford is President & USA is having an election
+		USA = { 
+			ruling_party_ideology = conservative 
+			election = yes 
+		}
+		
+		#Detente ongoing
+		has_country_modifier = cold_war_low
+		
+		#Cold War ongoing
+		has_global_flag = blocsenabled
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "Help President Gerald Ford!"
+		money = -500000
+		badboy = 3
+		USA = {
+			relation = { who = THIS value = 100 }
+			any_pop = {
+				limit = { is_culture_group = american_cultures }
+				ideology = { factor = 0.05 value = conservative }
+				consciousness = 5
+			}
+		}
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "Leave it to the American people"
+		USA = {
+			any_pop = {
+				limit = { is_culture_group = american_cultures }
+				ideology = { factor = 0.05 value = liberal }
+				consciousness = 5
+			}
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#USSR overthrow the reformists
+country_event = {
+	id = 1610132
+	title = "Coup by the Soviet Hardliners?"
+	desc = EVTDESC1610132
+	picture = "soviet_coup_no_reformists"
+
+	fire_only_once = yes
+
+	trigger = {
+		tag = RUS
+		
+		government = proletarian_dictatorship
+		war = yes
+		is_vassal = no
+		
+		ruling_party_ideology = communist_social
+		war_policy = pacifism
+		
+		#Must be losing the war
+		national_provinces_occupied = 0.10
+		
+		#THIS is not an aggressor
+		NOT = { has_country_flag = this_is_aggressor }
+	}
+
+	mean_time_to_happen = { 
+		months = 1
+	}
+
+	option = {
+		name = "Remove the pacifists!"
+		
+		#Switch to hardliners
+		ruling_party_ideology = communist
+		
+		#Purge the government
+		any_pop = { 
+			limit = { OR = { type = officers type = bureaucrats type = aristocrats } } 
+			reduce_pop = 0.90
+			ideology = { factor = 0.25 value = communist } 
+			dominant_issue = {
+				value = jingoism
+				factor = 0.25
+			}
+		}
+		
+		#Middle class is pissed
+		any_pop = { 
+			limit = { NOT = { type = bureaucrats } strata = middle } 
+			militancy = 5
+			ideology = { factor = 0.25 value = liberal } 
+		}
+		
+		#Lower class doesn't really care
+		any_pop = { 
+			limit = { NOT = { type = soldiers } strata = poor } 
+			militancy = 1
+			ideology = { factor = 0.05 value = liberal } 
+		}
+		
+		ai_chance = { factor = 0.9 }
+	}
+
+	option = {
+		name = "The coup fails"
+		
+		add_country_modifier = { name = political_strife duration = 365 }
+		
+		#Hardliners are furious
+		any_pop = {
+			limit = { OR = { type = officers type = bureaucrats type = aristocrats } } 
+			scaled_militancy = {
+				factor = 10
+				ideology = communist
+			}
+			dominant_issue = {
+				value = jingoism
+				factor = 0.25
+			}
+		}
+		ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#1954 Transfer of Crimea
+country_event = {
+	id = 1610074
+    title = "1954 Transfer of Crimea"
+	desc = EVTDESC1610074
+	picture = "crimea_transfer_1954"
+
+    fire_only_once = yes
+
+    trigger = {
+        tag = RUS    
+        year = 1954
+		NOT = { year = 1991 }
+		
+        war = no
+		
+        UKR = { exists = no }
+        CRI = { exists = no }
+		
+        any_owned_province = { is_core = CRI }
+		
+		has_global_flag = blocsenabled
+    }
+
+    mean_time_to_happen = { months = 2 }
+
+    option = {
+        name = "Do the transfer"
+        prestige = 50
+        badboy = -5
+		
+        CRI = { all_core = { add_core = UKR } }
+		
+		955 = { change_province_name = "Khmelnytskyi" }
+
+        set_global_flag = 1954_cri_transfer
+		
+        ai_chance = { factor = 0.9 }
+	}
+
+    option = {
+        name = "There is no need"
+        ai_chance = { factor = 0.1 }
+	}
+
+}
+
+#Soviets buy Rolls-Royce Nene from the UK - RUS
+country_event = {
+	id = 1610083
+title = "Buy British Rolls-Royce Nene Engines?"
+	desc = EVTDESC1610083
+	picture = "uk_ussr_rolls_royce"
+
+fire_only_once = yes
+
+trigger = {
+tag = RUS
+year = 1946
+NOT = { year = 1990 }
+war = no
+has_global_flag = blocsenabled
+ENG = { is_greater_power = yes government = hms_government war = no }
+}
+
+mean_time_to_happen = { 
+months = 9
+}
+
+option = {
+name = "Propose the sale (Costs $500,000 - 80% chance)"
+ENG = { country_event = 1610084 }
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "No thanks"
+ai_chance = { factor = 0.1 }
+		}
+
+}
+
+#Soviets buy Rolls-Royce Nene from the UK - ENG
+country_event = {
+	id = 1610084
+title = "Sale of Rolls-Royce Nene Engines?"
+	desc = EVTDESC1610083
+	picture = "uk_ussr_rolls_royce"
+
+is_triggered_only = yes
+
+option = {
+name = "Accept the offer!"
+random_country = { 
+limit = { tag = RUS ai = no } money = -500000 }
+money = 500000
+relation = { who = RUS value = 100 }
+relation = { who = USA value = -50 }
+RUS = { years_of_research = 5 }
+RUS = { activate_technology = first_generation_subsonic_jet_fighters }
+ai_chance = { factor = 0.8 }
+		}
+
+option = {
+name = "No thanks"
+relation = { who = RUS value = -50 }
+relation = { who = USA value = 50 }
+ai_chance = { factor = 0.2 }
+		}
+
+}
+
+#Soviet Stagnation Levels - Add
+country_event = {
+	id = 1512278
+	title = "Economic Stagnation in $COUNTRY$"
+	desc = EVTDESC1512278
+	picture = "soviet_stagnation"
+
+	trigger = {
+		#Socialist regime
+		OR = { 
+			government = proletarian_dictatorship 
+			government = proletarian_dictatorship1 
+			government = socialist_democracy 
+		}
+		
+		#Starting from 1965
+		year = 1965
+		
+		#Planned economy
+		OR = { 
+			economic_policy = planned_economy 
+			economic_policy = planned_economy1
+		}
+		
+		#Not has OGAS
+		NOT = { has_country_modifier = ogas }
+		NOT = { has_country_modifier = cybersin }
+		NOT = { has_country_modifier = partial_automation_ogas }
+		
+		#Not already max stagnation
+		NOT = { has_country_modifier = soviet_stagnation_4 }
+	}
+
+	mean_time_to_happen = { 
+		months = 60
+		modifier = { factor = 1.25 crime_fighting = 0.5 }
+		modifier = { factor = 1.25 crime_fighting = 0.6 }
+		modifier = { factor = 1.5 crime_fighting = 0.7 }
+		modifier = { factor = 1.5 crime_fighting = 0.8 }
+		modifier = { factor = 1.5 crime_fighting = 0.9 }
+		modifier = { factor = 1.5 crime_fighting = 1.0 }
+	}
+
+	option = {
+		name = "We have to find a way to stop the rot"
+
+		#Add stagnation modifiers - Level 4
+		random_owned = { limit = { owner = { has_country_modifier = soviet_stagnation_3 } } owner = { remove_country_modifier = soviet_stagnation_3 add_country_modifier = { name = soviet_stagnation_4 duration = -1 } } }
+
+		#Add stagnation modifiers - Level 3
+		random_owned = { limit = { owner = { has_country_modifier = soviet_stagnation_2 } } owner = { remove_country_modifier = soviet_stagnation_2 add_country_modifier = { name = soviet_stagnation_3 duration = -1 } } }
+
+		#Add stagnation modifiers - Level 2
+		random_owned = { limit = { owner = { has_country_modifier = soviet_stagnation_1 } } owner = { remove_country_modifier = soviet_stagnation_1 add_country_modifier = { name = soviet_stagnation_2 duration = -1 } } }
+
+		#Add stagnation modifiers - Level 1
+		random_owned = { limit = { owner = { NOT = { OR = { has_country_modifier = soviet_stagnation_1 has_country_modifier = soviet_stagnation_2 has_country_modifier = soviet_stagnation_3 has_country_modifier = soviet_stagnation_4 } } } } owner = { add_country_modifier = { name = soviet_stagnation_1 duration = -1 } } }
+
+	}
+}
+
+#Soviet Stagnation Levels - Remove
+country_event = {
+	id = 1512279
+	title = "$COUNTRY_ADJ$ Economic Recovery"
+	desc = "Years of communist planned economy has wrought much economic destruction to our industries. With the end of the planned economy, our nation's markets have been able to grow through market forces and is on the track to a healthy recovery."
+	picture = "soviet_stagnation_end"
+
+    	trigger = {
+		OR = {
+			#This event fires to reduce stagnation level when OGAS or Cybersin is developed
+			AND = {
+				OR = { has_country_modifier = ogas has_country_modifier = cybersin }
+				OR = { 			
+					has_country_modifier = soviet_stagnation_1 
+					has_country_modifier = soviet_stagnation_2 
+            				has_country_modifier = soviet_stagnation_3 
+           	 			has_country_modifier = soviet_stagnation_4  
+				}
+			}
+			#This event fires to remove OGAS and Cybersin modifiers if THIS no longer uses planned economy
+			AND = {
+				OR = { has_country_modifier = ogas has_country_modifier = cybersin }
+				NOT = { OR = { economic_policy = planned_economy economic_policy = planned_economy1 } }
+			}
+			#This event fires to remove stagnation modifiers if THIS no longer uses planned economy
+			AND = {
+				OR = { 			
+					has_country_modifier = soviet_stagnation_1 
+					has_country_modifier = soviet_stagnation_2 
+            				has_country_modifier = soviet_stagnation_3 
+           	 			has_country_modifier = soviet_stagnation_4  
+				}
+				NOT = { OR = { economic_policy = planned_economy economic_policy = planned_economy1 } }
+			}
+		}
+	}
+
+	mean_time_to_happen = { 
+		months = 120
+		modifier = { factor = 0.75 crime_fighting = 0.5 }
+		modifier = { factor = 0.75 crime_fighting = 0.6 }
+		modifier = { factor = 0.75 crime_fighting = 0.7 }
+		modifier = { factor = 0.75 crime_fighting = 0.8 }
+		modifier = { factor = 0.75 crime_fighting = 0.9 }
+		modifier = { factor = 0.75 crime_fighting = 1.0 }
+	}
+
+	option = {
+		name = "We have found a way to stop the rot"
+
+		#Remove OGAS and Cybersin modifiers if THIS is no longer a planned economy
+		random_owned = {
+			limit = { owner = { NOT = { OR = { economic_policy = planned_economy economic_policy = planned_economy1 } } } }
+			owner = { remove_country_modifier = ogas remove_country_modifier = cybersin }
+		}
+		remove_country_modifier = soviet_stagnation_1 
+		remove_country_modifier = soviet_stagnation_2 
+		remove_country_modifier = soviet_stagnation_3 
+		remove_country_modifier = soviet_stagnation_4 
+	}
+	
+}
+
+#Soviet Occupation of Bornholm
+country_event = {
+	id = 1512343
+title = "Soviet Occupation of Bornholm"
+	desc = EVTDESC1512343
+	picture = "bornholm_occupation"
+
+fire_only_once = yes
+
+trigger = {
+tag = RUS
+is_vassal = no
+war = no
+year = 1946
+owns = 374
+NOT = { year = 1990 }
+}
+
+mean_time_to_happen = { months = 4 }
+
+option = {
+name = "Return the island to Denmark"
+badboy = -10
+relation = { who = DEN value = 50 }
+374 = { secede_province = DEN }
+ai_chance = { factor = 0.9 }
+		}
+
+option = {
+name = "Continue the illegal occupation!"
+prestige = -100
+374 = { add_province_modifier = { name = occupied_province duration = -1 } }
+relation = { who = DEN value = -100 }
+ai_chance = { factor = 0.1 }
+		}
 
 }

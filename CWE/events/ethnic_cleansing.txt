@@ -1,0 +1,139 @@
+#Genocide
+country_event = {
+	id = 1410080
+	title = "$COUNTRY_ADJ$ Genocide of $YEAR$"
+	desc = "The Government of $COUNTRY$ has been discovered to have to begun killing off their ethnic minorities. The international community is outraged."
+	picture = "genocide"
+	major = yes
+is_triggered_only = yes
+
+option = {
+name = "We must brace the international fallout!"
+any_country = { limit = { OR = { government = democracy government = democracy1 government = hms_government government = hms_government1 } } relation = { who = THIS value = -200 } }
+	}
+}
+
+#Establishment of more concentration camps
+country_event = {
+	id = 1412027
+	title = "Concentration Camp Network Grows"
+	desc = "EVTDESC1412027"
+	picture = "death_camps"
+
+	trigger = {
+		any_owned_province = { total_pops = 500000 NOT = { has_province_modifier = death_camp } }
+		has_country_flag = death_camp_active
+	}
+
+	mean_time_to_happen = { months = 6 }
+
+	option = {
+		name = "Good work boys"
+		money = -10000
+		any_owned = { 
+			limit = { total_pops = 500000 NOT = { has_province_modifier = death_camp } } 
+			add_province_modifier = { name = death_camp duration = -1 } 
+		}
+	}
+	
+}
+
+#End concentration camps
+country_event = {
+	id = 1412028
+	title = "Concentration Camp Network Closed"
+	desc = "EVTDESC1412028"
+	picture = "death_camps_close"
+
+	trigger = {
+		OR = { government = socialist_democracy government = democracy government = democracy1 government = hms_government government = hms_government1 }
+		has_country_flag = death_camp_active
+	}
+
+	option = {
+		name = "The camps were a stain on our history.."
+		badboy = -5
+		clr_country_flag = death_camp_active
+		any_pop = { limit = { type = slaves } pop_type = farmers }
+		any_owned = { limit = { has_province_modifier = death_camp } remove_province_modifier = death_camp }
+	}
+	
+}
+
+#Genocide options
+country_event = {
+	id = 1512037
+title = "Ethnic Cleansing in $COUNTRY$"
+	desc = EVTDESC1512037
+	picture = "genocide_options"
+
+trigger = {
+
+OR = { has_country_flag = ethnic_cleansed has_country_modifier = ethnic_cleansing }
+
+}
+
+mean_time_to_happen = { 
+months = 4
+modifier = { factor = 0 NOT = { has_country_flag = genocide_101 } }
+}
+
+option = {
+name = "Spare no one (Target States and Colonial Provinces)"
+
+set_country_flag = genocide_101
+
+#Randomised Killing rates
+random_list = {
+	15 = { any_pop = { limit = { AND = { is_primary_culture = no is_accepted_culture = no } } reduce_pop = 0.90 } }
+	15 = { any_pop = { limit = { AND = { is_primary_culture = no is_accepted_culture = no } } reduce_pop = 0.925 } }
+	20 = { any_pop = { limit = { AND = { is_primary_culture = no is_accepted_culture = no } } reduce_pop = 0.95 } }
+	50 = { any_pop = { limit = { AND = { is_primary_culture = no is_accepted_culture = no } } reduce_pop = 0.975 } }
+}
+
+#Discovery Chance
+random = {
+	chance = 30
+	prestige_factor = -0.05
+	badboy = 5
+	set_country_flag = discovered_genocide
+}
+
+#Event to notify everyone if discovered
+random_owned = { limit = { owner = { has_country_flag = discovered_genocide NOT = { has_country_flag = discovered_genocide1 } } } owner = { set_country_flag = discovered_genocide1 country_event = 1410080 } }
+
+ai_chance = { factor = 0.6 }
+		}
+
+option = {
+name = "Spare some people (Target Colonial Provinces only)"
+
+set_country_flag = genocide_101
+
+#Randomised Killing rates
+random_list = {
+	15 = { any_pop = { limit = { location = { is_colonial = yes } AND = { is_primary_culture = no is_accepted_culture = no } } reduce_pop = 0.90 } }
+	15 = { any_pop = { limit = { location = { is_colonial = yes } AND = { is_primary_culture = no is_accepted_culture = no } } reduce_pop = 0.925 } }
+	20 = { any_pop = { limit = { location = { is_colonial = yes } AND = { is_primary_culture = no is_accepted_culture = no } } reduce_pop = 0.95 } }
+	50 = { any_pop = { limit = { location = { is_colonial = yes } AND = { is_primary_culture = no is_accepted_culture = no } } reduce_pop = 0.975 } }
+}
+
+#Discovery Chance
+random = {
+	chance = 10
+	prestige_factor = -0.05
+	badboy = 5
+	set_country_flag = discovered_genocide
+}
+
+#Event to notify everyone if discovered
+random_owned = { limit = { owner = { has_country_flag = discovered_genocide NOT = { has_country_flag = discovered_genocide1 } } } owner = { set_country_flag = discovered_genocide1 country_event = 1410080 } }
+
+ai_chance = { 
+factor = 0.4 
+modifier = { factor = 0 
+NOT = { any_owned_province = { is_colonial = yes } } } 
+}
+		}
+
+}
