@@ -1,4 +1,4 @@
- DO NOT MERGE THIS. Experimental fork for testing
+# DO NOT MERGE THIS. Experimental fork for testing
 
 This is one of the forks I've been maintaining offline. The fork contains bugfixes and content from me and Historical-Project-Mod ( https://github.com/arkhometha/Historical-Project-Mod ) NWO mod ( https://github.com/simsulla/nwomod ) Divergences-HPM ( https://github.com/Outta-my-way-burrocrat/Divergences-HPM ), Pop Demand Mod, and probably others I've forgotten. It's a test submod and isn't intended for merger in its current undocumented and badly atributed state.
 
@@ -19,13 +19,13 @@ Started adapting the British and English/white_anglo culture changes from NWO
 Adapted Chiapas and Yucatan tags from HPM mod
 Copied Scottish names from HPM
 
-### What are needed for CWE to run ###
+### What are needed for CWE to run
 
 Both the Heart of Darkness + A House Divided DLCs
 
 The 3.04 beta patch for Victoria 2
 
-### How to install the Github version of CWE ###
+### How to install the Github version of CWE
 
 Where to download the file: https://github.com/settintotrieste/Victoria-2-Cold-War-Enhancement-Mod-CWE
 
