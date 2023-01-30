@@ -1,14 +1,14 @@
- DO NOT MERGE THIS. Experimental submod for testing
+# DO NOT MERGE THIS. Experimental submod for testing
 
 This is one of the submods I've been maintaining offline. The submod contains bugfixes and content from me and Historical-Project-Mod ( https://github.com/arkhometha/Historical-Project-Mod ) NWO mod ( https://github.com/simsulla/nwomod ) and probably others I've forgotten. It isn't intended for merger in its current undocumented and badly atributed state.
 
-### What are needed for CWE to run ###
+### What are needed for CWE to run
 
 Both the Heart of Darkness + A House Divided DLCs
 
 The 3.04 beta patch for Victoria 2
 
-### How to install the Github version of CWE ###
+### How to install the Github version of CWE
 
 Where to download the file: https://github.com/settintotrieste/Victoria-2-Cold-War-Enhancement-Mod-CWE
 
