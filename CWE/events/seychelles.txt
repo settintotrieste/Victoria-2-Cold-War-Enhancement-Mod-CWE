@@ -32,6 +32,19 @@ country_event = {
 			country_event = 800054
 			ruling_party_ideology = conservative
 			add_country_modifier = { name = revolution_chaos duration = 1825 } 
+
+			any_pop = { 
+				limit = { OR = { strata = poor strata = middle } }	
+				ideology = { factor = 0.25 value = socialist }
+			}
+			any_pop = { 
+				limit = { OR = { strata = poor strata = rich } }	
+				ideology = { factor = 0.05 value = populist }
+			}
+			any_pop = {
+				limit = { OR = { strata = middle strata = rich } }
+				ideology = { factor = 0.05 value = populist }
+			}
 		}
 		
 		ai_chance = { factor = 0.7 }
@@ -52,6 +65,19 @@ country_event = {
 			ruling_party_ideology = conservative
 			any_pop = { militancy = 4 consciousness = 8.0 }
 			add_country_modifier = { name = revolution_chaos duration = 3650 } 
+
+			any_pop = { 
+				limit = { strata = poor }	
+				ideology = { factor = 0.25 value = communist }
+			}
+			any_pop = { 
+				limit = { strata = middle }	
+				ideology = { factor = 0.15 value = socialist }
+			}
+			any_pop = {
+				limit = { strata = rich }
+				ideology = { factor = 0.15 value = populist }
+			}
 		}
 
 		ai_chance = { factor = 0.2 }
@@ -66,6 +92,8 @@ country_event = {
 			limit = { location = { is_core = SEY } } 
 			militancy = 8 
 			consciousness = 5.0 
+			ideology = { factor = 0.25 value = communist }
+			ideology = { factor = 0.25 value = populist }
 		}
 		
 		SEY = { 
@@ -105,8 +133,8 @@ country_event = {
 	option = {
 		name = "Long live the Revolution! Long live Rene!"
 		any_pop = { militancy = 5 consciousness = 1 }
-		government = populist_dictatorship
-		country_event = 800050
+		government = socialist_democracy
+		country_event = 800054
 		ruling_party_ideology = socialist
 		
         RUS = { diplomatic_influence = { who = SEY value = 200 } }
@@ -137,7 +165,7 @@ country_event = {
 		year = 1981
 		NOT = { year = 1990 }
 		
-		government = populist_dictatorship
+		government = socialist_democracy
 		ruling_party_ideology = socialist
 		
 		is_vassal = no
@@ -159,9 +187,15 @@ country_event = {
 	option = {
 		name = "Run to Moscow!"
 		any_pop = { militancy = 5 consciousness = 2 }
+		government = populist_dictatorship
+		country_event = 800050
 		ruling_party_ideology = populist
 		RUS = { diplomatic_influence = { who = SEY value = -200 } }
-		relation = { who = SAF value = 150 }
+		
+		random_country = { #Should this be any_country instead?
+			limit = { tag = SAF NOT = { OR = { ruling_party_ideology = communist ruling_party_ideology = communist_social ruling_party_ideology = socialist ruling_party_ideology = social_democrat ruling_party_ideology = progressive } } }
+			SEY = { relation = { who = SAF value = 150 } }
+		}
 		badboy = 1
 		ai_chance = { factor = 0.1 }
 	}
@@ -179,9 +213,12 @@ country_event = {
 	trigger = {
 		tag = SEY
 		year = 1993
+		NOT = { year = 2000 }
 		
-		government = populist_dictatorship
+		government = socialist_democracy
 		ruling_party_ideology = socialist
+		
+		NOT = { RUS = { exists = yes OR = { government = proletarian_dictatorship government = proletarian_dictatorship1 government = socialist_democracy } } }
 		
 		is_vassal = no
 		war = no
