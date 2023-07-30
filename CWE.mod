@@ -1,4 +1,4 @@
-name = "CWE Unofficial 1.15.9.1" # Jun 2023
+name = "CWE Unofficial 1.15.9.3" # Jul-Aug 2023
 path = "mod/CWE" # location of your mod files. If changed change map/default.map as well
 user_dir = "CWE" # optional.   
 replace_path = "common"
