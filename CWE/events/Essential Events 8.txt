@@ -1508,55 +1508,58 @@ add_country_modifier = { name = revolution_chaos duration = 1825 }
 #UN Peace Making - Invite countries into the Peace Mission
 country_event = {
 	id = 1512032
-title = "UN Peace Mission to restore order in $FROMCOUNTRY$"
+	title = "UN Peace Mission to restore order in $FROMCOUNTRY$"
 	desc = EVTDESC1512032
 	picture = "un_peace_making_unsc_invite"
+	
 	is_triggered_only = yes
 
-trigger = {
-has_country_flag = un_peace_making_marker
-has_country_modifier = peace_making_veoted
-has_country_modifier = requested_un_peacemaking
-}
-mean_time_to_happen = { 
-months = 1
+	#trigger = {
+	#	has_country_flag = un_peace_making_marker
+	#	has_country_modifier = peace_making_veoted
+	#	has_country_modifier = requested_un_peacemaking
+	#}
+	
+	#mean_time_to_happen = { 
+	#	months = 1
+	#
+	#	modifier = { factor = 0.5 has_global_flag = UNSG_aggressive }
+	#	modifier = { factor = 0.75 has_global_flag = UNSG_normal }
+	#}
 
-modifier = { factor = 0.5 has_global_flag = UNSG_aggressive }
-modifier = { factor = 0.75 has_global_flag = UNSG_normal }
+	option = {
+		name = "Join the mission!"
+
+		clr_country_flag = un_peace_making_marker
+
+		prestige = 25
+		relation = { who = FROM value = 200 }
+		create_alliance = FROM
+		military_access = FROM
+		FROM = { military_access = THIS }
+
+		ai_chance = { 
+			factor = 1
+			modifier = { factor = 0 NOT = { relation = { who = FROM value = 0 } } }
+			modifier = { factor = 0 war_policy = pacifism }
+		}
+
 	}
 
-option = {
-name = "Join the mission!"
+	option = {
+		name = "Don't interfere in $FROMCOUNTRY_ADJ$ politics!"
 
-clr_country_flag = un_peace_making_marker
+		clr_country_flag = un_peace_making_marker
 
-prestige = 25
-relation = { who = FROM value = 200 }
-create_alliance = FROM
-military_access = FROM
-FROM = { military_access = THIS }
-
-ai_chance = { 
-factor = 1
-modifier = { factor = 0 NOT = { relation = { who = FROM value = 0 } } }
-modifier = { factor = 0 war_policy = pacifism }
-}
-
+		prestige = -25
+		relation = { who = FROM value = -25 }
+		
+		ai_chance = { 
+			factor = 1
+			modifier = { factor = 0 relation = { who = FROM value = 0 } }
+			modifier = { factor = 0 NOT = { war_policy = pacifism } }
 		}
-
-option = {
-name = "Don't interfere in $FROMCOUNTRY_ADJ$ politics!"
-
-clr_country_flag = un_peace_making_marker
-
-prestige = -25
-relation = { who = FROM value = -25 }
-ai_chance = { 
-factor = 1
-modifier = { factor = 0 relation = { who = FROM value = 0 } }
-modifier = { factor = 0 NOT = { war_policy = pacifism } }
-}
-		}
+	}
 
 
 }
@@ -12845,18 +12848,18 @@ country_event = {
 	desc = EVT_fullindependence_DESC
 	picture = "un_mandate_end"
 
-	is_triggered_only = yes
-
-	#trigger = {
-	#	has_country_flag = great_war_mandate_un
-	#	government = mandate_government
-	#	is_vassal = yes
-	#	war = no
-	#	election = no
-	#}
-	#mean_time_to_happen = { 
-	#	months = 60
-	#}
+	trigger = {
+		has_country_flag = great_war_mandate_un
+		
+		government = mandate_government
+		is_vassal = yes
+		war = no
+		election = no
+	}
+	
+	mean_time_to_happen = { 
+		months = 60
+	}
 
 	option = {
 		name = EVT_fullindependence_A
